@@ -49,7 +49,7 @@ void line::shallow_copy(const object::csptr& _source)
     m_position  = other->m_position;
     m_direction = other->m_direction;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -69,12 +69,12 @@ void line::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_co
     m_position  = data::object::copy(other->m_position, _cache);
     m_direction = data::object::copy(other->m_direction, _cache);
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void line::setValue(const data::point::sptr& _position, const data::point::sptr& _direction)
+void line::set_value(const data::point::sptr& _position, const data::point::sptr& _direction)
 {
     m_position  = _position;
     m_direction = _direction;
@@ -91,7 +91,7 @@ bool line::operator==(const line& _other) const noexcept
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

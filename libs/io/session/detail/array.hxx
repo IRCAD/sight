@@ -30,17 +30,17 @@
 namespace sight::io::session::detail::array
 {
 
-constexpr static auto s_Size {"Size"};
-constexpr static auto s_Sizes {"Sizes"};
-constexpr static auto s_Type {"Type"};
-constexpr static auto s_IsBufferOwner {"IsBufferOwner"};
-constexpr static auto s_uuid {"uuid"};
-constexpr static auto s_array {"/array.raw"};
+constexpr static auto SIZE {"Size"};
+constexpr static auto SIZES {"Sizes"};
+constexpr static auto TYPE {"Type"};
+constexpr static auto IS_BUFFER_OWNER {"IsBufferOwner"};
+constexpr static auto UUID {"uuid"};
+constexpr static auto ARRAY {"/array.raw"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& _archive,
+    zip::archive_writer& _archive,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -57,18 +57,18 @@ inline static void write(
 
     for(const auto& size : array->size())
     {
-        sizes_tree.add(s_Size, size);
+        sizes_tree.add(SIZE, size);
     }
 
-    _tree.add_child(s_Sizes, sizes_tree);
+    _tree.add_child(SIZES, sizes_tree);
 
     // type, isBufferOwner
-    _tree.put(s_Type, array->getType().name());
-    _tree.put(s_IsBufferOwner, array->getIsBufferOwner());
+    _tree.put(TYPE, array->type().name());
+    _tree.put(IS_BUFFER_OWNER, array->get_is_buffer_owner());
 
     // Create the output file inside the archive
-    const auto& ostream = _archive.openFile(
-        std::filesystem::path(array->get_uuid() + s_array),
+    const auto& ostream = _archive.open_file(
+        std::filesystem::path(array->get_uuid() + ARRAY),
         _password
     );
 
@@ -80,7 +80,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::array::sptr read(
-    zip::ArchiveReader& _archive,
+    zip::archive_reader& _archive,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -94,12 +94,12 @@ inline static data::array::sptr read(
     helper::read_version<data::array>(_tree, 0, 1);
 
     // IsBufferOwner
-    array->setIsBufferOwner(_tree.get<bool>(s_IsBufferOwner, false));
+    array->set_is_buffer_owner(_tree.get<bool>(IS_BUFFER_OWNER, false));
 
     // Sizes
     std::vector<std::size_t> sizes;
 
-    for(const auto& size_tree : _tree.get_child(s_Sizes))
+    for(const auto& size_tree : _tree.get_child(SIZES))
     {
         const auto& size = size_tree.second.get_value<std::size_t>();
         sizes.push_back(size);
@@ -107,7 +107,7 @@ inline static data::array::sptr read(
 
     if(!sizes.empty())
     {
-        array->resize(sizes, _tree.get<std::string>(s_Type), true);
+        array->resize(sizes, _tree.get<std::string>(TYPE), true);
     }
 
     // Buffer
@@ -115,9 +115,9 @@ inline static data::array::sptr read(
     core::memory::buffer_object::lock_t locker_source(buffer_object);
 
     // Create the istream from the input file inside the archive
-    const auto& uuid    = _tree.get<std::string>(s_uuid);
-    const auto& istream = _archive.openFile(
-        std::filesystem::path(uuid + s_array),
+    const auto& uuid    = _tree.get<std::string>(UUID);
+    const auto& istream = _archive.open_file(
+        std::filesystem::path(uuid + ARRAY),
         _password
     );
 

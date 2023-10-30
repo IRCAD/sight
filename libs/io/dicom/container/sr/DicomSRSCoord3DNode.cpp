@@ -33,66 +33,66 @@ namespace sight::io::dicom::container::sr
 
 //------------------------------------------------------------------------------
 
-DicomSRSCoord3DNode::DicomSRSCoord3DNode(
-    const DicomCodedAttribute& _coded_attribute,
+dicom_srs_coord3_d_node::dicom_srs_coord3_d_node(
+    const dicom_coded_attribute& _coded_attribute,
     const std::string& _relationship,
     std::string _graphic_type,
     graphic_data_container_t _graphic_data_container,
     std::string _frame_of_reference_uid
 ) :
-    io::dicom::container::sr::DicomSRNode(_coded_attribute, "SCOORD3D", _relationship),
-    m_frameOfReferenceUID(std::move(_frame_of_reference_uid)),
-    m_graphicType(std::move(_graphic_type)),
-    m_graphicDataContainer(std::move(_graphic_data_container))
+    io::dicom::container::sr::dicom_sr_node(_coded_attribute, "SCOORD3D", _relationship),
+    m_frame_of_reference_uid(std::move(_frame_of_reference_uid)),
+    m_graphic_type(std::move(_graphic_type)),
+    m_graphic_data_container(std::move(_graphic_data_container))
 {
     SIGHT_ASSERT(
         "Only POINT and POLYLINE are supported by SCoord3D node for now.",
-        m_graphicType == "POINT" || m_graphicType == "POLYLINE"
+        m_graphic_type == "POINT" || m_graphic_type == "POLYLINE"
     );
 
     SIGHT_ASSERT(
         "Graphic data doesn't match graphic type POINT.",
-        m_graphicType != "POINT" || m_graphicDataContainer.size() == 3
+        m_graphic_type != "POINT" || m_graphic_data_container.size() == 3
     );
 
     SIGHT_ASSERT(
         "Graphic data doesn't match graphic type POLYLINE.",
-        m_graphicType != "POLYLINE" || m_graphicDataContainer.size() == 6
+        m_graphic_type != "POLYLINE" || m_graphic_data_container.size() == 6
     );
 }
 
 //------------------------------------------------------------------------------
 
-DicomSRSCoord3DNode::~DicomSRSCoord3DNode()
+dicom_srs_coord3_d_node::~dicom_srs_coord3_d_node()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoord3DNode::write(gdcm::DataSet& _dataset) const
+void dicom_srs_coord3_d_node::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(_dataset);
+    io::dicom::container::sr::dicom_sr_node::write(_dataset);
 
     // Referenced Frame of Reference UID - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x3006, 0x0024>(m_frameOfReferenceUID, _dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x3006, 0x0024>(m_frame_of_reference_uid, _dataset);
 
     // Graphic Data - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValues<float, 0x0070, 0x0022>(
-        (m_graphicDataContainer).data(),
-        static_cast<unsigned int>(m_graphicDataContainer.size()),
+    io::dicom::helper::dicom_data_writer::set_tag_values<float, 0x0070, 0x0022>(
+        (m_graphic_data_container).data(),
+        static_cast<unsigned int>(m_graphic_data_container.size()),
         _dataset
     );
 
     // Graphic Type - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0023>(m_graphicType, _dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0070, 0x0023>(m_graphic_type, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoord3DNode::print(std::ostream& _os) const
+void dicom_srs_coord3_d_node::print(std::ostream& _os) const
 {
-    DicomSRNode::print(_os);
-    _os << "\\nFrame of Reference UID : [" << m_frameOfReferenceUID << "]";
-    _os << "\\nGraphic Type : [" << m_graphicType << "]";
+    dicom_sr_node::print(_os);
+    _os << "\\nFrame of Reference UID : [" << m_frame_of_reference_uid << "]";
+    _os << "\\nGraphic Type : [" << m_graphic_type << "]";
 }
 
 //------------------------------------------------------------------------------

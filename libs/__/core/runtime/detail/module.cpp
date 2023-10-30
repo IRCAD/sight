@@ -43,13 +43,13 @@ namespace sight::core::runtime::detail
 
 //------------------------------------------------------------------------------
 
-SPTR(module) module::m_loading_module;
+SPTR(module) module::s_loading_module;
 
 //------------------------------------------------------------------------------
 
 SPTR(module) module::get_loading_module()
 {
-    return m_loading_module;
+    return s_loading_module;
 }
 
 //------------------------------------------------------------------------------
@@ -60,18 +60,18 @@ module::module(
     std::string _c,
     int _priority
 ) :
-    M_RESOURCES_LOCATION(_location.lexically_normal()),
-    M_IDENTIFIER(std::move(_id)),
-    M_CLASS(std::move(_c)),
+    m_resources_location(_location.lexically_normal()),
+    m_identifier(std::move(_id)),
+    m_class(std::move(_c)),
     m_priority(_priority)
 {
     // Post-condition.
-    SIGHT_ASSERT("Invalid module location.", M_RESOURCES_LOCATION.is_absolute() == true);
+    SIGHT_ASSERT("Invalid module location.", m_resources_location.is_absolute() == true);
 
     const auto location_normalized = std::filesystem::weakly_canonical(_location);
     const auto str_location        = std::regex_replace(
         location_normalized.string(),
-        runtime::s_match_module_path,
+        runtime::MATCH_MODULE_PATH,
         MODULE_LIB_PREFIX
     );
 
@@ -105,9 +105,9 @@ module::executable_factory_const_iterator module::executable_factories_end() con
 SPTR(executable_factory) module::find_executable_factory(const std::string& _type) const
 {
     std::shared_ptr<executable_factory> res_executable_factory;
-    for(const executable_factory_container::value_type& factory : m_executable_factories)
+    for(const auto& factory : m_executable_factories)
     {
-        if(factory->get_type() == _type)
+        if(factory->type() == _type)
         {
             res_executable_factory = factory;
             break;
@@ -181,7 +181,7 @@ void module::add_extension_point(SPTR(extension_point)_extension_point)
 SPTR(extension_point) module::find_extension_point(const std::string& _identifier) const
 {
     std::shared_ptr<extension_point> res_extension_point;
-    for(const extension_point_container::value_type& extension_point : m_extension_points)
+    for(const auto& extension_point : m_extension_points)
     {
         if(extension_point->identifier() == _identifier && extension_point->enabled())
         {
@@ -198,7 +198,7 @@ SPTR(extension_point) module::find_extension_point(const std::string& _identifie
 bool module::has_extension_point(const std::string& _identifier) const
 {
     bool has_extension_point = false;
-    for(const extension_point_container::value_type& extension_point : m_extension_points)
+    for(const auto& extension_point : m_extension_points)
     {
         if(extension_point->identifier() == _identifier)
         {
@@ -214,7 +214,7 @@ bool module::has_extension_point(const std::string& _identifier) const
 
 void module::set_enable_extension_point(const std::string& _identifier, const bool _enable)
 {
-    for(const extension_point_container::value_type& extension_point : m_extension_points)
+    for(const auto& extension_point : m_extension_points)
     {
         if(extension_point->identifier() == _identifier)
         {
@@ -257,14 +257,14 @@ void module::add_requirement(const std::string& _requirement)
 
 std::string module::get_class() const
 {
-    return M_CLASS;
+    return m_class;
 }
 
 //------------------------------------------------------------------------------
 
 const std::string& module::identifier() const
 {
-    return M_IDENTIFIER;
+    return m_identifier;
 }
 
 //------------------------------------------------------------------------------
@@ -285,7 +285,7 @@ const std::filesystem::path& module::get_library_location() const
 
 const std::filesystem::path& module::get_resources_location() const
 {
-    return M_RESOURCES_LOCATION;
+    return m_resources_location;
 }
 
 //------------------------------------------------------------------------------
@@ -302,14 +302,14 @@ void module::load_libraries()
     // Ensure the module is enabled.
     if(!m_enabled)
     {
-        throw runtime_exception(get_module_str(M_IDENTIFIER) + ": module is not enabled.");
+        throw runtime_exception(get_module_str(m_identifier) + ": module is not enabled.");
     }
 
     // Pre-condition
-    SIGHT_ASSERT("Module is already loaded", m_loading_module == nullptr);
+    SIGHT_ASSERT("Module is already loaded", s_loading_module == nullptr);
 
     // References the current module as the loading module.
-    m_loading_module = shared_from_this();
+    s_loading_module = shared_from_this();
 
     // Loads the library
     if(m_library && !m_library->is_loaded())
@@ -328,17 +328,17 @@ void module::load_libraries()
             message += e.what();
 
             SIGHT_ERROR(message);
-            m_loading_module.reset();
+            s_loading_module.reset();
 
             throw runtime_exception(message);
         }
     }
 
     // Unreferences the current module from the loading module.
-    m_loading_module.reset();
+    s_loading_module.reset();
 
     // Post-condition
-    assert(m_loading_module == nullptr);
+    assert(s_loading_module == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -349,7 +349,7 @@ void module::load_requirements()
     {
         runtime& runtime = runtime::get();
         requirement_container::const_iterator iter;
-        for(const requirement_container::value_type& requirement : m_requirements)
+        for(const auto& requirement : m_requirements)
         {
             auto module = std::dynamic_pointer_cast<detail::module>(runtime.find_module(requirement));
 
@@ -373,7 +373,7 @@ void module::load_requirements()
     {
         std::string message;
 
-        message += "Module " + get_module_str(M_IDENTIFIER) + " was not able to load requirements. ";
+        message += "Module " + get_module_str(m_identifier) + " was not able to load requirements. ";
         message += e.what();
         throw runtime_exception(message);
     }
@@ -387,7 +387,7 @@ void module::start()
     {
         if(!m_enabled)
         {
-            throw runtime_exception(get_module_str(M_IDENTIFIER) + ": module is not enabled.");
+            throw runtime_exception(get_module_str(m_identifier) + ": module is not enabled.");
         }
 
         if(m_plugin == nullptr)
@@ -401,11 +401,11 @@ void module::start()
             catch(std::exception& e)
             {
                 throw runtime_exception(
-                          get_module_str(M_IDENTIFIER)
+                          get_module_str(m_identifier)
                           + ": start plugin error (after load requirement) " + e.what()
                 );
             }
-            SIGHT_INFO("Loaded module '" + M_IDENTIFIER + "' successfully");
+            SIGHT_INFO("Loaded module '" + m_identifier + "' successfully");
         }
     }
 }
@@ -415,7 +415,7 @@ void module::start()
 void module::start_plugin()
 {
     SIGHT_ASSERT(
-        "Module " + get_module_str(M_IDENTIFIER) + " plugin is already started.",
+        "Module " + get_module_str(m_identifier) + " plugin is already started.",
         !m_started
     );
 
@@ -441,7 +441,7 @@ void module::start_plugin()
     // Ensures that a plugin has been created.
     if(plugin == nullptr)
     {
-        throw runtime_exception(get_module_str(M_IDENTIFIER) + ": unable to create a plugin instance.");
+        throw runtime_exception(get_module_str(m_identifier) + ": unable to create a plugin instance.");
     }
 
     if(core::runtime::get_current_profile())
@@ -459,7 +459,7 @@ void module::start_plugin()
         }
         catch(std::exception& e)
         {
-            throw runtime_exception(get_module_str(M_IDENTIFIER) + ": start plugin error : " + e.what());
+            throw runtime_exception(get_module_str(m_identifier) + ": start plugin error : " + e.what());
         }
     }
 }
@@ -470,7 +470,7 @@ void module::stop()
 {
     if(m_started)
     {
-        SIGHT_ASSERT(get_module_str(M_IDENTIFIER) + " : m_plugin not an instance.", m_plugin != nullptr);
+        SIGHT_ASSERT(get_module_str(m_identifier) + " : m_plugin not an instance.", m_plugin != nullptr);
 
         try
         {
@@ -479,7 +479,7 @@ void module::stop()
         }
         catch(std::exception& e)
         {
-            throw runtime_exception(get_module_str(M_IDENTIFIER) + ": stop plugin error : " + e.what());
+            throw runtime_exception(get_module_str(m_identifier) + ": stop plugin error : " + e.what());
         }
 
         //Unloads all libraries.

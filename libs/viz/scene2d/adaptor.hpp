@@ -23,8 +23,8 @@
 #pragma once
 
 #include "viz/scene2d/config.hpp"
-#include "viz/scene2d/data/Axis.hpp"
-#include "viz/scene2d/data/Event.hpp"
+#include "viz/scene2d/data/axis.hpp"
+#include "viz/scene2d/data/event.hpp"
 #include "viz/scene2d/render.hpp"
 
 #include <service/base.hpp>
@@ -42,17 +42,17 @@ public:
     SIGHT_DECLARE_SERVICE(adaptor, service::base);
 
     /// Set the zValue.
-    VIZ_SCENE2D_API void setZValue(float _z_value);
+    VIZ_SCENE2D_API void set_z_value(float _z_value);
 
     /// Get the zValue.
-    VIZ_SCENE2D_API float getZValue() const;
+    VIZ_SCENE2D_API float get_z_value() const;
 
     /// Get the render that manages the adaptor.
-    VIZ_SCENE2D_API SPTR(viz::scene2d::render) getScene2DRender() const;
+    VIZ_SCENE2D_API SPTR(viz::scene2d::render) get_scene_2d_render() const;
 
     /// Interact with the mouse events catched on the adaptor
     /// (virtual function, its behavior is only defined in the specific adaptors).
-    VIZ_SCENE2D_API virtual void processInteraction(scene2d::data::Event& _event);
+    VIZ_SCENE2D_API virtual void process_interaction(scene2d::data::event& _event);
 
 protected:
 
@@ -73,31 +73,31 @@ protected:
      * - \b zValue (optional, default=0): z value of the layer
      * - \b opacity (optional, default=1.0): adaptor opacity (float)
      */
-    VIZ_SCENE2D_API void configureParams();
+    VIZ_SCENE2D_API void configure_params();
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     /// coordinates to scene coordinates
-    VIZ_SCENE2D_API vec2d_t mapAdaptorToScene(const vec2d_t& _xy) const;
+    VIZ_SCENE2D_API vec2d_t map_adaptor_to_scene(const vec2d_t& _xy) const;
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from scene
     /// coordinates to adaptor coordinates
-    VIZ_SCENE2D_API vec2d_t mapSceneToAdaptor(const vec2d_t& _xy) const;
+    VIZ_SCENE2D_API vec2d_t map_scene_to_adaptor(const vec2d_t& _xy) const;
 
     /// Return the ratio between view's initial size and its current size
-    VIZ_SCENE2D_API double getViewSizeRatio() const;
+    VIZ_SCENE2D_API double get_view_size_ratio() const;
 
     /// Converts a point in pixel units into a viewport coordinates
-    VIZ_SCENE2D_API vec2d_t viewToViewport(const scene2d::data::Viewport& _viewport) const;
+    VIZ_SCENE2D_API vec2d_t view_to_viewport(const scene2d::data::viewport& _viewport) const;
 
     /// The x Axis.
-    scene2d::data::Axis::sptr m_xAxis;
+    scene2d::data::axis::sptr m_x_axis;
 
     /// The y Axis.
-    scene2d::data::Axis::sptr m_yAxis;
+    scene2d::data::axis::sptr m_y_axis;
 
     /// The adaptor zValue (depth within the scene).
     /// The adaptor with the highest zValue is displayed on top of all adaptors.
-    float m_zValue {0.F};
+    float m_z_value {0.F};
 
     /// Opacity of the adaptor. Default value set to 1 (opaque).
     float m_opacity {1.F};

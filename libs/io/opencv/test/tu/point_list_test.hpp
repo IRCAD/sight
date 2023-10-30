@@ -36,7 +36,7 @@ public:
 
     CPPUNIT_TEST_SUITE(point_list_test);
     CPPUNIT_TEST(copy_from_cv);
-    CPPUNIT_TEST(copyToCv);
+    CPPUNIT_TEST(copy_to_cv);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,7 +45,7 @@ public:
     void tearDown() override;
 
     static void copy_from_cv();
-    static void copyToCv();
+    static void copy_to_cv();
 };
 
 } // namespace sight::io::opencv::ut

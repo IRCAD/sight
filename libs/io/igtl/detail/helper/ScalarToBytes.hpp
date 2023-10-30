@@ -56,11 +56,11 @@ union ConvertData
  * @brief utility class to convert bytes to scalar and scalar to bytes
  */
 template<typename T>
-class IO_IGTL_CLASS_API ScalarToBytes
+class IO_IGTL_CLASS_API scalar_to_bytes
 {
 public:
 
-    typedef std::vector<char> raw_data_t;
+    using raw_data_t = std::vector<char>;
 
     /**
      * @brief method to convert a scalar to his representation in bytes
@@ -68,7 +68,7 @@ public:
      * @param[in] scalar
      * @return the representation in bytes for the given scalar
      */
-    static raw_data_t toBytes(T const _scalar)
+    static raw_data_t to_bytes(T const _scalar)
     {
         io::igtl::detail::helper::detail::ConvertData<T> convert_data {};
         raw_data_t bytes;
@@ -88,7 +88,7 @@ public:
      * @param[in] bytes
      * @return the scalar value from bytes
      */
-    static T fromBytes(const char* const _bytes)
+    static T from_bytes(const char* const _bytes)
     {
         io::igtl::detail::helper::detail::ConvertData<T> convert_data {};
         std::copy(_bytes, _bytes + sizeof(T), convert_data.bytes.begin());

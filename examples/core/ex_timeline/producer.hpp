@@ -91,18 +91,18 @@ private:
     std::string m_message;
 
     /// Id of the sender
-    unsigned int m_senderId {0};
+    unsigned int m_sender_id {0};
 
     /// A message will be sent every m_uiPeriod milliseconds.
     unsigned int m_period {0};
 
     /// Current message count
-    unsigned int m_msgCount {0};
+    unsigned int m_msg_count {0};
 
     /// Timeline size
-    unsigned int m_timelineSize {0};
+    unsigned int m_timeline_size {0};
 
-    sight::data::ptr<ex_timeline::message_tl, sight::data::Access::inout> m_timeline {this, "timeline"};
+    sight::data::ptr<ex_timeline::message_tl, sight::data::access::inout> m_timeline {this, "timeline"};
 };
 
 } // namespace ex_timeline

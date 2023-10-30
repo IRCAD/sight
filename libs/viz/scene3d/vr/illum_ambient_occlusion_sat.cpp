@@ -45,15 +45,15 @@ namespace sight::viz::scene3d::vr
 {
 
 ///@brief Internal listener used to update the material according to the parameters.
-class VolIllumCompositorListener : public Ogre::CompositorInstance::Listener
+class vol_illum_compositor_listener : public Ogre::CompositorInstance::Listener
 {
 public:
 
-    VolIllumCompositorListener(
+    vol_illum_compositor_listener(
         const int& _current_slice_index,
         const illum_ambient_occlusion_sat::sat_parameters_t& _parameters
     ) :
-        m_currentSliceIndex(_current_slice_index),
+        m_current_slice_index(_current_slice_index),
         m_parameters(_parameters)
     {
     }
@@ -65,7 +65,7 @@ public:
         Ogre::Pass* pass                                     = _mat->getTechnique(0)->getPass(0);
         Ogre::GpuProgramParametersSharedPtr vol_illum_params = pass->getFragmentProgramParameters();
 
-        vol_illum_params->setNamedConstant("u_sliceIndex", m_currentSliceIndex);
+        vol_illum_params->setNamedConstant("u_sliceIndex", m_current_slice_index);
     }
 
     //------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ public:
 
 private:
 
-    const int& m_currentSliceIndex;
+    const int& m_current_slice_index;
 
     const illum_ambient_occlusion_sat::sat_parameters_t& m_parameters;
 };
@@ -101,9 +101,9 @@ illum_ambient_occlusion_sat::illum_ambient_occlusion_sat(
     m_ao(_ao),
     m_shadows(_shadows),
     m_parameters(_parameters.value_or(sat_parameters_t {})),
-    m_parentId(std::move(_parent_id)),
-    m_sceneManager(_scene_manager),
-    m_sat(m_parentId, m_sceneManager, m_parameters.size_ratio)
+    m_parent_id(std::move(_parent_id)),
+    m_scene_manager(_scene_manager),
+    m_sat(m_parent_id, m_scene_manager, m_parameters.size_ratio)
 {
 }
 
@@ -111,43 +111,43 @@ illum_ambient_occlusion_sat::illum_ambient_occlusion_sat(
 
 illum_ambient_occlusion_sat::~illum_ambient_occlusion_sat()
 {
-    if(m_dummyCamera != nullptr)
+    if(m_dummy_camera != nullptr)
     {
-        m_sceneManager->destroyCamera(m_dummyCamera.get());
+        m_scene_manager->destroyCamera(m_dummy_camera.get());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void illum_ambient_occlusion_sat::updateSatFromRatio(float _sat_size_ratio)
+void illum_ambient_occlusion_sat::update_sat_from_ratio(float _sat_size_ratio)
 {
     m_parameters.size_ratio = _sat_size_ratio;
-    m_sat.updateSatFromRatio(m_parameters.size_ratio);
-    updateTexture();
+    m_sat.update_sat_from_ratio(m_parameters.size_ratio);
+    update_texture();
 }
 
 //-----------------------------------------------------------------------------
 
-void illum_ambient_occlusion_sat::SATUpdate(
+void illum_ambient_occlusion_sat::sat_update(
     const texture::sptr& _img,
     const transfer_function::sptr& _tf,
     float _sample_distance
 )
 {
-    m_sat.computeParallel(_img, _tf, _sample_distance);
-    this->updateVolumeIllumination();
+    m_sat.compute_parallel(_img, _tf, _sample_distance);
+    this->update_volume_illumination();
 }
 
 //-----------------------------------------------------------------------------
 
-void illum_ambient_occlusion_sat::updateVolumeIllumination()
+void illum_ambient_occlusion_sat::update_volume_illumination()
 {
     // Do this for now but at the end we should use our own texture
-    m_illuminationVolume = m_sat.getSpareTexture();
+    m_illumination_volume = m_sat.get_spare_texture();
 
-    if(m_illuminationVolume != nullptr)
+    if(m_illumination_volume != nullptr)
     {
-        const int depth = static_cast<int>(m_illuminationVolume->getDepth());
+        const int depth = static_cast<int>(m_illumination_volume->getDepth());
 
         //Should never happen, but who knows
         if(depth > 0)
@@ -173,23 +173,23 @@ void illum_ambient_occlusion_sat::updateVolumeIllumination()
 
                     if(sat_img_state != nullptr)
                     {
-                        sat_img_state->setTexture(m_sat.getTexture());
+                        sat_img_state->setTexture(m_sat.get_texture());
 
                         //Update illumination volume slice by slice.
-                        for(m_currentSliceIndex = 0 ; m_currentSliceIndex < depth ; ++m_currentSliceIndex)
+                        for(m_current_slice_index = 0 ; m_current_slice_index < depth ; ++m_current_slice_index)
                         {
                             //The current render target index
-                            const auto target = static_cast<size_t>(m_currentSliceIndex);
+                            const auto target = static_cast<size_t>(m_current_slice_index);
 
                             Ogre::RenderTarget* const rt =
-                                m_illuminationVolume->getBuffer()->getRenderTarget(target);
+                                m_illumination_volume->getBuffer()->getRenderTarget(target);
 
                             if(rt->getNumViewports() > 0)
                             {
                                 Ogre::Viewport* const vp = rt->getViewport(0);
 
                                 //Temporary listener used to update shaders parameters when the target is updated.s
-                                VolIllumCompositorListener listener(m_currentSliceIndex, m_parameters);
+                                vol_illum_compositor_listener listener(m_current_slice_index, m_parameters);
 
                                 //Add compositor
                                 compositor_manager.addCompositor(vp, "VolumeIllumination");
@@ -233,17 +233,17 @@ void illum_ambient_occlusion_sat::updateVolumeIllumination()
 
 //-----------------------------------------------------------------------------
 
-void illum_ambient_occlusion_sat::updateTexture()
+void illum_ambient_occlusion_sat::update_texture()
 {
-    Ogre::TexturePtr sat_texture = m_sat.getSpareTexture();
+    Ogre::TexturePtr sat_texture = m_sat.get_spare_texture();
 
     Ogre::TextureManager& texture_manager = Ogre::TextureManager::getSingleton();
 
     // Removes the ping pong buffers if they have to be resized
-    texture_manager.remove(m_parentId + BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+    texture_manager.remove(m_parent_id + BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
 
-    m_illuminationVolume = texture_manager.createManual(
-        m_parentId + BUFFER_NAME,
+    m_illumination_volume = texture_manager.createManual(
+        m_parent_id + BUFFER_NAME,
         viz::scene3d::RESOURCE_GROUP,
         Ogre::TEX_TYPE_3D,
         sat_texture->getWidth(),
@@ -254,9 +254,9 @@ void illum_ambient_occlusion_sat::updateTexture()
         Ogre::TU_RENDERTARGET
     );
 
-    if(m_dummyCamera == nullptr)
+    if(m_dummy_camera == nullptr)
     {
-        m_dummyCamera.reset(m_sceneManager->createCamera(m_parentId + "_VolumeIllumination_DummyCamera"));
+        m_dummy_camera.reset(m_scene_manager->createCamera(m_parent_id + "_VolumeIllumination_DummyCamera"));
     }
 
     const int depth = static_cast<int>(sat_texture->getDepth());
@@ -264,8 +264,8 @@ void illum_ambient_occlusion_sat::updateTexture()
     {
         // Init source buffer
         Ogre::RenderTarget* render_target =
-            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<std::size_t>(slice_index));
-        Ogre::Viewport* vp = render_target->addViewport(m_dummyCamera.get());
+            m_illumination_volume->getBuffer()->getRenderTarget(static_cast<std::size_t>(slice_index));
+        Ogre::Viewport* vp = render_target->addViewport(m_dummy_camera.get());
 
         vp->setOverlaysEnabled(false);
     }

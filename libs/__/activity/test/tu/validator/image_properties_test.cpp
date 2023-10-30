@@ -65,15 +65,15 @@ static data::image_series::sptr image_to_image_series(const data::object::sptr& 
 {
     auto img = std::dynamic_pointer_cast<data::image>(_obj);
     auto res = std::make_shared<data::image_series>();
-    res->resize(img->size(), img->getType(), img->getPixelFormat());
-    res->setSpacing(img->getSpacing());
-    res->setOrigin(img->getOrigin());
+    res->resize(img->size(), img->type(), img->pixel_format());
+    res->set_spacing(img->spacing());
+    res->set_origin(img->origin());
     return res;
 }
 
 //------------------------------------------------------------------------------
 
-void image_properties_test::propertiesTest()
+void image_properties_test::properties_test()
 {
     activity::validator::base::sptr validator =
         activity::validator::factory::make("sight::activity::validator::image_properties");
@@ -85,8 +85,8 @@ void image_properties_test::propertiesTest()
     {
         data::image::sptr img1 = std::make_shared<data::image>();
         data::image::sptr img2 = std::make_shared<data::image>();
-        utest_data::generator::image::generateRandomImage(img1, core::type::UINT8);
-        utest_data::generator::image::generateRandomImage(img2, core::type::UINT8);
+        utest_data::generator::image::generate_random_image(img1, core::type::UINT8);
+        utest_data::generator::image::generate_random_image(img2, core::type::UINT8);
 
         data::vector::sptr vector = std::make_shared<data::vector>();
         vector->push_back(img1);
@@ -114,15 +114,15 @@ void image_properties_test::propertiesTest()
         data::image::sptr img1 = std::make_shared<data::image>();
         data::image::sptr img2 = std::make_shared<data::image>();
 
-        utest_data::generator::image::generateRandomImage(img1, core::type::UINT8);
+        utest_data::generator::image::generate_random_image(img1, core::type::UINT8);
 
-        utest_data::generator::image::generateImage(
+        utest_data::generator::image::generate_image(
             img2,
             img1->size(),
-            img1->getSpacing(),
-            img1->getOrigin(),
-            img1->getType(),
-            data::image::PixelFormat::GRAY_SCALE
+            img1->spacing(),
+            img1->origin(),
+            img1->type(),
+            data::image::pixel_format::gray_scale
         );
 
         data::vector::sptr vector = std::make_shared<data::vector>();

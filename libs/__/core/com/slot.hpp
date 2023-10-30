@@ -43,10 +43,10 @@ class CORE_CLASS_API slot<R(A ...)>: public slot_call<R(A ...)>
 {
 public:
 
-    typedef R signature_type(A ...);
-    typedef slot<signature_type> self_type;
-    typedef SPTR(self_type) sptr;
-    typedef WPTR(self_type) wptr;
+    using signature_type = R(A ...);
+    using self_t         = slot<signature_type>;
+    using sptr           = std::shared_ptr<self_t>;
+    using wptr           = std::weak_ptr<self_t>;
 
     slot();
 };
@@ -58,8 +58,8 @@ class CORE_CLASS_API slot<std::function<R(A ...)> >: public slot<R(A ...)>
 {
 public:
 
-    typedef R signature_type(A ...);
-    using function_t = std::function<signature_type>;
+    using signature_type = R(A ...);
+    using function_t     = std::function<signature_type>;
 
     template<typename FUNCTOR>
     slot(FUNCTOR _f) :
@@ -97,8 +97,8 @@ class CORE_CLASS_API slot<slot<R(A ...)> >: public slot<std::function<R(A ...)> 
 {
 public:
 
-    typedef R signature_type(A ...);
-    using function_t = std::function<signature_type>;
+    using signature_type = R(A ...);
+    using function_t     = std::function<signature_type>;
 
     template<typename F> slot(SPTR(slot_run<F>)_slot);
 

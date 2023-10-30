@@ -50,7 +50,7 @@ constexpr static auto PASSWORD = "This_is_a_password";
 
 inline static std::smatch parse_log_line(const std::string& _line)
 {
-    static const std::regex regex =
+    static const std::regex s_REGEX =
         []
         {
             constexpr auto date_group      = R"(\[([^\]]*)\])";
@@ -70,7 +70,7 @@ inline static std::smatch parse_log_line(const std::string& _line)
 
     std::smatch match;
 
-    std::regex_search(_line, match, regex);
+    std::regex_search(_line, match, s_REGEX);
 
     return match;
 }
@@ -138,7 +138,7 @@ inline static std::filesystem::path setup_encrypted_log()
     std::filesystem::remove(log_archive);
 
     auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.start_encrypted_logger(log_archive, sight::core::log::spy_logger::SL_TRACE, PASSWORD));
+    CPPUNIT_ASSERT_NO_THROW(log.start_encrypted_logger(log_archive, sight::core::log::spy_logger::sl_trace, PASSWORD));
 
     const auto& real_log_archive = log.get_current_log_path();
 
@@ -160,7 +160,7 @@ inline static std::filesystem::path setup_log()
     std::filesystem::remove(log_archive);
 
     auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.start_logger(log_archive, sight::core::log::spy_logger::SL_TRACE));
+    CPPUNIT_ASSERT_NO_THROW(log.start_logger(log_archive, sight::core::log::spy_logger::sl_trace));
 
     const auto& real_log_archive = log.get_current_log_path();
 
@@ -251,7 +251,7 @@ void encrypted_log_test::tearDown()
 void encrypted_log_test::log_without_sink_test()
 {
     auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.trace(core::tools::UUID::generate(), SIGHT_SOURCE_FILE, __LINE__));
+    CPPUNIT_ASSERT_NO_THROW(log.trace(core::tools::uuid::generate(), SIGHT_SOURCE_FILE, __LINE__));
 }
 
 //------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ void encrypted_log_test::nominal_test()
 
     // Write a simple trace message
     auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.trace(core::tools::UUID::generate(), SIGHT_SOURCE_FILE, __LINE__));
+    CPPUNIT_ASSERT_NO_THROW(log.trace(core::tools::uuid::generate(), SIGHT_SOURCE_FILE, __LINE__));
 
     // Final cleanup
     stop_logger();
@@ -281,7 +281,7 @@ void encrypted_log_test::bad_path_test()
 
     auto& log = core::log::spy_logger::get();
     CPPUNIT_ASSERT_THROW(
-        log.start_encrypted_logger(path, sight::core::log::spy_logger::SL_TRACE, PASSWORD),
+        log.start_encrypted_logger(path, sight::core::log::spy_logger::sl_trace, PASSWORD),
         std::runtime_error
     );
 
@@ -303,9 +303,9 @@ void encrypted_log_test::basic_decryption_test()
     auto& log = core::log::spy_logger::get();
 
     const std::array<const std::string, 3> messages = {
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate()
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
     };
 
     // Write some log messages
@@ -338,15 +338,15 @@ void encrypted_log_test::password_change_decryption_test()
     auto& log = core::log::spy_logger::get();
 
     const std::array<const std::string, 3> first_messages = {
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate()
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
     };
 
     const std::array<const std::string, 3> last_messages = {
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate()
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
     };
 
     // Write some log messages
@@ -356,8 +356,8 @@ void encrypted_log_test::password_change_decryption_test()
     }
 
     // Change the current password, it will also close the current log archive
-    constexpr static auto NEW_PASSWORD = "this_is_a_new_password";
-    log.change_log_password(NEW_PASSWORD, PASSWORD);
+    constexpr static auto s_NEW_PASSWORD = "this_is_a_new_password";
+    log.change_log_password(s_NEW_PASSWORD, PASSWORD);
 
     // Write again some log messages
     for(const auto& message : last_messages)
@@ -374,10 +374,10 @@ void encrypted_log_test::password_change_decryption_test()
     // Try to decrypt the first log archive
     auto merged_log_archive = last_log_archive;
     merged_log_archive.replace_filename("sight.1.log.zip");
-    test_log_archive(merged_log_archive, NEW_PASSWORD, first_messages);
+    test_log_archive(merged_log_archive, s_NEW_PASSWORD, first_messages);
 
     // Try to decrypt the last log archive
-    test_log_archive(last_log_archive, NEW_PASSWORD, last_messages);
+    test_log_archive(last_log_archive, s_NEW_PASSWORD, last_messages);
 
     // Final cleanup
     stop_logger();
@@ -388,21 +388,21 @@ void encrypted_log_test::password_change_decryption_test()
 void encrypted_log_test::relocate_log_test()
 {
     const std::array first_messages = {
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate()
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
     };
 
     const std::array next_messages = {
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate()
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
     };
 
     const std::array last_messages = {
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate(),
-        core::tools::UUID::generate()
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
     };
 
     const auto test =

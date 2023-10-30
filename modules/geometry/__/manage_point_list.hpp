@@ -103,16 +103,16 @@ private:
      * @brief Adds a point in the point list
      * @param _point the point added to the list.
      */
-    void addPoint(const data::point::sptr _point) const;
+    void add_point(const data::point::sptr _point) const;
 
     /**
      * @brief Removes a point from the point list.
      * @param _point the point removed from the list.
      */
-    void removePoint(const data::point::csptr _point) const;
+    void remove_point(const data::point::csptr _point) const;
 
     /// SLOT: Clears the point list.
-    void clearPoints() const;
+    void clear_points() const;
 
     /// Maximum number of contained points.
     std::size_t m_max {0};
@@ -125,8 +125,8 @@ private:
 
     float m_tolerance {10.F};
 
-    data::ptr<data::matrix4, sight::data::Access::in> m_transform {this, "matrix", false, true};
-    data::ptr<data::point_list, sight::data::Access::inout> m_pointList {this, "pointList", false};
+    data::ptr<data::matrix4, sight::data::access::in> m_transform {this, "matrix", false, true};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList", false};
 };
 
 } // namespace sight::module::geometry

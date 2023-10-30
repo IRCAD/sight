@@ -30,8 +30,8 @@ namespace sight::module::ui::viz::ut
 class utils_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(utils_test);
-CPPUNIT_TEST(convertOgreColorToQColor);
-CPPUNIT_TEST(convertQColorToOgreColor);
+CPPUNIT_TEST(convert_ogre_color_to_q_color);
+CPPUNIT_TEST(convert_q_color_to_ogre_color);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,8 +40,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void convertOgreColorToQColor();
-    static void convertQColorToOgreColor();
+    static void convert_ogre_color_to_q_color();
+    static void convert_q_color_to_ogre_color();
 };
 
 } // namespace sight::module::ui::viz::ut

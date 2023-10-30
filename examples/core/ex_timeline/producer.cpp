@@ -34,10 +34,10 @@ void producer::configuring()
 {
     sight::service::config_t config = this->get_config();
 
-    m_message      = config.get<std::string>("message");
-    m_senderId     = config.get<unsigned int>("id");
-    m_period       = config.get<unsigned int>("period", 0);
-    m_timelineSize = config.get<unsigned int>("timelineSize", 0);
+    m_message       = config.get<std::string>("message");
+    m_sender_id     = config.get<unsigned int>("id");
+    m_period        = config.get<unsigned int>("period", 0);
+    m_timeline_size = config.get<unsigned int>("timelineSize", 0);
 }
 
 //------------------------------------------------------------------------------
@@ -51,18 +51,18 @@ void producer::starting()
     m_timer->start();
 
     // Init timeline pool
-    if(m_timelineSize != 0U)
+    if(m_timeline_size != 0U)
     {
         const auto timeline = m_timeline.lock();
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
-        SIGHT_ASSERT("Timeline initialized twice", timeline->getMaxElementNum() == ~0U);
+        SIGHT_ASSERT("Timeline initialized twice", timeline->get_max_element_num() == ~0U);
 
-        timeline->setMaximumSize(m_timelineSize);
+        timeline->set_maximum_size(m_timeline_size);
 
         // We only have one element per buffer in this simple example
-        timeline->initPoolSize(1);
+        timeline->init_pool_size(1);
     }
 }
 
@@ -80,16 +80,16 @@ void producer::updating()
     const auto timeline = m_timeline.lock();
 
     const auto timestamp = sight::core::hires_clock::get_time_in_milli_sec();
-    SPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->createBuffer(timestamp);
+    SPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->create_buffer(timestamp);
 
-    ::ex_timeline::MsgData* data = buffer->addElement(0);
+    ::ex_timeline::msg_data* data = buffer->add_element(0);
 
-    const std::string message = m_message + " #" + std::to_string(m_msgCount++);
+    const std::string message = m_message + " #" + std::to_string(m_msg_count++);
 
-    data->uidSender = m_senderId;
-    std::copy(message.begin(), message.end(), data->szMsg.begin());
+    data->uid_sender = m_sender_id;
+    std::copy(message.begin(), message.end(), data->sz_msg.begin());
 
-    timeline->pushObject(buffer);
+    timeline->push_object(buffer);
 
     //Notify
     sight::data::timeline::signals::pushed_t::sptr sig;

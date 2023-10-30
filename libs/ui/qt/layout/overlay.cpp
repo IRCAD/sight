@@ -27,18 +27,18 @@
 #include <QResizeEvent>
 #include <QWidget>
 
-SIGHT_REGISTER_GUI(sight::ui::qt::layout::overlay, sight::ui::layout::overlay::REGISTRY_KEY)
+SIGHT_REGISTER_GUI(sight::ui::qt::layout::overlay, sight::ui::layout::overlay::s_registry_key)
 
 namespace sight::ui::qt::layout
 {
 
 //------------------------------------------------------------------------------
 
-using Coord = ui::layout::overlay::view::Coord;
+using coord = ui::layout::overlay::view::coord;
 
 //------------------------------------------------------------------------------
 
-static int calculate_offset(Coord _configured_offset, int _parent_size, int _widget_size)
+static int calculate_offset(coord _configured_offset, int _parent_size, int _widget_size)
 {
     int res = _configured_offset.relative ? static_cast<int>((std::abs(_configured_offset.value) / 100.) * _parent_size)
                                           : std::abs(_configured_offset.value);
@@ -59,31 +59,31 @@ static int calculate_offset(Coord _configured_offset, int _parent_size, int _wid
 
 //------------------------------------------------------------------------------
 
-static int calculate_size(Coord _configured_size, int _parent_size)
+static int calculate_size(coord _configured_size, int _parent_size)
 {
     return _configured_size.relative ? static_cast<int>((_configured_size.value / 100.) * _parent_size)
                                      : _configured_size.value;
 }
 
 /// Event filter which resizes the overlay if its parent size changed
-class UI_QT_CLASS_API_QT OverlayResizeFilter : public QObject
+class UI_QT_CLASS_API_QT overlay_resize_filter : public QObject
 {
 private:
 
     QWidget* m_child = nullptr; // The widget to be resized
-    Coord m_x;
-    Coord m_y;
-    Coord m_width;
-    Coord m_height;
+    coord m_x;
+    coord m_y;
+    coord m_width;
+    coord m_height;
 
 public:
 
-    OverlayResizeFilter(
+    overlay_resize_filter(
         QWidget* _child,
-        Coord _x,
-        Coord _y,
-        Coord _width,
-        Coord _height
+        coord _x,
+        coord _y,
+        coord _width,
+        coord _height
     ) :
         QObject(_child),
         m_child(_child),
@@ -127,45 +127,45 @@ public:
 
 //-----------------------------------------------------------------------------
 
-void overlay::createLayout(ui::container::widget::sptr _parent, const std::string& _id)
+void overlay::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
 {
-    m_parentContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
-    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parentContainer);
+    m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
+    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
     const QString q_id = QString::fromStdString(_id);
-    m_parentContainer->getQtContainer()->setObjectName(q_id);
+    m_parent_container->get_qt_container()->setObjectName(q_id);
 
     auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    m_parentContainer->setLayout(layout);
+    m_parent_container->set_layout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
     auto* viewport = new QWidget;
     layout->addWidget(viewport);
     auto viewport_container = ui::qt::container::widget::make();
-    viewport_container->setQtContainer(viewport);
-    m_subViews.push_back(viewport_container);
+    viewport_container->set_qt_container(viewport);
+    m_sub_views.push_back(viewport_container);
     for(std::size_t i = 1 ; i < views().size() ; i++)
     {
         const view& view = views()[i];
-        auto* widget     = new QWidget(m_parentContainer->getQtContainer());
+        auto* widget     = new QWidget(m_parent_container->get_qt_container());
 
         if(view.width.value > 0)
         {
-            widget->setFixedWidth(calculate_size(view.width, m_parentContainer->getQtContainer()->width()));
+            widget->setFixedWidth(calculate_size(view.width, m_parent_container->get_qt_container()->width()));
         }
 
         if(view.height.value > 0)
         {
-            widget->setFixedHeight(calculate_size(view.height, m_parentContainer->getQtContainer()->height()));
+            widget->setFixedHeight(calculate_size(view.height, m_parent_container->get_qt_container()->height()));
         }
 
-        if(view.minWidth > 0)
+        if(view.min_width > 0)
         {
-            widget->setMinimumWidth(view.minWidth);
+            widget->setMinimumWidth(view.min_width);
         }
 
-        if(view.minHeight > 0)
+        if(view.min_height > 0)
         {
-            widget->setMinimumHeight(view.minHeight);
+            widget->setMinimumHeight(view.min_height);
         }
 
         if(view.opacity == 0.F)
@@ -173,15 +173,15 @@ void overlay::createLayout(ui::container::widget::sptr _parent, const std::strin
             widget->setStyleSheet("background-color: none");
         }
 
-        int x = calculate_offset(view.x, m_parentContainer->getQtContainer()->width(), widget->width());
-        int y = calculate_offset(view.y, m_parentContainer->getQtContainer()->height(), widget->height());
+        int x = calculate_offset(view.x, m_parent_container->get_qt_container()->width(), widget->width());
+        int y = calculate_offset(view.y, m_parent_container->get_qt_container()->height(), widget->height());
         widget->move(x, y);
         if((view.x.value <= 0 && view.x.negative) || view.x.relative
            || (view.y.value <= 0 && view.y.negative) || view.y.relative
            || (view.width.value > 0 && view.width.relative) || (view.height.value > 0 && view.height.relative))
         {
-            m_parentContainer->getQtContainer()->installEventFilter(
-                new OverlayResizeFilter(
+            m_parent_container->get_qt_container()->installEventFilter(
+                new overlay_resize_filter(
                     widget,
                     view.x,
                     view.y,
@@ -192,22 +192,22 @@ void overlay::createLayout(ui::container::widget::sptr _parent, const std::strin
         }
 
         auto widget_container = ui::qt::container::widget::make();
-        widget_container->setQtContainer(widget);
+        widget_container->set_qt_container(widget);
         if(!view.visible)
         {
-            widget_container->setVisible(false);
+            widget_container->set_visible(false);
         }
 
-        m_subViews.push_back(widget_container);
+        m_sub_views.push_back(widget_container);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void overlay::destroyLayout()
+void overlay::destroy_layout()
 {
-    this->destroySubViews();
-    m_parentContainer->clean();
+    this->destroy_sub_views();
+    m_parent_container->clean();
 }
 
 //-----------------------------------------------------------------------------

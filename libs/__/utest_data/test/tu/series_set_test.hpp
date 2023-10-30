@@ -36,7 +36,7 @@ namespace ut
 class series_set_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(series_set_test);
-CPPUNIT_TEST(generationTest);
+CPPUNIT_TEST(generation_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,7 +45,7 @@ public:
     void setUp();
     void tearDown();
 
-    static void generationTest();
+    static void generation_test();
 };
 
 } //namespace ut

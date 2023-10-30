@@ -105,35 +105,35 @@ protected:
 private:
 
     /// Set the extent based on the extentImage and orientation.
-    void setReslicerExtent();
+    void set_reslicer_extent();
 
     /// Set the plane axes using the input transform.
-    void setReslicerAxes();
+    void set_reslicer_axes();
 
     /// Modify the matrix parameter to align the plane with the current extent image slice.
-    void applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> _vtk_mat) const;
+    void apply_slice_translation(vtkSmartPointer<vtkMatrix4x4> _vtk_mat) const;
 
     /// Slot: called when the extent image orientation.
     void updateorientation_t(int _from, int _to);
 
     /// Slot: sets the reslicer default value which is the minimum value of the input image.
-    void updateDefaultValue();
+    void update_default_value();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    data::helper::medical_image::orientation_t m_orientation {data::helper::medical_image::orientation_t::Z_AXIS};
+    data::helper::medical_image::orientation_t m_orientation {data::helper::medical_image::orientation_t::z_axis};
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 
-    static constexpr std::string_view s_IMAGE_IN    = "image";
-    static constexpr std::string_view s_EXTENT_IN   = "imageExtent";
-    static constexpr std::string_view s_AXES_IN     = "axes";
-    static constexpr std::string_view s_SLICE_INOUT = "slice";
+    static constexpr std::string_view IMAGE_IN    = "image";
+    static constexpr std::string_view EXTENT_IN   = "imageExtent";
+    static constexpr std::string_view AXES_IN     = "axes";
+    static constexpr std::string_view SLICE_INOUT = "slice";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_IN};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_extent {this, s_EXTENT_IN};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_axes {this, s_AXES_IN};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_slice {this, s_SLICE_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_extent {this, EXTENT_IN};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, AXES_IN};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, SLICE_INOUT};
 };
 
 } //namespace sight::module::filter::image

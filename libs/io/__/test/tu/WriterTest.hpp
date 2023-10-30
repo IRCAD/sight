@@ -32,32 +32,32 @@
 namespace sight::io::ut
 {
 
-// Defines a Writer class, with a dummy openLocationDialog implementation
-class STestWriter : public sight::io::service::writer
+// Defines a Writer class, with a dummy open_location_dialog implementation
+class s_test_writer : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STestWriter, sight::io::service::writer);
+    SIGHT_DECLARE_SERVICE(s_test_writer, sight::io::service::writer);
 
-    STestWriter(sight::io::service::IOPathType _pt) :
-        m_pathType(_pt)
+    s_test_writer(sight::io::service::path_type_t _pt) :
+        m_path_type(_pt)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void set_path_type(sight::io::service::IOPathType _pt)
+    void set_path_type(sight::io::service::path_type_t _pt)
     {
-        m_pathType = _pt;
+        m_path_type = _pt;
     }
 
 protected:
 
     //------------------------------------------------------------------------------
 
-    sight::io::service::IOPathType getIOPathType() const override
+    sight::io::service::path_type_t get_path_type() const override
     {
-        return m_pathType;
+        return m_path_type;
     }
 
     //------------------------------------------------------------------------------
@@ -80,23 +80,23 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    void openLocationDialog() override
+    void open_location_dialog() override
     {
     }
 
 private:
 
-    io::service::IOPathType m_pathType {io::service::IOPathType::FILE};
+    io::service::path_type_t m_path_type {io::service::path_type_t::file};
 };
 
 /**
  * @brief Test many methods to write data.
  */
-class WriterTest : public CPPUNIT_NS::TestFixture
+class writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(WriterTest);
-CPPUNIT_TEST(test_typeOK);
-CPPUNIT_TEST(test_hasLocationDefined);
+CPPUNIT_TEST_SUITE(writer_test);
+CPPUNIT_TEST(test_type_ok);
+CPPUNIT_TEST(test_has_location_defined);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -107,23 +107,23 @@ public:
     void tearDown() override;
 
     // Tests the correct-ness of types
-    void test_typeOK();
+    void test_type_ok();
 
-    // Test the hasLocationDefined method
-    void test_hasLocationDefined();
+    // Test the has_location_defined method
+    void test_has_location_defined();
 
-    // Test the hasLocationDefined method with a base folder
-    void test_hasLocationDefinedWithBaseFolder();
+    // Test the has_location_defined method with a base folder
+    void test_has_location_defined_with_base_folder();
 
     // Test the constructed output paths
-    void test_outputPaths();
+    void test_output_paths();
 
 protected:
 
     // Store test values for files/folders
     std::string m_file {"test.png"};
     std::string m_folder {"test"};
-    std::filesystem::path m_rootPath;
+    std::filesystem::path m_root_path;
 };
 
 } // namespace sight::io::ut

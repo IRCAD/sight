@@ -63,7 +63,7 @@ void boolean_test::methode1()
 
     CPPUNIT_ASSERT(*p1 != *p2);
 
-    p2->setValue(true_value);
+    p2->set_value(true_value);
 
     CPPUNIT_ASSERT(*p1 == *p2);
 }

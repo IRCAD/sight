@@ -34,22 +34,22 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a SCOORD node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRSCoordNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_srs_coord_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
-    typedef std::vector<float> graphic_data_container_t;
+    using graphic_data_container_t = std::vector<float>;
 
     /// Constructor
-    IO_DICOM_API DicomSRSCoordNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_srs_coord_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
         std::string _graphic_type,
         graphic_data_container_t _graphic_data_container
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRSCoordNode() override;
+    IO_DICOM_API ~dicom_srs_coord_node() override;
 
     /**
      * @brief Write the SR node in the dataset
@@ -60,25 +60,25 @@ public:
     /// Get Graphic type
     [[nodiscard]] const std::string& get_graphic_type() const
     {
-        return m_graphicType;
+        return m_graphic_type;
     }
 
     ///Set Graphic type
     void set_graphic_type(const std::string& _graphic_type)
     {
-        m_graphicType = _graphic_type;
+        m_graphic_type = _graphic_type;
     }
 
     /// Get Graphic data container
-    [[nodiscard]] const graphic_data_container_t& getGraphicDataContainer() const
+    [[nodiscard]] const graphic_data_container_t& get_graphic_data_container() const
     {
-        return m_graphicDataContainer;
+        return m_graphic_data_container;
     }
 
     ///Set Graphic data container
-    void setGraphicDataContainer(const graphic_data_container_t& _graphic_data_container)
+    void set_graphic_data_container(const graphic_data_container_t& _graphic_data_container)
     {
-        m_graphicDataContainer = _graphic_data_container;
+        m_graphic_data_container = _graphic_data_container;
     }
 
 protected:
@@ -87,10 +87,10 @@ protected:
     void print(std::ostream& _os) const override;
 
     /// Graphic Type
-    std::string m_graphicType;
+    std::string m_graphic_type;
 
     /// Graphic Data
-    graphic_data_container_t m_graphicDataContainer;
+    graphic_data_container_t m_graphic_data_container;
 };
 
 } // namespace sight::io::dicom::container::sr

@@ -32,14 +32,14 @@ namespace sight::module::viz::scene3d::adaptor
 
 predefined_camera::predefined_camera() noexcept
 {
-    new_slot(slots::SET_PARAMETER, &predefined_camera::setParameter, this);
+    new_slot(slots::SET_PARAMETER, &predefined_camera::set_parameter, this);
     new_slot(
         slots::NEXT_POSITION,
         [this]()
         {
             if(m_interactor)
             {
-                m_interactor->nextPosition();
+                m_interactor->next_position();
             }
         });
 
@@ -49,29 +49,29 @@ predefined_camera::predefined_camera() noexcept
         {
             if(m_interactor)
             {
-                m_interactor->previousPosition();
+                m_interactor->previous_position();
             }
         });
-    new_slot(slots::UPDATE_TRANSFORM, &predefined_camera::updateTransform, this);
+    new_slot(slots::UPDATE_TRANSFORM, &predefined_camera::update_transform, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void predefined_camera::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    m_priority            = config.get<int>(s_CONFIG + "priority", m_priority);
-    m_layerOrderDependant = config.get<bool>(s_CONFIG + "layerOrderDependant", m_layerOrderDependant);
+    m_priority              = config.get<int>(CONFIG + "priority", m_priority);
+    m_layer_order_dependant = config.get<bool>(CONFIG + "layerOrderDependant", m_layer_order_dependant);
 
-    m_manualRotation = config.get<bool>(s_CONFIG + "mouseRotation", m_manualRotation);
+    m_manual_rotation = config.get<bool>(CONFIG + "mouseRotation", m_manual_rotation);
 
-    const auto& default_position = config.get_optional<std::string>(s_CONFIG + "defaultPosition");
-    m_defaultPosition = default_position ? std::make_optional(*default_position) : std::nullopt;
+    const auto& default_position = config.get_optional<std::string>(CONFIG + "defaultPosition");
+    m_default_position = default_position ? std::make_optional(*default_position) : std::nullopt;
 
-    m_animate = config.get<bool>(s_CONFIG + "animate", m_animate);
+    m_animate = config.get<bool>(CONFIG + "animate", m_animate);
 
     const auto positions = config.get_child("positions");
 
@@ -91,7 +91,7 @@ void predefined_camera::configuring()
         position.ry = posattr.get<float>("ry", 0.F);
         position.rz = posattr.get<float>("rz", 0.F);
 
-        m_cameraPositions.push_back(position);
+        m_camera_positions.push_back(position);
     }
 }
 
@@ -101,29 +101,29 @@ void predefined_camera::starting()
 {
     this->initialize();
 
-    const auto layer = this->getLayer();
+    const auto layer = this->layer();
 
     m_interactor =
         std::make_shared<sight::viz::scene3d::interactor::predefined_position_interactor>(
             layer,
-            m_layerOrderDependant,
-            m_cameraPositions,
-            m_defaultPosition,
+            m_layer_order_dependant,
+            m_camera_positions,
+            m_default_position,
             m_animate
         );
 
-    m_interactor->setMouseRotation(m_manualRotation);
+    m_interactor->set_mouse_rotation(m_manual_rotation);
 
-    layer->addInteractor(m_interactor, m_priority);
+    layer->add_interactor(m_interactor, m_priority);
 
     if(const auto& transform = m_transform.const_lock(); transform)
     {
-        const auto ogre_mat = ::sight::viz::scene3d::utils::convertTM3DToOgreMx(transform.get_shared());
+        const auto ogre_mat = ::sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
 
-        m_interactor->setTransform(ogre_mat);
+        m_interactor->set_transform(ogre_mat);
     }
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,30 +136,30 @@ void predefined_camera::updating() noexcept
 
 void predefined_camera::stopping()
 {
-    const auto layer = this->getLayer();
-    layer->removeInteractor(m_interactor);
+    const auto layer = this->layer();
+    layer->remove_interactor(m_interactor);
     m_interactor.reset();
 }
 
 //------------------------------------------------------------------------------
 
-void predefined_camera::setParameter(ui::parameter_t _value, std::string _key)
+void predefined_camera::set_parameter(ui::parameter_t _value, std::string _key)
 {
     if(m_interactor)
     {
-        m_interactor->setParameter(_value, _key);
+        m_interactor->set_parameter(_value, _key);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void predefined_camera::updateTransform()
+void predefined_camera::update_transform()
 {
     if(const auto& transform = m_transform.const_lock(); transform)
     {
-        const auto ogre_mat = ::sight::viz::scene3d::utils::convertTM3DToOgreMx(transform.get_shared());
+        const auto ogre_mat = ::sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
 
-        m_interactor->setTransform(ogre_mat);
+        m_interactor->set_transform(ogre_mat);
     }
 }
 
@@ -167,7 +167,7 @@ void predefined_camera::updateTransform()
 
 predefined_camera::connections_t predefined_camera::auto_connections() const
 {
-    return {{s_REGISTRATION_TRANSFORM_IN, sight::data::matrix4::MODIFIED_SIG, slots::UPDATE_TRANSFORM}};
+    return {{REGISTRATION_TRANSFORM_IN, sight::data::matrix4::MODIFIED_SIG, slots::UPDATE_TRANSFORM}};
 }
 
 //-----------------------------------------------------------------------------

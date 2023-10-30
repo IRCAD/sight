@@ -27,7 +27,7 @@
 #include <data/image.hpp>
 
 #include <viz/scene2d/adaptor.hpp>
-#include <viz/scene2d/data/Viewport.hpp>
+#include <viz/scene2d/data/viewport.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -36,7 +36,7 @@ namespace sight::module::viz::scene2d::adaptor
  * @brief Adaptor implementation that manages the camera on the view (by updating the viewport object).
  *
  * The viewport_updater updates the viewport of the scene it is attached to, by picking values from the
- * managed sight::viz::scene2d::data::Viewport object.
+ * managed sight::viz::scene2d::data::viewport object.
  *
  * @section XML XML Configuration
  *
@@ -53,7 +53,7 @@ namespace sight::module::viz::scene2d::adaptor
  *  this will update both the scene view and the viewport passed as argument.
  *
  * @subsection In-Out In-Out
- * - \b viewport [sight::viz::scene2d::data::Viewport]: the viewport object this updater takes values from.
+ * - \b viewport [sight::viz::scene2d::data::viewport]: the viewport object this updater takes values from.
  * If the viewport is not initialized, it will be updated to fit the scene size.
  *
  * @subsection Configuration Configuration:
@@ -82,8 +82,8 @@ protected:
 
 private:
 
-    static constexpr std::string_view s_VIEWPORT_INOUT = "viewport";
-    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT
+    static constexpr std::string_view VIEWPORT_INOUT = "viewport";
+    sight::data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::inout> m_viewport {this, VIEWPORT_INOUT
     };
 };
 

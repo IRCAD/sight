@@ -76,28 +76,28 @@ location_base::~location_base()
 
 //------------------------------------------------------------------------------
 
-void location_base::setTitle(const std::string& _title)
+void location_base::set_title(const std::string& _title)
 {
     m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string& location_base::getTitle()
+const std::string& location_base::get_title()
 {
     return m_title;
 }
 
 //------------------------------------------------------------------------------
 
-void location_base::setDefaultLocation(core::location::base::sptr _loc)
+void location_base::set_default_location(core::location::base::sptr _loc)
 {
-    m_defaultLocaction = _loc;
+    m_default_locaction = _loc;
 }
 
 //------------------------------------------------------------------------------
 
-core::location::base::sptr location_base::getDefaultLocation()
+core::location::base::sptr location_base::get_default_location()
 {
     core::location::base::sptr location;
 
@@ -105,7 +105,7 @@ core::location::base::sptr location_base::getDefaultLocation()
     {
         ui::preferences preferences;
 
-        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(getTitle()));
+        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(get_title()));
            default_file)
         {
             auto single_file = std::make_shared<core::location::single_file>();
@@ -113,7 +113,7 @@ core::location::base::sptr location_base::getDefaultLocation()
             location = single_file;
         }
         else if(const auto& default_directory =
-                    preferences.get_optional<std::filesystem::path>(get_directory_key(getTitle())); default_directory)
+                    preferences.get_optional<std::filesystem::path>(get_directory_key(get_title())); default_directory)
         {
             auto single_directory = std::make_shared<core::location::single_folder>();
             single_directory->set_folder(*default_directory);
@@ -127,7 +127,7 @@ core::location::base::sptr location_base::getDefaultLocation()
 
     if(!location)
     {
-        location = m_defaultLocaction;
+        location = m_default_locaction;
     }
 
     return location;
@@ -135,7 +135,7 @@ core::location::base::sptr location_base::getDefaultLocation()
 
 //-----------------------------------------------------------------------------
 
-void location_base::saveDefaultLocation(core::location::base::sptr _loc)
+void location_base::save_default_location(core::location::base::sptr _loc)
 {
     if(_loc)
     {
@@ -145,11 +145,11 @@ void location_base::saveDefaultLocation(core::location::base::sptr _loc)
 
             if(auto single_file = std::dynamic_pointer_cast<core::location::single_file>(_loc))
             {
-                preferences.put(get_file_key(getTitle()), single_file->get_file());
+                preferences.put(get_file_key(get_title()), single_file->get_file());
             }
             else if(auto single_directory = std::dynamic_pointer_cast<core::location::single_folder>(_loc))
             {
-                preferences.put(get_directory_key(getTitle()), single_directory->get_folder());
+                preferences.put(get_directory_key(get_title()), single_directory->get_folder());
             }
         }
         catch(const ui::preferences_disabled&)
@@ -161,10 +161,10 @@ void location_base::saveDefaultLocation(core::location::base::sptr _loc)
 
 //------------------------------------------------------------------------------
 
-std::vector<std::string> location_base::getSelectedExtensions() const
+std::vector<std::string> location_base::get_selected_extensions() const
 {
     // Get the current selection, remove all "*" characters
-    const std::string& selection = boost::replace_all_copy(getCurrentSelection(), "*", "");
+    const std::string& selection = boost::replace_all_copy(get_current_selection(), "*", "");
 
     // Split the selection into a vector of extensions
     std::vector<std::string> extensions;

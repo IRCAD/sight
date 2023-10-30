@@ -52,7 +52,7 @@ public:
     IO_API virtual ~csv_reader();
 
     /// Containers to store parsed tokens.
-    typedef std::vector<std::string> token_container_t;
+    using token_container_t = std::vector<std::string>;
 
     /**
      * @brief Returns tokens on next line to read, using comma separator
@@ -62,7 +62,7 @@ public:
      *
      * @return tokens found on next line separated with given characters
      */
-    IO_API token_container_t getLine(const std::string& _separator = ",");
+    IO_API token_container_t get_line(const std::string& _separator = ",");
 
 private:
 

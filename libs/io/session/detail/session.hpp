@@ -41,16 +41,16 @@ public:
 
     SIGHT_DECLARE_CLASS(session, core::location::base);
 
-    constexpr static auto s_uuid {"uuid"};
-    constexpr static auto s_children {"children"};
-    constexpr static auto s_fields {"fields"};
-    constexpr static auto s_description {"description"};
+    constexpr static auto UUID {"uuid"};
+    constexpr static auto CHILDREN {"children"};
+    constexpr static auto FIELDS {"fields"};
+    constexpr static auto DESCRIPTION {"description"};
 
     /// String serialization function
     [[nodiscard]] inline std::string to_string() const override;
 
     /// Return the default index file path inside the session archive
-    static inline std::filesystem::path getIndexFilePath();
+    static inline std::filesystem::path get_index_file_path();
 
     /// Salt the password, depending of the encryption level
     /// "PASSWORD" means encrypt if a password is provided, using the same key.
@@ -65,7 +65,7 @@ public:
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& _password,
         const core::crypto::secure_string& _salt,
-        core::crypto::password_keeper::encryption_policy _policy = core::crypto::password_keeper::encryption_policy::PASSWORD
+        core::crypto::password_keeper::encryption_policy _policy = core::crypto::password_keeper::encryption_policy::password
     );
 
 protected:
@@ -86,7 +86,7 @@ inline std::string session::to_string() const
 
 //------------------------------------------------------------------------------
 
-inline std::filesystem::path session::getIndexFilePath()
+inline std::filesystem::path session::get_index_file_path()
 {
     return "index.json";
 }
@@ -99,7 +99,7 @@ inline core::crypto::secure_string session::pickle(
     const core::crypto::password_keeper::encryption_policy _policy
 )
 {
-    if(_password.empty() && _policy == core::crypto::password_keeper::encryption_policy::FORCED)
+    if(_password.empty() && _policy == core::crypto::password_keeper::encryption_policy::forced)
     {
         if constexpr(core::crypto::password_keeper::has_default_password())
         {
@@ -114,7 +114,7 @@ inline core::crypto::secure_string session::pickle(
             SIGHT_THROW("No password provided and no default password available");
         }
     }
-    else if(_policy == core::crypto::password_keeper::encryption_policy::SALTED)
+    else if(_policy == core::crypto::password_keeper::encryption_policy::salted)
     {
         return core::crypto::hash(_password + _salt);
     }

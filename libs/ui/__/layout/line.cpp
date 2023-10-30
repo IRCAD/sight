@@ -48,20 +48,20 @@ void line::initialize(const ui::config_t& _configuration)
         "Wrong value '" + orientation_cfg + "' for 'orientation' attribute (require vertical or horizontal)",
         orientation_cfg == "vertical" || orientation_cfg == "horizontal"
     );
-    m_orientation = (orientation_cfg == "vertical") ? VERTICAL : HORIZONTAL;
+    m_orientation = (orientation_cfg == "vertical") ? vertical : horizontal;
 
     m_views.clear();
     for(auto view : _configuration)
     {
         if(view.first == "spacer")
         {
-            ViewInfo vi;
-            vi.m_isSpacer = true;
+            view_info vi;
+            vi.m_is_spacer = true;
             m_views.push_back(vi);
         }
         else if(view.first == "view")
         {
-            ViewInfo vi;
+            view_info vi;
             if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
             {
                 vi.m_proportion = view_cfg->get<int>("proportion", vi.m_proportion);
@@ -72,23 +72,23 @@ void line::initialize(const ui::config_t& _configuration)
                 }
                 else
                 {
-                    vi.m_leftBorder   = view_cfg->get<int>("leftBorder", vi.m_leftBorder);
-                    vi.m_topBorder    = view_cfg->get<int>("topBorder", vi.m_topBorder);
-                    vi.m_rightBorder  = view_cfg->get<int>("rightBorder", vi.m_rightBorder);
-                    vi.m_bottomBorder = view_cfg->get<int>("bottomBorder", vi.m_bottomBorder);
+                    vi.m_left_border   = view_cfg->get<int>("leftBorder", vi.m_left_border);
+                    vi.m_top_border    = view_cfg->get<int>("topBorder", vi.m_top_border);
+                    vi.m_right_border  = view_cfg->get<int>("rightBorder", vi.m_right_border);
+                    vi.m_bottom_border = view_cfg->get<int>("bottomBorder", vi.m_bottom_border);
                 }
 
                 vi.m_spacing = view_cfg->get<int>("spacing", vi.m_spacing);
 
-                vi.m_minSize.first  = view_cfg->get<int>("minWidth", vi.m_minSize.first);
-                vi.m_minSize.second = view_cfg->get<int>("minHeight", vi.m_minSize.second);
-                vi.m_maxSize.first  = view_cfg->get<int>("maxWidth", vi.m_maxSize.first);
-                vi.m_maxSize.second = view_cfg->get<int>("maxHeight", vi.m_maxSize.second);
+                vi.m_min_size.first  = view_cfg->get<int>("minWidth", vi.m_min_size.first);
+                vi.m_min_size.second = view_cfg->get<int>("minHeight", vi.m_min_size.second);
+                vi.m_max_size.first  = view_cfg->get<int>("maxWidth", vi.m_max_size.first);
+                vi.m_max_size.second = view_cfg->get<int>("maxHeight", vi.m_max_size.second);
 
-                vi.m_visible      = view_cfg->get<bool>("visible", vi.m_visible);
-                vi.m_useScrollBar = view_cfg->get<bool>("useScrollBar", vi.m_useScrollBar);
-                vi.m_toolTip      = view_cfg->get<std::string>("toolTip", vi.m_toolTip);
-                vi.m_qssKey       = view_cfg->get<std::string>("QSSClass", "");
+                vi.m_visible        = view_cfg->get<bool>("visible", vi.m_visible);
+                vi.m_use_scroll_bar = view_cfg->get<bool>("useScrollBar", vi.m_use_scroll_bar);
+                vi.m_tool_tip       = view_cfg->get<std::string>("toolTip", vi.m_tool_tip);
+                vi.m_qss_key        = view_cfg->get<std::string>("QSSClass", "");
 
                 if(auto caption = view_cfg->get_optional<std::string>("caption"); caption.has_value())
                 {
@@ -104,7 +104,7 @@ void line::initialize(const ui::config_t& _configuration)
                         hexa_color[0] == '#'
                         && (hexa_color.length() == 7 || hexa_color.length() == 9)
                     );
-                    vi.m_backgroundColor = hexa_color;
+                    vi.m_background_color = hexa_color;
                 }
             }
 

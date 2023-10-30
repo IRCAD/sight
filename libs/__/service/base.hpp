@@ -62,7 +62,7 @@ struct slots
     static inline const core::com::slots::key_t START    = "start";
     static inline const core::com::slots::key_t STOP     = "stop";
     static inline const core::com::slots::key_t UPDATE   = "update";
-    static inline const core::com::slots::key_t swap_key = "swap_key";
+    static inline const core::com::slots::key_t SWAP_KEY = "swap_key";
 };
 
 struct signals
@@ -103,7 +103,7 @@ struct SERVICE_CLASS_API connections_t
 
     private:
 
-        key_connections_map_t m_keyConnectionsMap;
+        key_connections_map_t m_key_connections_map;
 };
 
 /**
@@ -117,7 +117,6 @@ struct SERVICE_CLASS_API connections_t
  * - \b updated() : Emitted when the service has updated.
  * - \b stopped() : Emitted when the service has stopped.
  * - \b swapped() : Emitted when the service has swapped.
- * - \b notified(notification_t _type, std::string _message): Emitted when the service wants to pop a notification.
  *
  * @section Slots Slots
  * - \b start() : Start the service.
@@ -149,36 +148,36 @@ public:
     //@{
 
     /// Defines all possible global status for a service, including transitions
-    typedef enum
+    enum class global_status
     {
-        STARTED,
+        started,
         /**< state after start */
-        STARTING,
+        starting,
         /**< state during start */
-        SWAPPING,
+        swapping,
         /**< state during swap */
-        STOPPED,
+        stopped,
         /**< state after stop */
-        STOPPING /**< state during stop */
-    } GlobalStatus;
+        stopping /**< state during stop */
+    };
 
     /// Defines all possible status for an update process
-    typedef enum
+    enum class updating_status
     {
-        UPDATING,
+        updating,
         /**< state during update */
-        NOTUPDATING /**< state during when the service is not updating */
-    } UpdatingStatus;
+        notupdating /**< state during when the service is not updating */
+    };
 
     /// Defines all possible status for a configuration process
-    typedef enum
+    enum class configuration_status
     {
-        CONFIGURING,
+        configuring,
         /**< state during configuration */
-        CONFIGURED,
+        configured,
         /**< state after configuration */
-        UNCONFIGURED /**< state when the service is not configured */
-    } ConfigurationStatus;
+        unconfigured /**< state when the service is not configured */
+    };
 
     //@}
 
@@ -268,10 +267,10 @@ public:
     //@{
 
     /// Return the global process status
-    SERVICE_API GlobalStatus status() const noexcept;
+    SERVICE_API global_status status() const noexcept;
 
     /// Return the configuration process status
-    SERVICE_API ConfigurationStatus config_status() const noexcept;
+    SERVICE_API configuration_status config_status() const noexcept;
 
     /// Test if the service is started or not
     SERVICE_API bool started() const noexcept;
@@ -280,7 +279,7 @@ public:
     SERVICE_API bool stopped() const noexcept;
 
     /// Return the update process status
-    SERVICE_API UpdatingStatus updating_status() const noexcept;
+    SERVICE_API updating_status updating_status() const noexcept;
 
     //@}
 

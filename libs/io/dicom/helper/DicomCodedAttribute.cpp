@@ -29,7 +29,7 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-DicomCodedAttribute::DicomCodedAttributeVectorType DicomCodedAttribute::convertEntryToCodedAttribute(
+dicom_coded_attribute::DicomCodedAttributeVectorType dicom_coded_attribute::convert_entry_to_coded_attribute(
     const std::string& _entry
 )
 {
@@ -59,14 +59,16 @@ DicomCodedAttribute::DicomCodedAttributeVectorType DicomCodedAttribute::convertE
 
 //------------------------------------------------------------------------------
 
-gdcm::Segment::BasicCodedEntryVector DicomCodedAttribute::convertEntryToGDCMCodedAttribute(const std::string& _entry)
+gdcm::Segment::BasicCodedEntryVector dicom_coded_attribute::convert_entry_to_gdcm_coded_attribute(
+    const std::string& _entry
+)
 {
     gdcm::Segment::BasicCodedEntryVector result;
 
-    DicomCodedAttributeVectorType coded_attributes = convertEntryToCodedAttribute(_entry);
+    DicomCodedAttributeVectorType coded_attributes = convert_entry_to_coded_attribute(_entry);
     for(const auto& attribute : coded_attributes)
     {
-        result.push_back(attribute.toGDCMFormat());
+        result.push_back(attribute.to_gdcm_format());
     }
 
     return result;
@@ -74,7 +76,7 @@ gdcm::Segment::BasicCodedEntryVector DicomCodedAttribute::convertEntryToGDCMCode
 
 //------------------------------------------------------------------------------
 
-bool DicomCodedAttribute::checkAndFormatEntry(std::string& _entry, bool _multiple_value)
+bool dicom_coded_attribute::check_and_format_entry(std::string& _entry, bool _multiple_value)
 {
     const std::string input = _entry;
 

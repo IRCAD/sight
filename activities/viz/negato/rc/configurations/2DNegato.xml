@@ -33,17 +33,17 @@
 
         <service uid="negato_top_slider_view" type="sight::module::ui::view">
             <gui>
-                <toolBar backgroundColor="#00000000" />
+                <toolbar backgroundColor="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="topToolbarView" start="true" />
+                <toolbar sid="topToolbarView" start="true" />
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="sight::module::ui::tool_bar">
+        <service uid="topToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />

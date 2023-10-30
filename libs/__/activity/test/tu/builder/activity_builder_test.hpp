@@ -39,8 +39,8 @@ class activity_builder_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(activity_builder_test);
 
-CPPUNIT_TEST(buildDataTest);
-CPPUNIT_TEST(objectParserTest);
+CPPUNIT_TEST(build_data_test);
+CPPUNIT_TEST(object_parser_test);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -50,8 +50,8 @@ public:
     void setUp();
     void tearDown();
 
-    void buildDataTest();
-    void objectParserTest();
+    void build_data_test();
+    void object_parser_test();
 
 protected:
 

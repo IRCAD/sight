@@ -25,8 +25,8 @@
 
 #include <core/crypto/base64.hpp>
 
-#include <io/zip/ArchiveReader.hpp>
-#include <io/zip/ArchiveWriter.hpp>
+#include <io/zip/archive_reader.hpp>
+#include <io/zip/archive_writer.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -35,8 +35,8 @@
 namespace sight::io::session::helper
 {
 
-constexpr static auto s_Value {"Value"};
-constexpr static auto s_Version {".version"};
+constexpr static auto VALUE {"Value"};
+constexpr static auto VERSION {".version"};
 
 /// Convenience function to read a version from a tree.
 /// Optionally checks the version number, when minVersion or maxVersion > 0.
@@ -51,7 +51,7 @@ inline static int read_version(
 )
 {
     // Add a version number. Not mandatory, but could help for future release
-    const int version = _tree.get<int>(T::classname() + s_Version, -1);
+    const int version = _tree.get<int>(T::classname() + VERSION, -1);
 
     SIGHT_THROW_IF(
         T::classname() << " deserialization is not implemented for version '" << version << "'.",
@@ -68,7 +68,7 @@ template<typename T>
 inline static void write_version(boost::property_tree::ptree& _tree, const int _version = 1)
 {
     // Add a version number. Not mandatory, but could help for future release
-    _tree.put(T::classname() + s_Version, std::to_string(_version));
+    _tree.put(T::classname() + VERSION, std::to_string(_version));
 }
 
 /// Convenience function to safely read strings from a tree
@@ -172,7 +172,7 @@ inline static typename T::csptr safe_cast(sight::data::object::csptr _object)
 /// @param[in] password (optional) the password to use if encryption is enabled
 template<typename T>
 inline static void serialize(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -184,7 +184,7 @@ inline static void serialize(
     // Add a version number. Not mandatory, but could help for future release
     write_version<T>(_tree, 1);
 
-    _tree.put(s_Value, casted->getValue());
+    _tree.put(VALUE, casted->get_value());
 }
 
 /// Generic deserialization function
@@ -195,7 +195,7 @@ inline static void serialize(
 /// @param[in] password (optional) the password used for encryption
 template<typename T>
 inline static typename T::sptr deserialize(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -209,7 +209,7 @@ inline static typename T::sptr deserialize(
     read_version<T>(_tree, 0, 1);
 
     // Assign the value
-    casted->setValue(_tree.get<typename T::value_t>(s_Value));
+    casted->set_value(_tree.get<typename T::value_t>(VALUE));
 
     return casted;
 }

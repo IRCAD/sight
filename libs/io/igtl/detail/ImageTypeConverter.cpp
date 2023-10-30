@@ -27,14 +27,14 @@
 namespace sight::io::igtl::detail
 {
 
-ImageTypeConverter::TypeConverterMap ImageTypeConverter::s_typeConverterMap =
-    ImageTypeConverter::initTypeConverterMap();
+image_type_converter::type_converter_map_t image_type_converter::s_type_converter_map =
+    image_type_converter::init_type_converter_map();
 
 //------------------------------------------------------------------------------
 
-ImageTypeConverter::TypeConverterMap ImageTypeConverter::initTypeConverterMap()
+image_type_converter::type_converter_map_t image_type_converter::init_type_converter_map()
 {
-    ImageTypeConverter::TypeConverterMap convert_map;
+    type_converter_map_t convert_map;
 
     convert_map[core::type::INT8]   = ::igtl::ImageMessage::TYPE_INT8;
     convert_map[core::type::UINT8]  = ::igtl::ImageMessage::TYPE_UINT8;
@@ -49,9 +49,9 @@ ImageTypeConverter::TypeConverterMap ImageTypeConverter::initTypeConverterMap()
 
 //-----------------------------------------------------------------------------
 
-const core::type& ImageTypeConverter::get_fw_tools_type(const std::uint8_t& _igtl_type)
+const core::type& image_type_converter::get_fw_tools_type(const std::uint8_t& _igtl_type)
 {
-    for(const auto& type_converter : ImageTypeConverter::s_typeConverterMap)
+    for(const auto& type_converter : image_type_converter::s_type_converter_map)
     {
         if(type_converter.second == _igtl_type)
         {
@@ -59,22 +59,22 @@ const core::type& ImageTypeConverter::get_fw_tools_type(const std::uint8_t& _igt
         }
     }
 
-    throw io::igtl::detail::exception::Conversion("Cannot found a fwTools type for igtl image type");
+    throw io::igtl::detail::exception::conversion("Cannot found a fwTools type for igtl image type");
 }
 
 //-----------------------------------------------------------------------------
 
-std::uint8_t ImageTypeConverter::get_igtl_type(const core::type& _type)
+std::uint8_t image_type_converter::get_igtl_type(const core::type& _type)
 {
-    ImageTypeConverter::TypeConverterMap::const_iterator it;
+    image_type_converter::type_converter_map_t::const_iterator it;
 
-    it = ImageTypeConverter::s_typeConverterMap.find(_type);
-    if(it != ImageTypeConverter::s_typeConverterMap.end())
+    it = image_type_converter::s_type_converter_map.find(_type);
+    if(it != image_type_converter::s_type_converter_map.end())
     {
         return it->second;
     }
 
-    throw io::igtl::detail::exception::Conversion(
+    throw io::igtl::detail::exception::conversion(
               "Cannot found a igtl image type for type : "
               + _type.name()
     );

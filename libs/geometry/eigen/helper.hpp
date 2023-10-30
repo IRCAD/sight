@@ -36,8 +36,8 @@ namespace sight::geometry::eigen::helper
  * The first element is the rotation vector (Rvec)
  * The second element is the translation vector (Tvec)
  */
-typedef std::pair<Eigen::Vector3d, Eigen::Vector3d> rvec_tvec_t;
-typedef Eigen::Matrix<double, 4, 4, Eigen::RowMajor> EigenMatrix;
+using rvec_tvec_t = std::pair<Eigen::Vector3d, Eigen::Vector3d>;
+using EigenMatrix = Eigen::Matrix<double, 4, 4, Eigen::RowMajor>;
 /**
  * @brief Convert from an Eigen float 4x4 Matrix to a data::matrix4
  * @param _mat : the eigen matrix

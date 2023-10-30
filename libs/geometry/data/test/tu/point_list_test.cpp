@@ -55,7 +55,7 @@ void point_list_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void point_list_test::computeDistance()
+void point_list_test::compute_distance()
 {
     const std::size_t nb_points = 42;
 
@@ -70,9 +70,9 @@ void point_list_test::computeDistance()
         pl2 = std::make_shared<sight::data::point_list>();
 
         // Compare the point lists
-        auto output_array = geometry::data::point_list::computeDistance(pl1, pl2);
+        auto output_array = geometry::data::point_list::compute_distance(pl1, pl2);
 
-        CPPUNIT_ASSERT(output_array->numElements() == 0);
+        CPPUNIT_ASSERT(output_array->num_elements() == 0);
     }
 
     // Simple test with parallel point lists
@@ -86,14 +86,14 @@ void point_list_test::computeDistance()
         for(std::size_t i = 0 ; i < nb_points ; i++)
         {
             p = std::make_shared<sight::data::point>(static_cast<float>(i), 0.0F, 0.0F);
-            pl1->pushBack(p);
+            pl1->push_back(p);
 
             p = std::make_shared<sight::data::point>(static_cast<float>(i), 1.0F, 0.0F);
-            pl2->pushBack(p);
+            pl2->push_back(p);
         }
 
         // Compare the point lists
-        auto output_array = geometry::data::point_list::computeDistance(pl1, pl2);
+        auto output_array = geometry::data::point_list::compute_distance(pl1, pl2);
 
         const auto dump_lock    = output_array->dump_lock();
         auto distance_array_itr = output_array->begin<double>();
@@ -115,14 +115,14 @@ void point_list_test::computeDistance()
         for(std::size_t i = 0 ; i < nb_points ; i++)
         {
             p = std::make_shared<sight::data::point>(static_cast<float>(i), 0.0F, 0.0F);
-            pl1->pushBack(p);
+            pl1->push_back(p);
 
             p = std::make_shared<sight::data::point>(static_cast<float>(i), static_cast<float>(i), 0.0F);
-            pl2->pushBack(p);
+            pl2->push_back(p);
         }
 
         // Compare the point lists
-        auto output_array    = geometry::data::point_list::computeDistance(pl1, pl2);
+        auto output_array    = geometry::data::point_list::compute_distance(pl1, pl2);
         const auto dump_lock = output_array->dump_lock();
 
         auto distance_array_itr = output_array->begin<double>();
@@ -142,35 +142,35 @@ void point_list_test::transform()
     {
         // Test sample
         sight::data::point_list::sptr pl1 = std::make_shared<sight::data::point_list>();
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 1.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 1.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 1.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 1.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 1.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
 
         // Reference list
-        const sight::data::point_list::PointListContainer points1 = pl1->getPoints();
-        const std::size_t size                                    = points1.size();
+        const sight::data::point_list::container_t points1 = pl1->get_points();
+        const std::size_t size                             = points1.size();
 
         sight::data::point_list::sptr pl2 = std::make_shared<sight::data::point_list>();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp = points1[i]->getCoord();
-            pl2->pushBack(std::make_shared<sight::data::point>(tmp[0], tmp[1], tmp[2]));
+            const sight::data::point::point_coord_array_t tmp = points1[i]->get_coord();
+            pl2->push_back(std::make_shared<sight::data::point>(tmp[0], tmp[1], tmp[2]));
         }
 
         const auto tf1 = std::make_shared<sight::data::matrix4>();
         geometry::data::point_list::transform(pl1, tf1);
 
-        const sight::data::point_list::PointListContainer points2 = pl2->getPoints();
+        const sight::data::point_list::container_t points2 = pl2->get_points();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->getCoord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->getCoord();
+            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
+            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -187,25 +187,25 @@ void point_list_test::transform()
 
         // Test sample
         sight::data::point_list::sptr pl1 = std::make_shared<sight::data::point_list>();
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 1.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 1.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 1.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 1.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 1.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
 
         // Reference list
-        const sight::data::point_list::PointListContainer points1 = pl1->getPoints();
-        const std::size_t size                                    = points1.size();
+        const sight::data::point_list::container_t points1 = pl1->get_points();
+        const std::size_t size                             = points1.size();
 
         sight::data::point_list::sptr pl2 = std::make_shared<sight::data::point_list>();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp = points1[i]->getCoord();
-            pl2->pushBack(
+            const sight::data::point::point_coord_array_t tmp = points1[i]->get_coord();
+            pl2->push_back(
                 std::make_shared<sight::data::point>(
                     tmp[0] + translation[0],
                     tmp[1] + translation[1],
@@ -220,11 +220,11 @@ void point_list_test::transform()
         (*tf1)(2, 3) = translation[2];
         geometry::data::point_list::transform(pl1, tf1);
 
-        const sight::data::point_list::PointListContainer points2 = pl2->getPoints();
+        const sight::data::point_list::container_t points2 = pl2->get_points();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->getCoord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->getCoord();
+            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
+            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -235,26 +235,26 @@ void point_list_test::transform()
     // Simple test with rotation
     {
         sight::data::point_list::sptr pl1 = std::make_shared<sight::data::point_list>();
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 1.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 1.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 1.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 1.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 1.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
 
         sight::data::point_list::sptr pl2 = std::make_shared<sight::data::point_list>();
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
-        pl2->pushBack(std::make_shared<sight::data::point>(-1.0F, 0.0F, 0.0F));
-        pl2->pushBack(std::make_shared<sight::data::point>(-1.0F, -1.0F, 0.0F));
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, -1.0F, 0.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 0.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(-1.0F, 0.0F, 0.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(-1.0F, -1.0F, 0.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, -1.0F, 0.0F));
 
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
-        pl2->pushBack(std::make_shared<sight::data::point>(-1.0F, 0.0F, 1.0F));
-        pl2->pushBack(std::make_shared<sight::data::point>(-1.0F, -1.0F, 1.0F));
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, -1.0F, 1.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 1.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(-1.0F, 0.0F, 1.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(-1.0F, -1.0F, 1.0F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, -1.0F, 1.0F));
 
         // Perform a 180 degrees rotation around Z
         const auto tf1 = std::make_shared<sight::data::matrix4>();
@@ -265,14 +265,14 @@ void point_list_test::transform()
 
         geometry::data::point_list::transform(pl1, tf1);
 
-        const sight::data::point_list::PointListContainer points1 = pl1->getPoints();
-        std::size_t size                                          = points1.size();
-        const sight::data::point_list::PointListContainer points2 = pl2->getPoints();
+        const sight::data::point_list::container_t points1 = pl1->get_points();
+        std::size_t size                                   = points1.size();
+        const sight::data::point_list::container_t points2 = pl2->get_points();
 
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->getCoord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->getCoord();
+            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
+            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -314,10 +314,10 @@ void point_list_test::associate()
         for(std::size_t i = 0 ; i <= nb_points ; i++)
         {
             p = std::make_shared<sight::data::point>(static_cast<float>(i), 0.0F, 0.0F);
-            pl1->pushBack(p);
+            pl1->push_back(p);
 
             p = std::make_shared<sight::data::point>(static_cast<float>(nb_points - i), 0.0F, 0.0F);
-            pl2->pushBack(p);
+            pl2->push_back(p);
         }
 
         // Transform the point lists, shift the points in y
@@ -335,15 +335,15 @@ void point_list_test::associate()
         // Check that the two list are equal (re-ordered)
         // Only the last component should differ, as there is a (0,0,42) translation
         // on the first one and a (0,0,-42) translation on the second one
-        const sight::data::point_list::PointListContainer points1 = pl1->getPoints();
-        const sight::data::point_list::PointListContainer points2 = pl2->getPoints();
+        const sight::data::point_list::container_t points1 = pl1->get_points();
+        const sight::data::point_list::container_t points2 = pl2->get_points();
 
         const std::size_t size = points1.size();
 
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->getCoord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->getCoord();
+            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
+            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
 
             // Check that the last component is equal to i
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
@@ -365,21 +365,21 @@ void point_list_test::associate()
     {
         // Create an initial octahedron with points
         pl1 = std::make_shared<sight::data::point_list>();
-        pl1->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(2.0F, 0.0F, 1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(2.0F, 0.8F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(2.0F, 0.0F, -1.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(2.0F, -0.8F, 0.0F));
-        pl1->pushBack(std::make_shared<sight::data::point>(3.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(2.0F, 0.0F, 1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(2.0F, 0.8F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(2.0F, 0.0F, -1.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(2.0F, -0.8F, 0.0F));
+        pl1->push_back(std::make_shared<sight::data::point>(3.0F, 0.0F, 0.0F));
 
         // Reference final octahedron
         pl2 = std::make_shared<sight::data::point_list>();
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 5.2F));
-        pl2->pushBack(std::make_shared<sight::data::point>(1.0F, 0.0F, 6.2F));
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, 0.8F, 6.2F));
-        pl2->pushBack(std::make_shared<sight::data::point>(-1.0F, 0.0F, 6.2F));
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, -0.8F, 6.2F));
-        pl2->pushBack(std::make_shared<sight::data::point>(0.0F, 0.0F, 7.2F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 5.2F));
+        pl2->push_back(std::make_shared<sight::data::point>(1.0F, 0.0F, 6.2F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, 0.8F, 6.2F));
+        pl2->push_back(std::make_shared<sight::data::point>(-1.0F, 0.0F, 6.2F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, -0.8F, 6.2F));
+        pl2->push_back(std::make_shared<sight::data::point>(0.0F, 0.0F, 7.2F));
 
         // Transform the point list
         auto tf1 = std::make_shared<sight::data::matrix4>();
@@ -399,16 +399,16 @@ void point_list_test::associate()
 
         // Check that the two lists are equal
         // The second one corresponds to a Z translation + a 90 degrees Y translation of the first one
-        const sight::data::point_list::PointListContainer points1 = pl1->getPoints();
-        const sight::data::point_list::PointListContainer points2 = pl2->getPoints();
+        const sight::data::point_list::container_t points1 = pl1->get_points();
+        const sight::data::point_list::container_t points2 = pl2->get_points();
 
         const std::size_t size  = points1.size();
         const int nb_components = 3;
 
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->getCoord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->getCoord();
+            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
+            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
 
             // Compare the components
             for(std::size_t j = 0 ; j < nb_components ; j++)
@@ -421,7 +421,7 @@ void point_list_test::associate()
 
 //------------------------------------------------------------------------------
 
-void point_list_test::removeClosestPointNominal()
+void point_list_test::remove_closest_point_nominal()
 {
     const std::size_t nb_points      = 42;
     sight::data::point_list::sptr pl = std::make_shared<sight::data::point_list>();
@@ -432,7 +432,7 @@ void point_list_test::removeClosestPointNominal()
         const auto p =
             std::make_shared<sight::data::point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         CPPUNIT_ASSERT(
-            geometry::data::point_list::removeClosestPoint(
+            geometry::data::point_list::remove_closest_point(
                 pl,
                 p,
                 std::numeric_limits<float>::min()
@@ -446,7 +446,7 @@ void point_list_test::removeClosestPointNominal()
     {
         const auto p =
             std::make_shared<sight::data::point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
-        pl->pushBack(p);
+        pl->push_back(p);
     }
 
     // Remove points with an unmatched delta
@@ -458,7 +458,7 @@ void point_list_test::removeClosestPointNominal()
             static_cast<float>(nb_points + 1)
         );
         CPPUNIT_ASSERT(
-            geometry::data::point_list::removeClosestPoint(
+            geometry::data::point_list::remove_closest_point(
                 pl,
                 p,
                 std::numeric_limits<float>::min()
@@ -473,17 +473,17 @@ void point_list_test::removeClosestPointNominal()
         const auto p =
             std::make_shared<sight::data::point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         const auto p_res =
-            geometry::data::point_list::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
+            geometry::data::point_list::remove_closest_point(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(p_res != nullptr);
-        CPPUNIT_ASSERT_EQUAL(p_res->getCoord()[0], p->getCoord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p_res->getCoord()[1], p->getCoord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p_res->getCoord()[2], p->getCoord()[2]);
+        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[0], p->get_coord()[0]);
+        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[1], p->get_coord()[1]);
+        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[2], p->get_coord()[2]);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void point_list_test::removeClosestPointExtreme()
+void point_list_test::remove_closest_point_extreme()
 {
     const std::size_t nb_points      = 42;
     sight::data::point_list::sptr pl = std::make_shared<sight::data::point_list>();
@@ -493,7 +493,7 @@ void point_list_test::removeClosestPointExtreme()
     {
         const auto p =
             std::make_shared<sight::data::point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
-        pl->pushBack(p);
+        pl->push_back(p);
     }
 
     // Remove points with negative delta
@@ -502,7 +502,7 @@ void point_list_test::removeClosestPointExtreme()
         const auto p =
             std::make_shared<sight::data::point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         CPPUNIT_ASSERT(
-            geometry::data::point_list::removeClosestPoint(
+            geometry::data::point_list::remove_closest_point(
                 pl,
                 p,
                 -std::numeric_limits<float>::max()
@@ -517,11 +517,11 @@ void point_list_test::removeClosestPointExtreme()
         const auto p =
             std::make_shared<sight::data::point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         const auto p_res =
-            geometry::data::point_list::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
+            geometry::data::point_list::remove_closest_point(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(p_res != nullptr);
-        CPPUNIT_ASSERT_EQUAL(p_res->getCoord()[0], p->getCoord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p_res->getCoord()[1], p->getCoord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p_res->getCoord()[2], p->getCoord()[2]);
+        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[0], p->get_coord()[0]);
+        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[1], p->get_coord()[1]);
+        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[2], p->get_coord()[2]);
     }
 }
 

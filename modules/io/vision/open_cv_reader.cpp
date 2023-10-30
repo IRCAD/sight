@@ -59,14 +59,14 @@ void open_cv_reader::configuring()
 
 // ----------------------------------------------------------------------------
 
-void open_cv_reader::openLocationDialog()
+void open_cv_reader::open_location_dialog()
 {
-    this->defineLocationGUI();
+    this->define_location_gui();
 }
 
 //----------------------------------------------------------------------------
 
-bool open_cv_reader::defineLocationGUI()
+bool open_cv_reader::define_location_gui()
 {
     bool ok = false;
 
@@ -74,11 +74,11 @@ bool open_cv_reader::defineLocationGUI()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::READ);
-    dialog_file.setType(ui::dialog::location::SINGLE_FILE);
-    dialog_file.addFilter("XML or YAML file", "*.xml *.yml *.yaml");
+    dialog_file.set_title(m_window_title.empty() ? "Enter file name" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::read);
+    dialog_file.set_type(ui::dialog::location::single_file);
+    dialog_file.add_filter("XML or YAML file", "*.xml *.yml *.yaml");
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
 
@@ -86,12 +86,12 @@ bool open_cv_reader::defineLocationGUI()
     {
         this->set_file(result->get_file());
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         ok = true;
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 
     return ok;
@@ -116,12 +116,12 @@ void open_cv_reader::updating()
     bool use_dialog = false;
 
     //use dialog only if no file was configured
-    if(!this->hasLocationDefined())
+    if(!this->has_location_defined())
     {
-        use_dialog = this->defineLocationGUI();
+        use_dialog = this->define_location_gui();
         if(!use_dialog)
         {
-            this->m_readFailed = true;
+            this->m_read_failed = true;
             return;
         }
     }
@@ -129,7 +129,7 @@ void open_cv_reader::updating()
     cv::FileStorage fs(this->get_file().string(), cv::FileStorage::READ); // Read the settings
     if(!fs.isOpened())
     {
-        this->m_readFailed = true;
+        this->m_read_failed = true;
         SIGHT_ERROR("The file " + this->get_file().string() + " cannot be opened.");
     }
 
@@ -182,17 +182,17 @@ void open_cv_reader::updating()
         }
 
         data::camera::sptr cam = std::make_shared<data::camera>();
-        cam->setFx(matrix.at<double>(0, 0));
-        cam->setFy(matrix.at<double>(1, 1));
-        cam->setCx(matrix.at<double>(0, 2));
-        cam->setCy(matrix.at<double>(1, 2));
+        cam->set_fx(matrix.at<double>(0, 0));
+        cam->set_fy(matrix.at<double>(1, 1));
+        cam->set_cx(matrix.at<double>(0, 2));
+        cam->set_cy(matrix.at<double>(1, 2));
 
-        cam->setCameraID(id);
-        cam->setDescription(desc);
-        cam->setWidth(static_cast<std::size_t>(width));
-        cam->setHeight(static_cast<std::size_t>(height));
+        cam->set_camera_id(id);
+        cam->set_description(desc);
+        cam->set_width(static_cast<std::size_t>(width));
+        cam->set_height(static_cast<std::size_t>(height));
 
-        cam->setDistortionCoefficient(
+        cam->set_distortion_coefficient(
             dist.at<double>(0),
             dist.at<double>(1),
             dist.at<double>(2),
@@ -200,8 +200,8 @@ void open_cv_reader::updating()
             dist.at<double>(4)
         );
 
-        cam->setScale(scale);
-        cam->setIsCalibrated(true);
+        cam->set_scale(scale);
+        cam->set_is_calibrated(true);
 
         camera_set->add_camera(cam);
 
@@ -238,15 +238,15 @@ void open_cv_reader::updating()
     //clear locations only if it was configured through GUI.
     if(use_dialog)
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
 // ----------------------------------------------------------------------------
 
-sight::io::service::IOPathType open_cv_reader::getIOPathType() const
+sight::io::service::path_type_t open_cv_reader::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 // ----------------------------------------------------------------------------

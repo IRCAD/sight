@@ -46,11 +46,11 @@ namespace sight::module::io::matrix
  * @subsection In-Out In-Out
  * - \b data [sight::data::matrix4]: matrix to read.
  */
-class MODULE_IO_MATRIX_CLASS_API Matrix4ReaderService : public sight::io::service::reader
+class MODULE_IO_MATRIX_CLASS_API matrix4_trf_reader : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(Matrix4ReaderService, sight::io::service::reader);
+    SIGHT_DECLARE_SERVICE(matrix4_trf_reader, sight::io::service::reader);
 
     /// Super class of reader services
     typedef sight::io::service::reader SuperClass;
@@ -65,16 +65,16 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    MODULE_IO_MATRIX_API void openLocationDialog() override;
+    MODULE_IO_MATRIX_API void open_location_dialog() override;
 
     /**
      * @brief   returns  (filename) extension
      */
-    MODULE_IO_MATRIX_API std::vector<std::string> getSupportedExtensions() override;
+    MODULE_IO_MATRIX_API std::vector<std::string> get_supported_extensions() override;
     /// @}
 
     /// Return path type managed by the service, here FILE
-    MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_MATRIX_API sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 

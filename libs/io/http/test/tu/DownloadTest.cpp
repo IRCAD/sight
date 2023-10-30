@@ -30,26 +30,26 @@
 
 namespace fs = std::filesystem;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::DownloadTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::download_test);
 
 namespace sight::io::http::ut
 {
 
 //------------------------------------------------------------------------------
 
-void DownloadTest::setUp()
+void download_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DownloadTest::tearDown()
+void download_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DownloadTest::downloadTestSuccess()
+void download_test::download_test_success()
 {
     core::os::temp_dir tmp_dir;
 
@@ -79,7 +79,7 @@ void DownloadTest::downloadTestSuccess()
 
 //------------------------------------------------------------------------------
 
-void DownloadTest::downloadTestFailure()
+void download_test::download_test_failure()
 {
     core::os::temp_dir tmp_dir;
     const auto& test_bin_path = tmp_dir / "test.bin";
@@ -97,7 +97,7 @@ void DownloadTest::downloadTestFailure()
 
 //------------------------------------------------------------------------------
 
-void DownloadTest::downloadTestWrongInputs()
+void download_test::download_test_wrong_inputs()
 {
     core::os::temp_dir tmp_dir;
     const auto& test2_bin_path = tmp_dir / "test2.bin";
@@ -112,7 +112,7 @@ void DownloadTest::downloadTestWrongInputs()
 
 //------------------------------------------------------------------------------
 
-void DownloadTest::downloadTestOverwritesFile()
+void download_test::download_test_overwrites_file()
 {
     core::os::temp_dir tmp_dir;
     const auto& sample_bin_path = tmp_dir / "sample.bin";

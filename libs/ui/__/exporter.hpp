@@ -66,12 +66,12 @@ protected:
 
     void info(std::ostream& _sstream) override;
 
-    static constexpr std::string_view s_CONTAINER_INOUT = "container";
+    static constexpr std::string_view CONTAINER_INOUT = "container";
 
-    data::ptr<C, data::Access::inout> m_container {this, s_CONTAINER_INOUT};
+    data::ptr<C, data::access::inout> m_container {this, CONTAINER_INOUT};
 
     using shared_pointer = typename C::value_type;
-    data::ptr<typename shared_pointer::element_type, data::Access::inout> m_data {this, "data"};
+    data::ptr<typename shared_pointer::element_type, data::access::inout> m_data {this, "data"};
 
 private:
 
@@ -81,10 +81,10 @@ private:
     inline static const core::com::slots::key_t CHECK_REMOVED_OBJECTS_SLOT = "checkRemovedObjects";
 
     /// Slot: check if specified object is added and set action not executable
-    constexpr void checkAddedObjects(typename C::container_type _added_objects);
+    constexpr void check_added_objects(typename C::container_t _added_objects);
 
     /// Slot: check if specified object is removed and set action executable
-    constexpr void checkRemovedObjects(typename C::container_type _removed_objects);
+    constexpr void check_removed_objects(typename C::container_t _removed_objects);
     /// @}
 };
 

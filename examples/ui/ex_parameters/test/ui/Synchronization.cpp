@@ -25,25 +25,25 @@
 
 #include <core/runtime/path.hpp>
 
-#include <ui/testCore/helper/Button.hpp>
-#include <ui/testCore/helper/CheckBox.hpp>
-#include <ui/testCore/helper/ColorParameter.hpp>
-#include <ui/testCore/helper/ComboBox.hpp>
-#include <ui/testCore/helper/Label.hpp>
-#include <ui/testCore/helper/Slider.hpp>
-#include <ui/testCore/helper/SpinBox.hpp>
-#include <ui/testCore/Tester.hpp>
+#include <ui/testCore/helper/button.hpp>
+#include <ui/testCore/helper/check_box.hpp>
+#include <ui/testCore/helper/color_parameter.hpp>
+#include <ui/testCore/helper/combo_box.hpp>
+#include <ui/testCore/helper/label.hpp>
+#include <ui/testCore/helper/slider.hpp>
+#include <ui/testCore/helper/spin_box.hpp>
+#include <ui/testCore/tester.hpp>
 
 #include <QToolButton>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::examples::ui::exsparameters::test::ui::Synchronization);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::examples::ui::exsparameters::test::ui::synchronization);
 
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path Synchronization::getProfilePath()
+std::filesystem::path synchronization::get_profile_path()
 {
     const std::filesystem::path cwd = sight::core::runtime::working_path();
     return cwd / "share/sight/ex_parameters/profile.xml";
@@ -51,57 +51,59 @@ std::filesystem::path Synchronization::getProfilePath()
 
 //------------------------------------------------------------------------------
 
-void Synchronization::test()
+void synchronization::test()
 {
     namespace helper = sight::ui::test_core::helper;
-    using Select     = helper::Select;
+    using selector   = helper::selector;
 
     start(
         "Synchronization",
-        [](sight::ui::test_core::Tester& _tester)
+        [](sight::ui::test_core::tester& _tester)
         {
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Enable' checkboxes");
-                helper::CheckBox::toggle(_tester, Select::fromParent("parameters1Srv", "enable"));
-                helper::CheckBox::shouldNotBeChecked(_tester, Select::current());
-                helper::CheckBox::shouldNotBeChecked(_tester, Select::fromParent("parameters2Srv", "enable"));
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Enable' checkboxes");
+                helper::check_box::toggle(_tester, selector::from_parent("parameters1Srv", "enable"));
+                helper::check_box::should_not_be_checked(_tester, selector::current());
+                helper::check_box::should_not_be_checked(_tester, selector::from_parent("parameters2Srv", "enable"));
             }
 
             {
                 auto bt =
-                    _tester.addInBacktrace("Check that 'Boolean' checkbox doesn't do anything because it is disabled");
-                helper::CheckBox::toggle(_tester, Select::fromParent("parameters1Srv", "bool_1"));
-                helper::CheckBox::shouldNotBeChecked(_tester, Select::current());
+                    _tester.add_in_backtrace(
+                        "Check that 'Boolean' checkbox doesn't do anything because it is disabled"
+                    );
+                helper::check_box::toggle(_tester, selector::from_parent("parameters1Srv", "bool_1"));
+                helper::check_box::should_not_be_checked(_tester, selector::current());
             }
 
             {
-                auto bt = _tester.addInBacktrace("Re-enable the parameters by re-checking the 'Enable' checkboxes");
-                helper::CheckBox::toggle(_tester, Select::fromParent("parameters1Srv", "enable"));
-                helper::CheckBox::shouldBeChecked(_tester, Select::current());
-                helper::CheckBox::shouldBeChecked(_tester, Select::fromParent("parameters2Srv", "enable"));
+                auto bt = _tester.add_in_backtrace("Re-enable the parameters by re-checking the 'Enable' checkboxes");
+                helper::check_box::toggle(_tester, selector::from_parent("parameters1Srv", "enable"));
+                helper::check_box::should_be_checked(_tester, selector::current());
+                helper::check_box::should_be_checked(_tester, selector::from_parent("parameters2Srv", "enable"));
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Boolean' checkboxes");
-                helper::CheckBox::toggle(_tester, Select::fromParent("parameters1Srv", "bool_1"));
-                helper::CheckBox::shouldBeChecked(_tester, Select::current());
-                helper::CheckBox::shouldBeChecked(_tester, Select::fromParent("parameters2Srv", "bool_1"));
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Boolean' checkboxes");
+                helper::check_box::toggle(_tester, selector::from_parent("parameters1Srv", "bool_1"));
+                helper::check_box::should_be_checked(_tester, selector::current());
+                helper::check_box::should_be_checked(_tester, selector::from_parent("parameters2Srv", "bool_1"));
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Color' color selectors");
-                helper::ColorParameter::select(_tester, Select::fromParent("parameters1Srv", "color_1"), {0, 0, 0});
-                helper::ColorParameter::colorEquals(
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Color' color selectors");
+                helper::color_parameter::select(_tester, selector::from_parent("parameters1Srv", "color_1"), {0, 0, 0});
+                helper::color_parameter::color_equals(
                     _tester,
-                    Select::fromParent(
+                    selector::from_parent(
                         "parameters1Srv",
                         "color_1"
                     ),
                     {0, 0, 0
                     });
-                helper::ColorParameter::colorEquals(
+                helper::color_parameter::color_equals(
                     _tester,
-                    Select::fromParent(
+                    selector::from_parent(
                         "parameters2Srv",
                         "color_1"
                     ),
@@ -110,31 +112,31 @@ void Synchronization::test()
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Double 1' spinboxes");
-                helper::SpinBox::increment(_tester, Select::fromParent("parameters1Srv", "double_1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), "0.40");
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "double_1"), "0.40");
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Double 1' spinboxes");
+                helper::spin_box::increment(_tester, selector::from_parent("parameters1Srv", "double_1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), "0.40");
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "double_1"), "0.40");
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Double 2' sliders");
-                helper::Slider::move(
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Double 2' sliders");
+                helper::slider::move(
                     _tester,
-                    Select::fromParent("parameters1Srv", "double_2"),
-                    helper::Slider::Position::RIGHT,
+                    selector::from_parent("parameters1Srv", "double_2"),
+                    helper::slider::position::right,
                     5
                 );
-                helper::Label::exactlyMatch(
+                helper::label::exactly_match(
                     _tester,
-                    Select::fromParent(
+                    selector::from_parent(
                         "parameters1Srv",
                         "double_2/valueLabel"
                     ),
                     "1.00"
                 );
-                helper::Label::exactlyMatch(
+                helper::label::exactly_match(
                     _tester,
-                    Select::fromParent(
+                    selector::from_parent(
                         "parameters2Srv",
                         "double_2/valueLabel"
                     ),
@@ -143,107 +145,139 @@ void Synchronization::test()
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between '2 Double' spinboxes");
-                helper::SpinBox::increment(_tester, Select::fromParent("parameters1Srv", "double2_1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), "55.000");
-                helper::SpinBox::decrement(_tester, Select::fromParent("parameters1Srv", "double2_1/1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), "45.000");
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "double2_1"), "55.000");
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "double2_1/1"), "45.000");
-            }
-
-            {
-                auto bt = _tester.addInBacktrace("Check synchronization between '3 Double' spinboxes");
-                helper::SpinBox::increment(_tester, Select::fromParent("parameters1Srv", "double3_1"), 4);
-                helper::SpinBox::valueEquals(_tester, Select::current(), "29.000");
-                helper::SpinBox::decrement(_tester, Select::fromParent("parameters1Srv", "double3_1/1"), 4);
-                helper::SpinBox::valueEquals(_tester, Select::current(), "21.000");
-                helper::SpinBox::increment(_tester, Select::fromParent("parameters1Srv", "double3_1/2"), 4);
-                helper::SpinBox::valueEquals(_tester, Select::current(), "29.000");
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "double3_1"), "29.000");
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "double3_1/2"), "29.000");
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "double3_1/1"), "21.000");
-            }
-
-            {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Integer 1' spinboxes");
-                helper::SpinBox::decrement(_tester, Select::fromParent("parameters1Srv", "int_1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), 15);
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "int_1"), 15);
-            }
-
-            {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Integer 2' sliders");
-                helper::Slider::move(
+                auto bt = _tester.add_in_backtrace("Check synchronization between '2 Double' spinboxes");
+                helper::spin_box::increment(_tester, selector::from_parent("parameters1Srv", "double2_1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), "55.000");
+                helper::spin_box::decrement(_tester, selector::from_parent("parameters1Srv", "double2_1/1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), "45.000");
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "double2_1"), "55.000");
+                helper::spin_box::value_equals(
                     _tester,
-                    Select::fromParent("parameters1Srv", "int_2"),
-                    helper::Slider::Position::LEFT,
+                    selector::from_parent(
+                        "parameters2Srv",
+                        "double2_1/1"
+                    ),
+                    "45.000"
+                );
+            }
+
+            {
+                auto bt = _tester.add_in_backtrace("Check synchronization between '3 Double' spinboxes");
+                helper::spin_box::increment(_tester, selector::from_parent("parameters1Srv", "double3_1"), 4);
+                helper::spin_box::value_equals(_tester, selector::current(), "29.000");
+                helper::spin_box::decrement(_tester, selector::from_parent("parameters1Srv", "double3_1/1"), 4);
+                helper::spin_box::value_equals(_tester, selector::current(), "21.000");
+                helper::spin_box::increment(_tester, selector::from_parent("parameters1Srv", "double3_1/2"), 4);
+                helper::spin_box::value_equals(_tester, selector::current(), "29.000");
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "double3_1"), "29.000");
+                helper::spin_box::value_equals(
+                    _tester,
+                    selector::from_parent(
+                        "parameters2Srv",
+                        "double3_1/2"
+                    ),
+                    "29.000"
+                );
+                helper::spin_box::value_equals(
+                    _tester,
+                    selector::from_parent(
+                        "parameters2Srv",
+                        "double3_1/1"
+                    ),
+                    "21.000"
+                );
+            }
+
+            {
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Integer 1' spinboxes");
+                helper::spin_box::decrement(_tester, selector::from_parent("parameters1Srv", "int_1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), 15);
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "int_1"), 15);
+            }
+
+            {
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Integer 2' sliders");
+                helper::slider::move(
+                    _tester,
+                    selector::from_parent("parameters1Srv", "int_2"),
+                    helper::slider::position::left,
                     2
                 );
-                helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "int_2/valueLabel"), "0");
-                helper::Label::exactlyMatch(_tester, Select::fromParent("parameters2Srv", "int_2/valueLabel"), "0");
+                helper::label::exactly_match(_tester, selector::from_parent("parameters1Srv", "int_2/valueLabel"), "0");
+                helper::label::exactly_match(_tester, selector::from_parent("parameters2Srv", "int_2/valueLabel"), "0");
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between '2 Integer' spinboxes");
-                helper::SpinBox::increment(_tester, Select::fromParent("parameters1Srv", "int2_1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), 13);
-                helper::SpinBox::decrement(_tester, Select::fromParent("parameters1Srv", "int2_1/1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), 3);
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "int2_1"), 13);
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "int2_1/1"), 3);
+                auto bt = _tester.add_in_backtrace("Check synchronization between '2 Integer' spinboxes");
+                helper::spin_box::increment(_tester, selector::from_parent("parameters1Srv", "int2_1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), 13);
+                helper::spin_box::decrement(_tester, selector::from_parent("parameters1Srv", "int2_1/1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), 3);
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "int2_1"), 13);
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "int2_1/1"), 3);
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between '3 Integer' spinboxes");
-                helper::SpinBox::increment(_tester, Select::fromParent("parameters1Srv", "int3_1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), 17);
-                helper::SpinBox::decrement(_tester, Select::fromParent("parameters1Srv", "int3_1/1"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), 7);
-                helper::SpinBox::increment(_tester, Select::fromParent("parameters1Srv", "int3_1/2"), 5);
-                helper::SpinBox::valueEquals(_tester, Select::current(), 17);
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "int3_1"), 17);
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "int3_1/1"), 7);
-                helper::SpinBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "int3_1/2"), 17);
+                auto bt = _tester.add_in_backtrace("Check synchronization between '3 Integer' spinboxes");
+                helper::spin_box::increment(_tester, selector::from_parent("parameters1Srv", "int3_1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), 17);
+                helper::spin_box::decrement(_tester, selector::from_parent("parameters1Srv", "int3_1/1"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), 7);
+                helper::spin_box::increment(_tester, selector::from_parent("parameters1Srv", "int3_1/2"), 5);
+                helper::spin_box::value_equals(_tester, selector::current(), 17);
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "int3_1"), 17);
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "int3_1/1"), 7);
+                helper::spin_box::value_equals(_tester, selector::from_parent("parameters2Srv", "int3_1/2"), 17);
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization between 'Enum' comboboxes");
-                helper::ComboBox::select(_tester, Select::fromParent("parameters1Srv", "enum_1"), "V1");
-                helper::ComboBox::valueEquals(_tester, Select::current(), "V1");
-                helper::ComboBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "enum_1"), "V1");
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Enum' comboboxes");
+                helper::combo_box::select(_tester, selector::from_parent("parameters1Srv", "enum_1"), "V1");
+                helper::combo_box::value_equals(_tester, selector::current(), "V1");
+                helper::combo_box::value_equals(_tester, selector::from_parent("parameters2Srv", "enum_1"), "V1");
             }
 
             {
-                auto bt = _tester.addInBacktrace(
+                auto bt = _tester.add_in_backtrace(
                     "Check synchronization from 'Nonlinear' non-linear slider to combobox"
                 );
-                helper::Slider::move(
+                helper::slider::move(
                     _tester,
-                    Select::fromParent(
+                    selector::from_parent(
                         "parameters1Srv",
                         "nonlin"
                     ),
-                    helper::Slider::Position::RIGHT
+                    helper::slider::position::right
                 );
-                helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/valueLabel"), "120");
-                helper::ComboBox::valueEquals(_tester, Select::fromParent("parameters2Srv", "nonlin"), "120");
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent("parameters1Srv", "nonlin/valueLabel"),
+                    "120"
+                );
+                helper::combo_box::value_equals(_tester, selector::from_parent("parameters2Srv", "nonlin"), "120");
             }
 
             {
-                auto bt = _tester.addInBacktrace(
+                auto bt = _tester.add_in_backtrace(
                     "Check synchronization from 'Nonlinear' combobox to non-linear slider"
                 );
-                helper::ComboBox::select(_tester, Select::fromParent("parameters2Srv", "nonlin"), "50");
-                helper::ComboBox::valueEquals(_tester, Select::current(), "50");
-                helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/valueLabel"), "50");
+                helper::combo_box::select(_tester, selector::from_parent("parameters2Srv", "nonlin"), "50");
+                helper::combo_box::value_equals(_tester, selector::current(), "50");
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent(
+                        "parameters1Srv",
+                        "nonlin/valueLabel"
+                    ),
+                    "50"
+                );
             }
 
             {
-                auto bt = _tester.addInBacktrace("Check synchronization button bar enum to button bar enum");
-                helper::Button::push(_tester, Select::fromParent("parameters1Srv", "buttonRaw_button1"));
+                auto bt = _tester.add_in_backtrace("Check synchronization button bar enum to button bar enum");
+                helper::button::push(_tester, selector::from_parent("parameters1Srv", "buttonRaw_button1"));
 
-                Select::fromParent("parameters2Srv", "buttonRaw_button1").select(_tester);
+                selector::from_parent("parameters2Srv", "buttonRaw_button1").select(_tester);
                 _tester.doubt<QToolButton*>(
                     "buttonRaw_button1 should be checked",
                     [](QToolButton* _obj)

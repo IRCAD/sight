@@ -36,7 +36,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers to handle GDCM data reading.
  */
-class IO_DICOM_CLASS_API DicomDataReader
+class IO_DICOM_CLASS_API dicom_data_reader
 {
 public:
 
@@ -54,7 +54,7 @@ public:
      * @return The tag value as string
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT>
-    static std::string getTagValue(
+    static std::string get_tag_value(
         const gdcm::DataSet& _dataset,
         const std::string& _charset            = "",
         const core::log::logger::sptr& _logger = nullptr
@@ -82,7 +82,7 @@ public:
 
                     try
                     {
-                        result = io::dicom::helper::Encoding::convertString(trimmed_buffer, _charset, _logger);
+                        result = io::dicom::helper::encoding::convert_string(trimmed_buffer, _charset, _logger);
                     }
                     catch(const std::runtime_error& e)
                     {
@@ -114,7 +114,7 @@ public:
      * @return The tag value as string
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT>
-    static std::string getTagValue(
+    static std::string get_tag_value(
         const std::string& _buffer,
         const std::string& _charset            = "",
         const core::log::logger::sptr& _logger = nullptr
@@ -129,7 +129,7 @@ public:
 
         try
         {
-            result = io::dicom::helper::Encoding::convertString(trimmed_buffer, _charset, _logger);
+            result = io::dicom::helper::encoding::convert_string(trimmed_buffer, _charset, _logger);
         }
         catch(const std::runtime_error& e)
         {
@@ -155,7 +155,7 @@ public:
      * @return The tag value.
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT, typename T>
-    static T getTagValue(const gdcm::DataSet& _dataset)
+    static T get_tag_value(const gdcm::DataSet& _dataset)
     {
         gdcm::Attribute<GROUP, ELEMENT> attribute {};
         attribute.SetFromDataSet(_dataset);

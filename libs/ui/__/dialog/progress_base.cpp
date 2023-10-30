@@ -39,19 +39,19 @@ progress_base::~progress_base()
 
 //-----------------------------------------------------------------------------
 
-void progress_base::setCancelCallback(cancel_callback_t _callback)
+void progress_base::set_cancel_callback(cancel_callback_t _callback)
 {
-    m_cancelCallback = _callback;
+    m_cancel_callback = _callback;
 }
 
 //-----------------------------------------------------------------------------
 
-void progress_base::cancelPressed()
+void progress_base::cancel_pressed()
 {
     m_canceled = true;
-    if(m_cancelCallback != nullptr)
+    if(m_cancel_callback != nullptr)
     {
-        m_cancelCallback();
+        m_cancel_callback();
     }
     else if(m_raise)
     {

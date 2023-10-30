@@ -46,8 +46,8 @@ public:
 
     SIGHT_DECLARE_CLASS(progress_base, ui::object);
 
-    typedef std::string factory_registry_key_t;
-    typedef boost::function<void ()> cancel_callback_t;
+    using factory_registry_key_t = std::string;
+    using cancel_callback_t      = boost::function<void ()>;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
     UI_API static const factory_registry_key_t REGISTRY_KEY;
@@ -56,60 +56,60 @@ public:
     UI_API progress_base();
 
     ///set the title for the dialog
-    UI_API virtual void setTitle(const std::string& _title) = 0;
+    UI_API virtual void set_title(const std::string& _title) = 0;
 
     ///set the message for the dialog
-    UI_API virtual void setMessage(const std::string& _msg) = 0;
+    UI_API virtual void set_message(const std::string& _msg) = 0;
 
     /// action called by core::tools::progress_adviser
     UI_API virtual void operator()(float _percent, std::string _msg) = 0;
 
-    UI_API virtual void setCancelCallback(cancel_callback_t _callback);
+    UI_API virtual void set_cancel_callback(cancel_callback_t _callback);
 
     //------------------------------------------------------------------------------
 
-    virtual void setCancelRaiseException(bool _raise)
+    virtual void set_cancel_raise_exception(bool _raise)
     {
         m_raise = _raise;
     }
 
     //------------------------------------------------------------------------------
 
-    virtual bool getCanceled()
+    virtual bool get_canceled()
     {
         return m_canceled;
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void hideCancelButton()
+    virtual void hide_cancel_button()
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void setProcessUserEvents(bool _process)
+    virtual void set_process_user_events(bool _process)
     {
-        m_processUserEvents = _process;
+        m_process_user_events = _process;
     }
 
 protected:
 
-    UI_API virtual void cancelPressed();
+    UI_API virtual void cancel_pressed();
 
-    cancel_callback_t m_cancelCallback;
+    cancel_callback_t m_cancel_callback;
     bool m_canceled {false};
     bool m_raise {true};
 
     ///progress bar's current value: [0-100]
     int m_value {0};
-    bool m_processUserEvents {true};
+    bool m_process_user_events {true};
 
 protected:
 
     //------------------------------------------------------------------------------
 
-    static sptr progressDialogFactory()
+    static sptr progress_dialog_factory()
     {
         ui::object::sptr gui_obj = ui::factory::make(
             ui::dialog::progress_base::REGISTRY_KEY

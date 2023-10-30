@@ -36,13 +36,13 @@ namespace sight::io::session
 namespace detail::activity
 {
 
-constexpr static auto s_Data {"Data"};
-constexpr static auto s_activityConfigId {"activityConfigId"};
+constexpr static auto DATA {"Data"};
+constexpr static auto ACTIVITY_CONFIG_ID {"activityConfigId"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter&,
+    zip::archive_writer&,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -58,13 +58,13 @@ inline static void write(
     _children = std::map<std::string, data::object::csptr>(activity->cbegin(), activity->cend());
 
     // Serialize trivial properties
-    helper::write_string(_tree, s_activityConfigId, activity->getActivityConfigId());
+    helper::write_string(_tree, ACTIVITY_CONFIG_ID, activity->get_activity_config_id());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::activity::sptr read(
-    zip::ArchiveReader&,
+    zip::archive_reader&,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -81,7 +81,7 @@ inline static data::activity::sptr read(
     // Deserialize children properties
     if(version < 2)
     {
-        auto composite = std::dynamic_pointer_cast<data::composite>(_children.at(s_Data));
+        auto composite = std::dynamic_pointer_cast<data::composite>(_children.at(DATA));
         std::ranges::copy(*composite, std::inserter(*activity, activity->begin()));
     }
     else
@@ -90,7 +90,7 @@ inline static data::activity::sptr read(
     }
 
     // Deserialize trivial properties
-    activity->setActivityConfigId(helper::read_string(_tree, s_activityConfigId));
+    activity->set_activity_config_id(helper::read_string(_tree, ACTIVITY_CONFIG_ID));
 
     return activity;
 }

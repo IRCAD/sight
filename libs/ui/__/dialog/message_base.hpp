@@ -40,56 +40,56 @@ public:
     SIGHT_DECLARE_CLASS(message_base, ui::object);
 
     /// Icon type
-    typedef enum
+    enum icons
     {
-        CRITICAL,
-        WARNING,
-        INFO,
-        QUESTION,
-        NONE
-    } Icons;
+        critical,
+        warning,
+        info,
+        question,
+        none
+    };
 
     /// Buttons type
-    typedef enum
+    enum buttons
     {
-        NOBUTTON = 0, // invalid
+        nobutton = 0, // invalid
 
-        OK     = 1 << 1,
-        YES    = 1 << 2,
-        NO     = 1 << 3,
-        CANCEL = 1 << 4,
-        RETRY  = 1 << 5,
-        YES_NO = YES | NO
-    } Buttons;
+        ok     = 1 << 1,
+        yes    = 1 << 2,
+        no     = 1 << 3,
+        cancel = 1 << 4,
+        retry  = 1 << 5,
+        yes_no = yes | no
+    };
 
     /// Constructor. Do nothing.
     UI_API message_base();
     /// Destructor. Do nothing.
     UI_API ~message_base() override;
 
-    typedef std::string factory_registry_key_t;
+    using factory_registry_key_t = std::string;
     UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the title of the message box
-    UI_API virtual void setTitle(const std::string& _title) = 0;
+    UI_API virtual void set_title(const std::string& _title) = 0;
 
     /// Set the message
-    UI_API virtual void setMessage(const std::string& _msg) = 0;
+    UI_API virtual void set_message(const std::string& _msg) = 0;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_API virtual void setIcon(Icons _icon) = 0;
+    UI_API virtual void set_icon(icons _icon) = 0;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL, RETRY)
-    UI_API virtual void addButton(Buttons _button) = 0;
+    UI_API virtual void add_button(buttons _button) = 0;
 
     /// Set the default button
-    UI_API virtual void setDefaultButton(Buttons _button) = 0;
+    UI_API virtual void set_default_button(buttons _button) = 0;
 
     /// Add a custom button to this dialog
-    UI_API virtual void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) = 0;
+    UI_API virtual void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) = 0;
 
     /// Show the message box and return the clicked button.
-    UI_API virtual Buttons show() = 0;
+    UI_API virtual buttons show() = 0;
 };
 
 } // namespace sight::ui::dialog

@@ -76,17 +76,17 @@ public:
     // This enum is internal and only useful to initialize static members
     enum class type_t : std::uint8_t
     {
-        INT8 = 0,
-        INT16,
-        INT32,
-        INT64,
-        UINT8,
-        UINT16,
-        UINT32,
-        UINT64,
+        in_t8 = 0,
+        in_t16,
+        in_t32,
+        in_t64,
+        uin_t8,
+        uin_t16,
+        uin_t32,
+        uin_t64,
         FLOAT,
         DOUBLE,
-        NONE
+        none
     };
 
     // This constructor is only used to initialize static members
@@ -98,11 +98,11 @@ public:
 private:
 
     // Internal map that stores type properties
-    static const std::array<std::tuple<size_t, bool, std::string, type::type_t>, size_t(type::type_t::NONE) + 1>
-    s_type_properties;
+    static const std::array<std::tuple<size_t, bool, std::string, type::type_t>, size_t(type::type_t::none) + 1>
+    TYPE_PROPERTIES;
 
     // Type storage
-    type_t m_type {type_t::NONE};
+    type_t m_type {type_t::none};
 };
 
 //------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ constexpr type::operator type_t() const
 template<>
 constexpr type type::get<std::int8_t>()
 {
-    return {type::type_t::INT8};
+    return {type::type_t::in_t8};
 }
 
 //------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ constexpr type type::get<std::int8_t>()
 template<>
 constexpr type type::get<char>()
 {
-    return {type::type_t::INT8};
+    return {type::type_t::in_t8};
 }
 
 //------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ constexpr type type::get<char>()
 template<>
 constexpr type type::get<std::int16_t>()
 {
-    return {type::type_t::INT16};
+    return {type::type_t::in_t16};
 }
 
 //------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ constexpr type type::get<std::int16_t>()
 template<>
 constexpr type type::get<std::int32_t>()
 {
-    return {type::type_t::INT32};
+    return {type::type_t::in_t32};
 }
 
 //------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ constexpr type type::get<std::int32_t>()
 template<>
 constexpr type type::get<std::int64_t>()
 {
-    return {type::type_t::INT64};
+    return {type::type_t::in_t64};
 }
 
 //------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ constexpr type type::get<std::int64_t>()
 template<>
 constexpr type type::get<std::uint8_t>()
 {
-    return {type::type_t::UINT8};
+    return {type::type_t::uin_t8};
 }
 
 //------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ constexpr type type::get<std::uint8_t>()
 template<>
 constexpr type type::get<std::uint16_t>()
 {
-    return {type::type_t::UINT16};
+    return {type::type_t::uin_t16};
 }
 
 //------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ constexpr type type::get<std::uint16_t>()
 template<>
 constexpr type type::get<std::uint32_t>()
 {
-    return {type::type_t::UINT32};
+    return {type::type_t::uin_t32};
 }
 
 //------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ constexpr type type::get<std::uint32_t>()
 template<>
 constexpr type type::get<std::uint64_t>()
 {
-    return {type::type_t::UINT64};
+    return {type::type_t::uin_t64};
 }
 
 //------------------------------------------------------------------------------
@@ -232,18 +232,18 @@ constexpr type type::get<double>()
 
 CORE_API std::ostream& operator<<(std::ostream& _os, const sight::core::type& _type);
 
-inline constexpr type type::INT8  = type::type_t::INT8;
-inline constexpr type type::INT16 = type::type_t::INT16;
-inline constexpr type type::INT32 = type::type_t::INT32;
-inline constexpr type type::INT64 = type::type_t::INT64;
+inline constexpr type type::INT8  = type::type_t::in_t8;
+inline constexpr type type::INT16 = type::type_t::in_t16;
+inline constexpr type type::INT32 = type::type_t::in_t32;
+inline constexpr type type::INT64 = type::type_t::in_t64;
 
-inline constexpr type type::UINT8  = type::type_t::UINT8;
-inline constexpr type type::UINT16 = type::type_t::UINT16;
-inline constexpr type type::UINT32 = type::type_t::UINT32;
-inline constexpr type type::UINT64 = type::type_t::UINT64;
+inline constexpr type type::UINT8  = type::type_t::uin_t8;
+inline constexpr type type::UINT16 = type::type_t::uin_t16;
+inline constexpr type type::UINT32 = type::type_t::uin_t32;
+inline constexpr type type::UINT64 = type::type_t::uin_t64;
 
 inline constexpr type type::FLOAT  = type::type_t::FLOAT;
 inline constexpr type type::DOUBLE = type::type_t::DOUBLE;
-inline constexpr type type::NONE   = type::type_t::NONE;
+inline constexpr type type::NONE   = type::type_t::none;
 
 } // namespace sight::core

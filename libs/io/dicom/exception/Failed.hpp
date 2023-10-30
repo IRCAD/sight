@@ -32,9 +32,9 @@ namespace sight::io::dicom::exception
 /**
  * @brief   Implements a failed exception class for fwGdcmIO
  */
-struct IO_DICOM_CLASS_API Failed : core::exception
+struct IO_DICOM_CLASS_API failed : core::exception
 {
-    Failed(const std::string& _err) :
+    failed(const std::string& _err) :
         core::exception(_err)
     {
     }

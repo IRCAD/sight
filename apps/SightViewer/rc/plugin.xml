@@ -45,7 +45,7 @@
         <id>SightViewerDicomReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
-            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+            <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>
         </config>
     </extension>
 
@@ -103,14 +103,14 @@
 
             <service uid="containerView" type="sight::module::ui::view" >
                 <gui>
-                    <toolBar align="left" />
+                    <toolbar align="left" />
                     <layout type="sight::ui::layout::overlay" >
                         <view />
                         <view x="-1" y="0" width="50" height="55" visible="false" />
                     </layout>
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="true" />
+                    <toolbar sid="toolBarView" start="true" />
                     <view sid="sceneParameterView" start="true" />
                     <view sid="rightToolbarSliderView" start="true" />
                 </registry>
@@ -132,17 +132,17 @@
 
             <service uid="rightToolbarSliderView" type="sight::module::ui::view">
                 <gui>
-                    <toolBar backgroundColor="#3E4453" />
+                    <toolbar backgroundColor="#3E4453" />
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                     </layout>
                 </gui>
                 <registry>
-                    <toolBar sid="rightToolbarView" start="true" />
+                    <toolbar sid="rightToolbarView" start="true" />
                 </registry>
             </service>
 
-            <service uid="rightToolbarView" type="sight::module::ui::tool_bar">
+            <service uid="rightToolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <spacer />
@@ -156,7 +156,7 @@
 
             <service uid="parameterView" type="sight::module::ui::view" >
                 <gui>
-                    <toolBar/>
+                    <toolbar/>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="0" spacing="0" />
@@ -168,7 +168,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolBar sid="parameterToolBarView" start="true" />
+                    <toolbar sid="parameterToolBarView" start="true" />
                     <view sid="volumeParameterView" start="true" />
                     <view sid="TFParameterView" start="true"/>
                     <view wid="organsParameterView" />
@@ -192,7 +192,7 @@
                 </registry>
             </service>
 
-            <service uid="parameterToolBarView" type="sight::module::ui::tool_bar" >
+            <service uid="parameterToolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout>
                         <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
@@ -256,7 +256,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::tool_bar" >
+            <service uid="toolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout>
                         <menuItem name="Load series" icon="sight::module::ui::flaticons/BlueLoad.svg" />

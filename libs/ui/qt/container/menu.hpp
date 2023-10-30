@@ -51,10 +51,10 @@ public:
     UI_QT_API ~menu() noexcept override = default;
 
     UI_QT_API void clean() override;
-    UI_QT_API void destroyContainer() override;
+    UI_QT_API void destroy_container() override;
 
-    UI_QT_API virtual void setQtMenu(QMenu* _menu);
-    UI_QT_API virtual QMenu* getQtMenu();
+    UI_QT_API virtual void set_qt_menu(QMenu* _menu);
+    UI_QT_API virtual QMenu* get_qt_menu();
 
 private:
 

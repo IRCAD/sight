@@ -28,6 +28,6 @@ namespace sight::filter::dicom::registry
 {
 
 #define SIGHT_REGISTER_DICOM_FILTER(classname) \
-    static sight::filter::dicom::filter::Registry<classname> s__factory__record__ ## __LINE__;
+    static sight::filter::dicom::filter::registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace sight::filter::dicom::registry

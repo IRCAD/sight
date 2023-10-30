@@ -92,8 +92,8 @@ private:
     /// Append mode
     bool m_append {false};
 
-    data::ptr_vector<data::matrix4, data::Access::in> m_matrices {this, "matrices"};
-    data::ptr<data::point_list, data::Access::inout> m_pointList {this, "pointList"};
+    data::ptr_vector<data::matrix4, data::access::in> m_matrices {this, "matrices"};
+    data::ptr<data::point_list, data::access::inout> m_point_list {this, "pointList"};
 };
 
 } // namespace sight::module::geometry.

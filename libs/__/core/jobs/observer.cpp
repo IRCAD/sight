@@ -61,7 +61,7 @@ observer::progress_callback_t observer::progress_callback()
 void observer::finish()
 {
     core::mt::read_lock lock(m_mutex);
-    if(m_state == RUNNING || m_state == CANCELING)
+    if(m_state == running || m_state == canceling)
     {
         lock.unlock();
         m_finish_task();

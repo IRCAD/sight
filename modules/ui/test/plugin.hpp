@@ -39,7 +39,7 @@ public:
 
 private:
 
-    MacroSaver m_macro;
+    macro_saver m_macro;
 };
 
 } // namespace sight::module::ui::test

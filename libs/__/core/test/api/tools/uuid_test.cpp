@@ -40,7 +40,7 @@ void uuidtest::setUp()
 {
     // Set up context before running a test.
     m_object = std::make_shared<core::tools::object>();
-    m_uuid   = core::tools::UUID::generate();
+    m_uuid   = core::tools::uuid::generate();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void uuidtest::conccurent_access_on_uuid_map_test()
 
 void uuidtest::run_uuidcreation()
 {
-    std::string uuid = core::tools::UUID::generate();
+    std::string uuid = core::tools::uuid::generate();
 
     core::tools::object::sptr obj = std::make_shared<core::tools::object>();
 

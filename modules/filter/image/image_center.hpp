@@ -91,11 +91,11 @@ protected:
 
 private:
 
-    static constexpr std::string_view s_IMAGE_IN        = "image";
-    static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
+    static constexpr std::string_view IMAGE_IN        = "image";
+    static constexpr std::string_view TRANSFORM_INOUT = "transform";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_IN};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::inout> m_transform {this, s_TRANSFORM_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_transform {this, TRANSFORM_INOUT};
 };
 
 } // namespace sight::module::filter::image

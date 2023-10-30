@@ -55,7 +55,7 @@ void vector_functions_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void vector_functions_test::checkDot()
+void vector_functions_test::check_dot()
 {
     // Dot product
     const double v1_x = 0.1;
@@ -66,9 +66,9 @@ void vector_functions_test::checkDot()
     const double v2_y = 0.5;
     const double v2_z = safe_rand() % 10 + 0.8;
 
-    const fwVec3d v1 = {v1_x, v1_y, v1_z};
-    const fwVec3d v2 = {v2_x, v2_y, v2_z};
-    double result    = NAN;
+    const fw_vec3d v1 = {v1_x, v1_y, v1_z};
+    const fw_vec3d v2 = {v2_x, v2_y, v2_z};
+    double result     = NAN;
 
 #ifndef FW_PROFILING_DISABLED
     {
@@ -89,16 +89,16 @@ void vector_functions_test::checkDot()
 
 //------------------------------------------------------------------------------
 
-void vector_functions_test::checkCross()
+void vector_functions_test::check_cross()
 {
     // New version
     const double cross_x = -0.03;
     const double cross_y = 0.06;
     const double cross_z = -0.03;
-    const fwVec3d v1     = {0.1, 0.2, 0.3};
-    const fwVec3d v2     = {0.4, 0.5, 0.6};
+    const fw_vec3d v1    = {0.1, 0.2, 0.3};
+    const fw_vec3d v2    = {0.4, 0.5, 0.6};
 
-    fwVec3d result;
+    fw_vec3d result;
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::cross");
@@ -118,10 +118,10 @@ void vector_functions_test::checkCross()
 
 //------------------------------------------------------------------------------
 
-void vector_functions_test::checkNormalize()
+void vector_functions_test::check_normalize()
 {
-    static constexpr double NORM = 0.87749;
-    fwVec3d v                    = {0.4, 0.5, 0.6};
+    static constexpr double s_NORM = 0.87749;
+    fw_vec3d v                     = {0.4, 0.5, 0.6};
 
     double norm = NAN;
 #ifndef FW_PROFILING_DISABLED
@@ -137,18 +137,18 @@ void vector_functions_test::checkNormalize()
     norm = geometry::data::normalize(v);
 #endif
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(NORM, norm, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(s_NORM, norm, 0.00001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4 / NORM, v[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 / NORM, v[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6 / NORM, v[2], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4 / s_NORM, v[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 / s_NORM, v[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6 / s_NORM, v[2], 0.00001);
 }
 
 //------------------------------------------------------------------------------
 
-void vector_functions_test::checkNegate()
+void vector_functions_test::check_negate()
 {
-    fwVec3d v = {1.0, 2.0, 3.0};
+    fw_vec3d v = {1.0, 2.0, 3.0};
 
     geometry::data::negate(v);
 
@@ -159,9 +159,9 @@ void vector_functions_test::checkNegate()
 
 //------------------------------------------------------------------------------
 
-void vector_functions_test::checkVecLength()
+void vector_functions_test::check_vec_length()
 {
-    fwVec3d v = {1.0, 2.0, 3.0};
+    fw_vec3d v = {1.0, 2.0, 3.0};
 
     double length = NAN;
 #ifndef FW_PROFILING_DISABLED
@@ -183,24 +183,24 @@ void vector_functions_test::checkVecLength()
 
 //------------------------------------------------------------------------------
 
-void vector_functions_test::checkOperators()
+void vector_functions_test::check_operators()
 {
-    fwVec3d vec1 = {1.0, 2.0, 3.0};
+    fw_vec3d vec1 = {1.0, 2.0, 3.0};
     vec1 *= 2.0;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2.0), vec1[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), vec1[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6.0), vec1[2], 0.00001);
 
-    fwVec3d vec2 = {1.0, 2.0, 3.0};
+    fw_vec3d vec2 = {1.0, 2.0, 3.0};
     vec2 /= 2.0;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.5), vec2[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), vec2[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.5), vec2[2], 0.00001);
 
-    fwVec3d add_vec = {2.0, 2.0, 2.0};
-    fwVec3d vec3;
+    fw_vec3d add_vec = {2.0, 2.0, 2.0};
+    fw_vec3d vec3;
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::operator/");
@@ -219,57 +219,57 @@ void vector_functions_test::checkOperators()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), vec3[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(5.0), vec3[2], 0.00001);
 
-    fwVec3d vec4    = {1.0, 2.0, 3.0};
-    fwVec3d sub_vec = {2.0, 2.0, 2.0};
+    fw_vec3d vec4    = {1.0, 2.0, 3.0};
+    fw_vec3d sub_vec = {2.0, 2.0, 2.0};
     vec4 -= sub_vec;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-1.0), vec4[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.0), vec4[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), vec4[2], 0.00001);
 
-    fwVec3d vec5 = {1.0, 2.0, 3.0};
-    fwVec3d res1 = vec5 * 2.0;
+    fw_vec3d vec5 = {1.0, 2.0, 3.0};
+    fw_vec3d res1 = vec5 * 2.0;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2.0), res1[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), res1[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6.0), res1[2], 0.00001);
 
-    fwVec3d vec6 = {1.0, 2.0, 3.0};
-    fwVec3d res2 = vec6 * (-2.0);
+    fw_vec3d vec6 = {1.0, 2.0, 3.0};
+    fw_vec3d res2 = vec6 * (-2.0);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-2.0), res2[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-4.0), res2[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-6.0), res2[2], 0.00001);
 
-    fwVec3d vec7 = {1.0, 2.0, 3.0};
-    fwVec3d res3 = vec7 / 2.0;
+    fw_vec3d vec7 = {1.0, 2.0, 3.0};
+    fw_vec3d res3 = vec7 / 2.0;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.5), res3[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), res3[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.5), res3[2], 0.00001);
 
-    fwVec3d vec8 = {1.0, 2.0, 3.0};
-    fwVec3d res4 = vec8 + add_vec;
+    fw_vec3d vec8 = {1.0, 2.0, 3.0};
+    fw_vec3d res4 = vec8 + add_vec;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(3.0), res4[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), res4[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(5.0), res4[2], 0.00001);
 
-    fwVec3d vec9 = {1.0, 2.0, 3.0};
-    fwVec3d res5 = vec9 - sub_vec;
+    fw_vec3d vec9 = {1.0, 2.0, 3.0};
+    fw_vec3d res5 = vec9 - sub_vec;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-1.0), res5[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.0), res5[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), res5[2], 0.00001);
 
-    fwVec3d vec10 = {1.0, 2.0, 3.0};
-    fwVec3d res6  = {1.000000, 2.00000000, 3.00000000000};
+    fw_vec3d vec10 = {1.0, 2.0, 3.0};
+    fw_vec3d res6  = {1.000000, 2.00000000, 3.00000000000};
 
     bool test_even = vec10 == res6;
     CPPUNIT_ASSERT_EQUAL(test_even, true);
 
-    fwVec3d vec11 = {1.0, 2.0, 3.0};
-    fwVec3d res7  = {1.0000001, 2.05, 3.000000000000009};
+    fw_vec3d vec11 = {1.0, 2.0, 3.0};
+    fw_vec3d res7  = {1.0000001, 2.05, 3.000000000000009};
 
     bool test_uneven = vec11 != res7;
     CPPUNIT_ASSERT_EQUAL(test_uneven, true);

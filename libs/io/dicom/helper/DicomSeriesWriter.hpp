@@ -55,7 +55,7 @@ class write_archive;
 namespace sight::io::dicom::helper
 {
 
-class DicomAnonymizer;
+class dicom_anonymizer;
 
 /**
  * @brief Write a DicomSeries in DICOM format.
@@ -66,21 +66,21 @@ class DicomAnonymizer;
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).
  * If the DicomSeries contains the paths of the DICOM files, a simple copy (or zip) is performed.
  */
-class IO_DICOM_CLASS_API DicomSeriesWriter : public io::writer::generic_object_writer<data::dicom_series>,
-                                             public core::location::single_folder
+class IO_DICOM_CLASS_API dicom_series_writer : public io::writer::generic_object_writer<data::dicom_series>,
+                                               public core::location::single_folder
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        DicomSeriesWriter,
+        dicom_series_writer,
         io::writer::generic_object_writer<data::dicom_series>,
-        io::writer::factory::make<DicomSeriesWriter>
+        io::writer::factory::make<dicom_series_writer>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor. Does nothing
-    IO_DICOM_API DicomSeriesWriter();
+    IO_DICOM_API dicom_series_writer();
 
     /// Write the image series in DICOM format.
     IO_DICOM_API void write() override;
@@ -89,10 +89,10 @@ public:
     IO_DICOM_API std::string extension() const override;
 
     /// Get job observer
-    IO_DICOM_API SPTR(core::jobs::base) getJob() const override;
+    IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
 
     /// Defines optional anonymizer.
-    IO_DICOM_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& _anonymizer);
+    IO_DICOM_API void set_anonymizer(const SPTR(helper::dicom_anonymizer)& _anonymizer);
 
     /**
      * @brief Defines output archive for DICOM files.
@@ -100,7 +100,7 @@ public:
      * @param archive Archive instance
      * @param subPath Path within archive where DICOM files are saved (only if an anonymizer instance is defined)
      */
-    IO_DICOM_API void setOutputArchive(
+    IO_DICOM_API void set_output_archive(
         const SPTR(io::zip::write_archive)& _archive,
         const std::string& _sub_path = ""
     );
@@ -108,31 +108,31 @@ public:
 protected:
 
     /// Compute DICOM filename according to anonymizer or return default filename.
-    std::string getFilename(const std::size_t& _instance_index);
+    std::string get_filename(const std::size_t& _instance_index);
 
     /// Process inputStream to outputStream with anonymization management.
-    void processStream(std::istream& _input_stream, std::ostream& _output_stream);
+    void process_stream(std::istream& _input_stream, std::ostream& _output_stream);
 
     /// Process write on archive
-    void processWriteArchive();
+    void process_write_archive();
 
     /// Process write with Standard output stream
-    void processWrite();
+    void process_write();
 
     /// Write count
-    int m_writeCount {0};
+    int m_write_count {0};
 
     /// Job observer
     SPTR(core::jobs::observer) m_job;
 
     /// Optional anonymiser
-    SPTR(DicomAnonymizer) m_anonymizer;
+    SPTR(dicom_anonymizer) m_anonymizer;
 
     /// Optional output archive
     SPTR(io::zip::write_archive) m_archive;
 
     /// Optional subPath (related to write archive
-    std::string m_subPath;
+    std::string m_sub_path;
 };
 
 } // namespace sight::io::dicom::helper

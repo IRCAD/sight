@@ -35,8 +35,8 @@ namespace sight::io::vtk::ut
 class transfer_function_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(transfer_function_test);
-CPPUNIT_TEST(toVtkLookupTableTest);
-CPPUNIT_TEST(toBWVtkLookupTableTest);
+CPPUNIT_TEST(to_vtk_lookup_table_test);
+CPPUNIT_TEST(to_bw_vtk_lookup_table_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,12 +45,12 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void toVtkLookupTableTest();
-    static void toBWVtkLookupTableTest();
+    void to_vtk_lookup_table_test();
+    static void to_bw_vtk_lookup_table_test();
 
 private:
 
-    static data::transfer_function::sptr createTFColor();
+    static data::transfer_function::sptr create_tf_color();
 };
 
 } // namespace sight::io::vtk::ut

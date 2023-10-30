@@ -50,7 +50,7 @@ sight::activity::validator::return_t contain_one_tool::validate(const data::obje
     if(model_series)
     {
         std::size_t skin_count = 0;
-        for(const auto& rec : model_series->getReconstructionDB())
+        for(const auto& rec : model_series->get_reconstruction_db())
         {
             if(rec->get_structure_type() == "Tool")
             {
@@ -82,7 +82,7 @@ sight::activity::validator::return_t contain_one_tool::validate(const data::obje
             else
             {
                 std::size_t skin_count = 0;
-                for(const auto& rec : model->getReconstructionDB())
+                for(const auto& rec : model->get_reconstruction_db())
                 {
                     if(rec->get_structure_type() == "Tool")
                     {
@@ -117,7 +117,7 @@ sight::activity::validator::return_t contain_one_tool::validate(const data::obje
             else
             {
                 std::size_t skin_count = 0;
-                for(const auto& rec : model->getReconstructionDB())
+                for(const auto& rec : model->get_reconstruction_db())
                 {
                     if(rec->get_structure_type() == "Tool")
                     {

@@ -39,22 +39,22 @@ namespace sight::io::dimse
 /**
  * @brief Reads DICOM series from pacs.
  */
-class IO_DIMSE_CLASS_API SeriesRetriever : public core::base_object,
-                                           public DcmSCP
+class IO_DIMSE_CLASS_API series_retriever : public core::base_object,
+                                            public DcmSCP
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesRetriever, io::dimse::SeriesRetriever);
+    SIGHT_DECLARE_CLASS(series_retriever, io::dimse::series_retriever);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
-    typedef core::com::slot<void (const std::string&, unsigned int, const std::string&)> progress_callback_slot_t;
+    using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
 
     /// Constructor
-    IO_DIMSE_API SeriesRetriever();
+    IO_DIMSE_API series_retriever();
 
     /// Destructor
-    IO_DIMSE_API ~SeriesRetriever() override;
+    IO_DIMSE_API ~series_retriever() override;
 
     /**
      * @brief Initialize the connection
@@ -97,10 +97,10 @@ protected:
     std::filesystem::path m_path;
 
     /// Progress callback slot
-    progress_callback_slot_t::sptr m_progressCallback;
+    progress_callback_slot_t::sptr m_progress_callback;
 
     /// Dowloaded instance index
-    unsigned int m_instanceIndex {};
+    unsigned int m_instance_index {};
 };
 
 } // namespace sight::io::dimse

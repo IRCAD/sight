@@ -59,24 +59,24 @@ namespace sight::io::vtk
  *
  * Write a data::reconstruction as .obj file using the VTK lib and the obj format.
  */
-class ModelSeriesObjWriter : public io::writer::generic_object_writer<data::model_series>,
-                             public core::location::single_folder
+class model_series_obj_writer : public io::writer::generic_object_writer<data::model_series>,
+                                public core::location::single_folder
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        ModelSeriesObjWriter,
+        model_series_obj_writer,
         io::writer::generic_object_writer<data::model_series>,
-        io::writer::factory::make<ModelSeriesObjWriter>
+        io::writer::factory::make<model_series_obj_writer>
     )
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Constructor.
-    IO_VTK_API ModelSeriesObjWriter();
+    IO_VTK_API model_series_obj_writer();
 
     /// Destructor.
-    IO_VTK_API ~ModelSeriesObjWriter() override;
+    IO_VTK_API ~model_series_obj_writer() override;
 
     /// Writing operator.
     IO_VTK_API void write() override;
@@ -87,7 +87,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

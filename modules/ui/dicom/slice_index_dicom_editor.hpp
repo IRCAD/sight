@@ -104,10 +104,10 @@ public:
     SIGHT_DECLARE_SERVICE(slice_index_dicom_editor, sight::ui::editor);
 
     MODULE_UI_DICOM_API static const core::com::slots::key_t READ_IMAGE_SLOT;
-    typedef core::com::slot<void (std::size_t)> read_image_slot_t;
+    using read_image_slot_t = core::com::slot<void (std::size_t)>;
 
     MODULE_UI_DICOM_API static const core::com::slots::key_t DISPLAY_MESSAGE_SLOT;
-    typedef core::com::slot<void (const std::string&)> display_message_slot_t;
+    using display_message_slot_t = core::com::slot<void (const std::string&)>;
 
     /**
      * @brief Constructor
@@ -137,19 +137,19 @@ protected:
     MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
 
     /// Function called when a new slice must be displayed
-    MODULE_UI_DICOM_API void triggerNewSlice();
+    MODULE_UI_DICOM_API void trigger_new_slice();
 
     /**
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    MODULE_UI_DICOM_API void readImage(std::size_t _selected_slice_index);
+    MODULE_UI_DICOM_API void read_image(std::size_t _selected_slice_index);
 
     /**
      * @brief Display error message
      * @param[in] message Message that must be displayed
      */
-    static MODULE_UI_DICOM_API void displayErrorMessage(const std::string& _message);
+    static MODULE_UI_DICOM_API void display_error_message(const std::string& _message);
 
 private Q_SLOTS:
 
@@ -157,51 +157,51 @@ private Q_SLOTS:
      * @brief Slot called when the slider is moved
      * @param[in] value Slider value
      */
-    MODULE_UI_DICOM_API void changeSliceIndex(int _value);
+    MODULE_UI_DICOM_API void change_slice_index(int _value);
 
 private:
 
     /// Slot to call readLocalSeries method
-    read_image_slot_t::sptr m_slotReadImage;
+    read_image_slot_t::sptr m_slot_read_image;
 
     /// Slice index slider
-    QPointer<QSlider> m_sliceIndexSlider;
+    QPointer<QSlider> m_slice_index_slider;
 
     /// Slice index line edit
-    QPointer<QLineEdit> m_sliceIndexLineEdit;
+    QPointer<QLineEdit> m_slice_index_line_edit;
 
     /// Number of instances
-    std::size_t m_numberOfSlices {};
+    std::size_t m_number_of_slices {};
 
     /// IODICOM Reader
-    std::string m_dicomReaderType;
+    std::string m_dicom_reader_type;
 
     /// Reader
-    sight::io::service::reader::wptr m_dicomReader;
+    sight::io::service::reader::wptr m_dicom_reader;
 
     /// Temporary series_set
     SPTR(data::series_set) m_tmp_series_set;
 
     /// Axial slice index
-    SPTR(data::integer) m_axialIndex;
+    SPTR(data::integer) m_axial_index;
     /// Frontal slice index
-    SPTR(data::integer) m_frontalIndex;
+    SPTR(data::integer) m_frontal_index;
     /// Sagittal slice index
-    SPTR(data::integer) m_sagittalIndex;
+    SPTR(data::integer) m_sagittal_index;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(core::thread::timer) m_delayTimer2;
+    SPTR(core::thread::timer) m_delay_timer2;
 
     /// Delay
     std::size_t m_delay {500};
 
     /// Optional configuration to set to reader implementation
-    service::config_t m_readerConfig;
+    service::config_t m_reader_config;
 
-    static constexpr std::string_view s_IMAGE = "image";
+    static constexpr std::string_view IMAGE = "image";
 
-    data::ptr<data::dicom_series, data::Access::in> m_dicomSeries {this, "series", true};
-    data::ptr<data::image, data::Access::out> m_image {this, s_IMAGE, false};
+    data::ptr<data::dicom_series, data::access::in> m_dicom_series {this, "series", true};
+    data::ptr<data::image, data::access::out> m_image {this, IMAGE, false};
 };
 
 } // namespace sight::module::ui::dicom

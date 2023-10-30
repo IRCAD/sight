@@ -192,7 +192,7 @@
 
     core::jobs::observer observer =  std::make_shared<core::jobs::observer>("VTK Image reader");
 
-    vtkSmartPointer<vtkLambdaCommand> progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
+    vtkSmartPointer<vtk_lambda_command> progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
     progress_callback->SetCallback( [this](vtkObject* caller, long unsigned int , void* )
                                    {
                                        auto filter = static_cast<vtkGenericDataObjectReader*>(caller);

@@ -49,7 +49,7 @@ namespace sight::viz::qt3d
 namespace core
 {
 
-class GenericScene;
+class generic_scene;
 
 } // namespace core
 
@@ -64,10 +64,7 @@ class VIZ_QT3D_CLASS_API_QT mesh : public Qt3DCore::QEntity
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
-Q_PROPERTY(
-    material * material
-    READ getMaterial WRITE setMaterial NOTIFY materialChanged
-)
+Q_PROPERTY(material * material READ get_material WRITE set_material NOTIFY material_changed)
 
 public:
 
@@ -78,30 +75,30 @@ public:
     VIZ_QT3D_API_QT ~mesh() override;
 
     /// @returns mesh material.
-    [[nodiscard]] VIZ_QT3D_API_QT viz::qt3d::data::material* getMaterial() const;
+    [[nodiscard]] VIZ_QT3D_API_QT viz::qt3d::data::material* get_material() const;
 
     /// @returns the scene associated with the mesh.
-    [[nodiscard]] VIZ_QT3D_API_QT sight::viz::qt3d::core::GenericScene* getScene() const;
+    [[nodiscard]] VIZ_QT3D_API_QT sight::viz::qt3d::core::generic_scene* get_scene() const;
 
     /// Updates mesh material.
-    VIZ_QT3D_API_QT void setMaterial(viz::qt3d::data::material* _material);
+    VIZ_QT3D_API_QT void set_material(viz::qt3d::data::material* _material);
 
     /// Updates the scene associated with the mesh.
-    VIZ_QT3D_API_QT void setScene(sight::viz::qt3d::core::GenericScene* _scene);
+    VIZ_QT3D_API_QT void set_scene(sight::viz::qt3d::core::generic_scene* _scene);
 
     /// Constructs position and normal buffers according to _mesh.
-    VIZ_QT3D_API_QT void buildBuffers(sight::data::mesh::sptr _mesh);
+    VIZ_QT3D_API_QT void build_buffers(sight::data::mesh::sptr _mesh);
 
     /// Updates the mesh according to _mesh.
-    VIZ_QT3D_API_QT Q_INVOKABLE void setMesh(sight::data::mesh::sptr _mesh);
+    VIZ_QT3D_API_QT Q_INVOKABLE void set_mesh(sight::data::mesh::sptr _mesh);
 
     /// Centers camera on mesh.
-    VIZ_QT3D_API_QT Q_INVOKABLE void centerCameraOnMesh();
+    VIZ_QT3D_API_QT Q_INVOKABLE void center_camera_on_mesh();
 
 Q_SIGNALS:
 
     /// Signal emitted when mesh material is modified.
-    void materialChanged();
+    void material_changed();
 
 private:
 
@@ -109,13 +106,13 @@ private:
      * @brief Adds the compute shader that change a quad mesh to a triangle mesh.
      * @param _numberOfCells the cells number of the mesh.
      */
-    void addComputeEntityToScene(int _number_of_cells);
+    void add_compute_entity_to_scene(int _number_of_cells);
 
     /// Contains the scene rendering this mesh.
-    QPointer<sight::viz::qt3d::core::GenericScene> m_scene;
+    QPointer<sight::viz::qt3d::core::generic_scene> m_scene;
 
     /// Contains QGeometryRenderer object holding informations needed to render a QGeometry object.
-    QPointer<Qt3DRender::QGeometryRenderer> m_geomRenderer;
+    QPointer<Qt3DRender::QGeometryRenderer> m_geom_renderer;
 
     /// Contains mesh geometry.
     QPointer<Qt3DRender::QGeometry> m_geometry;
@@ -124,37 +121,37 @@ private:
     QPointer<viz::qt3d::data::material> m_material;
 
     /// Contains mesh position attribute.
-    QPointer<Qt3DRender::QAttribute> m_posAttrib;
+    QPointer<Qt3DRender::QAttribute> m_pos_attrib;
 
     /// Contains mesh normal attribute.
-    QPointer<Qt3DRender::QAttribute> m_normalAttrib;
+    QPointer<Qt3DRender::QAttribute> m_normal_attrib;
 
     /// Contains mesh index attribute.
-    QPointer<Qt3DRender::QAttribute> m_indexAttrib;
+    QPointer<Qt3DRender::QAttribute> m_index_attrib;
 
     /// Contains mesh position buffer.
-    QPointer<Qt3DRender::QBuffer> m_posBuffer;
+    QPointer<Qt3DRender::QBuffer> m_pos_buffer;
 
     /// Contains mesh normal buffer.
-    QPointer<Qt3DRender::QBuffer> m_normalBuffer;
+    QPointer<Qt3DRender::QBuffer> m_normal_buffer;
 
     /// Contains mesh index buffer.
-    QPointer<Qt3DRender::QBuffer> m_indexBuffer;
+    QPointer<Qt3DRender::QBuffer> m_index_buffer;
 
     /// Specifies number of points in the mesh.
-    unsigned int m_numberOfPoints {0};
+    unsigned int m_number_of_points {0};
 
     /// Specifies the number of components of a vertex (3 for a 3D vertex).
-    unsigned int m_vertexSize {3};
+    unsigned int m_vertex_size {3};
 
     /// Specifies the mesh center. Needed to center camera.
-    QVector3D m_meshCenter;
+    QVector3D m_mesh_center;
 
     /// Specifies minimum extents of the mesh. Needed to center camera.
-    QVector3D m_minExtent;
+    QVector3D m_min_extent;
 
     /// Specifies maximum extents of the mesh. Needed to center camera.
-    QVector3D m_maxExtent;
+    QVector3D m_max_extent;
 };
 
 } // namespace data.

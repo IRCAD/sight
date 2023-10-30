@@ -37,21 +37,21 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-SPTR(io::dicom::container::sr::DicomSRContainerNode) StructuredReport::readSR(const gdcm::DataSet& _dataset)
+SPTR(io::dicom::container::sr::dicom_sr_container_node) structured_report::read_sr(const gdcm::DataSet& _dataset)
 {
-    SPTR(io::dicom::container::sr::DicomSRContainerNode) result;
+    SPTR(io::dicom::container::sr::dicom_sr_container_node) result;
 
     // Value Type - Type 1
-    const std::string type = io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0xa040>(_dataset);
+    const std::string type = io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0xa040>(_dataset);
 
     // Concept Name Code Sequence - Type 1C
-    const io::dicom::container::DicomCodedAttribute& coded_attribute =
-        io::dicom::helper::StructuredReport::readCodeSequence<0x0040, 0xa043>(_dataset);
+    const io::dicom::container::dicom_coded_attribute& coded_attribute =
+        io::dicom::helper::structured_report::read_code_sequence<0x0040, 0xa043>(_dataset);
 
-    if(type == "CONTAINER" && !coded_attribute.isEmpty())
+    if(type == "CONTAINER" && !coded_attribute.is_empty())
     {
-        result = std::make_shared<io::dicom::container::sr::DicomSRContainerNode>(coded_attribute);
-        io::dicom::helper::StructuredReport::readSubNodeContainer(_dataset, result);
+        result = std::make_shared<io::dicom::container::sr::dicom_sr_container_node>(coded_attribute);
+        io::dicom::helper::structured_report::read_sub_node_container(_dataset, result);
     }
 
     return result;
@@ -59,9 +59,9 @@ SPTR(io::dicom::container::sr::DicomSRContainerNode) StructuredReport::readSR(co
 
 //------------------------------------------------------------------------------
 
-void StructuredReport::readSubNodeContainer(
+void structured_report::read_sub_node_container(
     const gdcm::DataSet& _dataset,
-    SPTR(io::dicom::container::sr::DicomSRNode)_parent
+    SPTR(io::dicom::container::sr::dicom_sr_node)_parent
 )
 {
     // Retrieve the content sequence
@@ -73,37 +73,37 @@ void StructuredReport::readSubNodeContainer(
         for(unsigned int i = 1 ; i <= sequence->GetNumberOfItems() ; ++i)
         {
             const gdcm::DataSet& item_dataset = sequence->GetItem(i).GetNestedDataSet();
-            io::dicom::helper::StructuredReport::readSubNode(item_dataset, _parent);
+            io::dicom::helper::structured_report::read_sub_node(item_dataset, _parent);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void StructuredReport::readSubNode(
+void structured_report::read_sub_node(
     const gdcm::DataSet& _dataset,
-    SPTR(io::dicom::container::sr::DicomSRNode)_parent
+    SPTR(io::dicom::container::sr::dicom_sr_node)_parent
 )
 {
-    SPTR(io::dicom::container::sr::DicomSRNode) node;
+    SPTR(io::dicom::container::sr::dicom_sr_node) node;
 
     // Value Type - Type 1
-    const std::string type = io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0xa040>(_dataset);
+    const std::string type = io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0xa040>(_dataset);
 
     // Concept Name Code Sequence - Type 1C
-    const io::dicom::container::DicomCodedAttribute& coded_attribute =
-        io::dicom::helper::StructuredReport::readCodeSequence<0x0040, 0xa043>(_dataset);
+    const io::dicom::container::dicom_coded_attribute& coded_attribute =
+        io::dicom::helper::structured_report::read_code_sequence<0x0040, 0xa043>(_dataset);
 
     // Relationship Value - Type 1
-    const std::string relationship = io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0xa010>(_dataset);
+    const std::string relationship = io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0xa010>(_dataset);
 
     if(type == "TEXT")
     {
         // Text Value - Type 1C
-        const std::string text_value = io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0xa160>(_dataset);
+        const std::string text_value = io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0xa160>(_dataset);
 
         // Create Text Node
-        node = std::make_shared<io::dicom::container::sr::DicomSRTextNode>(
+        node = std::make_shared<io::dicom::container::sr::dicom_sr_text_node>(
             coded_attribute,
             relationship,
             text_value
@@ -122,14 +122,14 @@ void StructuredReport::readSubNode(
 
                 // Numerical value - Type 1
                 const double num_value =
-                    io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0xa30a, double>(item_dataset);
+                    io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0xa30a, double>(item_dataset);
 
                 // Measured units code sequence - Type 1
-                const io::dicom::container::DicomCodedAttribute& measurement_units =
-                    io::dicom::helper::StructuredReport::readCodeSequence<0x0040, 0x08ea>(item_dataset);
+                const io::dicom::container::dicom_coded_attribute& measurement_units =
+                    io::dicom::helper::structured_report::read_code_sequence<0x0040, 0x08ea>(item_dataset);
 
                 // Create Num Node
-                node = std::make_shared<io::dicom::container::sr::DicomSRNumNode>(
+                node = std::make_shared<io::dicom::container::sr::dicom_sr_num_node>(
                     coded_attribute,
                     relationship,
                     num_value,
@@ -146,13 +146,13 @@ void StructuredReport::readSubNode(
         const float* graphic_data = graphic_data_attribute.GetValues();
 
         // Graphic Type - Type 1
-        const std::string graphic_type = io::dicom::helper::DicomDataReader::getTagValue<0x0070, 0x0023>(_dataset);
+        const std::string graphic_type = io::dicom::helper::dicom_data_reader::get_tag_value<0x0070, 0x0023>(_dataset);
 
         if(graphic_type == "POINT" && graphic_data_attribute.GetNumberOfValues() == 2)
         {
             // Create Text Node
             std::vector<float> scoord_vector(graphic_data, graphic_data + 2);
-            node = std::make_shared<io::dicom::container::sr::DicomSRSCoordNode>(
+            node = std::make_shared<io::dicom::container::sr::dicom_srs_coord_node>(
                 coded_attribute,
                 relationship,
                 graphic_type,
@@ -163,7 +163,7 @@ void StructuredReport::readSubNode(
         {
             // Create Text Node
             std::vector<float> scoord_vector(graphic_data, graphic_data + 4);
-            node = std::make_shared<io::dicom::container::sr::DicomSRSCoordNode>(
+            node = std::make_shared<io::dicom::container::sr::dicom_srs_coord_node>(
                 coded_attribute,
                 relationship,
                 graphic_type,
@@ -179,7 +179,7 @@ void StructuredReport::readSubNode(
     {
         // Referenced Frame of Reference UID - Type 1
         const std::string frame_of_reference_uid =
-            io::dicom::helper::DicomDataReader::getTagValue<0x3006, 0x0024>(_dataset);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x3006, 0x0024>(_dataset);
 
         // Graphic Data - Type 1C
         gdcm::Attribute<0x0070, 0x0022> graphic_data_attribute;
@@ -187,13 +187,13 @@ void StructuredReport::readSubNode(
         const float* graphic_data = graphic_data_attribute.GetValues();
 
         // Graphic Type - Type 1
-        const std::string graphic_type = io::dicom::helper::DicomDataReader::getTagValue<0x0070, 0x0023>(_dataset);
+        const std::string graphic_type = io::dicom::helper::dicom_data_reader::get_tag_value<0x0070, 0x0023>(_dataset);
 
         if(graphic_type == "POINT" && graphic_data_attribute.GetNumberOfValues() == 3)
         {
             // Create Text Node
             std::vector<float> scoord_vector(graphic_data, graphic_data + 3);
-            node = std::make_shared<io::dicom::container::sr::DicomSRSCoord3DNode>(
+            node = std::make_shared<io::dicom::container::sr::dicom_srs_coord3_d_node>(
                 coded_attribute,
                 relationship,
                 graphic_type,
@@ -205,7 +205,7 @@ void StructuredReport::readSubNode(
         {
             // Create Text Node
             std::vector<float> scoord_vector(graphic_data, graphic_data + 6);
-            node = std::make_shared<io::dicom::container::sr::DicomSRSCoord3DNode>(
+            node = std::make_shared<io::dicom::container::sr::dicom_srs_coord3_d_node>(
                 coded_attribute,
                 relationship,
                 graphic_type,
@@ -230,19 +230,20 @@ void StructuredReport::readSubNode(
                 const gdcm::DataSet& item_dataset = sequence->GetItem(1).GetNestedDataSet();
 
                 // Referenced SOP Class UID - Type 1
-                const std::string sop_class_uid = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1150>(
+                const std::string sop_class_uid = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x1150>(
                     item_dataset
                 );
 
                 // Referenced SOP Instance UID  - Type 1
                 const std::string sop_instance_uid =
-                    io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1155>(item_dataset);
+                    io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x1155>(item_dataset);
 
                 // Referenced Frame Number - Type 1C
-                int frame_number = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1160, int>(item_dataset);
+                int frame_number =
+                    io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x1160, int>(item_dataset);
 
                 // Create Num Node
-                node = std::make_shared<io::dicom::container::sr::DicomSRImageNode>(
+                node = std::make_shared<io::dicom::container::sr::dicom_sr_image_node>(
                     coded_attribute,
                     relationship,
                     sop_class_uid,
@@ -254,50 +255,52 @@ void StructuredReport::readSubNode(
     }
     else if(type == "CODE")
     {
-        const io::dicom::container::DicomCodedAttribute& coded_entry =
-            io::dicom::helper::StructuredReport::readCodeSequence<0x0040, 0xa168>(_dataset);
+        const io::dicom::container::dicom_coded_attribute& coded_entry =
+            io::dicom::helper::structured_report::read_code_sequence<0x0040, 0xa168>(_dataset);
 
         // Create Code Node
-        node = std::make_shared<io::dicom::container::sr::DicomSRCodeNode>(coded_attribute, relationship, coded_entry);
+        node =
+            std::make_shared<io::dicom::container::sr::dicom_sr_code_node>(coded_attribute, relationship, coded_entry);
     }
     else if(type == "UIDREF")
     {
         // UID Value - Type 1C
-        const std::string uid_value = io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0xa124>(_dataset);
+        const std::string uid_value = io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0xa124>(_dataset);
 
         // Create UIDRef Node
-        node = std::make_shared<io::dicom::container::sr::DicomSRUIDRefNode>(coded_attribute, relationship, uid_value);
+        node =
+            std::make_shared<io::dicom::container::sr::dicom_sruid_ref_node>(coded_attribute, relationship, uid_value);
     }
     else if(type == "CONTAINER")
     {
         // Create Container Node
-        node = std::make_shared<io::dicom::container::sr::DicomSRContainerNode>(coded_attribute, relationship);
+        node = std::make_shared<io::dicom::container::sr::dicom_sr_container_node>(coded_attribute, relationship);
     }
 
     if(node)
     {
         // Create children
-        io::dicom::helper::StructuredReport::readSubNodeContainer(_dataset, node);
+        io::dicom::helper::structured_report::read_sub_node_container(_dataset, node);
 
         // Add node to parent
-        _parent->addSubNode(node);
+        _parent->add_sub_node(node);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void StructuredReport::dumpSR(const SPTR(io::dicom::container::sr::DicomSRNode)& _root, std::ostream& _out)
+void structured_report::dump_sr(const SPTR(io::dicom::container::sr::dicom_sr_node)& _root, std::ostream& _out)
 {
     _out << "graph SR {" << std::endl;
     int index = 0;
-    StructuredReport::dumpSRNode(_root, _out, index);
+    structured_report::dump_sr_node(_root, _out, index);
     _out << "}" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
-void StructuredReport::dumpSRNode(
-    const SPTR(io::dicom::container::sr::DicomSRNode)& _root,
+void structured_report::dump_sr_node(
+    const SPTR(io::dicom::container::sr::dicom_sr_node)& _root,
     std::ostream& _out,
     int& _index
 )
@@ -306,14 +309,14 @@ void StructuredReport::dumpSRNode(
     _out << "\t" << _index << "[label=\"" << (*_root) << "\"][shape=box];" << std::endl;
 
     const int parent_index = _index;
-    for(const SPTR(io::dicom::container::sr::DicomSRNode) & child : _root->getSubNodeContainer())
+    for(const SPTR(io::dicom::container::sr::dicom_sr_node) & child : _root->get_sub_node_container())
     {
         // Write edge
         _out << "\t" << parent_index << "--" << (_index + 1) << "[label=\""
-        << child->getRelationship() << "\"];" << std::endl;
+        << child->get_relationship() << "\"];" << std::endl;
 
         // Write child
-        StructuredReport::dumpSRNode(child, _out, ++_index);
+        structured_report::dump_sr_node(child, _out, ++_index);
     }
 }
 

@@ -49,24 +49,24 @@ namespace sight::io::vtk
  * Write a VTK Mesh using the VTK lib
  */
 
-class IO_VTK_CLASS_API MeshWriter :
+class IO_VTK_CLASS_API mesh_writer :
     public writer::generic_object_writer<data::mesh>,
     public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        MeshWriter,
+        mesh_writer,
         io::writer::generic_object_writer<data::mesh>,
-        io::writer::factory::make<MeshWriter>
+        io::writer::factory::make<mesh_writer>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API MeshWriter();
+    IO_VTK_API mesh_writer();
 
     /// @brief Destructor.
-    IO_VTK_API ~MeshWriter() override;
+    IO_VTK_API ~mesh_writer() override;
 
     /// @brief Reading operator.
     IO_VTK_API void write() override;
@@ -75,7 +75,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

@@ -22,7 +22,7 @@
 
 #include "camera.hpp"
 
-#include "modules/ui/qt/video/CameraDeviceDlg.hpp"
+#include "modules/ui/qt/video/camera_device_dlg.hpp"
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
@@ -60,26 +60,26 @@ static const core::com::slots::key_t CONFIGURE_DEVICE_SLOT = "configureDevice";
 static const core::com::slots::key_t CONFIGURE_FILE_SLOT   = "configureFile";
 static const core::com::slots::key_t CONFIGURE_STREAM_SLOT = "configureStream";
 
-static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
-static const std::string s_USE_ABSOLUTE_PATH           = "useAbsolutePath";
-static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
-static const std::string s_LABEL_CONFIG                = "label";
-static const std::string s_RESOLUTION_CONFIG           = "resolution";
+static const std::string VIDEO_SUPPORT_CONFIG        = "videoSupport";
+static const std::string USE_ABSOLUTE_PATH           = "useAbsolutePath";
+static const std::string CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
+static const std::string LABEL_CONFIG                = "label";
+static const std::string RESOLUTION_CONFIG           = "resolution";
 
-const std::string camera::s_RESOLUTION_PREF_KEY = "camera_resolution";
+const std::string camera::RESOLUTION_PREF_KEY = "camera_resolution";
 
 //------------------------------------------------------------------------------
 
 camera::camera() :
-    m_sigConfiguredCameras(new_signal<configured_signal_t>(CONFIGURED_CAMERAS_SIG))
+    m_sig_configured_cameras(new_signal<configured_signal_t>(CONFIGURED_CAMERAS_SIG))
 {
     new_signal<configured_signal_t>(CONFIGURED_DEVICE_SIG);
     new_signal<configured_signal_t>(CONFIGURED_FILE_SIG);
     new_signal<configured_signal_t>(CONFIGURED_STREAM_SIG);
 
-    new_slot(CONFIGURE_DEVICE_SLOT, &camera::onChooseDevice, this);
-    new_slot(CONFIGURE_FILE_SLOT, &camera::onChooseFile, this);
-    new_slot(CONFIGURE_STREAM_SLOT, &camera::onChooseStream, this);
+    new_slot(CONFIGURE_DEVICE_SLOT, &camera::on_choose_device, this);
+    new_slot(CONFIGURE_FILE_SLOT, &camera::on_choose_file, this);
+    new_slot(CONFIGURE_STREAM_SLOT, &camera::on_choose_stream, this);
 }
 
 //------------------------------------------------------------------------------
@@ -88,12 +88,12 @@ void camera::configuring()
 {
     const service::config_t config = this->get_config();
 
-    m_bVideoSupport    = config.get<bool>(s_VIDEO_SUPPORT_CONFIG, false);
-    m_useAbsolutePath  = config.get<bool>(s_USE_ABSOLUTE_PATH, false);
-    m_numCreateCameras = config.get<std::size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
-    m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
+    m_b_video_support    = config.get<bool>(VIDEO_SUPPORT_CONFIG, false);
+    m_use_absolute_path  = config.get<bool>(USE_ABSOLUTE_PATH, false);
+    m_num_create_cameras = config.get<std::size_t>(CREATE_CAMERA_NUMBER_CONFIG, m_num_create_cameras);
+    m_label              = config.get<std::string>(LABEL_CONFIG, m_label);
 
-    m_resolution = config.get<std::string>(s_RESOLUTION_CONFIG, "preferences");
+    m_resolution = config.get<std::string>(RESOLUTION_CONFIG, "preferences");
 
     this->initialize();
 }
@@ -105,7 +105,7 @@ void camera::starting()
     this->create();
 
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
@@ -118,17 +118,17 @@ void camera::starting()
 
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    m_devicesComboBox = new QComboBox();
-    m_devicesComboBox->setObjectName(service_id);
-    layout->addWidget(m_devicesComboBox);
+    m_devices_combo_box = new QComboBox();
+    m_devices_combo_box->setObjectName(service_id);
+    layout->addWidget(m_devices_combo_box);
 
-    m_devicesComboBox->addItem("Device...", "device");
+    m_devices_combo_box->addItem("Device...", "device");
 
     // Add video file
-    if(m_bVideoSupport)
+    if(m_b_video_support)
     {
-        m_devicesComboBox->addItem("File...", "file");
-        m_devicesComboBox->addItem("Stream...", "stream");
+        m_devices_combo_box->addItem("File...", "file");
+        m_devices_combo_box->addItem("Stream...", "stream");
     }
 
     // Add button to edit the preferences when and set `m_preferenceMode` to true
@@ -141,15 +141,15 @@ void camera::starting()
         set_pref_button->setIcon(QIcon(QString::fromStdString((path / "BlueParametersCamera.svg").string())));
         set_pref_button->setToolTip("Set camera resolution preference");
         layout->addWidget(set_pref_button);
-        m_preferenceMode = true;
+        m_preference_mode = true;
 
-        QObject::connect(set_pref_button, SIGNAL(clicked()), this, SLOT(setPreference()));
+        QObject::connect(set_pref_button, &QPushButton::clicked, this, &self_t::set_preference);
     }
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
-    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &camera::onActivated);
-    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &camera::onApply);
+    QObject::connect(m_devices_combo_box, qOverload<int>(&QComboBox::activated), this, &camera::on_activated);
+    QObject::connect(m_devices_combo_box, qOverload<int>(&QComboBox::currentIndexChanged), this, &camera::on_apply);
 
     // Create camera data if necessary
     auto camera_set = m_camera_set.lock();
@@ -158,9 +158,9 @@ void camera::starting()
         const std::size_t num_cameras = camera_set->size();
         if(num_cameras == 0)
         {
-            SIGHT_ASSERT("No camera data in the CameraSet.", m_numCreateCameras != 0);
+            SIGHT_ASSERT("No camera data in the CameraSet.", m_num_create_cameras != 0);
 
-            for(std::size_t i = 0 ; i < m_numCreateCameras ; ++i)
+            for(std::size_t i = 0 ; i < m_num_create_cameras ; ++i)
             {
                 auto camera = std::make_shared<data::camera>();
                 camera_set->add_camera(camera);
@@ -172,14 +172,14 @@ void camera::starting()
                 sig->async_emit(camera);
             }
 
-            SIGHT_INFO("No camera data in the CameraSet, " << m_numCreateCameras << " will be created.");
+            SIGHT_INFO("No camera data in the CameraSet, " << m_num_create_cameras << " will be created.");
         }
         else
         {
             SIGHT_WARN_IF(
                 "CameraSet contains camera data but the service is configured to create "
-                << m_numCreateCameras << " cameras.",
-                m_numCreateCameras != 0
+                << m_num_create_cameras << " cameras.",
+                m_num_create_cameras != 0
             );
         }
     }
@@ -200,20 +200,20 @@ void camera::updating()
 
 //------------------------------------------------------------------------------
 
-void camera::onApply(int _index)
+void camera::on_apply(int _index)
 {
     switch(_index)
     {
         case 0:
-            this->onChooseDevice();
+            this->on_choose_device();
             break;
 
         case 1:
-            this->onChooseFile();
+            this->on_choose_file();
             break;
 
         case 2:
-            this->onChooseStream();
+            this->on_choose_stream();
             break;
 
         default:
@@ -222,23 +222,23 @@ void camera::onApply(int _index)
 }
 
 //------------------------------------------------------------------------------
-void camera::onActivated(int _index)
+void camera::on_activated(int _index)
 {
     // If the current index did change, onCurrentIndexChanged will be called, we wouldn't want onApply to be called
     // twice
-    if(oldIndex == _index)
+    if(m_old_index == _index)
     {
-        onApply(_index);
+        on_apply(_index);
     }
 
-    oldIndex = _index;
+    m_old_index = _index;
 }
 
 //------------------------------------------------------------------------------
 
-void camera::onChooseFile()
+void camera::on_choose_file()
 {
-    std::vector<data::camera::sptr> cameras = this->getCameras();
+    std::vector<data::camera::sptr> cameras = this->get_cameras();
 
     // Check preferences
     const std::filesystem::path video_dir_preference_path(sight::ui::preferences().get(
@@ -249,13 +249,13 @@ void camera::onChooseFile()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("All files", "*.*");
-    dialog_file.addFilter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
-    dialog_file.addFilter("images", "*.bmp *.jpeg *.jpg *.png *.tiff");
-    dialog_file.addFilter("realsense files (*.bag)", "*.bag *.rosbag");
-    dialog_file.setOption(sight::ui::dialog::location::READ);
-    dialog_file.setOption(sight::ui::dialog::location::FILE_MUST_EXIST);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("All files", "*.*");
+    dialog_file.add_filter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
+    dialog_file.add_filter("images", "*.bmp *.jpeg *.jpg *.png *.tiff");
+    dialog_file.add_filter("realsense files (*.bag)", "*.bag *.rosbag");
+    dialog_file.set_option(sight::ui::dialog::location::read);
+    dialog_file.set_option(sight::ui::dialog::location::file_must_exist);
 
     std::size_t count = 0;
     for(auto& camera : cameras)
@@ -265,7 +265,7 @@ void camera::onChooseFile()
         if(count == 1 && cameras.size() == 2)
         {
             // Try to guess the second stream path for RGBD cameras
-            auto file = cameras[0]->getVideoFile();
+            auto file = cameras[0]->get_video_file();
 
             if(std::filesystem::is_directory(video_dir_preference_path))
             {
@@ -322,13 +322,13 @@ void camera::onChooseFile()
 
         if(video_path.empty())
         {
-            dialog_file.setTitle("Choose a file to load for video source #" + std::to_string(count++));
+            dialog_file.set_title("Choose a file to load for video source #" + std::to_string(count++));
 
             auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
             if(result)
             {
                 default_directory->set_folder(result->get_file().parent_path());
-                dialog_file.saveDefaultLocation(default_directory);
+                dialog_file.save_default_location(default_directory);
                 video_path = result->get_file();
             }
         }
@@ -337,7 +337,7 @@ void camera::onChooseFile()
         {
             if(std::filesystem::is_directory(video_dir_preference_path))
             {
-                if(!m_useAbsolutePath)
+                if(!m_use_absolute_path)
                 {
                     const auto video_relative_path = std::filesystem::relative(
                         video_path,
@@ -367,8 +367,8 @@ void camera::onChooseFile()
 
             {
                 data::mt::locked_ptr<data::camera> lock(camera);
-                camera->setCameraSource(data::camera::FILE);
-                camera->setVideoFile(video_path.string());
+                camera->set_camera_source(data::camera::file);
+                camera->set_video_file(video_path.string());
             }
             const data::camera::modified_signal_t::sptr sig =
                 camera->signal<data::camera::modified_signal_t>(data::camera::MODIFIED_SIG);
@@ -378,28 +378,28 @@ void camera::onChooseFile()
         }
     }
 
-    m_sigConfiguredCameras->async_emit();
+    m_sig_configured_cameras->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void camera::onChooseStream()
+void camera::on_choose_stream()
 {
-    std::vector<data::camera::sptr> cameras = this->getCameras();
+    std::vector<data::camera::sptr> cameras = this->get_cameras();
 
     std::size_t count = 0;
     for(auto& camera : cameras)
     {
         sight::ui::dialog::input input;
-        input.setTitle("Enter stream url for video source #" + std::to_string(count++));
+        input.set_title("Enter stream url for video source #" + std::to_string(count++));
 
-        const auto& [streamSource, ok] = input.getInput();
+        const auto& [streamSource, ok] = input.get_input();
         if(ok && !streamSource.empty())
         {
             {
                 data::mt::locked_ptr<data::camera> lock(camera);
-                camera->setCameraSource(data::camera::STREAM);
-                camera->setStreamUrl(streamSource);
+                camera->set_camera_source(data::camera::stream);
+                camera->set_stream_url(streamSource);
             }
             const data::camera::modified_signal_t::sptr sig =
                 camera->signal<data::camera::modified_signal_t>(data::camera::MODIFIED_SIG);
@@ -409,31 +409,31 @@ void camera::onChooseStream()
         }
     }
 
-    m_sigConfiguredCameras->async_emit();
+    m_sig_configured_cameras->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void camera::onChooseDevice()
+void camera::on_choose_device()
 {
-    if(m_preferenceMode)
+    if(m_preference_mode)
     {
         try
         {
             sight::ui::preferences resolution_preference;
-            m_cameraResolutionPreference = resolution_preference.get<std::string>(s_RESOLUTION_PREF_KEY);
+            m_camera_resolution_preference = resolution_preference.get<std::string>(RESOLUTION_PREF_KEY);
         }
         catch(boost::property_tree::ptree_error&)
         {
             SIGHT_ERROR("Couldn't get preference. The required key doesn't exist.");
         }
-        if(!m_cameraResolutionPreference.empty())
+        if(!m_camera_resolution_preference.empty())
         {
-            m_resolution = m_cameraResolutionPreference;
+            m_resolution = m_camera_resolution_preference;
         }
     }
 
-    std::vector<data::camera::sptr> cameras = this->getCameras();
+    std::vector<data::camera::sptr> cameras = this->get_cameras();
     const QList<QCameraInfo> devices        = QCameraInfo::availableCameras();
     if(devices.isEmpty())
     {
@@ -450,7 +450,7 @@ void camera::onChooseDevice()
         std::size_t count = 0;
         for(auto& camera : cameras)
         {
-            module::ui::qt::video::CameraDeviceDlg cam_dialog(m_resolution);
+            module::ui::qt::video::camera_device_dlg cam_dialog(m_resolution);
             cam_dialog.setWindowTitle(QString("Camera device selector for video source #%1").arg(count++));
 
             if(((devices.size() > 1 && m_resolution != "preferences") || m_resolution == "prompt")
@@ -463,7 +463,7 @@ void camera::onChooseDevice()
             {
                 data::mt::locked_ptr<data::camera> lock(camera);
 
-                is_selected = cam_dialog.getSelectedCamera(camera, m_resolution);
+                is_selected = cam_dialog.get_selected_camera(camera, m_resolution);
                 configured &= is_selected;
             }
 
@@ -475,7 +475,7 @@ void camera::onChooseDevice()
 
                 this->signal<configured_signal_t>(CONFIGURED_DEVICE_SIG)->async_emit();
             }
-            else if(m_preferenceMode)
+            else if(m_preference_mode)
             {
                 QMetaObject::invokeMethod(this, "setPreference", Qt::QueuedConnection);
             }
@@ -483,14 +483,14 @@ void camera::onChooseDevice()
 
         if(configured)
         {
-            m_sigConfiguredCameras->async_emit();
+            m_sig_configured_cameras->async_emit();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<data::camera::sptr> camera::getCameras() const
+std::vector<data::camera::sptr> camera::get_cameras() const
 {
     std::vector<data::camera::sptr> cameras;
 
@@ -516,13 +516,13 @@ std::vector<data::camera::sptr> camera::getCameras() const
 
 //------------------------------------------------------------------------------
 
-void camera::setPreference()
+void camera::set_preference()
 {
     // set m_resolution to "prompt" mode in order to display the camera selection dialog anytime the button is clicked
-    m_resolution     = "prompt";
-    m_preferenceMode = false;
-    this->onChooseDevice();
-    m_preferenceMode = true;
+    m_resolution      = "prompt";
+    m_preference_mode = false;
+    this->on_choose_device();
+    m_preference_mode = true;
 }
 
 //------------------------------------------------------------------------------

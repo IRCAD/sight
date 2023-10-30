@@ -29,11 +29,11 @@
 namespace sight::module::viz::scene3d_qt
 {
 
-std::weak_ptr<QOpenGLContext> OpenGLContext::s_globalOgreOpenGLContext;
+std::weak_ptr<QOpenGLContext> open_gl_context::s_global_ogre_open_gl_context;
 
 //-----------------------------------------------------------------------------
 
-QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* const _shared_context)
+QOpenGLContext* open_gl_context::create_ogre_gl_context(QOpenGLContext* const _shared_context)
 {
     auto* gl_context = new QOpenGLContext();
     QSurfaceFormat format;
@@ -68,14 +68,14 @@ QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* const _shared
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<QOpenGLContext> OpenGLContext::getGlobalOgreOpenGLContext()
+std::shared_ptr<QOpenGLContext> open_gl_context::get_global_ogre_open_gl_context()
 {
-    std::shared_ptr<QOpenGLContext> global_context = s_globalOgreOpenGLContext.lock();
+    std::shared_ptr<QOpenGLContext> global_context = s_global_ogre_open_gl_context.lock();
 
     if(global_context == nullptr)
     {
-        global_context            = std::shared_ptr<QOpenGLContext>(createOgreGLContext());
-        s_globalOgreOpenGLContext = global_context;
+        global_context                = std::shared_ptr<QOpenGLContext>(create_ogre_gl_context());
+        s_global_ogre_open_gl_context = global_context;
     }
 
     return global_context;

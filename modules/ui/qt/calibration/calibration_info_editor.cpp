@@ -49,24 +49,24 @@ calibration_info_editor::calibration_info_editor() noexcept
 {
     new_slot(REMOVE_SLOT, &calibration_info_editor::remove, this);
     new_slot(RESET_SLOT, &calibration_info_editor::reset, this);
-    new_slot(GET_SELECTION_SLOT, &calibration_info_editor::getSelection, this);
+    new_slot(GET_SELECTION_SLOT, &calibration_info_editor::get_selection, this);
 }
 
 // ----------------------------------------------------------------------------
 
 void calibration_info_editor::updating()
 {
-    const auto cal_info1 = m_calibrationInfo1.lock();
-    SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
+    const auto cal_info1 = m_calibration_info1.lock();
+    SIGHT_ASSERT("Object " << CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
 
-    const auto pl_list1 = cal_info1->getPointListContainer();
+    const auto pl_list1 = cal_info1->get_point_list_container();
 
-    m_capturesListWidget->clear();
+    m_captures_list_widget->clear();
 
-    const auto cal_info2 = m_calibrationInfo2.lock();
+    const auto cal_info2 = m_calibration_info2.lock();
     if(cal_info2)
     {
-        const auto pl_list2 = cal_info2->getPointListContainer();
+        const auto pl_list2 = cal_info2->get_point_list_container();
 
         std::size_t capture_idx = 0;
         auto it1                = pl_list1.begin();
@@ -75,16 +75,16 @@ void calibration_info_editor::updating()
         for( ; it1 != pl_list1.end() && it2 != pl_list2.end() ; ++it1, ++it2)
         {
             QString count_string;
-            std::size_t count1 = (*it1)->getPoints().size();
-            std::size_t count2 = (*it2)->getPoints().size();
+            std::size_t count1 = (*it1)->get_points().size();
+            std::size_t count2 = (*it2)->get_points().size();
 
             count_string = QString("%1. %2 and %3 elements").arg(capture_idx).arg(count1).arg(count2);
 
-            m_capturesListWidget->addItem(count_string);
+            m_captures_list_widget->addItem(count_string);
             ++capture_idx;
         }
 
-        m_nbCapturesLabel->setText(QString().setNum(capture_idx));
+        m_nb_captures_label->setText(QString().setNum(capture_idx));
 
         if(pl_list1.size() != pl_list2.size())
         {
@@ -94,7 +94,7 @@ void calibration_info_editor::updating()
             sight::ui::dialog::message::show(
                 "Inputs do not match",
                 err_msg,
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
     }
@@ -104,14 +104,14 @@ void calibration_info_editor::updating()
         for(const auto& it1 : pl_list1)
         {
             QString count_string;
-            std::size_t count = it1->getPoints().size();
+            std::size_t count = it1->get_points().size();
             count_string = QString("%1. %2 element%3").arg(capture_idx).arg(count).arg(count > 1 ? "s" : "");
 
-            m_capturesListWidget->addItem(count_string);
+            m_captures_list_widget->addItem(count_string);
             ++capture_idx;
         }
 
-        m_nbCapturesLabel->setText(QString().setNum(capture_idx));
+        m_nb_captures_label->setText(QString().setNum(capture_idx));
     }
 }
 
@@ -127,7 +127,7 @@ void calibration_info_editor::configuring()
 void calibration_info_editor::starting()
 {
     sight::ui::service::create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     // Creation of the Qt elements
 
@@ -143,26 +143,26 @@ void calibration_info_editor::starting()
 
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    m_nbCapturesLabel = new QLabel("-");
-    m_nbCapturesLabel->setObjectName(service_id + "/nbCapturesLabel");
-    nb_items_h_box->addWidget(m_nbCapturesLabel);
+    m_nb_captures_label = new QLabel("-");
+    m_nb_captures_label->setObjectName(service_id + "/nbCapturesLabel");
+    nb_items_h_box->addWidget(m_nb_captures_label);
     nb_items_h_box->addStretch();
 
     //   The ListWidget
-    m_capturesListWidget = new QListWidget();
-    m_capturesListWidget->setObjectName(service_id + "/capturesListWidget");
+    m_captures_list_widget = new QListWidget();
+    m_captures_list_widget->setObjectName(service_id + "/capturesListWidget");
     QObject::connect(
-        m_capturesListWidget,
+        m_captures_list_widget,
         SIGNAL(itemDoubleClicked(QListWidgetItem*)),
         this,
-        SLOT(onItemDoubleClicked(QListWidgetItem*))
+        SLOT(on_item_double_clicked(QListWidgetItem*))
     );
 
     // Fill the main VBox
     v_layout->addLayout(nb_items_h_box);
-    v_layout->addWidget(m_capturesListWidget);
+    v_layout->addWidget(m_captures_list_widget);
 
-    qt_container->setLayout(v_layout);
+    qt_container->set_layout(v_layout);
 
     this->updating();
 }
@@ -178,19 +178,19 @@ void calibration_info_editor::stopping()
 
 void calibration_info_editor::remove()
 {
-    int row = m_capturesListWidget->currentRow();
+    int row = m_captures_list_widget->currentRow();
 
     if(row >= 0)
     {
         const auto idx = static_cast<std::size_t>(row);
 
         {
-            const auto cal_info1 = m_calibrationInfo1.lock();
-            SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
+            const auto cal_info1 = m_calibration_info1.lock();
+            SIGHT_ASSERT("Object " << CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
 
-            const auto cal_info2 = m_calibrationInfo2.lock();
+            const auto cal_info2 = m_calibration_info2.lock();
 
-            cal_info1->removeRecord(idx);
+            cal_info1->remove_record(idx);
 
             //Notify
             {
@@ -203,7 +203,7 @@ void calibration_info_editor::remove()
 
             if(cal_info2)
             {
-                cal_info2->removeRecord(idx);
+                cal_info2->remove_record(idx);
 
                 //Notify
                 {
@@ -223,16 +223,16 @@ void calibration_info_editor::remove()
 
 void calibration_info_editor::reset()
 {
-    const auto cal_info1 = m_calibrationInfo1.lock();
-    SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
+    const auto cal_info1 = m_calibration_info1.lock();
+    SIGHT_ASSERT("Object " << CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
 
-    const auto cal_info2 = m_calibrationInfo2.lock();
+    const auto cal_info2 = m_calibration_info2.lock();
 
-    cal_info1->resetRecords();
+    cal_info1->reset_records();
 
     //Notify
     {
-        auto sig = cal_info1->signal<data::calibration_info::Reset_record_signal_type>(
+        auto sig = cal_info1->signal<data::calibration_info::reset_record_signal_t>(
             data::calibration_info::RESET_RECORD_SIG
         );
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -241,11 +241,11 @@ void calibration_info_editor::reset()
 
     if(cal_info2)
     {
-        cal_info2->resetRecords();
+        cal_info2->reset_records();
 
         //Notify
         {
-            auto sig = cal_info2->signal<data::calibration_info::Reset_record_signal_type>(
+            auto sig = cal_info2->signal<data::calibration_info::reset_record_signal_t>(
                 data::calibration_info::RESET_RECORD_SIG
             );
             core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -253,22 +253,22 @@ void calibration_info_editor::reset()
         }
     }
 
-    m_capturesListWidget->clear();
-    m_nbCapturesLabel->setText("0");
+    m_captures_list_widget->clear();
+    m_nb_captures_label->setText("0");
 }
 
 // ----------------------------------------------------------------------------
 
-void calibration_info_editor::getSelection()
+void calibration_info_editor::get_selection()
 {
-    int row = m_capturesListWidget->currentRow();
+    int row = m_captures_list_widget->currentRow();
 
     if(row >= 0)
     {
         const auto idx = static_cast<std::size_t>(row);
 
-        const auto cal_info1 = m_calibrationInfo1.lock();
-        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
+        const auto cal_info1 = m_calibration_info1.lock();
+        SIGHT_ASSERT("Object " << CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
 
         //Notify
         {
@@ -285,16 +285,16 @@ void calibration_info_editor::getSelection()
 service::connections_t calibration_info_editor::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_CALIBRATION_INFO_1, data::object::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_CALIBRATION_INFO_2, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CALIBRATION_INFO_1, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CALIBRATION_INFO_2, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
 // ----------------------------------------------------------------------------
 
-void calibration_info_editor::onItemDoubleClicked(QListWidgetItem* /*unused*/)
+void calibration_info_editor::on_item_double_clicked(QListWidgetItem* /*unused*/)
 {
-    this->getSelection();
+    this->get_selection();
 }
 
 // ----------------------------------------------------------------------------

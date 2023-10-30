@@ -28,14 +28,14 @@
 #include <filesystem>
 #include <numeric>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::ArrayReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::array_reader_test);
 
 namespace sight::io::ut
 {
 
 //------------------------------------------------------------------------------
 
-void ArrayReaderTest::basicTest()
+void array_reader_test::basic_test()
 {
     auto array_reader              = std::make_shared<reader::array_reader>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + array_reader->extension());

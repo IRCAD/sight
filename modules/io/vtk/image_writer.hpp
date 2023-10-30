@@ -66,7 +66,7 @@ namespace sight::module::io::vtk
  * @subsection Input Input
  * - \b data [sight::data::image]: image to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
 class MODULE_IO_VTK_CLASS_API image_writer : public sight::io::service::writer
@@ -83,7 +83,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(image_writer, sight::io::service::writer);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Configure the image path.
@@ -91,7 +91,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    MODULE_IO_VTK_API void openLocationDialog() override;
+    MODULE_IO_VTK_API void open_location_dialog() override;
 
     /**
      * @brief Save a VTK image.
@@ -103,7 +103,7 @@ public:
      * This method is used to save an image using the file path.
      * Returns \b true if the image saving is a success and \b false if it fails
      */
-    MODULE_IO_VTK_API static bool saveImage(
+    MODULE_IO_VTK_API static bool save_image(
         const std::filesystem::path& _img_file,
         const CSPTR(data::image)& _image,
         const SPTR(job_created_signal_t)& _sig_job_created
@@ -111,7 +111,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
@@ -155,9 +155,9 @@ private:
     /**
      * @brief Image path.
      */
-    std::filesystem::path m_fsImgPath;
+    std::filesystem::path m_fs_img_path;
 
-    SPTR(job_created_signal_t) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

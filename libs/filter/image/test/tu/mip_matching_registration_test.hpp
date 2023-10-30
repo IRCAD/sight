@@ -30,9 +30,9 @@ namespace sight::filter::image::ut
 class mip_matching_registration_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(mip_matching_registration_test);
-CPPUNIT_TEST(identityTest);
-CPPUNIT_TEST(translateTransformTest);
-CPPUNIT_TEST(translateTransformWithScalesTest);
+CPPUNIT_TEST(identity_test);
+CPPUNIT_TEST(translate_transform_test);
+CPPUNIT_TEST(translate_transform_with_scales_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,9 +40,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void identityTest();
-    static void translateTransformTest();
-    static void translateTransformWithScalesTest();
+    static void identity_test();
+    static void translate_transform_test();
+    static void translate_transform_with_scales_test();
 };
 
 } // namespace sight::filter::image::ut

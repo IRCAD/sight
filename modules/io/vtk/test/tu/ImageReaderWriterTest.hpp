@@ -30,18 +30,18 @@ namespace sight::module::io::vtk::ut
 /**
  * @brief Test the reader and the writer of image using VTK.
  */
-class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
+class image_reader_writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ImageReaderWriterTest);
-CPPUNIT_TEST(testVtkImageReader);
-CPPUNIT_TEST(testVtiImageReader);
-CPPUNIT_TEST(testMhdImageReader);
-CPPUNIT_TEST(testImageReaderExtension);
-CPPUNIT_TEST(testVtkImageWriter);
-CPPUNIT_TEST(testVtkImageSeriesWriter);
-CPPUNIT_TEST(testVtiImageWriter);
-CPPUNIT_TEST(testMhdImageWriter);
-CPPUNIT_TEST(testImageWriterExtension);
+CPPUNIT_TEST_SUITE(image_reader_writer_test);
+CPPUNIT_TEST(test_vtk_image_reader);
+CPPUNIT_TEST(test_vti_image_reader);
+CPPUNIT_TEST(test_mhd_image_reader);
+CPPUNIT_TEST(test_image_reader_extension);
+CPPUNIT_TEST(test_vtk_image_writer);
+CPPUNIT_TEST(test_vtk_image_series_writer);
+CPPUNIT_TEST(test_vti_image_writer);
+CPPUNIT_TEST(test_mhd_image_writer);
+CPPUNIT_TEST(test_image_writer_extension);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,15 +50,15 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testVtkImageReader();
-    static void testVtiImageReader();
-    static void testMhdImageReader();
-    static void testImageReaderExtension();
-    static void testVtkImageWriter();
-    static void testVtkImageSeriesWriter();
-    static void testVtiImageWriter();
-    static void testMhdImageWriter();
-    static void testImageWriterExtension();
+    static void test_vtk_image_reader();
+    static void test_vti_image_reader();
+    static void test_mhd_image_reader();
+    static void test_image_reader_extension();
+    static void test_vtk_image_writer();
+    static void test_vtk_image_series_writer();
+    static void test_vti_image_writer();
+    static void test_mhd_image_writer();
+    static void test_image_writer_extension();
 };
 
 } // namespace sight::module::io::vtk::ut

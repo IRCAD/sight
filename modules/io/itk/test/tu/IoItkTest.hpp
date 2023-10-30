@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,15 +30,15 @@ namespace sight::module::io::itk::ut
 /**
  * @brief Test many methods to create mesh.
  */
-class IoItkTest : public CPPUNIT_NS::TestFixture
+class io_itk_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(IoItkTest);
-CPPUNIT_TEST(testImageSeriesWriterJPG);
-CPPUNIT_TEST(testSaveLoadInr);
-CPPUNIT_TEST(testSaveLoadNifti);
-CPPUNIT_TEST(ImageSeriesInrTest);
-CPPUNIT_TEST(ImageSeriesNiftiTest);
-CPPUNIT_TEST(SeriesSetInrTest);
+CPPUNIT_TEST_SUITE(io_itk_test);
+CPPUNIT_TEST(test_image_series_writer_jpg);
+CPPUNIT_TEST(test_save_load_inr);
+CPPUNIT_TEST(test_save_load_nifti);
+CPPUNIT_TEST(image_series_inr_test);
+CPPUNIT_TEST(image_series_nifti_test);
+CPPUNIT_TEST(series_set_inr_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,12 +47,12 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testImageSeriesWriterJPG();
-    static void testSaveLoadInr();
-    static void testSaveLoadNifti();
-    static void ImageSeriesInrTest();
-    static void ImageSeriesNiftiTest();
-    static void SeriesSetInrTest();
+    static void test_image_series_writer_jpg();
+    static void test_save_load_inr();
+    static void test_save_load_nifti();
+    static void image_series_inr_test();
+    static void image_series_nifti_test();
+    static void series_set_inr_test();
 };
 
 } // namespace sight::module::io::itk::ut

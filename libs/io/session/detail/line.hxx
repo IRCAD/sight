@@ -31,13 +31,13 @@
 namespace sight::io::session::detail::line
 {
 
-constexpr static auto s_Position {"Position"};
-constexpr static auto s_Direction {"Direction"};
+constexpr static auto POSITION {"Position"};
+constexpr static auto DIRECTION {"Direction"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -49,14 +49,14 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::line>(_tree, 1);
 
-    _children[s_Position]  = line->getPosition();
-    _children[s_Direction] = line->getDirection();
+    _children[POSITION]  = line->get_position();
+    _children[DIRECTION] = line->get_direction();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::line::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -69,8 +69,8 @@ inline static data::line::sptr read(
     // Check version number. Not mandatory, but could help for future release
     helper::read_version<data::line>(_tree, 0, 1);
 
-    line->setPosition(std::dynamic_pointer_cast<data::point>(_children.at(s_Position)));
-    line->setDirection(std::dynamic_pointer_cast<data::point>(_children.at(s_Direction)));
+    line->set_position(std::dynamic_pointer_cast<data::point>(_children.at(POSITION)));
+    line->set_direction(std::dynamic_pointer_cast<data::point>(_children.at(DIRECTION)));
 
     return line;
 }

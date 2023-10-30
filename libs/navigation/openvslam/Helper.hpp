@@ -36,7 +36,7 @@ namespace sight::navigation::openvslam
 /**
  * @brief The Helper class
  */
-class NAVIGATION_OPENVSLAM_CLASS_API Helper
+class NAVIGATION_OPENVSLAM_CLASS_API helper
 {
 public:
 
@@ -45,14 +45,14 @@ public:
      * @param _sightCam: sight camera reference.
      * @return ::openvslam::camera::perspective* pointer to a openvslam perspective camera.
      */
-    static ::openvslam::camera::perspective fromSight(const data::camera& _sightCam);
+    static ::openvslam::camera::perspective from_sight(const data::camera& _sight_cam);
 
     /**
      * @brief converts openvslam  perspective camera to sight camera
      * @param _oVSlamCam is a pointer to an openvlsam perspective camera.
      * @return an data::camera::sptr.
      */
-    static data::camera::sptr toSight(const ::openvslam::camera::perspective _oVSlamCam);
+    static data::camera::sptr to_sight(const ::openvslam::camera::perspective _o_v_slam_cam);
 
     /**
      * @brief create an openvslam monocular config file from camera, orb parameters and initializer parameters (both
@@ -62,29 +62,32 @@ public:
      * @param _orbParams initialize parameters (optional).
      * @return shared_ptr of ::openvslam::config, to initialize openvslam system.
      */
-    static std::shared_ptr< ::openvslam::config> createMonocularConfig(
-        const data::camera& _sightCam,
-        const navigation::openvslam::OrbParams& _orbParams
-        = navigation::openvslam::OrbParams(),
-        const navigation::openvslam::InitParams& _initParams
-        = navigation::openvslam::InitParams()
+    static std::shared_ptr< ::openvslam::config> create_monocular_config(
+        const data::camera& _sight_cam,
+        const navigation::openvslam::orb_params& _orb_params
+        = navigation::openvslam::orb_params(),
+        const navigation::openvslam::init_params& _init_params
+        = navigation::openvslam::init_params()
     );
 
-    static void writeOpenvslamConfig(const std::shared_ptr<::openvslam::config> config, const std::string& _filepath);
+    static void write_openvslam_config(
+        const std::shared_ptr<::openvslam::config> _config,
+        const std::string& _filepath
+    );
 
     /**
      * @brief write
      * @param _node
      * @param _filepath
      */
-    static void writeOpenvslamConfig(const ::YAML::Node& _node, const std::string& _filepath);
+    static void write_openvslam_config(const ::YAML::Node& _node, const std::string& _filepath);
 
     /**
      * @brief readOpenvslamConfig
      * @param _filepath
      * @return
      */
-    static std::shared_ptr<::openvslam::config> readOpenvslamConfig(const std::string& _filepath);
+    static std::shared_ptr<::openvslam::config> read_openvslam_config(const std::string& _filepath);
 };
 
 } // namespace sight::navigation::openvslam

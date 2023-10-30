@@ -46,7 +46,7 @@ void matrix4_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::getterSetterByCoef()
+void matrix4_test::getter_setter_by_coef()
 {
     const std::array identity {
         1., 0., 0., 0.,
@@ -107,7 +107,7 @@ void matrix4_test::getterSetterByCoef()
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::getterSetterByArray()
+void matrix4_test::getter_setter_by_array()
 {
     const std::array identity = {1., 0., 0., 0.,
                                  0., 1., 0., 0.,
@@ -126,10 +126,10 @@ void matrix4_test::getterSetterByArray()
     }
 
     // Call setter and check getter
-    data::matrix4::container_type coefs = {2, -2, .3, .12,
-                                           4, 8.9, 4.2, 1.2,
-                                           7.8, -12.1, 2.3, 1.2,
-                                           .3, 1.21, -3.1, 1.2
+    data::matrix4::container_t coefs = {2, -2, .3, .12,
+                                        4, 8.9, 4.2, 1.2,
+                                        7.8, -12.1, 2.3, 1.2,
+                                        .3, 1.21, -3.1, 1.2
     };
 
     mat = {2, -2, .3, .12,
@@ -154,7 +154,7 @@ void matrix4_test::getterSetterByArray()
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::rowMatrixAccessor()
+void matrix4_test::row_matrix_accessor()
 {
     const std::array identity {
         1., 0., 0., 0.,
@@ -215,7 +215,7 @@ void matrix4_test::rowMatrixAccessor()
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::equalityTest()
+void matrix4_test::equality_test()
 {
     auto matrix1 = std::make_shared<data::matrix4>();
     auto matrix2 = std::make_shared<data::matrix4>();

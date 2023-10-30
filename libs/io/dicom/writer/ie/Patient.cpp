@@ -29,42 +29,42 @@ namespace sight::io::dicom::writer::ie
 
 //------------------------------------------------------------------------------
 
-Patient::Patient(
+patient::patient(
     const SPTR(gdcm::Writer)& _writer,
-    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const SPTR(io::dicom::container::dicom_instance)& _instance,
     const data::series::csptr& _series,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::series>(_writer, _instance, _series,
-                                                           _logger, _progress, _cancel)
+    io::dicom::writer::ie::information_entity<data::series>(_writer, _instance, _series,
+                                                            _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Patient::~Patient()
+patient::~patient()
 = default;
 
 //------------------------------------------------------------------------------
 
-void Patient::writePatientModule()
+void patient::write_patient_module()
 {
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Patient's name - Type 2
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x0010>(m_object->getPatientName(), dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0010, 0x0010>(m_object->get_patient_name(), dataset);
 
     // Patient's ID - Type 2
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x0020>(m_object->getPatientID(), dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0010, 0x0020>(m_object->get_patient_id(), dataset);
 
     // Patient's birth date - Type 2
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x0030>(m_object->getPatientBirthDate(), dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0010, 0x0030>(m_object->get_patient_birth_date(), dataset);
 
     // Patient's sex - Type 2
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x0040>(m_object->getPatientSex(), dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0010, 0x0040>(m_object->get_patient_sex(), dataset);
 }
 
 //------------------------------------------------------------------------------

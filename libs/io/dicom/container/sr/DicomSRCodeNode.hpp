@@ -34,19 +34,19 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a CODE node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRCodeNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_sr_code_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRCodeNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_sr_code_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
-        DicomCodedAttribute _coded_entry
+        dicom_coded_attribute _coded_entry
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRCodeNode() override;
+    IO_DICOM_API ~dicom_sr_code_node() override;
 
     /**
      * @brief Write the SR node in the dataset
@@ -55,15 +55,15 @@ public:
     IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get Coded Entry
-    [[nodiscard]] const DicomCodedAttribute& getCodedEntry() const
+    [[nodiscard]] const dicom_coded_attribute& get_coded_entry() const
     {
-        return m_codedEntry;
+        return m_coded_entry;
     }
 
     /// Set Coded Entry
-    void setCodedEntry(const DicomCodedAttribute& _coded_entry)
+    void set_coded_entry(const dicom_coded_attribute& _coded_entry)
     {
-        m_codedEntry = _coded_entry;
+        m_coded_entry = _coded_entry;
     }
 
 protected:
@@ -72,7 +72,7 @@ protected:
     void print(std::ostream& _os) const override;
 
     /// Coded Entry
-    DicomCodedAttribute m_codedEntry;
+    dicom_coded_attribute m_coded_entry;
 };
 
 } // namespace sight::io::dicom::container::sr

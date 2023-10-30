@@ -29,28 +29,28 @@ namespace sight::io::dicom::container::sr
 
 //------------------------------------------------------------------------------
 
-DicomSRContainerNode::DicomSRContainerNode(
-    const DicomCodedAttribute& _coded_attribute,
+dicom_sr_container_node::dicom_sr_container_node(
+    const dicom_coded_attribute& _coded_attribute,
     const std::string& _relationship
 ) :
-    io::dicom::container::sr::DicomSRNode(_coded_attribute, "CONTAINER", _relationship)
+    io::dicom::container::sr::dicom_sr_node(_coded_attribute, "CONTAINER", _relationship)
 {
 }
 
 //------------------------------------------------------------------------------
 
-DicomSRContainerNode::~DicomSRContainerNode()
+dicom_sr_container_node::~dicom_sr_container_node()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomSRContainerNode::write(gdcm::DataSet& _dataset) const
+void dicom_sr_container_node::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(_dataset);
+    io::dicom::container::sr::dicom_sr_node::write(_dataset);
 
     // Continuity of content - Type 1 - See PS 3.3 C.18.8 (Only for type CONTAINER)
     // NOTE : Continuity is fixed to SEPARATE because it provides a better compatibility.
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa050>("SEPARATE", _dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0040, 0xa050>("SEPARATE", _dataset);
 }
 
 //------------------------------------------------------------------------------

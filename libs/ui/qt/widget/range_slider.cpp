@@ -35,25 +35,25 @@ static QColor s_cyan      = QColor(104, 151, 187);
 static QColor s_dark_blue = QColor(102, 108, 123);
 
 template<typename T>
-struct Castable
+struct castable
 {
     //------------------------------------------------------------------------------
 
     template<typename U>
-    static T* safeCast(U* _p)
+    static T* safe_cast(U* _p)
     {
         T* casted = dynamic_cast<T*>(_p);
         return casted;
     }
 };
 
-class Handle : public range_slider::Paintable,
-               public Castable<Handle>
+class handle : public range_slider::paintable,
+               public castable<handle>
 {
 public:
 
-    explicit Handle(QWidget* _w) :
-        Paintable(_w),
+    explicit handle(QWidget* _w) :
+        paintable(_w),
         m_pen(Qt::gray),
         m_brush(Qt::lightGray)
     {
@@ -64,13 +64,13 @@ public:
 
     void draw(QPainter& _painter, bool /*enabled*/) override
     {
-        int height        = drawingArea().height() - 1;
-        int top           = int(height * m_verticalPadding);
+        int height        = drawing_area().height() - 1;
+        int top           = int(height * m_vertical_padding);
         int handle_height = height - 2 * top;
         _painter.setRenderHint(QPainter::Antialiasing);
         _painter.setPen(m_pen);
         _painter.setBrush(m_brush);
-        _painter.drawRect(m_pos - halfWidth(), top, m_width, handle_height);
+        _painter.drawRect(m_pos - half_width(), top, m_width, handle_height);
     }
 
     //------------------------------------------------------------------------------
@@ -79,11 +79,11 @@ public:
     {
         bool picked = false;
 
-        int height        = drawingArea().height() - 1;
-        int top           = int(height * m_verticalPadding);
+        int height        = drawing_area().height() - 1;
+        int top           = int(height * m_vertical_padding);
         int handle_height = height - 2 * top;
 
-        if(abs(_point.x() - m_pos) <= (halfWidth() + m_tolerance)
+        if(abs(_point.x() - m_pos) <= (half_width() + m_tolerance)
            && (top + handle_height) >= _point.y() && _point.y() >= top)
         {
             picked = true;
@@ -94,7 +94,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    int setHandleSize(int _size)
+    int set_handle_size(int _size)
     {
         //handle size should be odd
         m_width = _size + ((_size + 1) % 2);
@@ -103,19 +103,19 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] int halfWidth() const
+    [[nodiscard]] int half_width() const
     {
         return m_width / 2;
     }
 
     //------------------------------------------------------------------------------
 
-    int setPos(const int& _pos)
+    int set_pos(const int& _pos)
     {
         int p = _pos;
 
-        p = std::max(p, xPosMin());
-        p = std::min(p, xPosMax());
+        p = std::max(p, x_pos_min());
+        p = std::min(p, x_pos_max());
 
         m_pos = p;
 
@@ -131,50 +131,50 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] int xPosMin() const
+    [[nodiscard]] int x_pos_min() const
     {
-        return halfWidth();
+        return half_width();
     }
 
     //------------------------------------------------------------------------------
 
-    int xPosMax()
+    int x_pos_max()
     {
-        return drawingArea().width() - halfWidth() - 1;
+        return drawing_area().width() - half_width() - 1;
     }
 
     //------------------------------------------------------------------------------
 
-    double toFloatingPos(int _p)
+    double to_floating_pos(int _p)
     {
-        int pos_min = xPosMin();
-        int pos_max = xPosMax();
+        int pos_min = x_pos_min();
+        int pos_max = x_pos_max();
         return (double) (_p - pos_min) / (double) (pos_max - pos_min);
     }
 
     //------------------------------------------------------------------------------
 
-    int fromFloatingPos(double _p)
+    int from_floating_pos(double _p)
     {
         assert(0. <= _p && _p <= 1.);
-        int pos_min = xPosMin();
-        int extend  = (xPosMax()) - pos_min;
+        int pos_min = x_pos_min();
+        int extend  = (x_pos_max()) - pos_min;
 
         return pos_min + (int) (_p * extend);
     }
 
     //------------------------------------------------------------------------------
 
-    double floatingPos()
+    double floating_pos()
     {
-        return toFloatingPos(pos());
+        return to_floating_pos(pos());
     }
 
     //------------------------------------------------------------------------------
 
-    void setFloatingPos(double _pos)
+    void set_floating_pos(double _pos)
     {
-        setPos(fromFloatingPos(_pos));
+        set_pos(from_floating_pos(_pos));
     }
 
 private:
@@ -182,23 +182,23 @@ private:
     int m_pos {0};
     int m_tolerance;
     int m_width {13};
-    double m_verticalPadding {0.2};
+    double m_vertical_padding {0.2};
 
     QPen m_pen;
     QBrush m_brush;
 };
 
-class Window : public range_slider::Paintable,
-               public Castable<Window>
+class window : public range_slider::paintable,
+               public castable<window>
 {
 public:
 
-    explicit Window(QWidget* _w) :
-        Paintable(_w),
+    explicit window(QWidget* _w) :
+        paintable(_w),
         m_pen(s_dark_blue),
         m_brush(s_cyan),
-        m_reversePen(Qt::darkYellow),
-        m_reverseBrush(Qt::yellow)
+        m_reverse_pen(Qt::darkYellow),
+        m_reverse_brush(Qt::yellow)
     {
     }
 
@@ -221,8 +221,8 @@ public:
         {
             if(w < 0)
             {
-                pen   = m_reversePen;
-                brush = m_reverseBrush;
+                pen   = m_reverse_pen;
+                brush = m_reverse_brush;
             }
             else
             {
@@ -239,7 +239,7 @@ public:
         _painter.setPen(pen);
         _painter.setBrush(brush);
         _painter.setRenderHint(QPainter::Antialiasing);
-        _painter.drawRect(m_left, 0, w, drawingArea().height() - 1);
+        _painter.drawRect(m_left, 0, w, drawing_area().height() - 1);
     }
 
     //------------------------------------------------------------------------------
@@ -255,7 +255,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setPos(const int& _left, const int& _right)
+    void set_pos(const int& _left, const int& _right)
     {
         m_left  = _left;
         m_right = _right;
@@ -268,57 +268,57 @@ private:
 
     QPen m_pen;
     QBrush m_brush;
-    QPen m_reversePen;
-    QBrush m_reverseBrush;
+    QPen m_reverse_pen;
+    QBrush m_reverse_brush;
 };
 
 //-----------------------------------------------------------------------------
 
 range_slider::range_slider(QWidget* _parent) :
     QWidget(_parent),
-    m_minHandle(new Handle(this)),
-    m_maxHandle(new Handle(this)),
-    m_window(new Window(this))
+    m_min_handle(new handle(this)),
+    m_max_handle(new handle(this)),
+    m_window(new class window (this))
+    {
+        auto* min_h = new handle(this);
+        auto* max_h = new handle(this);
+        min_h->set_handle_size(m_handle_size);
+        max_h->set_handle_size(m_handle_size);
+
+        m_min_handle = min_h;
+        m_max_handle = max_h;
+
+        this->set_pos(m_min_value, m_max_value);
+        this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    }
+
+             range_slider::~range_slider()
 {
-    auto* min_h = new Handle(this);
-    auto* max_h = new Handle(this);
-    min_h->setHandleSize(m_handleSize);
-    max_h->setHandleSize(m_handleSize);
-
-    m_minHandle = min_h;
-    m_maxHandle = max_h;
-
-    this->setPos(m_minValue, m_maxValue);
-    this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-}
-
-range_slider::~range_slider()
-{
-    delete m_minHandle;
-    delete m_maxHandle;
+    delete m_min_handle;
+    delete m_max_handle;
     delete m_window;
 }
 
 //------------------------------------------------------------------------------
 
-void range_slider::setPos(double _min, double _max)
+void range_slider::set_pos(double _min, double _max)
 {
-    Handle* min_handle = Handle::safeCast(m_minHandle);
-    Handle* max_handle = Handle::safeCast(m_maxHandle);
-    Window* window     = Window::safeCast(m_window);
+    handle* min_handle   = handle::safe_cast(m_min_handle);
+    handle* max_handle   = handle::safe_cast(m_max_handle);
+    class window* window = window::safe_cast(m_window);
 
     assert(min_handle && max_handle && window);
 
-    min_handle->setFloatingPos(_min);
-    max_handle->setFloatingPos(_max);
+    min_handle->set_floating_pos(_min);
+    max_handle->set_floating_pos(_max);
 
     int min = 0;
     int max = 0;
     min = min_handle->pos();
     max = max_handle->pos();
-    window->setPos(min, max);
+    window->set_pos(min, max);
 
-    this->movedTo(_min, _max);
+    this->moved_to(_min, _max);
     this->update();
 }
 
@@ -326,9 +326,9 @@ void range_slider::setPos(double _min, double _max)
 
 void range_slider::move(int _delta)
 {
-    Handle* min_handle = Handle::safeCast(m_minHandle);
-    Handle* max_handle = Handle::safeCast(m_maxHandle);
-    Window* window     = Window::safeCast(m_window);
+    handle* min_handle   = handle::safe_cast(m_min_handle);
+    handle* max_handle   = handle::safe_cast(m_max_handle);
+    class window* window = window::safe_cast(m_window);
 
     assert(min_handle && max_handle && window);
 
@@ -346,30 +346,30 @@ void range_slider::move(int _delta)
     if((moving_right && dir < 0)
        || (!moving_right && dir > 0))
     {
-        low  = min_handle->setPos(low - _delta);
+        low  = min_handle->set_pos(low - _delta);
         high = low + width;
-        max_handle->setPos(high);
+        max_handle->set_pos(high);
     }
     else
     {
-        high = max_handle->setPos(high - _delta);
+        high = max_handle->set_pos(high - _delta);
         low  = high - width;
-        min_handle->setPos(low);
+        min_handle->set_pos(low);
     }
 
-    window->setPos(low, high);
+    window->set_pos(low, high);
 }
 
 //------------------------------------------------------------------------------
 
-bool range_slider::movedTo(double _min, double _max)
+bool range_slider::moved_to(double _min, double _max)
 {
-    bool changed = m_minValue != _min || m_maxValue != _max;
+    bool changed = m_min_value != _min || m_max_value != _max;
     if(changed)
     {
-        m_minValue = _min;
-        m_maxValue = _max;
-        Q_EMIT sliderRangeChanged(m_minValue, m_maxValue);
+        m_min_value = _min;
+        m_max_value = _max;
+        Q_EMIT slider_range_changed(m_min_value, m_max_value);
     }
 
     return changed;
@@ -384,8 +384,8 @@ void range_slider::paintEvent(QPaintEvent* /*event*/)
     painter.setRenderHint(QPainter::Antialiasing);
 
     QRect rect = this->rect();
-    rect.setLeft(rect.left() + m_handleSize / 2);
-    rect.setRight(rect.right() - m_handleSize / 2);
+    rect.setLeft(rect.left() + m_handle_size / 2);
+    rect.setRight(rect.right() - m_handle_size / 2);
     painter.fillRect(rect, QColor(86, 90, 94));
 
     painter.setBrush(s_cyan);
@@ -393,10 +393,10 @@ void range_slider::paintEvent(QPaintEvent* /*event*/)
 
     painter.setBrush(Qt::gray);
     painter.setPen(Qt::darkGreen);
-    m_minHandle->draw(painter, enabled);
+    m_min_handle->draw(painter, enabled);
 
     painter.setPen(Qt::darkRed);
-    m_maxHandle->draw(painter, enabled);
+    m_max_handle->draw(painter, enabled);
 }
 
 //------------------------------------------------------------------------------
@@ -405,40 +405,40 @@ void range_slider::mouseMoveEvent(QMouseEvent* _event)
 {
     if(m_current != nullptr)
     {
-        Handle* min_handle     = Handle::safeCast(m_minHandle);
-        Handle* max_handle     = Handle::safeCast(m_maxHandle);
-        Window* window         = Window::safeCast(m_window);
-        Handle* current_handle = nullptr;
+        handle* min_handle     = handle::safe_cast(m_min_handle);
+        handle* max_handle     = handle::safe_cast(m_max_handle);
+        class window* window   = window::safe_cast(m_window);
+        handle* current_handle = nullptr;
 
-        if((current_handle = Handle::safeCast(m_current)) != nullptr)
+        if((current_handle = handle::safe_cast(m_current)) != nullptr)
         {
             int old_pos = current_handle->pos();
             int new_pos = _event->pos().x();
-            current_handle->setPos(new_pos);
+            current_handle->set_pos(new_pos);
 
-            if(!m_allowMinGreaterThanMax
-               && min_handle->floatingPos() + m_minimumMinMaxDelta >= max_handle->floatingPos())
+            if(!m_allow_min_greater_than_max
+               && min_handle->floating_pos() + m_minimum_min_max_delta >= max_handle->floating_pos())
             {
-                current_handle->setPos(old_pos);
+                current_handle->set_pos(old_pos);
             }
 
-            window->setPos(min_handle->pos(), max_handle->pos());
+            window->set_pos(min_handle->pos(), max_handle->pos());
         }
-        else if(Window::safeCast(m_current) != nullptr)
+        else if(window::safe_cast(m_current) != nullptr)
         {
-            QPoint delta = m_pressPos - _event->pos();
+            QPoint delta = m_press_pos - _event->pos();
 
-            min_handle->setPos(m_pressMin);
-            max_handle->setPos(m_pressMax);
-            window->setPos(min_handle->pos(), max_handle->pos());
+            min_handle->set_pos(m_press_min);
+            max_handle->set_pos(m_press_max);
+            window->set_pos(min_handle->pos(), max_handle->pos());
             this->move(delta.x());
         }
 
-        double min = min_handle->floatingPos();
-        double max = max_handle->floatingPos();
-        if(this->movedTo(min, max))
+        double min = min_handle->floating_pos();
+        double max = max_handle->floating_pos();
+        if(this->moved_to(min, max))
         {
-            Q_EMIT sliderRangeEdited(min, max);
+            Q_EMIT slider_range_edited(min, max);
         }
 
         this->update();
@@ -449,23 +449,23 @@ void range_slider::mouseMoveEvent(QMouseEvent* _event)
 
 void range_slider::mousePressEvent(QMouseEvent* _event)
 {
-    Handle* min_handle = Handle::safeCast(m_minHandle);
-    Handle* max_handle = Handle::safeCast(m_maxHandle);
+    handle* min_handle = handle::safe_cast(m_min_handle);
+    handle* max_handle = handle::safe_cast(m_max_handle);
 //    Window *window     = Window::safeCast(m_window);
 
-    m_pressPos = _event->pos();
-    m_pressMin = min_handle->pos();
-    m_pressMax = max_handle->pos();
+    m_press_pos = _event->pos();
+    m_press_min = min_handle->pos();
+    m_press_max = max_handle->pos();
 
-    if(m_maxHandle->pick(m_pressPos))
+    if(m_max_handle->pick(m_press_pos))
     {
-        m_current = m_maxHandle;
+        m_current = m_max_handle;
     }
-    else if(m_minHandle->pick(m_pressPos))
+    else if(m_min_handle->pick(m_press_pos))
     {
-        m_current = m_minHandle;
+        m_current = m_min_handle;
     }
-    else if(m_window->pick(m_pressPos))
+    else if(m_window->pick(m_press_pos))
     {
         m_current = m_window;
     }
@@ -482,9 +482,9 @@ void range_slider::mouseReleaseEvent(QMouseEvent* /*event*/)
 
 void range_slider::wheelEvent(QWheelEvent* _event)
 {
-    Handle* min_handle = Handle::safeCast(m_minHandle);
-    Handle* max_handle = Handle::safeCast(m_maxHandle);
-    Window* window     = Window::safeCast(m_window);
+    handle* min_handle   = handle::safe_cast(m_min_handle);
+    handle* max_handle   = handle::safe_cast(m_max_handle);
+    class window* window = window::safe_cast(m_window);
 
     const auto angle_delta = _event->angleDelta();
 
@@ -494,16 +494,16 @@ void range_slider::wheelEvent(QWheelEvent* _event)
     if(angle_delta.y() != 0)
     {
         int delta = int(this->size().width() / (((double) angle_delta.y()) / 4.));
-        if(!m_allowMinGreaterThanMax)
+        if(!m_allow_min_greater_than_max)
         {
             int diff     = (high - low);
-            int min_diff = min_handle->fromFloatingPos(m_minimumMinMaxDelta);
+            int min_diff = min_handle->from_floating_pos(m_minimum_min_max_delta);
             delta = std::max(delta, -(diff - min_diff) / 2);
         }
 
-        low  = min_handle->setPos(low - delta);
-        high = max_handle->setPos(high + delta);
-        window->setPos(low, high);
+        low  = min_handle->set_pos(low - delta);
+        high = max_handle->set_pos(high + delta);
+        window->set_pos(low, high);
     }
     else if(angle_delta.x() != 0)
     {
@@ -511,11 +511,11 @@ void range_slider::wheelEvent(QWheelEvent* _event)
         this->move(delta);
     }
 
-    double min = min_handle->floatingPos();
-    double max = max_handle->floatingPos();
-    if(this->movedTo(min, max))
+    double min = min_handle->floating_pos();
+    double max = max_handle->floating_pos();
+    if(this->moved_to(min, max))
     {
-        Q_EMIT sliderRangeEdited(min, max);
+        Q_EMIT slider_range_edited(min, max);
     }
 
     this->update();
@@ -525,7 +525,7 @@ void range_slider::wheelEvent(QWheelEvent* _event)
 
 void range_slider::resizeEvent(QResizeEvent* /*event*/)
 {
-    this->setPos(m_minValue, m_maxValue);
+    this->set_pos(m_min_value, m_max_value);
 }
 
 } // namespace sight::ui::qt::widget

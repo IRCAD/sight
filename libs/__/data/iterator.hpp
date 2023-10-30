@@ -48,7 +48,7 @@ namespace sight::data
  * Example:
  * @code{.cpp}
     data::image::sptr img = std::make_shared<data::image>();
-    img->resize(1920, 1080, 0, core::type::UINT8, data::image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 0, core::type::UINT8, data::image::pixel_format::rgba);
     auto iter    = img->begin<RGBA>();
     const auto iterEnd = img->end<RGBA>();
 
@@ -72,19 +72,19 @@ public:
      * @{
      */
 
-    using pointer    = T*;
+    using pointer_t  = T*;
     using value_type = T;
     using reference  = T&;
 
     /// Define difference type
-    typedef std::ptrdiff_t difference_type;
+    using difference_type = std::ptrdiff_t;
 
     /// define the category of the iterator.
-    typedef std::random_access_iterator_tag iterator_category;
+    using iterator_category = std::random_access_iterator_tag;
     /// @}
 
     array_iterator() = default;
-    constexpr array_iterator(pointer _begin);
+    constexpr array_iterator(pointer_t _begin);
     array_iterator(const array_iterator<T>& _other) = default;
     array_iterator(array_iterator<T>&& _other) noexcept = default;
     ~array_iterator() = default;
@@ -115,17 +115,17 @@ public:
     reference operator*() const;
 
     /// Value access operators
-    constexpr pointer operator->() const noexcept;
+    constexpr pointer_t operator->() const noexcept;
 
 protected:
 
     /// allow to create a ConstIterator from an Iterator
     friend class array_iterator<const T>;
 
-    pointer m_current {nullptr};
+    pointer_t m_current {nullptr};
 #ifdef SIGHT_DEBUG_ITERATOR
-    pointer m_begin {nullptr};
-    pointer m_end {nullptr};
+    pointer_t m_begin {nullptr};
+    pointer_t m_end {nullptr};
 #endif
 };
 

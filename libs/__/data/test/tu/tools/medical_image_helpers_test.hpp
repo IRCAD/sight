@@ -32,17 +32,17 @@ namespace sight::data::tools::ut
 class medical_image_helpers_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(medical_image_helpers_test);
-CPPUNIT_TEST(getMinMaxTest);
-CPPUNIT_TEST(getPixelTest);
-CPPUNIT_TEST(setPixelTest);
-CPPUNIT_TEST(isBufNull);
-CPPUNIT_TEST(testLandmarks);
-CPPUNIT_TEST(testImageValidity);
-CPPUNIT_TEST(testSliceIndex);
-CPPUNIT_TEST(testDistances);
-CPPUNIT_TEST(testDistanceVisibility);
-CPPUNIT_TEST(testLandmarksVisibility);
-CPPUNIT_TEST(computeHistogram);
+CPPUNIT_TEST(get_min_max_test);
+CPPUNIT_TEST(get_pixel_test);
+CPPUNIT_TEST(set_pixel_test);
+CPPUNIT_TEST(is_buf_null);
+CPPUNIT_TEST(test_landmarks);
+CPPUNIT_TEST(test_image_validity);
+CPPUNIT_TEST(test_slice_index);
+CPPUNIT_TEST(test_distances);
+CPPUNIT_TEST(test_distance_visibility);
+CPPUNIT_TEST(test_landmarks_visibility);
+CPPUNIT_TEST(compute_histogram);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,40 +53,40 @@ public:
     void tearDown() override;
 
     /// Tests the get_min_max method.
-    static void getMinMaxTest();
+    static void get_min_max_test();
 
     /// Tests the getPixel method for several image pixel types
-    static void getPixelTest();
+    static void get_pixel_test();
 
     /// Tests the setPixel method for several image pixel types
-    static void setPixelTest();
+    static void set_pixel_test();
 
     /// Tests isBuffNull method.
-    static void isBufNull();
+    static void is_buf_null();
 
     /// Tests helper method around landmarks (get/set).
-    static void testLandmarks();
+    static void test_landmarks();
 
     /// Tests check_image_validity method.
-    static void testImageValidity();
+    static void test_image_validity();
 
     /// Tests helper methods around slice count.
-    void testSliceCount();
+    void test_slice_count();
 
     /// Tests helper methods around slice indexes.
-    static void testSliceIndex();
+    static void test_slice_index();
 
     /// Tests helper methods around distances.
-    static void testDistances();
+    static void test_distances();
 
     /// Tests set/get methods on distance visibility.
-    static void testDistanceVisibility();
+    static void test_distance_visibility();
 
     /// Tests set/get methods on landmarks visibility.
-    static void testLandmarksVisibility();
+    static void test_landmarks_visibility();
 
     /// Test the computation of the image histogram
-    static void computeHistogram();
+    static void compute_histogram();
 };
 
 } // namespace sight::data::tools::ut

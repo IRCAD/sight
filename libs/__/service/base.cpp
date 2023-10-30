@@ -44,7 +44,7 @@ connections_t::connections_t(
 {
     for(const auto& [key, sig, slot] : _init)
     {
-        m_keyConnectionsMap[key].emplace_back(sig, slot);
+        m_key_connections_map[key].emplace_back(sig, slot);
     }
 }
 
@@ -56,7 +56,7 @@ void connections_t::push(
     const core::com::slots::key_t& _slot
 )
 {
-    m_keyConnectionsMap[_key].emplace_back(_sig, _slot);
+    m_key_connections_map[_key].emplace_back(_sig, _slot);
 }
 
 //------------------------------------------------------------------------------
@@ -65,28 +65,28 @@ connections_t::key_connections_map_t::const_iterator connections_t::find(
     std::string_view _key
 ) const
 {
-    return m_keyConnectionsMap.find(_key);
+    return m_key_connections_map.find(_key);
 }
 
 //------------------------------------------------------------------------------
 
 connections_t::key_connections_map_t::const_iterator connections_t::end() const
 {
-    return m_keyConnectionsMap.cend();
+    return m_key_connections_map.cend();
 }
 
 //------------------------------------------------------------------------------
 
 bool connections_t::empty() const
 {
-    return m_keyConnectionsMap.empty();
+    return m_key_connections_map.empty();
 }
 
 //------------------------------------------------------------------------------
 
 std::size_t connections_t::size() const
 {
-    return m_keyConnectionsMap.size();
+    return m_key_connections_map.size();
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ base::base() :
     new_slot(slots::STOP, [this](){m_pimpl->stop(true);});
     new_slot(slots::UPDATE, [this](){m_pimpl->update(true);});
     new_slot(
-        slots::swap_key,
+        slots::SWAP_KEY,
         [this](std::string_view _key, data::object::sptr _obj)
         {
             m_pimpl->swap_key(_key, _obj, true);
@@ -203,42 +203,42 @@ base::shared_future_t base::swap_key(std::string_view _key, data::object::sptr _
         return m_pimpl->swap_key(_key, _obj, false);
     }
 
-    return slot(slots::swap_key)->async_run(_key, _obj);
+    return slot(slots::SWAP_KEY)->async_run(_key, _obj);
 }
 
 //-----------------------------------------------------------------------------
 
-base::GlobalStatus base::status() const noexcept
+base::global_status base::status() const noexcept
 {
-    return m_pimpl->m_globalState;
+    return m_pimpl->m_global_state;
 }
 
 //-----------------------------------------------------------------------------
 
-base::ConfigurationStatus base::config_status() const noexcept
+base::configuration_status base::config_status() const noexcept
 {
-    return m_pimpl->m_configurationState;
+    return m_pimpl->m_configuration_state;
 }
 
 //-----------------------------------------------------------------------------
 
 bool base::started() const noexcept
 {
-    return m_pimpl->m_globalState == STARTED;
+    return m_pimpl->m_global_state == global_status::started;
 }
 
 //-----------------------------------------------------------------------------
 
 bool base::stopped() const noexcept
 {
-    return m_pimpl->m_globalState == STOPPED;
+    return m_pimpl->m_global_state == global_status::stopped;
 }
 
 //-----------------------------------------------------------------------------
 
-base::UpdatingStatus base::updating_status() const noexcept
+enum base::updating_status base::updating_status() const noexcept
 {
-    return m_pimpl->m_updatingState;
+    return m_pimpl->m_updating_state;
 }
 
 //-----------------------------------------------------------------------------

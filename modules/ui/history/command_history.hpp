@@ -91,7 +91,7 @@ protected:
 
 private:
 
-    typedef core::com::signal<void (bool)> can_do_signal_t;
+    using can_do_signal_t = core::com::signal<void (bool)>;
 
     /// SLOT: add a command to the history.
     void enqueue(sight::ui::history::command::sptr _command);
@@ -106,13 +106,13 @@ private:
     void clear();
 
     /// Send 'canUndo' and 'canRedo' signals.
-    void emitModifiedSig() const;
+    void emit_modified_sig() const;
 
-    can_do_signal_t::sptr m_canUndoSig;
+    can_do_signal_t::sptr m_can_undo_sig;
 
-    can_do_signal_t::sptr m_canRedoSig;
+    can_do_signal_t::sptr m_can_redo_sig;
 
-    sight::ui::history::UndoRedoManager m_undoRedoManager;
+    sight::ui::history::undo_redo_manager m_undo_redo_manager;
 };
 
 } // namespace sight::module::ui::history

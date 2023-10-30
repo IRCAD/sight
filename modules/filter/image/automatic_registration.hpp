@@ -45,7 +45,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="opITK::automatic_registration">
+   <service type="sight::module::filter::image::automatic_registration">
        <in key="target" uid="..." />
        <in key="reference" uid="..." />
        <inout key="transform" uid="..." />
@@ -116,46 +116,46 @@ protected:
 private:
 
     /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
-    void setEnumParameter(std::string _val, std::string _key) override;
+    void set_enum_parameter(std::string _val, std::string _key) override;
 
     /// Set the minimum and maximum step sizes. keys are "minStep" and "maxStep".
-    void setDoubleParameter(double _val, std::string _key) override;
+    void set_double_parameter(double _val, std::string _key) override;
 
     /// Set the maximum number of iterations, key must be "maxIterations".
-    void setIntParameter(int _val, std::string _key) override;
+    void set_int_parameter(int _val, std::string _key) override;
 
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
-    void setMetric(const std::string& _metric_name);
+    void set_metric(const std::string& _metric_name);
 
     /// Extract the level at the end of the parameter name.
     /// Create the level if it doesn't exist
-    std::uint64_t extractLevelFromParameterName(const std::string& _name);
+    std::uint64_t extract_level_from_parameter_name(const std::string& _name);
 
     /// Smallest step that can be taken by the optimizer.
-    double m_minStep {};
+    double m_min_step {};
 
     /// Maximum number of iterations allowed.
-    std::uint64_t m_maxIterations {};
+    std::uint64_t m_max_iterations {};
 
     /// Flag enabling the registration log.
     bool m_log = {false};
 
     /// metric used by the optimizer.
-    sight::filter::image::metric_t m_metric {sight::filter::image::metric_t::MEAN_SQUARES};
+    sight::filter::image::metric_t m_metric {sight::filter::image::metric_t::mean_squares};
 
     /// Shrink factors per level and smoothing sigmas per level.
-    sight::filter::image::automatic_registration::multi_resolution_parameters_t m_multiResolutionParameters;
+    sight::filter::image::automatic_registration::multi_resolution_parameters_t m_multi_resolution_parameters;
 
     /// Percentage of samples used for registration.
-    sight::filter::image::automatic_registration::real_t m_samplingPercentage {};
+    sight::filter::image::automatic_registration::real_t m_sampling_percentage {};
 
-    static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
-    static constexpr std::string_view s_TARGET_IN       = "target";
-    static constexpr std::string_view s_REFERENCE_IN    = "reference";
+    static constexpr std::string_view TRANSFORM_INOUT = "transform";
+    static constexpr std::string_view TARGET_IN       = "target";
+    static constexpr std::string_view REFERENCE_IN    = "reference";
 
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::inout> m_transform {this, s_TRANSFORM_INOUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_target {this, s_TARGET_IN};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_reference {this, s_REFERENCE_IN};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_transform {this, TRANSFORM_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_target {this, TARGET_IN};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_reference {this, REFERENCE_IN};
 };
 
 } // namespace sight::module::filter::image

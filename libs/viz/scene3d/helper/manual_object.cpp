@@ -33,7 +33,7 @@ namespace sight::viz::scene3d::helper
 
 //-----------------------------------------------------------------------------
 
-void manual_object::createCylinder(
+void manual_object::create_cylinder(
     Ogre::ManualObject* _object,
     const std::string& _material,
     const Ogre::ColourValue& _color,
@@ -116,7 +116,7 @@ void manual_object::createCylinder(
 
 //-----------------------------------------------------------------------------
 
-void manual_object::createCone(
+void manual_object::create_cone(
     Ogre::ManualObject* _object,
     const std::string& _material,
     const Ogre::ColourValue& _color,
@@ -187,7 +187,7 @@ void manual_object::createCone(
 
 //------------------------------------------------------------------------------
 
-void manual_object::createCube(
+void manual_object::create_cube(
     Ogre::ManualObject* _object,
     const std::string& _material,
     const Ogre::ColourValue& _color,
@@ -283,7 +283,7 @@ void manual_object::createCube(
 
 //------------------------------------------------------------------------------
 
-void manual_object::createSphere(
+void manual_object::create_sphere(
     Ogre::ManualObject* _object,
     const std::string& _material,
     const Ogre::ColourValue& _color,
@@ -331,7 +331,7 @@ void manual_object::createSphere(
 
 //------------------------------------------------------------------------------
 
-void manual_object::createFrustum(
+void manual_object::create_frustum(
     Ogre::ManualObject* _object,
     const std::string& _material,
     const Ogre::Frustum& _frustum
@@ -365,7 +365,7 @@ void manual_object::createFrustum(
 
 //------------------------------------------------------------------------------
 
-void manual_object::drawDashedLine(
+void manual_object::draw_dashed_line(
     Ogre::ManualObject* _object,
     const Ogre::Vector3& _p1,
     const Ogre::Vector3& _p2,

@@ -151,8 +151,8 @@ void system::robust_rename(
 
 [[deprecated("Removed in sight 23.0.")]] const std::filesystem::path& system::get_temp_path() noexcept
 {
-    static const std::filesystem::path temp_path = std::filesystem::temp_directory_path();
-    return temp_path;
+    static const std::filesystem::path s_TEMP_PATH = std::filesystem::temp_directory_path();
+    return s_TEMP_PATH;
 }
 
 //------------------------------------------------------------------------------

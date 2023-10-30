@@ -55,7 +55,7 @@ namespace sight::module::ui::qt::metrics
 {
 
 static_assert(
-    std::is_same_v<data::landmarks::group_modified_signal_t, data::has_fiducials::signals::GroupModified>,
+    std::is_same_v<data::landmarks::group_modified_signal_t, data::has_fiducials::signals::group_modified>,
     "'groupModified' signal from data::landmarks and data::has_fiducials must have the same signature"
 );
 
@@ -64,16 +64,16 @@ namespace
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] std::vector<std::string> get_group_names(LandmarksOrImageSeriesConstPtr _li)
+[[nodiscard]] std::vector<std::string> get_group_names(landmarks_or_image_series_const_ptr _li)
 {
     if(_li.landmarks != nullptr)
     {
-        return _li.landmarks->getGroupNames();
+        return _li.landmarks->get_group_names();
     }
 
-    if(_li.imageSeries != nullptr)
+    if(_li.image_series != nullptr)
     {
-        return _li.imageSeries->getFiducials()->getPointFiducialsGroupNames();
+        return _li.image_series->get_fiducials()->get_point_fiducials_group_names();
     }
 
     SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
@@ -82,47 +82,50 @@ namespace
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] std::optional<std::size_t> num_points(LandmarksOrImageSeriesConstPtr _li, const std::string& _group_name)
-{
-    if(_li.landmarks != nullptr)
-    {
-        if(!_li.landmarks->hasGroup(_group_name))
-        {
-            return std::nullopt;
-        }
-
-        return _li.landmarks->numPoints(_group_name);
-    }
-
-    if(_li.imageSeries != nullptr)
-    {
-        return _li.imageSeries->getFiducials()->getNumberOfPointsInGroup(_group_name);
-    }
-
-    SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
-    return {};
-}
-
-//------------------------------------------------------------------------------
-
-[[nodiscard]] std::optional<data::landmarks::LandmarksGroup> get_group(
-    LandmarksOrImageSeriesConstPtr _li,
+[[nodiscard]] std::optional<std::size_t> num_points(
+    landmarks_or_image_series_const_ptr _li,
     const std::string& _group_name
 )
 {
     if(_li.landmarks != nullptr)
     {
-        if(!_li.landmarks->hasGroup(_group_name))
+        if(!_li.landmarks->has_group(_group_name))
         {
             return std::nullopt;
         }
 
-        return _li.landmarks->getGroup(_group_name);
+        return _li.landmarks->num_points(_group_name);
     }
 
-    if(_li.imageSeries != nullptr)
+    if(_li.image_series != nullptr)
     {
-        return _li.imageSeries->getFiducials()->getGroup(_group_name);
+        return _li.image_series->get_fiducials()->get_number_of_points_in_group(_group_name);
+    }
+
+    SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::optional<data::landmarks::landmarks_group> get_group(
+    landmarks_or_image_series_const_ptr _li,
+    const std::string& _group_name
+)
+{
+    if(_li.landmarks != nullptr)
+    {
+        if(!_li.landmarks->has_group(_group_name))
+        {
+            return std::nullopt;
+        }
+
+        return _li.landmarks->get_group(_group_name);
+    }
+
+    if(_li.image_series != nullptr)
+    {
+        return _li.image_series->get_fiducials()->get_group(_group_name);
     }
 
     SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
@@ -132,24 +135,24 @@ namespace
 //------------------------------------------------------------------------------
 
 [[nodiscard]] std::optional<data::landmarks::point_t> get_point(
-    LandmarksOrImageSeriesConstPtr _li,
+    landmarks_or_image_series_const_ptr _li,
     const std::string& _group_name,
     std::size_t _index
 )
 {
     if(_li.landmarks != nullptr)
     {
-        if(!_li.landmarks->hasGroup(_group_name))
+        if(!_li.landmarks->has_group(_group_name))
         {
             return std::nullopt;
         }
 
-        return _li.landmarks->getPoint(_group_name, _index);
+        return _li.landmarks->get_point(_group_name, _index);
     }
 
-    if(_li.imageSeries != nullptr)
+    if(_li.image_series != nullptr)
     {
-        return _li.imageSeries->getFiducials()->getPoint(_group_name, _index);
+        return _li.image_series->get_fiducials()->get_point(_group_name, _index);
     }
 
     SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
@@ -161,22 +164,22 @@ namespace
 //------------------------------------------------------------------------------
 
 static const char* s_group_property_name = "group";
-static const int s_GROUP_NAME_ROLE       = Qt::UserRole + 1;
+static const int GROUP_NAME_ROLE         = Qt::UserRole + 1;
 
 static const core::com::slots::key_t ADD_POINT_SLOT      = "addPoint";
 static const core::com::slots::key_t MODIFY_POINT_SLOT   = "modifyPoint";
 static const core::com::slots::key_t SELECT_POINT_SLOT   = "selectPoint";
 static const core::com::slots::key_t DESELECT_POINT_SLOT = "deselectPoint";
 static const core::com::slots::key_t REMOVE_POINT_SLOT   = "removePoint";
-static const core::com::slots::key_t ADD_GROUP_SLOT      = "addGroup";
-static const core::com::slots::key_t REMOVE_GROUP_SLOT   = "removeGroup";
+static const core::com::slots::key_t ADD_GROUP_SLOT      = "add_group";
+static const core::com::slots::key_t REMOVE_GROUP_SLOT   = "remove_group";
 static const core::com::slots::key_t MODIFY_GROUP_SLOT   = "modifyGroup";
-static const core::com::slots::key_t RENAME_GROUP_SLOT   = "renameGroup";
+static const core::com::slots::key_t RENAME_GROUP_SLOT   = "rename_group";
 
-static const std::string s_SIZE_CONFIG     = "size";
-static const std::string s_OPACITY_CONFIG  = "opacity";
-static const std::string s_ADVANCED_CONFIG = "advanced";
-static const std::string s_TEXT_CONFIG     = "text";
+static const std::string SIZE_CONFIG     = "size";
+static const std::string OPACITY_CONFIG  = "opacity";
+static const std::string ADVANCED_CONFIG = "advanced";
+static const std::string TEXT_CONFIG     = "text";
 
 const core::com::signals::key_t landmarks::SEND_WORLD_COORD = "sendWorldCoord";
 const core::com::signals::key_t landmarks::GROUP_SELECTED   = "groupSelected";
@@ -185,18 +188,18 @@ const core::com::signals::key_t landmarks::GROUP_SELECTED   = "groupSelected";
 
 landmarks::landmarks() noexcept
 {
-    new_slot(ADD_POINT_SLOT, &landmarks::addPoint, this);
-    new_slot(MODIFY_POINT_SLOT, &landmarks::modifyPoint, this);
-    new_slot(SELECT_POINT_SLOT, &landmarks::selectPoint, this);
-    new_slot(DESELECT_POINT_SLOT, &landmarks::deselectPoint, this);
-    new_slot(ADD_GROUP_SLOT, &landmarks::addGroup, this);
-    new_slot(REMOVE_POINT_SLOT, &landmarks::removePoint, this);
-    new_slot(REMOVE_GROUP_SLOT, &landmarks::removeGroup, this);
-    new_slot(MODIFY_GROUP_SLOT, &landmarks::modifyGroup, this);
-    new_slot(RENAME_GROUP_SLOT, &landmarks::renameGroup, this);
+    new_slot(ADD_POINT_SLOT, &landmarks::add_point, this);
+    new_slot(MODIFY_POINT_SLOT, &landmarks::modify_point, this);
+    new_slot(SELECT_POINT_SLOT, &landmarks::select_point, this);
+    new_slot(DESELECT_POINT_SLOT, &landmarks::deselect_point, this);
+    new_slot(ADD_GROUP_SLOT, &landmarks::add_group, this);
+    new_slot(REMOVE_POINT_SLOT, &landmarks::remove_point, this);
+    new_slot(REMOVE_GROUP_SLOT, &landmarks::remove_group, this);
+    new_slot(MODIFY_GROUP_SLOT, &landmarks::modify_group, this);
+    new_slot(RENAME_GROUP_SLOT, &landmarks::rename_group, this);
 
     new_signal<world_coordinates_signal_t>(SEND_WORLD_COORD);
-    new_signal<GroupSelectedSignal>(GROUP_SELECTED);
+    new_signal<group_selected_signal_t>(GROUP_SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -212,21 +215,21 @@ void landmarks::configuring()
 
     const service::config_t config = this->get_config();
 
-    m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
+    m_default_landmark_size = config.get<float>(SIZE_CONFIG, m_default_landmark_size);
     SIGHT_FATAL_IF(
-        "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
-        m_defaultLandmarkSize <= 0.F
+        "'size' value must be a positive number greater than 0 (current value: " << m_default_landmark_size << ")",
+        m_default_landmark_size <= 0.F
     );
 
-    m_defaultLandmarkOpacity = config.get<float>(s_OPACITY_CONFIG, m_defaultLandmarkOpacity);
+    m_default_landmark_opacity = config.get<float>(OPACITY_CONFIG, m_default_landmark_opacity);
     SIGHT_FATAL_IF(
-        "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
-        m_defaultLandmarkOpacity<0.F || m_defaultLandmarkOpacity>1.F
+        "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_default_landmark_opacity << ")",
+        m_default_landmark_opacity<0.F || m_default_landmark_opacity>1.F
     );
 
-    m_advancedMode = config.get<bool>(s_ADVANCED_CONFIG, false);
+    m_advanced_mode = config.get<bool>(ADVANCED_CONFIG, false);
 
-    m_text = config.get<std::string>(s_TEXT_CONFIG, m_text);
+    m_text = config.get<std::string>(TEXT_CONFIG, m_text);
 }
 
 //------------------------------------------------------------------------------
@@ -238,92 +241,92 @@ void landmarks::starting()
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
-    qt_container->getQtContainer()->setObjectName(service_id);
+    qt_container->get_qt_container()->setObjectName(service_id);
 
     auto* const layout      = new QVBoxLayout();
     auto* const grid_layout = new QGridLayout();
 
-    m_visibilityCheckbox = new QCheckBox();
+    m_visibility_checkbox = new QCheckBox();
     auto* const visibility_label = new QLabel(QString("Visibility"));
-    m_visibilityCheckbox->setObjectName(service_id + "/" + visibility_label->text());
-    m_sizeSlider = new QSlider(Qt::Horizontal);
-    m_sizeSlider->setMinimum(1);
-    m_sizeSlider->setMaximum(100);
+    m_visibility_checkbox->setObjectName(service_id + "/" + visibility_label->text());
+    m_size_slider = new QSlider(Qt::Horizontal);
+    m_size_slider->setMinimum(1);
+    m_size_slider->setMaximum(100);
     auto* const size_label = new QLabel(QString("Size"));
-    m_sizeSlider->setObjectName(service_id + "/" + size_label->text());
-    m_opacitySlider = new QSlider(Qt::Horizontal);
+    m_size_slider->setObjectName(service_id + "/" + size_label->text());
+    m_opacity_slider = new QSlider(Qt::Horizontal);
     auto* const opacity_label = new QLabel("Opacity");
-    m_opacitySlider->setObjectName(service_id + "/" + opacity_label->text());
-    m_shapeSelector = new QComboBox();
-    m_shapeSelector->addItem(QString("Cube"));
-    m_shapeSelector->addItem(QString("Sphere"));
+    m_opacity_slider->setObjectName(service_id + "/" + opacity_label->text());
+    m_shape_selector = new QComboBox();
+    m_shape_selector->addItem(QString("Cube"));
+    m_shape_selector->addItem(QString("Sphere"));
     auto* const shape_label = new QLabel("Shape");
-    m_shapeSelector->setObjectName(service_id + "/" + shape_label->text());
+    m_shape_selector->setObjectName(service_id + "/" + shape_label->text());
 
-    if(m_advancedMode)
+    if(m_advanced_mode)
     {
-        m_newGroupButton = new QPushButton("New Group");
-        m_newGroupButton->setObjectName(service_id + "/" + m_newGroupButton->text());
+        m_new_group_button = new QPushButton("New Group");
+        m_new_group_button->setObjectName(service_id + "/" + m_new_group_button->text());
     }
 
-    m_removeButton = new QPushButton("Delete");
-    m_removeButton->setObjectName(service_id + "/" + m_removeButton->text());
-    m_removeButton->setShortcut(QKeySequence::Delete);
+    m_remove_button = new QPushButton("Delete");
+    m_remove_button->setObjectName(service_id + "/" + m_remove_button->text());
+    m_remove_button->setShortcut(QKeySequence::Delete);
 
     grid_layout->addWidget(visibility_label, 0, 0);
-    grid_layout->addWidget(m_visibilityCheckbox, 0, 1);
+    grid_layout->addWidget(m_visibility_checkbox, 0, 1);
     grid_layout->addWidget(size_label, 1, 0);
-    grid_layout->addWidget(m_sizeSlider, 1, 1);
+    grid_layout->addWidget(m_size_slider, 1, 1);
     grid_layout->addWidget(opacity_label, 2, 0);
-    grid_layout->addWidget(m_opacitySlider, 2, 1);
+    grid_layout->addWidget(m_opacity_slider, 2, 1);
     grid_layout->addWidget(shape_label, 3, 0);
-    grid_layout->addWidget(m_shapeSelector, 3, 1);
-    grid_layout->addWidget(m_removeButton, 4, 1);
+    grid_layout->addWidget(m_shape_selector, 3, 1);
+    grid_layout->addWidget(m_remove_button, 4, 1);
 
-    m_groupEditorWidget = new QWidget();
-    m_groupEditorWidget->setLayout(grid_layout);
+    m_group_editor_widget = new QWidget();
+    m_group_editor_widget->setLayout(grid_layout);
 
-    m_treeWidget = new QTreeWidget();
-    m_treeWidget->setObjectName(service_id + "/treeWidget");
+    m_tree_widget = new QTreeWidget();
+    m_tree_widget->setObjectName(service_id + "/treeWidget");
     if(!m_text.empty())
     {
         auto* helper_text_label = new QLabel(QString::fromStdString(m_text));
         layout->addWidget(helper_text_label);
     }
 
-    if(m_advancedMode)
+    if(m_advanced_mode)
     {
-        layout->addWidget(m_newGroupButton);
+        layout->addWidget(m_new_group_button);
     }
 
-    layout->addWidget(m_treeWidget);
-    layout->addWidget(m_groupEditorWidget);
-    m_groupEditorWidget->setDisabled(true);
+    layout->addWidget(m_tree_widget);
+    layout->addWidget(m_group_editor_widget);
+    m_group_editor_widget->setDisabled(true);
 
     QStringList headers;
     headers << "Group" << "Color";
 
-    if(m_advancedMode)
+    if(m_advanced_mode)
     {
         // Add empty third column to display and edit point coordinates.
         headers << "";
     }
 
-    m_treeWidget->setHeaderLabels(headers);
+    m_tree_widget->setHeaderLabels(headers);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
     this->updating();
 
     SIGHT_ASSERT(
         "Either 'landmarks' or 'imageSeries' parameter must be set.",
-        (m_landmarks.const_lock() != nullptr) + (m_imageSeries.const_lock() != nullptr) == 1
+        (m_landmarks.const_lock() != nullptr) + (m_image_series.const_lock() != nullptr) == 1
     );
-    if(auto image_series = m_imageSeries.lock())
+    if(auto image_series = m_image_series.lock())
     {
-        image_series->getFiducials()->setGroupNamesForPointFiducials();
+        image_series->get_fiducials()->set_group_names_for_point_fiducials();
     }
 }
 
@@ -333,27 +336,27 @@ service::connections_t landmarks::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::POINT_ADDED_SIG, ADD_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::POINT_MODIFIED_SIG, MODIFY_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::POINT_SELECTED_SIG, SELECT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::POINT_DESELECTED_SIG, DESELECT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::GROUP_ADDED_SIG, ADD_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::GROUP_REMOVED_SIG, REMOVE_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::POINT_REMOVED_SIG, REMOVE_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::GROUP_MODIFIED_SIG, MODIFY_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::landmarks::GROUP_RENAMED_SIG, RENAME_GROUP_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(LANDMARKS_INOUT, data::landmarks::POINT_ADDED_SIG, ADD_POINT_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::POINT_MODIFIED_SIG, MODIFY_POINT_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::POINT_SELECTED_SIG, SELECT_POINT_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::POINT_DESELECTED_SIG, DESELECT_POINT_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::GROUP_ADDED_SIG, ADD_GROUP_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::GROUP_REMOVED_SIG, REMOVE_GROUP_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::POINT_REMOVED_SIG, REMOVE_POINT_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::GROUP_MODIFIED_SIG, MODIFY_GROUP_SLOT);
+    connections.push(LANDMARKS_INOUT, data::landmarks::GROUP_RENAMED_SIG, RENAME_GROUP_SLOT);
 
-    connections.push(s_IMAGE_SERIES_INOUT, data::image_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_ADDED, ADD_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_MODIFIED, MODIFY_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_SELECTED, SELECT_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_DESELECTED, DESELECT_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_ADDED, ADD_GROUP_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_REMOVED, REMOVE_GROUP_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_REMOVED, REMOVE_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_MODIFIED, MODIFY_GROUP_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_RENAMED, RENAME_GROUP_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::image_series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_ADDED, ADD_POINT_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_MODIFIED, MODIFY_POINT_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_SELECTED, SELECT_POINT_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_DESELECTED, DESELECT_POINT_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_ADDED, ADD_GROUP_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_REMOVED, REMOVE_GROUP_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_REMOVED, REMOVE_POINT_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_MODIFIED, MODIFY_GROUP_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_RENAMED, RENAME_GROUP_SLOT);
 
     return connections;
 }
@@ -362,35 +365,40 @@ service::connections_t landmarks::auto_connections() const
 
 void landmarks::updating()
 {
-    m_treeWidget->blockSignals(true);
+    m_tree_widget->blockSignals(true);
 
     {
-        LandmarksOrImageSeriesConstLock li_lock = constLock();
+        landmarks_or_image_series_const_lock li_lock = const_lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
-        m_treeWidget->clear();
+        m_tree_widget->clear();
 
         for(const auto& name : get_group_names(li_lock))
         {
-            this->addGroup(name);
-            this->addPoint(name);
+            this->add_group(name);
+            this->add_point(name);
         }
     }
 
-    QObject::connect(m_treeWidget.data(), &QTreeWidget::itemChanged, this, &landmarks::onGroupNameEdited);
-    QObject::connect(m_treeWidget.data(), &QTreeWidget::currentItemChanged, this, &landmarks::onSelectionChanged);
-    QObject::connect(m_treeWidget.data(), &QTreeWidget::itemDoubleClicked, this, &landmarks::onLandmarkDoubleClicked);
-    QObject::connect(m_sizeSlider.data(), &QSlider::valueChanged, this, &landmarks::onSizeChanged);
-    QObject::connect(m_opacitySlider.data(), &QSlider::valueChanged, this, &landmarks::onOpacityChanged);
-    QObject::connect(m_visibilityCheckbox.data(), &QCheckBox::stateChanged, this, &landmarks::onVisibilityChanged);
-    QObject::connect(m_shapeSelector.data(), &QComboBox::currentTextChanged, this, &landmarks::onShapeChanged);
-    QObject::connect(m_removeButton.data(), &QPushButton::clicked, this, &landmarks::onRemoveSelection);
-    QObject::connect(m_newGroupButton.data(), &QPushButton::clicked, this, &landmarks::onAddNewGroup);
+    QObject::connect(m_tree_widget.data(), &QTreeWidget::itemChanged, this, &landmarks::on_group_name_edited);
+    QObject::connect(m_tree_widget.data(), &QTreeWidget::currentItemChanged, this, &landmarks::on_selection_changed);
+    QObject::connect(
+        m_tree_widget.data(),
+        &QTreeWidget::itemDoubleClicked,
+        this,
+        &landmarks::on_landmark_double_clicked
+    );
+    QObject::connect(m_size_slider.data(), &QSlider::valueChanged, this, &landmarks::on_size_changed);
+    QObject::connect(m_opacity_slider.data(), &QSlider::valueChanged, this, &landmarks::on_opacity_changed);
+    QObject::connect(m_visibility_checkbox.data(), &QCheckBox::stateChanged, this, &landmarks::on_visibility_changed);
+    QObject::connect(m_shape_selector.data(), &QComboBox::currentTextChanged, this, &landmarks::on_shape_changed);
+    QObject::connect(m_remove_button.data(), &QPushButton::clicked, this, &landmarks::on_remove_selection);
+    QObject::connect(m_new_group_button.data(), &QPushButton::clicked, this, &landmarks::on_add_new_group);
 
-    m_treeWidget->blockSignals(false);
+    m_tree_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
@@ -402,13 +410,13 @@ void landmarks::stopping()
 
 //------------------------------------------------------------------------------
 
-void landmarks::onColorButton()
+void landmarks::on_color_button()
 {
     QObject* const sender = this->sender();
 
     // Create Color choice dialog.
-    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    QWidget* const container = qt_container->getQtContainer();
+    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    QWidget* const container = qt_container->get_qt_container();
     SIGHT_ASSERT("container not instanced", container);
 
     const auto old_color  = sender->property("color").value<QColor>();
@@ -419,7 +427,7 @@ void landmarks::onColorButton()
         auto* const color_button = dynamic_cast<QPushButton*>(sender);
         color_button->setProperty("color", color_qt);
 
-        setColorButtonIcon(color_button, color_qt);
+        set_color_button_icon(color_button, color_qt);
 
         const std::string group_name = color_button->property(s_group_property_name).value<QString>().toStdString();
 
@@ -431,37 +439,37 @@ void landmarks::onColorButton()
 
         data::landmarks::group_modified_signal_t::sptr sig;
         {
-            LandmarksOrImageSeriesLock li_lock = lock();
+            landmarks_or_image_series_lock li_lock = lock();
             SIGHT_ASSERT(
-                "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-                li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+                "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+                li_lock.landmarks != nullptr || li_lock.image_series != nullptr
             );
             if(li_lock.landmarks != nullptr)
             {
-                auto& group = li_lock.landmarks->getGroup(group_name);
+                auto& group = li_lock.landmarks->get_group(group_name);
                 group.m_color = color;
 
                 sig = li_lock.landmarks->signal<data::landmarks::group_modified_signal_t>(
                     data::landmarks::GROUP_MODIFIED_SIG
                 );
             }
-            else if(li_lock.imageSeries != nullptr)
+            else if(li_lock.image_series != nullptr)
             {
-                std::optional<std::pair<data::fiducials_series::FiducialSet, std::size_t> > fiducial_set =
-                    li_lock.imageSeries->getFiducials()->getFiducialSetAndIndex(group_name);
+                std::optional<std::pair<data::fiducials_series::fiducial_set, std::size_t> > fiducial_set =
+                    li_lock.image_series->get_fiducials()->get_fiducial_set_and_index(group_name);
                 if(!fiducial_set.has_value())
                 {
                     return;
                 }
 
-                li_lock.imageSeries->getFiducials()->setColor(fiducial_set->second, color);
-                sig = li_lock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+                li_lock.image_series->get_fiducials()->set_color(fiducial_set->second, color);
+                sig = li_lock.image_series->signal<data::has_fiducials::signals::group_modified>(
                     data::has_fiducials::signals::GROUP_MODIFIED
                 );
             }
         }
 
-        m_opacitySlider->setValue(static_cast<int>(color[3] * float(m_opacitySlider->maximum())));
+        m_opacity_slider->setValue(static_cast<int>(color[3] * float(m_opacity_slider->maximum())));
 
         {
             core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
@@ -472,14 +480,14 @@ void landmarks::onColorButton()
 
 //------------------------------------------------------------------------------
 
-void landmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
+void landmarks::on_group_name_edited(QTreeWidgetItem* _item, int _column)
 {
     SIGHT_ERROR_IF("A column different from the group's name is being edited", _column != 0);
-    m_treeWidget->blockSignals(true);
+    m_tree_widget->blockSignals(true);
 
     if(_column == 0)
     {
-        const QString old_group_name = _item->data(0, s_GROUP_NAME_ROLE).toString();
+        const QString old_group_name = _item->data(0, GROUP_NAME_ROLE).toString();
         const QString new_group_name = _item->text(0);
 
         if(new_group_name.isEmpty())
@@ -496,15 +504,15 @@ void landmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
             try
             {
                 {
-                    LandmarksOrImageSeriesLock li_lock = lock();
+                    landmarks_or_image_series_lock li_lock = lock();
                     SIGHT_ASSERT(
-                        "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-                        li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+                        "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+                        li_lock.landmarks != nullptr || li_lock.image_series != nullptr
                     );
 
                     if(li_lock.landmarks != nullptr)
                     {
-                        li_lock.landmarks->renameGroup(old_group_name.toStdString(), new_group_name.toStdString());
+                        li_lock.landmarks->rename_group(old_group_name.toStdString(), new_group_name.toStdString());
 
                         const auto sig = li_lock.landmarks->signal<data::landmarks::group_renamed_signal_t>(
                             data::landmarks::GROUP_RENAMED_SIG
@@ -515,22 +523,24 @@ void landmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
                             sig->async_emit(old_group_name.toStdString(), new_group_name.toStdString());
                         }
                     }
-                    else if(li_lock.imageSeries != nullptr)
+                    else if(li_lock.image_series != nullptr)
                     {
-                        std::optional<std::pair<data::fiducials_series::FiducialSet, std::size_t> > fiducial_set =
-                            li_lock.imageSeries->getFiducials()->getFiducialSetAndIndex(old_group_name.toStdString());
+                        std::optional<std::pair<data::fiducials_series::fiducial_set, std::size_t> > fiducial_set =
+                            li_lock.image_series->get_fiducials()->get_fiducial_set_and_index(
+                                old_group_name.toStdString()
+                            );
                         if(!fiducial_set.has_value())
                         {
                             throw data::exception("'" + old_group_name.toStdString() + "' group doesn't exist");
                         }
 
-                        li_lock.imageSeries->getFiducials()->setGroupName(
+                        li_lock.image_series->get_fiducials()->set_group_name(
                             fiducial_set->second,
                             new_group_name.toStdString()
                         );
 
                         const auto sig =
-                            li_lock.imageSeries->signal<data::has_fiducials::signals::GroupRenamed>(
+                            li_lock.image_series->signal<data::has_fiducials::signals::group_renamed>(
                                 data::has_fiducials::signals::GROUP_RENAMED
                             );
 
@@ -539,8 +549,8 @@ void landmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
                     }
                 }
 
-                _item->setData(0, s_GROUP_NAME_ROLE, new_group_name);
-                QWidget* const widget = m_treeWidget->itemWidget(_item, 1);
+                _item->setData(0, GROUP_NAME_ROLE, new_group_name);
+                QWidget* const widget = m_tree_widget->itemWidget(_item, 1);
 
                 widget->setProperty(s_group_property_name, new_group_name);
             }
@@ -556,25 +566,25 @@ void landmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
         }
     }
 
-    m_treeWidget->blockSignals(false);
+    m_tree_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous)
+void landmarks::on_selection_changed(QTreeWidgetItem* _current, QTreeWidgetItem* _previous)
 {
     if(_previous != nullptr)
     {
-        LandmarksOrImageSeriesConstLock li_lock = constLock();
+        landmarks_or_image_series_const_lock li_lock = const_lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
         data::landmarks::point_deselected_signal_t::sptr deselect_sig;
         static_assert(
             std::is_same_v<data::landmarks::point_deselected_signal_t,
-                           data::has_fiducials::signals::PointDeselected>,
+                           data::has_fiducials::signals::point_deselected>,
             "'pointDeselected' signal from data::landmarks and data::has_fiducials must have the same signature"
         );
         if(li_lock.landmarks != nullptr)
@@ -583,16 +593,16 @@ void landmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _
                 data::landmarks::POINT_DESELECTED_SIG
             );
         }
-        else if(li_lock.imageSeries != nullptr)
+        else if(li_lock.image_series != nullptr)
         {
-            deselect_sig = li_lock.imageSeries->signal<data::has_fiducials::signals::PointDeselected>(
+            deselect_sig = li_lock.image_series->signal<data::has_fiducials::signals::point_deselected>(
                 data::has_fiducials::signals::POINT_DESELECTED
             );
         }
 
         const core::com::connection::blocker block(deselect_sig->get_connection(this->slot(DESELECT_POINT_SLOT)));
 
-        if(m_advancedMode)
+        if(m_advanced_mode)
         {
             const QTreeWidgetItem* const previous_parent = _previous->parent();
 
@@ -625,16 +635,16 @@ void landmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _
         QString shape_text;
         float opacity = NAN;
         {
-            LandmarksOrImageSeriesConstLock li_lock = constLock();
+            landmarks_or_image_series_const_lock li_lock = const_lock();
             SIGHT_ASSERT(
-                "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-                li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+                "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+                li_lock.landmarks != nullptr || li_lock.image_series != nullptr
             );
 
             data::landmarks::point_selected_signal_t::sptr select_sig;
             static_assert(
                 std::is_same_v<data::landmarks::point_selected_signal_t,
-                               data::has_fiducials::signals::PointSelected>,
+                               data::has_fiducials::signals::point_selected>,
                 "'pointSelected' signal from data::landmarks and data::has_fiducials must have the same signature"
             );
             if(li_lock.landmarks != nullptr)
@@ -643,16 +653,16 @@ void landmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _
                     data::landmarks::POINT_SELECTED_SIG
                 );
             }
-            else if(li_lock.imageSeries != nullptr)
+            else if(li_lock.image_series != nullptr)
             {
-                select_sig = li_lock.imageSeries->signal<data::has_fiducials::signals::PointSelected>(
+                select_sig = li_lock.image_series->signal<data::has_fiducials::signals::point_selected>(
                     data::has_fiducials::signals::POINT_SELECTED
                 );
             }
 
             std::string group_name;
 
-            if(m_advancedMode)
+            if(m_advanced_mode)
             {
                 const QTreeWidgetItem* const current_parent = _current->parent();
 
@@ -683,7 +693,7 @@ void landmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _
                 select_sig->async_emit(group_name, 0);
             }
 
-            std::optional<data::landmarks::LandmarksGroup> group = get_group(li_lock, group_name);
+            std::optional<data::landmarks::landmarks_group> group = get_group(li_lock, group_name);
             if(!group.has_value())
             {
                 return;
@@ -691,29 +701,29 @@ void landmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _
 
             size       = static_cast<int>(group->m_size);
             visible    = group->m_visibility;
-            shape_text = group->m_shape == data::landmarks::Shape::CUBE ? "Cube" : "Sphere";
+            shape_text = group->m_shape == data::landmarks::shape::cube ? "Cube" : "Sphere";
             opacity    = group->m_color[3];
 
-            signal<GroupSelectedSignal>(GROUP_SELECTED)->async_emit(group_name);
+            signal<group_selected_signal_t>(GROUP_SELECTED)->async_emit(group_name);
         }
 
         // Set widget values
-        m_sizeSlider->setValue(size);
-        m_visibilityCheckbox->setChecked(visible);
-        m_shapeSelector->setCurrentText(shape_text);
-        m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
+        m_size_slider->setValue(size);
+        m_visibility_checkbox->setChecked(visible);
+        m_shape_selector->setCurrentText(shape_text);
+        m_opacity_slider->setValue(static_cast<int>(opacity * float(m_opacity_slider->maximum())));
     }
     else
     {
-        signal<GroupSelectedSignal>(GROUP_SELECTED)->async_emit("");
+        signal<group_selected_signal_t>(GROUP_SELECTED)->async_emit("");
     }
 
-    m_groupEditorWidget->setDisabled(_current == nullptr);
+    m_group_editor_widget->setDisabled(_current == nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int /*unused*/) const
+void landmarks::on_landmark_double_clicked(QTreeWidgetItem* _item, int /*unused*/) const
 {
     if(_item != nullptr)
     {
@@ -755,13 +765,13 @@ void landmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int /*unused*/) 
             return;
         }
 
-        updateCurrentLandmark(world_coord);
+        update_current_landmark(world_coord);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::updateCurrentLandmark(data::landmarks::point_t& _world_coord) const
+void landmarks::update_current_landmark(data::landmarks::point_t& _world_coord) const
 {
     // Send signal with world coordinates of the landmarks
 
@@ -776,10 +786,10 @@ void landmarks::updateCurrentLandmark(data::landmarks::point_t& _world_coord) co
     );
 
     //update the data with the current point
-    auto current_landmark = m_currentLandmark.lock();
+    auto current_landmark = m_current_landmark.lock();
     if(current_landmark)
     {
-        current_landmark->setCoord(_world_coord);
+        current_landmark->set_coord(_world_coord);
         auto current_landmark_modified_sig =
             current_landmark->signal<sight::data::object::modified_signal_t>(
                 sight::data::object::MODIFIED_SIG
@@ -790,17 +800,17 @@ void landmarks::updateCurrentLandmark(data::landmarks::point_t& _world_coord) co
 
 //------------------------------------------------------------------------------
 
-void landmarks::onSizeChanged(int _new_size)
+void landmarks::on_size_changed(int _new_size)
 {
     const auto real_size = static_cast<data::landmarks::size_t>(_new_size);
 
     std::string group_name;
-    if(currentSelection(group_name))
+    if(current_selection(group_name))
     {
-        LandmarksOrImageSeriesLock li_lock = lock();
+        landmarks_or_image_series_lock li_lock = lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
         data::landmarks::group_modified_signal_t::sptr sig;
@@ -809,23 +819,23 @@ void landmarks::onSizeChanged(int _new_size)
             sig = li_lock.landmarks->signal<data::landmarks::group_modified_signal_t>(
                 data::landmarks::GROUP_MODIFIED_SIG
             );
-            li_lock.landmarks->setGroupSize(group_name, real_size);
+            li_lock.landmarks->set_group_size(group_name, real_size);
         }
-        else if(li_lock.imageSeries != nullptr)
+        else if(li_lock.image_series != nullptr)
         {
-            sig = li_lock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+            sig = li_lock.image_series->signal<data::has_fiducials::signals::group_modified>(
                 data::has_fiducials::signals::GROUP_MODIFIED
             );
-            std::optional<std::pair<data::fiducials_series::FiducialSet,
+            std::optional<std::pair<data::fiducials_series::fiducial_set,
                                     std::size_t> > fiducial_set =
-                li_lock.imageSeries->getFiducials()->getFiducialSetAndIndex(group_name);
+                li_lock.image_series->get_fiducials()->get_fiducial_set_and_index(group_name);
             if(!fiducial_set.has_value())
             {
                 SIGHT_WARN("Couldn't change size of size of group '" << group_name << "', it doesn't exist");
                 return;
             }
 
-            li_lock.imageSeries->getFiducials()->setSize(fiducial_set->second, real_size);
+            li_lock.image_series->get_fiducials()->set_size(fiducial_set->second, real_size);
         }
 
         const core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
@@ -836,19 +846,19 @@ void landmarks::onSizeChanged(int _new_size)
 
 //------------------------------------------------------------------------------
 
-void landmarks::onOpacityChanged(int _new_opacity)
+void landmarks::on_opacity_changed(int _new_opacity)
 {
-    const auto slider_size = static_cast<float>(m_opacitySlider->maximum() - m_opacitySlider->minimum());
+    const auto slider_size = static_cast<float>(m_opacity_slider->maximum() - m_opacity_slider->minimum());
 
     const float real_opacity = static_cast<float>(_new_opacity) / slider_size;
 
     std::string group_name;
-    if(currentSelection(group_name))
+    if(current_selection(group_name))
     {
-        LandmarksOrImageSeriesLock li_lock = lock();
+        landmarks_or_image_series_lock li_lock = lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
         data::landmarks::group_modified_signal_t::sptr sig;
@@ -859,41 +869,42 @@ void landmarks::onOpacityChanged(int _new_opacity)
                 data::landmarks::GROUP_MODIFIED_SIG
             );
 
-            const auto group_color = li_lock.landmarks->getGroup(group_name).m_color;
+            const auto group_color = li_lock.landmarks->get_group(group_name).m_color;
 
             const data::landmarks::color_t new_group_color =
             {{group_color[0], group_color[1], group_color[2], real_opacity}};
 
-            li_lock.landmarks->setGroupColor(group_name, new_group_color);
+            li_lock.landmarks->set_group_color(group_name, new_group_color);
         }
-        else if(li_lock.imageSeries != nullptr)
+        else if(li_lock.image_series != nullptr)
         {
-            sig = li_lock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+            sig = li_lock.image_series->signal<data::has_fiducials::signals::group_modified>(
                 data::has_fiducials::signals::GROUP_MODIFIED
             );
-            std::optional<std::pair<data::fiducials_series::FiducialSet,
+            std::optional<std::pair<data::fiducials_series::fiducial_set,
                                     std::size_t> > fs =
-                li_lock.imageSeries->getFiducials()->getFiducialSetAndIndex(group_name);
+                li_lock.image_series->get_fiducials()->get_fiducial_set_and_index(group_name);
             if(!fs.has_value())
             {
                 SIGHT_WARN("Couldn't modify the color of group '" << group_name << "', it doesn't exist");
                 return;
             }
 
-            std::optional<data::landmarks::color_t> color = li_lock.imageSeries->getFiducials()->getColor(fs->second);
+            std::optional<data::landmarks::color_t> color =
+                li_lock.image_series->get_fiducials()->get_color(fs->second);
             SIGHT_ASSERT("The group must have a color", color.has_value());
             (*color)[3] = real_opacity;
-            li_lock.imageSeries->getFiducials()->setColor(fs->second, *color);
+            li_lock.image_series->get_fiducials()->set_color(fs->second, *color);
         }
 
-        QTreeWidgetItem* const item = getGroupItem(group_name);
-        auto* const color_button    = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
+        QTreeWidgetItem* const item = get_group_item(group_name);
+        auto* const color_button    = dynamic_cast<QPushButton*>(m_tree_widget->itemWidget(item, 1));
 
         auto current_color = color_button->property("color").value<QColor>();
         current_color.setAlphaF(real_opacity);
         color_button->setProperty("color", current_color);
 
-        setColorButtonIcon(color_button, current_color);
+        set_color_button_icon(color_button, current_color);
 
         core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
 
@@ -903,20 +914,20 @@ void landmarks::onOpacityChanged(int _new_opacity)
 
 //------------------------------------------------------------------------------
 
-void landmarks::onVisibilityChanged(int _visibility)
+void landmarks::on_visibility_changed(int _visibility)
 {
     std::string group_name;
-    if(currentSelection(group_name))
+    if(current_selection(group_name))
     {
-        LandmarksOrImageSeriesLock li_lock = lock();
+        landmarks_or_image_series_lock li_lock = lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
         if(li_lock.landmarks != nullptr)
         {
-            li_lock.landmarks->setGroupVisibility(group_name, static_cast<bool>(_visibility));
+            li_lock.landmarks->set_group_visibility(group_name, static_cast<bool>(_visibility));
 
             const auto sig = li_lock.landmarks->signal<data::landmarks::group_modified_signal_t>(
                 data::landmarks::GROUP_MODIFIED_SIG
@@ -926,19 +937,19 @@ void landmarks::onVisibilityChanged(int _visibility)
 
             sig->async_emit(group_name);
         }
-        else if(li_lock.imageSeries != nullptr)
+        else if(li_lock.image_series != nullptr)
         {
-            std::optional<std::pair<data::fiducials_series::FiducialSet, std::size_t> > fiducial_set =
-                li_lock.imageSeries->getFiducials()->getFiducialSetAndIndex(group_name);
+            std::optional<std::pair<data::fiducials_series::fiducial_set, std::size_t> > fiducial_set =
+                li_lock.image_series->get_fiducials()->get_fiducial_set_and_index(group_name);
             if(!fiducial_set.has_value())
             {
                 SIGHT_WARN("Couldn't change visibility of group '" << group_name << "', it doesn't exist");
                 return;
             }
 
-            li_lock.imageSeries->getFiducials()->setVisibility(fiducial_set->second, static_cast<bool>(_visibility));
+            li_lock.image_series->get_fiducials()->set_visibility(fiducial_set->second, static_cast<bool>(_visibility));
 
-            const auto sig = li_lock.imageSeries->signal<data::image_series::signals::GroupModified>(
+            const auto sig = li_lock.image_series->signal<data::image_series::signals::group_modified>(
                 data::image_series::signals::GROUP_MODIFIED
             );
             const core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
@@ -949,19 +960,19 @@ void landmarks::onVisibilityChanged(int _visibility)
 
 //------------------------------------------------------------------------------
 
-void landmarks::onShapeChanged(const QString& _shape)
+void landmarks::on_shape_changed(const QString& _shape)
 {
     std::string group_name;
-    if(currentSelection(group_name))
+    if(current_selection(group_name))
     {
         SIGHT_ASSERT("Shape must be 'Cube' or 'Sphere'.", _shape == "Cube" || _shape == "Sphere");
-        const data::landmarks::Shape s =
-            (_shape == "Cube") ? data::landmarks::Shape::CUBE : data::landmarks::Shape::SPHERE;
+        const data::landmarks::shape s =
+            (_shape == "Cube") ? data::landmarks::shape::cube : data::landmarks::shape::sphere;
 
-        LandmarksOrImageSeriesLock li_lock = lock();
+        landmarks_or_image_series_lock li_lock = lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
         data::landmarks::group_modified_signal_t::sptr sig;
@@ -971,26 +982,26 @@ void landmarks::onShapeChanged(const QString& _shape)
             sig = li_lock.landmarks->signal<data::landmarks::group_modified_signal_t>(
                 data::landmarks::GROUP_MODIFIED_SIG
             );
-            li_lock.landmarks->setGroupShape(group_name, s);
+            li_lock.landmarks->set_group_shape(group_name, s);
         }
-        else if(li_lock.imageSeries != nullptr)
+        else if(li_lock.image_series != nullptr)
         {
-            sig = li_lock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+            sig = li_lock.image_series->signal<data::has_fiducials::signals::group_modified>(
                 data::has_fiducials::signals::GROUP_MODIFIED
             );
-            std::optional<std::pair<data::fiducials_series::FiducialSet,
+            std::optional<std::pair<data::fiducials_series::fiducial_set,
                                     std::size_t> > fiducial_set =
-                li_lock.imageSeries->getFiducials()->getFiducialSetAndIndex(group_name);
+                li_lock.image_series->get_fiducials()->get_fiducial_set_and_index(group_name);
             if(!fiducial_set.has_value())
             {
                 SIGHT_WARN("Couldn't change shape of group '" << group_name << "', it doesn't exist");
                 return;
             }
 
-            li_lock.imageSeries->getFiducials()->setShape(
+            li_lock.image_series->get_fiducials()->set_shape(
                 fiducial_set->second,
-                s == data::landmarks::Shape::CUBE ? data::fiducials_series::PrivateShape::CUBE
-                                                  : data::fiducials_series::PrivateShape::SPHERE
+                s == data::landmarks::shape::cube ? data::fiducials_series::private_shape::cube
+                                                  : data::fiducials_series::private_shape::sphere
             );
         }
 
@@ -1002,26 +1013,30 @@ void landmarks::onShapeChanged(const QString& _shape)
 
 //------------------------------------------------------------------------------
 
-void landmarks::onAddNewGroup()
+void landmarks::on_add_new_group()
 {
-    const std::string group_name = this->generateNewGroupName();
+    const std::string group_name = this->generate_new_group_name();
 
-    LandmarksOrImageSeriesLock li_lock = lock();
+    landmarks_or_image_series_lock li_lock = lock();
     SIGHT_ASSERT(
-        "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-        li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+        "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+        li_lock.landmarks != nullptr || li_lock.image_series != nullptr
     );
     if(li_lock.landmarks != nullptr)
     {
-        li_lock.landmarks->addGroup(group_name, this->generateNewColor(), m_defaultLandmarkSize);
+        li_lock.landmarks->add_group(group_name, this->generate_new_color(), m_default_landmark_size);
         li_lock.landmarks->signal<data::landmarks::group_added_signal_t>(data::landmarks::GROUP_ADDED_SIG)->async_emit(
             group_name
         );
     }
-    else if(li_lock.imageSeries != nullptr)
+    else if(li_lock.image_series != nullptr)
     {
-        li_lock.imageSeries->getFiducials()->addGroup(group_name, this->generateNewColor(), m_defaultLandmarkSize);
-        li_lock.imageSeries->signal<data::has_fiducials::signals::GroupAdded>(
+        li_lock.image_series->get_fiducials()->add_group(
+            group_name,
+            this->generate_new_color(),
+            m_default_landmark_size
+        );
+        li_lock.image_series->signal<data::has_fiducials::signals::group_added>(
             data::has_fiducials::signals::GROUP_ADDED
         )->async_emit(group_name);
     }
@@ -1029,23 +1044,23 @@ void landmarks::onAddNewGroup()
 
 //------------------------------------------------------------------------------
 
-void landmarks::onRemoveSelection()
+void landmarks::on_remove_selection()
 {
-    m_treeWidget->blockSignals(true);
+    m_tree_widget->blockSignals(true);
 
-    QTreeWidgetItem* const item = m_treeWidget->currentItem();
+    QTreeWidgetItem* const item = m_tree_widget->currentItem();
 
     if(item != nullptr)
     {
-        const int top_level_index = m_treeWidget->indexOfTopLevelItem(item);
+        const int top_level_index = m_tree_widget->indexOfTopLevelItem(item);
 
-        LandmarksOrImageSeriesLock li_lock = lock();
+        landmarks_or_image_series_lock li_lock = lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
-        if(m_advancedMode && top_level_index == -1) // Delete point
+        if(m_advanced_mode && top_level_index == -1) // Delete point
         {
             QTreeWidgetItem* const item_parent = item->parent();
 
@@ -1055,7 +1070,7 @@ void landmarks::onRemoveSelection()
             data::landmarks::point_removed_signal_t::sptr sig;
             static_assert(
                 std::is_same_v<data::landmarks::point_removed_signal_t,
-                               data::has_fiducials::signals::PointRemoved>,
+                               data::has_fiducials::signals::point_removed>,
                 "'pointRemoved' signal from data::landmarks and data::has_fiducials must have the same signature"
             );
 
@@ -1064,14 +1079,14 @@ void landmarks::onRemoveSelection()
                 sig = li_lock.landmarks->signal<data::landmarks::point_removed_signal_t>(
                     data::landmarks::POINT_REMOVED_SIG
                 );
-                li_lock.landmarks->removePoint(group_name, index);
+                li_lock.landmarks->remove_point(group_name, index);
             }
-            else if(li_lock.imageSeries != nullptr)
+            else if(li_lock.image_series != nullptr)
             {
-                sig = li_lock.imageSeries->signal<data::has_fiducials::signals::PointRemoved>(
+                sig = li_lock.image_series->signal<data::has_fiducials::signals::point_removed>(
                     data::has_fiducials::signals::POINT_REMOVED
                 );
-                li_lock.imageSeries->getFiducials()->removePoint(group_name, index);
+                li_lock.image_series->get_fiducials()->remove_point(group_name, index);
             }
 
             item_parent->removeChild(item);
@@ -1088,7 +1103,7 @@ void landmarks::onRemoveSelection()
             data::landmarks::group_removed_signal_t::sptr sig;
             static_assert(
                 std::is_same_v<data::landmarks::group_removed_signal_t,
-                               data::has_fiducials::signals::GroupRemoved>,
+                               data::has_fiducials::signals::group_removed>,
                 "'groupRemoved' signal from data::landmarks and data::has_fiducials must have the same signature"
             );
 
@@ -1097,17 +1112,17 @@ void landmarks::onRemoveSelection()
                 sig = li_lock.landmarks->signal<data::landmarks::group_removed_signal_t>(
                     data::landmarks::GROUP_REMOVED_SIG
                 );
-                li_lock.landmarks->removeGroup(group_name);
+                li_lock.landmarks->remove_group(group_name);
             }
-            else if(li_lock.imageSeries != nullptr)
+            else if(li_lock.image_series != nullptr)
             {
-                sig = li_lock.imageSeries->signal<data::has_fiducials::signals::GroupRemoved>(
+                sig = li_lock.image_series->signal<data::has_fiducials::signals::group_removed>(
                     data::has_fiducials::signals::GROUP_REMOVED
                 );
-                li_lock.imageSeries->getFiducials()->removeGroup(group_name);
+                li_lock.image_series->get_fiducials()->remove_group(group_name);
             }
 
-            delete m_treeWidget->takeTopLevelItem(top_level_index);
+            delete m_tree_widget->takeTopLevelItem(top_level_index);
 
             {
                 const core::com::connection::blocker block(sig->get_connection(this->slot(REMOVE_GROUP_SLOT)));
@@ -1115,28 +1130,28 @@ void landmarks::onRemoveSelection()
             }
         }
 
-        m_treeWidget->setCurrentItem(nullptr);
-        m_groupEditorWidget->setDisabled(true);
+        m_tree_widget->setCurrentItem(nullptr);
+        m_group_editor_widget->setDisabled(true);
     }
 
-    m_treeWidget->blockSignals(false);
+    m_tree_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::addPoint(std::string _group_name) const
+void landmarks::add_point(std::string _group_name) const
 {
-    if(m_advancedMode)
+    if(m_advanced_mode)
     {
-        m_treeWidget->blockSignals(true);
+        m_tree_widget->blockSignals(true);
 
-        LandmarksOrImageSeriesConstLock li_lock = constLock();
+        landmarks_or_image_series_const_lock li_lock = const_lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
-        QTreeWidgetItem* const item = getGroupItem(_group_name);
+        QTreeWidgetItem* const item = get_group_item(_group_name);
 
         const auto nb_childs                       = static_cast<std::size_t>(item->childCount());
         std::optional<std::size_t> maybe_nb_points = num_points(li_lock, _group_name);
@@ -1165,56 +1180,56 @@ void landmarks::addPoint(std::string _group_name) const
             item->addChild(pt);
         }
 
-        m_treeWidget->blockSignals(false);
+        m_tree_widget->blockSignals(false);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::addGroup(std::string _name) const
+void landmarks::add_group(std::string _name) const
 {
     QColor color;
     {
-        LandmarksOrImageSeriesConstLock li_lock = constLock();
+        landmarks_or_image_series_const_lock li_lock = const_lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
-        std::optional<data::landmarks::LandmarksGroup> group = get_group(li_lock, _name);
+        std::optional<data::landmarks::landmarks_group> group = get_group(li_lock, _name);
         if(!group.has_value())
         {
             return;
         }
 
-        color = convertToQColor(group->m_color);
+        color = convert_to_q_color(group->m_color);
     }
 
     auto* const item = new QTreeWidgetItem();
     item->setFlags(item->flags() | Qt::ItemIsEditable);
-    item->setData(0, s_GROUP_NAME_ROLE, QString::fromStdString(_name));
+    item->setData(0, GROUP_NAME_ROLE, QString::fromStdString(_name));
 
-    m_treeWidget->addTopLevelItem(item);
+    m_tree_widget->addTopLevelItem(item);
 
     item->setText(0, QString::fromStdString(_name));
     auto* const button = new QPushButton();
 
-    setColorButtonIcon(button, color);
+    set_color_button_icon(button, color);
     button->setProperty("color", color);
     button->setProperty(s_group_property_name, QString::fromStdString(_name));
 
-    QObject::connect(button, &QPushButton::clicked, this, &landmarks::onColorButton);
+    QObject::connect(button, &QPushButton::clicked, this, &landmarks::on_color_button);
 
-    m_treeWidget->setItemWidget(item, 1, button);
+    m_tree_widget->setItemWidget(item, 1, button);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::removeGroup(std::string _name) const
+void landmarks::remove_group(std::string _name) const
 {
     try
     {
-        QTreeWidgetItem* const item = getGroupItem(_name);
+        QTreeWidgetItem* const item = get_group_item(_name);
 
         while(item->childCount() != 0)
         {
@@ -1222,8 +1237,8 @@ void landmarks::removeGroup(std::string _name) const
             item->removeChild(child);
         }
 
-        const int index                 = m_treeWidget->indexOfTopLevelItem(item);
-        QTreeWidgetItem* const top_item = m_treeWidget->takeTopLevelItem(index);
+        const int index                 = m_tree_widget->indexOfTopLevelItem(item);
+        QTreeWidgetItem* const top_item = m_tree_widget->takeTopLevelItem(index);
         delete top_item;
     }
     catch(const std::exception& e)
@@ -1234,67 +1249,67 @@ void landmarks::removeGroup(std::string _name) const
 
 //------------------------------------------------------------------------------
 
-void landmarks::removePoint(std::string _group_name, std::size_t _index) const
+void landmarks::remove_point(std::string _group_name, std::size_t _index) const
 {
-    m_treeWidget->blockSignals(true);
+    m_tree_widget->blockSignals(true);
 
-    QTreeWidgetItem* const item = getGroupItem(_group_name);
+    QTreeWidgetItem* const item = get_group_item(_group_name);
 
     SIGHT_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
 
     QTreeWidgetItem* const point_item = item->child(static_cast<int>(_index));
     item->removeChild(point_item);
-    m_treeWidget->blockSignals(false);
+    m_tree_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::renameGroup(std::string _old_name, std::string _new_name) const
+void landmarks::rename_group(std::string _old_name, std::string _new_name) const
 {
-    m_treeWidget->blockSignals(true);
+    m_tree_widget->blockSignals(true);
 
     const QString qt_new_name   = QString::fromStdString(_new_name);
-    QTreeWidgetItem* const item = getGroupItem(_old_name);
-    item->setData(0, s_GROUP_NAME_ROLE, qt_new_name);
-    QWidget* const widget = m_treeWidget->itemWidget(item, 1);
+    QTreeWidgetItem* const item = get_group_item(_old_name);
+    item->setData(0, GROUP_NAME_ROLE, qt_new_name);
+    QWidget* const widget = m_tree_widget->itemWidget(item, 1);
     widget->setProperty(s_group_property_name, qt_new_name);
 
     item->setText(0, qt_new_name);
 
-    m_treeWidget->blockSignals(false);
+    m_tree_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::modifyGroup(std::string _name) const
+void landmarks::modify_group(std::string _name) const
 {
-    QTreeWidgetItem* const item = getGroupItem(_name);
+    QTreeWidgetItem* const item = get_group_item(_name);
 
     item->setText(0, _name.c_str());
 
-    LandmarksOrImageSeriesConstLock li_lock = constLock();
+    landmarks_or_image_series_const_lock li_lock = const_lock();
     SIGHT_ASSERT(
-        "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-        li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+        "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+        li_lock.landmarks != nullptr || li_lock.image_series != nullptr
     );
 
-    std::optional<data::landmarks::LandmarksGroup> maybe_group = get_group(li_lock, _name);
+    std::optional<data::landmarks::landmarks_group> maybe_group = get_group(li_lock, _name);
     if(!maybe_group.has_value())
     {
         return;
     }
 
-    data::landmarks::LandmarksGroup group = *maybe_group;
+    data::landmarks::landmarks_group group = *maybe_group;
 
-    auto* const color_button = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
+    auto* const color_button = dynamic_cast<QPushButton*>(m_tree_widget->itemWidget(item, 1));
 
-    const QColor color = convertToQColor(group.m_color);
+    const QColor color = convert_to_q_color(group.m_color);
 
-    setColorButtonIcon(color_button, color);
+    set_color_button_icon(color_button, color);
 
     bool group_selected = item->isSelected();
 
-    if(m_advancedMode) // Check if a child is selected.
+    if(m_advanced_mode) // Check if a child is selected.
     {
         for(int i = 0 ; i < item->childCount() && !group_selected ; ++i)
         {
@@ -1305,24 +1320,24 @@ void landmarks::modifyGroup(std::string _name) const
     if(group_selected)
     {
         // Set widget values
-        m_sizeSlider->setValue(static_cast<int>(group.m_size));
-        m_visibilityCheckbox->setChecked(group.m_visibility);
+        m_size_slider->setValue(static_cast<int>(group.m_size));
+        m_visibility_checkbox->setChecked(group.m_visibility);
 
-        const QString shape_text = group.m_shape == data::landmarks::Shape::CUBE ? "Cube" : "Sphere";
-        m_shapeSelector->setCurrentText(shape_text);
+        const QString shape_text = group.m_shape == data::landmarks::shape::cube ? "Cube" : "Sphere";
+        m_shape_selector->setCurrentText(shape_text);
 
         const float opacity = group.m_color[3];
-        m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
+        m_opacity_slider->setValue(static_cast<int>(opacity * float(m_opacity_slider->maximum())));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::modifyPoint(std::string _group_name, std::size_t _index) const
+void landmarks::modify_point(std::string _group_name, std::size_t _index) const
 {
-    if(m_advancedMode)
+    if(m_advanced_mode)
     {
-        auto const item_list = m_treeWidget->findItems(QString::fromStdString(_group_name), Qt::MatchExactly);
+        auto const item_list = m_tree_widget->findItems(QString::fromStdString(_group_name), Qt::MatchExactly);
 
         SIGHT_ASSERT("Only a single item can be named '" + _group_name + "'", item_list.size() == 1);
 
@@ -1332,10 +1347,10 @@ void landmarks::modifyPoint(std::string _group_name, std::size_t _index) const
 
         QTreeWidgetItem* const point_item = item->child(static_cast<int>(_index));
 
-        LandmarksOrImageSeriesConstLock li_lock = constLock();
+        landmarks_or_image_series_const_lock li_lock = const_lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
         std::optional<data::landmarks::point_t> maybe_point = get_point(li_lock, _group_name, _index);
@@ -1346,25 +1361,25 @@ void landmarks::modifyPoint(std::string _group_name, std::size_t _index) const
 
         data::landmarks::point_t point = *maybe_point;
 
-        m_treeWidget->blockSignals(true);
+        m_tree_widget->blockSignals(true);
         for(int i = 0 ; i < 3 ; ++i)
         {
             point_item->setText(i, QString("%1").arg(point[static_cast<std::size_t>(i)]));
         }
 
-        m_treeWidget->blockSignals(false);
+        m_tree_widget->blockSignals(false);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::selectPoint(std::string _group_name, std::size_t _index) const
+void landmarks::select_point(std::string _group_name, std::size_t _index) const
 {
-    m_treeWidget->blockSignals(true);
+    m_tree_widget->blockSignals(true);
 
-    QTreeWidgetItem* current_item = getGroupItem(_group_name);
+    QTreeWidgetItem* current_item = get_group_item(_group_name);
 
-    if(m_advancedMode)
+    if(m_advanced_mode)
     {
         SIGHT_ASSERT(
             "Index must be less than " << current_item->childCount(),
@@ -1374,69 +1389,69 @@ void landmarks::selectPoint(std::string _group_name, std::size_t _index) const
         current_item = current_item->child(static_cast<int>(_index));
     }
 
-    m_treeWidget->setCurrentItem(current_item);
+    m_tree_widget->setCurrentItem(current_item);
 
     int size     = 0;
     bool visible = false;
     QString shape_text;
     float opacity = NAN;
     {
-        LandmarksOrImageSeriesConstLock li_lock = constLock();
+        landmarks_or_image_series_const_lock li_lock = const_lock();
         SIGHT_ASSERT(
-            "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-            li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+            "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+            li_lock.landmarks != nullptr || li_lock.image_series != nullptr
         );
 
-        std::optional<data::landmarks::LandmarksGroup> maybe_group = get_group(li_lock, _group_name);
+        std::optional<data::landmarks::landmarks_group> maybe_group = get_group(li_lock, _group_name);
         if(!maybe_group.has_value())
         {
             return;
         }
 
-        data::landmarks::LandmarksGroup group = *maybe_group;
+        data::landmarks::landmarks_group group = *maybe_group;
 
         size       = static_cast<int>(group.m_size);
         visible    = group.m_visibility;
-        shape_text = group.m_shape == data::landmarks::Shape::CUBE ? "Cube" : "Sphere";
+        shape_text = group.m_shape == data::landmarks::shape::cube ? "Cube" : "Sphere";
         opacity    = group.m_color[3];
     }
 
     // Set widget values
-    m_sizeSlider->setValue(size);
-    m_visibilityCheckbox->setChecked(visible);
-    m_shapeSelector->setCurrentText(shape_text);
-    m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
+    m_size_slider->setValue(size);
+    m_visibility_checkbox->setChecked(visible);
+    m_shape_selector->setCurrentText(shape_text);
+    m_opacity_slider->setValue(static_cast<int>(opacity * float(m_opacity_slider->maximum())));
 
-    m_groupEditorWidget->setEnabled(true);
-    m_treeWidget->blockSignals(false);
+    m_group_editor_widget->setEnabled(true);
+    m_tree_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::deselectPoint(std::string /*unused*/, std::size_t /*unused*/) const
+void landmarks::deselect_point(std::string /*unused*/, std::size_t /*unused*/) const
 {
-    m_treeWidget->blockSignals(true);
-    m_treeWidget->setCurrentItem(nullptr);
-    m_groupEditorWidget->setDisabled(true);
-    m_treeWidget->blockSignals(false);
+    m_tree_widget->blockSignals(true);
+    m_tree_widget->setCurrentItem(nullptr);
+    m_group_editor_widget->setDisabled(true);
+    m_tree_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
-std::string landmarks::generateNewGroupName() const
+std::string landmarks::generate_new_group_name() const
 {
     static std::size_t group_count = 0;
 
     // const auto landmarks = m_landmarks.lock();
-    LandmarksOrImageSeriesConstLock li_lock = constLock();
+    landmarks_or_image_series_const_lock li_lock = const_lock();
     SIGHT_ASSERT(
-        "Neither inout '" << s_LANDMARKS_INOUT << "' nor inout '" << s_IMAGE_SERIES_INOUT << "' exists.",
-        li_lock.landmarks != nullptr || li_lock.imageSeries != nullptr
+        "Neither inout '" << LANDMARKS_INOUT << "' nor inout '" << IMAGE_SERIES_INOUT << "' exists.",
+        li_lock.landmarks != nullptr || li_lock.image_series != nullptr
     );
 
     const data::landmarks::GroupNameContainer group_names = get_group_names(li_lock);
 
-    const std::string new_group_name_prefix = m_advancedMode ? "Group_" : "Point_";
+    const std::string new_group_name_prefix = m_advanced_mode ? "Group_" : "Point_";
 
     while(std::find(
               group_names.begin(),
@@ -1452,13 +1467,13 @@ std::string landmarks::generateNewGroupName() const
 
 //------------------------------------------------------------------------------
 
-std::array<float, 4> landmarks::generateNewColor()
+std::array<float, 4> landmarks::generate_new_color()
 {
     const std::array<float, 4> color = {
         m_distributor(m_generator),
         m_distributor(m_generator),
         m_distributor(m_generator),
-        m_defaultLandmarkOpacity
+        m_default_landmark_opacity
     };
 
     return color;
@@ -1466,17 +1481,17 @@ std::array<float, 4> landmarks::generateNewColor()
 
 //------------------------------------------------------------------------------
 
-bool landmarks::currentSelection(std::string& _selection) const
+bool landmarks::current_selection(std::string& _selection) const
 {
-    QTreeWidgetItem* item = m_treeWidget->currentItem();
+    QTreeWidgetItem* item = m_tree_widget->currentItem();
 
     const bool selected_group = (item != nullptr);
 
     if(selected_group)
     {
-        const int top_level_index = m_treeWidget->indexOfTopLevelItem(item);
+        const int top_level_index = m_tree_widget->indexOfTopLevelItem(item);
 
-        if(m_advancedMode && top_level_index == -1)
+        if(m_advanced_mode && top_level_index == -1)
         {
             item = item->parent();
         }
@@ -1489,7 +1504,7 @@ bool landmarks::currentSelection(std::string& _selection) const
 
 //------------------------------------------------------------------------------
 
-QColor landmarks::convertToQColor(const data::landmarks::color_t& _color)
+QColor landmarks::convert_to_q_color(const data::landmarks::color_t& _color)
 {
     return {
         static_cast<int>(_color[0] * 255),
@@ -1501,7 +1516,7 @@ QColor landmarks::convertToQColor(const data::landmarks::color_t& _color)
 
 //------------------------------------------------------------------------------
 
-void landmarks::setColorButtonIcon(QPushButton* _button, const QColor& _color)
+void landmarks::set_color_button_icon(QPushButton* _button, const QColor& _color)
 {
     const int icon_size = _button->style()->pixelMetric(QStyle::PM_LargeIconSize);
     QPixmap pix(icon_size, icon_size);
@@ -1512,9 +1527,9 @@ void landmarks::setColorButtonIcon(QPushButton* _button, const QColor& _color)
 
 //------------------------------------------------------------------------------
 
-QTreeWidgetItem* landmarks::getGroupItem(const std::string& _group_name) const
+QTreeWidgetItem* landmarks::get_group_item(const std::string& _group_name) const
 {
-    const auto item_list = m_treeWidget->findItems(QString::fromStdString(_group_name), Qt::MatchExactly);
+    const auto item_list = m_tree_widget->findItems(QString::fromStdString(_group_name), Qt::MatchExactly);
 
     SIGHT_ASSERT("Only a single item can be named '" + _group_name + "'", item_list.size() == 1);
 
@@ -1523,16 +1538,16 @@ QTreeWidgetItem* landmarks::getGroupItem(const std::string& _group_name) const
 
 //------------------------------------------------------------------------------
 
-LandmarksOrImageSeriesLock landmarks::lock()
+landmarks_or_image_series_lock landmarks::lock()
 {
-    return {.landmarks = m_landmarks.lock(), .imageSeries = m_imageSeries.lock()};
+    return {.landmarks = m_landmarks.lock(), .image_series = m_image_series.lock()};
 }
 
 //------------------------------------------------------------------------------
 
-LandmarksOrImageSeriesConstLock landmarks::constLock() const
+landmarks_or_image_series_const_lock landmarks::const_lock() const
 {
-    return {.landmarks = m_landmarks.const_lock(), .imageSeries = m_imageSeries.const_lock()};
+    return {.landmarks = m_landmarks.const_lock(), .image_series = m_image_series.const_lock()};
 }
 
 } // namespace sight::module::ui::qt::metrics

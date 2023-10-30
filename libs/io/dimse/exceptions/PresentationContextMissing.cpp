@@ -25,14 +25,14 @@
 namespace sight::io::dimse::exceptions
 {
 
-PresentationContextMissing::PresentationContextMissing(const std::string& _message) :
-    io::dimse::exceptions::Base(_message)
+presentation_context_missing::presentation_context_missing(const std::string& _message) :
+    io::dimse::exceptions::base(_message)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-PresentationContextMissing::~PresentationContextMissing() noexcept =
+presentation_context_missing::~presentation_context_missing() noexcept =
     default;
 
 } // namespace sight::io::dimse::exceptions

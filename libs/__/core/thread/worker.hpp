@@ -35,7 +35,7 @@
 namespace sight::core::thread
 {
 
-typedef std::thread::id thread_id_t;
+using thread_id_t = std::thread::id;
 
 /// Returns the current thread id
 CORE_API thread_id_t get_current_thread_id();
@@ -50,11 +50,11 @@ class CORE_CLASS_API worker : public core::base_object
 {
 public:
 
-    typedef core::hires_clock::type period_t;
-    typedef std::function<void ()> task_t;
-    typedef std::any exit_return_type;
+    using period_t         = core::hires_clock::type;
+    using task_t           = std::function<void ()>;
+    using exit_return_type = std::any;
 
-    typedef std::shared_future<exit_return_type> future_t;
+    using future_t = std::shared_future<exit_return_type>;
 
     SIGHT_DECLARE_CLASS(worker, core::base_object);
 
@@ -132,7 +132,7 @@ protected:
     future_t m_future;
 };
 
-typedef std::string worker_key_type;
+using worker_key_type = std::string;
 
 /**
  * @brief Get a registered worker given a key, if the key does not exist a null pointer is returned

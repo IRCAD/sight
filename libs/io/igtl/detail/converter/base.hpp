@@ -44,7 +44,7 @@ class IO_IGTL_CLASS_API base
 {
 public:
 
-    typedef SPTR(base) sptr;
+    using sptr = std::shared_ptr<base>;
 
     ///destructor
     virtual ~base()
@@ -55,7 +55,7 @@ public:
      *
      * @return a data::object
      */
-    [[nodiscard]] IO_IGTL_API virtual data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer _src) const =
+    [[nodiscard]] IO_IGTL_API virtual data::object::sptr from_igtl_message(::igtl::MessageBase::Pointer _src) const =
     0;
 
     /**
@@ -63,7 +63,8 @@ public:
      *
      * @return a ::igtl::MessageBase
      */
-    [[nodiscard]] IO_IGTL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const = 0;
+    [[nodiscard]] IO_IGTL_API virtual ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src) const =
+    0;
 
     /**
      * @brief get the igtlType supported for conversion
@@ -77,7 +78,7 @@ public:
      *
      * @return the fwData Object type supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API virtual std::string const& getFwDataObjectType() const = 0;
+    [[nodiscard]] IO_IGTL_API virtual std::string const& get_fw_data_object_type() const = 0;
 };
 
 } // namespace sight::io::igtl::detail::converter

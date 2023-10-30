@@ -50,25 +50,25 @@ static const core::com::slots::key_t WRITE        = "write";
 
 matrix_writer::matrix_writer() noexcept
 {
-    new_slot(SAVE_MATRIX, &matrix_writer::saveMatrix, this);
-    new_slot(START_RECORD, &matrix_writer::startRecord, this);
-    new_slot(STOP_RECORD, &matrix_writer::stopRecord, this);
+    new_slot(SAVE_MATRIX, &matrix_writer::save_matrix, this);
+    new_slot(START_RECORD, &matrix_writer::start_record, this);
+    new_slot(STOP_RECORD, &matrix_writer::stop_record, this);
     new_slot(WRITE, &matrix_writer::write, this);
-    new_slot(SET_BASE_FOLDER, &matrix_writer::setBaseFolder, this);
+    new_slot(SET_BASE_FOLDER, &matrix_writer::set_base_folder, this);
 }
 
 //------------------------------------------------------------------------------
 
 matrix_writer::~matrix_writer() noexcept
 {
-    this->stopRecord();
+    this->stop_record();
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType matrix_writer::getIOPathType() const
+sight::io::service::path_type_t matrix_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
@@ -93,26 +93,26 @@ void matrix_writer::starting()
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::openLocationDialog()
+void matrix_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::WRITE);
-    dialog_file.setType(ui::dialog::location::SINGLE_FILE);
-    dialog_file.addFilter(".csv file", "*.csv");
+    dialog_file.set_title(m_window_title.empty() ? "Choose a folder to save the csv file" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::write);
+    dialog_file.set_type(ui::dialog::location::single_file);
+    dialog_file.add_filter(".csv file", "*.csv");
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         this->set_file(result->get_file());
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -120,7 +120,7 @@ void matrix_writer::openLocationDialog()
 
 void matrix_writer::stopping()
 {
-    this->stopRecord();
+    this->stop_record();
 }
 
 //------------------------------------------------------------------------------
@@ -128,19 +128,19 @@ void matrix_writer::stopping()
 void matrix_writer::updating()
 {
     const auto& timestamp = core::hires_clock::get_time_in_milli_sec();
-    this->saveMatrix(timestamp);
+    this->save_matrix(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::saveMatrix(core::hires_clock::type _timestamp)
+void matrix_writer::save_matrix(core::hires_clock::type _timestamp)
 {
     // Protect operation
     std::unique_lock lock(m_mutex);
 
-    this->startRecord();
+    this->start_record();
     this->write(_timestamp);
-    this->stopRecord();
+    this->stop_record();
 }
 
 //------------------------------------------------------------------------------
@@ -150,9 +150,9 @@ void matrix_writer::write(core::hires_clock::type _timestamp)
     // Protect operation
     std::unique_lock lock(m_mutex);
 
-    m_writeFailed = true;
+    m_write_failed = true;
 
-    if(!m_isRecording)
+    if(!m_is_recording)
     {
         // No need to write if not recording
         return;
@@ -165,25 +165,25 @@ void matrix_writer::write(core::hires_clock::type _timestamp)
         "The object is not a '"
         + data::matrix_tl::classname()
         + "' or '"
-        + sight::io::service::s_DATA_KEY
+        + sight::io::service::DATA_KEY
         + "' is not correctly set.",
         matrix_tl
     );
 
-    const unsigned int number_of_mat = matrix_tl->getMaxElementNum();
+    const unsigned int number_of_mat = matrix_tl->get_max_element_num();
 
     // Get the buffer of the copied timeline
-    if(const auto& object = matrix_tl->getClosestObject(_timestamp); object)
+    if(const auto& object = matrix_tl->get_closest_object(_timestamp); object)
     {
         if(const auto& buffer = std::dynamic_pointer_cast<const data::matrix_tl::buffer_t>(object); buffer)
         {
-            _timestamp = object->getTimestamp();
+            _timestamp = object->get_timestamp();
             const auto time = static_cast<std::size_t>(_timestamp);
             m_filestream << time << ";";
 
             for(unsigned int i = 0 ; i < number_of_mat ; ++i)
             {
-                const std::array<float, 16>& values = buffer->getElement(i);
+                const std::array<float, 16>& values = buffer->get_element(i);
 
                 for(unsigned int v = 0 ; v < 16 ; ++v)
                 {
@@ -195,34 +195,34 @@ void matrix_writer::write(core::hires_clock::type _timestamp)
         }
     }
 
-    m_writeFailed = false;
+    m_write_failed = false;
 }
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::startRecord()
+void matrix_writer::start_record()
 {
     // Protect operation
     std::unique_lock lock(m_mutex);
 
     // No need to start if already recording
-    if(m_isRecording)
+    if(m_is_recording)
     {
         return;
     }
 
     // Default mode when opening a file is in append mode
     std::ios_base::openmode open_mode = std::ofstream::app;
-    if(m_interactive && !this->hasLocationDefined())
+    if(m_interactive && !this->has_location_defined())
     {
-        this->openLocationDialog();
+        this->open_location_dialog();
 
         // In trunc mode, any contents that existed in the file before it is open are discarded.
         // This is the needed behavior when opening the file for the first time.
         open_mode = std::ofstream::trunc;
     }
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         // Make sure the parent path exists
         const std::filesystem::path dirname = this->get_file().parent_path();
@@ -241,17 +241,17 @@ void matrix_writer::startRecord()
             }
 
             // Check if the file is open and in good state
-            m_isRecording = m_filestream.good();
+            m_is_recording = m_filestream.good();
 
             SIGHT_ERROR_IF(
                 "The file " + this->get_file().string()
                 + " can't be opened. Please check if it is already open in another program.",
-                !m_isRecording
+                !m_is_recording
             );
         }
         catch(const std::exception& e)
         {
-            m_isRecording = false;
+            m_is_recording = false;
 
             SIGHT_ERROR("The file " + this->get_file().string() + " can't be opened. " + e.what());
         }
@@ -259,7 +259,7 @@ void matrix_writer::startRecord()
     else if(!m_interactive)
     {
         // This will allow to start recording once the file and / or base folder has been set...
-        m_isRecording = true;
+        m_is_recording = true;
     }
     else
     {
@@ -269,13 +269,13 @@ void matrix_writer::startRecord()
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::stopRecord()
+void matrix_writer::stop_record()
 {
     // Protect operation
     std::unique_lock lock(m_mutex);
 
     // No need to stop recording if already stopped
-    if(!m_isRecording)
+    if(!m_is_recording)
     {
         return;
     }
@@ -288,7 +288,7 @@ void matrix_writer::stopRecord()
             m_filestream.close();
         }
 
-        m_isRecording = false;
+        m_is_recording = false;
     }
     catch(const std::exception& e)
     {
@@ -298,25 +298,25 @@ void matrix_writer::stopRecord()
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::setBaseFolder(std::string _path)
+void matrix_writer::set_base_folder(std::string _path)
 {
     // Protect operation
     std::unique_lock lock(m_mutex);
 
     // If the service is recording, stop it and restart it after changing the base folder
-    const bool was_recording = m_isRecording;
+    const bool was_recording = m_is_recording;
 
-    if(m_isRecording)
+    if(m_is_recording)
     {
-        this->stopRecord();
+        this->stop_record();
     }
 
     // Set the base folder
-    sight::io::service::writer::setBaseFolder(_path);
+    sight::io::service::writer::set_base_folder(_path);
 
     if(was_recording)
     {
-        this->startRecord();
+        this->start_record();
     }
 }
 
@@ -325,7 +325,7 @@ void matrix_writer::setBaseFolder(std::string _path)
 service::connections_t matrix_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::s_DATA_KEY, data::timeline::signals::PUSHED, WRITE);
+    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, WRITE);
     return connections;
 }
 

@@ -43,7 +43,7 @@ class UI_QML_CLASS_API location : public QObject,
                                   public ui::dialog::location_base
 {
 Q_OBJECT
-Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
+Q_PROPERTY(QString filterSelected MEMBER m_filter_selected)
 
 public:
 
@@ -53,35 +53,35 @@ public:
     UI_QML_API core::location::base::sptr show() override;
 
     /// Set the type of locationDialog to open (multi selection, folder selection...)
-    UI_QML_API void setType(location::Types _type) override;
+    UI_QML_API void set_type(location::types _type) override;
 
     /// Set the type of locationDialog to open (read, write...)
-    UI_QML_API void setOption(location::Options _option) override;
+    UI_QML_API void set_option(location::options _option) override;
 
     /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
-    UI_QML_API void addFilter(const std::string& _filter_name, const std::string& _wildcard_list) override;
+    UI_QML_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(const QVariant& _msg);
+    void result_dialog(const QVariant& _msg);
 
 private:
 
-    location::Options m_style {location::NONE};
-    location::Types m_type {location::SINGLE_FILE};
+    location::options m_style {location::none};
+    location::types m_type {location::single_file};
     std::vector<std::pair<std::string, std::string> > m_filters;
 
     /// helper to transform m_filters into qml encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
-    QStringList fileFilters();
+    QStringList file_filters();
 
     std::string m_wildcard;
     core::location::base::sptr m_location;
 
     /// the filter list and the current filter selected
-    QString m_filterSelected;
+    QString m_filter_selected;
 
-    std::string getCurrentSelection() const override;
+    std::string get_current_selection() const override;
 
     /// event filter for Mac
     bool eventFilter(QObject* _watched, QEvent* _event) override;

@@ -56,12 +56,12 @@ public:
     SIGHT_DECLARE_SERVICE(reader, sight::service::base);
 
     /// Enum to define a password policy
-    enum class DialogPolicy : uint8_t
+    enum class dialog_policy : uint8_t
     {
-        NEVER   = 0,  /// Never show the dialog
-        ONCE    = 1,  /// Show only once, store the location as long as the service is started
-        ALWAYS  = 2,  /// Always show the location dialog
-        INVALID = 255 /// Used for error management
+        never   = 0,  /// Never show the dialog
+        once    = 1,  /// Show only once, store the location as long as the service is started
+        always  = 2,  /// Always show the location dialog
+        invalid = 255 /// Used for error management
     };
 
     /**
@@ -82,16 +82,16 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IO_API virtual void openLocationDialog() = 0;
+    IO_API virtual void open_location_dialog() = 0;
     /**
      * @brief   returns  (filename) extension
      */
-    IO_API virtual std::vector<std::string> getSupportedExtensions();
+    IO_API virtual std::vector<std::string> get_supported_extensions();
 
     /**
      * @brief   returns  the title of selector dialog box
      */
-    IO_API virtual std::string getSelectorDialogTitle();
+    IO_API virtual std::string get_selector_dialog_title();
 
     /**
      * @brief This method must be implemented by concrete service readers
@@ -101,7 +101,7 @@ public:
      * A reader can support file and folder, or files and folder, but not
      * file and files ( because files include file concept ).
      */
-    IO_API virtual io::service::IOPathType getIOPathType() const;
+    IO_API virtual io::service::path_type_t get_path_type() const;
 
     /**
      * @brief Returns the file path set by the user or set during service configuration
@@ -139,13 +139,13 @@ public:
     /**
      * @brief Clear any location set by the set_file/set_files/set_folder setter
      */
-    IO_API void clearLocations();
+    IO_API void clear_locations();
 
     /**
      * @brief Returns file/files/folder paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
-    IO_API const io::service::locations_t& getLocations() const;
+    IO_API const io::service::locations_t& get_locations() const;
 
     /**
      * @brief Sets folder path
@@ -159,25 +159,25 @@ public:
      *
      * @pre exception if service does not support FILE or FILES mode
      */
-    IO_API void setFileFolder(std::filesystem::path _folder);
+    IO_API void set_file_folder(std::filesystem::path _folder);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
-    IO_API bool hasLocationDefined() const;
+    IO_API bool has_location_defined() const;
 
     /// Returns if reading has failed.
-    IO_API bool hasFailed() const;
+    IO_API bool has_failed() const;
 
     //@}
 
     /// Convenience function to convert from DialogPolicy enum value to string
-    constexpr static std::string_view dialogPolicyToString(DialogPolicy _policy) noexcept
+    constexpr static std::string_view dialog_policy_to_string(dialog_policy _policy) noexcept
     {
         switch(_policy)
         {
-            case DialogPolicy::ONCE:
+            case dialog_policy::once:
                 return "once";
 
-            case DialogPolicy::ALWAYS:
+            case dialog_policy::always:
                 return "always";
 
             default:
@@ -186,26 +186,26 @@ public:
     }
 
     /// Convenience function to convert from string to DialogPolicy enum value
-    constexpr static DialogPolicy stringToDialogPolicy(std::string_view _policy) noexcept
+    constexpr static dialog_policy string_to_dialog_policy(std::string_view _policy) noexcept
     {
-        if(constexpr auto never = dialogPolicyToString(DialogPolicy::NEVER);
+        if(constexpr auto never = dialog_policy_to_string(dialog_policy::never);
            _policy == never || _policy.empty() || _policy == "default")
         {
-            return DialogPolicy::NEVER;
+            return dialog_policy::never;
         }
 
-        if(constexpr auto once = dialogPolicyToString(DialogPolicy::ONCE); _policy == once)
+        if(constexpr auto once = dialog_policy_to_string(dialog_policy::once); _policy == once)
         {
-            return DialogPolicy::ONCE;
+            return dialog_policy::once;
         }
 
-        if(constexpr auto always = dialogPolicyToString(DialogPolicy::ALWAYS); _policy == always)
+        if(constexpr auto always = dialog_policy_to_string(dialog_policy::always); _policy == always)
         {
-            return DialogPolicy::ALWAYS;
+            return dialog_policy::always;
         }
 
         // Error case
-        return DialogPolicy::INVALID;
+        return dialog_policy::invalid;
     }
 
 protected:
@@ -270,24 +270,24 @@ protected:
     IO_API void configuring() override;
 
     /**
-     * @brief Title of the window that will open when the `openLocationDialog` slot is called
+     * @brief Title of the window that will open when the `open_location_dialog` slot is called
      */
-    std::string m_windowTitle;
+    std::string m_window_title;
 
     /// Defines whether reading was performed correctly, or if it has failed or if user has cancelled the process.
-    bool m_readFailed {false};
+    bool m_read_failed {false};
 
     /// Generic output data
-    data::ptr<data::object, data::Access::inout> m_data {this, sight::io::service::s_DATA_KEY};
+    data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 
 private:
 
     /// Slot to read folder
-    void readFolder(std::filesystem::path _folder);
+    void read_folder(std::filesystem::path _folder);
     /// Slot to read file
-    void readFile(std::filesystem::path _file);
+    void read_file(std::filesystem::path _file);
     /// Slot to read files
-    void readFiles(io::service::locations_t _files);
+    void read_files(io::service::locations_t _files);
 
     /// Value to stock file or folder paths
     io::service::locations_t m_locations;

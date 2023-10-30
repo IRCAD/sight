@@ -41,9 +41,9 @@ const core::com::slots::key_t REMOVE_POINT_SLOT             = "removePoint";
 point_to_landmark_distance::point_to_landmark_distance() noexcept
 {
     new_signal<distance_changed_signal_t>(DISTANCE_CHANGED_SIG);
-    new_slot(SELECTED_POINT_SLOT, &point_to_landmark_distance::updateSelectedPoint, this);
-    new_slot(UPDATE_POINT_SLOT, &point_to_landmark_distance::updatePoint, this);
-    new_slot(REMOVE_POINT_SLOT, &point_to_landmark_distance::removePoint, this);
+    new_slot(SELECTED_POINT_SLOT, &point_to_landmark_distance::update_selected_point, this);
+    new_slot(UPDATE_POINT_SLOT, &point_to_landmark_distance::update_point, this);
+    new_slot(REMOVE_POINT_SLOT, &point_to_landmark_distance::remove_point, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -80,24 +80,24 @@ void point_to_landmark_distance::stopping()
 
 void point_to_landmark_distance::updating()
 {
-    if(m_landmarkSelected)
+    if(m_landmark_selected)
     {
-        const auto point_mat            = m_pointMatrix.lock();
-        auto point_to_landmark_mat      = m_pointToLandmarkMatrix.lock();
-        const auto distance_text        = m_distanceText.lock();
+        const auto point_mat            = m_point_matrix.lock();
+        auto point_to_landmark_mat      = m_point_to_landmark_matrix.lock();
+        const auto distance_text        = m_distance_text.lock();
         const glm::dmat4x4 point_matrix = sight::geometry::data::to_glm_mat(
             *point_mat
         );
         const glm::dvec4 origin_point(0.0, 0.0, 0.0, 1.0);
         const glm::dvec3 point = glm::dvec3(point_matrix * origin_point);
 
-        const glm::dvec3 direction = m_currentLandmark - point;
+        const glm::dvec3 direction = m_current_landmark - point;
         const auto length          = static_cast<float>(glm::length(direction));
 
         std::ostringstream out;
         out.precision(m_precision);
         out << std::fixed << length;
-        distance_text->setValue(out.str() + m_unit);
+        distance_text->set_value(out.str() + m_unit);
 
         // notify that distance is modified
         this->signal<distance_changed_signal_t>(DISTANCE_CHANGED_SIG)->async_emit(static_cast<float>(length));
@@ -131,47 +131,47 @@ void point_to_landmark_distance::updating()
 }
 
 // -----------------------------------------------------------------------------
-void point_to_landmark_distance::updateSelectedPoint(std::string _name, std::size_t _index)
+void point_to_landmark_distance::update_selected_point(std::string _name, std::size_t _index)
 {
-    m_landmarkSelected = true;
+    m_landmark_selected = true;
 
     const auto landmark = m_landmark.lock();
 
-    const data::landmarks::point_t& point = landmark->getPoint(_name, _index);
+    const data::landmarks::point_t& point = landmark->get_point(_name, _index);
     for(int i = 0 ; i < 3 ; ++i)
     {
-        m_currentLandmark[i] = point[std::size_t(i)];
+        m_current_landmark[i] = point[std::size_t(i)];
     }
 
     this->update();
 }
 
 // -----------------------------------------------------------------------------
-void point_to_landmark_distance::updatePoint(std::string _name)
+void point_to_landmark_distance::update_point(std::string _name)
 {
-    m_landmarkSelected = true;
+    m_landmark_selected = true;
 
     const auto landmark                   = m_landmark.lock();
-    std::size_t size                      = landmark->getGroup(_name).m_points.size();
-    const data::landmarks::point_t& point = landmark->getPoint(_name, size - 1);
+    std::size_t size                      = landmark->get_group(_name).m_points.size();
+    const data::landmarks::point_t& point = landmark->get_point(_name, size - 1);
     for(int i = 0 ; i < 3 ; ++i)
     {
-        m_currentLandmark[i] = point[std::size_t(i)];
+        m_current_landmark[i] = point[std::size_t(i)];
     }
 
     this->update();
 }
 
 // -----------------------------------------------------------------------------
-void point_to_landmark_distance::removePoint()
+void point_to_landmark_distance::remove_point()
 {
     // When a point is removed, it's not selected anymore
-    m_landmarkSelected = false;
+    m_landmark_selected = false;
     // Notify that distance is modified
     this->signal<distance_changed_signal_t>(DISTANCE_CHANGED_SIG)->async_emit(static_cast<float>(0.0));
 
-    auto distance_text = m_distanceText.lock();
-    distance_text->setValue("");
+    auto distance_text = m_distance_text.lock();
+    distance_text->set_value("");
 
     // notify that text distance is modified
     distance_text->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->async_emit();

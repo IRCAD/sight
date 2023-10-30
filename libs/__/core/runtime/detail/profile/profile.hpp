@@ -42,8 +42,8 @@ class profile : public core::runtime::profile
 {
 public:
 
-    typedef std::vector<std::string> params_container;
-    typedef std::function<int ()> run_callback_type;
+    using params_container  = std::vector<std::string>;
+    using run_callback_type = std::function<int ()>;
 
     SIGHT_DECLARE_CLASS(profile, base_object);
 
@@ -109,9 +109,9 @@ public:
 
 private:
 
-    typedef std::vector<SPTR(activater)> activater_container;
-    typedef std::multimap<int, std::string> starter_container;
-    typedef std::multimap<int, std::string> stopper_container;
+    using activater_container = std::vector<std::shared_ptr<activater> >;
+    using starter_container   = std::multimap<int, std::string>;
+    using stopper_container   = std::multimap<int, std::string>;
 
     activater_container m_activaters; ///< all managed activators
     starter_container m_starters;     ///< all managed starters

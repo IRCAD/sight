@@ -57,14 +57,14 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration:
  * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API open_cv_intrinsic : public sight::geometry::vision::ICalibration
+class MODULE_GEOMETRY_VISION_CLASS_API open_cv_intrinsic : public sight::geometry::vision::i_calibration
 {
 public:
 
     /// Double changed signal type
-    typedef core::com::signal<void (double)> error_computed_signal_t;
+    using error_computed_signal_t = core::com::signal<void (double)>;
 
-    SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::ICalibration);
+    SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::i_calibration);
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API open_cv_intrinsic() noexcept;
@@ -89,18 +89,18 @@ protected:
     /**
      * @brief SLOT: update the chessboard size.
      */
-    void updateChessboardSize();
+    void update_chessboard_size();
 
 private:
 
     /// Preference key to retrieve width of the chessboard used for calibration
-    std::string m_widthKey;
+    std::string m_width_key;
 
     /// Preference key to retrieve height of the chessboard used for calibration
-    std::string m_heightKey;
+    std::string m_height_key;
 
     /// Preference key to retrieve size of the chessboard'square used for calibration
-    std::string m_squareSizeKey;
+    std::string m_square_size_key;
 
     /// Width of the chessboard used for calibration
     unsigned int m_width {11};
@@ -109,11 +109,11 @@ private:
     unsigned int m_height {8};
 
     /// Size of the chessboard'square used for calibration
-    float m_squareSize {20.0};
+    float m_square_size {20.0};
 
-    data::ptr<data::calibration_info, data::Access::in> m_calibrationInfo {this, "calibrationInfo"};
-    data::ptr<data::camera, data::Access::inout> m_camera {this, "camera"};
-    data::ptr<data::vector, data::Access::inout> m_poseVector {this, "poseVector"};
+    data::ptr<data::calibration_info, data::access::in> m_calibration_info {this, "calibrationInfo"};
+    data::ptr<data::camera, data::access::inout> m_camera {this, "camera"};
+    data::ptr<data::vector, data::access::inout> m_pose_vector {this, "poseVector"};
 };
 
 } // namespace sight::module::geometry::vision

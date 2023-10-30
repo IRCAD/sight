@@ -26,15 +26,15 @@
                         <name>ExFrameByFrame</name>
                         <icon>ExFrameByFrame/app.ico</icon>
                     </frame>
-                    <toolBar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <editor />
@@ -138,7 +138,7 @@
 
             <connect>
                 <signal>frameUpdaterSrv/synchronizationDone</signal>
-                <slot>genericSceneSrv/requestRender</slot>
+                <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

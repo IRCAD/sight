@@ -32,8 +32,8 @@ namespace sight::module::io::matrix::ut
 class writer_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(writer_test);
-CPPUNIT_TEST(basicTest);
-CPPUNIT_TEST(baseFolderTest);
+CPPUNIT_TEST(basic_test);
+CPPUNIT_TEST(base_folder_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,8 +42,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void basicTest();
-    static void baseFolderTest();
+    static void basic_test();
+    static void base_folder_test();
 };
 
 } // namespace sight::module::io::matrix::ut

@@ -40,7 +40,7 @@ void matrix4::updating()
 
 //------------------------------------------------------------------------------
 
-void matrix4::createConfig(core::tools::object::sptr _obj)
+void matrix4::create_config(core::tools::object::sptr _obj)
 {
     data::matrix4::sptr matrix = std::dynamic_pointer_cast<data::matrix4>(_obj);
     SIGHT_ASSERT("matrix not instanced", matrix);

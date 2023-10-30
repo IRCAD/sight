@@ -42,16 +42,16 @@ struct double_t
     = default;
 
     explicit double_t(double _value) :
-        M_VALUE(_value)
+        m_value(_value)
     {
     }
 
-    const double M_VALUE {0.0};
+    const double m_value {0.0};
 
     // This is required to be able to compare the objects
     inline bool operator==(const double_t& _other) const
     {
-        return tools::is_equal(M_VALUE, _other.M_VALUE);
+        return tools::is_equal(m_value, _other.m_value);
     }
 };
 

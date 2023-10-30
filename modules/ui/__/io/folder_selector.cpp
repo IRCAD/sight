@@ -51,7 +51,7 @@ folder_selector::~folder_selector() noexcept =
 void folder_selector::configuring()
 {
     const auto& config = this->get_config();
-    m_dialogTitle = config.get("dialogTitle", "Select a folder");
+    m_dialog_title = config.get("dialogTitle", "Select a folder");
 }
 
 //------------------------------------------------------------------------------
@@ -66,10 +66,10 @@ void folder_selector::updating()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_dialogTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(sight::ui::dialog::location::READ);
-    dialog_file.setType(sight::ui::dialog::location::FOLDER);
+    dialog_file.set_title(m_dialog_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(sight::ui::dialog::location::read);
+    dialog_file.set_type(sight::ui::dialog::location::folder);
 
     auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)

@@ -82,13 +82,13 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::slots::key_t ADD_SLOT;
-    typedef core::com::slot<void (core::hires_clock::type)> add_slot_t;
+    using add_slot_t = core::com::slot<void (core::hires_clock::type)>;
 
     MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_SLOT;
-    typedef core::com::slot<void ()> remove_slot_t;
+    using remove_slot_t = core::com::slot<void ()>;
 
     MODULE_UI_QT_API static const core::com::slots::key_t RESET_SLOT;
-    typedef core::com::slot<void ()> Reset_slot_type;
+    using reset_slot_type = core::com::slot<void ()>;
     ///@}
 
 protected:
@@ -119,16 +119,16 @@ protected:
 private:
 
     /// Index of the last acquisition.
-    int m_captureIdx {0};
+    int m_capture_idx {0};
 
     /// Label displaying the number of point acquisitions.
-    QPointer<QLabel> m_nbCapturesLabel;
+    QPointer<QLabel> m_nb_captures_label;
 
     /// Calibration point list.
-    QPointer<QListWidget> m_capturesListWidget;
+    QPointer<QListWidget> m_captures_list_widget;
 
-    data::ptr<data::frame_tl, data::Access::in> m_frameTL {this, "frameTL"};
-    data::ptr<data::vector, data::Access::inout> m_selected_image {this, "selection"};
+    data::ptr<data::frame_tl, data::access::in> m_frame_tl {this, "frameTL"};
+    data::ptr<data::vector, data::access::inout> m_selected_image {this, "selection"};
 };
 
 } // namespace sight::module::ui::qt::calibration

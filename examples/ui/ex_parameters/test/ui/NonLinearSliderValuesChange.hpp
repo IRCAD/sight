@@ -30,15 +30,15 @@
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
-class NonLinearSliderValuesChange : public sight::ui::test_core::test
+class non_linear_slider_values_change : public sight::ui::test_core::test
 {
-CPPUNIT_TEST_SUITE(NonLinearSliderValuesChange);
+CPPUNIT_TEST_SUITE(non_linear_slider_values_change);
 CPPUNIT_TEST(test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    std::filesystem::path getProfilePath() override;
+    std::filesystem::path get_profile_path() override;
 
     void test();
 };

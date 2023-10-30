@@ -22,19 +22,19 @@
 
         <service uid="mainView" type="sight::module::ui::view">
             <gui>
-                <toolBar />
+                <toolbar />
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" start="true" />
                 <view wid="calibrationView" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::tool_bar">
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />

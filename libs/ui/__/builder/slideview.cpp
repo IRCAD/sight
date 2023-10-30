@@ -27,62 +27,62 @@ namespace sight::ui::builder
 
 const std::string slideview::REGISTRY_KEY = "::ui::slideview";
 
-static const std::string s_H_ALIGN_CONFIG          = "hAlign";
-static const std::string s_V_ALIGN_CONFIG          = "vAlign";
-static const std::string s_H_OFFSET_CONFIG         = "hOffset";
-static const std::string s_V_OFFSET_CONFIG         = "vOffset";
-static const std::string s_WIDTH_CONFIG            = "width";
-static const std::string s_HEIGHT_CONFIG           = "height";
-static const std::string s_OPACITY_CONFIG          = "opacity";
-static const std::string s_ANIMATABLE_CONFIG       = "animatable";
-static const std::string s_ANIMATABLE_ALIGN_CONFIG = "animatableAlignment";
-static const std::string s_STYLE_SHEET_CONFIG      = "styleSheet";
+static const std::string H_ALIGN_CONFIG          = "hAlign";
+static const std::string V_ALIGN_CONFIG          = "vAlign";
+static const std::string H_OFFSET_CONFIG         = "hOffset";
+static const std::string V_OFFSET_CONFIG         = "vOffset";
+static const std::string WIDTH_CONFIG            = "width";
+static const std::string HEIGHT_CONFIG           = "height";
+static const std::string OPACITY_CONFIG          = "opacity";
+static const std::string ANIMATABLE_CONFIG       = "animatable";
+static const std::string ANIMATABLE_ALIGN_CONFIG = "animatableAlignment";
+static const std::string STYLE_SHEET_CONFIG      = "styleSheet";
 
 //-----------------------------------------------------------------------------
 
 void slideview::initialize(const ui::config_t& _config)
 {
-    if(const auto h_align = _config.get_optional<std::string>("<xmlattr>." + s_H_ALIGN_CONFIG); h_align.has_value())
+    if(const auto h_align = _config.get_optional<std::string>("<xmlattr>." + H_ALIGN_CONFIG); h_align.has_value())
     {
         if(*h_align == "left")
         {
-            m_hAlignment = LEFT;
+            m_h_alignment = left;
         }
         else if(*h_align == "right")
         {
-            m_hAlignment = RIGHT;
+            m_h_alignment = right;
         }
         else
         {
             SIGHT_FATAL(
                 std::string(
                     "Wrong value '"
-                ) + *h_align + "' for '" + s_H_ALIGN_CONFIG + "' attribute (require 'left' or 'right')"
+                ) + *h_align + "' for '" + H_ALIGN_CONFIG + "' attribute (require 'left' or 'right')"
             );
         }
     }
 
-    if(const auto v_align = _config.get_optional<std::string>("<xmlattr>." + s_V_ALIGN_CONFIG); v_align.has_value())
+    if(const auto v_align = _config.get_optional<std::string>("<xmlattr>." + V_ALIGN_CONFIG); v_align.has_value())
     {
         if(*v_align == "top")
         {
-            m_vAlignment = TOP;
+            m_v_alignment = top;
         }
         else if(*v_align == "bottom")
         {
-            m_vAlignment = BOTTOM;
+            m_v_alignment = bottom;
         }
         else
         {
             SIGHT_FATAL(
                 std::string(
                     "Wrong value '"
-                ) + *v_align + "' for '" + s_V_ALIGN_CONFIG + "' attribute (require 'top' or 'bottom')"
+                ) + *v_align + "' for '" + V_ALIGN_CONFIG + "' attribute (require 'top' or 'bottom')"
             );
         }
     }
 
-    if(const auto width_cfg = _config.get_optional<std::string>("<xmlattr>." + s_WIDTH_CONFIG); width_cfg.has_value())
+    if(const auto width_cfg = _config.get_optional<std::string>("<xmlattr>." + WIDTH_CONFIG); width_cfg.has_value())
     {
         std::string width = width_cfg.value();
         if(width[width.size() - 1] == '%')
@@ -91,14 +91,14 @@ void slideview::initialize(const ui::config_t& _config)
         }
         else
         {
-            m_percentWidth = false;
+            m_percent_width = false;
         }
 
         m_width = std::stoi(width);
         SIGHT_ASSERT("Height must be upper to 0", m_width >= 0);
     }
 
-    if(const auto height_cfg = _config.get_optional<std::string>("<xmlattr>." + s_HEIGHT_CONFIG);
+    if(const auto height_cfg = _config.get_optional<std::string>("<xmlattr>." + HEIGHT_CONFIG);
        height_cfg.has_value())
     {
         std::string height = height_cfg.value();
@@ -108,38 +108,38 @@ void slideview::initialize(const ui::config_t& _config)
         }
         else
         {
-            m_percentHeight = false;
+            m_percent_height = false;
         }
 
         m_height = std::stoi(height);
         SIGHT_ASSERT("Height must be upper to 0", m_height >= 0);
     }
 
-    if(const auto off_cfg = _config.get_optional<std::string>("<xmlattr>." + s_H_OFFSET_CONFIG); off_cfg.has_value())
+    if(const auto off_cfg = _config.get_optional<std::string>("<xmlattr>." + H_OFFSET_CONFIG); off_cfg.has_value())
     {
         std::string offset = off_cfg.value();
         if(offset[offset.size() - 1] == '%')
         {
-            m_percentHOffset = true;
-            offset           = offset.substr(0, offset.size() - 1);
+            m_percent_h_offset = true;
+            offset             = offset.substr(0, offset.size() - 1);
         }
 
-        m_hOffset = std::stoi(offset);
+        m_h_offset = std::stoi(offset);
     }
 
-    if(const auto off_cfg = _config.get_optional<std::string>("<xmlattr>." + s_V_OFFSET_CONFIG); off_cfg.has_value())
+    if(const auto off_cfg = _config.get_optional<std::string>("<xmlattr>." + V_OFFSET_CONFIG); off_cfg.has_value())
     {
         std::string offset = off_cfg.value();
         if(offset[offset.size() - 1] == '%')
         {
-            m_percentVOffset = true;
-            offset           = offset.substr(0, offset.size() - 1);
+            m_percent_v_offset = true;
+            offset             = offset.substr(0, offset.size() - 1);
         }
 
-        m_vOffset = std::stoi(offset);
+        m_v_offset = std::stoi(offset);
     }
 
-    if(const auto opacity_cfg = _config.get_optional<double>("<xmlattr>." + s_OPACITY_CONFIG); opacity_cfg.has_value())
+    if(const auto opacity_cfg = _config.get_optional<double>("<xmlattr>." + OPACITY_CONFIG); opacity_cfg.has_value())
     {
         m_opacity = opacity_cfg.value();
         SIGHT_ASSERT(
@@ -150,42 +150,42 @@ void slideview::initialize(const ui::config_t& _config)
         );
     }
 
-    m_animatable = _config.get<bool>(s_ANIMATABLE_CONFIG, m_animatable);
+    m_animatable = _config.get<bool>(ANIMATABLE_CONFIG, m_animatable);
 
-    if(const auto align = _config.get_optional<std::string>("<xmlattr>." + s_ANIMATABLE_ALIGN_CONFIG);
+    if(const auto align = _config.get_optional<std::string>("<xmlattr>." + ANIMATABLE_ALIGN_CONFIG);
        align.has_value())
     {
         if(*align == "top")
         {
-            m_animatableAlignment = TOP_ANIMATION;
+            m_animatable_alignment = top_animation;
         }
         else if(*align == "bottom")
         {
-            m_animatableAlignment = BOTTOM_ANIMATION;
+            m_animatable_alignment = bottom_animation;
         }
         else if(*align == "left")
         {
-            m_animatableAlignment = LEFT_ANIMATION;
+            m_animatable_alignment = left_animation;
         }
         else if(*align == "right")
         {
-            m_animatableAlignment = RIGHT_ANIMATION;
+            m_animatable_alignment = right_animation;
         }
         else
         {
             SIGHT_FATAL(
-                std::string("Wrong value '") + *align + "' for '" + s_ANIMATABLE_ALIGN_CONFIG
+                std::string("Wrong value '") + *align + "' for '" + ANIMATABLE_ALIGN_CONFIG
                 + "' attribute (require 'left', 'right', 'top' or 'bottom')"
             );
         }
     }
 
-    m_styleSheet = _config.get<std::string>(s_STYLE_SHEET_CONFIG, "");
+    m_style_sheet = _config.get<std::string>(STYLE_SHEET_CONFIG, "");
 }
 
 //-----------------------------------------------------------------------------
 
-ui::container::widget::sptr slideview::getContainer() const
+ui::container::widget::sptr slideview::get_container() const
 {
     return m_container;
 }

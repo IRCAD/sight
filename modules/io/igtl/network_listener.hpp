@@ -57,12 +57,12 @@ protected:
     MODULE_IO_IGTL_API void updating() override;
 
     /// Defines the signal emitted when service is connected.
-    typedef core::com::signal<void ()> connected_signal_t;
-    connected_signal_t::sptr m_sigConnected;
+    using connected_signal_t = core::com::signal<void ()>;
+    connected_signal_t::sptr m_sig_connected;
 
     /// Defines the signal emitted when service is disconnected.
-    typedef core::com::signal<void ()> disconnect_signal_t;
-    disconnect_signal_t::sptr m_sigDisconnected;
+    using disconnect_signal_t = core::com::signal<void ()>;
+    disconnect_signal_t::sptr m_sig_disconnected;
 };
 
 } // namespace sight::module::io::igtl.

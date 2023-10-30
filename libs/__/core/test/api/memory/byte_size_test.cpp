@@ -56,7 +56,7 @@ void byte_size_test::size_test()
         std::string ref_iec("0 Bytes");
         std::string ref_si("0 Bytes");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
@@ -67,17 +67,17 @@ void byte_size_test::size_test()
         std::string ref_iec("1000 Bytes");
         std::string ref_si("1 KB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
     {
         core::memory::byte_size::size_t size = 1;
-        core::memory::byte_size bsize(size, core::memory::byte_size::ki_b);
+        core::memory::byte_size bsize(size, core::memory::byte_size::KI_B);
         std::string ref_iec("1 KiB");
         std::string ref_si("1.024 KB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
@@ -87,28 +87,28 @@ void byte_size_test::size_test()
         std::string ref_iec("953.674 MiB");
         std::string ref_si("1 GB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
     {
         core::memory::byte_size::size_t size = 1;
-        core::memory::byte_size bsize(size, core::memory::byte_size::gi_b);
+        core::memory::byte_size bsize(size, core::memory::byte_size::GI_B);
         std::string ref_iec("1 GiB");
         std::string ref_si("1.07374 GB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
 
     {
         double size = 1.5;
-        core::memory::byte_size bsize(size, core::memory::byte_size::gi_b);
+        core::memory::byte_size bsize(size, core::memory::byte_size::GI_B);
         std::string ref_iec("1.5 GiB");
         std::string ref_si("1.61061 GB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }    {
@@ -117,7 +117,7 @@ void byte_size_test::size_test()
         std::string ref_iec("1.36424 TiB");
         std::string ref_si("1.5 TB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
@@ -128,7 +128,7 @@ void byte_size_test::size_test()
         std::string ref_iec("1.42 MiB");
         std::string ref_si("1.48898 MB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
@@ -138,7 +138,7 @@ void byte_size_test::size_test()
         std::string ref_iec("1.22935 GiB");
         std::string ref_si("1.32 GB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }
@@ -148,7 +148,7 @@ void byte_size_test::size_test()
         std::string ref_iec("1.04588 GiB");
         std::string ref_si("1.123 GB");
         std::string result_iec(bsize);
-        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::SI));
+        std::string result_si(bsize.get_human_readable_size(core::memory::byte_size::si));
         CPPUNIT_ASSERT_EQUAL(ref_iec, result_iec);
         CPPUNIT_ASSERT_EQUAL(ref_si, result_si);
     }

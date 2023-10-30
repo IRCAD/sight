@@ -36,7 +36,7 @@ class DATA_CLASS_API camera_set final : public data::container<std::vector<std::
 {
 public:
 
-    SIGHT_DECLARE_CLASS(camera_set, container<camera_set::container_type>);
+    SIGHT_DECLARE_CLASS(camera_set, container<camera_set::container_t>);
 
     /// Constructors / Destructor / Assignment operators
     /// @{
@@ -44,8 +44,8 @@ public:
     DATA_API ~camera_set() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
-    using container<camera_set::container_type>::container;
-    using container<camera_set::container_type>::operator=;
+    using container<camera_set::container_t>::container;
+    using container<camera_set::container_t>::operator=;
     /// @}
 
     /// Equality comparison operators

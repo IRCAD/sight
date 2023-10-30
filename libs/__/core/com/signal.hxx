@@ -82,7 +82,7 @@ void signal<R(A ...)>::disconnect_all()
 
     connection_map_type connections = m_connections;
 
-    for(const typename connection_map_type::value_type& conn : connections)
+    for(const auto& conn : connections)
     {
         slot_connection_base::sptr connection(conn.second.lock());
 
@@ -99,7 +99,7 @@ template<typename R, typename ... A>
 void signal<R(A ...)>::emit(A ... _a) const
 {
     core::mt::read_lock lock(m_connections_mutex);
-    typename slot_container_type::const_iterator iter;
+    typename slot_container_t::const_iterator iter;
     auto end = m_slots.end();
     for(iter = m_slots.begin() ; iter != end ; ++iter)
     {
@@ -122,7 +122,7 @@ void signal<R(A ...)>::async_emit(A ... _a) const
     std::vector<SPTR(slot_run_type)> keep_slots_alive;
     {
         core::mt::read_lock lock(m_connections_mutex);
-        typename slot_container_type::const_iterator iter;
+        typename slot_container_t::const_iterator iter;
         auto end = m_slots.end();
         for(iter = m_slots.begin() ; iter != end ; ++iter)
         {

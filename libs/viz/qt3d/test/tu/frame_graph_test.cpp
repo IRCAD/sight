@@ -24,7 +24,7 @@
 
 #include "test_application.hpp"
 
-#include "viz/qt3d/core/FrameGraph.hpp"
+#include "viz/qt3d/core/frame_graph.hpp"
 
 #include <QCameraSelector>
 #include <QClearBuffers>
@@ -67,11 +67,11 @@ void frame_graph_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void frame_graph_test::initializeFrameGraph()
+void frame_graph_test::initialize_frame_graph()
 {
     test_application app;
 
-    auto* frame_graph = new sight::viz::qt3d::core::FrameGraph();
+    auto* frame_graph = new sight::viz::qt3d::core::frame_graph();
 
     ASSERT_NOT_NULL(frame_graph);
 

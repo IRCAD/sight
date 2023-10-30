@@ -49,7 +49,7 @@ void image_center::updating()
 {
     const auto image = m_image.lock();
 
-    SIGHT_ASSERT("Missing image '" << s_IMAGE_IN << "'", image);
+    SIGHT_ASSERT("Missing image '" << IMAGE_IN << "'", image);
 
     const bool image_validity = data::helper::medical_image::check_image_validity(image.get_shared());
 
@@ -61,14 +61,14 @@ void image_center::updating()
 
     auto matrix = m_transform.lock();
 
-    SIGHT_ASSERT("Missing matrix '" << s_TRANSFORM_INOUT << "'", matrix);
+    SIGHT_ASSERT("Missing matrix '" << TRANSFORM_INOUT << "'", matrix);
 
     geometry::data::identity(*matrix);
 
     //compute the center
-    const data::image::Size size       = image->size();
-    const data::image::Spacing spacing = image->getSpacing();
-    const data::image::Origin origin   = image->getOrigin();
+    const data::image::size_t size       = image->size();
+    const data::image::spacing_t spacing = image->spacing();
+    const data::image::origin_t origin   = image->origin();
 
     SIGHT_ASSERT("image should be in 3 Dimensions", size.size() == 3);
 
@@ -95,7 +95,7 @@ void image_center::updating()
 
     sig->async_emit();
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void image_center::stopping()
 
 service::connections_t image_center::auto_connections() const
 {
-    return {{s_IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------

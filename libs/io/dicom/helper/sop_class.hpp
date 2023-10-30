@@ -45,7 +45,7 @@ public:
      * @return SOP Class Name according to UID
      * @note If the UID is not registered, the function returns the UID
      */
-    IO_DICOM_API static std::string getSOPClassName(const std::string& _sop_class_uid);
+    IO_DICOM_API static std::string get_sop_class_name(const std::string& _sop_class_uid);
 
     /**
      * @brief Returns whether the SOP Class is hazardous or not
@@ -55,18 +55,18 @@ public:
      * the anonymization process (like pictures, pdf report, etc.)
      * @note If the UID is not registered, the function returns true
      */
-    IO_DICOM_API static bool isHazardousSOPClass(const std::string& _sop_class_uid);
+    IO_DICOM_API static bool is_hazardous_sop_class(const std::string& _sop_class_uid);
 
 private:
 
     /// Container holding SOP Class Names and associated Hazardousness
-    typedef std::pair<std::string, bool> op_classNameAndHazardousnessPairType;
+    using op_class_name_and_hazardousness_pair_t = std::pair<std::string, bool>;
 
     /**
      * @brief Map holding associations between SOP Class UID and SOP Class Name/Hazardousness
      * @{ */
-    typedef std::map<std::string, op_classNameAndHazardousnessPairType> op_classContainerType;
-    static const op_classContainerType s_SOP_CLASS_LIST;
+    using op_class_container_t = std::map<std::string, op_class_name_and_hazardousness_pair_t>;
+    static const op_class_container_t SOP_CLASS_LIST;
     /**  @} */
 };
 

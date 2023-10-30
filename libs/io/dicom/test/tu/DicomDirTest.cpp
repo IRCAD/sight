@@ -28,23 +28,23 @@
 
 #include <io/dicom/helper/DicomDir.hpp>
 
-#include <utest/Filter.hpp>
+#include <utest/filter.hpp>
 
 #include <utest_data/Data.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomDirTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::dicom_dir_test);
 
 namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
 
-void DicomDirTest::setUp()
+void dicom_dir_test::setUp()
 {
     // Set up context before running a test.
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -56,21 +56,21 @@ void DicomDirTest::setUp()
 
 //------------------------------------------------------------------------------
 
-void DicomDirTest::tearDown()
+void dicom_dir_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void DicomDirTest::readDicomDir()
+void dicom_dir_test::read_dicom_dir()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const std::filesystem::path path = utest_data::Data::dir()
+    const std::filesystem::path path = utest_data::dir()
                                        / "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::string path_str = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
@@ -84,11 +84,11 @@ void DicomDirTest::readDicomDir()
     core::log::logger::sptr logger = std::make_shared<core::log::logger>();
 
     // Read DICOMDIR file
-    io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", series_container, logger);
+    io::dicom::helper::dicom_dir::retrieve_dicom_series(path / "DICOMDIR", series_container, logger);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_container.size());
     CPPUNIT_ASSERT(logger->empty());
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(84), series_container.front()->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(84), series_container.front()->get_dicom_container().size());
 }
 
 //------------------------------------------------------------------------------

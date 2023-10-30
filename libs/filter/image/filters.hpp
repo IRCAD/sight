@@ -59,7 +59,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
 
 /// FillHole2D filter
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole2_d(
+typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     unsigned int _direction,
     IMAGE_TYPE _background,

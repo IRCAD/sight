@@ -51,37 +51,37 @@ class worker_qt;
 namespace ut
 {
 
-struct TestHandler
+struct test_handler
 {
-    TestHandler()
+    test_handler()
     = default;
 
     //------------------------------------------------------------------------------
 
-    void nextStep()
+    void next_step()
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        this->nextStepNoSleep();
+        this->next_step_no_sleep();
     }
 
     //------------------------------------------------------------------------------
 
-    void nextStepNoSleep()
+    void next_step_no_sleep()
     {
-        m_threadCheckOk &= (m_workerThreadId == core::thread::get_current_thread_id());
+        m_thread_check_ok &= (m_worker_thread_id == core::thread::get_current_thread_id());
         ++m_step;
     }
 
     //------------------------------------------------------------------------------
 
-    void set_workerId(core::thread::thread_id_t _id)
+    void set_worker_id(core::thread::thread_id_t _id)
     {
-        m_workerThreadId = _id;
+        m_worker_thread_id = _id;
     }
 
     int m_step {0};
-    bool m_threadCheckOk {true};
-    core::thread::thread_id_t m_workerThreadId;
+    bool m_thread_check_ok {true};
+    core::thread::thread_id_t m_worker_thread_id;
 };
 
 //-----------------------------------------------------------------------------
@@ -124,43 +124,43 @@ void worker_qt_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void worker_qt_test::initTest()
+void worker_qt_test::init_test()
 {
     CPPUNIT_ASSERT(qApp != nullptr);
 }
 
 //-----------------------------------------------------------------------------
 
-void worker_qt_test::twiceInitTest()
+void worker_qt_test::twice_init_test()
 {
     CPPUNIT_ASSERT(qApp != nullptr);
 }
 
 //-----------------------------------------------------------------------------
 
-void run_basic_test(TestHandler& _handler, core::thread::worker::sptr _worker)
+void run_basic_test(test_handler& _handler, core::thread::worker::sptr _worker)
 {
-    _handler.set_workerId(_worker->get_thread_id());
-    _worker->post([&_handler]{_handler.nextStep();});
-    _worker->post([&_handler]{_handler.nextStep();});
-    _worker->post([&_handler]{_handler.nextStep();});
+    _handler.set_worker_id(_worker->get_thread_id());
+    _worker->post([&_handler]{_handler.next_step();});
+    _worker->post([&_handler]{_handler.next_step();});
+    _worker->post([&_handler]{_handler.next_step();});
 
     _worker->post([]{return QApplication::quit();});
 }
 
 //-----------------------------------------------------------------------------
 
-void run_basic_test_checks(const TestHandler& _handler)
+void run_basic_test_checks(const test_handler& _handler)
 {
     CPPUNIT_ASSERT_EQUAL(3, _handler.m_step);
-    CPPUNIT_ASSERT_EQUAL(true, _handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(true, _handler.m_thread_check_ok);
 }
 
 //-----------------------------------------------------------------------------
 
-void worker_qt_test::basicTest()
+void worker_qt_test::basic_test()
 {
-    TestHandler handler;
+    test_handler handler;
 
     run_basic_test(handler, m_worker);
 
@@ -171,9 +171,9 @@ void worker_qt_test::basicTest()
 
 //-----------------------------------------------------------------------------
 
-void worker_qt_test::postFromInsideTest()
+void worker_qt_test::post_from_inside_test()
 {
-    TestHandler handler;
+    test_handler handler;
 
     m_worker->post([&handler, this]{return run_basic_test(handler, m_worker);});
 
@@ -190,7 +190,7 @@ void do_nothing()
 
 //-----------------------------------------------------------------------------
 
-void run_from_outside_test(TestHandler& _handler, core::thread::worker::sptr _worker)
+void run_from_outside_test(test_handler& _handler, core::thread::worker::sptr _worker)
 {
     //waiting for worker_qt to start
     _worker->post_task<void>([]{return do_nothing();}).wait();
@@ -200,9 +200,9 @@ void run_from_outside_test(TestHandler& _handler, core::thread::worker::sptr _wo
 
 //-----------------------------------------------------------------------------
 
-void worker_qt_test::postFromOutsideTest()
+void worker_qt_test::post_from_outside_test()
 {
-    TestHandler handler;
+    test_handler handler;
 
     std::thread test_thread([&handler, this]{return run_from_outside_test(handler, m_worker);});
 
@@ -237,7 +237,7 @@ static inline void qt_test(const std::function<void()>& _f)
 //-----------------------------------------------------------------------------
 
 void run_basic_timer_test(
-    const TestHandler& _handler,
+    const test_handler& _handler,
     const core::thread::timer::sptr& _timer,
     core::thread::timer::time_duration_t
     /*unused*/
@@ -249,7 +249,7 @@ void run_basic_timer_test(
         [&]
             {
                 CPPUNIT_ASSERT(_timer->is_running());
-                CPPUNIT_ASSERT(_handler.m_threadCheckOk);
+                CPPUNIT_ASSERT(_handler.m_thread_check_ok);
                 CPPUNIT_ASSERT_EQUAL(0, _handler.m_step);
             });
 }
@@ -258,19 +258,19 @@ void run_basic_timer_test(
 
 void one_shot_basic_timer_test(
     int& _i,
-    TestHandler& _handler,
+    test_handler& _handler,
     const core::thread::timer::sptr& _timer,
     core::thread::timer::time_duration_t /*unused*/,
     const core::thread::worker::sptr& _worker
 )
 {
-    _handler.nextStepNoSleep();
+    _handler.next_step_no_sleep();
 
     qt_test(
         [&]
             {
                 CPPUNIT_ASSERT(_timer->is_running());
-                CPPUNIT_ASSERT(_handler.m_threadCheckOk);
+                CPPUNIT_ASSERT(_handler.m_thread_check_ok);
                 CPPUNIT_ASSERT_EQUAL(_i, _handler.m_step);
             });
 
@@ -282,7 +282,7 @@ void one_shot_basic_timer_test(
             [&]
                 {
                     CPPUNIT_ASSERT(!_timer->is_running());
-                    CPPUNIT_ASSERT(_handler.m_threadCheckOk);
+                    CPPUNIT_ASSERT(_handler.m_thread_check_ok);
                     CPPUNIT_ASSERT_EQUAL(49, _handler.m_step);
                 });
         _worker->post([]{return QApplication::quit();});
@@ -291,10 +291,10 @@ void one_shot_basic_timer_test(
 
 //-----------------------------------------------------------------------------
 
-void worker_qt_test::basicTimerTest()
+void worker_qt_test::basic_timer_test()
 {
-    TestHandler handler;
-    handler.set_workerId(m_worker->get_thread_id());
+    test_handler handler;
+    handler.set_worker_id(m_worker->get_thread_id());
 
     core::thread::timer::sptr timer = m_worker->create_timer();
 
@@ -309,7 +309,7 @@ void worker_qt_test::basicTimerTest()
     timer->set_duration(duration);
 
     CPPUNIT_ASSERT(!timer->is_running());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT(handler.m_thread_check_ok);
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
     m_worker->post([&handler, &timer, duration]{return run_basic_timer_test(handler, timer, duration);});

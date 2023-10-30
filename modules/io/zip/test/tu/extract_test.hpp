@@ -29,14 +29,14 @@ namespace sight::module::io::zip::ut
 class extract_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(extract_test);
-CPPUNIT_TEST(basicArchiveTest);
-CPPUNIT_TEST(encryptedArchiveTest);
+CPPUNIT_TEST(basic_archive_test);
+CPPUNIT_TEST(encrypted_archive_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void basicArchiveTest();
-    static void encryptedArchiveTest();
+    static void basic_archive_test();
+    static void encrypted_archive_test();
 };
 
 } // namespace sight::module::io::zip::ut

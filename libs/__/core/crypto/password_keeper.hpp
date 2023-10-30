@@ -41,19 +41,19 @@ public:
     /// Enum to define a password policy
     enum class password_policy : uint8_t
     {
-        NEVER   = 0,  /// Never ask a password
-        GLOBAL  = 1,  /// Use global password if set, Otherwise ask for password
-        ALWAYS  = 2,  /// Always ask for a password
-        INVALID = 255 /// Used for error management
+        never   = 0,  /// Never ask a password
+        global  = 1,  /// Use global password if set, Otherwise ask for password
+        always  = 2,  /// Always ask for a password
+        invalid = 255 /// Used for error management
     };
 
     /// Enum to define an encryption policy
     enum class encryption_policy : uint8_t
     {
-        PASSWORD = 0,  /// Use the given password for encryption
-        SALTED   = 1,  /// Use the given password with salt for encryption
-        FORCED   = 2,  /// Force encryption with a pseudo random hidden password
-        INVALID  = 255 /// Used for error management
+        password = 0,  /// Use the given password for encryption
+        salted   = 1,  /// Use the given password with salt for encryption
+        forced   = 2,  /// Force encryption with a pseudo random hidden password
+        invalid  = 255 /// Used for error management
     };
 
     /// Delete default copy constructors and assignment operators
@@ -107,10 +107,10 @@ public:
     {
         switch(_policy)
         {
-            case password_policy::GLOBAL:
+            case password_policy::global:
                 return "global";
 
-            case password_policy::ALWAYS:
+            case password_policy::always:
                 return "always";
 
             default:
@@ -121,25 +121,25 @@ public:
     /// Convenience function to convert from string to password_policy enum value
     constexpr static password_policy string_to_password_policy(std::string_view _policy) noexcept
     {
-        if(constexpr auto never = password_policy_to_string(password_policy::NEVER);
+        if(constexpr auto never = password_policy_to_string(password_policy::never);
            _policy == never || _policy.empty() || _policy == "default")
         {
-            return password_policy::NEVER;
+            return password_policy::never;
         }
 
-        if(constexpr auto global = password_policy_to_string(password_policy::GLOBAL);
+        if(constexpr auto global = password_policy_to_string(password_policy::global);
            _policy == global || _policy == "once")
         {
-            return password_policy::GLOBAL;
+            return password_policy::global;
         }
 
-        if(constexpr auto always = password_policy_to_string(password_policy::ALWAYS); _policy == always)
+        if(constexpr auto always = password_policy_to_string(password_policy::always); _policy == always)
         {
-            return password_policy::ALWAYS;
+            return password_policy::always;
         }
 
         // Error case
-        return password_policy::INVALID;
+        return password_policy::invalid;
     }
 
     /// Convenience function to convert from encryption_policy enum value to string
@@ -147,10 +147,10 @@ public:
     {
         switch(_policy)
         {
-            case encryption_policy::SALTED:
+            case encryption_policy::salted:
                 return "salted";
 
-            case encryption_policy::FORCED:
+            case encryption_policy::forced:
                 return "forced";
 
             default:
@@ -161,24 +161,24 @@ public:
     /// Convenience function to convert from string to encryption_policy enum value
     constexpr static encryption_policy string_to_encryption_policy(std::string_view _policy) noexcept
     {
-        if(constexpr auto password = encryption_policy_to_string(encryption_policy::PASSWORD);
+        if(constexpr auto password = encryption_policy_to_string(encryption_policy::password);
            _policy == password || _policy.empty() || _policy == "default")
         {
-            return encryption_policy::PASSWORD;
+            return encryption_policy::password;
         }
 
-        if(constexpr auto salted = encryption_policy_to_string(encryption_policy::SALTED); _policy == salted)
+        if(constexpr auto salted = encryption_policy_to_string(encryption_policy::salted); _policy == salted)
         {
-            return encryption_policy::SALTED;
+            return encryption_policy::salted;
         }
 
-        if(constexpr auto forced = encryption_policy_to_string(encryption_policy::FORCED); _policy == forced)
+        if(constexpr auto forced = encryption_policy_to_string(encryption_policy::forced); _policy == forced)
         {
-            return encryption_policy::FORCED;
+            return encryption_policy::forced;
         }
 
         // Error case
-        return encryption_policy::INVALID;
+        return encryption_policy::invalid;
     }
 
     //------------------------------------------------------------------------------

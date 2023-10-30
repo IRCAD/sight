@@ -47,8 +47,8 @@ void hires_timer_test::tearDown()
 
 enum class comparison
 {
-    EQ,
-    GE
+    eq,
+    ge
 };
 
 struct test_data
@@ -68,24 +68,24 @@ void hires_timer_test::get_time_test()
 {
     const std::array data {
         // Start the timer, stop the timer and get the time
-        test_data {1, true, true, true, comparison::GE, -1, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, true, comparison::GE, -1, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, true, comparison::GE, -1, &hires_timer::get_elapsed_time_in_micro_sec},
+        test_data {1, true, true, true, comparison::ge, -1, &hires_timer::get_elapsed_time_in_sec},
+        test_data {1000, true, true, true, comparison::ge, -1, &hires_timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, true, true, true, comparison::ge, -1, &hires_timer::get_elapsed_time_in_micro_sec},
 
         // Start the timer, reset it in the middle, stop it and get the time
-        test_data {1, true, true, true, comparison::GE, 0, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, true, comparison::GE, 0, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, true, comparison::GE, 0, &hires_timer::get_elapsed_time_in_micro_sec},
+        test_data {1, true, true, true, comparison::ge, 0, &hires_timer::get_elapsed_time_in_sec},
+        test_data {1000, true, true, true, comparison::ge, 0, &hires_timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, true, true, true, comparison::ge, 0, &hires_timer::get_elapsed_time_in_micro_sec},
 
         // Start the timer and get the time
-        test_data {1, true, true, false, comparison::GE, -1, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, false, comparison::GE, -1, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, false, comparison::GE, -1, &hires_timer::get_elapsed_time_in_micro_sec},
+        test_data {1, true, true, false, comparison::ge, -1, &hires_timer::get_elapsed_time_in_sec},
+        test_data {1000, true, true, false, comparison::ge, -1, &hires_timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, true, true, false, comparison::ge, -1, &hires_timer::get_elapsed_time_in_micro_sec},
 
         // Reset the timer and get the time
-        test_data {1, false, false, false, comparison::EQ, 1000000, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, false, false, false, comparison::EQ, 1000000, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, false, false, false, comparison::EQ, 1000000, &hires_timer::get_elapsed_time_in_micro_sec}
+        test_data {1, false, false, false, comparison::eq, 1000000, &hires_timer::get_elapsed_time_in_sec},
+        test_data {1000, false, false, false, comparison::eq, 1000000, &hires_timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, false, false, false, comparison::eq, 1000000, &hires_timer::get_elapsed_time_in_micro_sec}
     };
 
     for(size_t i = 0 ; i < sizeof(data) / sizeof(data[0]) ; i++)
@@ -114,11 +114,11 @@ void hires_timer_test::get_time_test()
             timer.stop();
         }
 
-        if(d.comp == comparison::EQ)
+        if(d.comp == comparison::eq)
         {
             CPPUNIT_ASSERT_EQUAL(time, (timer.*d.get_elapsed_time_in_x)());
         }
-        else if(d.comp == comparison::GE)
+        else if(d.comp == comparison::ge)
         {
             CPPUNIT_ASSERT_GREATEREQUAL(time, (timer.*d.get_elapsed_time_in_x)());
         }

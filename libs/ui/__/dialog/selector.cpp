@@ -40,8 +40,8 @@ selector::selector(
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
-            m_implementation->setTitle(_title);
-            m_implementation->setMessage(_message);
+            m_implementation->set_title(_title);
+            m_implementation->set_message(_message);
             m_implementation->set_choices(_selections);
             m_implementation->set_multiple(_multiple);
         }).wait();
@@ -63,13 +63,13 @@ selector::selector()
 
 //-----------------------------------------------------------------------------
 
-void selector::setTitle(std::string _title)
+void selector::set_title(std::string _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setTitle(_title);
+            m_implementation->set_title(_title);
         })
     ).wait();
 }
@@ -112,26 +112,26 @@ void selector::set_choices_preset(choices_preset_t _selections)
 
 //-----------------------------------------------------------------------------
 
-void selector::setMessage(const std::string& _msg)
+void selector::set_message(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setMessage(_msg);
+            m_implementation->set_message(_msg);
         })
     ).wait();
 }
 
 //------------------------------------------------------------------------------
 
-void selector::addCustomButton(const std::string& _label, std::function<void()> _clicked_fn)
+void selector::add_custom_button(const std::string& _label, std::function<void()> _clicked_fn)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->addCustomButton(_label, _clicked_fn);
+            m_implementation->add_custom_button(_label, _clicked_fn);
         })
     ).wait();
 }

@@ -22,7 +22,7 @@
 
 #include "io/vtk/ImageWriter.hpp"
 
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
@@ -34,33 +34,33 @@
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::vtk::ImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::image_writer);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-ImageWriter::ImageWriter() :
+image_writer::image_writer() :
     m_job(std::make_shared<core::jobs::observer>("VTK image Writer"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-ImageWriter::~ImageWriter()
+image_writer::~image_writer()
 = default;
 
 //------------------------------------------------------------------------------
 
-void ImageWriter::write()
+void image_writer::write()
 {
-    using helper::vtkLambdaCommand;
+    using helper::vtk_lambda_command;
 
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::csptr p_image = getConcreteObject();
+    data::image::csptr p_image = get_concrete_object();
 
     vtkSmartPointer<vtkGenericDataObjectWriter> writer = vtkSmartPointer<vtkGenericDataObjectWriter>::New();
     vtkSmartPointer<vtkImageData> vtk_image            = vtkSmartPointer<vtkImageData>::New();
@@ -69,9 +69,9 @@ void ImageWriter::write()
     writer->SetFileName(this->get_file().string().c_str());
     writer->SetFileTypeToBinary();
 
-    vtkSmartPointer<vtkLambdaCommand> progress_callback;
-    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progress_callback->SetCallback(
+    vtkSmartPointer<vtk_lambda_command> progress_callback;
+    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
+    progress_callback->set_callback(
         [this](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectWriter*>(_caller);
@@ -90,14 +90,14 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ImageWriter::extension() const
+std::string image_writer::extension() const
 {
     return ".vtk";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr ImageWriter::getJob() const
+core::jobs::base::sptr image_writer::get_job() const
 {
     return m_job;
 }

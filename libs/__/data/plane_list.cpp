@@ -61,9 +61,9 @@ void plane_list::shallow_copy(const object::csptr& _source)
         !other
     );
 
-    this->m_vPlanes = other->m_vPlanes;
+    this->m_v_planes = other->m_v_planes;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -80,26 +80,26 @@ void plane_list::deep_copy(const object::csptr& _source, const std::unique_ptr<d
         !other
     );
 
-    this->m_vPlanes.clear();
-    for(const auto& plane : other->m_vPlanes)
+    this->m_v_planes.clear();
+    for(const auto& plane : other->m_v_planes)
     {
-        this->m_vPlanes.push_back(data::object::copy(plane, _cache));
+        this->m_v_planes.push_back(data::object::copy(plane, _cache));
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool plane_list::operator==(const plane_list& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_vPlanes, _other.m_vPlanes))
+    if(!core::tools::is_equal(m_v_planes, _other.m_v_planes))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

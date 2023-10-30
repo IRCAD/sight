@@ -118,7 +118,7 @@ public:
     /// Destructor. Do nothing.
     MODULE_IO_VIDEO_API ~frame_grabber() noexcept override;
 
-    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t _value, std::string _key) override;
+    MODULE_IO_VIDEO_API void set_parameter(ui::parameter_t _value, std::string _key) override;
 
 protected:
 
@@ -135,74 +135,74 @@ protected:
     MODULE_IO_VIDEO_API void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started).
-    void startCamera() override;
+    void start_camera() override;
 
     /// SLOT : Stop camera.
-    void stopCamera() override;
+    void stop_camera() override;
 
     /// SLOT : Pause camera.
-    void pauseCamera() override;
+    void pause_camera() override;
 
     /// SLOT : enable/disable loop in video.
-    void toggleLoopMode() override;
+    void toggle_loop_mode() override;
 
     /// SLOT : set the new position in the video.
-    void setPosition(int64_t _position) override;
+    void set_position(int64_t _position) override;
 
     /// SLOT : read the next image (only in file mode, and if m_oneShot is enabled).
-    void nextImage() override;
+    void next_image() override;
 
     /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled).
-    void previousImage() override;
+    void previous_image() override;
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(int _step, std::string _key) override;
+    void set_step(int _step, std::string _key) override;
 
     /// SLOT: Adds a region of interest center. Currently this function implements image zoom.
     ///       The added point can be forwarded from a picker in singlePointMode for example.
-    void addROICenter(sight::data::point::sptr _p) final;
+    void add_roi_center(sight::data::point::sptr _p) final;
 
     /// SLOT: Removes a region of interest center. Currently this function relates to image zoom.
     ///       The removed point can be forwarded from a picker in singlePointMode for example.
-    void removeROICenter(sight::data::point::sptr _p) final;
+    void remove_roi_center(sight::data::point::sptr _p) final;
 
 private:
 
-    typedef std::vector<std::filesystem::path> image_files_t;
-    typedef std::vector<double> image_timestamps_t;
+    using image_files_t      = std::vector<std::filesystem::path>;
+    using image_timestamps_t = std::vector<double>;
 
     /// Initializes the video reader, start the timer.
-    void readVideo(const std::filesystem::path& _file);
+    void read_video(const std::filesystem::path& _file);
 
     /// Initializes the usb device reader, start the timer.
-    void readDevice(const data::camera& _cam);
+    void read_device(const data::camera& _cam);
 
     /// Initializes the ffmpeg based stream grabber, start the timer.
-    void readStream(const data::camera& _cam);
+    void read_stream(const data::camera& _cam);
 
     /// Initializes the image reader, start the timer.
-    void readImages(const std::filesystem::path& _folder, const std::string& _extension);
+    void read_images(const std::filesystem::path& _folder, const std::string& _extension);
 
     /// Reads the next video frame.
-    void grabVideo();
+    void grab_video();
 
     /// Reads the next image.
-    void grabImage();
+    void grab_image();
 
     /// Updates the image if zoom is requested
-    void updateZoom(cv::Mat _image);
+    void update_zoom(cv::Mat _image);
 
     /// State of the loop mode.
-    bool m_loopVideo {false};
+    bool m_loop_video {false};
 
     /// State of the timeline initialization.
-    bool m_isInitialized {false};
+    bool m_is_initialized {false};
 
     /// Fps used to read the video.
     unsigned int m_fps {30};
 
     /// Counter used by the image reader.
-    std::size_t m_imageCount {0};
+    std::size_t m_image_count {0};
 
     core::thread::timer::sptr m_timer;
 
@@ -210,48 +210,48 @@ private:
     core::thread::worker::sptr m_worker;
 
     /// OpenCV video grabber.
-    cv::VideoCapture m_videoCapture;
+    cv::VideoCapture m_video_capture;
 
     /// List of image paths to read.
-    image_files_t m_imageToRead;
+    image_files_t m_image_to_read;
 
     /// List of the image timestamps.
-    image_timestamps_t m_imageTimestamps;
+    image_timestamps_t m_image_timestamps;
 
     /// Zoom factor
-    int m_zoomFactor {2};
+    int m_zoom_factor {2};
 
     /// Zoom center, if defined
-    std::optional<std::array<int, 2> > m_zoomCenter;
+    std::optional<std::array<int, 2> > m_zoom_center;
 
     /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead.
     mutable core::mt::mutex m_mutex;
 
     /// Frame -by-frame mode (true if enabled, false otherwise).
-    bool m_oneShot {false};
+    bool m_one_shot {false};
 
     /// If true: create a new timestamp when reading image, if false: use the name of the image file as timestamp.
-    bool m_createNewTS {false};
+    bool m_create_new_ts {false};
 
     /// If true: the difference between two image's timestamps will be use as timer duration.
-    bool m_useTimelapse {true};
+    bool m_use_timelapse {true};
 
     /// If true: the grabber is paused.
-    bool m_isPaused {false};
+    bool m_is_paused {false};
 
     /// If timestamp cannot be deduced from filename use the default duration (5000ms).
-    double m_defaultDuration {5000};
+    double m_default_duration {5000};
 
     /// Step between two images when calling nexImage()/previousImage() slots
     std::uint64_t m_step {1};
 
     /// Step value updated in setStep() slot used to compute a shift value when calling nextImage()/previousImage()
-    std::uint64_t m_stepChanged {1};
+    std::uint64_t m_step_changed {1};
 
     /// Total number of frames in a video file.
-    std::size_t m_videoFramesNb {0};
+    std::size_t m_video_frames_nb {0};
 
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
 };
 
 } // namespace sight::module::io::video

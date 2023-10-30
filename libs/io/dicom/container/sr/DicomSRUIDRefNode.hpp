@@ -34,19 +34,19 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a UIDREF node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRUIDRefNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_sruid_ref_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRUIDRefNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_sruid_ref_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
         std::string _uid_value
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRUIDRefNode() override;
+    IO_DICOM_API ~dicom_sruid_ref_node() override;
 
     /**
      * @brief Write the SR node in the dataset
@@ -55,15 +55,15 @@ public:
     IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get UID value
-    [[nodiscard]] const std::string& getUIDValue() const
+    [[nodiscard]] const std::string& get_uid_value() const
     {
-        return m_uidValue;
+        return m_uid_value;
     }
 
     ///Set UID value
-    void setUIDValue(const std::string& _uid_value)
+    void set_uid_value(const std::string& _uid_value)
     {
-        m_uidValue = _uid_value;
+        m_uid_value = _uid_value;
     }
 
 protected:
@@ -72,7 +72,7 @@ protected:
     void print(std::ostream& _os) const override;
 
     /// Text Value (0040, a124)
-    std::string m_uidValue;
+    std::string m_uid_value;
 };
 
 } // namespace sight::io::dicom::container::sr

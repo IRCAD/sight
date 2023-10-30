@@ -61,8 +61,8 @@ public:
      * @{
      */
     MODULE_SYNC_API static const core::com::signals::key_t ALL_RECEIVED_SIG;
-    typedef core::com::signal<void ()> all_received_signal_t;
-    typedef core::com::slot<void ()> received_signal_t;
+    using all_received_signal_t = core::com::signal<void ()>;
+    using received_signal_t     = core::com::slot<void ()>;
     /** @} */
 
     /// Constructor
@@ -93,7 +93,7 @@ private:
     /// Keep track of received signals
     std::vector<bool> m_flags;
 
-    std::vector<received_signal_t::sptr> m_waitingSlots;
+    std::vector<received_signal_t::sptr> m_waiting_slots;
 
     /// Store all internal signal connections
     core::com::helper::sig_slot_connection m_connections;

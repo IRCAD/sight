@@ -70,8 +70,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(optical_flow, sight::service::controller);
 
-    typedef core::com::signal<void ()> motion_signal_t;
-    typedef core::com::signal<void ()> no_motion_signal_t;
+    using motion_signal_t    = core::com::signal<void ()>;
+    using no_motion_signal_t = core::com::signal<void ()>;
 
     /// Constructor
     MODULE_FILTER_VISION_CLASS_API optical_flow() noexcept;
@@ -99,25 +99,25 @@ protected:
 private:
 
     /// Handles concurrency.
-    std::mutex m_mainMutex;
+    std::mutex m_main_mutex;
 
     /// Signal send when motion is detected.
-    motion_signal_t::sptr m_motionSignal;
+    motion_signal_t::sptr m_motion_signal;
 
     /// Signal send when no motion is detected.
-    no_motion_signal_t::sptr m_noMotionSignal;
+    no_motion_signal_t::sptr m_no_motion_signal;
 
     /// Stores last image.
-    cv::Mat m_lastGrayImg;
+    cv::Mat m_last_gray_img;
 
     /// Stores last corners.
-    cv::Mat m_lastCorners;
+    cv::Mat m_last_corners;
 
     /// Waiting time between to frames.
     unsigned int m_latency {333};
 
     /// Factor of re-scale: resize image to keep good balance between computation time and feature tracking quality.
-    float m_imageScaleFactor {3.6F};
+    float m_image_scale_factor {3.6F};
 
     /// Optical flow can only be computed if a frame is already present (see: m_lastGrayImg).
     /// True if it is, False otherwise
@@ -127,11 +127,11 @@ private:
     bool m_motion {false};
 
     /// Stores last processed frame timestamp.
-    core::hires_clock::type m_lastTimestamp {0};
+    core::hires_clock::type m_last_timestamp {0};
 
-    static constexpr std::string_view s_FRAME_TIMELINE_INPUT = "timeline";
+    static constexpr std::string_view FRAME_TIMELINE_INPUT = "timeline";
 
-    sight::data::ptr<sight::data::frame_tl, sight::data::Access::in> m_timeline {this, s_FRAME_TIMELINE_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, FRAME_TIMELINE_INPUT};
 };
 
 } //namespace sight::module::filter::vision

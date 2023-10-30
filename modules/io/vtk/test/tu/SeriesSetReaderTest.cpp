@@ -41,33 +41,33 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::SeriesSetReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::series_set_reader_test);
 
-static const double epsilon = 0.00001;
+static const double EPSILON = 0.00001;
 
 namespace sight::module::io::vtk::ut
 {
 
 //------------------------------------------------------------------------------
 
-void SeriesSetReaderTest::setUp()
+void series_set_reader_test::setUp()
 {
     // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesSetReaderTest::tearDown()
+void series_set_reader_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesSetReaderTest::testSeriesSetReader()
+void series_set_reader_test::test_series_set_reader()
 {
-    const std::filesystem::path image_file = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
-    const std::filesystem::path mesh_file  = utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk";
+    const std::filesystem::path image_file = utest_data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path mesh_file  = utest_data::dir() / "sight/mesh/vtk/sphere.vtk";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + image_file.string() + "' does not exist",
@@ -100,9 +100,9 @@ void SeriesSetReaderTest::testSeriesSetReader()
     service::remove(srv);
 
     // Data expected
-    const data::image::Spacing spacing_expected = {1.732, 1.732, 3.2};
-    const data::image::Origin origin_expected   = {34.64, 86.6, 56};
-    const data::image::Size size_expected       = {230, 170, 58};
+    const data::image::spacing_t spacing_expected = {1.732, 1.732, 3.2};
+    const data::image::origin_t origin_expected   = {34.64, 86.6, 56};
+    const data::image::size_t size_expected       = {230, 170, 58};
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
@@ -112,44 +112,44 @@ void SeriesSetReaderTest::testSeriesSetReader()
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", model_series);
 
     // Data read.
-    const data::image::Spacing spacing_read = image_series->getSpacing();
-    const data::image::Spacing origin_read  = image_series->getOrigin();
-    const data::image::Size size_read       = image_series->size();
+    const data::image::spacing_t spacing_read = image_series->spacing();
+    const data::image::spacing_t origin_read  = image_series->origin();
+    const data::image::size_t size_read       = image_series->size();
 
     CPPUNIT_ASSERT_EQUAL(spacing_expected.size(), spacing_read.size());
     CPPUNIT_ASSERT_EQUAL(origin_expected.size(), origin_read.size());
     CPPUNIT_ASSERT_EQUAL(size_expected.size(), size_read.size());
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacing_expected[0], spacing_read[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacing_expected[1], spacing_read[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on z", spacing_expected[2], spacing_read[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacing_expected[0], spacing_read[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacing_expected[1], spacing_read[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on z", spacing_expected[2], spacing_read[2], EPSILON);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on x", origin_expected[0], origin_read[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", origin_expected[1], origin_read[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on z", origin_expected[2], origin_read[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on x", origin_expected[0], origin_read[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", origin_expected[1], origin_read[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on z", origin_expected[2], origin_read[2], EPSILON);
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", size_expected[0], size_read[0]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", size_expected[1], size_read[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", size_expected[2], size_read[2]);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), model_series->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), model_series->get_reconstruction_db().size());
 
-    data::reconstruction::sptr rec1 = model_series->getReconstructionDB()[0];
-    data::reconstruction::sptr rec2 = model_series->getReconstructionDB()[1];
-    data::mesh::sptr mesh1          = rec1->getMesh();
-    data::mesh::sptr mesh2          = rec2->getMesh();
+    data::reconstruction::sptr rec1 = model_series->get_reconstruction_db()[0];
+    data::reconstruction::sptr rec2 = model_series->get_reconstruction_db()[1];
+    data::mesh::sptr mesh1          = rec1->get_mesh();
+    data::mesh::sptr mesh2          = rec2->get_mesh();
 
-    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 720, mesh1->numCells());
-    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 362, mesh1->numPoints());
+    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 720, mesh1->num_cells());
+    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 362, mesh1->num_points());
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesSetReaderTest::testMergeSeriesSetReader()
+void series_set_reader_test::test_merge_series_set_reader()
 {
-    const std::filesystem::path image_file = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path image_file = utest_data::dir() / "sight/image/vtk/img.vtk";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + image_file.string() + "' does not exist",

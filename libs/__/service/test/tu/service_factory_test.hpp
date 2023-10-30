@@ -32,7 +32,7 @@ namespace sight::service::ut
 class service_factory_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(service_factory_test);
-CPPUNIT_TEST(factoryTest);
+CPPUNIT_TEST(factory_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,7 +41,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void factoryTest();
+    static void factory_test();
 
 private:
 };

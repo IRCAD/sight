@@ -994,7 +994,7 @@ def main():
     global g_filtered_sops
     g_filtered_sops = parse_sop_classes()
 
-    # Filter results
+    # filter results
     global g_filtered_iods
     global g_filtered_modules
     global g_filtered_attributes

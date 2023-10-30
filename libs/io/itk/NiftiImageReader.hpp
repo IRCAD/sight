@@ -33,20 +33,20 @@
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API NiftiImageReader : public reader::generic_object_reader<data::image>,
-                                          public core::location::single_file,
-                                          public core::tools::progress_adviser
+class IO_ITK_CLASS_API nifti_image_reader : public reader::generic_object_reader<data::image>,
+                                            public core::location::single_file,
+                                            public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        NiftiImageReader,
+        nifti_image_reader,
         io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<NiftiImageReader>
+        io::reader::factory::make<nifti_image_reader>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API ~NiftiImageReader() override = default;
+    IO_ITK_API ~nifti_image_reader() override = default;
 
     IO_ITK_API void read() override;
 };

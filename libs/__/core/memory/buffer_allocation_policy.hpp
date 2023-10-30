@@ -34,9 +34,9 @@ class CORE_CLASS_API buffer_allocation_policy
 {
 public:
 
-    typedef SPTR(buffer_allocation_policy) sptr;
-    typedef std::size_t size_type;
-    typedef void* buffer_t;
+    using sptr      = std::shared_ptr<buffer_allocation_policy>;
+    using size_type = std::size_t;
+    using buffer_t  = void*;
 
     CORE_API virtual void allocate(buffer_t& _buffer, size_type _size)   = 0;
     CORE_API virtual void reallocate(buffer_t& _buffer, size_type _size) = 0;

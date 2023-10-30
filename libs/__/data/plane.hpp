@@ -44,7 +44,7 @@ public:
 
     SIGHT_DECLARE_CLASS(plane, object);
 
-    typedef std::array<point::sptr, 3> PointContainer;
+    using point_container = std::array<point::sptr, 3>;
 
     /**
      * @brief Constructor
@@ -56,7 +56,7 @@ public:
     DATA_API ~plane() noexcept override = default;
 
     /// Re-initialize the plane with 3 points
-    DATA_API void setValue(
+    DATA_API void set_value(
         point::sptr _point1,
         point::sptr _point2,
         point::sptr _point3
@@ -65,16 +65,16 @@ public:
     /** @{
      *  @brief get/set points container
      */
-    PointContainer& getPoints();
-    const PointContainer& getPoints() const;
-    void setPoints(const PointContainer& _v_points);
+    point_container& get_points();
+    const point_container& get_points() const;
+    void set_points(const point_container& _v_points);
     /// @}
 
     /** @{
      *  @brief get/set flag if the plane is an intersection one (else an union one)
      */
-    bool getIsIntersection() const;
-    void setIsIntersection(bool _is_intersection);
+    bool get_is_intersection() const;
+    void set_is_intersection(bool _is_intersection);
     /// @}
 
     /**
@@ -82,7 +82,7 @@ public:
      * @{
      */
     /// Signal emitted when plane is selected/deselected
-    typedef core::com::signal<void (bool)> selected_signal_t;
+    using selected_signal_t = core::com::signal<void (bool)>;
     DATA_API static const core::com::signals::key_t SELECTED_SIG;
 /**
  * @}
@@ -111,45 +111,45 @@ public:
 protected:
 
     //! Points container
-    PointContainer m_vPoints;
+    point_container m_v_points;
 
     //! flag if the plane is an intersection (else an union)
-    bool m_isIntersection {true};
+    bool m_is_intersection {true};
 }; // end class plane
 
 //-----------------------------------------------------------------------------
 
-inline plane::PointContainer& plane::getPoints()
+inline plane::point_container& plane::get_points()
 {
-    return this->m_vPoints;
+    return this->m_v_points;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const plane::PointContainer& plane::getPoints() const
+inline const plane::point_container& plane::get_points() const
 {
-    return this->m_vPoints;
+    return this->m_v_points;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void plane::setPoints(const plane::PointContainer& _v_points)
+inline void plane::set_points(const plane::point_container& _v_points)
 {
-    this->m_vPoints = _v_points;
+    this->m_v_points = _v_points;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool plane::getIsIntersection() const
+inline bool plane::get_is_intersection() const
 {
-    return m_isIntersection;
+    return m_is_intersection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void plane::setIsIntersection(bool _is_intersection)
+inline void plane::set_is_intersection(bool _is_intersection)
 {
-    this->m_isIntersection = _is_intersection;
+    this->m_is_intersection = _is_intersection;
 }
 
 //-----------------------------------------------------------------------------

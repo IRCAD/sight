@@ -37,7 +37,7 @@ void menu::clean()
 
 //-----------------------------------------------------------------------------
 
-void menu::destroyContainer()
+void menu::destroy_container()
 {
     SIGHT_ASSERT("The Qt menu not yet initialized, cleaning is thus impossible", m_menu);
     delete m_menu;
@@ -45,14 +45,14 @@ void menu::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-void menu::setQtMenu(QMenu* _menu)
+void menu::set_qt_menu(QMenu* _menu)
 {
     this->m_menu = _menu;
 }
 
 //-----------------------------------------------------------------------------
 
-QMenu* menu::getQtMenu()
+QMenu* menu::get_qt_menu()
 {
     return this->m_menu;
 }

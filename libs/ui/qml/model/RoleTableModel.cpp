@@ -27,14 +27,14 @@
 namespace sight::ui::qml::model
 {
 
-RoleTableModel::RoleTableModel(QObject* _parent) :
+role_table_model::role_table_model(QObject* _parent) :
     QAbstractTableModel(_parent)
 {
 }
 
 //------------------------------------------------------------------------------
 
-int RoleTableModel::rowCount(const QModelIndex& _parent) const
+int role_table_model::rowCount(const QModelIndex& _parent) const
 {
     Q_UNUSED(_parent)
     return m_data.size();
@@ -42,7 +42,7 @@ int RoleTableModel::rowCount(const QModelIndex& _parent) const
 
 //------------------------------------------------------------------------------
 
-int RoleTableModel::columnCount(const QModelIndex& _parent) const
+int role_table_model::columnCount(const QModelIndex& _parent) const
 {
     Q_UNUSED(_parent)
     return m_roles.size();
@@ -50,7 +50,7 @@ int RoleTableModel::columnCount(const QModelIndex& _parent) const
 
 //------------------------------------------------------------------------------
 
-QVariant RoleTableModel::data(const QModelIndex& _index, int _role) const
+QVariant role_table_model::data(const QModelIndex& _index, int _role) const
 {
     // check if the role exist
     if(!m_roles.contains(_role))
@@ -72,14 +72,14 @@ QVariant RoleTableModel::data(const QModelIndex& _index, int _role) const
 
 //------------------------------------------------------------------------------
 
-QHash<int, QByteArray> RoleTableModel::roleNames() const
+QHash<int, QByteArray> role_table_model::roleNames() const
 {
     return m_roles;
 }
 
 //------------------------------------------------------------------------------
 
-void RoleTableModel::addData(const QHash<QByteArray, QVariant>& _data)
+void role_table_model::add_data(const QHash<QByteArray, QVariant>& _data)
 {
     SIGHT_ASSERT("RoleTableModel must have role to add Data", !m_roles.empty());
     m_data.push_back(_data);
@@ -89,7 +89,7 @@ void RoleTableModel::addData(const QHash<QByteArray, QVariant>& _data)
 
 //------------------------------------------------------------------------------
 
-void RoleTableModel::addRole(const int& _enum_nb, const QByteArray& _role)
+void role_table_model::add_role(const int& _enum_nb, const QByteArray& _role)
 {
     // each time the user add a role we clear data to be sure everything is alright
     m_roles.insert(_enum_nb, _role);
@@ -98,7 +98,7 @@ void RoleTableModel::addRole(const int& _enum_nb, const QByteArray& _role)
 
 //------------------------------------------------------------------------------
 
-bool RoleTableModel::isEmpty() noexcept
+bool role_table_model::is_empty() noexcept
 {
     return m_data.isEmpty();
 }

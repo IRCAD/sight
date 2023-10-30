@@ -57,9 +57,9 @@ pre_integration_table::~pre_integration_table()
 
 //-----------------------------------------------------------------------------
 
-void pre_integration_table::createTexture(const std::string& _parent_id)
+void pre_integration_table::create_texture(const std::string& _parent_id)
 {
-    m_tableTexture = Ogre::TextureManager::getSingleton().create(
+    m_table_texture = Ogre::TextureManager::getSingleton().create(
         _parent_id + "_PreIntTableTexture",
         viz::scene3d::RESOURCE_GROUP,
         true
@@ -68,15 +68,15 @@ void pre_integration_table::createTexture(const std::string& _parent_id)
 
 //-----------------------------------------------------------------------------
 
-void pre_integration_table::removeTexture()
+void pre_integration_table::remove_texture()
 {
-    Ogre::TextureManager::getSingleton().remove(m_tableTexture->getHandle());
-    m_tableTexture.reset();
+    Ogre::TextureManager::getSingleton().remove(m_table_texture->getHandle());
+    m_table_texture.reset();
 }
 
 //-----------------------------------------------------------------------------
 
-void pre_integration_table::imageUpdate(
+void pre_integration_table::image_update(
     const data::image::csptr& _img,
     const data::transfer_function::csptr& _tf,
     float _sampling_rate
@@ -84,11 +84,11 @@ void pre_integration_table::imageUpdate(
 {
     FW_PROFILE("TF Init")
     {
-        Ogre::PixelFormat pixel_format = viz::scene3d::utils::getPixelFormatOgre(*_img);
+        Ogre::PixelFormat pixel_format = viz::scene3d::utils::get_pixel_format_ogre(*_img);
 
         const auto dump_lock = _img->dump_lock();
 
-        const std::size_t nb_pixels = _img->numElements();
+        const std::size_t nb_pixels = _img->num_elements();
 
         switch(pixel_format)
         {
@@ -97,8 +97,8 @@ void pre_integration_table::imageUpdate(
                 const auto* uchar_img_buffer = static_cast<const uint8_t*>(_img->buffer());
                 auto min_max                 = std::minmax_element(uchar_img_buffer, uchar_img_buffer + nb_pixels);
 
-                m_valueInterval.first  = *min_max.first;
-                m_valueInterval.second = *min_max.second;
+                m_value_interval.first  = *min_max.first;
+                m_value_interval.second = *min_max.second;
 
                 break;
             }
@@ -108,8 +108,8 @@ void pre_integration_table::imageUpdate(
                 const auto* ushort_img_buffer = static_cast<const int16_t*>(_img->buffer());
                 auto min_max                  = std::minmax_element(ushort_img_buffer, ushort_img_buffer + nb_pixels);
 
-                m_valueInterval.first  = *min_max.first;
-                m_valueInterval.second = *min_max.second;
+                m_value_interval.first  = *min_max.first;
+                m_value_interval.second = *min_max.second;
 
                 break;
             }
@@ -119,8 +119,8 @@ void pre_integration_table::imageUpdate(
                 const auto* uint_img_buffer = static_cast<const int32_t*>(_img->buffer());
                 auto min_max                = std::minmax_element(uint_img_buffer, uint_img_buffer + nb_pixels);
 
-                m_valueInterval.first  = *min_max.first;
-                m_valueInterval.second = *min_max.second;
+                m_value_interval.first  = *min_max.first;
+                m_value_interval.second = *min_max.second;
 
                 break;
             }
@@ -129,39 +129,39 @@ void pre_integration_table::imageUpdate(
                 SIGHT_FATAL("Invalid pixel format for pre-integration, pixels must be integers");
         }
 
-        auto texture_size = static_cast<unsigned>(m_valueInterval.second - m_valueInterval.first);
+        auto texture_size = static_cast<unsigned>(m_value_interval.second - m_value_interval.first);
 
-        if(texture_size != m_textureSize)
+        if(texture_size != m_texture_size)
         {
-            m_textureSize = texture_size;
+            m_texture_size = texture_size;
 
             if(m_table != nullptr)
             {
                 delete[] m_table;
-                delete[] m_integralTable;
+                delete[] m_integral_table;
             }
 
-            m_table         = new TablePixel[static_cast<std::size_t>(m_textureSize) * m_textureSize];
-            m_integralTable = new IntegralPixel[m_textureSize];
+            m_table          = new table_pixel[static_cast<std::size_t>(m_texture_size) * m_texture_size];
+            m_integral_table = new integral_pixel[m_texture_size];
 
-            utils::allocateTexture(
-                m_tableTexture.get(),
-                m_textureSize,
-                m_textureSize,
+            utils::allocate_texture(
+                m_table_texture.get(),
+                m_texture_size,
+                m_texture_size,
                 1,
                 Ogre::PF_A8R8G8B8,
                 Ogre::TEX_TYPE_2D,
                 true
             );
 
-            tfUpdate(_tf, _sampling_rate);
+            tf_update(_tf, _sampling_rate);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, float _sample_distance)
+void pre_integration_table::tf_update(const data::transfer_function::csptr& _tf, float _sample_distance)
 {
     if(m_table == nullptr)
     {
@@ -172,9 +172,9 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
     {
         glm::vec4 tmp(0.F);
 
-        for(int k = 0 ; k < static_cast<int>(m_textureSize) ; ++k)
+        for(int k = 0 ; k < static_cast<int>(m_texture_size) ; ++k)
         {
-            data::transfer_function::value_t value              = k + m_valueInterval.first;
+            data::transfer_function::value_t value              = k + m_value_interval.first;
             data::transfer_function::color_t interpolated_color = _tf->sample(value);
 
             // We use associated colours.
@@ -186,7 +186,7 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
                 alpha
             );
 
-            m_integralTable[k] = tmp;
+            m_integral_table[k] = tmp;
         }
 
         // Inverse of the sampling accounted by the TF.
@@ -194,9 +194,9 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
 
         // NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
         #pragma omp parallel for schedule(dynamic)
-        for(int sb = 0 ; sb < static_cast<int>(m_textureSize) ; ++sb)
+        for(int sb = 0 ; sb < static_cast<int>(m_texture_size) ; ++sb)
         {
-            for(int sf = 0 ; sf < static_cast<int>(m_textureSize) ; ++sf)
+            for(int sf = 0 ; sf < static_cast<int>(m_texture_size) ; ++sf)
             {
                 glm::vec4 res(0.F);
 
@@ -204,16 +204,16 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
 
                 if(sb != sf)
                 {
-                    const float opacity = 1.F - std::exp(-d * (m_integralTable[sb].a - m_integralTable[sf].a));
+                    const float opacity = 1.F - std::exp(-d * (m_integral_table[sb].a - m_integral_table[sf].a));
 
                     const glm::vec3 colour =
-                        (d * (glm::vec3(m_integralTable[sb]) - glm::vec3(m_integralTable[sf]))) / opacity;
+                        (d * (glm::vec3(m_integral_table[sb]) - glm::vec3(m_integral_table[sf]))) / opacity;
 
                     res = glm::vec4(colour, opacity);
                 }
                 else
                 {
-                    data::transfer_function::value_t value              = sb + m_valueInterval.first;
+                    data::transfer_function::value_t value              = sb + m_value_interval.first;
                     data::transfer_function::color_t interpolated_color = _tf->sample(value);
 
                     res =
@@ -229,7 +229,7 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
 
                 res = glm::clamp(res, 0.F, 1.F);
 
-                m_table[static_cast<unsigned>(sb) * m_textureSize + static_cast<unsigned>(sf)] = {
+                m_table[static_cast<unsigned>(sb) * m_texture_size + static_cast<unsigned>(sf)] = {
                     static_cast<uint8_t>(res.b * 255.F),
                     static_cast<uint8_t>(res.g * 255.F),
                     static_cast<uint8_t>(res.r * 255.F),
@@ -239,14 +239,14 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
         }
 
         // Store table in texture buffer.
-        Ogre::HardwarePixelBufferSharedPtr pix_buffer = m_tableTexture->getBuffer();
+        Ogre::HardwarePixelBufferSharedPtr pix_buffer = m_table_texture->getBuffer();
 
         // Discards the entire buffer while locking so that we can easily refill it from scratch
         pix_buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         Ogre::PixelBox pix_box = pix_buffer->getCurrentLock();
         auto* p_dest           = static_cast<std::uint8_t*>(pix_box.data);
 
-        std::memcpy(p_dest, m_table, static_cast<std::size_t>(m_textureSize) * m_textureSize * sizeof(TablePixel));
+        std::memcpy(p_dest, m_table, static_cast<std::size_t>(m_texture_size) * m_texture_size * sizeof(table_pixel));
 
         pix_buffer->unlock();
     }

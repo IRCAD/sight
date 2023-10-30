@@ -31,10 +31,10 @@
 namespace sight::io::dicom::ut
 {
 
-class WriterReaderTest : public CPPUNIT_NS::TestFixture
+class writer_reader_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(WriterReaderTest);
-CPPUNIT_TEST(writeReadImageSeriesTest);
+CPPUNIT_TEST_SUITE(writer_reader_test);
+CPPUNIT_TEST(write_read_image_series_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,7 +43,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void writeReadImageSeriesTest();
+    static void write_read_image_series_test();
 
 private:
 
@@ -51,7 +51,7 @@ private:
      * Create a series set containing an ImageSeries with landmarks and distance
      * and a ModelSeries with one reconstruction.
      */
-    static data::series_set::sptr createSeriesSet();
+    static data::series_set::sptr create_series_set();
 };
 
 } // namespace sight::io::dicom::ut

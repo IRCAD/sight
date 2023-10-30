@@ -34,19 +34,19 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a TEXT node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRTextNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_sr_text_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRTextNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_sr_text_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
         std::string _text_value
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRTextNode() override;
+    IO_DICOM_API ~dicom_sr_text_node() override;
 
     /**
      * @brief Write the SR node in the dataset
@@ -55,15 +55,15 @@ public:
     IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get Text value
-    [[nodiscard]] const std::string& getTextValue() const
+    [[nodiscard]] const std::string& get_text_value() const
     {
-        return m_textValue;
+        return m_text_value;
     }
 
     ///Set Text value
-    void setTextValue(const std::string& _text_value)
+    void set_text_value(const std::string& _text_value)
     {
-        m_textValue = _text_value;
+        m_text_value = _text_value;
     }
 
 protected:
@@ -72,7 +72,7 @@ protected:
     void print(std::ostream& _os) const override;
 
     /// Text Value (0040, a160)
-    std::string m_textValue;
+    std::string m_text_value;
 };
 
 } // namespace sight::io::dicom::container::sr

@@ -47,7 +47,7 @@ void powell_optimizer_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void powell_optimizer_test::parabolaTest()
+void powell_optimizer_test::parabola_test()
 {
     filter::image::powell_optimizer::optimized_function_t x_squared =
         [](const filter::image::powell_optimizer::function_parameters_t& _p)
@@ -67,7 +67,7 @@ void powell_optimizer_test::parabolaTest()
 
 //------------------------------------------------------------------------------
 
-void powell_optimizer_test::ackleyTest()
+void powell_optimizer_test::ackley_test()
 {
     filter::image::powell_optimizer::optimized_function_t ackley_function =
         [](const filter::image::powell_optimizer::function_parameters_t& _p)
@@ -96,7 +96,7 @@ void powell_optimizer_test::ackleyTest()
 
 //------------------------------------------------------------------------------
 
-void powell_optimizer_test::sphereFunctionTest()
+void powell_optimizer_test::sphere_function_test()
 {
     // n-dimensional sphere function.
     filter::image::powell_optimizer::optimized_function_t sphere_function =
@@ -143,7 +143,7 @@ void powell_optimizer_test::sphereFunctionTest()
 
 //------------------------------------------------------------------------------
 
-void powell_optimizer_test::bealeFunctionTest()
+void powell_optimizer_test::beale_function_test()
 {
     filter::image::powell_optimizer::optimized_function_t beale_function =
         [](const filter::image::powell_optimizer::function_parameters_t& _p)

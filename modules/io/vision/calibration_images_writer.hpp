@@ -63,12 +63,12 @@ public:
     MODULE_IO_VISION_API ~calibration_images_writer() noexcept override;
 
     /// Configures the folder path.
-    MODULE_IO_VISION_API void openLocationDialog() override;
+    MODULE_IO_VISION_API void open_location_dialog() override;
 
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::service::path_type_t get_path_type() const override;
 
     /// Configures the output file format.
     MODULE_IO_VISION_API void configuring() override;
@@ -85,7 +85,7 @@ protected:
 private:
 
     /// Output file extension, can be any format handled by `cv::imwrite()`.
-    std::string m_fileExtension;
+    std::string m_file_extension;
 };
 
 } // namespace sight::module::io::vision

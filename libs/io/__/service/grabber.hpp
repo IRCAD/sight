@@ -118,21 +118,21 @@ public:
     using camera_stopped_signal_t = core::com::signal<void ()>;
 
     IO_API static const core::com::signals::key_t PARAMETER_CHANGED_SIG;
-    using parameter_changed_signal_t = core::com::signal<void (ui::parameter_t, std::string)>;
+    using parameter_changed_t = core::com::signal<void (ui::parameter_t, std::string)>;
 
     IO_API static const core::com::signals::key_t JOB_CREATED_SIG;
     using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
     IO_API static const core::com::signals::key_t FPS_CHANGED_SIG;
-    using FPSChangedSignalType = sight::core::com::signal<void (double)>;
+    using fps_changed_signal_t = sight::core::com::signal<void (double)>;
     /** @} */
 
     /**
      * @name Data API
      * @{
      */
-    static constexpr std::string_view s_CAMERA_INPUT  = "camera";
-    static constexpr std::string_view s_FRAMETL_INOUT = "frameTL";
+    static constexpr std::string_view CAMERA_INPUT  = "camera";
+    static constexpr std::string_view FRAMETL_INOUT = "frameTL";
     /** @} */
     /**
      * @brief Constructor.
@@ -147,60 +147,60 @@ public:
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void startCamera() = 0;
+    IO_API virtual void start_camera() = 0;
 
     /**
      * @brief API for stopping a camera. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void stopCamera() = 0;
+    IO_API virtual void stop_camera() = 0;
 
     /**
      * @brief API for pausing a camera. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void pauseCamera() = 0;
+    IO_API virtual void pause_camera() = 0;
 
     /**
      * @brief API for enable/disable the loop mode in video. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void toggleLoopMode() = 0;
+    IO_API virtual void toggle_loop_mode() = 0;
 
     /**
      * @brief API for setting a new position in the video. Needs to be reimplemented in child classes
      */
-    IO_API virtual void setPosition(int64_t _position) = 0;
+    IO_API virtual void set_position(int64_t _position) = 0;
 
     /**
      * @brief API to get the previous image in frame by frame mode.
      */
-    IO_API virtual void previousImage();
+    IO_API virtual void previous_image();
 
     /**
      * @brief API to get the next image in frame by frame mode.
      */
-    IO_API virtual void nextImage();
+    IO_API virtual void next_image();
 
     /**
      * @brief API to set step used on readPrevious/readNext slots in frame by frame mode.
      */
-    IO_API virtual void setStep(int _step, std::string _key);
+    IO_API virtual void set_step(int _step, std::string _key);
 
     /// SLOT: Requests the grabber internal settings.
-    IO_API virtual void requestSettings();
+    IO_API virtual void request_settings();
 
     /// SLOT: Calls optimization functions defined in the grabber (e.g. hardware related function).
     IO_API virtual void optimize();
 
     /// SLOT: Adds a region of interest center.
-    IO_API virtual void addROICenter(sight::data::point::sptr _p);
+    IO_API virtual void add_roi_center(sight::data::point::sptr _p);
 
     /// SLOT: Removes a region of interest center.
-    IO_API virtual void removeROICenter(sight::data::point::sptr _p);
+    IO_API virtual void remove_roi_center(sight::data::point::sptr _p);
 
     /// SLOT: Sets a parameter value with its key.
-    IO_API virtual void setParameter(ui::parameter_t _value, std::string _key);
+    IO_API virtual void set_parameter(ui::parameter_t _value, std::string _key);
 
     /// SLOT: Forward FPS data
-    IO_API virtual void forwardFPSChanged(double _fps);
+    IO_API virtual void forward_fps_changed(double _fps);
 
 protected:
 
@@ -208,15 +208,15 @@ protected:
      * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
      * signal, pushes a black frame and emits the object pushed signal.
      */
-    IO_API static void clearTimeline(data::frame_tl& _tl);
+    IO_API static void clear_timeline(data::frame_tl& _tl);
 
     /**
      * @brief sets the current start state of the grabber.
      */
-    IO_API void setStartState(bool _state);
+    IO_API void set_start_state(bool _state);
     bool started() const;
 
-    data::ptr<data::frame_tl, data::Access::inout> m_frame {this, s_FRAMETL_INOUT};
+    data::ptr<data::frame_tl, data::access::inout> m_frame {this, FRAMETL_INOUT};
 
 private:
 
@@ -224,17 +224,17 @@ private:
      * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used when play
      * or pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
      */
-    IO_API void playPauseCamera();
+    IO_API void play_pause_camera();
 
     /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
-    bool m_isStarted {false};
+    bool m_is_started {false};
 };
 
 //------------------------------------------------------------------------------
 
 inline bool grabber::started() const
 {
-    return m_isStarted;
+    return m_is_started;
 }
 
 } //namespace sight::io::service

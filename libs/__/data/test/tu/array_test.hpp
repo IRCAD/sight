@@ -36,14 +36,14 @@ private:
     CPPUNIT_TEST(resize);
     CPPUNIT_TEST(reallocate);
     CPPUNIT_TEST(copy);
-    CPPUNIT_TEST(dumpLockTest);
-    CPPUNIT_TEST(bufferAccessTest);
-    CPPUNIT_TEST(constArrayTest);
-    CPPUNIT_TEST(emptyIteratorTest);
-    CPPUNIT_TEST(equalityTest);
-    CPPUNIT_TEST(swapTest);
-    CPPUNIT_TEST(resizeNonOwnerTest);
-    CPPUNIT_TEST(setBufferObjectNullThenResizeTest);
+    CPPUNIT_TEST(dump_lock_test);
+    CPPUNIT_TEST(buffer_access_test);
+    CPPUNIT_TEST(const_array_test);
+    CPPUNIT_TEST(empty_iterator_test);
+    CPPUNIT_TEST(equality_test);
+    CPPUNIT_TEST(swap_test);
+    CPPUNIT_TEST(resize_non_owner_test);
+    CPPUNIT_TEST(set_buffer_object_null_then_resize_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -56,15 +56,15 @@ public:
     static void resize();
     static void reallocate();
     static void copy();
-    static void dumpLockTest();
-    static void bufferAccessTest();
-    static void constArrayTest();
-    static void emptyIteratorTest();
-    static void equalityTest();
-    static void swapTest();
-    static void resizeNonOwnerTest();
-    static void setBufferObjectNullThenResizeTest();
-    static void atTest();
+    static void dump_lock_test();
+    static void buffer_access_test();
+    static void const_array_test();
+    static void empty_iterator_test();
+    static void equality_test();
+    static void swap_test();
+    static void resize_non_owner_test();
+    static void set_buffer_object_null_then_resize_test();
+    static void at_test();
 };
 
 } // namespace sight::data::ut

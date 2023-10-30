@@ -32,7 +32,7 @@ namespace sight::ui::layout
 
 //-----------------------------------------------------------------------------
 
-static overlay::view::Coord parse_size(const std::string& _s)
+static overlay::view::coord parse_size(const std::string& _s)
 {
     SIGHT_ASSERT("The provided size shouldn't be empty", !_s.empty());
     bool relative = (_s.back() == '%');
@@ -60,14 +60,14 @@ void overlay::initialize(const ui::config_t& _configuration)
         overlay::view vi;
         if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
         {
-            vi.x         = parse_size(view_cfg->get("x", "0"));
-            vi.y         = parse_size(view_cfg->get("y", "0"));
-            vi.width     = parse_size(view_cfg->get("width", "0"));
-            vi.height    = parse_size(view_cfg->get("height", "0"));
-            vi.minWidth  = view_cfg->get("minWidth", 0);
-            vi.minHeight = view_cfg->get("minHeight", 0);
-            vi.visible   = view_cfg->get("visible", true);
-            vi.opacity   = view_cfg->get("opacity", 0.F);
+            vi.x          = parse_size(view_cfg->get("x", "0"));
+            vi.y          = parse_size(view_cfg->get("y", "0"));
+            vi.width      = parse_size(view_cfg->get("width", "0"));
+            vi.height     = parse_size(view_cfg->get("height", "0"));
+            vi.min_width  = view_cfg->get("minWidth", 0);
+            vi.min_height = view_cfg->get("minHeight", 0);
+            vi.visible    = view_cfg->get("visible", true);
+            vi.opacity    = view_cfg->get("opacity", 0.F);
         }
 
         m_views.push_back(vi);

@@ -39,7 +39,7 @@ class FILTER_IMAGE_CLASS_API matrix_regressor
 {
 public:
 
-    typedef glm::dvec4 point_t;
+    using point_t = glm::dvec4;
 
     /**
      * @brief Constructor
@@ -71,9 +71,9 @@ public:
 
 private:
 
-    std::vector<glm::dmat4> m_matList;
+    std::vector<glm::dmat4> m_mat_list;
 
-    std::vector<point_t> m_pointList;
+    std::vector<point_t> m_point_list;
 };
 
 } // namespace sight::filter::image.

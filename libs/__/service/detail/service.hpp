@@ -99,20 +99,20 @@ public:
     /**
      * @brief Defines the current global status of the service.
      */
-    base::GlobalStatus m_globalState {base::STOPPED};
+    base::global_status m_global_state {base::global_status::stopped};
 
     /**
      * @brief Defines if the service is updating.
      */
-    base::UpdatingStatus m_updatingState {base::NOTUPDATING};
+    enum base::updating_status m_updating_state {base::updating_status::notupdating};
 
     /**
      * @brief Defines if the service is configured or not.
      */
-    base::ConfigurationStatus m_configurationState {base::UNCONFIGURED};
+    base::configuration_status m_configuration_state {base::configuration_status::unconfigured};
 
     /// Auto connections between this service and its objects
-    core::com::helper::sig_slot_connection m_autoConnections;
+    core::com::helper::sig_slot_connection m_auto_connections;
 
     /// Reference to the service
     sight::service::base& m_service;

@@ -40,7 +40,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::itk::ut::IoItkTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::itk::ut::io_itk_test);
 
 namespace sight::module::io::itk::ut
 {
@@ -49,13 +49,13 @@ static const double EPSILON = 0.00001;
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::setUp()
+void io_itk_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::tearDown()
+void io_itk_test::tearDown()
 {
 }
 
@@ -65,19 +65,19 @@ void execute_service(
     const SPTR(data::object)& _obj,
     const std::string& _srv_impl,
     const boost::property_tree::ptree& _cfg,
-    const data::Access _access = data::Access::inout
+    const data::access _access = data::access::inout
 )
 {
     service::base::sptr srv = service::add(_srv_impl);
     CPPUNIT_ASSERT(srv);
 
-    if(_access == data::Access::inout)
+    if(_access == data::access::inout)
     {
-        srv->set_inout(_obj, sight::io::service::s_DATA_KEY);
+        srv->set_inout(_obj, sight::io::service::DATA_KEY);
     }
     else
     {
-        srv->set_input(_obj, sight::io::service::s_DATA_KEY);
+        srv->set_input(_obj, sight::io::service::DATA_KEY);
     }
 
     srv->set_config(_cfg);
@@ -90,11 +90,11 @@ void execute_service(
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::testImageSeriesWriterJPG()
+void io_itk_test::test_image_series_writer_jpg()
 {
     // Create image series
     auto image_series = std::make_shared<data::image_series>();
-    utest_data::generator::image::generateRandomImage(image_series, core::type::INT16);
+    utest_data::generator::image::generate_random_image(image_series, core::type::INT16);
 
     // Create path
     core::os::temp_dir tmp_dir;
@@ -108,7 +108,7 @@ void IoItkTest::testImageSeriesWriterJPG()
         image_series,
         "sight::module::io::itk::sliced_image_series_writer",
         srv_cfg,
-        data::Access::in
+        data::access::in
     );
 }
 
@@ -121,14 +121,14 @@ double tolerance(double _num)
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::testSaveLoadInr()
+void io_itk_test::test_save_load_inr()
 {
     data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(image, core::type::INT16);
+    utest_data::generator::image::generate_random_image(image, core::type::INT16);
 
     // inr only support image origin (0,0,0)
-    const data::image::Origin origin = {0., 0., 0.};
-    image->setOrigin(origin);
+    const data::image::origin_t origin = {0., 0., 0.};
+    image->set_origin(origin);
 
     // save image in inr
     core::os::temp_dir tmp_dir;
@@ -143,7 +143,7 @@ void IoItkTest::testSaveLoadInr()
         image,
         "sight::module::io::itk::image_writer",
         srv_cfg,
-        data::Access::in
+        data::access::in
     );
 
     // load image
@@ -152,29 +152,29 @@ void IoItkTest::testSaveLoadInr()
         image2,
         "sight::module::io::itk::image_reader",
         srv_cfg,
-        data::Access::inout
+        data::access::inout
     );
 
-    data::image::Spacing spacing = image2->getSpacing();
+    data::image::spacing_t spacing = image2->spacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing(spacing);
+    image2->set_spacing(spacing);
 
     // check image
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    image2->set_window_center(image->window_center());
+    image2->set_window_width(image->window_width());
 
     CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::testSaveLoadNifti()
+void io_itk_test::test_save_load_nifti()
 {
     data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(image, core::type::INT16);
+    utest_data::generator::image::generate_random_image(image, core::type::INT16);
 
-    const data::image::Origin origin = {0.5F, 0.2F, 1.2F};
-    image->setOrigin(origin);
+    const data::image::origin_t origin = {0.5F, 0.2F, 1.2F};
+    image->set_origin(origin);
 
     // save image in inr
     core::os::temp_dir tmp_dir;
@@ -189,7 +189,7 @@ void IoItkTest::testSaveLoadNifti()
         image,
         "sight::module::io::itk::image_writer",
         srv_cfg,
-        data::Access::in
+        data::access::in
     );
 
     // load image
@@ -198,30 +198,30 @@ void IoItkTest::testSaveLoadNifti()
         image2,
         "sight::module::io::itk::image_reader",
         srv_cfg,
-        data::Access::inout
+        data::access::inout
     );
 
-    data::image::Spacing spacing = image2->getSpacing();
+    data::image::spacing_t spacing = image2->spacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing(spacing);
+    image2->set_spacing(spacing);
 
     // check image
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    image2->set_window_center(image->window_center());
+    image2->set_window_width(image->window_width());
 
     CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::ImageSeriesInrTest()
+void io_itk_test::image_series_inr_test()
 {
     auto image_series = std::make_shared<data::image_series>();
-    utest_data::generator::image::generateRandomImage(image_series, core::type::INT16);
+    utest_data::generator::image::generate_random_image(image_series, core::type::INT16);
 
     // inr only support image origin (0,0,0)
-    const data::image::Origin origin = {0., 0., 0.};
-    image_series->setOrigin(origin);
+    const data::image::origin_t origin = {0., 0., 0.};
+    image_series->set_origin(origin);
 
     // save image in inr
     core::os::temp_dir tmp_dir;
@@ -236,7 +236,7 @@ void IoItkTest::ImageSeriesInrTest()
         image_series,
         "sight::module::io::itk::image_series_writer",
         srv_cfg,
-        data::Access::in
+        data::access::in
     );
 
     // load image
@@ -245,36 +245,36 @@ void IoItkTest::ImageSeriesInrTest()
         image_series2,
         "sight::module::io::itk::image_series_reader",
         srv_cfg,
-        data::Access::inout
+        data::access::inout
     );
 
-    data::image::Spacing spacing = image_series2->getSpacing();
+    data::image::spacing_t spacing = image_series2->spacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image_series2->setSpacing(spacing);
+    image_series2->set_spacing(spacing);
 
     // check image
-    image_series2->setWindowCenter(image_series->getWindowCenter());
-    image_series2->setWindowWidth(image_series->getWindowWidth());
+    image_series2->set_window_center(image_series->window_center());
+    image_series2->set_window_width(image_series->window_width());
 
     // ITK reader change the description of the image, the modality is set to "OT", etc ...
     // We only compare "image" part...
     const auto image  = std::dynamic_pointer_cast<data::image>(image_series);
     const auto image2 = std::dynamic_pointer_cast<data::image>(image_series2);
-    image2->setDescription(image->getDescription());
+    image2->set_description(image->get_description());
 
     CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::ImageSeriesNiftiTest()
+void io_itk_test::image_series_nifti_test()
 {
     auto image_series = std::make_shared<data::image_series>();
-    utest_data::generator::image::generateRandomImage(image_series, core::type::INT16);
+    utest_data::generator::image::generate_random_image(image_series, core::type::INT16);
 
     // inr only support image origin (0,0,0)
-    const data::image::Origin origin = {0., 0., 0.};
-    image_series->setOrigin(origin);
+    const data::image::origin_t origin = {0., 0., 0.};
+    image_series->set_origin(origin);
 
     // save image in inr
     core::os::temp_dir tmp_dir;
@@ -289,7 +289,7 @@ void IoItkTest::ImageSeriesNiftiTest()
         image_series,
         "sight::module::io::itk::image_series_writer",
         srv_cfg,
-        data::Access::in
+        data::access::in
     );
 
     // load image
@@ -298,36 +298,36 @@ void IoItkTest::ImageSeriesNiftiTest()
         image_series2,
         "sight::module::io::itk::image_series_reader",
         srv_cfg,
-        data::Access::inout
+        data::access::inout
     );
 
-    data::image::Spacing spacing = image_series2->getSpacing();
+    data::image::spacing_t spacing = image_series2->spacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image_series2->setSpacing(spacing);
+    image_series2->set_spacing(spacing);
 
     // check image
-    image_series2->setWindowCenter(image_series->getWindowCenter());
-    image_series2->setWindowWidth(image_series->getWindowWidth());
+    image_series2->set_window_center(image_series->window_center());
+    image_series2->set_window_width(image_series->window_width());
 
     // ITK reader change the description of the image, the modality is set to "OT", etc ...
     // We only compare "image" part...
     const auto image  = std::dynamic_pointer_cast<data::image>(image_series);
     const auto image2 = std::dynamic_pointer_cast<data::image>(image_series2);
-    image2->setDescription(image->getDescription());
+    image2->set_description(image->get_description());
 
     CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::SeriesSetInrTest()
+void io_itk_test::series_set_inr_test()
 {
     /*
      * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
      * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
      */
-    const std::filesystem::path image_file = utest_data::Data::dir() / "sight/image/inr/image.inr.gz";
-    const std::filesystem::path skin_file  = utest_data::Data::dir() / "sight/image/inr/skin.inr.gz";
+    const std::filesystem::path image_file = utest_data::dir() / "sight/image/inr/image.inr.gz";
+    const std::filesystem::path skin_file  = utest_data::dir() / "sight/image/inr/skin.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + image_file.string() + "' does not exist",
@@ -350,32 +350,32 @@ void IoItkTest::SeriesSetInrTest()
         series_set,
         "sight::module::io::itk::series_set_reader",
         srv_cfg,
-        data::Access::inout
+        data::access::inout
     );
 
-    const data::image::Spacing spacing = {0.781, 0.781, 1.6};
-    const data::image::Size size       = {512, 512, 134};
+    const data::image::spacing_t spacing = {0.781, 0.781, 1.6};
+    const data::image::size_t size       = {512, 512, 134};
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
     data::image_series::sptr img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
     CPPUNIT_ASSERT(img_series);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->getModality());
+    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->get_modality());
 
-    CPPUNIT_ASSERT_EQUAL(std::string("int16"), img_series->getType().name());
+    CPPUNIT_ASSERT_EQUAL(std::string("int16"), img_series->type().name());
     CPPUNIT_ASSERT(size == img_series->size());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], img_series->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], img_series->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], img_series->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], img_series->spacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], img_series->spacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], img_series->spacing()[2], EPSILON);
 
     img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(1));
     CPPUNIT_ASSERT(img_series);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->getModality());
+    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->get_modality());
 
-    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), img_series->getType().name());
+    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), img_series->type().name());
     CPPUNIT_ASSERT(size == img_series->size());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], img_series->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], img_series->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], img_series->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], img_series->spacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], img_series->spacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], img_series->spacing()[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------

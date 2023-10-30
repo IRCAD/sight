@@ -30,7 +30,7 @@ namespace sight::data::ut
 
 //------------------------------------------------------------------------------
 
-void structure_traits_test::equalityTest()
+void structure_traits_test::equality_test()
 {
     auto struct1 = std::make_shared<data::structure_traits>();
     auto struct2 = std::make_shared<data::structure_traits>();
@@ -50,15 +50,15 @@ void structure_traits_test::equalityTest()
         *struct1 == *struct2 && !(*struct1 != *struct2) \
     );
 
-    TEST(setType("1"));
-    TEST(setCategories({data::structure_traits::BODY}));
-    TEST(setClass(data::structure_traits::TOOL));
-    TEST(setNativeExp("2"));
-    TEST(setNativeGeometricExp("3"));
+    TEST(set_type("1"));
+    TEST(set_categories({data::structure_traits::body}));
+    TEST(set_class(data::structure_traits::tool));
+    TEST(set_native_exp("2"));
+    TEST(set_native_geometric_exp("3"));
     TEST(set_attachment_type("4"));
-    TEST(setColor(std::make_shared<data::color>(5.F, 6.F, 7.F)));
-    TEST(setAnatomicRegion("8"));
-    TEST(setPropertyCategory("9"));
+    TEST(set_color(std::make_shared<data::color>(5.F, 6.F, 7.F)));
+    TEST(set_anatomic_region("8"));
+    TEST(set_property_category("9"));
     TEST(set_property_type("10"));
 
     #undef TEST

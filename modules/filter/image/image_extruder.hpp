@@ -107,17 +107,17 @@ private:
     void stopping() override;
 
     /// SLOT: called when reconstructions are added to the model series.
-    void addReconstructions(data::model_series::reconstruction_vector_t _reconstructions) const;
+    void add_reconstructions(data::model_series::reconstruction_vector_t _reconstructions) const;
 
-    static constexpr std::string_view s_MESHES_INPUT    = "meshes";
-    static constexpr std::string_view s_IMAGE_INPUT     = "image";
-    static constexpr std::string_view s_TRANSFORM_INPUT = "transform";
-    static constexpr std::string_view s_IMAGE_INOUT     = "mask";
+    static constexpr std::string_view MESHES_INPUT    = "meshes";
+    static constexpr std::string_view IMAGE_INPUT     = "image";
+    static constexpr std::string_view TRANSFORM_INPUT = "transform";
+    static constexpr std::string_view IMAGE_INOUT     = "mask";
 
-    sight::data::ptr<sight::data::model_series, sight::data::Access::in> m_meshes {this, s_MESHES_INPUT, true};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_transform {this, s_TRANSFORM_INPUT, true, true};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_extrudedImage {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::model_series, sight::data::access::in> m_meshes {this, MESHES_INPUT, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT, true, true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_extruded_image {this, IMAGE_INOUT};
 };
 
 } // namespace sight::module::filter::image.

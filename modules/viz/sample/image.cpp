@@ -30,7 +30,7 @@
 namespace sight::module::viz::sample
 {
 
-static const std::string s_IMAGE_INPUT = "image";
+static const std::string IMAGE_INPUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ void image::starting()
     this->sight::ui::service::create();
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
     const auto generic_scene_id = this->get_id() + "-genericScene";
     sight::ui::registry::register_sid_container(generic_scene_id, qt_container);
@@ -76,32 +76,32 @@ void image::starting()
     render_config.add_child("scene.layer.adaptor", interactor_cfg);
     render_config.add_child("scene.layer.adaptor", negato_cfg);
 
-    m_renderSrv = sight::service::add("sight::viz::scene3d::render");
-    m_renderSrv->set_config(render_config);
-    m_renderSrv->set_id(generic_scene_id);
+    m_render_srv = sight::service::add("sight::viz::scene3d::render");
+    m_render_srv->set_config(render_config);
+    m_render_srv->set_id(generic_scene_id);
 
-    m_renderSrv->configure();
+    m_render_srv->configure();
 
-    m_interactorSrv = sight::service::add("sight::module::viz::scene3d::adaptor::trackball_camera");
-    m_interactorSrv->set_id(this->get_id() + "interactorAdaptor");
-    m_interactorSrv->configure();
+    m_interactor_srv = sight::service::add("sight::module::viz::scene3d::adaptor::trackball_camera");
+    m_interactor_srv->set_id(this->get_id() + "interactorAdaptor");
+    m_interactor_srv->configure();
 
     // Create default transfer function
-    m_tf = data::transfer_function::createDefaultTF();
+    m_tf = data::transfer_function::create_default_tf();
 
     auto image = m_image.lock();
     service::config_t negato_config;
     negato_config.put("config.<xmlattr>.interactive", "true");
-    m_negatoSrv = sight::service::add("sight::module::viz::scene3d::adaptor::negato3d");
-    m_negatoSrv->set_config(negato_config);
-    m_negatoSrv->set_input(image.get_shared(), "image", true);
-    m_negatoSrv->set_inout(m_tf, "tf", true);
-    m_negatoSrv->set_id(this->get_id() + "negato3DAdaptor");
-    m_negatoSrv->configure();
+    m_negato_srv = sight::service::add("sight::module::viz::scene3d::adaptor::negato3d");
+    m_negato_srv->set_config(negato_config);
+    m_negato_srv->set_input(image.get_shared(), "image", true);
+    m_negato_srv->set_inout(m_tf, "tf", true);
+    m_negato_srv->set_id(this->get_id() + "negato3DAdaptor");
+    m_negato_srv->configure();
 
-    m_renderSrv->start().wait();
-    m_interactorSrv->start().wait();
-    m_negatoSrv->start().wait();
+    m_render_srv->start().wait();
+    m_interactor_srv->start().wait();
+    m_negato_srv->start().wait();
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ service::connections_t image::auto_connections() const
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
     connections_t connections;
-    connections.push(s_IMAGE_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -126,19 +126,19 @@ void image::updating()
 
 void image::stopping()
 {
-    m_negatoSrv->stop().wait();
-    m_interactorSrv->stop().wait();
-    m_renderSrv->stop().wait();
+    m_negato_srv->stop().wait();
+    m_interactor_srv->stop().wait();
+    m_render_srv->stop().wait();
 
     sight::ui::registry::unregister_sid_container(this->get_id() + "-genericScene");
 
-    sight::service::remove(m_negatoSrv);
-    sight::service::remove(m_interactorSrv);
-    sight::service::remove(m_renderSrv);
+    sight::service::remove(m_negato_srv);
+    sight::service::remove(m_interactor_srv);
+    sight::service::remove(m_render_srv);
 
-    m_negatoSrv.reset();
-    m_interactorSrv.reset();
-    m_renderSrv.reset();
+    m_negato_srv.reset();
+    m_interactor_srv.reset();
+    m_render_srv.reset();
     m_tf.reset();
 
     this->destroy();

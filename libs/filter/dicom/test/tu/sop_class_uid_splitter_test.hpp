@@ -30,12 +30,12 @@ namespace sight::filter::dicom::ut
 {
 
 /**
- * @brief Test SliceThicknessModifier and TagValueSplitter classes
+ * @brief Test slice_thickness_modifier and tag_value_splitter classes
  */
 class sop_class_uid_splitter_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(sop_class_uid_splitter_test);
-CPPUNIT_TEST(simpleApplication);
+CPPUNIT_TEST(simple_application);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,7 +45,7 @@ public:
     void tearDown() override;
 
     /// Apply the patch and verify that the DicomSeries has been correctly modified
-    static void simpleApplication();
+    static void simple_application();
 };
 
 } // namespace sight::filter::dicom::ut

@@ -41,13 +41,7 @@ intrinsic_edition::intrinsic_edition() :
     m_dialog(new update_intrinsic_dialog())
 {
     core::com::has_slots::m_slots.set_worker(this->worker());
-
-    QObject::connect(
-        m_dialog,
-        SIGNAL(newCalibration(std::array<double,12>&)),
-        this,
-        SLOT(onNewCalibration(std::array<double,12>&))
-    );
+    QObject::connect(m_dialog, &update_intrinsic_dialog::new_calibration, this, &intrinsic_edition::on_new_calibration);
 }
 
 // -------------------------------------------------------------------------
@@ -56,37 +50,37 @@ intrinsic_edition::~intrinsic_edition()
 {
     QObject::disconnect(
         m_dialog,
-        SIGNAL(newCalibration(std::array<double,12>&)),
+        &update_intrinsic_dialog::new_calibration,
         this,
-        SLOT(onNewCalibration(std::array<double,12>&))
+        &intrinsic_edition::on_new_calibration
     );
 }
 
 // -------------------------------------------------------------------------
 
-void intrinsic_edition::onNewCalibration(std::array<double, 12>& _cal)
+void intrinsic_edition::on_new_calibration(std::array<double, 12>& _cal)
 {
     m_calibration = _cal;
 
-    this->updateCalibration();
+    this->update_calibration();
 }
 
 // -------------------------------------------------------------------------
 
-void intrinsic_edition::updateCalibration()
+void intrinsic_edition::update_calibration()
 {
     const auto camera = m_camera.lock();
-    SIGHT_ASSERT("The inout key '" << s_CAMERA << "' is not correctly set.", camera);
+    SIGHT_ASSERT("The inout key '" << CAMERA << "' is not correctly set.", camera);
 
-    camera->setWidth(std::size_t(m_calibration[0]));
-    camera->setHeight(std::size_t(m_calibration[1]));
+    camera->set_width(std::size_t(m_calibration[0]));
+    camera->set_height(std::size_t(m_calibration[1]));
 
-    camera->setFx(m_calibration[2]);
-    camera->setFy(m_calibration[3]);
-    camera->setCx(m_calibration[4]);
-    camera->setCy(m_calibration[5]);
+    camera->set_fx(m_calibration[2]);
+    camera->set_fy(m_calibration[3]);
+    camera->set_cx(m_calibration[4]);
+    camera->set_cy(m_calibration[5]);
 
-    camera->setDistortionCoefficient(
+    camera->set_distortion_coefficient(
         m_calibration[6],
         m_calibration[7],
         m_calibration[8],
@@ -94,7 +88,7 @@ void intrinsic_edition::updateCalibration()
         m_calibration[10]
     );
 
-    camera->setSkew(m_calibration[11]);
+    camera->set_skew(m_calibration[11]);
 
     data::camera::intrinsic_calibrated_signal_t::sptr sig;
     sig = camera->signal<data::camera::intrinsic_calibrated_signal_t>(
@@ -108,34 +102,34 @@ void intrinsic_edition::updateCalibration()
 
 void intrinsic_edition::configuring()
 {
-    this->readCalibration();
+    this->read_calibration();
 
-    m_dialog->setParameters(m_calibration);
+    m_dialog->set_parameters(m_calibration);
 }
 
 // -------------------------------------------------------------------------
 
-void intrinsic_edition::readCalibration()
+void intrinsic_edition::read_calibration()
 {
     const auto camera = m_camera.lock();
-    SIGHT_ASSERT("The inout key '" << s_CAMERA << "' is not correctly set.", camera);
+    SIGHT_ASSERT("The inout key '" << CAMERA << "' is not correctly set.", camera);
 
-    m_calibration[0] = double(camera->getWidth());
-    m_calibration[1] = double(camera->getHeight());
+    m_calibration[0] = double(camera->get_width());
+    m_calibration[1] = double(camera->get_height());
 
-    m_calibration[2] = camera->getFx();
-    m_calibration[3] = camera->getFy();
-    m_calibration[4] = camera->getCx();
-    m_calibration[5] = camera->getCy();
+    m_calibration[2] = camera->get_fx();
+    m_calibration[3] = camera->get_fy();
+    m_calibration[4] = camera->get_cx();
+    m_calibration[5] = camera->get_cy();
 
-    m_distParameters = camera->getDistortionCoefficient();
+    m_dist_parameters = camera->get_distortion_coefficient();
 
-    m_calibration[6]  = m_distParameters[0];
-    m_calibration[7]  = m_distParameters[1];
-    m_calibration[8]  = m_distParameters[2];
-    m_calibration[9]  = m_distParameters[3];
-    m_calibration[10] = m_distParameters[4];
-    m_calibration[11] = camera->getSkew();
+    m_calibration[6]  = m_dist_parameters[0];
+    m_calibration[7]  = m_dist_parameters[1];
+    m_calibration[8]  = m_dist_parameters[2];
+    m_calibration[9]  = m_dist_parameters[3];
+    m_calibration[10] = m_dist_parameters[4];
+    m_calibration[11] = camera->get_skew();
 }
 
 // -------------------------------------------------------------------------
@@ -154,8 +148,8 @@ void intrinsic_edition::stopping()
 
 void intrinsic_edition::updating()
 {
-    this->readCalibration();
-    m_dialog->setParameters(m_calibration);
+    this->read_calibration();
+    m_dialog->set_parameters(m_calibration);
     m_dialog->show();
 }
 

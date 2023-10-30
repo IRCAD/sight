@@ -99,14 +99,14 @@ protected:
 private:
 
     /// Slot: get the picking information to display the pixel value
-    void getInteraction(data::tools::picking_info _info);
+    void get_interaction(data::tools::picking_info _info);
 
     /// Label to display the pixel value
-    QPointer<QLineEdit> m_valueText;
+    QPointer<QLineEdit> m_value_text;
 
-    static constexpr std::string_view s_IMAGE = "image";
+    static constexpr std::string_view IMAGE = "image";
 
-    data::ptr<data::image, data::Access::in> m_image {this, s_IMAGE, true};
+    data::ptr<data::image, data::access::in> m_image {this, IMAGE, true};
 };
 
 } // namespace sight::module::ui::qt::image

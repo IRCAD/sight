@@ -30,7 +30,7 @@ namespace sight::service::ut
 class sig_slot_connection_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(sig_slot_connection_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,7 +38,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void basicTest();
+    static void basic_test();
 };
 
 } // namespace sight::service::ut

@@ -30,7 +30,7 @@ namespace sight::app
 //------------------------------------------------------------------------------
 
 config_controller::config_controller() noexcept :
-    m_configLauncher(std::make_unique<app::helper::config_launcher>())
+    m_config_launcher(std::make_unique<app::helper::config_launcher>())
 {
 }
 
@@ -38,21 +38,21 @@ config_controller::config_controller() noexcept :
 
 void config_controller::configuring(const config_t& _config)
 {
-    m_configLauncher->parseConfig(_config, this->get_sptr());
+    m_config_launcher->parse_config(_config, this->get_sptr());
 }
 
 //------------------------------------------------------------------------------
 
 void config_controller::starting()
 {
-    m_configLauncher->startConfig(this->get_sptr());
+    m_config_launcher->start_config(this->get_sptr());
 }
 
 //------------------------------------------------------------------------------
 
 void config_controller::stopping()
 {
-    m_configLauncher->stopConfig();
+    m_config_launcher->stop_config();
 }
 
 //------------------------------------------------------------------------------

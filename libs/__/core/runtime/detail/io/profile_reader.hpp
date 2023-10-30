@@ -116,18 +116,18 @@ public:
 
 private:
 
-    static std::string ID;                    ///< defines the name of the id xml element or attribute name
-    static std::string NAME;                  ///< defines the name of the xml profile
-    static std::string VALUE;                 ///< defines the name of the value xml element or attribute name
-    static std::string VERSION;               ///< defines the name of the version xml element or attribute name
-    static std::string CHECK_SINGLE_INSTANCE; ///< defines the name of the check-single-instance xml element or
+    static std::string s_id;                    ///< defines the name of the id xml element or attribute name
+    static std::string s_name;                  ///< defines the name of the xml profile
+    static std::string s_value;                 ///< defines the name of the value xml element or attribute name
+    static std::string s_version;               ///< defines the name of the version xml element or attribute name
+    static std::string s_check_single_instance; ///< defines the name of the check-single-instance xml element or
     // attribute name
-    static std::string ACTIVATE;   ///< defines the name of the activate xml element or attribute name
-    static std::string START;      ///< defines the name of the start xml element or attribute name
-    static std::string PARAM;      ///< defines the name of the parameter xml element or attribute name
-    static std::string DIS_EXT_PT; ///< defines the name of the disable extension point xml element or attribute
+    static std::string s_activate;   ///< defines the name of the activate xml element or attribute name
+    static std::string s_start;      ///< defines the name of the start xml element or attribute name
+    static std::string s_param;      ///< defines the name of the parameter xml element or attribute name
+    static std::string s_dis_ext_pt; ///< defines the name of the disable extension point xml element or attribute
     // name
-    static std::string DIS_EXT; ///< defines the name of the disable extension xml element or attribute name
+    static std::string s_dis_ext; ///< defines the name of the disable extension xml element or attribute name
 };
 
 } // namespace io

@@ -44,16 +44,16 @@ message::message(
     const parameters_t& _parameters
 ) :
     m_title(_info.title),
-    m_tabID("TABID_" + core::tools::UUID::generate()),
-    m_appConfigID(_info.appConfig.id),
-    m_tabInfo(_info.tabInfo.empty() ? _info.title : _info.tabInfo),
-    m_iconPath(_info.icon),
-    m_tooltip(m_tabInfo),
+    m_tab_id("TABID_" + core::tools::uuid::generate()),
+    m_app_config_id(_info.app_config.id),
+    m_tab_info(_info.tab_info.empty() ? _info.title : _info.tab_info),
+    m_icon_path(_info.icon),
+    m_tooltip(m_tab_info),
     m_activity(_activity)
 {
     SIGHT_ASSERT("Activity instantiation failed", _activity);
 
-    m_replacementMap = sight::activity::extension::activity::getDefault()->getReplacementMap(
+    m_replacement_map = sight::activity::extension::activity::get_default()->get_replacement_map(
         *_activity,
         _info,
         _parameters

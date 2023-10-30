@@ -204,7 +204,7 @@ void buffer_manager::set_buffer_impl(
     info.last_access.modified();
     info.size          = _size;
     info.buffer_policy = _policy;
-    info.file_format   = core::memory::OTHER;
+    info.file_format   = core::memory::other;
     info.fs_file.clear();
     info.istream_factory =
         std::make_shared<core::memory::stream::in::buffer>(
@@ -438,7 +438,7 @@ bool buffer_manager::dump_buffer(buffer_info& _info, buffer_manager::buffer_ptr_
     if(sight::core::memory::buffer_manager::write_buffer_impl(*_buffer_ptr, _info.size, dumped_file))
     {
         _info.fs_file             = core::memory::file_holder(dumped_file, true);
-        _info.file_format         = core::memory::RAW;
+        _info.file_format         = core::memory::raw;
         _info.istream_factory     = std::make_shared<core::memory::stream::in::raw>(_info.fs_file);
         _info.user_stream_factory = false;
         _info.buffer_policy->destroy(*_buffer_ptr);
@@ -510,7 +510,7 @@ bool buffer_manager::restore_buffer(
 
             m_dump_policy->restore_success(_info, _buffer_ptr);
 
-            _info.file_format     = core::memory::OTHER;
+            _info.file_format     = core::memory::other;
             _info.istream_factory =
                 std::make_shared<core::memory::stream::in::buffer>(
                     *_buffer_ptr,
@@ -618,7 +618,7 @@ std::string buffer_manager::to_string_impl() const
     << "DumpStatus" << " "
     << "File" << " "
     << std::endl;
-    for(const buffer_info_map_t::value_type& item : m_buffer_infos)
+    for(const auto& item : m_buffer_infos)
     {
         const buffer_info& info = item.second;
         sstr << std::setw(18) << item.first << "->" << std::setw(18) << *(item.first) << " "
@@ -676,7 +676,7 @@ std::shared_future<buffer_manager::buffer_stats> buffer_manager::get_buffer_stat
 buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_info_map_t& _buffer_info)
 {
     buffer_stats stats = {0, 0};
-    for(const buffer_info_map_t::value_type& item : _buffer_info)
+    for(const auto& item : _buffer_info)
     {
         const auto& info = item.second;
         if(!info.loaded)
@@ -739,11 +739,11 @@ void buffer_manager::set_istream_factory_impl(
 
     switch(m_loading_mode)
     {
-        case buffer_manager::DIRECT:
+        case buffer_manager::direct:
             this->restore_buffer(_buffer_ptr);
             break;
 
-        case buffer_manager::LAZY:
+        case buffer_manager::lazy:
             m_updated_sig->async_emit();
             break;
 

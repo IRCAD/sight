@@ -117,64 +117,64 @@ protected:
 private Q_SLOTS:
 
     /// Updates slider information and trigger the slice puller timer.
-    void changeSliceIndex(int _value);
+    void change_slice_index(int _value);
 
 private:
 
     /// Fills editor information.
-    void setSliderInformation(unsigned _value);
+    void set_slider_information(unsigned _value);
 
     /// Retrieves the local slice or pull it, then, read it.
-    void retrieveSlice();
+    void retrieve_slice();
 
     /**
      * @brief Pulls the slice from the PACS.
      * @param _selectedSliceIndex index of the slice to pull.
      */
-    void pullSlice(std::size_t _selected_slice_index) const;
+    void pull_slice(std::size_t _selected_slice_index) const;
 
     /**
      * @brief Reads a local slice.
      * @param _dicomSeries the dicom series instance.
      * @param _selectedSliceIndex index of the slice to read.
      */
-    void readSlice(
+    void read_slice(
         const data::mt::locked_ptr<data::dicom_series>& _dicom_series,
         std::size_t _selected_slice_index
     ) const;
 
     /// Contains the worker of the series enquire thread.
-    core::thread::worker::sptr m_requestWorker;
+    core::thread::worker::sptr m_request_worker;
 
     /// Contains the slider.
     QPointer<QSlider> m_slider {nullptr};
 
     /// Contains the slider informations.
-    QPointer<QLineEdit> m_lineEdit {nullptr};
+    QPointer<QLineEdit> m_line_edit {nullptr};
 
     /// Contains the timer used to trigger the new slice retrieving.
-    core::thread::timer::sptr m_sliceTrigger {nullptr};
+    core::thread::timer::sptr m_slice_trigger {nullptr};
 
     /// Defines the delay to wait to trigger a slice retrieving.
     unsigned int m_delay {500};
 
     /// Defines the DICOM reader implementation.
-    std::string m_dicomReaderImplementation;
+    std::string m_dicom_reader_implementation;
 
     /// Contains the optional configuration to set to reader implementation.
-    std::string m_readerConfig;
+    std::string m_reader_config;
 
     /// Contains the DICOM reader.
-    sight::io::service::reader::sptr m_dicomReader;
+    sight::io::service::reader::sptr m_dicom_reader;
 
     /// Contains the series_set where the DICOM reader sets its output.
     data::series_set::sptr m_series_set;
 
-    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
-    data::ptr<sight::data::image, data::Access::inout> m_image {this, "image"};
+    data::ptr<sight::io::dimse::data::pacs_configuration, data::access::in> m_config {this, "pacsConfig"};
+    data::ptr<sight::data::image, data::access::inout> m_image {this, "image"};
 
-    static constexpr std::string_view s_DICOMSERIES_INOUT = "series";
-    data::ptr<sight::data::dicom_series, data::Access::inout> m_series {this, s_DICOMSERIES_INOUT};
+    static constexpr std::string_view DICOMSERIES_INOUT = "series";
+    data::ptr<sight::data::dicom_series, data::access::inout> m_series {this, DICOMSERIES_INOUT};
 };
 
 } // namespace sight::module::io::dimse.

@@ -37,7 +37,7 @@ SIGHT_REGISTER_DATA(sight::data::reconstruction);
 namespace sight::data
 {
 
-const double reconstruction::s_NO_COMPUTED_MASK_VOLUME = -1.;
+const double reconstruction::NO_COMPUTED_MASK_VOLUME = -1.;
 
 const core::com::signals::key_t reconstruction::MESH_CHANGED_SIG        = "meshModified";
 const core::com::signals::key_t reconstruction::VISIBILITY_MODIFIED_SIG = "visibilityModified";
@@ -47,12 +47,12 @@ const core::com::signals::key_t reconstruction::VISIBILITY_MODIFIED_SIG = "visib
 reconstruction::reconstruction() :
 
     m_material(data::factory::make<data::material>()),
-    m_computedMaskVolume(reconstruction::s_NO_COMPUTED_MASK_VOLUME),
-    m_sigMeshChanged(std::make_shared<mesh_changed_signal_t>()),
-    m_sigVisibilityModified(std::make_shared<visibility_modified_signal_t>())
+    m_computed_mask_volume(reconstruction::NO_COMPUTED_MASK_VOLUME),
+    m_sig_mesh_changed(std::make_shared<mesh_changed_signal_t>()),
+    m_sig_visibility_modified(std::make_shared<visibility_modified_signal_t>())
 {
-    m_signals(MESH_CHANGED_SIG, m_sigMeshChanged)
-        (VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
+    m_signals(MESH_CHANGED_SIG, m_sig_mesh_changed)
+        (VISIBILITY_MODIFIED_SIG, m_sig_visibility_modified);
 }
 
 //------------------------------------------------------------------------------
@@ -69,17 +69,17 @@ void reconstruction::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_bIsVisible     = other->m_bIsVisible;
-    m_sOrganName     = other->m_sOrganName;
-    m_sStructureType = other->m_sStructureType;
+    m_b_is_visible     = other->m_b_is_visible;
+    m_s_organ_name     = other->m_s_organ_name;
+    m_s_structure_type = other->m_s_structure_type;
 
     m_material = other->m_material;
     m_image    = other->m_image;
     m_mesh     = other->m_mesh;
 
-    m_computedMaskVolume = other->m_computedMaskVolume;
+    m_computed_mask_volume = other->m_computed_mask_volume;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -96,27 +96,27 @@ void reconstruction::deep_copy(const object::csptr& _source, const std::unique_p
         !bool(other)
     );
 
-    m_bIsVisible     = other->m_bIsVisible;
-    m_sOrganName     = other->m_sOrganName;
-    m_sStructureType = other->m_sStructureType;
+    m_b_is_visible     = other->m_b_is_visible;
+    m_s_organ_name     = other->m_s_organ_name;
+    m_s_structure_type = other->m_s_structure_type;
 
     m_material = data::object::copy(other->m_material, _cache);
     m_image    = data::object::copy(other->m_image, _cache);
     m_mesh     = data::object::copy(other->m_mesh, _cache);
 
-    m_computedMaskVolume = other->m_computedMaskVolume;
+    m_computed_mask_volume = other->m_computed_mask_volume;
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool reconstruction::operator==(const reconstruction& _other) const noexcept
 {
-    if(m_bIsVisible != _other.m_bIsVisible
-       || m_sOrganName != _other.m_sOrganName
-       || m_sStructureType != _other.m_sStructureType
-       || m_computedMaskVolume != _other.m_computedMaskVolume
+    if(m_b_is_visible != _other.m_b_is_visible
+       || m_s_organ_name != _other.m_s_organ_name
+       || m_s_structure_type != _other.m_s_structure_type
+       || m_computed_mask_volume != _other.m_computed_mask_volume
        || !core::tools::is_equal(m_material, _other.m_material)
        || !core::tools::is_equal(m_image, _other.m_image)
        || !core::tools::is_equal(m_mesh, _other.m_mesh))
@@ -125,7 +125,7 @@ bool reconstruction::operator==(const reconstruction& _other) const noexcept
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

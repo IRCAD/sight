@@ -40,18 +40,18 @@ class FILTER_IMAGE_CLASS_API min_max_propagation
 {
 public:
 
-    enum Mode
+    enum mode
     {
-        MIN,
-        MAX,
-        MINMAX
+        min,
+        max,
+        minmax
     };
 
-    typedef filter::image::bresenham_line::coordinates_t coordinates_t;
+    using coordinates_t = filter::image::bresenham_line::coordinates_t;
 
-    typedef filter::image::bresenham_line::Orientation orientation_t;
+    using orientation_t = filter::image::bresenham_line::Orientation;
 
-    typedef std::vector<coordinates_t> seeds_t;
+    using seeds_t = std::vector<coordinates_t>;
 
     /**
      * @brief Constructor.
@@ -80,7 +80,7 @@ public:
         data::image::buffer_t* _value,
         double _radius,
         bool _overwrite,
-        Mode _mode
+        mode _mode
     );
 
 private:
@@ -89,13 +89,13 @@ private:
     seeds_t m_seeds;
 
     /// Input image. Where the voxel values are read from.
-    data::image::csptr m_inImage;
+    data::image::csptr m_in_image;
 
     /// Region of interest.
     data::image::csptr m_roi;
 
     /// Output image. Where we write the flooded voxels.
-    data::image::sptr m_outImage;
+    data::image::sptr m_out_image;
 };
 
 } // namespace sight::filter::image.

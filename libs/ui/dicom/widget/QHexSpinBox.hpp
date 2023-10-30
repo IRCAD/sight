@@ -34,14 +34,14 @@ namespace sight::ui::dicom::widget
 /**
  * @brief QSpinBox for hexadecimal values
  */
-class QHexSpinBox : public QSpinBox
+class q_hex_spin_box : public QSpinBox
 {
 Q_OBJECT;
 
 public:
 
     /// Constructor
-    QHexSpinBox(QWidget* _parent = nullptr);
+    q_hex_spin_box(QWidget* _parent = nullptr);
 
 protected:
 

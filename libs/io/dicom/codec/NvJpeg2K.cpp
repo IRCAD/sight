@@ -72,7 +72,7 @@ static inline core::type gdcm_to_sight_pf(const gdcm::PixelFormat& _pf)
 
 //------------------------------------------------------------------------------
 
-static inline data::image::PixelFormat gdcm_to_sight_pi(
+static inline enum data::image::pixel_format gdcm_to_sight_pi(
     const gdcm::PhotometricInterpretation& _pi,
     const gdcm::PixelFormat& _pf
 )
@@ -80,7 +80,7 @@ static inline data::image::PixelFormat gdcm_to_sight_pi(
     if(_pi == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // PALETTE_COLOR is always expended as RGB
-        return data::image::PixelFormat::RGB;
+        return data::image::pixel_format::rgb;
     }
 
     const auto gdcm_sample_per_pixel = _pf.GetSamplesPerPixel();
@@ -88,7 +88,7 @@ static inline data::image::PixelFormat gdcm_to_sight_pi(
     if(gdcm_sample_per_pixel == 1)
     {
         // No need to check, no color space conversion...
-        return data::image::PixelFormat::GRAY_SCALE;
+        return data::image::pixel_format::gray_scale;
     }
 
     if(gdcm_sample_per_pixel == 3
@@ -98,16 +98,16 @@ static inline data::image::PixelFormat gdcm_to_sight_pi(
            || _pi == gdcm::PhotometricInterpretation::YBR_RCT
            || _pi == gdcm::PhotometricInterpretation::RGB))
     {
-        return data::image::PixelFormat::RGB;
+        return data::image::pixel_format::rgb;
     }
 
     // Unsupported...
-    return data::image::PixelFormat::UNDEFINED;
+    return data::image::pixel_format::undefined;
 }
 
 //------------------------------------------------------------------------------
 
-bool NvJpeg2K::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
+bool nv_jpeg2_k::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
 {
     _out = _in;
 
@@ -125,14 +125,14 @@ bool NvJpeg2K::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
     const auto dump_lock = image->dump_lock();
 
     // Create the writer
-    auto writer = std::make_shared<bitmap::Writer>();
+    auto writer = std::make_shared<bitmap::writer>();
     writer->set_object(image);
 
     // The output buffer is resized by the writer if not big enough
     std::vector<std::uint8_t> output_buffer(frame_size);
 
     const auto& sight_type   = gdcm_to_sight_pf(this->GetPixelFormat());
-    const auto& sight_size   = sight::data::image::Size {dims[0], dims[1], 1};
+    const auto& sight_size   = sight::data::image::size_t {dims[0], dims[1], 1};
     const auto& sight_format = gdcm_to_sight_pi(this->GetPhotometricInterpretation(), this->GetPixelFormat());
 
     for(std::size_t z = 0, end = dims[2] ; z < end ; ++z)
@@ -141,7 +141,7 @@ bool NvJpeg2K::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
         const char* in_frame = in_pointer + (z * std::size_t(frame_size));
 
         // We change the buffer address of the image to avoid unneeded copy
-        image->setBuffer(
+        image->set_buffer(
             // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
             const_cast<char*>(in_frame),
             false,
@@ -154,8 +154,8 @@ bool NvJpeg2K::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
         // Encode the frame
         const auto output_size = writer->write(
             output_buffer,
-            bitmap::Backend::NVJPEG2K_J2K,
-            bitmap::Writer::Mode::FAST
+            bitmap::backend::nvjpeg2k_j2k,
+            bitmap::writer::mode::fast
         );
 
         SIGHT_THROW_IF("Output size is greater than 4GB", output_size > 0xFFFFFFFF);
@@ -173,9 +173,9 @@ bool NvJpeg2K::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
 
 //------------------------------------------------------------------------------
 
-gdcm::ImageCodec* NvJpeg2K::Clone() const
+gdcm::ImageCodec* nv_jpeg2_k::Clone() const
 {
-    auto* copy = new NvJpeg2K;
+    auto* copy = new nv_jpeg2_k;
     return copy;
 }
 

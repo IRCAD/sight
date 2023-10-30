@@ -47,33 +47,33 @@ class IO_DIMSE_CLASS_API series
 {
 public:
 
-    typedef sight::data::series_set::container_type DicomSeriesContainer;
-    typedef std::vector<std::string> InstanceUIDContainer;
-    typedef std::map<std::string, unsigned int> InstanceCountMap;
+    using DicomSeriesContainer = sight::data::series_set::container_t;
+    using InstanceUIDContainer = std::vector<std::string>;
+    using instance_count_map   = std::map<std::string, unsigned int>;
 
     /**
      * @brief Releases the responses.
      * @param _responses the responses to free.
      */
-    IO_DIMSE_API static void releaseResponses(OFList<QRResponse*> _responses);
+    IO_DIMSE_API static void release_responses(OFList<QRResponse*> _responses);
 
     /**
      * @brief Converts DCMTK series to data::dicom_series.
      * @param _responses the DCMTK responses from the pacs that must be converted.
      */
-    IO_DIMSE_API static DicomSeriesContainer toFwMedData(OFList<QRResponse*> _responses);
+    IO_DIMSE_API static DicomSeriesContainer to_fw_med_data(OFList<QRResponse*> _responses);
 
     /**
      * @brief Converts DCMTK series to instance uid vector.
      * @param _responses the DCMTK responses from the pacs that must be converted.
      */
-    IO_DIMSE_API static InstanceUIDContainer toSeriesInstanceUIDContainer(OFList<QRResponse*> _responses);
+    IO_DIMSE_API static InstanceUIDContainer to_series_instance_uid_container(OFList<QRResponse*> _responses);
 
     /**
      * @brief Converts std::vector< data::dicom_series > to series instance uid container.
      * @param _series the series vector used to extract the series instance uids.
      */
-    IO_DIMSE_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer _series);
+    IO_DIMSE_API static InstanceUIDContainer to_series_instance_uid_container(DicomSeriesContainer _series);
 };
 
 } // namespace sight::io::dimse::helper

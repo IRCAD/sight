@@ -111,23 +111,23 @@ inline static std::string format_date(const std::string& _date)
     return _date;
 }
 
-enum class When
+enum class when
 {
-    STUDY,
-    SERIES
+    study,
+    series
 };
 
-struct ColumnDisplayInformation
+struct column_display_information
 {
     std::string header;
-    std::function<QStandardItem* (data::series::csptr, When)> getInfo;
+    std::function<QStandardItem* (data::series::csptr, when)> get_info;
 };
 
 //------------------------------------------------------------------------------
 
 inline static QTextCodec* get_codec(data::series::csptr _series)
 {
-    QTextCodec* codec = QTextCodec::codecForName(_series->getEncoding().c_str());
+    QTextCodec* codec = QTextCodec::codecForName(_series->get_encoding().c_str());
     if(codec == nullptr)
     {
         return QTextCodec::codecForName("UTF-8");
@@ -137,37 +137,37 @@ inline static QTextCodec* get_codec(data::series::csptr _series)
 }
 
 /* *INDENT-OFF* */
-static const std::map<std::string, ColumnDisplayInformation> columnMap {
-    {"PatientName", {.header = "Name", .getInfo =
-        [](data::series::csptr _series, When _when)
+static const std::map<std::string, column_display_information> COLUMN_MAP {
+    {"PatientName", {.header = "Name", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            if(_when == When::SERIES)
+            if(_when == when::series)
             {
                 return new QStandardItem;
             }
 
-            QString res = get_codec(_series)->toUnicode(_series->getPatientName().c_str());
+            QString res = get_codec(_series)->toUnicode(_series->get_patient_name().c_str());
             QString upper_patient_name = res.toUpper();
             if(upper_patient_name.isEmpty() || upper_patient_name.contains("ANONYMIZED") || upper_patient_name == "UNKNOWN"
                 || upper_patient_name.contains("ANONYMOUS") || upper_patient_name == "NONE" || upper_patient_name == "NA")
             {
                 // Automatically switch to Patient ID if the Patient Name is anonymized
-                res = QString::fromStdString(_series->getPatientID());
+                res = QString::fromStdString(_series->get_patient_id());
             }
 
             return new QStandardItem(res);
         }
      }
     },
-    {"SeriesInstanceUID", {.header = "Name", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"SeriesInstanceUID", {.header = "Name", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            if(_when == When::STUDY)
+            if(_when == when::study)
             {
                 return new QStandardItem;
             }
 
-            if(std::string series_instance_uid = _series->getSeriesInstanceUID();
+            if(std::string series_instance_uid = _series->get_series_instance_uid();
                 !series_instance_uid.empty())
             {
                 return new QStandardItem(QString::fromStdString(series_instance_uid));
@@ -177,24 +177,24 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
         }
      }
     },
-    {"PatientName/SeriesInstanceUID", {.header = "Name", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"PatientName/SeriesInstanceUID", {.header = "Name", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            if(_when == When::STUDY)
+            if(_when == when::study)
             {
-                QString res = get_codec(_series)->toUnicode(_series->getPatientName().c_str());
+                QString res = get_codec(_series)->toUnicode(_series->get_patient_name().c_str());
                 QString upper_patient_name = res.toUpper();
                 if(upper_patient_name.isEmpty() || upper_patient_name.contains("ANONYMIZED") || upper_patient_name == "UNKNOWN"
                     || upper_patient_name.contains("ANONYMOUS") || upper_patient_name == "NONE" || upper_patient_name == "NA")
                 {
                     // Automatically switch to Patient ID if the Patient Name is anonymized
-                    res = QString::fromStdString(_series->getPatientID());
+                    res = QString::fromStdString(_series->get_patient_id());
                 }
 
                 return new QStandardItem(res);
             }
 
-            if(std::string series_instance_uid = _series->getSeriesInstanceUID(); !series_instance_uid.empty())
+            if(std::string series_instance_uid = _series->get_series_instance_uid(); !series_instance_uid.empty())
             {
                 return new QStandardItem(QString::fromStdString(series_instance_uid));
             }
@@ -203,80 +203,80 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
         }
      }
     },
-    {"PatientSex", {.header = "Sex", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"PatientSex", {.header = "Sex", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            return new QStandardItem(QString::fromStdString(_when == When::STUDY ? _series->getPatientSex() : ""));
+            return new QStandardItem(QString::fromStdString(_when == when::study ? _series->get_patient_sex() : ""));
         }
      }
     },
-    {"PatientBirthDate", {.header = "Birthdate", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"PatientBirthDate", {.header = "Birthdate", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(
-                QString::fromStdString(_when == When::STUDY ? format_date(_series->getPatientBirthDate()) : ""));
+                QString::fromStdString(_when == when::study ? format_date(_series->get_patient_birth_date()) : ""));
         }
      }
     },
-    {"Icon", {.header = "Icon", .getInfo =
-        [](data::series::csptr /*series*/, When _when)
+    {"Icon", {.header = "Icon", .get_info =
+        [](data::series::csptr /*series*/, when _when)
         {
-            if(_when == When::STUDY)
+            if(_when == when::study)
             {
                 return new QStandardItem;
             }
 
             auto* item = new QStandardItem;
-            item->setData(true, selector_model::Role::ICON);
+            item->setData(true, selector_model::role::icon);
             return item;
         }
      }
     },
-    {"PatientBirthDate/Icon", {.header = "Birthdate", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"PatientBirthDate/Icon", {.header = "Birthdate", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            if(_when == When::STUDY)
+            if(_when == when::study)
             {
-                return new QStandardItem(QString::fromStdString(format_date(_series->getPatientBirthDate())));
+                return new QStandardItem(QString::fromStdString(format_date(_series->get_patient_birth_date())));
             }
 
             auto* item = new QStandardItem;
-            item->setData(true, selector_model::Role::ICON);
+            item->setData(true, selector_model::role::icon);
             return item;
         }
      }
     },
-    {"Modality", {.header = "Modality", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"Modality", {.header = "Modality", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            return new QStandardItem(QString::fromStdString(_when == When::SERIES ? _series->getModality() : ""));
+            return new QStandardItem(QString::fromStdString(_when == when::series ? _series->get_modality() : ""));
         }
      }
     },
-    {"StudyDescription", {.header = "Description", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"StudyDescription", {.header = "Description", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            if(_when == When::STUDY)
+            if(_when == when::study)
             {
-                return new QStandardItem(get_codec(_series)->toUnicode(_series->getStudyDescription().c_str()));
+                return new QStandardItem(get_codec(_series)->toUnicode(_series->get_study_description().c_str()));
             }
 
             return new QStandardItem();
         }
      }
     },
-    {"SeriesDescription", {.header = "Description", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"SeriesDescription", {.header = "Description", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            if(_when == When::STUDY)
+            if(_when == when::study)
             {
                 return new QStandardItem;
             }
 
-            std::string infos(_series->getSOPClassName());
-            const auto& rows    = _series->getRows();
-            const auto& columns = _series->getColumns();
-            const auto& frames  = _series->numFrames();
+            std::string infos(_series->get_sop_class_name());
+            const auto& rows    = _series->get_rows();
+            const auto& columns = _series->get_columns();
+            const auto& frames  = _series->num_frames();
             if(rows && columns)
             {
                 infos += " ( " + std::to_string(*rows)
@@ -285,7 +285,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
             }
 
             QString full_description = QString::fromStdString(infos);
-            const auto& description = get_codec(_series)->toUnicode(_series->getSeriesDescription().c_str());
+            const auto& description = get_codec(_series)->toUnicode(_series->get_series_description().c_str());
 
             if(!description.isEmpty())
             {
@@ -296,18 +296,18 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
         }
      }
     },
-    {"StudyDescription/SeriesDescription", {.header = "Description", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"StudyDescription/SeriesDescription", {.header = "Description", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            if(_when == When::STUDY)
+            if(_when == when::study)
             {
-                return new QStandardItem(get_codec(_series)->toUnicode(_series->getDescription().c_str()));
+                return new QStandardItem(get_codec(_series)->toUnicode(_series->get_description().c_str()));
             }
 
-            std::string infos(_series->getSOPClassName());
-            const auto& rows = _series->getRows();
-            const auto& columns = _series->getColumns();
-            const auto& frames = _series->numFrames();
+            std::string infos(_series->get_sop_class_name());
+            const auto& rows = _series->get_rows();
+            const auto& columns = _series->get_columns();
+            const auto& frames = _series->num_frames();
             if(rows && columns)
             {
                 infos += " ( " + std::to_string(*rows)
@@ -316,7 +316,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
             }
 
             QString full_description = QString::fromStdString(infos);
-            const auto& description = get_codec(_series)->toUnicode(_series->getSeriesDescription().c_str());
+            const auto& description = get_codec(_series)->toUnicode(_series->get_series_description().c_str());
 
             if(!description.isEmpty())
             {
@@ -327,115 +327,115 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
         }
      }
     },
-    {"StudyDate", {.header = "Date", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"StudyDate", {.header = "Date", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(
-                QString::fromStdString(_when == When::STUDY ? format_date(_series->getStudyDate()) : ""));
+                QString::fromStdString(_when == when::study ? format_date(_series->get_study_date()) : ""));
         }
      }
     },
-    {"SeriesDate", {.header = "Date", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"SeriesDate", {.header = "Date", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(
-                QString::fromStdString(_when == When::SERIES ? format_date(_series->getSeriesDate()) : ""));
+                QString::fromStdString(_when == when::series ? format_date(_series->get_series_date()) : ""));
         }
      }
     },
-    {"StudyDate/SeriesDate", {.header = "Date", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"StudyDate/SeriesDate", {.header = "Date", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(QString::fromStdString(
-                format_date(_when == When::STUDY ? _series->getStudyDate() : _series->getSeriesDate())));
+                format_date(_when == when::study ? _series->get_study_date() : _series->get_series_date())));
         }
      }
     },
-    {"StudyTime", {.header = "Time", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"StudyTime", {.header = "Time", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(
-                QString::fromStdString(_when == When::STUDY ? format_time(_series->getStudyTime()) : ""));
+                QString::fromStdString(_when == when::study ? format_time(_series->get_study_time()) : ""));
         }
      }
     },
-    {"SeriesTime", {.header = "Time", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"SeriesTime", {.header = "Time", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(
-                QString::fromStdString(_when == When::SERIES ? format_time(_series->getSeriesTime()) : ""));
+                QString::fromStdString(_when == when::series ? format_time(_series->get_series_time()) : ""));
         }
      }
     },
-    {"StudyTime/SeriesTime", {.header = "Time", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"StudyTime/SeriesTime", {.header = "Time", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(QString::fromStdString(
-                format_time(_when == When::STUDY ? _series->getStudyTime() : _series->getSeriesTime())));
+                format_time(_when == when::study ? _series->get_study_time() : _series->get_series_time())));
         }
      }
     },
-    {"PatientAge", {.header = "Patient age", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"PatientAge", {.header = "Patient age", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            return new QStandardItem(QString::fromStdString(_when == When::STUDY ? _series->getPatientAge() : ""));
+            return new QStandardItem(QString::fromStdString(_when == when::study ? _series->get_patient_age() : ""));
         }
      }
     },
-    {"BodyPartExamined", {.header = "Body part examined", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"BodyPartExamined", {.header = "Body part examined", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(QString::fromStdString(
-                _when == When::SERIES && _series->get_dicom_type() == data::series::dicom_t::IMAGE
-                    ? _series->getBodyPartExamined()
+                _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
+                    ? _series->get_body_part_examined()
                     : ""));
         }
      }
     },
-    {"PatientPositionString", {.header = "Patient position", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"PatientPositionString", {.header = "Patient position", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(QString::fromStdString(
-                _when == When::SERIES && _series->get_dicom_type() == data::series::dicom_t::IMAGE
-                    ? _series->getPatientPositionString()
+                _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
+                    ? _series->get_patient_position_string()
                     : ""));
         }
      }
     },
-    {"ContrastBolusAgent", {.header = "Contrast agent", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"ContrastBolusAgent", {.header = "Contrast agent", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(QString::fromStdString(
-                _when == When::SERIES && _series->get_dicom_type() == data::series::dicom_t::IMAGE
-                    ? _series->getContrastBolusAgent()
+                _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
+                    ? _series->get_contrast_bolus_agent()
                     : ""));
         }
      }
     },
-    {"AcquisitionTime", {.header = "Acquisition time", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"AcquisitionTime", {.header = "Acquisition time", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(QString::fromStdString(
-                _when == When::SERIES && _series->get_dicom_type() == data::series::dicom_t::IMAGE
-                    ? format_time(_series->getAcquisitionTime())
+                _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
+                    ? format_time(_series->get_acquisition_time())
                     : ""));
         }
      }
     },
-    {"ContrastBolusStartTime", {.header = "Contrast/bolus time", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"ContrastBolusStartTime", {.header = "Contrast/bolus time", .get_info =
+        [](data::series::csptr _series, when _when)
         {
             return new QStandardItem(QString::fromStdString(
-                _when == When::SERIES && _series->get_dicom_type() == data::series::dicom_t::IMAGE
-                    ? format_time(_series->getContrastBolusStartTime())
+                _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
+                    ? format_time(_series->get_contrast_bolus_start_time())
                     : ""));
         }
      }
     },
-    {"PatientID", {.header = "Patient ID", .getInfo =
-        [](data::series::csptr _series, When _when)
+    {"PatientID", {.header = "Patient ID", .get_info =
+        [](data::series::csptr _series, when _when)
         {
-            return new QStandardItem(QString::fromStdString(_when == When::STUDY ? _series->getPatientID() : ""));
+            return new QStandardItem(QString::fromStdString(_when == when::study ? _series->get_patient_id() : ""));
         }
      }
     }
@@ -446,9 +446,9 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
 
 selector_model::selector_model(const std::string& _display_columns, QWidget* _parent, bool _allow_remove) :
     QStandardItemModel(_parent),
-    m_removeAllowed(_allow_remove)
+    m_remove_allowed(_allow_remove)
 {
-    boost::split(m_displayColumns, _display_columns, boost::is_any_of(","));
+    boost::split(m_display_columns, _display_columns, boost::is_any_of(","));
     this->init();
 }
 
@@ -456,17 +456,17 @@ selector_model::selector_model(const std::string& _display_columns, QWidget* _pa
 
 void selector_model::init()
 {
-    m_studyRowCount = 0;
+    m_study_row_count = 0;
     m_items.clear();
 
     QStringList headers;
-    for(const std::string& display_column : m_displayColumns)
+    for(const std::string& display_column : m_display_columns)
     {
-        SIGHT_ASSERT("Display column '" << display_column << "' unknown.", columnMap.contains(display_column));
-        headers << QString::fromStdString(columnMap.at(display_column).header);
+        SIGHT_ASSERT("Display column '" << display_column << "' unknown.", COLUMN_MAP.contains(display_column));
+        headers << QString::fromStdString(COLUMN_MAP.at(display_column).header);
     }
 
-    if(m_removeAllowed)
+    if(m_remove_allowed)
     {
         headers << "Remove";
     }
@@ -480,7 +480,7 @@ selector_model::item_t selector_model::get_item_type(const QModelIndex& _index)
 {
     QModelIndex idx     = this->createIndex(_index.row(), 0, _index.internalPointer());
     QStandardItem* item = this->itemFromIndex(idx);
-    return (selector_model::item_t) item->data(Role::ITEM_TYPE).toInt();
+    return (selector_model::item_t) item->data(role::item_type).toInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -493,12 +493,12 @@ void selector_model::clear()
 
 //-----------------------------------------------------------------------------
 
-data::image::Spacing round_spacing(const data::image::Spacing& _spacing)
+data::image::spacing_t round_spacing(const data::image::spacing_t& _spacing)
 {
-    data::image::Spacing round_spacing;
+    data::image::spacing_t round_spacing;
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
-        data::image::Spacing::value_type round_val = boost::math::round(_spacing[i] * 100.) / 100.;
+        data::image::spacing_t::value_type round_val = boost::math::round(_spacing[i] * 100.) / 100.;
         round_spacing[i] = round_val;
     }
 
@@ -507,9 +507,9 @@ data::image::Spacing round_spacing(const data::image::Spacing& _spacing)
 
 //------------------------------------------------------------------------------
 
-void selector_model::addSeries(data::series::sptr _series)
+void selector_model::add_series(data::series::sptr _series)
 {
-    const auto study_instance_uid  = _series->getStudyInstanceUID();
+    const auto study_instance_uid  = _series->get_study_instance_uid();
     auto itr                       = m_items.find(study_instance_uid);
     QStandardItem* study_root_item = nullptr;
 
@@ -520,25 +520,29 @@ void selector_model::addSeries(data::series::sptr _series)
     else
     {
         std::size_t i = 0;
-        for(const std::string& display_column : m_displayColumns)
+        for(const std::string& display_column : m_display_columns)
         {
-            setItem(m_studyRowCount, static_cast<int>(i), columnMap.at(display_column).getInfo(_series, When::STUDY));
+            setItem(
+                m_study_row_count,
+                static_cast<int>(i),
+                COLUMN_MAP.at(display_column).get_info(_series, when::study)
+            );
             i++;
         }
 
-        item(m_studyRowCount)->setData(item_t::STUDY, Role::ITEM_TYPE);
-        item(m_studyRowCount)->setData(QString::fromStdString(study_instance_uid), Role::UID);
+        item(m_study_row_count)->setData(item_t::study, role::item_type);
+        item(m_study_row_count)->setData(QString::fromStdString(study_instance_uid), role::uid);
 
         // Add a remove button to each studies.
-        if(m_removeAllowed && !m_removeStudyIcon.empty())
+        if(m_remove_allowed && !m_remove_study_icon.empty())
         {
-            this->setItem(m_studyRowCount, static_cast<int>(i), new QStandardItem());
+            this->setItem(m_study_row_count, static_cast<int>(i), new QStandardItem());
 
             auto* const selector = static_cast<QTreeView*>(this->parent());
             SIGHT_ASSERT("The QTreeView parent must be given to the constructor", selector);
 
-            auto* const remove_button = new QPushButton(QIcon(m_removeStudyIcon.string().c_str()), "");
-            selector->setIndexWidget(this->index(m_studyRowCount, static_cast<int>(i)), remove_button);
+            auto* const remove_button = new QPushButton(QIcon(m_remove_study_icon.string().c_str()), "");
+            selector->setIndexWidget(this->index(m_study_row_count, static_cast<int>(i)), remove_button);
 
             // When the remove button is clicked, emit a signal with the study UID.
             QObject::connect(
@@ -547,12 +551,12 @@ void selector_model::addSeries(data::series::sptr _series)
                 this,
                 [study_instance_uid, this]()
                 {
-                    Q_EMIT removeStudyInstanceUID(study_instance_uid);
+                    Q_EMIT remove_study_instance_uid(study_instance_uid);
                 });
         }
 
-        study_root_item = item(m_studyRowCount);
-        m_studyRowCount++;
+        study_root_item = item(m_study_row_count);
+        m_study_row_count++;
         m_items[study_instance_uid] = study_root_item;
     }
 
@@ -562,11 +566,11 @@ void selector_model::addSeries(data::series::sptr _series)
 
     QStandardItem* series_icon = nullptr;
     std::size_t i              = 0;
-    for(const std::string& display_column : m_displayColumns)
+    for(const std::string& display_column : m_display_columns)
     {
-        QStandardItem* item = columnMap.at(display_column).getInfo(_series, When::SERIES);
+        QStandardItem* item = COLUMN_MAP.at(display_column).get_info(_series, when::series);
         study_root_item->setChild(nb_row, static_cast<int>(i), item);
-        if(item->data(Role::ICON).toBool())
+        if(item->data(role::icon).toBool())
         {
             series_icon = item;
         }
@@ -574,11 +578,11 @@ void selector_model::addSeries(data::series::sptr _series)
         i++;
     }
 
-    study_root_item->child(nb_row)->setData(item_t::SERIES, Role::ITEM_TYPE);
-    study_root_item->child(nb_row)->setData(QString::fromStdString(series_id), Role::UID);
+    study_root_item->child(nb_row)->setData(item_t::series, role::item_type);
+    study_root_item->child(nb_row)->setData(QString::fromStdString(series_id), role::uid);
 
     // Add a remove button to each series.
-    if(m_removeAllowed && !m_removeSeriesIcon.empty())
+    if(m_remove_allowed && !m_remove_series_icon.empty())
     {
         auto* const remove_item = new QStandardItem();
         study_root_item->setChild(nb_row, static_cast<int>(i), remove_item);
@@ -586,7 +590,7 @@ void selector_model::addSeries(data::series::sptr _series)
         auto* const selector = static_cast<QTreeView*>(this->parent());
         SIGHT_ASSERT("The QTreeView parent must be given to the constructor", selector);
 
-        auto* const remove_button = new QPushButton(QIcon(m_removeSeriesIcon.string().c_str()), "");
+        auto* const remove_button = new QPushButton(QIcon(m_remove_series_icon.string().c_str()), "");
         selector->setIndexWidget(this->indexFromItem(remove_item), remove_button);
 
         // When the remove button is clicked, emit a signal with the study UID.
@@ -596,7 +600,7 @@ void selector_model::addSeries(data::series::sptr _series)
             this,
             [series_id, this]()
             {
-                Q_EMIT removeSeriesID(series_id);
+                Q_EMIT remove_series_id(series_id);
             });
     }
 
@@ -620,16 +624,16 @@ void selector_model::addSeries(data::series::sptr _series)
 
     if(series_icon != nullptr)
     {
-        this->addSeriesIcon(_series, series_icon);
+        this->add_series_icon(_series, series_icon);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void selector_model::addSeriesIcon(data::series::sptr _series, QStandardItem* _item)
+void selector_model::add_series_icon(data::series::sptr _series, QStandardItem* _item)
 {
-    auto iter = m_seriesIcons.find(_series->get_classname());
-    if(iter != m_seriesIcons.end())
+    auto iter = m_series_icons.find(_series->get_classname());
+    if(iter != m_series_icons.end())
     {
         _item->setIcon(QIcon(QString::fromStdString(iter->second)));
     }
@@ -637,11 +641,11 @@ void selector_model::addSeriesIcon(data::series::sptr _series, QStandardItem* _i
     {
         std::filesystem::path icon_path;
 
-        if(const auto& type = _series->get_dicom_type(); type == data::series::dicom_t::IMAGE)
+        if(const auto& type = _series->get_dicom_type(); type == data::series::dicom_t::image)
         {
             icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ImageSeries.svg");
         }
-        else if(type == data::series::dicom_t::MODEL)
+        else if(type == data::series::dicom_t::model)
         {
             icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ModelSeries.svg");
         }
@@ -655,19 +659,19 @@ void selector_model::addSeriesIcon(data::series::sptr _series, QStandardItem* _i
 
 //-----------------------------------------------------------------------------
 
-void selector_model::removeSeries(data::series::sptr _series)
+void selector_model::remove_series(data::series::sptr _series)
 {
-    QStandardItem* series_item = this->findSeriesItem(_series);
+    QStandardItem* series_item = this->find_series_item(_series);
 
     if(series_item != nullptr)
     {
-        this->removeSeriesItem(series_item);
+        this->remove_series_item(series_item);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-QModelIndex selector_model::getIndex(const QModelIndex& _index, int _column)
+QModelIndex selector_model::get_index(const QModelIndex& _index, int _column)
 {
     QModelIndex idx = this->createIndex(_index.row(), _column, _index.internalPointer());
     return idx;
@@ -684,11 +688,11 @@ void selector_model::removeRows(const QModelIndexList _indexes)
     {
         SIGHT_ASSERT("Index must be in the first column.", index.column() == 0);
         QStandardItem* item = this->itemFromIndex(index);
-        if(item->data(Role::ITEM_TYPE) == item_t::STUDY)
+        if(item->data(role::item_type) == item_t::study)
         {
             study_items.append(item);
         }
-        else if(item->data(Role::ITEM_TYPE) == item_t::SERIES)
+        else if(item->data(role::item_type) == item_t::series)
         {
             series_items.append(item);
         }
@@ -702,47 +706,47 @@ void selector_model::removeRows(const QModelIndexList _indexes)
         // Remove series item if it is not included in a study which will be remove.
         if(std::find(study_items.begin(), study_items.end(), study_item) == study_items.end())
         {
-            this->removeSeriesItem(item);
+            this->remove_series_item(item);
         }
     }
 
     // Remove study items from selector
     for(QStandardItem* item : study_items)
     {
-        this->removeStudyItem(item);
+        this->remove_study_item(item);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool selector_model::removeStudyItem(QStandardItem* _item)
+bool selector_model::remove_study_item(QStandardItem* _item)
 {
     bool is_removed = false;
-    SIGHT_ASSERT("Index must represent a study.", _item->data(Role::ITEM_TYPE) == item_t::STUDY);
-    QString uid                      = _item->data(Role::UID).toString();
+    SIGHT_ASSERT("Index must represent a study.", _item->data(role::item_type) == item_t::study);
+    QString uid                      = _item->data(role::uid).toString();
     data::dicom_value_t instance_uid = uid.toStdString();
 
     is_removed = this->QStandardItemModel::removeRow(_item->row());
     SIGHT_ASSERT("Remove can not be done!", is_removed);
     m_items.erase(instance_uid);
-    --m_studyRowCount;
+    --m_study_row_count;
 
     return is_removed;
 }
 
 //-----------------------------------------------------------------------------
 
-bool selector_model::removeSeriesItem(QStandardItem* _item)
+bool selector_model::remove_series_item(QStandardItem* _item)
 {
     bool is_removed = false;
 
-    SIGHT_ASSERT("Index must represent series", _item->data(Role::ITEM_TYPE) == item_t::SERIES);
+    SIGHT_ASSERT("Index must represent series", _item->data(role::item_type) == item_t::series);
     QStandardItem* parent = _item->parent();
     is_removed = this->QStandardItemModel::removeRow(_item->row(), this->indexFromItem(parent));
     SIGHT_ASSERT("Remove can not be done!", is_removed);
     if(parent != nullptr && parent->rowCount() == 0)
     {
-        this->removeStudyItem(parent);
+        this->remove_study_item(parent);
     }
 
     return is_removed;
@@ -750,10 +754,10 @@ bool selector_model::removeSeriesItem(QStandardItem* _item)
 
 //-----------------------------------------------------------------------------
 
-QStandardItem* selector_model::findSeriesItem(data::series::sptr _series)
+QStandardItem* selector_model::find_series_item(data::series::sptr _series)
 {
     QStandardItem* series_item = nullptr;
-    QStandardItem* study_item  = this->findStudyItem(_series);
+    QStandardItem* study_item  = this->find_study_item(_series);
 
     if(study_item != nullptr)
     {
@@ -761,7 +765,7 @@ QStandardItem* selector_model::findSeriesItem(data::series::sptr _series)
         for(int row = 0 ; row < nb_row ; ++row)
         {
             QStandardItem* child  = study_item->child(row, 0);
-            std::string series_id = child->data(Role::UID).toString().toStdString();
+            std::string series_id = child->data(role::uid).toString().toStdString();
             if(series_id == _series->get_id())
             {
                 series_item = child;
@@ -775,9 +779,9 @@ QStandardItem* selector_model::findSeriesItem(data::series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-QStandardItem* selector_model::findStudyItem(data::series::sptr _series)
+QStandardItem* selector_model::find_study_item(data::series::sptr _series)
 {
-    data::dicom_value_t study_instance_uid = _series->getStudyInstanceUID();
+    data::dicom_value_t study_instance_uid = _series->get_study_instance_uid();
 
     QStandardItem* study_item = m_items[study_instance_uid];
     return study_item;
@@ -785,9 +789,9 @@ QStandardItem* selector_model::findStudyItem(data::series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-void selector_model::setSeriesIcons(const series_icon_t& _series_icons)
+void selector_model::set_series_icons(const series_icon_t& _series_icons)
 {
-    m_seriesIcons = _series_icons;
+    m_series_icons = _series_icons;
 }
 
 } // namespace sight::ui::qt::series

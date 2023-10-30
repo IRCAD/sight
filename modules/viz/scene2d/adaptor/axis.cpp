@@ -22,8 +22,8 @@
 
 #include "modules/viz/scene2d/adaptor/axis.hpp"
 
-#include <viz/scene2d/data/InitQtPen.hpp>
-#include <viz/scene2d/Scene2DGraphicsView.hpp>
+#include <viz/scene2d/data/init_qt_pen.hpp>
+#include <viz/scene2d/graphics_view.hpp>
 
 #include <glm/common.hpp>
 
@@ -50,15 +50,15 @@ void axis::starting()
 {
     m_layer = new QGraphicsItemGroup();
 
-    this->buildAxis();
-    this->buildLabels();
+    this->build_axis();
+    this->build_labels();
 
     // Adjust the layer's position and zValue depending on the associated axis
-    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-    m_layer->setZValue(m_zValue);
+    m_layer->setPos(m_x_axis->origin(), m_y_axis->origin());
+    m_layer->setZValue(m_z_value);
 
     // Add to the scene the unique item which gather the whole set of rectangle graphic items:
-    this->getScene2DRender()->getScene()->addItem(m_layer);
+    this->get_scene_2d_render()->get_scene()->addItem(m_layer);
 
     this->updating();
 }
@@ -74,7 +74,7 @@ void axis::stopping()
 
 void axis::configuring()
 {
-    this->configureParams(); // Looks for 'xAxis', 'yAxis' and 'zValue'
+    this->configure_params(); // Looks for 'xAxis', 'yAxis' and 'zValue'
 
     const config_t srv_config = this->get_config();
     const config_t config     = srv_config.get_child("config.<xmlattr>");
@@ -82,7 +82,7 @@ void axis::configuring()
     // 'color'
     if(config.count("color") != 0U)
     {
-        sight::viz::scene2d::data::InitQtPen::setPenColor(m_line.color, config.get<std::string>("color"));
+        sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_line.color, config.get<std::string>("color"));
     }
 
     // 'align' attribute configuration
@@ -105,7 +105,7 @@ void axis::configuring()
     SIGHT_FATAL_IF("'max' attribute should be greater than 'min'.", m_max <= m_min);
 
     // Ticks size
-    m_line.tickSize = config.get<double>("tickSize", m_line.tickSize);
+    m_line.tick_size = config.get<double>("tickSize", m_line.tick_size);
 
     // Step
     m_interval = config.get<double>("interval", m_interval);
@@ -114,18 +114,18 @@ void axis::configuring()
     if(label_config.has_value())
     {
         // Font size configuration
-        m_labels.fontSize = label_config->get<int>("fontSize", m_labels.fontSize);
+        m_labels.font_size = label_config->get<int>("fontSize", m_labels.font_size);
 
         // Show unit
-        m_labels.showUnit = label_config->get<bool>("showUnit", m_labels.showUnit);
+        m_labels.show_unit = label_config->get<bool>("showUnit", m_labels.show_unit);
 
         // Unit text configuration
-        m_labels.displayedUnit = label_config->get<std::string>("unit", "");
+        m_labels.displayed_unit = label_config->get<std::string>("unit", "");
 
         // Color configuration
         if(label_config->count("color") != 0U)
         {
-            sight::viz::scene2d::data::InitQtPen::setPenColor(
+            sight::viz::scene2d::data::init_qt_pen::set_pen_color(
                 m_labels.pen,
                 label_config->get<std::string>("color"),
                 m_opacity
@@ -133,14 +133,14 @@ void axis::configuring()
         }
         else
         {
-            sight::viz::scene2d::data::InitQtPen::setPenColor(m_labels.pen, "white", m_opacity);
+            sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_labels.pen, "white", m_opacity);
         }
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void axis::buildAxis()
+void axis::build_axis()
 {
     m_line.color.setCosmetic(true);
     const int nb_values = static_cast<int>(std::ceil((m_max - m_min) / m_interval)) + 1;
@@ -161,7 +161,7 @@ void axis::buildAxis()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void axis::buildLabels()
+void axis::build_labels()
 {
     SIGHT_ASSERT("m_interval can not be equal to 0", m_interval != 0);
 
@@ -176,14 +176,14 @@ void axis::buildLabels()
     // but under Windows, rendering a font with a tiny size like 1,2, etc... gives incorrect results in terms of
     // letter spacing and weight. Thus we "pretend" to use a font of a more common size like 10 and take that extra
     // scale into account in our QTransform (in updateLabels())
-    m_labels.font.setPixelSize(static_cast<int>(m_labels.extraScale));
+    m_labels.font.setPixelSize(static_cast<int>(m_labels.extra_scale));
     m_labels.font.setKerning(true);
     m_labels.font.setFixedPitch(true);
 
     m_labels.values.clear();
 
-    double val          = this->getStartVal();
-    const int range     = static_cast<int>(std::ceil(this->getEndVal() - val));
+    double val          = this->get_start_val();
+    const int range     = static_cast<int>(std::ceil(this->get_end_val() - val));
     const int nb_values = static_cast<int>((std::ceil(range / m_interval))) + 1;
 
     std::string format;
@@ -222,12 +222,12 @@ void axis::buildLabels()
 
     // Build the unit graphic item
     m_labels.unit = new QGraphicsSimpleTextItem();
-    m_labels.unit->setText(QString::fromStdString(m_labels.displayedUnit));
+    m_labels.unit->setText(QString::fromStdString(m_labels.displayed_unit));
     m_labels.unit->setFont(m_labels.font);
     m_labels.unit->setBrush(m_labels.brush);
 
     // Add it to the items to be displayed if required
-    if(m_labels.showUnit)
+    if(m_labels.show_unit)
     {
         m_layer->addToGroup(m_labels.unit);
     }
@@ -235,14 +235,14 @@ void axis::buildLabels()
 
 //---------------------------------------------------------------------------------------
 
-double axis::getStartVal() const
+double axis::get_start_val() const
 {
     return std::floor(m_min / m_interval) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
 
-double axis::getEndVal() const
+double axis::get_end_val() const
 {
     return std::ceil(m_max / m_interval) * m_interval;
 }
@@ -251,21 +251,21 @@ double axis::getEndVal() const
 
 void axis::updating()
 {
-    updateAxis();
-    updateLabels();
+    update_axis();
+    update_labels();
 }
 
 //---------------------------------------------------------------------------------------
 
-void axis::updateAxis()
+void axis::update_axis()
 {
     const auto viewport         = m_viewport.lock();
-    const auto view_to_viewport = this->viewToViewport(*viewport);
+    const auto view_to_viewport = this->view_to_viewport(*viewport);
 
     const std::size_t nb_values = m_line.ticks.size();
 
-    const double min = this->getStartVal();
-    const double max = this->getEndVal();
+    const double min = this->get_start_val();
+    const double max = this->get_end_val();
 
     double pos = NAN;
     vec2d_t tick_size;
@@ -273,14 +273,14 @@ void axis::updateAxis()
 
     if(m_align == "bottom")
     {
-        tick_size = this->mapAdaptorToScene((vec2d_t(0, m_line.tickSize)));
+        tick_size = this->map_adaptor_to_scene((vec2d_t(0, m_line.tick_size)));
 
         const double tick_pos_y = 0.;
 
         for(std::size_t i = 0 ; i < nb_values ; ++i)
         {
             pos      = min + static_cast<double>(i) * m_interval;
-            tick_pos = this->mapAdaptorToScene((vec2d_t(pos, tick_pos_y)));
+            tick_pos = this->map_adaptor_to_scene((vec2d_t(pos, tick_pos_y)));
             m_line.ticks.at(i)->setLine(
                 tick_pos.x,
                 tick_pos.y,
@@ -293,14 +293,14 @@ void axis::updateAxis()
     }
     else if(m_align == "top")
     {
-        tick_size = this->mapAdaptorToScene((vec2d_t(0, m_line.tickSize)));
+        tick_size = this->map_adaptor_to_scene((vec2d_t(0, m_line.tick_size)));
 
         const double tick_pos_y = 1.0;
 
         for(std::size_t i = 0 ; i < nb_values ; ++i)
         {
             pos      = min + static_cast<double>(i) * m_interval;
-            tick_pos = this->mapAdaptorToScene((vec2d_t(pos, tick_pos_y)));
+            tick_pos = this->map_adaptor_to_scene((vec2d_t(pos, tick_pos_y)));
             m_line.ticks.at(i)->setLine(
                 tick_pos.x,
                 tick_pos.y,
@@ -313,14 +313,14 @@ void axis::updateAxis()
     }
     else if(m_align == "left")
     {
-        tick_size = this->mapAdaptorToScene((vec2d_t(m_line.tickSize, 0)));
+        tick_size = this->map_adaptor_to_scene((vec2d_t(m_line.tick_size, 0)));
 
         const double tick_pos_x = viewport->x();
 
         for(std::size_t i = 0 ; i < nb_values ; ++i)
         {
             pos      = min + static_cast<double>(i) * m_interval;
-            tick_pos = this->mapAdaptorToScene((vec2d_t(tick_pos_x, pos)));
+            tick_pos = this->map_adaptor_to_scene((vec2d_t(tick_pos_x, pos)));
             m_line.ticks.at(i)->setLine(
                 tick_pos.x,
                 tick_pos.y,
@@ -333,7 +333,7 @@ void axis::updateAxis()
     }
     else if(m_align == "right")
     {
-        tick_size = this->mapAdaptorToScene((vec2d_t(m_line.tickSize, 0)));
+        tick_size = this->map_adaptor_to_scene((vec2d_t(m_line.tick_size, 0)));
 
         const double tick_pos_x = viewport->x() + viewport->width();
 
@@ -341,7 +341,7 @@ void axis::updateAxis()
         {
             pos = min + static_cast<double>(i) * m_interval;
 
-            tick_pos = this->mapAdaptorToScene((vec2d_t(tick_pos_x, pos)));
+            tick_pos = this->map_adaptor_to_scene((vec2d_t(tick_pos_x, pos)));
             m_line.ticks.at(i)->setLine(
                 tick_pos.x - tick_size.x * view_to_viewport.x,
                 tick_pos.y,
@@ -356,20 +356,20 @@ void axis::updateAxis()
 
 //---------------------------------------------------------------------------------------
 
-void axis::updateLabels()
+void axis::update_labels()
 {
     const auto viewport = m_viewport.lock();
 
-    const auto view_to_viewport = this->viewToViewport(*viewport);
+    const auto view_to_viewport = this->view_to_viewport(*viewport);
     const auto size_vp          =
-        vec2d_t(m_labels.fontSize, m_labels.fontSize) * view_to_viewport / m_labels.extraScale;
-    const vec2d_t interval_sc = glm::abs(this->mapAdaptorToScene(vec2d_t(m_interval, m_interval)));
+        vec2d_t(m_labels.font_size, m_labels.font_size) * view_to_viewport / m_labels.extra_scale;
+    const vec2d_t interval_sc = glm::abs(this->map_adaptor_to_scene(vec2d_t(m_interval, m_interval)));
 
     QTransform transform;
     transform.scale(size_vp.x, size_vp.y);
 
     const std::size_t values_size = m_labels.values.size();
-    double val                    = getStartVal();
+    double val                    = get_start_val();
 
     const double viewport_x      = viewport->x();
     const double viewport_width  = viewport->width();
@@ -393,10 +393,10 @@ void axis::updateLabels()
 
         for(std::size_t i = 0 ; i < values_size ; ++i)
         {
-            const vec2d_t coord = this->mapAdaptorToScene((vec2d_t(text_pos_x, val)));
+            const vec2d_t coord = this->map_adaptor_to_scene((vec2d_t(text_pos_x, val)));
 
             const vec2d_t size =
-                this->mapAdaptorToScene(
+                this->map_adaptor_to_scene(
                     vec2d_t(
                         m_labels.values[i]->boundingRect().width(),
                         m_labels.values[i]->boundingRect().height()
@@ -440,14 +440,14 @@ void axis::updateLabels()
         val = viewport_height * 0.8F;
 
         const vec2d_t size =
-            this->mapAdaptorToScene(
+            this->map_adaptor_to_scene(
                 vec2d_t(
                     m_labels.unit->boundingRect().width(),
                     m_labels.unit->boundingRect().height()
                 )
             );
 
-        const vec2d_t coord = this->mapAdaptorToScene((vec2d_t(text_pos_x, val)));
+        const vec2d_t coord = this->map_adaptor_to_scene((vec2d_t(text_pos_x, val)));
         coeff = (m_align == "left") ? 1 : -1.5;
         m_labels.unit->setPos(coord.x + coeff * 2 * size.x * size_vp.x, coord.y);
     }
@@ -459,10 +459,10 @@ void axis::updateLabels()
 
         for(std::size_t i = 0 ; i < values_size ; ++i)
         {
-            const vec2d_t coord = this->mapAdaptorToScene(vec2d_t(val, text_pos_y));
+            const vec2d_t coord = this->map_adaptor_to_scene(vec2d_t(val, text_pos_y));
 
             const vec2d_t size =
-                this->mapAdaptorToScene(
+                this->map_adaptor_to_scene(
                     vec2d_t(
                         m_labels.values[i]->boundingRect().width(),
                         m_labels.values[i]->boundingRect().height()
@@ -502,13 +502,13 @@ void axis::updateLabels()
         m_labels.unit->setTransform(transform);
 
         const vec2d_t size =
-            this->mapAdaptorToScene(
+            this->map_adaptor_to_scene(
                 vec2d_t(
                     m_labels.unit->boundingRect().width(),
                     m_labels.unit->boundingRect().height()
                 )
             );
-        const vec2d_t coord = this->mapAdaptorToScene(vec2d_t(viewport_x + viewport_width * .5, text_pos_y));
+        const vec2d_t coord = this->map_adaptor_to_scene(vec2d_t(viewport_x + viewport_width * .5, text_pos_y));
         coeff = (m_align == "top") ? 1 : -1.5;
 
         m_labels.unit->setPos(coord.x - size.x * size_vp.x, coord.y + coeff * size.y * size_vp.y);
@@ -517,9 +517,9 @@ void axis::updateLabels()
 
 //---------------------------------------------------------------------------------------
 
-void axis::processInteraction(sight::viz::scene2d::data::Event& _event)
+void axis::process_interaction(sight::viz::scene2d::data::event& _event)
 {
-    if(_event.getType() == sight::viz::scene2d::data::Event::Resize)
+    if(_event.type() == sight::viz::scene2d::data::event::resize)
     {
         this->updating();
     }
@@ -530,7 +530,7 @@ void axis::processInteraction(sight::viz::scene2d::data::Event& _event)
 service::connections_t axis::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(VIEWPORT_INPUT, sight::viz::scene2d::data::viewport::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

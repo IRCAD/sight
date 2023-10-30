@@ -95,24 +95,24 @@ protected:
 
 private Q_SLOTS:
 
-    void onCxSliderChanged(int _value);
-    void onCySliderChanged(int _value);
-    void onFySliderChanged(int _value);
+    void on_cx_slider_changed(int _value);
+    void on_cy_slider_changed(int _value);
+    void on_fy_slider_changed(int _value);
 
 private:
 
-    QPointer<QSlider> m_cxSlider; ///< Slider to modify cx
-    QPointer<QSlider> m_cySlider; ///< Slider to modify cy
-    QPointer<QSlider> m_fySlider; ///< Slider to modify fy
-    QPointer<QLabel> m_cxLabel;   ///< Label for cx value
-    QPointer<QLabel> m_cyLabel;   ///< Label for cy value
-    QPointer<QLabel> m_fyLabel;   ///< Label for fy value
+    QPointer<QSlider> m_cx_slider; ///< Slider to modify cx
+    QPointer<QSlider> m_cy_slider; ///< Slider to modify cy
+    QPointer<QSlider> m_fy_slider; ///< Slider to modify fy
+    QPointer<QLabel> m_cx_label;   ///< Label for cx value
+    QPointer<QLabel> m_cy_label;   ///< Label for cy value
+    QPointer<QLabel> m_fy_label;   ///< Label for fy value
 
-    static constexpr std::string_view s_CAMERA = "camera";
-    static constexpr std::string_view s_MATRIX = "matrix";
+    static constexpr std::string_view CAMERA = "camera";
+    static constexpr std::string_view MATRIX = "matrix";
 
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA, true};
-    data::ptr<data::matrix4, data::Access::inout> m_matrix {this, s_MATRIX, true};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA, true};
+    data::ptr<data::matrix4, data::access::inout> m_matrix {this, MATRIX, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

@@ -41,7 +41,7 @@ namespace sight::viz::scene3d::compositor::listener
 //-----------------------------------------------------------------------------
 
 auto_stereo_compositor_listener::auto_stereo_compositor_listener(std::uint8_t _viewpoint_number) :
-    M_VIEWPOINT_NUMBER(_viewpoint_number)
+    m_viewpoint_number(_viewpoint_number)
 {
 }
 
@@ -52,7 +52,7 @@ auto_stereo_compositor_listener::~auto_stereo_compositor_listener()
     auto& mtl_manager = Ogre::MaterialManager::getSingleton();
     // We need to clean the VR techniques because we want to set the correct textures
     // Cleaning the texture forces the listener to be triggered and then to create the techniques with the new textures
-    for(auto& tech_mat_pair : m_createdTechniques)
+    for(auto& tech_mat_pair : m_created_techniques)
     {
         Ogre::MaterialPtr mtl = mtl_manager.getByName(tech_mat_pair.second, RESOURCE_GROUP);
 
@@ -123,7 +123,7 @@ Ogre::Technique* auto_stereo_compositor_listener::handleSchemeNotFound(
             matching_tech = _original_material->getTechnique(0);
         }
 
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(matching_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(matching_tech, _scheme_name, _original_material);
 
         auto* const pass = new_tech->getPass(0);
         {
@@ -134,7 +134,7 @@ Ogre::Technique* auto_stereo_compositor_listener::handleSchemeNotFound(
             viz::scene3d::helper::shading::gpu_program_parameters_t parameters;
             parameters.emplace_back("preprocessor_defines", "AUTOSTEREO=1");
 
-            viz::scene3d::helper::shading::createProgramFrom(
+            viz::scene3d::helper::shading::create_program_from(
                 vp_new_name,
                 vp_source_file_name,
                 parameters,
@@ -172,7 +172,7 @@ Ogre::Technique* auto_stereo_compositor_listener::handleSchemeNotFound(
             viz::scene3d::helper::shading::gpu_program_parameters_t parameters;
             parameters.emplace_back("preprocessor_defines", "AUTOSTEREO=1");
 
-            viz::scene3d::helper::shading::createProgramFrom(
+            viz::scene3d::helper::shading::create_program_from(
                 fp_new_name,
                 fp_source_file_name,
                 parameters,
@@ -215,11 +215,11 @@ Ogre::Technique* auto_stereo_compositor_listener::handleSchemeNotFound(
             SIGHT_ASSERT("No texture named 'entryPoints' in " + _original_material->getName(), tex_unit_state);
             tex_unit_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
 
-            const auto comp_name = "VolumeEntries" + std::to_string(M_VIEWPOINT_NUMBER);
+            const auto comp_name = "VolumeEntries" + std::to_string(m_viewpoint_number);
             tex_unit_state->setCompositorReference(comp_name, std::string(comp_name) + "texture" + pass_id_str);
         }
 
-        m_createdTechniques.emplace_back(new_tech, _original_material->getName());
+        m_created_techniques.emplace_back(new_tech, _original_material->getName());
     }
 
     return new_tech;

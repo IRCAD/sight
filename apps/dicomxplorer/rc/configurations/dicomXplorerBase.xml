@@ -31,15 +31,15 @@
                     <icon>${appIconPath}</icon>
                     <minSize width="800" height="600" />
                 </frame>
-                <menuBar />
+                <menubar />
             </gui>
             <registry>
-                <menuBar sid="menuBar" start="true" />
+                <menubar sid="menubar" start="true" />
                 <view sid="dynamicView" start="true" />
             </registry>
         </service>
 
-        <service uid="menuBar" type="sight::module::ui::menu_bar">
+        <service uid="menubar" type="sight::module::ui::menubar">
             <gui>
                 <layout>
                     <menu name="File" />

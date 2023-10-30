@@ -54,10 +54,10 @@ class layer;
  * - \b resetCameras(): resets all layers camera.
  * - \b resetCamera_LAYER_ID(): "LAYER_ID" needs to be changed with your actual layer id. Resets the camera of the layer
  * specified by LAYER_ID.
- * - \b requestRender(): request the service to repaint the scene.
+ * - \b request_render(): request the service to repaint the scene.
  * - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
  * - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
- * - \b setManualMode(): switches to manual mode, the scene is rendered whenever the requestRender() slot is called.
+ * - \b setManualMode(): switches to manual mode, the scene is rendered whenever the request_render() slot is called.
  * - \b setAutoMode(): switches to auto mode, the scene is rendered whenever an adaptor decides it.
  *
  * @section XML XML Configuration
@@ -83,8 +83,8 @@ class layer;
  *
  * @subsection Configuration Configuration
  *  - \b scene (mandatory)
- *      - \b renderMode (optional, auto/manual, default=auto): 'auto' (when any of the adaptor calls "requestRender",
- *           i.e. when its data has changed), or 'manual' (only when the slot "requestRender" is called). This can also
+ *      - \b renderMode (optional, auto/manual, default=auto): 'auto' (when any of the adaptor calls "request_render",
+ *           i.e. when its data has changed), or 'manual' (only when the slot "request_render" is called). This can also
  *           be changed at runtime with setManualMode and setAutoMode slots.
  *      - \b width (optional, int, default=1280): width for off-screen rendering.
  *      - \b height (optional, int, default=720): height for off-screen rendering.
@@ -131,17 +131,17 @@ public:
     SIGHT_DECLARE_SERVICE(render, viz::render);
 
     /// Represents all possible render modes.
-    enum class RenderMode : std::uint8_t
+    enum class render_mode : std::uint8_t
     {
         AUTO,
-        MANUAL
+        manual
     };
 
     struct signals
     {
-        using key_t                      = sight::core::com::signals::key_t;
-        using void_signal_t              = sight::core::com::signal<void ()>;
-        using compositorUpdated_signal_t = core::com::signal<void (std::string, bool, viz::scene3d::layer::sptr)>;
+        using key_t                       = sight::core::com::signals::key_t;
+        using void_signal_t               = sight::core::com::signal<void ()>;
+        using compositor_updated_signal_t = core::com::signal<void (std::string, bool, viz::scene3d::layer::sptr)>;
 
         static inline const key_t FULLSCREEN_SET     = "fullscreenSet";
         static inline const key_t FULLSCREEN_UNSET   = "fullscreenUnset";
@@ -149,16 +149,16 @@ public:
     };
 
     /// Defines the type of adaptors ID.
-    typedef std::string adaptor_id_t;
+    using adaptor_id_t = std::string;
 
     /// Defines the type of object ID.
-    typedef std::string ogre_object_id_t;
+    using ogre_object_id_t = std::string;
 
     /// Defines the type of scene ID.
-    typedef std::string scene_id_t;
+    using scene_id_t = std::string;
 
     /// Defines actives layouts in the scene.
-    typedef std::map<scene_id_t, SPTR(viz::scene3d::layer)> layer_map_t;
+    using layer_map_t = std::map<scene_id_t, std::shared_ptr<viz::scene3d::layer> >;
 
     /// Contains the slot name that computes the parameters to reset the camera.
     VIZ_SCENE3D_API static const core::com::slots::key_t COMPUTE_CAMERA_ORIG_SLOT;
@@ -185,7 +185,7 @@ public:
     VIZ_SCENE3D_API static const core::com::slots::key_t SET_AUTO_MODE;
 
     /// Defines the layer ID of the background.
-    VIZ_SCENE3D_API static const std::string s_OGREBACKGROUNDID;
+    VIZ_SCENE3D_API static const std::string OGREBACKGROUNDID;
 
     /// Initializes slots.
     VIZ_SCENE3D_API render() noexcept;
@@ -194,37 +194,37 @@ public:
     VIZ_SCENE3D_API ~render() noexcept override;
 
     /// Sets this render service as the current OpenGL context.
-    VIZ_SCENE3D_API void makeCurrent();
+    VIZ_SCENE3D_API void make_current();
 
     /// Requests a render from the Ogre render engine.
-    VIZ_SCENE3D_API void requestRender();
+    VIZ_SCENE3D_API void request_render();
 
     /// @returns true if the scene is shown on screen.
-    VIZ_SCENE3D_API bool isShownOnScreen();
+    VIZ_SCENE3D_API bool is_shown_on_screen();
 
     /// @returns the scene manager corresponding to the sceneID.
-    VIZ_SCENE3D_API Ogre::SceneManager* getSceneManager(const std::string& _scene_id);
+    VIZ_SCENE3D_API Ogre::SceneManager* get_scene_manager(const std::string& _scene_id);
 
     /// @returns the layer corresponding to the sceneID.
-    VIZ_SCENE3D_API viz::scene3d::layer::sptr getLayer(const std::string& _scene_id);
+    VIZ_SCENE3D_API viz::scene3d::layer::sptr layer(const std::string& _scene_id);
 
     /// @returns this render layers.
-    VIZ_SCENE3D_API layer_map_t getLayers();
+    VIZ_SCENE3D_API layer_map_t get_layers();
 
     /// @returns m_interactorManager.
-    VIZ_SCENE3D_API viz::scene3d::window_interactor::sptr getInteractorManager() const;
+    VIZ_SCENE3D_API viz::scene3d::window_interactor::sptr get_interactor_manager() const;
 
     /// Resets camera parameters with the actual global bounding box.
-    VIZ_SCENE3D_API void resetCameraCoordinates(const std::string& _layer_id);
+    VIZ_SCENE3D_API void reset_camera_coordinates(const std::string& _layer_id);
 
     /// Resets all layers camera parameters with the actual global bounding box.
-    VIZ_SCENE3D_API void resetCameras();
+    VIZ_SCENE3D_API void reset_cameras();
 
     template<class T>
-    std::vector<SPTR(T)> getAdaptors() const;
+    std::vector<SPTR(T)> get_adaptors() const;
 
     /// Returns the rendering mode
-    RenderMode getRenderMode() const;
+    render_mode get_render_mode() const;
 
 protected:
 
@@ -246,34 +246,34 @@ private:
     void paint();
 
     /// Configures background layer of the scene.
-    void configureBackgroundLayer(const config_t& _cfg);
+    void configure_background_layer(const config_t& _cfg);
 
     /// Configures each layer of the scene.
-    void configureLayer(const config_t& _cfg);
+    void configure_layer(const config_t& _cfg);
 
     /// Retrieves the viewport parameters from the configuration.
-    static layer::viewport_config_t configureLayerViewport(const service::config_t& _cfg);
+    static layer::viewport_config_t configure_layer_viewport(const service::config_t& _cfg);
 
     /**
      * @brief Renders the scene in fullscreen on the screen with the given index.
      * @param screen the index of the screen where the fullscreen is enabled.
      */
-    void enableFullscreen(int _screen);
+    void enable_fullscreen(int _screen);
 
     /// Switches back to windowed rendering if fullscreen is on.
-    void disableFullscreen();
+    void disable_fullscreen();
 
     /// Contains all the layers of the scene.
     layer_map_t m_layers;
 
     /// Contains the Ogre window interactor manager.
-    viz::scene3d::window_interactor::sptr m_interactorManager;
+    viz::scene3d::window_interactor::sptr m_interactor_manager;
 
     /// Contains the Ogre root.
-    Ogre::Root* m_ogreRoot {nullptr};
+    Ogre::Root* m_ogre_root {nullptr};
 
     /// Defines how the rendering is triggered.
-    RenderMode m_renderMode {RenderMode::AUTO};
+    render_mode m_render_mode {render_mode::AUTO};
 
     /// Defines if the render window is in fullscreen.
     bool m_fullscreen {false};
@@ -285,20 +285,20 @@ private:
     unsigned int m_height {0};
 
     /// Defines if the scene is rendered off-screen.
-    bool m_offScreen {false};
+    bool m_off_screen {false};
 
     /// Defines if the scene will be rendered upside down.
     /// @warning the scene must be rendered off-screen.
     bool m_flip {false};
 
-    static constexpr std::string_view s_OFFSCREEN_INOUT = "offScreen";
-    data::ptr<data::image, data::Access::inout> m_offScreenImage {this, s_OFFSCREEN_INOUT, false, true};
+    static constexpr std::string_view OFFSCREEN_INOUT = "offScreen";
+    data::ptr<data::image, data::access::inout> m_off_screen_image {this, OFFSCREEN_INOUT, false, true};
 };
 
 //-----------------------------------------------------------------------------
 
 template<class T>
-std::vector<SPTR(T)> render::getAdaptors() const
+std::vector<SPTR(T)> render::get_adaptors() const
 {
     auto services_vector = sight::service::get_services("sight::viz::scene3d::adaptor");
     std::vector<SPTR(T)> result_vector;
@@ -308,7 +308,7 @@ std::vector<SPTR(T)> render::getAdaptors() const
         SPTR(T) adaptor = std::dynamic_pointer_cast<T>(scene_adaptor);
         if(adaptor)
         {
-            if(adaptor->getRenderService() == this->get_const_sptr())
+            if(adaptor->render_service() == this->get_const_sptr())
             {
                 result_vector.push_back(adaptor);
             }
@@ -320,9 +320,9 @@ std::vector<SPTR(T)> render::getAdaptors() const
 
 //------------------------------------------------------------------------------
 
-inline render::RenderMode render::getRenderMode() const
+inline render::render_mode render::get_render_mode() const
 {
-    return m_renderMode;
+    return m_render_mode;
 }
 
 //-----------------------------------------------------------------------------

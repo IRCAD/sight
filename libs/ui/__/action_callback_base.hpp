@@ -39,12 +39,12 @@ public:
 
     SIGHT_DECLARE_CLASS(action_callback_base, ui::menu_item_callback);
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
     /**
      * @brief  Sets service ID updated in executed method.
      */
-    UI_API virtual void setSID(std::string _sid);
+    UI_API virtual void set_sid(std::string _sid);
 
     /**
      * @brief  Called method when callback is executed.

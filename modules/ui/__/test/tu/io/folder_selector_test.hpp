@@ -33,7 +33,7 @@ namespace sight::module::ui::io::ut
 class folder_selector_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(folder_selector_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,11 +41,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    service::base::sptr m_folderSelector;
+    service::base::sptr m_folder_selector;
     core::thread::worker::sptr m_worker;
 };
 

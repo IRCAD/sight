@@ -57,22 +57,22 @@ void matrix_regressor::starting()
 
 void matrix_regressor::updating()
 {
-    const auto matrix_list = m_matrixList.lock();
-    const auto point_list  = m_pointList.lock();
+    const auto matrix_list = m_matrix_list.lock();
+    const auto point_list  = m_point_list.lock();
 
-    SIGHT_ASSERT(s_MATRIX_LIST_IN << " does not exist", matrix_list);
-    SIGHT_ASSERT(s_POINT_LIST_IN << " does not exist", point_list);
+    SIGHT_ASSERT(MATRIX_LIST_IN << " does not exist", matrix_list);
+    SIGHT_ASSERT(POINT_LIST_IN << " does not exist", point_list);
 
-    const auto optimal_matrix = m_optimalMatrix.lock();
+    const auto optimal_matrix = m_optimal_matrix.lock();
 
     SIGHT_ASSERT("'optimalMatrix' does not exist", optimal_matrix);
 
     std::vector<sight::filter::image::matrix_regressor::point_t> pt_list;
 
     // Convert the point list.
-    for(const auto& pt : point_list->getPoints())
+    for(const auto& pt : point_list->get_points())
     {
-        const auto& pt_coords = pt->getCoord();
+        const auto& pt_coords = pt->get_coord();
         pt_list.emplace_back(pt_coords[0], pt_coords[1], pt_coords[2], 1.);
     }
 
@@ -86,7 +86,7 @@ void matrix_regressor::updating()
         data::matrix4::sptr res = regressor.minimize(*init_val, 1., 1e-4, 1e-4);
         optimal_matrix->deep_copy(res);
 
-        m_sigComputed->async_emit();
+        m_sig_computed->async_emit();
     }
 }
 
@@ -101,12 +101,12 @@ void matrix_regressor::stopping()
 service::connections_t matrix_regressor::auto_connections() const
 {
     return {
-        {s_MATRIX_LIST_IN, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE},
-        {s_MATRIX_LIST_IN, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE},
-        {s_MATRIX_LIST_IN, data::vector::MODIFIED_SIG, service::slots::UPDATE},
-        {s_POINT_LIST_IN, data::point_list::POINT_ADDED_SIG, service::slots::UPDATE},
-        {s_POINT_LIST_IN, data::point_list::POINT_REMOVED_SIG, service::slots::UPDATE},
-        {s_POINT_LIST_IN, data::point_list::MODIFIED_SIG, service::slots::UPDATE}
+        {MATRIX_LIST_IN, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::vector::MODIFIED_SIG, service::slots::UPDATE},
+        {POINT_LIST_IN, data::point_list::POINT_ADDED_SIG, service::slots::UPDATE},
+        {POINT_LIST_IN, data::point_list::POINT_REMOVED_SIG, service::slots::UPDATE},
+        {POINT_LIST_IN, data::point_list::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

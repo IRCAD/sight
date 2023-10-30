@@ -44,11 +44,11 @@ void utils_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void utils_test::convertOgreColorToQColor()
+void utils_test::convert_ogre_color_to_q_color()
 {
     QColor ref_color(255, 255, 255);
 
-    QColor result_color = module::ui::viz::helper::utils::convertOgreColorToQColor(Ogre::ColourValue());
+    QColor result_color = module::ui::viz::helper::utils::convert_ogre_color_to_q_color(Ogre::ColourValue());
     CPPUNIT_ASSERT(result_color.red() == ref_color.red());
     CPPUNIT_ASSERT(result_color.green() == ref_color.green());
     CPPUNIT_ASSERT(result_color.blue() == ref_color.blue());
@@ -57,11 +57,12 @@ void utils_test::convertOgreColorToQColor()
 
 //------------------------------------------------------------------------------
 
-void utils_test::convertQColorToOgreColor()
+void utils_test::convert_q_color_to_ogre_color()
 {
     Ogre::ColourValue ref_color;
 
-    Ogre::ColourValue result_color = module::ui::viz::helper::utils::convertQColorToOgreColor(QColor(255, 255, 255));
+    Ogre::ColourValue result_color =
+        module::ui::viz::helper::utils::convert_q_color_to_ogre_color(QColor(255, 255, 255));
     CPPUNIT_ASSERT(static_cast<int>(result_color.r) == static_cast<int>(ref_color.r));
     CPPUNIT_ASSERT(static_cast<int>(result_color.g) == static_cast<int>(ref_color.g));
     CPPUNIT_ASSERT(static_cast<int>(result_color.b) == static_cast<int>(ref_color.b));

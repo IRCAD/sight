@@ -43,7 +43,7 @@ static std::size_t compute_offset(
     data::image::sptr _image
 )
 {
-    const data::image::Size size = _image->size();
+    const data::image::size_t size = _image->size();
     return _z * size[0] * size[1] + _y * size[0] + _x;
 }
 
@@ -62,7 +62,7 @@ static void draw_cube(data::image::sptr _image, const std::uint8_t _value)
         {
             for(std::size_t z = 10 ; z < 20 ; ++z)
             {
-                _image->setPixel(compute_offset(x, y, z, _image), buffer_value.get());
+                _image->set_pixel(compute_offset(x, y, z, _image), buffer_value.get());
             }
         }
     }
@@ -82,19 +82,19 @@ void min_max_propagation_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void min_max_propagation_test::minPropagTest()
+void min_max_propagation_test::min_propag_test()
 {
     // Create two 32*32*32*8 images
-    const data::image::Size size       = {{32, 32, 32}};
-    const data::image::Spacing spacing = {{1., 1., 1.}};
-    const data::image::Origin origin   = {{0., 0., 0.}};
-    const core::type type              = core::type::UINT8;
+    const data::image::size_t size       = {{32, 32, 32}};
+    const data::image::spacing_t spacing = {{1., 1., 1.}};
+    const data::image::origin_t origin   = {{0., 0., 0.}};
+    const core::type type                = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
-    utest_data::generator::image::generateImage(image_out, size, spacing, origin, type, data::image::GRAY_SCALE);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(image_out, size, spacing, origin, type, data::image::gray_scale);
 
     // Draw a cube at 10,10,10 with a 255 value
     draw_cube(image_in, 255);
@@ -109,13 +109,13 @@ void min_max_propagation_test::minPropagTest()
     SPTR(data::image::buffer_t) buffer_value =
         data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::MIN);
+    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::min);
 
     const auto dump_lock_in  = image_in->dump_lock();
     const auto dump_lock_out = image_out->dump_lock();
 
     // Check that the image is not changed because the propagated value is the same
-    for(std::size_t index = 0 ; index < image_in->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
     {
         const std::uint8_t value_in  = image_in->at<std::uint8_t>(index);
         const std::uint8_t value_out = image_out->at<std::uint8_t>(index);
@@ -131,9 +131,9 @@ void min_max_propagation_test::minPropagTest()
     buffer_value =
         data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::MIN);
+    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::min);
 
-    for(std::size_t index = 0 ; index < image_in->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
     {
         const std::uint8_t value_in  = image_in->at<std::uint8_t>(index);
         const std::uint8_t value_out = image_out->at<std::uint8_t>(index);
@@ -156,9 +156,9 @@ void min_max_propagation_test::minPropagTest()
     buffer_value =
         data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::MIN);
+    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::min);
 
-    for(std::size_t index = 0 ; index < image_in->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
     {
         const std::uint8_t value_out = image_out->at<std::uint8_t>(index);
 
@@ -168,19 +168,19 @@ void min_max_propagation_test::minPropagTest()
 
 //------------------------------------------------------------------------------
 
-void min_max_propagation_test::maxPropagTest()
+void min_max_propagation_test::max_propag_test()
 {
     // Create two 32*32*32*8 images
-    const data::image::Size size       = {{32, 32, 32}};
-    const data::image::Spacing spacing = {{1., 1., 1.}};
-    const data::image::Origin origin   = {{0., 0., 0.}};
-    const core::type type              = core::type::UINT8;
+    const data::image::size_t size       = {{32, 32, 32}};
+    const data::image::spacing_t spacing = {{1., 1., 1.}};
+    const data::image::origin_t origin   = {{0., 0., 0.}};
+    const core::type type                = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
-    utest_data::generator::image::generateImage(image_out, size, spacing, origin, type, data::image::GRAY_SCALE);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(image_out, size, spacing, origin, type, data::image::gray_scale);
 
     // Draw a cube at 10,10,10 with a 2 value
     draw_cube(image_in, 2);
@@ -195,13 +195,13 @@ void min_max_propagation_test::maxPropagTest()
     SPTR(data::image::buffer_t) buffer_value =
         data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::MAX);
+    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::max);
 
     const auto dump_lock_in  = image_in->dump_lock();
     const auto dump_lock_out = image_out->dump_lock();
 
     // Check that the entire image is completely filled with propagated value
-    for(std::size_t index = 0 ; index < image_in->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
     {
         const std::uint8_t value_out = image_out->at<std::uint8_t>(index);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(3), value_out);
@@ -213,10 +213,10 @@ void min_max_propagation_test::maxPropagTest()
 
     buffer_value = data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::MAX);
+    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::max);
 
     // Check that the entire image is completely filled with propagated value
-    for(std::size_t index = 0 ; index < image_in->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
     {
         const std::uint8_t value_in  = image_in->at<std::uint8_t>(index);
         const std::uint8_t value_out = image_out->at<std::uint8_t>(index);
@@ -235,19 +235,19 @@ void min_max_propagation_test::maxPropagTest()
 
 //------------------------------------------------------------------------------
 
-void min_max_propagation_test::radiusTest()
+void min_max_propagation_test::radius_test()
 {
     // Create two 32*32*32*8 images
-    const data::image::Size size       = {{33, 33, 33}};
-    const data::image::Spacing spacing = {{1., 1., 1.}};
-    const data::image::Origin origin   = {{0., 0., 0.}};
-    const core::type type              = core::type::UINT8;
+    const data::image::size_t size       = {{33, 33, 33}};
+    const data::image::spacing_t spacing = {{1., 1., 1.}};
+    const data::image::origin_t origin   = {{0., 0., 0.}};
+    const core::type type                = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
-    utest_data::generator::image::generateImage(image_out, size, spacing, origin, type, data::image::GRAY_SCALE);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(image_out, size, spacing, origin, type, data::image::gray_scale);
 
     min_max_propagation propagator(image_in, image_out, nullptr);
 
@@ -259,7 +259,7 @@ void min_max_propagation_test::radiusTest()
     SPTR(data::image::buffer_t) buffer_value =
         data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
-    propagator.propagate(seed, buffer_value.get(), 3.5, true, min_max_propagation::MIN);
+    propagator.propagate(seed, buffer_value.get(), 3.5, true, min_max_propagation::min);
 
     const auto dump_lock_out = image_out->dump_lock();
 

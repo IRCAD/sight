@@ -36,7 +36,7 @@ namespace sight::geometry::vtk
 data::point::sptr compute_center_of_mass(const data::mesh::csptr _mesh, const bool _use_scalar_as_weights)
 {
     vtkSmartPointer<vtkPolyData> poly_data = vtkSmartPointer<vtkPolyData>::New();
-    sight::io::vtk::helper::mesh::toVTKMesh(_mesh, poly_data);
+    sight::io::vtk::helper::mesh::to_vtk_mesh(_mesh, poly_data);
 
     // Compute the center of mass
     vtkSmartPointer<vtkCenterOfMass> center_of_mass_filter =

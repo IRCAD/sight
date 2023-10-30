@@ -37,7 +37,7 @@ namespace sight::module::viz::scene3d::adaptor
 service::connections_t transform::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_TRANSFORM_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TRANSFORM_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -45,13 +45,13 @@ service::connections_t transform::auto_connections() const
 
 void transform::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    this->setTransformId(config.get<std::string>(s_TRANSFORM_CONFIG));
+    this->set_transform_id(config.get<std::string>(TRANSFORM_CONFIG));
 
-    m_parentTransformId = config.get<std::string>(s_CONFIG + "parent", m_parentTransformId);
+    m_parent_transform_id = config.get<std::string>(CONFIG + "parent", m_parent_transform_id);
 }
 
 //------------------------------------------------------------------------------
@@ -59,25 +59,28 @@ void transform::configuring()
 void transform::starting()
 {
     this->initialize();
-    Ogre::SceneManager* const scene_manager = this->getSceneManager();
+    Ogre::SceneManager* const scene_manager = this->get_scene_manager();
 
     Ogre::SceneNode* const root_scene_node = scene_manager->getRootSceneNode();
     SIGHT_ASSERT("Root scene node not found", root_scene_node);
 
-    if(!m_parentTransformId.empty())
+    if(!m_parent_transform_id.empty())
     {
-        m_parentTransformNode = sight::viz::scene3d::helper::scene::getNodeById(m_parentTransformId, root_scene_node);
-        if(m_parentTransformNode == nullptr)
+        m_parent_transform_node = sight::viz::scene3d::helper::scene::get_node_by_id(
+            m_parent_transform_id,
+            root_scene_node
+        );
+        if(m_parent_transform_node == nullptr)
         {
-            m_parentTransformNode = root_scene_node->createChildSceneNode(m_parentTransformId);
+            m_parent_transform_node = root_scene_node->createChildSceneNode(m_parent_transform_id);
         }
     }
     else
     {
-        m_parentTransformNode = root_scene_node;
+        m_parent_transform_node = root_scene_node;
     }
 
-    m_transformNode = this->getOrCreateTransformNode(m_parentTransformNode);
+    m_transform_node = this->get_or_create_transform_node(m_parent_transform_node);
 
     this->updating();
 }
@@ -88,32 +91,32 @@ void transform::updating()
 {
     {
         const auto transform = m_matrix.lock();
-        m_ogreTransform = Ogre::Affine3(sight::viz::scene3d::utils::convertTM3DToOgreMx(transform.get_shared()));
+        m_ogre_transform = Ogre::Affine3(sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared()));
     }
 
-    if(m_ogreTransform == Ogre::Affine3::ZERO)
+    if(m_ogre_transform == Ogre::Affine3::ZERO)
     {
-        m_parentTransformNode->removeChild(m_transformNode);
+        m_parent_transform_node->removeChild(m_transform_node);
     }
     else
     {
-        if(!m_transformNode->isInSceneGraph())
+        if(!m_transform_node->isInSceneGraph())
         {
-            m_parentTransformNode->addChild(m_transformNode);
+            m_parent_transform_node->addChild(m_transform_node);
         }
 
         // Decompose the matrix
         Ogre::Vector3 position;
         Ogre::Vector3 scale;
         Ogre::Quaternion orientation;
-        m_ogreTransform.decomposition(position, scale, orientation);
+        m_ogre_transform.decomposition(position, scale, orientation);
 
-        m_transformNode->setOrientation(orientation);
-        m_transformNode->setPosition(position);
-        m_transformNode->setScale(scale);
+        m_transform_node->setOrientation(orientation);
+        m_transform_node->setPosition(position);
+        m_transform_node->setScale(scale);
     }
 
-    this->requestRender();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------

@@ -79,15 +79,15 @@
                         <icon>Tuto09MatrixTransformInGS/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <menuBar />
+                    <menubar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
                     <view sid="mainView" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />

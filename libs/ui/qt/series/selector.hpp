@@ -60,13 +60,13 @@ public:
      * this study.
      * @param _series series to add in the tree.
      */
-    UI_QT_API_QT void addSeries(data::series::sptr _series);
+    UI_QT_API_QT void add_series(data::series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UI_QT_API_QT void removeSeries(data::series::sptr _series);
+    UI_QT_API_QT void remove_series(data::series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
     UI_QT_API_QT selector_model::item_t get_item_type(const QModelIndex& _index) const;
@@ -78,24 +78,24 @@ public:
      * @brief Sets the specific icons for series in selector.
      * @param _seriesIcons map\<series classname, icon path\>
      */
-    UI_QT_API_QT void setSeriesIcons(const series_icon_t& _series_icons);
+    UI_QT_API_QT void set_series_icons(const series_icon_t& _series_icons);
 
     /// Allows removing items or not.
-    UI_QT_API_QT void allowRemove(bool _allowed);
+    UI_QT_API_QT void allow_remove(bool _allowed);
 
     /// Sets if the selector must be in insert mode.
-    void setInsertMode(bool _insert);
+    void set_insert_mode(bool _insert);
 
     /// Sets the remove study button icon.
-    void setRemoveStudyIcon(const std::filesystem::path& _path);
+    void set_remove_study_icon(const std::filesystem::path& _path);
 
     /// Sets the remove series button icon.
-    void setRemoveSeriesIcon(const std::filesystem::path& _path);
+    void set_remove_series_icon(const std::filesystem::path& _path);
 
     /// Returns the selected series.
-    inline series_vector_t getSelectedSeries() const
+    inline series_vector_t get_selected_series() const
     {
-        return getSeries(this->selectedIndexes());
+        return get_series(this->selectedIndexes());
     }
 
     /// Returns a meaningful preferred size for the selector.
@@ -110,7 +110,7 @@ Q_SIGNALS:
      * @note selection and deselection contain only the change of selection. The series always selected or deselected
      * don't appear in this selection/deselection.
      */
-    void seriesSelected(
+    void series_selected(
         QVector<data::series::sptr> _selection,
         QVector<data::series::sptr> _deselection
     );
@@ -119,7 +119,7 @@ Q_SIGNALS:
      * @brief Signal emitted when series are deleted.
      * @param _selection contains the deleted series.
      */
-    void removeSeries(QVector<data::series::sptr> _selection);
+    void remove_series(QVector<data::series::sptr> _selection);
 
 protected Q_SLOTS:
 
@@ -139,13 +139,13 @@ private Q_SLOTS:
      * @brief SLOT: called when the selector model sends a signal to remove the study.
      * @param _uid the instance UID of the study to remove.
      */
-    void onRemoveStudyInstanceUID(const std::string& _uid);
+    void on_remove_study_instance_uid(const std::string& _uid);
 
     /**
      * @brief SLOT: called when the selector model sends a signal to remove the series.
      * @param _id the ID of the series to remove.
      */
-    void onRemoveSeriesID(const std::string& _id);
+    void on_remove_series_id(const std::string& _id);
 
 private:
 
@@ -153,31 +153,31 @@ private:
      * @brief Returns all the Series associated to the selection.
      * @note If a study is selected, return an empty selection.
      */
-    static inline series_vector_t getSeries(const QItemSelection& _selection)
+    static inline series_vector_t get_series(const QItemSelection& _selection)
     {
-        return getSeries(_selection.indexes());
+        return get_series(_selection.indexes());
     }
 
     /**
      * @brief Returns all the Series associated to the selection.
      * @note It ignores the studies.
      */
-    static series_vector_t getSeries(const QModelIndexList& _index_list);
+    static series_vector_t get_series(const QModelIndexList& _index_list);
 
     /// Returns all the study indexes contained in the given indexList
-    static QModelIndexList getStudyIndexes(const QModelIndexList& _index_list);
+    static QModelIndexList get_study_indexes(const QModelIndexList& _index_list);
 
     /// Returns all the series associated with the study index
-    series_vector_t getSeriesFromStudyIndex(const QModelIndex& _index) const;
+    series_vector_t get_series_from_study_index(const QModelIndex& _index) const;
 
     /// Deletes the selected items and notify the deleted series.
-    void deleteSelection();
+    void delete_selection();
 
     /// Tree model
     QPointer<selector_model> m_model {nullptr};
 
     /// Allows to remove items.
-    bool m_removeAllowed {true};
+    bool m_remove_allowed {true};
 };
 
 //-----------------------------------------------------------------------------
@@ -189,23 +189,23 @@ inline void selector::clear()
 
 //-----------------------------------------------------------------------------
 
-inline void selector::setInsertMode(bool _insert)
+inline void selector::set_insert_mode(bool _insert)
 {
-    m_model->setInsertMode(_insert);
+    m_model->set_insert_mode(_insert);
 }
 
 //-----------------------------------------------------------------------------
 
-inline void selector::setRemoveStudyIcon(const std::filesystem::path& _path)
+inline void selector::set_remove_study_icon(const std::filesystem::path& _path)
 {
-    m_model->setRemoveStudyIcon(_path);
+    m_model->set_remove_study_icon(_path);
 }
 
 //-----------------------------------------------------------------------------
 
-inline void selector::setRemoveSeriesIcon(const std::filesystem::path& _path)
+inline void selector::set_remove_series_icon(const std::filesystem::path& _path)
 {
-    m_model->setRemoveSeriesIcon(_path);
+    m_model->set_remove_series_icon(_path);
 }
 
 } // namespace sight::ui::qt::series

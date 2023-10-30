@@ -51,10 +51,10 @@ location::~location()
 
 core::location::base::sptr location::show()
 {
-    using R = std::shared_ptr<core::location::base>;
+    using ret_t = std::shared_ptr<core::location::base>;
 
-    std::function<R()> func = [this](auto&& ...){return m_implementation->show();};
-    std::shared_future<R> f = core::thread::get_default_worker()->post_task<R>(func);
+    std::function<ret_t()> func = [this](auto&& ...){return m_implementation->show();};
+    std::shared_future<ret_t> f = core::thread::get_default_worker()->post_task<ret_t>(func);
 
     f.wait();
     return f.get();
@@ -62,65 +62,65 @@ core::location::base::sptr location::show()
 
 //-----------------------------------------------------------------------------
 
-void location::setType(location::Types _type)
+void location::set_type(location::types _type)
 {
-    m_implementation->setType(_type);
+    m_implementation->set_type(_type);
 }
 
 //-----------------------------------------------------------------------------
 
-void location::addFilter(const std::string& _filter_name, const std::string& _wildcard_list)
+void location::add_filter(const std::string& _filter_name, const std::string& _wildcard_list)
 {
-    m_implementation->addFilter(_filter_name, _wildcard_list);
+    m_implementation->add_filter(_filter_name, _wildcard_list);
 }
 
 //-----------------------------------------------------------------------------
 
-void location::setOption(location::Options _option)
+void location::set_option(location::options _option)
 {
-    m_implementation->setOption(_option);
+    m_implementation->set_option(_option);
 }
 
 //-----------------------------------------------------------------------------
 
-void location::setTitle(const std::string& _title)
+void location::set_title(const std::string& _title)
 {
-    m_implementation->setTitle(_title);
+    m_implementation->set_title(_title);
 }
 
 //-----------------------------------------------------------------------------
 
-const std::string& location::getTitle()
+const std::string& location::get_title()
 {
-    return m_implementation->getTitle();
+    return m_implementation->get_title();
 }
 
 //-----------------------------------------------------------------------------
 
-void location::setDefaultLocation(core::location::base::sptr _loc)
+void location::set_default_location(core::location::base::sptr _loc)
 {
-    m_implementation->setDefaultLocation(_loc);
+    m_implementation->set_default_location(_loc);
 }
 
 //-----------------------------------------------------------------------------
 
-core::location::base::sptr location::getDefaultLocation()
+core::location::base::sptr location::get_default_location()
 {
-    return m_implementation->getDefaultLocation();
+    return m_implementation->get_default_location();
 }
 
 //-----------------------------------------------------------------------------
 
-void location::saveDefaultLocation(core::location::base::sptr _loc)
+void location::save_default_location(core::location::base::sptr _loc)
 {
-    m_implementation->saveDefaultLocation(_loc);
+    m_implementation->save_default_location(_loc);
 }
 
 //-----------------------------------------------------------------------------
 
-std::string location::getCurrentSelection() const
+std::string location::get_current_selection() const
 {
-    return m_implementation->getCurrentSelection();
+    return m_implementation->get_current_selection();
 }
 
 //-----------------------------------------------------------------------------

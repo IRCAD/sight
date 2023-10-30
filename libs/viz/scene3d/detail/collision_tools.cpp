@@ -63,26 +63,26 @@ namespace sight::viz::scene3d::detail
 {
 
 collision_tools::collision_tools(Ogre::SceneManager& _scene_mgr, std::uint32_t _query_mask) :
-    mSceneMgr(_scene_mgr)
+    m_scene_mgr(_scene_mgr)
 {
-    mRaySceneQuery = mSceneMgr.createRayQuery(Ogre::Ray(), _query_mask);
-    if(nullptr == mRaySceneQuery)
+    m_ray_scene_query = m_scene_mgr.createRayQuery(Ogre::Ray(), _query_mask);
+    if(nullptr == m_ray_scene_query)
     {
         // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
         return;
     }
 
-    mRaySceneQuery->setSortByDistance(true);
+    m_ray_scene_query->setSortByDistance(true);
 }
 
 collision_tools::~collision_tools()
 {
-    delete mRaySceneQuery;
+    delete m_ray_scene_query;
 }
 
 //------------------------------------------------------------------------------
 
-bool collision_tools::collidesWithEntity(
+bool collision_tools::collides_with_entity(
     const Ogre::Vector3& _from_point,
     const Ogre::Vector3& _to_point,
     const Ogre::uint32 _query_mask,
@@ -96,7 +96,7 @@ bool collision_tools::collidesWithEntity(
     float dist_to_dest   = normal.normalise();
 
     std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*,
-               float> res = raycastFromPoint(from_point_adj, normal, _query_mask);
+               float> res = raycast_from_point(from_point_adj, normal, _query_mask);
 
     if(std::get<0>(res))
     {
@@ -111,7 +111,7 @@ bool collision_tools::collidesWithEntity(
 
 //------------------------------------------------------------------------------
 
-std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycastFromCamera(
+std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycast_from_camera(
     Ogre::RenderWindow* _rw,
     Ogre::Camera* _camera,
     const Ogre::Vector2& _mousecoords,
@@ -128,7 +128,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
 
 //------------------------------------------------------------------------------
 
-std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycastFromPoint(
+std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycast_from_point(
     const Ogre::Vector3& _point,
     const Ogre::Vector3& _normal,
     const Ogre::uint32 _query_mask
@@ -154,14 +154,14 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     float closest_distance      = NAN;
 
     // Check we are initialised.
-    if(mRaySceneQuery != nullptr)
+    if(m_ray_scene_query != nullptr)
     {
         // Create a query object.
-        mRaySceneQuery->setRay(_ray);
-        mRaySceneQuery->setSortByDistance(true);
-        mRaySceneQuery->setQueryMask(_query_mask);
+        m_ray_scene_query->setRay(_ray);
+        m_ray_scene_query->setSortByDistance(true);
+        m_ray_scene_query->setQueryMask(_query_mask);
         // Execute the query, returns a vector of hits.
-        if(mRaySceneQuery->execute().empty())
+        if(m_ray_scene_query->execute().empty())
         {
             // Raycast did not hit an objects bounding box.
             return std::make_tuple(false, result, target, closest_distance);
@@ -179,7 +179,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     // we need to test every triangle of every object.
     closest_distance = -1.0F;
     Ogre::Vector3 closest_result;
-    for(auto& qr_idx : mRaySceneQuery->getLastResults())
+    for(auto& qr_idx : m_ray_scene_query->getLastResults())
     {
         // Stop checking if we have found a raycast hit that is closer
         // than all remaining entities.
@@ -193,7 +193,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
         Ogre::MovableObject* const entity = qr_idx.movable;
 
         const bool is_entity = qr_idx.movable->getMovableType() == "Entity";
-        const bool is_r2_vb  = qr_idx.movable->getMovableType() == factory::r2vb_renderable::FACTORY_TYPE_NAME;
+        const bool is_r2_vb  = qr_idx.movable->getMovableType() == factory::r2vb_renderable::s_factory_type_name;
 
         // Only check this result if its a hit against an entity.
         if((entity != nullptr) && (is_entity || is_r2_vb))
@@ -209,7 +209,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
 
             const Ogre::MeshPtr mesh = is_entity
                                        ? static_cast<Ogre::Entity*>(entity)->getMesh()
-                                       : static_cast<viz::scene3d::r2vb_renderable*>(entity)->getMesh();
+                                       : static_cast<viz::scene3d::r2vb_renderable*>(entity)->get_mesh();
 
             std::vector<Ogre::Vector3> vertices;
             bool added_shared = false;
@@ -343,8 +343,8 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                     {
                         // We do not have faces, we simply check all vertices and compute the distance from the picked
                         // point
-                        const Ogre::Camera* const camera = mSceneMgr.getCamera(
-                            viz::scene3d::layer::s_DEFAULT_CAMERA_NAME
+                        const Ogre::Camera* const camera = m_scene_mgr.getCamera(
+                            viz::scene3d::layer::DEFAULT_CAMERA_NAME
                         );
                         const Ogre::Matrix4 view_matrix = camera->getViewMatrix();
                         const Ogre::Matrix4 proj_matrix = camera->getProjectionMatrixWithRSDepth();

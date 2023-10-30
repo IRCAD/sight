@@ -64,12 +64,12 @@ using sight::activity::extension::activity;
 
 wizard::wizard() noexcept
 {
-    new_slot(CREATE_ACTIVITY_SLOT, &wizard::createActivity, this);
-    new_slot(UPDATE_ACTIVITY_SLOT, &wizard::updateActivity, this);
+    new_slot(CREATE_ACTIVITY_SLOT, &wizard::create_activity, this);
+    new_slot(UPDATE_ACTIVITY_SLOT, &wizard::update_activity, this);
 
-    m_sigActivityCreated = new_signal<activity_created_signal_t>(ACTIVITY_CREATED_SIG);
-    m_sigActivityUpdated = new_signal<activity_updated_signal_t>(ACTIVITY_UPDATED_SIG);
-    m_sigCanceled        = new_signal<canceled_signal_t>(CANCELED_SIG);
+    m_sig_activity_created = new_signal<activity_created_signal_t>(ACTIVITY_CREATED_SIG);
+    m_sig_activity_updated = new_signal<activity_updated_signal_t>(ACTIVITY_UPDATED_SIG);
+    m_sig_canceled         = new_signal<canceled_signal_t>(CANCELED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -85,17 +85,17 @@ void wizard::configuring()
 
     const auto config = this->get_config();
 
-    m_ioSelectorConfig = config.get("ioSelectorConfig", "");
-    SIGHT_ASSERT("ioSelector Configuration must not be empty", !m_ioSelectorConfig.empty());
+    m_io_selector_config = config.get("ioSelectorConfig", "");
+    SIGHT_ASSERT("ioSelector Configuration must not be empty", !m_io_selector_config.empty());
 
-    m_sdbIoSelectorConfig = config.get("sdbIoSelectorConfig", "");
-    if(m_sdbIoSelectorConfig.empty())
+    m_sdb_io_selector_config = config.get("sdbIoSelectorConfig", "");
+    if(m_sdb_io_selector_config.empty())
     {
-        m_sdbIoSelectorConfig = m_ioSelectorConfig;
+        m_sdb_io_selector_config = m_io_selector_config;
     }
 
-    m_confirmUpdate = config.get("confirm", m_confirmUpdate);
-    m_isCancelable  = config.get("cancel", m_isCancelable);
+    m_confirm_update = config.get("confirm", m_confirm_update);
+    m_is_cancelable  = config.get("cancel", m_is_cancelable);
 
     const auto icons_cfg = config.get_child("icons");
     const auto icon_cfg  = icons_cfg.equal_range("icon");
@@ -109,10 +109,10 @@ void wizard::configuring()
         SIGHT_ASSERT("'icon' attribute must not be empty", !icon.empty());
 
         const auto file = core::runtime::get_resource_file_path(icon);
-        m_objectIcons[type] = file.string();
+        m_object_icons[type] = file.string();
     }
 
-    SIGHT_ASSERT("icons are empty", !m_objectIcons.empty());
+    SIGHT_ASSERT("icons are empty", !m_object_icons.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -121,9 +121,9 @@ void wizard::starting()
 {
     sight::ui::service::create();
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
-    QWidget* const container = qt_container->getQtContainer();
+    QWidget* const container = qt_container->get_qt_container();
 
     auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -146,45 +146,45 @@ void wizard::starting()
         m_description->setStyleSheet("QLabel { font: italic; border: solid 1px;}");
     }
 
-    m_DataView = new DataView();
-    m_DataView->setIOSelectorConfig(m_ioSelectorConfig);
-    m_DataView->setSDBIOSelectorConfig(m_sdbIoSelectorConfig);
+    m_data_view = new data_view();
+    m_data_view->set_io_selector_config(m_io_selector_config);
+    m_data_view->set_sdbio_selector_config(m_sdb_io_selector_config);
 
-    m_DataView->setObjectIconAssociation(m_objectIcons);
+    m_data_view->set_object_icon_association(m_object_icons);
 
-    layout->addWidget(m_DataView, 1);
+    layout->addWidget(m_data_view, 1);
 
     auto* button_layout = new QHBoxLayout();
     layout->addLayout(button_layout);
 
-    if(m_isCancelable)
+    if(m_is_cancelable)
     {
-        m_cancelButton = new QPushButton("Cancel");
-        m_cancelButton->setToolTip("Cancel the activity creation");
-        button_layout->addWidget(m_cancelButton);
+        m_cancel_button = new QPushButton("Cancel");
+        m_cancel_button->setToolTip("Cancel the activity creation");
+        button_layout->addWidget(m_cancel_button);
     }
 
-    m_resetButton = new QPushButton("Clear");
-    m_resetButton->setToolTip("Clear the current selected data");
-    button_layout->addWidget(m_resetButton);
+    m_reset_button = new QPushButton("Clear");
+    m_reset_button->setToolTip("Clear the current selected data");
+    button_layout->addWidget(m_reset_button);
 
-    m_okButton = new QPushButton("Apply");
-    m_okButton->setToolTip("Create or update the activity with the selected data");
-    button_layout->addWidget(m_okButton);
+    m_ok_button = new QPushButton("Apply");
+    m_ok_button->setToolTip("Create or update the activity with the selected data");
+    button_layout->addWidget(m_ok_button);
 
     container->setLayout(layout);
 
     QObject::connect(
-        m_DataView.data(),
-        &DataView::currentChanged,
+        m_data_view.data(),
+        &data_view::currentChanged,
         this,
-        &wizard::onTabChanged
+        &wizard::on_tab_changed
     );
-    QObject::connect(m_okButton.data(), &QPushButton::clicked, this, &wizard::onBuildActivity);
-    QObject::connect(m_resetButton.data(), &QPushButton::clicked, this, &wizard::onReset);
-    if(m_isCancelable)
+    QObject::connect(m_ok_button.data(), &QPushButton::clicked, this, &wizard::on_build_activity);
+    QObject::connect(m_reset_button.data(), &QPushButton::clicked, this, &wizard::on_reset);
+    if(m_is_cancelable)
     {
-        QObject::connect(m_cancelButton.data(), &QPushButton::clicked, this, &wizard::onCancel);
+        QObject::connect(m_cancel_button.data(), &QPushButton::clicked, this, &wizard::on_cancel);
     }
 }
 
@@ -192,19 +192,19 @@ void wizard::starting()
 
 void wizard::stopping()
 {
-    m_DataView->clear();
+    m_data_view->clear();
 
     QObject::disconnect(
-        m_DataView.data(),
-        &DataView::currentChanged,
+        m_data_view.data(),
+        &data_view::currentChanged,
         this,
-        &wizard::onTabChanged
+        &wizard::on_tab_changed
     );
-    QObject::disconnect(m_okButton.data(), &QPushButton::clicked, this, &wizard::onBuildActivity);
-    QObject::disconnect(m_resetButton.data(), &QPushButton::clicked, this, &wizard::onReset);
-    if(m_isCancelable)
+    QObject::disconnect(m_ok_button.data(), &QPushButton::clicked, this, &wizard::on_build_activity);
+    QObject::disconnect(m_reset_button.data(), &QPushButton::clicked, this, &wizard::on_reset);
+    if(m_is_cancelable)
     {
-        QObject::disconnect(m_cancelButton.data(), &QPushButton::clicked, this, &wizard::onCancel);
+        QObject::disconnect(m_cancel_button.data(), &QPushButton::clicked, this, &wizard::on_cancel);
     }
 
     this->destroy();
@@ -217,7 +217,7 @@ void wizard::updating()
     auto as = m_activity.lock();
     if(as)
     {
-        this->updateActivity(as.get_shared());
+        this->update_activity(as.get_shared());
     }
     else
     {
@@ -227,17 +227,17 @@ void wizard::updating()
 
 //------------------------------------------------------------------------------
 
-void wizard::createActivity(std::string _activity_id)
+void wizard::create_activity(std::string _activity_id)
 {
-    m_mode = Mode::CREATE;
+    m_mode = mode::create;
     activity_info info;
-    info = activity::getDefault()->getInfo(_activity_id);
+    info = activity::get_default()->get_info(_activity_id);
 
     // load activity module
-    core::runtime::start_module(info.bundleId);
+    core::runtime::start_module(info.bundle_id);
 
     m_new_activity = std::make_shared<data::activity>();
-    m_new_activity->setActivityConfigId(info.id);
+    m_new_activity->set_activity_config_id(info.id);
 
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
@@ -247,7 +247,7 @@ void wizard::createActivity(std::string _activity_id)
     // If we have requirements but they are not needed to start (maxOccurs = 0), we can skip the config as well
     for(const auto& req : info.requirements)
     {
-        if(req.maxOccurs > 0)
+        if(req.max_occurs > 0)
         {
             need_config = true;
             break;
@@ -256,10 +256,10 @@ void wizard::createActivity(std::string _activity_id)
 
     if(need_config)
     {
-        m_DataView->fillInformation(info);
-        if(m_DataView->count() > 1)
+        m_data_view->fill_information(info);
+        if(m_data_view->count() > 1)
         {
-            m_okButton->setText("Next");
+            m_ok_button->setText("Next");
         }
 
         this->slot(slots::SHOW)->async_run();
@@ -269,34 +269,34 @@ void wizard::createActivity(std::string _activity_id)
         // Create data automatically if they are not provided by the user
         for(const auto& req : info.requirements)
         {
-            SIGHT_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
-            (*m_new_activity)[req.name] = sight::activity::detail::data::create(req.type, req.objectConfig);
+            SIGHT_ASSERT("minOccurs and maxOccurs should be 0", req.min_occurs == 0 && req.max_occurs == 0);
+            (*m_new_activity)[req.name] = sight::activity::detail::data::create(req.type, req.object_config);
         }
 
         const auto activity_set = m_activity_set.lock();
-        SIGHT_ASSERT("The inout key '" << s_ACTIVITY_SET << "' is not defined.", activity_set);
+        SIGHT_ASSERT("The inout key '" << ACTIVITY_SET << "' is not defined.", activity_set);
 
         const auto scoped_emitter = activity_set->scoped_emit();
         activity_set->push_back(m_new_activity);
 
-        m_sigActivityCreated->async_emit(m_new_activity);
+        m_sig_activity_created->async_emit(m_new_activity);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void wizard::updateActivity(data::activity::sptr _activity)
+void wizard::update_activity(data::activity::sptr _activity)
 {
     activity_info info;
-    info = activity::getDefault()->getInfo(_activity->getActivityConfigId());
+    info = activity::get_default()->get_info(_activity->get_activity_config_id());
 
     // load activity module
-    core::runtime::start_module(info.bundleId);
+    core::runtime::start_module(info.bundle_id);
 
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
 
-    m_mode         = Mode::UPDATE;
+    m_mode         = mode::update;
     m_new_activity = _activity;
 
     bool need_config = false;
@@ -304,7 +304,7 @@ void wizard::updateActivity(data::activity::sptr _activity)
     // If we have requirements but they are not needed to start (maxOccurs = 0), we can skip the config as well
     for(const auto& req : info.requirements)
     {
-        if(req.maxOccurs != 0)
+        if(req.max_occurs != 0)
         {
             need_config = true;
             break;
@@ -313,10 +313,10 @@ void wizard::updateActivity(data::activity::sptr _activity)
 
     if(need_config)
     {
-        m_DataView->fillInformation(m_new_activity);
-        if(m_DataView->count() > 1)
+        m_data_view->fill_information(m_new_activity);
+        if(m_data_view->count() > 1)
         {
-            m_okButton->setText("Next");
+            m_ok_button->setText("Next");
         }
     }
     else
@@ -325,55 +325,55 @@ void wizard::updateActivity(data::activity::sptr _activity)
         data::object::modified_signal_t::sptr sig;
         sig = m_new_activity->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig->async_emit();
-        m_sigActivityUpdated->async_emit(m_new_activity);
+        m_sig_activity_updated->async_emit(m_new_activity);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void wizard::onTabChanged(int _index)
+void wizard::on_tab_changed(int _index)
 {
-    if(_index == m_DataView->count() - 1)
+    if(_index == m_data_view->count() - 1)
     {
-        m_okButton->setText("Apply");
+        m_ok_button->setText("Apply");
     }
     else
     {
-        m_okButton->setText("Next");
+        m_ok_button->setText("Next");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void wizard::onReset()
+void wizard::on_reset()
 {
     if(m_new_activity)
     {
         activity_info info;
-        info = activity::getDefault()->getInfo(m_new_activity->getActivityConfigId());
-        m_DataView->fillInformation(info);
+        info = activity::get_default()->get_info(m_new_activity->get_activity_config_id());
+        m_data_view->fill_information(info);
 
-        if(m_DataView->count() > 1)
+        if(m_data_view->count() > 1)
         {
-            m_okButton->setText("Next");
+            m_ok_button->setText("Next");
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void wizard::onCancel()
+void wizard::on_cancel()
 {
-    m_DataView->clear();
-    m_sigCanceled->async_emit();
+    m_data_view->clear();
+    m_sig_canceled->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void wizard::onBuildActivity()
+void wizard::on_build_activity()
 {
-    int index    = m_DataView->currentIndex();
-    int last_tab = m_DataView->count() - 1;
+    int index    = m_data_view->currentIndex();
+    int last_tab = m_data_view->count() - 1;
 
     if(index < 0)
     {
@@ -382,18 +382,18 @@ void wizard::onBuildActivity()
 
     std::string error_msg;
     // Check current data
-    if(m_DataView->checkData(std::size_t(index), error_msg))
+    if(m_data_view->check_data(std::size_t(index), error_msg))
     {
         if(index != last_tab)
         {
             // enable and select the next tab
-            m_DataView->setTabEnabled(index + 1, true);
-            m_DataView->setCurrentIndex(index + 1);
+            m_data_view->setTabEnabled(index + 1, true);
+            m_data_view->setCurrentIndex(index + 1);
         }
         else // index == lastTab
         {
             // Create/update activity
-            if(m_mode == Mode::UPDATE && m_confirmUpdate)
+            if(m_mode == mode::update && m_confirm_update)
             {
                 QMessageBox::StandardButton button = QMessageBox::question(
                     qApp->activeWindow(),
@@ -412,20 +412,20 @@ void wizard::onBuildActivity()
                 if(button == QMessageBox::Yes)
                 {
                     m_new_activity = data::object::copy(m_new_activity);
-                    m_mode         = Mode::CREATE; // The new activity should be added in the activity_set
+                    m_mode         = mode::create; // The new activity should be added in the activity_set
                 }
             }
 
             // check all data and create/update the activity
-            bool ok = m_DataView->checkAndComputeData(m_new_activity, error_msg);
+            bool ok = m_data_view->check_and_compute_data(m_new_activity, error_msg);
             if(ok)
             {
-                if(m_mode == Mode::CREATE)
+                if(m_mode == mode::create)
                 {
                     // Add the new activity in activity_set
-                    activity_info info = activity::getDefault()->getInfo(m_new_activity->getActivityConfigId());
+                    activity_info info = activity::get_default()->get_info(m_new_activity->get_activity_config_id());
 
-                    const auto& [description, input_ok] = sight::ui::dialog::input::showInputDialog(
+                    const auto& [description, input_ok] = sight::ui::dialog::input::show_input_dialog(
                         "Activity creation",
                         "Please, give a description of the activity.",
                         info.title
@@ -436,21 +436,21 @@ void wizard::onBuildActivity()
                         return;
                     }
 
-                    m_new_activity->setDescription(description);
+                    m_new_activity->set_description(description);
                     const auto activity_set = m_activity_set.lock();
-                    SIGHT_ASSERT("The inout key '" << s_ACTIVITY_SET << "' is not defined.", activity_set);
+                    SIGHT_ASSERT("The inout key '" << ACTIVITY_SET << "' is not defined.", activity_set);
 
                     const auto scoped_emitter = activity_set->scoped_emit();
                     activity_set->push_back(m_new_activity);
 
-                    m_sigActivityCreated->async_emit(m_new_activity);
+                    m_sig_activity_created->async_emit(m_new_activity);
                 }
                 else // m_mode == Mode::UPDATE
                 {
                     data::object::modified_signal_t::sptr sig;
                     sig = m_new_activity->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                     sig->async_emit();
-                    m_sigActivityUpdated->async_emit(m_new_activity);
+                    m_sig_activity_updated->async_emit(m_new_activity);
                 }
             }
             else

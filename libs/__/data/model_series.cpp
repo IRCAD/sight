@@ -41,11 +41,11 @@ const core::com::signals::key_t model_series::RECONSTRUCTIONS_REMOVED_SIG = "rec
 
 model_series::model_series() :
     has_fiducials(m_signals),
-    m_sigReconstructionsAdded(std::make_shared<reconstructions_added_signal_t>()),
-    m_sigReconstructionsRemoved(std::make_shared<reconstructions_removed_signal_t>())
+    m_sig_reconstructions_added(std::make_shared<reconstructions_added_signal_t>()),
+    m_sig_reconstructions_removed(std::make_shared<reconstructions_removed_signal_t>())
 {
-    m_signals(RECONSTRUCTIONS_ADDED_SIG, m_sigReconstructionsAdded)
-        (RECONSTRUCTIONS_REMOVED_SIG, m_sigReconstructionsRemoved);
+    m_signals(RECONSTRUCTIONS_ADDED_SIG, m_sig_reconstructions_added)
+        (RECONSTRUCTIONS_REMOVED_SIG, m_sig_reconstructions_removed);
 }
 
 //------------------------------------------------------------------------------
@@ -62,10 +62,10 @@ void model_series::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_reconstructionDB = other->m_reconstructionDB;
-    m_dicomReference   = other->m_dicomReference;
+    m_reconstruction_db = other->m_reconstruction_db;
+    m_dicom_reference   = other->m_dicom_reference;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -82,29 +82,29 @@ void model_series::deep_copy(const object::csptr& _source, const std::unique_ptr
         !bool(other)
     );
 
-    m_reconstructionDB.clear();
-    for(const data::reconstruction::sptr& rec : other->m_reconstructionDB)
+    m_reconstruction_db.clear();
+    for(const data::reconstruction::sptr& rec : other->m_reconstruction_db)
     {
-        m_reconstructionDB.push_back(data::object::copy(rec, _cache));
+        m_reconstruction_db.push_back(data::object::copy(rec, _cache));
     }
 
-    m_dicomReference = data::object::copy(other->m_dicomReference);
+    m_dicom_reference = data::object::copy(other->m_dicom_reference);
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool model_series::operator==(const model_series& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_dicomReference, _other.m_dicomReference)
-       || !core::tools::is_equal(m_reconstructionDB, _other.m_reconstructionDB))
+    if(!core::tools::is_equal(m_dicom_reference, _other.m_dicom_reference)
+       || !core::tools::is_equal(m_reconstruction_db, _other.m_reconstruction_db))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -116,23 +116,16 @@ bool model_series::operator!=(const model_series& _other) const noexcept
 
 //------------------------------------------------------------------------------
 
-fiducials_series::csptr model_series::getFiducials() const
+fiducials_series::csptr model_series::get_fiducials() const
 {
-    return m_fiducialsSeries;
+    return m_fiducials_series;
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::sptr model_series::getFiducials()
+fiducials_series::sptr model_series::get_fiducials()
 {
-    return m_fiducialsSeries;
-}
-
-//------------------------------------------------------------------------------
-
-bool model_series::hasFiducials() const
-{
-    return !m_fiducialsSeries->getFiducialSets().empty();
+    return m_fiducials_series;
 }
 
 } // namespace sight::data

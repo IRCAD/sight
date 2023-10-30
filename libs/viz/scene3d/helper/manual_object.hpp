@@ -44,7 +44,7 @@ public:
      * @param _length the cylinder's length
      * @param _sample the number of samples used to create the cylinder
      */
-    VIZ_SCENE3D_API static void createCylinder(
+    VIZ_SCENE3D_API static void create_cylinder(
         Ogre::ManualObject* _object,
         const std::string& _material,
         const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
@@ -62,7 +62,7 @@ public:
      * @param _length the cone's length
      * @param _sample the number of samples used to create the cone
      */
-    VIZ_SCENE3D_API static void createCone(
+    VIZ_SCENE3D_API static void create_cone(
         Ogre::ManualObject* _object,
         const std::string& _material,
         const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
@@ -78,7 +78,7 @@ public:
      * @param _color the cube's color
      * @param _length the cube's length
      */
-    VIZ_SCENE3D_API static void createCube(
+    VIZ_SCENE3D_API static void create_cube(
         Ogre::ManualObject* _object,
         const std::string& _material,
         const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
@@ -93,7 +93,7 @@ public:
      * @param _radius the sphere's radius
      * @param _sample the number of samples used to create the sphere
      */
-    VIZ_SCENE3D_API static void createSphere(
+    VIZ_SCENE3D_API static void create_sphere(
         Ogre::ManualObject* _object,
         const std::string& _material,
         const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
@@ -107,7 +107,7 @@ public:
      * @param _material the material used to create the frustum
      * @param _frustum Ogre's camera frustum
      */
-    VIZ_SCENE3D_API static void createFrustum(
+    VIZ_SCENE3D_API static void create_frustum(
         Ogre::ManualObject* _object,
         const std::string& _material,
         const Ogre::Frustum& _frustum
@@ -127,7 +127,7 @@ public:
      * @param _dashSpacing spacing between two dashes
      * @param _color optional line color, only necessary when using a material that supports vertex color
      */
-    VIZ_SCENE3D_API static void drawDashedLine(
+    VIZ_SCENE3D_API static void draw_dashed_line(
         Ogre::ManualObject* _object,
         const Ogre::Vector3& _p1,
         const Ogre::Vector3& _p2,

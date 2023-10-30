@@ -37,17 +37,17 @@ namespace sight::app::ut
 class config_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(config_test);
-CPPUNIT_TEST(addConfigTest);
-CPPUNIT_TEST(parametersConfigTest);
-CPPUNIT_TEST(startStopTest);
-CPPUNIT_TEST(autoConnectTest);
-CPPUNIT_TEST(connectionTest);
-CPPUNIT_TEST(startStopConnectionTest);
-CPPUNIT_TEST(optionalKeyTest);
-CPPUNIT_TEST(keyGroupTest);
+CPPUNIT_TEST(add_config_test);
+CPPUNIT_TEST(parameters_config_test);
+CPPUNIT_TEST(start_stop_test);
+CPPUNIT_TEST(auto_connect_test);
+CPPUNIT_TEST(connection_test);
+CPPUNIT_TEST(start_stop_connection_test);
+CPPUNIT_TEST(optional_key_test);
+CPPUNIT_TEST(key_group_test);
 CPPUNIT_TEST(concurrent_access_to_config_test);
-CPPUNIT_TEST(parameterReplaceTest);
-CPPUNIT_TEST(objectConfigTest);
+CPPUNIT_TEST(parameter_replace_test);
+CPPUNIT_TEST(object_config_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -56,28 +56,28 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void addConfigTest();
-    static void parametersConfigTest();
-    void startStopTest();
-    void autoConnectTest();
-    void connectionTest();
-    void startStopConnectionTest();
-    void optionalKeyTest();
-    void keyGroupTest();
+    static void add_config_test();
+    static void parameters_config_test();
+    void start_stop_test();
+    void auto_connect_test();
+    void connection_test();
+    void start_stop_connection_test();
+    void optional_key_test();
+    void key_group_test();
     static void concurrent_access_to_config_test();
-    void parameterReplaceTest();
-    void objectConfigTest();
+    void parameter_replace_test();
+    void object_config_test();
 
 private:
 
-    static service::config_t buildConfig();
+    static service::config_t build_config();
 
-    static app::config_manager::sptr launchAppConfigMgr(
+    static app::config_manager::sptr launch_app_config_mgr(
         const std::string& _name,
         bool _auto_prefix = false
     );
 
-    app::config_manager::sptr m_appConfigMgr;
+    app::config_manager::sptr m_app_config_mgr;
 };
 
 } // namespace sight::app::ut

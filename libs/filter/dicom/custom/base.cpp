@@ -37,7 +37,7 @@ base::~base()
 
 filter::filter_t base::get_filter_type() const
 {
-    return filter::CUSTOM;
+    return filter::custom;
 }
 
 } // namespace sight::filter::dicom::custom

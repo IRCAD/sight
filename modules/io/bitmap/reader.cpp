@@ -38,10 +38,8 @@
 namespace sight::module::io::bitmap
 {
 
-using sight::io::bitmap::Reader;
-
 // Retrieve the backend from the extension
-sight::io::bitmap::Backend reader::findBackend(const std::string& _extension) const
+sight::io::bitmap::backend reader::find_backend(const std::string& _extension) const
 {
     const auto& it = std::find_if(
         m_backends.cbegin(),
@@ -70,32 +68,32 @@ sight::io::bitmap::Backend reader::findBackend(const std::string& _extension) co
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType reader::getIOPathType() const
+sight::io::service::path_type_t reader::get_path_type() const
 {
-    return sight::io::service::IOPathType::FILE;
+    return sight::io::service::path_type_t::file;
 }
 
 //------------------------------------------------------------------------------
 
-void reader::openLocationDialog()
+void reader::open_location_dialog()
 {
     static auto default_location = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location location_dialog;
 
     // Set window title
-    if(!m_windowTitle.empty())
+    if(!m_window_title.empty())
     {
-        location_dialog.setTitle(m_windowTitle);
+        location_dialog.set_title(m_window_title);
     }
     else
     {
-        location_dialog.setTitle("Enter file name");
+        location_dialog.set_title("Enter file name");
     }
 
-    location_dialog.setDefaultLocation(default_location);
-    location_dialog.setOption(ui::dialog::location::READ);
-    location_dialog.setType(ui::dialog::location::SINGLE_FILE);
+    location_dialog.set_default_location(default_location);
+    location_dialog.set_option(ui::dialog::location::read);
+    location_dialog.set_type(ui::dialog::location::single_file);
 
     // Will be used later to check if "All supported images" is selected
     std::string all_wildcards;
@@ -113,7 +111,7 @@ void reader::openLocationDialog()
 
         if(!all_wildcards.empty())
         {
-            location_dialog.addFilter("All supported images", all_wildcards);
+            location_dialog.add_filter("All supported images", all_wildcards);
         }
     }
 
@@ -121,7 +119,7 @@ void reader::openLocationDialog()
     for(const auto& backend : m_backends)
     {
         const auto& [label, wildcard] = sight::io::bitmap::wildcard_filter(backend);
-        location_dialog.addFilter(label, wildcard);
+        location_dialog.add_filter(label, wildcard);
     }
 
     // Show the dialog
@@ -133,37 +131,37 @@ void reader::openLocationDialog()
         set_file(file_path);
 
         // Get the selected filter
-        const auto& current_selection = boost::trim_copy(location_dialog.getCurrentSelection());
+        const auto& current_selection = boost::trim_copy(location_dialog.get_current_selection());
 
         // If "All supported images" is selected, try to guess the backend from the file extension
         if(!all_wildcards.empty() && all_wildcards == current_selection)
         {
             // Use file extension to guess the backend later
-            m_selected_backend = sight::io::bitmap::Backend::ANY;
+            m_selected_backend = sight::io::bitmap::backend::any;
         }
         else
         {
             try
             {
                 // Find backend from selected filter
-                m_selected_backend = findBackend(location_dialog.getSelectedExtensions().front());
+                m_selected_backend = find_backend(location_dialog.get_selected_extensions().front());
             }
             catch(...)
             {
                 // Should normally not happen, but just in case, use file extension as fallback
-                m_selected_backend = sight::io::bitmap::Backend::ANY;
+                m_selected_backend = sight::io::bitmap::backend::any;
             }
         }
 
         // Save default location for later use
         default_location->set_folder(file_path.parent_path());
-        location_dialog.saveDefaultLocation(default_location);
+        location_dialog.save_default_location(default_location);
 
         m_dialog_shown = true;
     }
     else
     {
-        clearLocations();
+        clear_locations();
     }
 }
 
@@ -185,9 +183,9 @@ void reader::configuring()
 {
     sight::io::service::reader::configuring();
 
-    if(hasLocationDefined())
+    if(has_location_defined())
     {
-        m_selected_backend = sight::io::bitmap::Backend::ANY;
+        m_selected_backend = sight::io::bitmap::backend::any;
     }
 
     const auto& tree = get_config();
@@ -195,11 +193,11 @@ void reader::configuring()
     // Dialog configuration
     if(const auto& dialog_tree = tree.get_child_optional("dialog.<xmlattr>"); dialog_tree.is_initialized())
     {
-        m_dialog_policy = stringToDialogPolicy(dialog_tree->get<std::string>("policy", "default"));
+        m_dialog_policy = string_to_dialog_policy(dialog_tree->get<std::string>("policy", "default"));
 
         SIGHT_THROW_IF(
             "Cannot read dialog policy.",
-            m_dialog_policy == DialogPolicy::INVALID
+            m_dialog_policy == dialog_policy::invalid
         );
     }
 
@@ -213,38 +211,38 @@ void reader::configuring()
            enabled.is_initialized() && *enabled == "all")
         {
             // We add everything. Use GPU backend if available
-            m_backends.emplace(sight::io::bitmap::Backend::LIBPNG);
-            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
+            m_backends.emplace(sight::io::bitmap::backend::libpng);
+            m_backends.emplace(sight::io::bitmap::backend::libtiff);
 
 #if defined(SIGHT_ENABLE_NVJPEG)
             if(sight::io::bitmap::nv_jpeg())
             {
-                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG);
+                m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
             }
             else
  #endif
             {
-                m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
+                m_backends.emplace(sight::io::bitmap::backend::libjpeg);
             }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
             if(sight::io::bitmap::nv_jpeg_2k())
             {
-                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG2K);
+                m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
             }
             else
  #endif
             {
-                m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
+                m_backends.emplace(sight::io::bitmap::backend::openjpeg);
             }
         }
         else if(enabled.is_initialized() && *enabled == "cpu")
         {
             // We add only cpu backends
-            m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
-            m_backends.emplace(sight::io::bitmap::Backend::LIBPNG);
-            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
-            m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
+            m_backends.emplace(sight::io::bitmap::backend::libjpeg);
+            m_backends.emplace(sight::io::bitmap::backend::libpng);
+            m_backends.emplace(sight::io::bitmap::backend::libtiff);
+            m_backends.emplace(sight::io::bitmap::backend::openjpeg);
         }
         else if(enabled.is_initialized() && *enabled == "gpu")
         {
@@ -252,14 +250,14 @@ void reader::configuring()
 #if defined(SIGHT_ENABLE_NVJPEG)
             if(sight::io::bitmap::nv_jpeg())
             {
-                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG);
+                m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
             }
 #endif
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
             if(sight::io::bitmap::nv_jpeg_2k())
             {
-                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG2K);
+                m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
             }
 #endif
 
@@ -272,37 +270,37 @@ void reader::configuring()
         // Add hand selected backends
         if(const auto& node = backends_tree->get_child_optional("default"); node.is_initialized())
         {
-            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
+            m_backends.emplace(sight::io::bitmap::backend::libtiff);
         }
 
         if(const auto& node = backends_tree->get_child_optional("libjpeg");
            node.is_initialized()
 #if defined(SIGHT_ENABLE_NVJPEG)
-           && !m_backends.contains(sight::io::bitmap::Backend::NVJPEG)
+           && !m_backends.contains(sight::io::bitmap::backend::nvjpeg)
 #endif
         )
         {
-            m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
+            m_backends.emplace(sight::io::bitmap::backend::libjpeg);
         }
 
         if(const auto& node = backends_tree->get_child_optional("libpng"); node.is_initialized())
         {
-            m_backends.emplace(sight::io::bitmap::Backend::LIBPNG);
+            m_backends.emplace(sight::io::bitmap::backend::libpng);
         }
 
         if(const auto& node = backends_tree->get_child_optional("libtiff"); node.is_initialized())
         {
-            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
+            m_backends.emplace(sight::io::bitmap::backend::libtiff);
         }
 
         if(const auto& node = backends_tree->get_child_optional("openjpeg");
            node.is_initialized()
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-           && !m_backends.contains(sight::io::bitmap::Backend::NVJPEG2K)
+           && !m_backends.contains(sight::io::bitmap::backend::nvjpeg2k)
 #endif
         )
         {
-            m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
+            m_backends.emplace(sight::io::bitmap::backend::openjpeg);
         }
 
         if(const auto& node = backends_tree->get_child_optional("nvjpeg"); node.is_initialized())
@@ -310,19 +308,19 @@ void reader::configuring()
 #if defined(SIGHT_ENABLE_NVJPEG)
             if(sight::io::bitmap::nv_jpeg())
             {
-                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG);
+                m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
 
                 // Remove libjpeg since we have a better alternative...
-                m_backends.erase(sight::io::bitmap::Backend::LIBJPEG);
+                m_backends.erase(sight::io::bitmap::backend::libjpeg);
             }
             else
 #endif
             {
                 SIGHT_WARN("nvjpeg GPU backend is not available. It will be replaced by libjpeg.");
 
-                if(!m_backends.contains(sight::io::bitmap::Backend::LIBJPEG))
+                if(!m_backends.contains(sight::io::bitmap::backend::libjpeg))
                 {
-                    m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
+                    m_backends.emplace(sight::io::bitmap::backend::libjpeg);
                 }
             }
         }
@@ -332,19 +330,19 @@ void reader::configuring()
 #if defined(SIGHT_ENABLE_NVJPEG2K)
             if(sight::io::bitmap::nv_jpeg_2k())
             {
-                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG2K);
+                m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
 
                 // Remove openjpeg since we have a better alternative...
-                m_backends.erase(sight::io::bitmap::Backend::OPENJPEG);
+                m_backends.erase(sight::io::bitmap::backend::openjpeg);
             }
             else
 #endif
             {
                 SIGHT_WARN("nvjpeg2k GPU backend is not available. It will be replaced by openJPEG.");
 
-                if(!m_backends.contains(sight::io::bitmap::Backend::OPENJPEG))
+                if(!m_backends.contains(sight::io::bitmap::backend::openjpeg))
                 {
-                    m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
+                    m_backends.emplace(sight::io::bitmap::backend::openjpeg);
                 }
             }
         }
@@ -356,17 +354,17 @@ void reader::configuring()
 void reader::updating()
 {
     // Set to failed until successful
-    m_readFailed = true;
+    m_read_failed = true;
 
     // Show the save dialog if the path is empty
-    if((!hasLocationDefined() && m_dialog_policy != DialogPolicy::NEVER)
-       || (!m_dialog_shown && m_dialog_policy == DialogPolicy::ALWAYS))
+    if((!has_location_defined() && m_dialog_policy != dialog_policy::never)
+       || (!m_dialog_shown && m_dialog_policy == dialog_policy::always))
     {
-        openLocationDialog();
+        open_location_dialog();
     }
 
     // If the user did not choose a file, we stop here
-    if(!hasLocationDefined())
+    if(!has_location_defined())
     {
         return;
     }
@@ -378,10 +376,10 @@ void reader::updating()
     try
     {
         // Find the backend to use for the current file extension in the list of enabled backends
-        const auto& backend_from_extension = findBackend(current_extension);
+        const auto& backend_from_extension = find_backend(current_extension);
 
         // If we can use any backend, we shall use the one found
-        if(m_selected_backend == sight::io::bitmap::Backend::ANY)
+        if(m_selected_backend == sight::io::bitmap::backend::any)
         {
             m_selected_backend = backend_from_extension;
         }
@@ -400,7 +398,7 @@ void reader::updating()
     {
         // If there is no selected backend, use the first available one
         // This could happen if the extension is not supported by any enabled backends
-        if(m_selected_backend == sight::io::bitmap::Backend::ANY)
+        if(m_selected_backend == sight::io::bitmap::backend::any)
         {
             m_selected_backend = *std::next(m_backends.begin());
         }
@@ -419,17 +417,17 @@ void reader::updating()
             + sight::io::bitmap::extensions(m_selected_backend).front()
             + "'.";
 
-        if(m_dialog_policy != DialogPolicy::NEVER || m_dialog_policy == DialogPolicy::ALWAYS)
+        if(m_dialog_policy != dialog_policy::never || m_dialog_policy == dialog_policy::always)
         {
             ui::dialog::message critical_dialog;
-            critical_dialog.setIcon(ui::dialog::message::CRITICAL);
-            critical_dialog.setTitle("Missing or Wrong file extension");
-            critical_dialog.setMessage(message + "\n\nWould you like to continue ?");
-            critical_dialog.addButton(ui::dialog::message::OK);
-            critical_dialog.addButton(ui::dialog::message::CANCEL);
-            critical_dialog.setDefaultButton(ui::dialog::message::CANCEL);
+            critical_dialog.set_icon(ui::dialog::message::critical);
+            critical_dialog.set_title("Missing or Wrong file extension");
+            critical_dialog.set_message(message + "\n\nWould you like to continue ?");
+            critical_dialog.add_button(ui::dialog::message::ok);
+            critical_dialog.add_button(ui::dialog::message::cancel);
+            critical_dialog.set_default_button(ui::dialog::message::cancel);
 
-            if(critical_dialog.show() == ui::dialog::message::CANCEL)
+            if(critical_dialog.show() == ui::dialog::message::cancel)
             {
                 return;
             }
@@ -449,7 +447,7 @@ void reader::updating()
             _running_job.done_work(10);
 
             // Create the session reader
-            auto reader = std::make_shared<Reader>();
+            auto reader = std::make_shared<sight::io::bitmap::reader>();
             {
                 // The object must be unlocked since it will be locked again when writing
                 auto data = m_data.lock();
@@ -458,7 +456,7 @@ void reader::updating()
             }
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::BusyCursor busy_cursor;
+            const sight::ui::busy_cursor busy_cursor;
 
             // Read the file
             reader->read(m_selected_backend);
@@ -477,7 +475,7 @@ void reader::updating()
     try
     {
         jobs->run().get();
-        m_readFailed = false;
+        m_read_failed = false;
     }
     catch(std::exception& e)
     {
@@ -486,7 +484,7 @@ void reader::updating()
         sight::ui::dialog::message::show(
             "Bitmap reader failed",
             e.what(),
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
     }
     catch(...)
@@ -495,7 +493,7 @@ void reader::updating()
         sight::ui::dialog::message::show(
             "Bitmap reader aborted",
             "Reading process aborted",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
     }
 

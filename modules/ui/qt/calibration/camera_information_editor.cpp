@@ -44,7 +44,7 @@ const core::com::slots::key_t camera_information_editor::UPDATE_INFOS_SLOT = "up
 
 camera_information_editor::camera_information_editor() noexcept
 {
-    new_slot(UPDATE_INFOS_SLOT, &camera_information_editor::updateInformations, this);
+    new_slot(UPDATE_INFOS_SLOT, &camera_information_editor::update_informations, this);
 }
 
 // -------------------------------------------------------------------------
@@ -61,8 +61,8 @@ void camera_information_editor::starting()
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     sight::ui::service::create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
-    qt_container->getQtContainer()->setObjectName(service_id);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
+    qt_container->get_qt_container()->setObjectName(service_id);
 
     auto* main_layout = new QBoxLayout(QBoxLayout::TopToBottom);
     main_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -75,9 +75,9 @@ void camera_information_editor::starting()
     grid_layout->addWidget(m_description, 0, 1);
 
     auto* title_layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    m_isCalibrated = new QLabel();
-    m_isCalibrated->setObjectName(service_id + "/isCalibrated");
-    title_layout->addWidget(m_isCalibrated);
+    m_is_calibrated = new QLabel();
+    m_is_calibrated->setObjectName(service_id + "/isCalibrated");
+    title_layout->addWidget(m_is_calibrated);
 
     auto* info_layout = new QGridLayout;
     info_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -126,9 +126,9 @@ void camera_information_editor::starting()
     info_layout->addWidget(m_p2, 2, 3);
     info_layout->addWidget(m_k3, 2, 4);
 
-    qt_container->setLayout(main_layout);
+    qt_container->set_layout(main_layout);
 
-    updateInformations();
+    update_informations();
 }
 
 // -------------------------------------------------------------------------
@@ -140,59 +140,59 @@ void camera_information_editor::stopping()
 
 // -------------------------------------------------------------------------
 
-void camera_information_editor::updateInformations()
+void camera_information_editor::update_informations()
 {
     const auto camera = m_camera.lock();
     std::stringstream out;
 
-    m_description->setText(QString::fromStdString(camera->getDescription()));
+    m_description->setText(QString::fromStdString(camera->get_description()));
 
     //IS CALIBRATED
-    if(camera->getIsCalibrated())
+    if(camera->get_is_calibrated())
     {
-        m_isCalibrated->setText("<b>The camera is calibrated.</b>");
+        m_is_calibrated->setText("<b>The camera is calibrated.</b>");
     }
     else
     {
-        m_isCalibrated->setText("<b>The camera is not calibrated.</b>");
-        this->clearLabels();
+        m_is_calibrated->setText("<b>The camera is not calibrated.</b>");
+        this->clear_labels();
         return;
     }
 
     //Height
-    out << "Height: <font color='#0066CC'>" << camera->getHeight() << "</font>";
+    out << "Height: <font color='#0066CC'>" << camera->get_height() << "</font>";
     m_height->setText(out.str().c_str());
 
     out.str("");
 
     //Width
-    out << "Width: <font color='#0066CC'>" << camera->getWidth() << "</font>";
+    out << "Width: <font color='#0066CC'>" << camera->get_width() << "</font>";
     m_width->setText(out.str().c_str());
 
     out.str("");
     //CX
-    out << "Cx: <font color='#0066CC'>" << camera->getCx() << "</font>";
+    out << "Cx: <font color='#0066CC'>" << camera->get_cx() << "</font>";
     m_cx->setText(out.str().c_str());
 
     out.str("");
 
     //CY
-    out << "Cy: <font color='#0066CC'>" << camera->getCy() << "</font>";
+    out << "Cy: <font color='#0066CC'>" << camera->get_cy() << "</font>";
     m_cy->setText(out.str().c_str());
 
     out.str("");
 
     //FX
-    out << "Fx: <font color='#0066CC'>" << camera->getFx() << "</font>";
+    out << "Fx: <font color='#0066CC'>" << camera->get_fx() << "</font>";
     m_fx->setText(out.str().c_str());
 
     out.str("");
 
     //FY
-    out << "Fy: <font color='#0066CC'>" << camera->getFy() << "</font>";
+    out << "Fy: <font color='#0066CC'>" << camera->get_fy() << "</font>";
     m_fy->setText(out.str().c_str());
 
-    const data::camera::dist_array_t& dist = camera->getDistortionCoefficient();
+    const data::camera::dist_array_t& dist = camera->get_distortion_coefficient();
 
     out.str("");
 
@@ -227,13 +227,13 @@ void camera_information_editor::updateInformations()
     out.str("");
 
     //SKEW
-    out << "Skew: <font color='#0066CC'>" << camera->getSkew() << "</font>";
+    out << "Skew: <font color='#0066CC'>" << camera->get_skew() << "</font>";
     m_skew->setText(out.str().c_str());
 }
 
 // -------------------------------------------------------------------------
 
-void camera_information_editor::clearLabels()
+void camera_information_editor::clear_labels()
 {
     m_width->setText("");
     m_height->setText("");
@@ -255,8 +255,8 @@ service::connections_t camera_information_editor::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(s_CAMERA, data::camera::ID_MODIFIED_SIG, UPDATE_INFOS_SLOT);
-    connections.push(s_CAMERA, data::camera::INTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT);
+    connections.push(CAMERA, data::camera::ID_MODIFIED_SIG, UPDATE_INFOS_SLOT);
+    connections.push(CAMERA, data::camera::INTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT);
 
     return connections;
 }

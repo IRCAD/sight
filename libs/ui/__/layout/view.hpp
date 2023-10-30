@@ -59,33 +59,33 @@ public:
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_API virtual void createLayout(ui::container::widget::sptr _parent, const std::string& _id) = 0;
+    UI_API virtual void create_layout(ui::container::widget::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_API virtual void destroyLayout() = 0;
+    UI_API virtual void destroy_layout() = 0;
 
     /**
      * @brief Returns all sub containers managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::widget::sptr> getSubViews();
+    UI_API virtual std::vector<ui::container::widget::sptr> get_sub_views();
 
     /// Modify a layout element, depending of the key.
     /// @param parameter The parameter of the action.
     /// @param key The action to perform.
-    UI_API virtual void modifyLayout(const ui::parameter_t& _parameter, const std::string& _key);
+    UI_API virtual void modify_layout(const ui::parameter_t& _parameter, const std::string& _key);
 
 protected:
 
     /**
      * @brief Helper to destroy local sub views.
      */
-    UI_API virtual void destroySubViews();
+    UI_API virtual void destroy_sub_views();
 
     /// All sub containers managed by this layout.
-    std::vector<ui::container::widget::sptr> m_subViews;
+    std::vector<ui::container::widget::sptr> m_sub_views;
 };
 
 } // namespace sight::ui::layout

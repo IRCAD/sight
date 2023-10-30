@@ -53,7 +53,7 @@ sight::activity::validator::return_t mono_camera::validate(const data::object::c
         if(camera_set->size() == 1)
         {
             data::camera::csptr camera = camera_set->get_camera(0);
-            if(!camera->getIsCalibrated())
+            if(!camera->get_is_calibrated())
             {
                 validation.first  = false;
                 validation.second = "The CameraSet should be calibrated.";

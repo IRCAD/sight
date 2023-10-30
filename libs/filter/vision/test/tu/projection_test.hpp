@@ -30,7 +30,7 @@ namespace sight::filter::vision::ut
 class projection_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(projection_test);
-CPPUNIT_TEST(projectionTest);
+CPPUNIT_TEST(projection);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,7 +39,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void projectionTest();
+    static void projection();
 };
 
 } // namespace sight::filter::vision::ut

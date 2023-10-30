@@ -45,7 +45,7 @@ namespace sight::ui::qt
 // This proxy style class provides a way to set slider positions in an absolute way
 // which is very useful in general and especially for touchscreen input.
 // See: https://stackoverflow.com/questions/11132597/qslider-mouse-direct-jump
-class AbsoluteProxyStyle : public QProxyStyle
+class absolute_proxy_style : public QProxyStyle
 {
 public:
 
@@ -92,19 +92,19 @@ public:
     /// @brief Destructor.
     UI_QT_API_QT ~slice_selector() noexcept override;
 
-    UI_QT_API_QT void setSliceRange(int _min, int _max);
+    UI_QT_API_QT void set_slice_range(int _min, int _max);
 
-    UI_QT_API_QT void setSliceValue(int _index);
+    UI_QT_API_QT void set_slice_value(int _index);
 
-    UI_QT_API_QT void setTypeSelection(int _type);
+    UI_QT_API_QT void set_type_selection(int _type);
 
-    UI_QT_API_QT void setEnable(bool _enable);
+    UI_QT_API_QT void set_enable(bool _enable);
 
-    typedef std::function<void (int)> ChangeIndexCallback;
-    UI_QT_API_QT void setChangeIndexCallback(ChangeIndexCallback _fct);
+    using ChangeIndexCallback = std::function<void (int)>;
+    UI_QT_API_QT void set_change_index_callback(ChangeIndexCallback _fct);
 
-    typedef std::function<void (int)> ChangeTypeCallback;
-    UI_QT_API_QT void setChangeTypeCallback(ChangeTypeCallback _fct);
+    using ChangeTypeCallback = std::function<void (int)>;
+    UI_QT_API_QT void set_change_type_callback(ChangeTypeCallback _fct);
 
 protected Q_SLOTS:
 
@@ -112,28 +112,28 @@ protected Q_SLOTS:
      * @brief Event handler for a slice type change.
      * @param index index of the selected type item.
      */
-    UI_QT_API_QT void onSliceTypeChange(int _index);
+    UI_QT_API_QT void on_slice_type_change(int _index);
 
     /**
      * @brief Event handler for a slice index change.
      * @param value current value of the slice index slider.
      */
-    UI_QT_API_QT void onSliceIndexChange(int _value) noexcept;
+    UI_QT_API_QT void on_slice_index_change(int _value) noexcept;
 
 private:
 
-    QPointer<QComboBox> m_sliceType;
+    QPointer<QComboBox> m_slice_type;
 
     /// @brief The slice index slider widget.
-    QPointer<QStyle> m_sliceIndexStyle;
-    QPointer<QSlider> m_sliceIndex;
-    QPointer<QLineEdit> m_pSliceIndexText;
+    QPointer<QStyle> m_slice_index_style;
+    QPointer<QSlider> m_slice_index;
+    QPointer<QLineEdit> m_p_slice_index_text;
 
-    void printIndex(int _index);
-    void printType(int _type);
+    void print_index(int _index);
+    void print_type(int _type);
 
-    ChangeIndexCallback m_fctChangeIndexCallback;
-    ChangeTypeCallback m_fctChangeTypeCallback;
+    ChangeIndexCallback m_fct_change_index_callback;
+    ChangeTypeCallback m_fct_change_type_callback;
 };
 
 } // namespace sight::ui::qt

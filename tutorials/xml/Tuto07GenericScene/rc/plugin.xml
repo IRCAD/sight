@@ -237,12 +237,12 @@
             <!--
                 Connection for 3D image slice:
                 Connect the button (showNegatoSrv) signal "toggled" to the negato adaptor (negato3D)
-                slot "updateVisibility", this signals/slots contains a boolean.
+                slot "update_visibility", this signals/slots contains a boolean.
                 The image slices will be show or hide when the button is checked/unchecked.
             -->
             <connect>
                 <signal>showNegatoSrv/toggled</signal>
-                <slot>negatoAdp/updateVisibility</slot>
+                <slot>negatoAdp/update_visibility</slot>
             </connect>
 
             <connect>

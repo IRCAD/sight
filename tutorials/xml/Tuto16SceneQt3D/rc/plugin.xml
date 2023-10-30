@@ -42,15 +42,15 @@
                         <icon>Tuto16SceneQt3D/tuto.ico</icon>
                         <minSize width="1080" height="720" />
                     </frame>
-                    <menuBar/>
+                    <menubar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
                     <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
+            <service uid="menuBarView" type="sight::module::ui::menubar" >
                 <gui>
                     <layout>
                         <menu name="File" />

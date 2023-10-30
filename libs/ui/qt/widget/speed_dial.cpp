@@ -31,26 +31,26 @@
 namespace sight::ui::qt::widget
 {
 
-speed_dial::speed_dial(Direction _direction, int _spacing, int _animation_duration, QWidget* _parent) :
+speed_dial::speed_dial(enum direction _direction, int _spacing, int _animation_duration, QWidget* _parent) :
     QPushButton(_parent),
     m_direction(_direction),
     m_spacing(_spacing),
-    m_animationDuration(_animation_duration),
-    m_animationGroup(new QParallelAnimationGroup)
+    m_animation_duration(_animation_duration),
+    m_animation_group(new QParallelAnimationGroup)
 {
     setEnabled(false);
     setCheckable(true);
-    m_actionsContainer->setObjectName(objectName() + "Actions");
+    m_actions_container->setObjectName(objectName() + "Actions");
     infect(_parent);
-    QObject::connect(this, &QPushButton::clicked, this, &speed_dial::toggleFold);
+    QObject::connect(this, &QPushButton::clicked, this, &speed_dial::toggle_fold);
     QObject::connect(
-        m_animationGroup,
+        m_animation_group,
         &QAnimationGroup::finished,
         [this]
         {
             if(m_folded)
             {
-                m_actionsContainer->hide();
+                m_actions_container->hide();
             }
         });
     QObject::connect(
@@ -58,27 +58,27 @@ speed_dial::speed_dial(Direction _direction, int _spacing, int _animation_durati
         &QObject::objectNameChanged,
         [this](QString)
         {
-            m_actionsContainer->setObjectName(objectName() + "Actions");
+            m_actions_container->setObjectName(objectName() + "Actions");
         });
 }
 
 //------------------------------------------------------------------------------
 
-void speed_dial::setDirection(Direction _direction)
+void speed_dial::set_direction(enum direction _direction)
 {
     m_direction = _direction;
 }
 
 //------------------------------------------------------------------------------
 
-speed_dial::Direction speed_dial::direction() const
+enum speed_dial::direction speed_dial::direction() const
 {
     return m_direction;
 }
 
 //------------------------------------------------------------------------------
 
-void speed_dial::setSpacing(int _spacing)
+void speed_dial::set_spacing(int _spacing)
 {
     m_spacing = _spacing;
 }
@@ -92,25 +92,25 @@ int speed_dial::spacing() const
 
 //------------------------------------------------------------------------------
 
-void speed_dial::setAnimationDuration(int _animation_duration)
+void speed_dial::set_animation_duration(int _animation_duration)
 {
     // It seems there is a bug when animationDuration=1; QAbstractAnimation::finished doesn't trigger, and as such the
     // buttons don't hide when folded.
     if(_animation_duration == 1)
     {
-        m_animationDuration = 0;
+        m_animation_duration = 0;
     }
     else
     {
-        m_animationDuration = _animation_duration;
+        m_animation_duration = _animation_duration;
     }
 }
 
 //------------------------------------------------------------------------------
 
-int speed_dial::animationDuration() const
+int speed_dial::animation_duration() const
 {
-    return m_animationDuration;
+    return m_animation_duration;
 }
 
 //------------------------------------------------------------------------------
@@ -124,13 +124,13 @@ void speed_dial::fold()
 
     m_folded = true;
     setChecked(false);
-    if(m_actionsContainer == nullptr)
+    if(m_actions_container == nullptr)
     {
         return;
     }
 
-    m_animationGroup->setDirection(QAbstractAnimation::Backward);
-    m_animationGroup->start();
+    m_animation_group->setDirection(QAbstractAnimation::Backward);
+    m_animation_group->start();
 }
 
 //------------------------------------------------------------------------------
@@ -149,14 +149,14 @@ void speed_dial::unfold()
 
     m_folded = false;
     setChecked(true);
-    m_animationGroup->setDirection(QAbstractAnimation::Forward);
-    m_actionsContainer->show();
-    m_animationGroup->start();
+    m_animation_group->setDirection(QAbstractAnimation::Forward);
+    m_actions_container->show();
+    m_animation_group->start();
 }
 
 //------------------------------------------------------------------------------
 
-void speed_dial::toggleFold()
+void speed_dial::toggle_fold()
 {
     if(m_folded)
     {
@@ -170,20 +170,20 @@ void speed_dial::toggleFold()
 
 //------------------------------------------------------------------------------
 
-bool speed_dial::isFolded() const
+bool speed_dial::is_folded() const
 {
     return m_folded;
 }
 
 //------------------------------------------------------------------------------
 
-void speed_dial::updateActions(std::vector<QWidget*> _actions)
+void speed_dial::update_actions(std::vector<QWidget*> _actions)
 {
     m_actions = std::move(_actions);
     setEnabled(!m_actions.empty());
 
     // Update the action container
-    for(QObject* obj : m_actionsContainer->children())
+    for(QObject* obj : m_actions_container->children())
     {
         if(obj->isWidgetType() && std::ranges::find(m_actions, obj) == m_actions.end())
         {
@@ -194,30 +194,31 @@ void speed_dial::updateActions(std::vector<QWidget*> _actions)
 
     for(QWidget* w : m_actions)
     {
-        w->setParent(m_actionsContainer);
+        w->setParent(m_actions_container);
         w->show();
     }
 
     // Update the animations
-    int current_time = m_animationGroup->currentTime(); // Current time get resetted when calling QAnimationGroup::clear
-    m_animationGroup->clear();
-    auto* container_animation = new QPropertyAnimation(m_actionsContainer, "geometry");
-    container_animation->setDuration(m_animationDuration);
+    int current_time = m_animation_group->currentTime(); // Current time get resetted when calling
+                                                         // QAnimationGroup::clear
+    m_animation_group->clear();
+    auto* container_animation = new QPropertyAnimation(m_actions_container, "geometry");
+    container_animation->setDuration(m_animation_duration);
     container_animation->setCurrentTime(current_time);
-    m_animationGroup->addAnimation(container_animation);
+    m_animation_group->addAnimation(container_animation);
     for(QWidget* w : m_actions)
     {
         auto* animation = new QPropertyAnimation(w, "pos");
-        animation->setDuration(m_animationDuration);
+        animation->setDuration(m_animation_duration);
         animation->setCurrentTime(current_time);
-        m_animationGroup->addAnimation(animation);
+        m_animation_group->addAnimation(animation);
     }
 
     // Ensure the actual size of the widgets are computed; this is needed by computePositions
     std::ranges::for_each(m_actions, &QWidget::adjustSize);
     if(parentWidget() != nullptr)
     {
-        updateActionsPositions();
+        update_actions_positions();
     }
 }
 
@@ -245,7 +246,7 @@ bool speed_dial::eventFilter(QObject* _o, QEvent* _e)
        || (_o->findChildren<speed_dial*>(objectName()).contains(this)
            && (_e->type() == QEvent::Resize || _e->type() == QEvent::Move)))
     {
-        updateActionsPositions();
+        update_actions_positions();
     }
 
     return false;
@@ -258,7 +259,7 @@ bool speed_dial::event(QEvent* _e)
     if(_e->type() == QEvent::ParentChange)
     {
         infect(parent());
-        m_actionsContainer->setParent(window());
+        m_actions_container->setParent(window());
     }
 
     return QPushButton::event(_e);
@@ -269,7 +270,7 @@ bool speed_dial::event(QEvent* _e)
 void speed_dial::moveEvent(QMoveEvent* _e)
 {
     QPushButton::moveEvent(_e);
-    updateActionsPositions();
+    update_actions_positions();
 }
 
 //------------------------------------------------------------------------------
@@ -277,7 +278,7 @@ void speed_dial::moveEvent(QMoveEvent* _e)
 void speed_dial::resizeEvent(QResizeEvent* _e)
 {
     QPushButton::resizeEvent(_e);
-    updateActionsPositions();
+    update_actions_positions();
     bool is_in_an_overlay = false;
     for(QWidget* child = this ; !is_in_an_overlay && child->parentWidget() != nullptr ; child = child->parentWidget())
     {
@@ -306,9 +307,9 @@ void speed_dial::infect(QObject* _parent)
 
 //------------------------------------------------------------------------------
 
-void speed_dial::updateActionsPositions()
+void speed_dial::update_actions_positions()
 {
-    if(m_actionsContainer == nullptr || m_animationGroup == nullptr)
+    if(m_actions_container == nullptr || m_animation_group == nullptr)
     {
         return;
     }
@@ -317,24 +318,24 @@ void speed_dial::updateActionsPositions()
     // size of the container is now invalid and must be changed.
     SIGHT_ASSERT(
         "There must be as much animations as there are actions (+ 1 animation because of the container)",
-        static_cast<std::size_t>(m_animationGroup->animationCount()) == m_actions.size() + 1
+        static_cast<std::size_t>(m_animation_group->animationCount()) == m_actions.size() + 1
     );
     // computePositions will give us the positions and sizes of the container and the positions of the actions. They are
     // provided as a pair, where the first element is the initial value and the second element is the final value.
-    auto [containerRect, actionsPositions] = computePositions();
+    auto [containerRect, actionsPositions] = compute_positions();
     // In the animation group, there must be precisely as much as animations as action, plus the animation of the
     // container, which is the first element. See updateActions, where these animations are created.
-    auto* container_animation = qobject_cast<QPropertyAnimation*>(m_animationGroup->animationAt(0));
+    auto* container_animation = qobject_cast<QPropertyAnimation*>(m_animation_group->animationAt(0));
     SIGHT_ASSERT(
         "All animations inside the animation group must be QPropertyAnimation",
         container_animation != nullptr
     );
     container_animation->setStartValue(containerRect.first);
     container_animation->setEndValue(containerRect.second);
-    m_actionsContainer->setGeometry(container_animation->currentValue().toRect());
+    m_actions_container->setGeometry(container_animation->currentValue().toRect());
     for(std::size_t i = 0 ; i < actionsPositions.size() ; i++)
     {
-        auto* animation = qobject_cast<QPropertyAnimation*>(m_animationGroup->animationAt(static_cast<int>(i) + 1));
+        auto* animation = qobject_cast<QPropertyAnimation*>(m_animation_group->animationAt(static_cast<int>(i) + 1));
         SIGHT_ASSERT("All animations inside the animation group must be QPropertyAnimation", animation != nullptr);
         animation->setStartValue(actionsPositions[i].first);
         animation->setEndValue(actionsPositions[i].second);
@@ -344,7 +345,7 @@ void speed_dial::updateActionsPositions()
 
 //------------------------------------------------------------------------------
 
-speed_dial::Animations speed_dial::computePositions() const
+speed_dial::animations speed_dial::compute_positions() const
 {
     std::pair<QRect, QRect> container_rect;
     QPoint speed_dial_position_on_window = mapTo(window(), parentWidget()->pos());
@@ -356,7 +357,7 @@ speed_dial::Animations speed_dial::computePositions() const
     // sum of the width of all the actions including the spacing, and the height is the height of the biggest action.
     // In order for the container to be centered on the speed dial, its position is adapted. The container won't however
     // exceed the window.
-    if(m_direction == Direction::UP || m_direction == Direction::DOWN)
+    if(m_direction == direction::up || m_direction == direction::down)
     {
         int fattest_widget_width = 0;
         int total_height         = static_cast<int>(m_actions.size() - 1) * m_spacing;
@@ -406,15 +407,15 @@ speed_dial::Animations speed_dial::computePositions() const
     // the "negative" world (up and left), where we must substract the final width/height of the container to its
     // position.
     QPoint delta;
-    if(m_direction == Direction::UP)
+    if(m_direction == direction::up)
     {
         delta = QPoint(0, -container_final_size.height() - m_spacing);
     }
-    else if(m_direction == Direction::LEFT)
+    else if(m_direction == direction::left)
     {
         delta = QPoint(-container_final_size.width() - m_spacing, 0);
     }
-    else if(m_direction == Direction::DOWN)
+    else if(m_direction == direction::down)
     {
         delta = QPoint(0, height() + m_spacing);
     }
@@ -436,7 +437,7 @@ speed_dial::Animations speed_dial::computePositions() const
     {
         std::pair<QPoint, QPoint> action_positions;
         int offset = cumulated_size + i * m_spacing;
-        if(m_direction == Direction::UP || m_direction == Direction::DOWN)
+        if(m_direction == direction::up || m_direction == direction::down)
         {
             int x = container_final_size.width() - w->width();
             action_positions.first  = QPoint(x, 0);
@@ -451,7 +452,7 @@ speed_dial::Animations speed_dial::computePositions() const
 
         actions_positions.push_back(action_positions);
 
-        cumulated_size += m_direction == Direction::UP || m_direction == Direction::DOWN ? w->height() : w->width();
+        cumulated_size += m_direction == direction::up || m_direction == direction::down ? w->height() : w->width();
         i++;
     }
 

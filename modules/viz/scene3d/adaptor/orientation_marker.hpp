@@ -81,9 +81,9 @@ protected:
     MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /// Sets the visibility of the adaptor
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
 
-    /// Connects input matrix S_MODIFIED to UPDATE slot.
+    /// Connects input matrix MODIFIED to UPDATE slot.
     MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
 
 private:
@@ -92,22 +92,22 @@ private:
     data::material::sptr m_material {nullptr};
 
     /// Updates the internal camera matrix from the input transform
-    void updateCameraMatrix();
+    void update_camera_matrix();
 
     /// Contains the scene node where all of manual objects are attached.
-    Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_scene_node {nullptr};
 
     /// Stores the entity associated to the marker mesh
-    Ogre::Entity* m_patientMesh {nullptr};
+    Ogre::Entity* m_patient_mesh {nullptr};
 
     /// Resource used for the marker
-    std::string m_patientMeshRc {"human.mesh"};
+    std::string m_patient_mesh_rc {"human.mesh"};
 
     /// Z coordinate of marker position, increase to zoom in, decrease to zoom out.
-    float m_markerDepth = -32.F;
+    float m_marker_depth = -32.F;
 
-    static constexpr std::string_view s_MATRIX_IN = "matrix";
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN};
+    static constexpr std::string_view MATRIX_IN = "matrix";
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

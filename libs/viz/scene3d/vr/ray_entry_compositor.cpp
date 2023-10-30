@@ -47,16 +47,16 @@ ray_entry_compositor::ray_entry_compositor(
     compositor::core::stereo_mode_t _stereo_mode,
     bool _enable_mixed_rendering
 ) :
-    M_COMPOSITOR_NAME(std::move(_compositor_name))
+    m_compositor_name(std::move(_compositor_name))
 {
     auto& cm = Ogre::CompositorManager::getSingleton();
     std::lock_guard<std::mutex> guard(s_compositor_manager_lock);
 
-    m_compositor = cm.getByName(M_COMPOSITOR_NAME, RESOURCE_GROUP);
+    m_compositor = cm.getByName(m_compositor_name, RESOURCE_GROUP);
 
     if(!m_compositor)
     {
-        m_compositor = cm.create(M_COMPOSITOR_NAME, viz::scene3d::RESOURCE_GROUP);
+        m_compositor = cm.create(m_compositor_name, viz::scene3d::RESOURCE_GROUP);
 
         auto* comp_tech = m_compositor->createTechnique();
 
@@ -66,21 +66,21 @@ ray_entry_compositor::ray_entry_compositor(
 
         switch(_stereo_mode)
         {
-            case compositor::core::stereo_mode_t::NONE:
+            case compositor::core::stereo_mode_t::none:
                 break;
 
-            case compositor::core::stereo_mode_t::STEREO:
+            case compositor::core::stereo_mode_t::stereo:
                 nb_viewpoints = 2;
                 height_factor = 0.5F;
                 break;
 
-            case compositor::core::stereo_mode_t::AUTOSTEREO_5:
+            case compositor::core::stereo_mode_t::autostereo_5:
                 nb_viewpoints = 5;
                 height_factor = 0.5F;
                 width_factor  = 0.6F;
                 break;
 
-            case compositor::core::stereo_mode_t::AUTOSTEREO_8:
+            case compositor::core::stereo_mode_t::autostereo_8:
                 nb_viewpoints = 8;
                 height_factor = 0.5F;
                 width_factor  = 0.375F;
@@ -92,7 +92,7 @@ ray_entry_compositor::ray_entry_compositor(
         for(std::uint8_t i = 0 ; i < nb_viewpoints ; ++i)
         {
             const auto scheme_suffix   = nb_viewpoints > 1 ? std::to_string(i) : "";
-            const auto tex_target_name = M_COMPOSITOR_NAME + "texture" + scheme_suffix;
+            const auto tex_target_name = m_compositor_name + "texture" + scheme_suffix;
 
             auto* tex_def = comp_tech->createTextureDefinition(tex_target_name);
             tex_def->scope = Ogre::CompositionTechnique::TextureScope::TS_CHAIN;
@@ -146,7 +146,7 @@ ray_entry_compositor::ray_entry_compositor(
                     std::string(scheme_prefix) + "_FrontFacesMin" + scheme_suffix
                 );
                 front_faces_min_pass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                front_faces_min_pass->setLastRenderQueue(viz::scene3d::rq::s_SURFACE_ID);
+                front_faces_min_pass->setLastRenderQueue(viz::scene3d::rq::SURFACE_ID);
             }
         }
 
@@ -171,9 +171,9 @@ ray_entry_compositor::~ray_entry_compositor()
 
 //------------------------------------------------------------------------------
 
-const std::string& ray_entry_compositor::getName() const
+const std::string& ray_entry_compositor::get_name() const
 {
-    return M_COMPOSITOR_NAME;
+    return m_compositor_name;
 }
 
 //------------------------------------------------------------------------------

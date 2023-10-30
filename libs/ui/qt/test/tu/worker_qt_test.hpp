@@ -36,13 +36,13 @@ private:
 
     CPPUNIT_TEST_SUITE(worker_qt_test);
 
-    CPPUNIT_TEST(initTest);
-    CPPUNIT_TEST(twiceInitTest);
-    CPPUNIT_TEST(basicTest);
-    CPPUNIT_TEST(postFromInsideTest);
-    CPPUNIT_TEST(postFromOutsideTest);
+    CPPUNIT_TEST(init_test);
+    CPPUNIT_TEST(twice_init_test);
+    CPPUNIT_TEST(basic_test);
+    CPPUNIT_TEST(post_from_inside_test);
+    CPPUNIT_TEST(post_from_outside_test);
 
-    CPPUNIT_TEST(basicTimerTest);
+    CPPUNIT_TEST(basic_timer_test);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -52,14 +52,14 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void initTest();
-    static void twiceInitTest();
-    void basicTest();
+    static void init_test();
+    static void twice_init_test();
+    void basic_test();
 
-    void postFromInsideTest();
-    void postFromOutsideTest();
+    void post_from_inside_test();
+    void post_from_outside_test();
 
-    void basicTimerTest();
+    void basic_timer_test();
 
 protected:
 

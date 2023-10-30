@@ -26,6 +26,6 @@
 
 SIGHT_REGISTER_SERVICE(
     sight::app::ut::TestConfigService,
-    sight::app::ut::STest1Image,
+    sight::app::ut::test1_image,
     sight::data::image
 );

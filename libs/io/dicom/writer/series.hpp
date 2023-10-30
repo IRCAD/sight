@@ -54,14 +54,14 @@ public:
     );
 
     //cspell: ignore ComprehensiveSRIOD Comprehensive3DSRIOD
-    typedef enum
+    enum fiducials_export_mode
     {
-        SPATIAL_FIDUCIALS   = 1, /*! Export Fiducials using SpatialFiducialsIOD */
-        COMPREHENSIVE_SR    = 2, /*! Export Fiducials using ComprehensiveSRIOD */
-        COMPREHENSIVE_3D_SR = 3  /*! Export Fiducials using Comprehensive3DSRIOD */
-    } FiducialsExportMode;
+        spatial_fiducials    = 1, /*! Export Fiducials using SpatialFiducialsIOD */
+        comprehensive_sr     = 2, /*! Export Fiducials using ComprehensiveSRIOD */
+        comprehensive_3_d_sr = 3  /*! Export Fiducials using Comprehensive3DSRIOD */
+    };
 
-    typedef std::map<std::string, SPTR(io::dicom::container::DicomInstance)> dicom_instance_map_t;
+    using dicom_instance_map_t = std::map<std::string, std::shared_ptr<io::dicom::container::dicom_instance> >;
 
     /// Destructor
     IO_DICOM_API ~series() override = default;
@@ -82,15 +82,15 @@ public:
     IO_DICOM_API std::string extension() const override;
 
     /// Get Fiducials Export Mode
-    const FiducialsExportMode& getFiducialsExportMode() const
+    const fiducials_export_mode& get_fiducials_export_mode() const
     {
-        return m_fiducialsExportMode;
+        return m_fiducials_export_mode;
     }
 
     /// Set Fiducials Export Mode);
-    void setFiducialsExportMode(const FiducialsExportMode& _fiducials_export_mode)
+    void set_fiducials_export_mode(const fiducials_export_mode& _fiducials_export_mode)
     {
-        m_fiducialsExportMode = _fiducials_export_mode;
+        m_fiducials_export_mode = _fiducials_export_mode;
     }
 
 private:
@@ -99,20 +99,20 @@ private:
      * @brief Check if there is comment on acquisition.
      * @param[in] series ImageSeries that must be checked.
      */
-    static bool hasDocumentSR(const data::image_series::csptr& _series);
+    static bool has_document_sr(const data::image_series::csptr& _series);
 
     /**
      * @brief Returns the image instance used to create the reconstruction
      * @note This function assume that one and only one image instance has been created prior calling this function.
      * The created image instance must be the one used to generate the reconstruction.
      */
-    SPTR(io::dicom::container::DicomInstance) getImageInstance();
+    SPTR(io::dicom::container::dicom_instance) get_image_instance();
 
     /// Dicom Instance map used to keep information between series writing calls
-    dicom_instance_map_t m_dicomInstanceMap;
+    dicom_instance_map_t m_dicom_instance_map;
 
     /// Fiducials Export Mode
-    FiducialsExportMode m_fiducialsExportMode {SPATIAL_FIDUCIALS};
+    fiducials_export_mode m_fiducials_export_mode {spatial_fiducials};
 };
 
 } // namespace sight::io::dicom::writer

@@ -29,9 +29,9 @@ namespace sight::io::dimse::exceptions
 {
 
 /**
- * @brief NegociateAssociationFailure Exceptions
+ * @brief NegociateAssociationFailure exceptions
  */
-class IO_DIMSE_CLASS_API NegociateAssociationFailure : public sight::io::dimse::exceptions::Base
+class IO_DIMSE_CLASS_API negociate_association_failure : public sight::io::dimse::exceptions::base
 {
 public:
 
@@ -39,10 +39,10 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DIMSE_API NegociateAssociationFailure(const std::string& _message);
+    IO_DIMSE_API negociate_association_failure(const std::string& _message);
 
     /// Destructor
-    IO_DIMSE_API ~NegociateAssociationFailure() noexcept override;
+    IO_DIMSE_API ~negociate_association_failure() noexcept override;
 };
 
 } // namespace sight::io::dimse::exceptions

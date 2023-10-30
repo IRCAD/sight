@@ -30,17 +30,17 @@
                         <name>Tuto08MesherWithGenericScene</name>
                         <icon>Tuto08MesherWithGenericScene/tuto.ico</icon>
                     </frame>
-                    <menuBar />
+                    <menubar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
                     <view sid="mainView" start="true" />
                 </registry>
             </service>
 
             <service uid="progressBarView" type="sight::module::ui::job_bar" />
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -264,7 +264,7 @@
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
-            <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" auto_connect="true">
+            <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::representation_editor" auto_connect="true">
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
@@ -311,7 +311,7 @@
             -->
             <connect>
                 <signal>showNegatoSrv/toggled</signal>
-                <slot>negatoAdp/updateVisibility</slot>
+                <slot>negatoAdp/update_visibility</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

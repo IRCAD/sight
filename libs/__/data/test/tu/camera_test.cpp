@@ -50,127 +50,127 @@ void camera_test::tearDown()
 
 data::camera::sptr init_camera()
 {
-    const double cx                             = safe_rand() % 10000 / 100.;
-    const double cy                             = safe_rand() % 10000 / 100.;
-    const double fx                             = safe_rand() % 10000 / 100.;
-    const double fy                             = safe_rand() % 10000 / 100.;
-    const double skew                           = safe_rand() % 10000 / 100.;
-    const double k1                             = safe_rand() % 10000 / 100.;
-    const double k2                             = safe_rand() % 10000 / 100.;
-    const double p1                             = safe_rand() % 10000 / 100.;
-    const double p2                             = safe_rand() % 10000 / 100.;
-    const double k3                             = safe_rand() % 10000 / 100.;
-    const bool is_calibrated                    = true;
-    const std::string desc                      = "My camera";
-    const std::string cam_id                    = "CAM_461384568";
-    const std::size_t width                     = 800;
-    const std::size_t height                    = 800;
-    const data::camera::source_t camerasource   = data::camera::DEVICE;
-    const std::string cameraid                  = "/dev/video0";
-    const float maximumframerate                = 30.F;
-    const data::camera::PixelFormat pixelformat = data::camera::RGBA32;
-    const std::string videofile                 = "/tmp/video.mp4";
-    const std::string streamurl                 = "rtsp://192.168.0.1/h264.sdp";
-    const double scale                          = 0.9996;
+    const double cx                                   = safe_rand() % 10000 / 100.;
+    const double cy                                   = safe_rand() % 10000 / 100.;
+    const double fx                                   = safe_rand() % 10000 / 100.;
+    const double fy                                   = safe_rand() % 10000 / 100.;
+    const double skew                                 = safe_rand() % 10000 / 100.;
+    const double k1                                   = safe_rand() % 10000 / 100.;
+    const double k2                                   = safe_rand() % 10000 / 100.;
+    const double p1                                   = safe_rand() % 10000 / 100.;
+    const double p2                                   = safe_rand() % 10000 / 100.;
+    const double k3                                   = safe_rand() % 10000 / 100.;
+    const bool is_calibrated                          = true;
+    const std::string desc                            = "My camera";
+    const std::string cam_id                          = "CAM_461384568";
+    const std::size_t width                           = 800;
+    const std::size_t height                          = 800;
+    const data::camera::source_t camerasource         = data::camera::device;
+    const std::string cameraid                        = "/dev/video0";
+    const float maximumframerate                      = 30.F;
+    const enum data::camera::pixel_format pixelformat = data::camera::rgba32;
+    const std::string videofile                       = "/tmp/video.mp4";
+    const std::string streamurl                       = "rtsp://192.168.0.1/h264.sdp";
+    const double scale                                = 0.9996;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
-    camera->setCx(cx);
-    camera->setCy(cy);
-    camera->setFx(fx);
-    camera->setFy(fy);
-    camera->setSkew(skew);
-    camera->setDistortionCoefficient(k1, k2, p1, p2, k3);
-    camera->setIsCalibrated(is_calibrated);
-    camera->setDescription(desc);
-    camera->setCameraID(cam_id);
-    camera->setWidth(width);
-    camera->setHeight(height);
-    camera->setCameraSource(camerasource);
-    camera->setMaximumFrameRate(maximumframerate);
-    camera->setPixelFormat(pixelformat);
-    camera->setVideoFile(videofile);
-    camera->setStreamUrl(streamurl);
-    camera->setScale(scale);
+    camera->set_cx(cx);
+    camera->set_cy(cy);
+    camera->set_fx(fx);
+    camera->set_fy(fy);
+    camera->set_skew(skew);
+    camera->set_distortion_coefficient(k1, k2, p1, p2, k3);
+    camera->set_is_calibrated(is_calibrated);
+    camera->set_description(desc);
+    camera->set_camera_id(cam_id);
+    camera->set_width(width);
+    camera->set_height(height);
+    camera->set_camera_source(camerasource);
+    camera->set_maximum_frame_rate(maximumframerate);
+    camera->set_pixel_format(pixelformat);
+    camera->set_video_file(videofile);
+    camera->set_stream_url(streamurl);
+    camera->set_scale(scale);
 
     return camera;
 }
 
 //------------------------------------------------------------------------------
 
-void camera_test::paramTest()
+void camera_test::param_test()
 {
-    const double cx                             = safe_rand() % 10000 / 100.;
-    const double cy                             = safe_rand() % 10000 / 100.;
-    const double fx                             = safe_rand() % 10000 / 100.;
-    const double fy                             = safe_rand() % 10000 / 100.;
-    const double skew                           = safe_rand() % 10000 / 100.;
-    const double k1                             = safe_rand() % 10000 / 100.;
-    const double k2                             = safe_rand() % 10000 / 100.;
-    const double p1                             = safe_rand() % 10000 / 100.;
-    const double p2                             = safe_rand() % 10000 / 100.;
-    const double k3                             = safe_rand() % 10000 / 100.;
-    const bool is_calibrated                    = true;
-    const std::string desc                      = "My camera";
-    const std::string cam_id                    = "CAM_461384568";
-    const std::size_t width                     = 800;
-    const std::size_t height                    = 800;
-    const data::camera::source_t camerasource   = data::camera::DEVICE;
-    const std::string cameraid                  = "/dev/video0";
-    const float maximumframerate                = 30.F;
-    const data::camera::PixelFormat pixelformat = data::camera::RGBA32;
-    const std::string videofile                 = "/tmp/video.mp4";
-    const std::string streamurl                 = "rtsp://192.168.0.1/h264.sdp";
-    const double scale                          = 0.9796;
+    const double cx                                   = safe_rand() % 10000 / 100.;
+    const double cy                                   = safe_rand() % 10000 / 100.;
+    const double fx                                   = safe_rand() % 10000 / 100.;
+    const double fy                                   = safe_rand() % 10000 / 100.;
+    const double skew                                 = safe_rand() % 10000 / 100.;
+    const double k1                                   = safe_rand() % 10000 / 100.;
+    const double k2                                   = safe_rand() % 10000 / 100.;
+    const double p1                                   = safe_rand() % 10000 / 100.;
+    const double p2                                   = safe_rand() % 10000 / 100.;
+    const double k3                                   = safe_rand() % 10000 / 100.;
+    const bool is_calibrated                          = true;
+    const std::string desc                            = "My camera";
+    const std::string cam_id                          = "CAM_461384568";
+    const std::size_t width                           = 800;
+    const std::size_t height                          = 800;
+    const data::camera::source_t camerasource         = data::camera::device;
+    const std::string cameraid                        = "/dev/video0";
+    const float maximumframerate                      = 30.F;
+    const enum data::camera::pixel_format pixelformat = data::camera::rgba32;
+    const std::string videofile                       = "/tmp/video.mp4";
+    const std::string streamurl                       = "rtsp://192.168.0.1/h264.sdp";
+    const double scale                                = 0.9796;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
-    camera->setCx(cx);
-    camera->setCy(cy);
-    camera->setFx(fx);
-    camera->setFy(fy);
-    camera->setSkew(skew);
-    camera->setDistortionCoefficient(k1, k2, p1, p2, k3);
-    camera->setIsCalibrated(is_calibrated);
-    camera->setDescription(desc);
-    camera->setCameraID(cam_id);
+    camera->set_cx(cx);
+    camera->set_cy(cy);
+    camera->set_fx(fx);
+    camera->set_fy(fy);
+    camera->set_skew(skew);
+    camera->set_distortion_coefficient(k1, k2, p1, p2, k3);
+    camera->set_is_calibrated(is_calibrated);
+    camera->set_description(desc);
+    camera->set_camera_id(cam_id);
 
-    camera->setWidth(width);
-    camera->setHeight(height);
-    camera->setCameraSource(camerasource);
-    camera->setMaximumFrameRate(maximumframerate);
-    camera->setPixelFormat(pixelformat);
-    camera->setVideoFile(videofile);
-    camera->setStreamUrl(streamurl);
-    camera->setScale(scale);
+    camera->set_width(width);
+    camera->set_height(height);
+    camera->set_camera_source(camerasource);
+    camera->set_maximum_frame_rate(maximumframerate);
+    camera->set_pixel_format(pixelformat);
+    camera->set_video_file(videofile);
+    camera->set_stream_url(streamurl);
+    camera->set_scale(scale);
 
-    CPPUNIT_ASSERT_EQUAL(cx, camera->getCx());
-    CPPUNIT_ASSERT_EQUAL(cy, camera->getCy());
-    CPPUNIT_ASSERT_EQUAL(fx, camera->getFx());
-    CPPUNIT_ASSERT_EQUAL(fy, camera->getFy());
-    CPPUNIT_ASSERT_EQUAL(skew, camera->getSkew());
+    CPPUNIT_ASSERT_EQUAL(cx, camera->get_cx());
+    CPPUNIT_ASSERT_EQUAL(cy, camera->get_cy());
+    CPPUNIT_ASSERT_EQUAL(fx, camera->get_fx());
+    CPPUNIT_ASSERT_EQUAL(fy, camera->get_fy());
+    CPPUNIT_ASSERT_EQUAL(skew, camera->get_skew());
 
-    data::camera::dist_array_t dist = camera->getDistortionCoefficient();
+    data::camera::dist_array_t dist = camera->get_distortion_coefficient();
     CPPUNIT_ASSERT_EQUAL(k1, dist[0]);
     CPPUNIT_ASSERT_EQUAL(k2, dist[1]);
     CPPUNIT_ASSERT_EQUAL(p1, dist[2]);
     CPPUNIT_ASSERT_EQUAL(p2, dist[3]);
     CPPUNIT_ASSERT_EQUAL(k3, dist[4]);
 
-    CPPUNIT_ASSERT_EQUAL(is_calibrated, camera->getIsCalibrated());
-    CPPUNIT_ASSERT_EQUAL(desc, camera->getDescription());
-    CPPUNIT_ASSERT_EQUAL(cam_id, camera->getCameraID());
-    CPPUNIT_ASSERT_EQUAL(width, camera->getWidth());
-    CPPUNIT_ASSERT_EQUAL(height, camera->getHeight());
-    CPPUNIT_ASSERT_EQUAL(camerasource, camera->getCameraSource());
-    CPPUNIT_ASSERT_EQUAL(maximumframerate, camera->getMaximumFrameRate());
-    CPPUNIT_ASSERT_EQUAL(pixelformat, camera->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(videofile, camera->getVideoFile().string());
-    CPPUNIT_ASSERT_EQUAL(streamurl, camera->getStreamUrl());
-    CPPUNIT_ASSERT_EQUAL(scale, camera->getScale());
+    CPPUNIT_ASSERT_EQUAL(is_calibrated, camera->get_is_calibrated());
+    CPPUNIT_ASSERT_EQUAL(desc, camera->get_description());
+    CPPUNIT_ASSERT_EQUAL(cam_id, camera->get_camera_id());
+    CPPUNIT_ASSERT_EQUAL(width, camera->get_width());
+    CPPUNIT_ASSERT_EQUAL(height, camera->get_height());
+    CPPUNIT_ASSERT_EQUAL(camerasource, camera->get_camera_source());
+    CPPUNIT_ASSERT_EQUAL(maximumframerate, camera->get_maximum_frame_rate());
+    CPPUNIT_ASSERT_EQUAL(pixelformat, camera->pixel_format());
+    CPPUNIT_ASSERT_EQUAL(videofile, camera->get_video_file().string());
+    CPPUNIT_ASSERT_EQUAL(streamurl, camera->get_stream_url());
+    CPPUNIT_ASSERT_EQUAL(scale, camera->get_scale());
 }
 
 //------------------------------------------------------------------------------
 
-void camera_test::shallow_copyTest()
+void camera_test::shallow_copy_test()
 {
     data::camera::sptr camera  = init_camera();
     data::camera::sptr camera2 = std::make_shared<data::camera>();
@@ -181,36 +181,36 @@ void camera_test::shallow_copyTest()
 
     CPPUNIT_ASSERT(*camera == *camera2);
 
-    CPPUNIT_ASSERT_EQUAL(camera->getCx(), camera2->getCx());
-    CPPUNIT_ASSERT_EQUAL(camera->getCy(), camera2->getCy());
-    CPPUNIT_ASSERT_EQUAL(camera->getFx(), camera2->getFx());
-    CPPUNIT_ASSERT_EQUAL(camera->getFy(), camera2->getFy());
-    CPPUNIT_ASSERT_EQUAL(camera->getSkew(), camera2->getSkew());
+    CPPUNIT_ASSERT_EQUAL(camera->get_cx(), camera2->get_cx());
+    CPPUNIT_ASSERT_EQUAL(camera->get_cy(), camera2->get_cy());
+    CPPUNIT_ASSERT_EQUAL(camera->get_fx(), camera2->get_fx());
+    CPPUNIT_ASSERT_EQUAL(camera->get_fy(), camera2->get_fy());
+    CPPUNIT_ASSERT_EQUAL(camera->get_skew(), camera2->get_skew());
 
-    data::camera::dist_array_t dist  = camera->getDistortionCoefficient();
-    data::camera::dist_array_t dist2 = camera2->getDistortionCoefficient();
+    data::camera::dist_array_t dist  = camera->get_distortion_coefficient();
+    data::camera::dist_array_t dist2 = camera2->get_distortion_coefficient();
     CPPUNIT_ASSERT_EQUAL(dist[0], dist2[0]);
     CPPUNIT_ASSERT_EQUAL(dist[1], dist2[1]);
     CPPUNIT_ASSERT_EQUAL(dist[2], dist2[2]);
     CPPUNIT_ASSERT_EQUAL(dist[3], dist2[3]);
     CPPUNIT_ASSERT_EQUAL(dist[4], dist2[4]);
 
-    CPPUNIT_ASSERT_EQUAL(camera->getIsCalibrated(), camera2->getIsCalibrated());
-    CPPUNIT_ASSERT_EQUAL(camera->getDescription(), camera2->getDescription());
-    CPPUNIT_ASSERT_EQUAL(camera->getCameraID(), camera2->getCameraID());
-    CPPUNIT_ASSERT_EQUAL(camera->getWidth(), camera2->getWidth());
-    CPPUNIT_ASSERT_EQUAL(camera->getHeight(), camera2->getHeight());
-    CPPUNIT_ASSERT_EQUAL(camera->getCameraSource(), camera2->getCameraSource());
-    CPPUNIT_ASSERT_EQUAL(camera->getMaximumFrameRate(), camera2->getMaximumFrameRate());
-    CPPUNIT_ASSERT_EQUAL(camera->getPixelFormat(), camera2->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(camera->getVideoFile(), camera2->getVideoFile());
-    CPPUNIT_ASSERT_EQUAL(camera->getStreamUrl(), camera2->getStreamUrl());
-    CPPUNIT_ASSERT_EQUAL(camera->getScale(), camera2->getScale());
+    CPPUNIT_ASSERT_EQUAL(camera->get_is_calibrated(), camera2->get_is_calibrated());
+    CPPUNIT_ASSERT_EQUAL(camera->get_description(), camera2->get_description());
+    CPPUNIT_ASSERT_EQUAL(camera->get_camera_id(), camera2->get_camera_id());
+    CPPUNIT_ASSERT_EQUAL(camera->get_width(), camera2->get_width());
+    CPPUNIT_ASSERT_EQUAL(camera->get_height(), camera2->get_height());
+    CPPUNIT_ASSERT_EQUAL(camera->get_camera_source(), camera2->get_camera_source());
+    CPPUNIT_ASSERT_EQUAL(camera->get_maximum_frame_rate(), camera2->get_maximum_frame_rate());
+    CPPUNIT_ASSERT_EQUAL(camera->pixel_format(), camera2->pixel_format());
+    CPPUNIT_ASSERT_EQUAL(camera->get_video_file(), camera2->get_video_file());
+    CPPUNIT_ASSERT_EQUAL(camera->get_stream_url(), camera2->get_stream_url());
+    CPPUNIT_ASSERT_EQUAL(camera->get_scale(), camera2->get_scale());
 }
 
 //------------------------------------------------------------------------------
 
-void camera_test::deep_copyTest()
+void camera_test::deep_copy_test()
 {
     data::camera::sptr camera = init_camera();
     data::camera::sptr camera2;
@@ -220,7 +220,7 @@ void camera_test::deep_copyTest()
 
 //------------------------------------------------------------------------------
 
-void camera_test::equalityTest()
+void camera_test::equality_test()
 {
     auto camera1 = std::make_shared<data::camera>();
     auto camera2 = std::make_shared<data::camera>();
@@ -240,113 +240,113 @@ void camera_test::equalityTest()
         *camera1 == *camera2 && !(*camera1 != *camera2) \
     );
 
-    TEST(setCx(1));
-    TEST(setCy(2));
-    TEST(setFx(3));
-    TEST(setFy(4));
-    TEST(setSkew(5));
-    TEST(setDistortionCoefficient(6, 7, 8, 9, 10));
-    TEST(setDescription("11"));
-    TEST(setCameraID("12"));
-    TEST(setWidth(13));
-    TEST(setHeight(14));
-    TEST(setMaximumFrameRate(15));
-    TEST(setPixelFormat(data::camera::AYUV444_PREMULTIPLIED));
-    TEST(setVideoFile("17"));
-    TEST(setStreamUrl("18"));
-    TEST(setScale(19));
-    TEST(setIsCalibrated(true));
-    TEST(setCameraSource(data::camera::DEVICE));
+    TEST(set_cx(1));
+    TEST(set_cy(2));
+    TEST(set_fx(3));
+    TEST(set_fy(4));
+    TEST(set_skew(5));
+    TEST(set_distortion_coefficient(6, 7, 8, 9, 10));
+    TEST(set_description("11"));
+    TEST(set_camera_id("12"));
+    TEST(set_width(13));
+    TEST(set_height(14));
+    TEST(set_maximum_frame_rate(15));
+    TEST(set_pixel_format(data::camera::ayuv444_premultiplied));
+    TEST(set_video_file("17"));
+    TEST(set_stream_url("18"));
+    TEST(set_scale(19));
+    TEST(set_is_calibrated(true));
+    TEST(set_camera_source(data::camera::device));
 
     #undef TEST
 }
 
 //------------------------------------------------------------------------------
 
-void camera_test::getPixelFormatTest()
+void camera_test::get_pixel_format_test()
 {
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-    #define TEST(value) CPPUNIT_ASSERT_EQUAL(data::camera::value, camera::getPixelFormat(#value));
-    TEST(INVALID);
-    TEST(ARGB32);
-    TEST(ARGB32_PREMULTIPLIED);
-    TEST(RGB32);
-    TEST(RGB24);
-    TEST(RGB565);
-    TEST(RGB555);
-    TEST(ARGB8565_PREMULTIPLIED);
-    TEST(BGRA32);
-    TEST(BGRA32_PREMULTIPLIED);
-    TEST(BGR32);
-    TEST(BGR24);
-    TEST(BGR565);
-    TEST(BGR555);
-    TEST(BGRA5658_PREMULTIPLIED);
-    TEST(AYUV444);
-    TEST(AYUV444_PREMULTIPLIED);
-    TEST(YUV444);
-    TEST(YUV420P);
-    TEST(YV12);
-    TEST(UYVY);
-    TEST(YUYV);
-    TEST(NV12);
-    TEST(NV21);
-    TEST(IMC1);
-    TEST(IMC2);
-    TEST(IMC3);
-    TEST(IMC4);
-    TEST(Y8);
-    TEST(Y16);
-    TEST(JPEG);
-    TEST(CAMERARAW);
-    TEST(ADOBEDNG);
-    TEST(RGBA32);
-    TEST(USER);
+    #define TEST(value) CPPUNIT_ASSERT_EQUAL(data::camera::value, camera::pixel_format(#value));
+    TEST(invalid);
+    TEST(argb32);
+    TEST(argb32_premultiplied);
+    TEST(rgb32);
+    TEST(rgb24);
+    TEST(rgb565);
+    TEST(rgb555);
+    TEST(argb8565_premultiplied);
+    TEST(bgra32);
+    TEST(bgra32_premultiplied);
+    TEST(bgr32);
+    TEST(bgr24);
+    TEST(bgr565);
+    TEST(bgr555);
+    TEST(bgra5658_premultiplied);
+    TEST(ayuv444);
+    TEST(ayuv444_premultiplied);
+    TEST(yuv444);
+    TEST(yuv420_p);
+    TEST(yv12);
+    TEST(uyvy);
+    TEST(yuyv);
+    TEST(nv12);
+    TEST(nv21);
+    TEST(imc1);
+    TEST(imc2);
+    TEST(imc3);
+    TEST(imc4);
+    TEST(y8);
+    TEST(y16);
+    TEST(jpeg);
+    TEST(cameraraw);
+    TEST(adobedng);
+    TEST(rgba32);
+    TEST(user);
     #undef TEST
-    CPPUNIT_ASSERT_EQUAL(data::camera::INVALID, camera::getPixelFormat("NOT_A_PIXELFORMAT"));
+    CPPUNIT_ASSERT_EQUAL(data::camera::invalid, camera::pixel_format("NOT_A_PIXELFORMAT"));
 }
 
 //------------------------------------------------------------------------------
 
-void camera_test::getPixelFormatNameTest()
+void camera_test::get_pixel_format_name_test()
 {
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-    #define TEST(value) CPPUNIT_ASSERT_EQUAL(std::string(#value), camera::getPixelFormatName(data::camera::value));
-    TEST(INVALID);
-    TEST(ARGB32);
-    TEST(ARGB32_PREMULTIPLIED);
-    TEST(RGB32);
-    TEST(RGB24);
-    TEST(RGB565);
-    TEST(RGB555);
-    TEST(ARGB8565_PREMULTIPLIED);
-    TEST(BGRA32);
-    TEST(BGRA32_PREMULTIPLIED);
-    TEST(BGR32);
-    TEST(BGR24);
-    TEST(BGR565);
-    TEST(BGR555);
-    TEST(BGRA5658_PREMULTIPLIED);
-    TEST(AYUV444);
-    TEST(AYUV444_PREMULTIPLIED);
-    TEST(YUV444);
-    TEST(YUV420P);
-    TEST(YV12);
-    TEST(UYVY);
-    TEST(YUYV);
-    TEST(NV12);
-    TEST(NV21);
-    TEST(IMC1);
-    TEST(IMC2);
-    TEST(IMC3);
-    TEST(IMC4);
-    TEST(Y8);
-    TEST(Y16);
-    TEST(JPEG);
-    TEST(CAMERARAW);
-    TEST(ADOBEDNG);
-    TEST(RGBA32);
-    TEST(USER);
+    #define TEST(value) CPPUNIT_ASSERT_EQUAL(std::string(#value), camera::get_pixel_format_name(data::camera::value));
+    TEST(invalid);
+    TEST(argb32);
+    TEST(argb32_premultiplied);
+    TEST(rgb32);
+    TEST(rgb24);
+    TEST(rgb565);
+    TEST(rgb555);
+    TEST(argb8565_premultiplied);
+    TEST(bgra32);
+    TEST(bgra32_premultiplied);
+    TEST(bgr32);
+    TEST(bgr24);
+    TEST(bgr565);
+    TEST(bgr555);
+    TEST(bgra5658_premultiplied);
+    TEST(ayuv444);
+    TEST(ayuv444_premultiplied);
+    TEST(yuv444);
+    TEST(yuv420_p);
+    TEST(yv12);
+    TEST(uyvy);
+    TEST(yuyv);
+    TEST(nv12);
+    TEST(nv21);
+    TEST(imc1);
+    TEST(imc2);
+    TEST(imc3);
+    TEST(imc4);
+    TEST(y8);
+    TEST(y16);
+    TEST(jpeg);
+    TEST(cameraraw);
+    TEST(adobedng);
+    TEST(rgba32);
+    TEST(user);
     #undef TEST
 }
 

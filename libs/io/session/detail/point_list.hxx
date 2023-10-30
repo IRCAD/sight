@@ -34,7 +34,7 @@ namespace sight::io::session::detail::point_list
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -48,7 +48,7 @@ inline static void write(
 
     // Add points to children list
     int index = 0;
-    for(const auto& point : point_list->getPoints())
+    for(const auto& point : point_list->get_points())
     {
         _children[data::point::classname() + std::to_string(index++)] = point;
     }
@@ -57,7 +57,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::point_list::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -72,7 +72,7 @@ inline static data::point_list::sptr read(
 
     // Deserialize points
     // Clearing is required in case the object is reused
-    point_list->getPoints().clear();
+    point_list->get_points().clear();
 
     for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
@@ -83,7 +83,7 @@ inline static data::point_list::sptr read(
             break;
         }
 
-        point_list->pushBack(helper::cast_or_create<data::point>(it->second));
+        point_list->push_back(helper::cast_or_create<data::point>(it->second));
     }
 
     return point_list;

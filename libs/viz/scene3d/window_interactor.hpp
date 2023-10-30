@@ -44,27 +44,27 @@ class VIZ_SCENE3D_CLASS_API window_interactor : public core::base_object
 public:
 
     /// Inner class used to send informations about mouse events.
-    class InteractionInfo
+    class interaction_info
     {
     public:
 
-        typedef enum InteractionEnum
+        enum interaction_enum
         {
-            MOUSEMOVE,
-            WHEELMOVE,
-            RESIZE,
-            KEYPRESS,
-            KEYRELEASE,
-            BUTTONRELEASE,
-            BUTTONPRESS,
-            BUTTONDOUBLEPRESS,
-            PINCH_GESTURE,
-            PAN_GESTURE_MOVE,
-            PAN_GESTURE_RELEASE,
-            LONG_TAP_GESTURE,
-            ENTER,
-            LEAVE
-        } interaction_enum_t;
+            mousemove,
+            wheelmove,
+            resize,
+            keypress,
+            keyrelease,
+            buttonrelease,
+            buttonpress,
+            buttondoublepress,
+            pinch_gesture,
+            pan_gesture_move,
+            pan_gesture_release,
+            long_tap_gesture,
+            enter,
+            leave
+        };
 
         /**
          * @brief
@@ -76,9 +76,9 @@ public:
         int dy;
         double delta;
         int key;
-        interactor::base::MouseButton button;
-        interactor::base::Modifier modifiers;
-        interaction_enum_t interactionType;
+        interactor::base::mouse_button button;
+        interactor::base::modifier modifiers;
+        interaction_enum interaction_type;
     };
 
     /**
@@ -88,11 +88,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry(std::string _functor_key)
+        registry(std::string _functor_key)
         {
             viz::scene3d::registry::get()->add_factory(_functor_key, &viz::scene3d::factory::make<T>);
         }
@@ -104,11 +104,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class OffscreenMgrRegistry
+    class offscreen_mgr_registry
     {
     public:
 
-        OffscreenMgrRegistry(std::string _functor_key)
+        offscreen_mgr_registry(std::string _functor_key)
         {
             auto fact = [](std::pair<unsigned int, unsigned int> _dims) -> std::shared_ptr<T>
                         {
@@ -121,13 +121,13 @@ public:
 
     SIGHT_DECLARE_CLASS(window_interactor, core::base_object);
 
-    typedef std::string factory_registry_key_t;
+    using factory_registry_key_t = std::string;
 
     VIZ_SCENE3D_API static const factory_registry_key_t REGISTRY_KEY;
 
     VIZ_SCENE3D_API static const factory_registry_key_t OFFSCREEN_REGISTRY_KEY;
 
-    VIZ_SCENE3D_API static window_interactor::sptr createManager();
+    VIZ_SCENE3D_API static window_interactor::sptr create_manager();
 
     /**
      * @brief Creates an offscreen window using the factory.
@@ -135,7 +135,7 @@ public:
      * @param _width  width of underlying render texture.
      * @param _height height of underlying render texture.
      */
-    VIZ_SCENE3D_API static window_interactor::sptr createOffscreenManager(
+    VIZ_SCENE3D_API static window_interactor::sptr create_offscreen_manager(
         unsigned int _width,
         unsigned int _height
     );
@@ -147,42 +147,42 @@ public:
     VIZ_SCENE3D_API ~window_interactor() override;
 
     /// Call Ogre Widget render immediately
-    VIZ_SCENE3D_API virtual void renderNow() = 0;
+    VIZ_SCENE3D_API virtual void render_now() = 0;
 
     /// Call Ogre Widget render as soon as possible
-    VIZ_SCENE3D_API virtual void requestRender() = 0;
+    VIZ_SCENE3D_API virtual void request_render() = 0;
 
     /// Creates an interactor and installs it in window.
-    VIZ_SCENE3D_API virtual void createContainer(
+    VIZ_SCENE3D_API virtual void create_container(
         ui::container::widget::sptr _parent,
         bool _fullscreen,
         const std::string& _id
     ) = 0;
 
     /// Connects widget and render signals and slots.
-    VIZ_SCENE3D_API virtual void connectToContainer() = 0;
+    VIZ_SCENE3D_API virtual void connect_to_container() = 0;
 
     /// Deletes interactor and manage correctly the window (removing layout).
-    VIZ_SCENE3D_API virtual void disconnectInteractor() = 0;
+    VIZ_SCENE3D_API virtual void disconnect_interactor() = 0;
 
     /// Returns Ogre widget
-    VIZ_SCENE3D_API virtual int getWidgetId() const = 0;
+    VIZ_SCENE3D_API virtual int get_widget_id() const = 0;
 
     /// Returns frame ID
-    VIZ_SCENE3D_API virtual int getFrameId() const = 0;
+    VIZ_SCENE3D_API virtual int get_frame_id() const = 0;
 
     /// Sets the rendering context as being enabled against this window and on this thread.
-    VIZ_SCENE3D_API virtual void makeCurrent() = 0;
+    VIZ_SCENE3D_API virtual void make_current() = 0;
 
     /// Returns the texture in which this window manager is rendering. Only implemented for offscreen windows.
-    VIZ_SCENE3D_API virtual Ogre::TexturePtr getRenderTexture() = 0;
+    VIZ_SCENE3D_API virtual Ogre::TexturePtr get_render_texture() = 0;
 
     /// Spawns a worker able to handle graphics resources in parallel.
-    VIZ_SCENE3D_API virtual graphics_worker* createGraphicsWorker() = 0;
+    VIZ_SCENE3D_API virtual graphics_worker* create_graphics_worker() = 0;
 
     /// Gets the vertical logical DPI of the monitor on which the window is displayed.
     /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
-    VIZ_SCENE3D_API virtual float getLogicalDotsPerInch() const = 0;
+    VIZ_SCENE3D_API virtual float get_logical_dots_per_inch() const = 0;
 
     /**
      * @brief Sets the fullscreen or windowed rendering mode.
@@ -190,17 +190,17 @@ public:
      * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
      * @param _screenNumber index of the screen on which to render in fullscreen mode.
      */
-    VIZ_SCENE3D_API virtual void setFullscreen(bool _fullscreen, int _screen_number);
+    VIZ_SCENE3D_API virtual void set_fullscreen(bool _fullscreen, int _screen_number);
 
     /// Set the render service using the IOgreRenderwindow_interactor
-    virtual void setRenderService(service::base::sptr _srv)
+    virtual void set_render_service(service::base::sptr _srv)
     {
-        m_renderService = _srv;
+        m_render_service = _srv;
     }
 
 protected:
 
-    service::base::wptr m_renderService;
+    service::base::wptr m_render_service;
 };
 
 } // namespace sight::viz::scene3d

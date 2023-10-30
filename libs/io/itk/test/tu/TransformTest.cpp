@@ -29,28 +29,28 @@
 #include <itkMatrix.h>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::TransformTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::transform_test);
 
 namespace sight::io::itk::ut
 {
 
 //------------------------------------------------------------------------------
 
-void TransformTest::setUp()
+void transform_test::setUp()
 {
     // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
-void TransformTest::tearDown()
+void transform_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void TransformTest::testConversion()
+void transform_test::test_conversion()
 {
     ::itk::Matrix<double, 4, 4> mat;
     data::matrix4::sptr sight_mat = std::make_shared<data::matrix4>();
@@ -63,7 +63,7 @@ void TransformTest::testConversion()
         }
     }
 
-    io::itk::helper::Transform::convertFromITK(mat, sight_mat);
+    io::itk::helper::transform::convert_from_itk(mat, sight_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -75,7 +75,7 @@ void TransformTest::testConversion()
 
     data::matrix4::csptr sight_mat2 = sight_mat;
 
-    ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::Transform::convertToITK(sight_mat2);
+    ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::transform::convert_to_itk(sight_mat2);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {

@@ -31,36 +31,36 @@ namespace sight::io::dicom::reader::ie
 
 //------------------------------------------------------------------------------
 
-Equipment::Equipment(
+equipment::equipment(
     const data::dicom_series::csptr& _dicom_series,
     const SPTR(gdcm::Reader)& _reader,
-    const io::dicom::container::DicomInstance::sptr& _instance,
+    const io::dicom::container::dicom_instance::sptr& _instance,
     const data::series::sptr& _series,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::series>(_dicom_series, _reader, _instance, _series,
-                                                           _logger, _progress, _cancel)
+    io::dicom::reader::ie::information_entity<data::series>(_dicom_series, _reader, _instance, _series,
+                                                            _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Equipment::~Equipment()
+equipment::~equipment()
 = default;
 
 //------------------------------------------------------------------------------
 
-void Equipment::readGeneralEquipmentModule()
+void equipment::read_general_equipment_module()
 {
     // Retrieve dataset
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     // Institution Name - Type 3
     const std::string& institut_name =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0080>(dataset);
-    m_object->setInstitutionName(institut_name);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0080>(dataset);
+    m_object->set_institution_name(institut_name);
 
     // Manufacturer - Type 2
     // NOTE: Not used in Sight

@@ -50,7 +50,7 @@ template<typename T, std::size_t NUM_COMPONENTS>
 void test_to_cv(std::int32_t _expected_type)
 {
     core::type type         = core::type::get<T>();
-    const auto image_format = io::opencv::type::toCv(type, NUM_COMPONENTS);
+    const auto image_format = io::opencv::type::to_cv(type, NUM_COMPONENTS);
     CPPUNIT_ASSERT_EQUAL(_expected_type, image_format);
 }
 
@@ -60,7 +60,7 @@ template<typename EXPECTED_T, uint8_t EXPECTED_NUM_COMPONENTS>
 void test_from_cv(std::int32_t _cv_type)
 {
     core::type expected_type = core::type::get<EXPECTED_T>();
-    const auto format        = io::opencv::type::fromCv(_cv_type);
+    const auto format        = io::opencv::type::from_cv(_cv_type);
     const auto type          = format.first;
     const auto comp          = format.second;
 
@@ -70,7 +70,7 @@ void test_from_cv(std::int32_t _cv_type)
 
 //------------------------------------------------------------------------------
 
-void type_test::toCv()
+void type_test::to_cv()
 {
     test_to_cv<std::uint8_t, 1>(CV_8UC1);
     test_to_cv<std::uint8_t, 2>(CV_8UC2);
@@ -110,7 +110,7 @@ void type_test::toCv()
 
 //------------------------------------------------------------------------------
 
-void type_test::fromCv()
+void type_test::from_cv()
 {
     test_from_cv<std::uint8_t, 1>(CV_8UC1);
     test_from_cv<std::uint8_t, 2>(CV_8UC2);

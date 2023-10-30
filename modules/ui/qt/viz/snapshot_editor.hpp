@@ -92,11 +92,11 @@ protected Q_SLOTS:
     /**
      * @brief Show a file dialog and notify the scene must be printed.
      */
-    void onSnapButton();
+    void on_snap_button();
 
 private:
 
-    static std::string requestFileName();
+    static std::string request_file_name();
 
     /**
      * @name Signals
@@ -104,15 +104,15 @@ private:
      */
 
     /// Type of signal to snap shot
-    typedef core::com::signal<void (std::string)> snapped_signal_t;
+    using snapped_signal_t = core::com::signal<void (std::string)>;
     static const core::com::signals::key_t SNAPPED_SIG;
 
-    snapped_signal_t::sptr m_sigSnapped; ///< snap shot signal
+    snapped_signal_t::sptr m_sig_snapped; ///< snap shot signal
     /**
      * @}
      */
 
-    QPointer<QPushButton> m_snapButton;
+    QPointer<QPushButton> m_snap_button;
 };
 
 } // namespace sight::module::ui::qt::viz

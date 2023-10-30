@@ -78,17 +78,17 @@
 
         <service uid="topToolbarSliderView" type="sight::module::ui::view">
             <gui>
-                <toolBar backgroundColor="#00000000" />
+                <toolbar backgroundColor="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="topToolbarView" start="true" />
+                <toolbar sid="topToolbarView" start="true" />
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="sight::module::ui::tool_bar">
+        <service uid="topToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Fullscreen" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
@@ -272,28 +272,28 @@
 
         <!-- Volume rendering parameters -->
         <connect channel="${VR_BOOL_PARAM_RECEIVER_CHANNEL}">
-            <slot>volumeAdp/setBoolParameter</slot>
+            <slot>volumeAdp/set_bool_parameter</slot>
         </connect>
 
         <connect channel="${VR_INT_PARAM_RECEIVER_CHANNEL}">
-            <slot>volumeAdp/setIntParameter</slot>
+            <slot>volumeAdp/set_int_parameter</slot>
         </connect>
 
         <connect channel="${VR_DOUBLE_PARAM_RECEIVER_CHANNEL}">
-            <slot>volumeAdp/setDoubleParameter</slot>
+            <slot>volumeAdp/set_double_parameter</slot>
         </connect>
 
         <!-- Adaptors visibility -->
         <connect channel="${VR_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>volumeAdp/updateVisibility</slot>
+            <slot>volumeAdp/update_visibility</slot>
         </connect>
 
         <connect channel="${3DNEGATO_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>3DNegatoAdp/updateVisibility</slot>
+            <slot>3DNegatoAdp/update_visibility</slot>
         </connect>
 
         <connect channel="${MESHES_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>modeSeriesAdp/updateVisibility</slot>
+            <slot>modeSeriesAdp/update_visibility</slot>
         </connect>
 
         <connect channel="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}">
@@ -326,7 +326,7 @@
         </connect>
 
         <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>axisAdp/updateVisibility</slot>
+            <slot>axisAdp/update_visibility</slot>
         </connect>
 
         <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">

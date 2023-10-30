@@ -110,37 +110,37 @@ protected:
 private:
 
     /// Defines the text string.
-    void setText(std::string _str);
+    void set_text(std::string _str);
 
     /// Updates the displayed text from the input object.
-    void updateText();
+    void update_text();
 
     /// Contains the displayed stats in the overlay.
     sight::viz::scene3d::text::sptr m_text;
 
     /// Defines the text's color.
-    std::string m_textColor;
+    std::string m_text_color;
 
     /// Defines the font size in points.
-    std::size_t m_fontSize {12};
+    std::size_t m_font_size {12};
 
     /// Defines the position of the text.
     Ogre::Vector2 m_position {0.F, 0.F};
 
     /// Defines the vertical alignment type (top, center or bottom).
-    std::string m_verticalAlignment;
+    std::string m_vertical_alignment;
 
     /// Defines the horizontal alignment type (left, center or right).
-    std::string m_horizontalAlignment;
+    std::string m_horizontal_alignment;
 
     /// Defines the displayed message.
-    std::string m_textString;
+    std::string m_text_string;
 
     /// Defines the true_t font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    std::string m_font_source {"DejaVuSans.ttf"};
 
-    static constexpr std::string_view s_OBJECT_INPUT = "object";
-    sight::data::ptr<sight::data::object, sight::data::Access::in> m_object {this, s_OBJECT_INPUT, true};
+    static constexpr std::string_view OBJECT_INPUT = "object";
+    sight::data::ptr<sight::data::object, sight::data::access::in> m_object {this, OBJECT_INPUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

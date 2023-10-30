@@ -33,42 +33,42 @@
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 
-#include <io/zip/WriteDirArchive.hpp>
+#include <io/zip/write_dir_archive.hpp>
 
 namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
 
-DicomSeriesSetWriter::DicomSeriesSetWriter() :
+dicom_series_set_writer::dicom_series_set_writer() :
     m_aggregator(std::make_shared<core::jobs::aggregator>("Writing Dicom series"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesSetWriter::extension() const
+std::string dicom_series_set_writer::extension() const
 {
     return "";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::aggregator::sptr DicomSeriesSetWriter::getAggregator()
+core::jobs::aggregator::sptr dicom_series_set_writer::get_aggregator()
 {
     return m_aggregator;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesSetWriter::setAnonymizer(const DicomAnonymizer::sptr& _anonymizer)
+void dicom_series_set_writer::set_anonymizer(const dicom_anonymizer::sptr& _anonymizer)
 {
     m_anonymizer = _anonymizer;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesSetWriter::setProducer(std::string _producer)
+void dicom_series_set_writer::set_producer(std::string _producer)
 {
     m_producer = _producer;
 }
@@ -84,12 +84,12 @@ std::string get_sub_path(int _index)
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesSetWriter::write()
+void dicom_series_set_writer::write()
 {
-    auto series_set = getConcreteObject();
+    auto series_set = get_concrete_object();
     SIGHT_ASSERT("Unable to retrieve associated series_set", series_set);
 
-    io::zip::write_archive::sptr write_archive = io::zip::WriteDirArchive::make(this->get_folder());
+    io::zip::write_archive::sptr write_archive = io::zip::write_dir_archive::make(this->get_folder());
 
     const auto nb_series = series_set->size();
     int processed_series = 0;
@@ -105,20 +105,20 @@ void DicomSeriesSetWriter::write()
             {
                 if(!_running_job.cancel_requested())
                 {
-                    m_anonymizer->resetIndex();
+                    m_anonymizer->reset_index();
 
-                    io::dicom::helper::DicomSeriesWriter::sptr writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
+                    io::dicom::helper::dicom_series_writer::sptr writer = std::make_shared<io::dicom::helper::dicom_series_writer>();
                     writer->set_object(dicom_series);
-                    writer->setAnonymizer(m_anonymizer);
-                    writer->setOutputArchive(write_archive, nb_series > 1 ? get_sub_path(processed_series++) : "");
+                    writer->set_anonymizer(m_anonymizer);
+                    writer->set_output_archive(write_archive, nb_series > 1 ? get_sub_path(processed_series++) : "");
 
                     _running_job.add_cancel_hook(
                         [&](core::jobs::base&)
                     {
-                        writer->getJob()->cancel();
+                        writer->get_job()->cancel();
                     });
 
-                    writer->getJob()->add_done_work_hook(
+                    writer->get_job()->add_done_work_hook(
                         [&](core::jobs::base& _sub_job, std::uint64_t)
                     {
                         _running_job.done_work(_sub_job.get_done_work_units());

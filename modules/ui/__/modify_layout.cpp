@@ -46,29 +46,29 @@ void modify_layout::configuring()
             const auto uid = action_cfg.second.get<std::string>("<xmlattr>.uid");
             const auto wid = action_cfg.second.get<std::string>("<xmlattr>.wid");
 
-            m_moveSrv.emplace_back(uid, wid);
+            m_move_srv.emplace_back(uid, wid);
         }
         else if(action_cfg.first == "show"
                 || action_cfg.first == "hide"
                 || action_cfg.first == "show_or_hide"
                 || action_cfg.first == "toggle")
         {
-            visibility_t visibility = visibility_t::SHOW;
+            visibility_t visibility = visibility_t::show;
             if(action_cfg.first == "show")
             {
-                visibility = visibility_t::SHOW;
+                visibility = visibility_t::show;
             }
             else if(action_cfg.first == "hide")
             {
-                visibility = visibility_t::HIDE;
+                visibility = visibility_t::hide;
             }
             else if(action_cfg.first == "show_or_hide")
             {
-                visibility = visibility_t::SHOW_OR_HIDE;
+                visibility = visibility_t::show_or_hide;
             }
             else if(action_cfg.first == "toggle")
             {
-                visibility = visibility_t::TOGGLE;
+                visibility = visibility_t::toggle;
             }
             else
             {
@@ -77,11 +77,11 @@ void modify_layout::configuring()
 
             if(const auto wid = action_cfg.second.get_optional<std::string>("<xmlattr>.wid"); wid.has_value())
             {
-                m_showSrvWid.emplace_back(wid.value(), visibility);
+                m_show_srv_wid.emplace_back(wid.value(), visibility);
             }
             else if(const auto sid = action_cfg.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
             {
-                m_showSrvSid.emplace_back(sid.value(), visibility);
+                m_show_srv_sid.emplace_back(sid.value(), visibility);
             }
             else
             {
@@ -93,7 +93,7 @@ void modify_layout::configuring()
             const auto uid = action_cfg.second.get<std::string>("<xmlattr>.uid");
             bool is_enable = (action_cfg.first == "enable");
 
-            m_enableSrv.emplace_back(uid, is_enable);
+            m_enable_srv.emplace_back(uid, is_enable);
         }
         else
         {
@@ -106,14 +106,14 @@ void modify_layout::configuring()
 
 void modify_layout::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //-----------------------------------------------------------------------------
 
 void modify_layout::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ void modify_layout::info(std::ostream& _sstream)
 
 void modify_layout::updating()
 {
-    for(const move_srv_vect_t::value_type& elt : m_moveSrv)
+    for(const auto& elt : m_move_srv)
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
@@ -137,11 +137,11 @@ void modify_layout::updating()
         auto container = std::dynamic_pointer_cast<sight::ui::service>(service);
         SIGHT_ASSERT("::ui::container dynamicCast failed", container);
 
-        container->setParent(wid);
+        container->set_parent(wid);
         service->update();
     }
 
-    for(const enable_srv_vect_t::value_type& elt : m_enableSrv)
+    for(const auto& elt : m_enable_srv)
     {
         std::string uid = elt.first;
         bool is_enable  = elt.second;
@@ -153,18 +153,18 @@ void modify_layout::updating()
             auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(service);
             if(container_srv)
             {
-                container_srv->getContainer()->setEnabled(is_enable);
+                container_srv->get_container()->set_enabled(is_enable);
             }
 
             auto action_srv = std::dynamic_pointer_cast<sight::ui::action>(service);
             if(action_srv)
             {
-                action_srv->setEnabled(is_enable);
+                action_srv->set_enabled(is_enable);
             }
         }
     }
 
-    for(const show_srv_vect_t::value_type& elt : m_showSrvWid)
+    for(const auto& elt : m_show_srv_wid)
     {
         const std::string wid                        = elt.first;
         const auto visibility                        = elt.second;
@@ -172,21 +172,21 @@ void modify_layout::updating()
             sight::ui::registry::get_wid_container(wid);
         SIGHT_ASSERT("::ui::container " << wid << " is unknown", container);
 
-        if(visibility == visibility_t::SHOW)
+        if(visibility == visibility_t::show)
         {
-            container->setVisible(true);
+            container->set_visible(true);
         }
-        else if(visibility == visibility_t::HIDE)
+        else if(visibility == visibility_t::hide)
         {
-            container->setVisible(false);
+            container->set_visible(false);
         }
-        else if(visibility == visibility_t::SHOW_OR_HIDE)
+        else if(visibility == visibility_t::show_or_hide)
         {
-            container->setVisible(this->checked());
+            container->set_visible(this->checked());
         }
-        else if(visibility == visibility_t::TOGGLE)
+        else if(visibility == visibility_t::toggle)
         {
-            container->setVisible(!container->isShownOnScreen());
+            container->set_visible(!container->is_shown_on_screen());
         }
         else
         {
@@ -194,7 +194,7 @@ void modify_layout::updating()
         }
     }
 
-    for(const show_srv_vect_t::value_type& elt : m_showSrvSid)
+    for(const auto& elt : m_show_srv_sid)
     {
         std::string uid       = elt.first;
         const auto visibility = elt.second;
@@ -204,23 +204,23 @@ void modify_layout::updating()
         auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(service);
         SIGHT_ASSERT("::ui::container dynamicCast failed", container_srv);
 
-        sight::ui::container::widget::sptr container = container_srv->getContainer();
+        sight::ui::container::widget::sptr container = container_srv->get_container();
 
-        if(visibility == visibility_t::SHOW)
+        if(visibility == visibility_t::show)
         {
-            container->setVisible(true);
+            container->set_visible(true);
         }
-        else if(visibility == visibility_t::HIDE)
+        else if(visibility == visibility_t::hide)
         {
-            container->setVisible(false);
+            container->set_visible(false);
         }
-        else if(visibility == visibility_t::SHOW_OR_HIDE)
+        else if(visibility == visibility_t::show_or_hide)
         {
-            container->setVisible(this->checked());
+            container->set_visible(this->checked());
         }
-        else if(visibility == visibility_t::TOGGLE)
+        else if(visibility == visibility_t::toggle)
         {
-            container->setVisible(!container->isShownOnScreen());
+            container->set_visible(!container->is_shown_on_screen());
         }
         else
         {

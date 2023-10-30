@@ -45,14 +45,14 @@ namespace sight::module::viz::scene3d_qt
 
 // ----------------------------------------------------------------------------
 
-static inline sight::viz::scene3d::interactor::base::Modifier convert_modifiers(Qt::KeyboardModifiers _modifiers)
+static inline sight::viz::scene3d::interactor::base::modifier convert_modifiers(Qt::KeyboardModifiers _modifiers)
 {
-    using sight_ogre_mod_t = sight::viz::scene3d::interactor::base::Modifier;
-    sight_ogre_mod_t mods = sight_ogre_mod_t::NONE;
-    mods |= (_modifiers& Qt::ShiftModifier) != 0U ? sight_ogre_mod_t::SHIFT : sight_ogre_mod_t::NONE;
-    mods |= (_modifiers& Qt::ControlModifier) != 0U ? sight_ogre_mod_t::CONTROL : sight_ogre_mod_t::NONE;
-    mods |= (_modifiers& Qt::AltModifier) != 0U ? sight_ogre_mod_t::ALT : sight_ogre_mod_t::NONE;
-    mods |= (_modifiers& Qt::MetaModifier) != 0U ? sight_ogre_mod_t::META : sight_ogre_mod_t::NONE;
+    using sight_ogre_mod_t = sight::viz::scene3d::interactor::base::modifier;
+    sight_ogre_mod_t mods = sight_ogre_mod_t::none;
+    mods |= (_modifiers& Qt::ShiftModifier) != 0U ? sight_ogre_mod_t::shift : sight_ogre_mod_t::none;
+    mods |= (_modifiers& Qt::ControlModifier) != 0U ? sight_ogre_mod_t::control : sight_ogre_mod_t::none;
+    mods |= (_modifiers& Qt::AltModifier) != 0U ? sight_ogre_mod_t::alt : sight_ogre_mod_t::none;
+    mods |= (_modifiers& Qt::MetaModifier) != 0U ? sight_ogre_mod_t::meta : sight_ogre_mod_t::none;
 
     return mods;
 }
@@ -74,13 +74,13 @@ static inline QPoint get_cursor_position(const QWidget* const _w)
 
 // ----------------------------------------------------------------------------
 
-int Window::m_counter = 0;
+int window::s_counter = 0;
 
 // ----------------------------------------------------------------------------
 
-Window::Window() :
+window::window() :
     QOpenGLWidget(nullptr),
-    m_id(Window::m_counter++)
+    m_id(window::s_counter++)
 {
     this->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
     this->setFocusPolicy(Qt::ClickFocus);
@@ -88,21 +88,21 @@ Window::Window() :
 
 //------------------------------------------------------------------------------
 
-void Window::registerLayer(sight::viz::scene3d::layer::wptr _layer)
+void window::register_layer(sight::viz::scene3d::layer::wptr _layer)
 {
-    m_renderTargets.push_back({_layer, nullptr, nullptr});
+    m_render_targets.push_back({_layer, nullptr, nullptr});
 }
 
 // ----------------------------------------------------------------------------
 
-int Window::getId() const
+int window::get_id() const
 {
     return m_id;
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::requestRender()
+void window::request_render()
 {
     if(not isVisible())
     {
@@ -116,21 +116,21 @@ void Window::requestRender()
 
 //------------------------------------------------------------------------------
 
-void Window::makeCurrent()
+void window::makeCurrent()
 {
     QOpenGLWidget::makeCurrent();
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::destroyWindow()
+void window::destroy_window()
 {
     m_init = false;
 
     auto& texture_mgr = Ogre::TextureManager::getSingleton();
     auto& mat_mgr     = Ogre::MaterialManager::getSingleton();
 
-    for(auto& render_target : m_renderTargets)
+    for(auto& render_target : m_render_targets)
     {
         if(render_target.texture)
         {
@@ -142,16 +142,16 @@ void Window::destroyWindow()
         }
     }
 
-    m_renderTargets.clear();
+    m_render_targets.clear();
 
     Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
-    mesh_manager.remove(m_fsQuadPlane);
-    m_fsQuadPlane.reset();
+    mesh_manager.remove(m_fs_quad_plane);
+    m_fs_quad_plane.reset();
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::renderNow()
+void window::render_now()
 {
     if(not isVisible())
     {
@@ -165,13 +165,13 @@ void Window::renderNow()
 
 //------------------------------------------------------------------------------
 
-bool Window::event(QEvent* _e)
+bool window::event(QEvent* _e)
 {
     switch(_e->type())
     {
         case QEvent::Gesture:
-            // Filter gesture events
-            gestureEvent(static_cast<QGestureEvent*>(_e));
+            // filter gesture events
+            gesture_event(static_cast<QGestureEvent*>(_e));
             return true;
 
         case QEvent::MouseButtonDblClick:
@@ -179,7 +179,7 @@ bool Window::event(QEvent* _e)
         case QEvent::MouseButtonRelease:
         case QEvent::MouseMove:
             // If we are currently in a gesture, filter mouse events
-            if(m_gestureState != GestureState::NoGesture)
+            if(m_gesture_state != gesture_state::no_gesture)
             {
                 return true;
             }
@@ -204,12 +204,12 @@ bool Window::event(QEvent* _e)
 
 // ----------------------------------------------------------------------------
 
-void Window::keyPressEvent(QKeyEvent* _e)
+void window::keyPressEvent(QKeyEvent* _e)
 {
-    sight::viz::scene3d::window_interactor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::KEYPRESS;
-    info.modifiers       = convert_modifiers(QApplication::keyboardModifiers());
-    info.key             = _e->key();
+    sight::viz::scene3d::window_interactor::interaction_info info {};
+    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::keypress;
+    info.modifiers        = convert_modifiers(QApplication::keyboardModifiers());
+    info.key              = _e->key();
 
     auto cursor_position = get_cursor_position(this);
     const auto ratio     = devicePixelRatioF();
@@ -217,17 +217,17 @@ void Window::keyPressEvent(QKeyEvent* _e)
     info.y = static_cast<int>(cursor_position.y() * ratio);
 
     Q_EMIT interacted(info);
-    requestRender();
+    request_render();
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::keyReleaseEvent(QKeyEvent* _e)
+void window::keyReleaseEvent(QKeyEvent* _e)
 {
-    sight::viz::scene3d::window_interactor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::KEYRELEASE;
-    info.modifiers       = convert_modifiers(QApplication::keyboardModifiers());
-    info.key             = _e->key();
+    sight::viz::scene3d::window_interactor::interaction_info info {};
+    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::keyrelease;
+    info.modifiers        = convert_modifiers(QApplication::keyboardModifiers());
+    info.key              = _e->key();
 
     const auto cursor_position = get_cursor_position(this);
     const auto ratio           = devicePixelRatioF();
@@ -235,17 +235,17 @@ void Window::keyReleaseEvent(QKeyEvent* _e)
     info.y = static_cast<int>(cursor_position.y() * ratio);
 
     Q_EMIT interacted(info);
-    requestRender();
+    request_render();
 }
 
 // ----------------------------------------------------------------------------
 
-Window::InteractionInfo Window::convertMouseEvent(
+window::interaction_info window::convert_mouse_event(
     const QMouseEvent* const _evt,
-    InteractionInfo::InteractionEnum _interaction_type
+    interaction_info::interaction_enum _interaction_type
 ) const
 {
-    InteractionInfo info;
+    interaction_info info;
     const auto button         = _evt->button();
     const auto active_buttons = _evt->buttons();
 
@@ -254,48 +254,48 @@ Window::InteractionInfo Window::convertMouseEvent(
         case Qt::NoButton:
             if((active_buttons& Qt::LeftButton) == Qt::LeftButton)
             {
-                info.button = sight::viz::scene3d::interactor::base::LEFT;
+                info.button = sight::viz::scene3d::interactor::base::left;
             }
             else if((active_buttons& Qt::MiddleButton) == Qt::MiddleButton)
             {
-                info.button = sight::viz::scene3d::interactor::base::MIDDLE;
+                info.button = sight::viz::scene3d::interactor::base::middle;
             }
             else if((active_buttons& Qt::RightButton) == Qt::RightButton)
             {
-                info.button = sight::viz::scene3d::interactor::base::RIGHT;
+                info.button = sight::viz::scene3d::interactor::base::right;
             }
             else
             {
-                info.button = sight::viz::scene3d::interactor::base::UNKNOWN;
+                info.button = sight::viz::scene3d::interactor::base::unknown;
             }
 
             break;
 
         case Qt::LeftButton:
-            info.button = sight::viz::scene3d::interactor::base::LEFT;
+            info.button = sight::viz::scene3d::interactor::base::left;
             break;
 
         case Qt::MiddleButton:
-            info.button = sight::viz::scene3d::interactor::base::MIDDLE;
+            info.button = sight::viz::scene3d::interactor::base::middle;
             break;
 
         case Qt::RightButton:
-            info.button = sight::viz::scene3d::interactor::base::RIGHT;
+            info.button = sight::viz::scene3d::interactor::base::right;
             break;
 
         default:
-            info.button = sight::viz::scene3d::interactor::base::UNKNOWN;
+            info.button = sight::viz::scene3d::interactor::base::unknown;
             break;
     }
 
     const auto ratio = devicePixelRatioF();
-    info.interactionType = _interaction_type;
-    info.x               = static_cast<int>(_evt->x() * ratio);
-    info.y               = static_cast<int>(_evt->y() * ratio);
+    info.interaction_type = _interaction_type;
+    info.x                = static_cast<int>(_evt->x() * ratio);
+    info.y                = static_cast<int>(_evt->y() * ratio);
 
-    if(m_lastMousePosition)
+    if(m_last_mouse_position)
     {
-        const auto& point = m_lastMousePosition.value();
+        const auto& point = m_last_mouse_position.value();
         info.dx = static_cast<int>((point.x() - _evt->x()) * ratio);
         info.dy = static_cast<int>((point.y() - _evt->y()) * ratio);
     }
@@ -312,18 +312,18 @@ Window::InteractionInfo Window::convertMouseEvent(
 
 // ----------------------------------------------------------------------------
 
-void Window::mouseMoveEvent(QMouseEvent* _e)
+void window::mouseMoveEvent(QMouseEvent* _e)
 {
-    if(m_gestureState != GestureState::NoGesture)
+    if(m_gesture_state != gesture_state::no_gesture)
     {
         return;
     }
 
-    const auto info = this->convertMouseEvent(_e, InteractionInfo::MOUSEMOVE);
+    const auto info = this->convert_mouse_event(_e, interaction_info::mousemove);
 
-    if(m_lastMousePosition)
+    if(m_last_mouse_position)
     {
-        m_lastMousePosition = _e->pos();
+        m_last_mouse_position = _e->pos();
     }
 
     Q_EMIT interacted(info);
@@ -331,10 +331,10 @@ void Window::mouseMoveEvent(QMouseEvent* _e)
 
 // ----------------------------------------------------------------------------
 
-void Window::wheelEvent(QWheelEvent* _e)
+void window::wheelEvent(QWheelEvent* _e)
 {
-    sight::viz::scene3d::window_interactor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::WHEELMOVE;
+    sight::viz::scene3d::window_interactor::interaction_info info {};
+    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::wheelmove;
 
     // Only manage vertical wheel scroll.
     const auto ratio = devicePixelRatioF();
@@ -351,70 +351,70 @@ void Window::wheelEvent(QWheelEvent* _e)
 
 // ----------------------------------------------------------------------------
 
-void Window::mousePressEvent(QMouseEvent* _e)
+void window::mousePressEvent(QMouseEvent* _e)
 {
-    if(m_gestureState != GestureState::NoGesture)
+    if(m_gesture_state != gesture_state::no_gesture)
     {
         return;
     }
 
-    m_lastMousePosition = _e->pos();
+    m_last_mouse_position = _e->pos();
 
-    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONPRESS);
+    const auto info = this->convert_mouse_event(_e, interaction_info::buttonpress);
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::mouseDoubleClickEvent(QMouseEvent* _e)
+void window::mouseDoubleClickEvent(QMouseEvent* _e)
 {
-    if(m_gestureState != GestureState::NoGesture)
+    if(m_gesture_state != gesture_state::no_gesture)
     {
         return;
     }
 
-    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONDOUBLEPRESS);
+    const auto info = this->convert_mouse_event(_e, interaction_info::buttondoublepress);
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::mouseReleaseEvent(QMouseEvent* _e)
+void window::mouseReleaseEvent(QMouseEvent* _e)
 {
-    if(m_gestureState != GestureState::NoGesture)
+    if(m_gesture_state != gesture_state::no_gesture)
     {
         return;
     }
 
-    m_lastMousePosition.reset();
+    m_last_mouse_position.reset();
 
-    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONRELEASE);
+    const auto info = this->convert_mouse_event(_e, interaction_info::buttonrelease);
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::leaveEvent(QEvent* /*_e*/)
+void window::leaveEvent(QEvent* /*_e*/)
 {
-    sight::viz::scene3d::window_interactor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::LEAVE;
+    sight::viz::scene3d::window_interactor::interaction_info info {};
+    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::leave;
 
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::enterEvent(QEvent* /*_e*/)
+void window::enterEvent(QEvent* /*_e*/)
 {
-    sight::viz::scene3d::window_interactor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::ENTER;
+    sight::viz::scene3d::window_interactor::interaction_info info {};
+    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::enter;
 
     Q_EMIT interacted(info);
 }
 
 //------------------------------------------------------------------------------
 
-void Window::gestureEvent(QGestureEvent* _e)
+void window::gesture_event(QGestureEvent* _e)
 {
     /// @note Both event could be triggered at the same time.
     auto* const pan_gesture   = static_cast<QPanGesture*>(_e->gesture(Qt::PanGesture));
@@ -424,7 +424,7 @@ void Window::gestureEvent(QGestureEvent* _e)
     if(pan_gesture == nullptr && pinch_gesture == nullptr)
     {
         // Early return
-        m_gestureState = GestureState::NoGesture;
+        m_gesture_state = gesture_state::no_gesture;
         _e->ignore();
         return;
     }
@@ -439,28 +439,29 @@ void Window::gestureEvent(QGestureEvent* _e)
         {
             case Qt::GestureStarted:
             case Qt::GestureUpdated:
-                m_gestureState = GestureState::PanGesture;
+                m_gesture_state = gesture_state::pan_gesture;
                 break;
 
             default:
-                m_gestureState = GestureState::NoGesture;
+                m_gesture_state = gesture_state::no_gesture;
                 break;
         }
 
         if(const auto& delta = pan_gesture->delta();
            core::tools::is_greater(std::abs(delta.x()), 0.0F) || core::tools::is_greater(std::abs(delta.y()), 0.0F))
         {
-            sight::viz::scene3d::window_interactor::InteractionInfo info {};
+            sight::viz::scene3d::window_interactor::interaction_info info {};
 
             switch(pan_gesture->state())
             {
                 case Qt::GestureStarted:
                 case Qt::GestureUpdated:
-                    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_MOVE;
+                    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::pan_gesture_move;
                     break;
 
                 default:
-                    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_RELEASE;
+                    info.interaction_type =
+                        sight::viz::scene3d::window_interactor::interaction_info::pan_gesture_release;
                     break;
             }
 
@@ -486,11 +487,11 @@ void Window::gestureEvent(QGestureEvent* _e)
         {
             case Qt::GestureStarted:
             case Qt::GestureUpdated:
-                m_gestureState = GestureState::PinchGesture;
+                m_gesture_state = gesture_state::pinch_gesture;
                 break;
 
             default:
-                m_gestureState = GestureState::NoGesture;
+                m_gesture_state = gesture_state::no_gesture;
                 break;
         }
 
@@ -498,8 +499,8 @@ void Window::gestureEvent(QGestureEvent* _e)
         if(const auto scale = pinch_gesture->scaleFactor();
            !core::tools::is_equal(scale, 0) && !core::tools::is_less(std::abs(scale - 1.0F), 0.01F))
         {
-            sight::viz::scene3d::window_interactor::InteractionInfo info {};
-            info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::PINCH_GESTURE;
+            sight::viz::scene3d::window_interactor::interaction_info info {};
+            info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::pinch_gesture;
 
             // scaleFactor is a positive number, where a number inferior to 1 means that the distance between the
             // fingers increases, and a number superior to 1 means that the distance between the fingers decreases.
@@ -523,45 +524,45 @@ void Window::gestureEvent(QGestureEvent* _e)
         }
     }
 
-    requestRender();
+    request_render();
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::ogreResize(const QSize& _new_size)
+void window::ogre_resize(const QSize& _new_size)
 {
-    if(!_new_size.isValid() || !m_init || _new_size == m_ogreSize)
+    if(!_new_size.isValid() || !m_init || _new_size == m_ogre_size)
     {
         return;
     }
 
-    m_ogreSize = _new_size;
+    m_ogre_size = _new_size;
 
     const auto ratio     = devicePixelRatioF();
     const int new_width  = static_cast<int>(ratio * _new_size.width());
     const int new_height = static_cast<int>(ratio * _new_size.height());
 
-    createRenderTextures(new_width, new_height);
+    create_render_textures(new_width, new_height);
 
-    sight::viz::scene3d::window_interactor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::RESIZE;
-    info.x               = new_width;
-    info.y               = new_height;
-    info.dx              = 0;
-    info.dy              = 0;
+    sight::viz::scene3d::window_interactor::interaction_info info {};
+    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::resize;
+    info.x                = new_width;
+    info.y                = new_height;
+    info.dx               = 0;
+    info.dy               = 0;
 
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::createRenderTextures(int _w, int _h)
+void window::create_render_textures(int _w, int _h)
 {
     FW_PROFILE("createRenderTextures");
     auto& mgr = Ogre::TextureManager::getSingleton();
 
     unsigned i = 0;
-    for(auto& render_target : m_renderTargets)
+    for(auto& render_target : m_render_targets)
     {
         const auto layer = render_target.layer.lock();
         if(render_target.texture)
@@ -583,16 +584,16 @@ void Window::createRenderTextures(int _w, int _h)
         SIGHT_ASSERT("texture could not be created", render_target.texture);
 
         auto* rt = render_target.texture->getBuffer()->getRenderTarget();
-        layer->setRenderTarget(rt);
+        layer->set_render_target(rt);
 
         if(!layer->initialized())
         {
-            layer->createScene();
+            layer->create_scene();
         }
         else
         {
             // This will be skipped on initialisation
-            Ogre::Camera* camera = layer->getDefaultCamera();
+            Ogre::Camera* camera = layer->get_default_camera();
             // Save last viewport and current aspect ratio
             Ogre::Viewport* old_viewport = camera->getViewport();
             Ogre::Real aspect_ratio      = camera->getAspectRatio();
@@ -622,7 +623,7 @@ void Window::createRenderTextures(int _w, int _h)
             SIGHT_ASSERT("Width and height should be strictly positive", !std::isnan(aspect_ratio));
             camera->setAspectRatio(aspect_ratio);
 
-            if(layer->getOrder() != 0)
+            if(layer->get_order() != 0)
             {
                 vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0, 0));
             }
@@ -677,13 +678,13 @@ void Window::createRenderTextures(int _w, int _h)
 
 //------------------------------------------------------------------------------
 
-void Window::initializeGL()
+void window::initializeGL()
 {
-    m_ogreRoot = sight::viz::scene3d::utils::getOgreRoot();
+    m_ogre_root = sight::viz::scene3d::utils::get_ogre_root();
 
     SIGHT_ASSERT(
         "OpenGL RenderSystem not found",
-        m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos
+        m_ogre_root->getRenderSystem()->getName().find("GL") != std::string::npos
     );
 
     init_resources();
@@ -694,33 +695,33 @@ void Window::initializeGL()
 
     Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
     Ogre::MovablePlane p(Ogre::Vector3::UNIT_Z, 0);
-    m_fsQuadPlane =
+    m_fs_quad_plane =
         mesh_manager.createPlane("plane" + std::to_string(m_id), sight::viz::scene3d::RESOURCE_GROUP, p, 2, 2);
 
     unsigned int i = 0;
-    for(auto& render_target : m_renderTargets)
+    for(auto& render_target : m_render_targets)
     {
         auto material = Ogre::MaterialManager::getSingleton().getByName("Blit", sight::viz::scene3d::RESOURCE_GROUP);
         render_target.material = material->clone("mat" + std::to_string(m_id) + "_" + std::to_string(i++));
     }
 
-    createRenderTextures(width, height);
+    create_render_textures(width, height);
 
     m_init = true;
 
-    sight::viz::scene3d::window_interactor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::RESIZE;
-    info.x               = width;
-    info.y               = height;
-    info.dx              = 0;
-    info.dy              = 0;
+    sight::viz::scene3d::window_interactor::interaction_info info {};
+    info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::resize;
+    info.x                = width;
+    info.y                = height;
+    info.dx               = 0;
+    info.dy               = 0;
 
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::paintGL()
+void window::paintGL()
 {
     if(!m_init)
     {
@@ -728,16 +729,16 @@ void Window::paintGL()
     }
 
     m_update_pending = false;
-    ++m_frameId;
+    ++m_frame_id;
 
     FW_PROFILE("paintGL");
 
     try
     {
-        for(auto& render_target : m_renderTargets)
+        for(auto& render_target : m_render_targets)
         {
             auto layer = render_target.layer.lock();
-            layer->resetCameraClippingRange();
+            layer->reset_camera_clipping_range();
 
             auto* rt = render_target.texture->getBuffer()->getRenderTarget();
             rt->update(false);
@@ -753,7 +754,7 @@ void Window::paintGL()
             tex_unit->setTexture(render_target.texture);
 
             Ogre::RenderOperation op;
-            m_fsQuadPlane->getSubMesh(0)->_getRenderOperation(op);
+            m_fs_quad_plane->getSubMesh(0)->_getRenderOperation(op);
 
             const auto ratio = devicePixelRatioF();
             this->context()->functions()->glViewport(
@@ -763,7 +764,7 @@ void Window::paintGL()
                 int(ratio * this->height())
             );
 
-            auto* scene = layer->getSceneManager();
+            auto* scene = layer->get_scene_manager();
             // Somehow this variable is set to true when compositors are run, and this messes things up here
             // We just reset it here and Ogre will reset it when it needs it
             scene->setLateMaterialResolving(false);
@@ -785,9 +786,9 @@ void Window::paintGL()
 
 //------------------------------------------------------------------------------
 
-void Window::resizeGL(int _w, int _h)
+void window::resizeGL(int _w, int _h)
 {
-    ogreResize(QSize(_w, _h));
+    ogre_resize(QSize(_w, _h));
 }
 
 // ----------------------------------------------------------------------------

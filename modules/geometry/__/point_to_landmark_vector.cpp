@@ -45,7 +45,7 @@ static const core::com::signals::key_t SAME_SLICE_SIG         = "sameSlice";
 point_to_landmark_vector::point_to_landmark_vector() noexcept
 {
     new_signal<length_changed_signal_t>(LENGTH_CHANGED_SIG);
-    new_signal<LengthStrChangedSignalType>(LENGTH_STR_CHANGED_SIG);
+    new_signal<length_str_changed_signal_t>(LENGTH_STR_CHANGED_SIG);
     new_signal<same_slice_signal_t>(SAME_SLICE_SIG);
 }
 
@@ -58,8 +58,8 @@ point_to_landmark_vector::~point_to_landmark_vector() noexcept =
 
 void point_to_landmark_vector::starting()
 {
-    auto computed_landmark = m_computedLandmark.lock();
-    computed_landmark->addGroup(m_groupLabel);
+    auto computed_landmark = m_computed_landmark.lock();
+    computed_landmark->add_group(m_group_label);
 }
 
 // -----------------------------------------------------------------------------
@@ -73,11 +73,11 @@ void point_to_landmark_vector::stopping()
 void point_to_landmark_vector::configuring()
 {
     const config_t configuration = this->get_config();
-    m_originLabel    = configuration.get<std::string>("originLabel", m_originLabel);
-    m_endLabel       = configuration.get<std::string>("endLabel", m_endLabel);
-    m_groupLabel     = configuration.get<std::string>("computedLandmarkLabel", m_groupLabel);
-    m_tolerance      = configuration.get<double>("sameAxialSliceTolerance", m_tolerance);
-    m_sameSliceLabel = configuration.get<std::string>("sameAxialSliceLabel", m_sameSliceLabel);
+    m_origin_label     = configuration.get<std::string>("originLabel", m_origin_label);
+    m_end_label        = configuration.get<std::string>("endLabel", m_end_label);
+    m_group_label      = configuration.get<std::string>("computedLandmarkLabel", m_group_label);
+    m_tolerance        = configuration.get<double>("sameAxialSliceTolerance", m_tolerance);
+    m_same_slice_label = configuration.get<std::string>("sameAxialSliceLabel", m_same_slice_label);
 }
 
 // -----------------------------------------------------------------------------
@@ -85,27 +85,27 @@ void point_to_landmark_vector::configuring()
 void point_to_landmark_vector::updating()
 {
     auto transform          = m_transform.lock();
-    auto translation_matrix = m_translationMatrix.lock();
+    auto translation_matrix = m_translation_matrix.lock();
     const auto landmark     = m_landmark.lock();
     std::array<double, 3> source_point {};
     std::array<double, 3> target_point {};
-    if(landmark->getGroup(m_originLabel).m_size >= 1)
+    if(landmark->get_group(m_origin_label).m_size >= 1)
     {
-        source_point = landmark->getPoint(m_originLabel, 0);
+        source_point = landmark->get_point(m_origin_label, 0);
     }
 
-    if(landmark->getGroup(m_endLabel).m_size >= 1)
+    if(landmark->get_group(m_end_label).m_size >= 1)
     {
-        target_point = landmark->getPoint(m_endLabel, 0);
+        target_point = landmark->get_point(m_end_label, 0);
     }
 
     if(std::abs(source_point[2] - target_point[2]) < m_tolerance)
     {
-        this->signal<same_slice_signal_t>(SAME_SLICE_SIG)->async_emit(m_sameSliceLabel + ": Yes");
+        this->signal<same_slice_signal_t>(SAME_SLICE_SIG)->async_emit(m_same_slice_label + ": Yes");
     }
     else
     {
-        this->signal<same_slice_signal_t>(SAME_SLICE_SIG)->async_emit(m_sameSliceLabel + ": No");
+        this->signal<same_slice_signal_t>(SAME_SLICE_SIG)->async_emit(m_same_slice_label + ": No");
     }
 
     // Compute the vector and put the result in the translation part of the matrix.
@@ -115,7 +115,7 @@ void point_to_landmark_vector::updating()
     const auto length                = static_cast<float>(glm::length(point_to_target));
     this->signal<length_changed_signal_t>(LENGTH_CHANGED_SIG)->async_emit(length);
     const std::string length_str = std::to_string(length) + " mm";
-    this->signal<LengthStrChangedSignalType>(LENGTH_STR_CHANGED_SIG)->async_emit(length_str);
+    this->signal<length_str_changed_signal_t>(LENGTH_STR_CHANGED_SIG)->async_emit(length_str);
 
     glm::dmat4x4 point_to_target_mat(1.0);
     const glm::dvec3 front = glm::normalize(point_to_target);
@@ -135,16 +135,16 @@ void point_to_landmark_vector::updating()
 
     // Create the computed landmark containing the position of the target point
 
-    auto computed_landmark = m_computedLandmark.lock();
-    if(computed_landmark->getGroup(m_groupLabel).m_size > 0)
+    auto computed_landmark = m_computed_landmark.lock();
+    if(computed_landmark->get_group(m_group_label).m_size > 0)
     {
-        computed_landmark->clearPoints(m_groupLabel);
+        computed_landmark->clear_points(m_group_label);
     }
 
-    computed_landmark->addPoint(m_groupLabel, target_point);
+    computed_landmark->add_point(m_group_label, target_point);
 
     auto sig1 = computed_landmark->signal<data::landmarks::point_added_signal_t>(data::landmarks::POINT_ADDED_SIG);
-    sig1->async_emit(m_groupLabel);
+    sig1->async_emit(m_group_label);
 
     (*translation_matrix)(0, 3) = point_to_target[0];
     (*translation_matrix)(1, 3) = point_to_target[1];
@@ -158,7 +158,7 @@ void point_to_landmark_vector::updating()
 
 service::connections_t point_to_landmark_vector::auto_connections() const
 {
-    return {{s_LANDMARK_INPUT, data::landmarks::POINT_ADDED_SIG, service::slots::UPDATE}};
+    return {{LANDMARK_INPUT, data::landmarks::POINT_ADDED_SIG, service::slots::UPDATE}};
 }
 
 // -----------------------------------------------------------------------------

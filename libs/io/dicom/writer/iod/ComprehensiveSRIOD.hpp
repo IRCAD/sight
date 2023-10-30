@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::iod
 /**
  * @brief ComprehensiveSRIOD class used to write Enhanced Structured Report DICOM files
  */
-class IO_DICOM_CLASS_API ComprehensiveSRIOD : public io::dicom::writer::iod::InformationObjectDefinition
+class IO_DICOM_CLASS_API comprehensive_sriod : public io::dicom::writer::iod::information_object_definition
 {
 public:
 
@@ -45,17 +45,17 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API ComprehensiveSRIOD(
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+    IO_DICOM_API comprehensive_sriod(
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const std::filesystem::path& _destination_path,
-        bool _use3_dsr                         = false,
+        bool _use_3d_sr                        = false,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~ComprehensiveSRIOD() override;
+    IO_DICOM_API ~comprehensive_sriod() override;
 
     /// Write DICOM file
     IO_DICOM_API void write(const data::series::csptr& _series) override;
@@ -63,7 +63,7 @@ public:
 protected:
 
     /// True if we must use 3DSR
-    bool m_use3DSR;
+    bool m_use_3d_sr;
 };
 
 } // namespace sight::io::dicom::writer::iod

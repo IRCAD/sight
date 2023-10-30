@@ -47,7 +47,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b changeMesh(data::mesh::sptr): called when the associated mesh changes.
- * - \b updateVisibility(bool): sets whether the reconstruction is to be seen or not.
+ * - \b update_visibility(bool): sets whether the reconstruction is to be seen or not.
  * - \b toggleVisibility(): toggle whether the reconstruction is shown or not.
  * - \b show(): shows the reconstruction.
  * - \b hide(): hides the reconstruction.
@@ -90,25 +90,25 @@ public:
      * @brief Enables/disables automatic reset on camera.
      * @param _autoResetCamera use true to activate it.
      */
-    MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _auto_reset_camera);
+    MODULE_VIZ_SCENE3D_API void set_auto_reset_camera(bool _auto_reset_camera);
 
     /**
      * @brief Sets the material template Name.
      * @param _materialName material name.
      */
-    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _material_name);
+    MODULE_VIZ_SCENE3D_API void set_material_template_name(const std::string& _material_name);
 
     /**
      * @brief Sets the query flag.
      * @param _queryFlags value of the query flag.
      */
-    MODULE_VIZ_SCENE3D_API void setQueryFlags(std::uint32_t _query_flags);
+    MODULE_VIZ_SCENE3D_API void set_query_flags(std::uint32_t _query_flags);
 
     /**
      * @brief Gets the mesh adaptor.
      * @return The mesh adaptor.
      */
-    MODULE_VIZ_SCENE3D_API module::viz::scene3d::adaptor::mesh::sptr getMeshAdaptor();
+    MODULE_VIZ_SCENE3D_API module::viz::scene3d::adaptor::mesh::sptr get_mesh_adaptor();
 
 protected:
 
@@ -137,60 +137,60 @@ protected:
      * @brief Sets the reconstruction visibility.
      * @param _visible the visibility status of the reconstruction.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
 
 private:
 
     /// Changes the attached mesh.
-    void changeMesh(data::mesh::sptr /*unused*/);
+    void change_mesh(data::mesh::sptr /*unused*/);
 
     /// Modifies the visibility.
-    void modifyVisibility();
+    void modify_visibility();
 
     /// Creates the mesh service.
-    void createMeshService();
+    void create_mesh_service();
 
     /// Contains the associated mesh service.
-    sight::viz::scene3d::adaptor::wptr m_meshAdaptor;
+    sight::viz::scene3d::adaptor::wptr m_mesh_adaptor;
 
     /// Defines if the camera has to be reset automatically.
-    bool m_autoResetCamera {true};
+    bool m_auto_reset_camera {true};
 
     /// Defines the material name.
-    std::string m_materialTemplateName {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_material_template_name {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
 
     /// Defines if the mesh changes dynamically.
-    bool m_isDynamic {false};
+    bool m_is_dynamic {false};
 
     /// Defines if the vertices change dynamically.
-    bool m_isDynamicVertices {false};
+    bool m_is_dynamic_vertices {false};
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    static constexpr std::string_view s_RECONSTRUCTION_INPUT = "reconstruction";
-    data::ptr<data::reconstruction, data::Access::in> m_reconstruction {this, s_RECONSTRUCTION_INPUT, true};
+    static constexpr std::string_view RECONSTRUCTION_INPUT = "reconstruction";
+    data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT, true};
 };
 
 //------------------------------------------------------------------------------
 
-inline void reconstruction::setAutoResetCamera(bool _auto_reset_camera)
+inline void reconstruction::set_auto_reset_camera(bool _auto_reset_camera)
 {
-    m_autoResetCamera = _auto_reset_camera;
+    m_auto_reset_camera = _auto_reset_camera;
 }
 
 //------------------------------------------------------------------------------
 
-inline void reconstruction::setMaterialTemplateName(const std::string& _material_name)
+inline void reconstruction::set_material_template_name(const std::string& _material_name)
 {
-    m_materialTemplateName = _material_name;
+    m_material_template_name = _material_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void reconstruction::setQueryFlags(uint32_t _query_flags)
+inline void reconstruction::set_query_flags(uint32_t _query_flags)
 {
-    m_queryFlags = _query_flags;
+    m_query_flags = _query_flags;
 }
 
 //------------------------------------------------------------------------------

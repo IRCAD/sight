@@ -99,15 +99,15 @@ public:
     MODULE_IO_MATRIX_API ~matrices_reader() noexcept override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_MATRIX_API void openLocationDialog() override;
+    MODULE_IO_MATRIX_API void open_location_dialog() override;
 
     /// Return file type (io::service::FILE)
-    MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_MATRIX_API sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.
      */
-    struct TimeStampedMatrices
+    struct time_stamped_matrices
     {
         ///timestamp
         core::hires_clock::type timestamp {};
@@ -132,62 +132,62 @@ protected:
 private:
 
     /// SLOT: Read previous TimeStamped matrices
-    void readPrevious();
+    void read_previous();
     /// SLOT: Read next TimeStamped matrices
-    void readNext();
+    void read_next();
 
     /// SLOT: Start reading
-    void startReading();
+    void start_reading();
 
     /// SLOT: Stop reading
-    void stopReading();
+    void stop_reading();
 
     /// SLOT: pause reading
     void pause();
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(int _step, std::string _key);
+    void set_step(int _step, std::string _key);
 
     /// SLOT: toggle the loop mode
-    void toggleLoopMode();
+    void toggle_loop_mode();
 
     /// Read matrices (this function is set to the worker)
-    void readMatrices();
+    void read_matrices();
 
-    bool m_isPlaying {false}; ///<flag if the service is playing.
+    bool m_is_playing {false}; ///<flag if the service is playing.
 
     std::ifstream* m_filestream {nullptr}; ///< input filestream
 
-    std::vector<TimeStampedMatrices> m_tsMatrices; ///< vector of TimeStampedMatrices read from csv file.
+    std::vector<time_stamped_matrices> m_ts_matrices; ///< vector of TimeStampedMatrices read from csv file.
 
     core::thread::timer::sptr m_timer; ///< Timer to call readMatrices at constant framerate
 
     core::thread::worker::sptr m_worker; ///< Worker for the readMatrices timer
 
-    std::size_t m_tsMatricesCount {0}; ///< counter used by matrices reader
+    std::size_t m_ts_matrices_count {0}; ///< counter used by matrices reader
 
-    bool m_createNewTS {false}; ///< bool to handle if we create a new timestamp
+    bool m_create_new_ts {false}; ///< bool to handle if we create a new timestamp
 
     unsigned int m_fps {30}; ///< fps used to read matrices (represent the matrices-per-second rate)
 
-    bool m_oneShot {false}; ///< oneShot mode (read matrices one-by-one)
+    bool m_one_shot {false}; ///< oneShot mode (read matrices one-by-one)
 
     /// If set to true, ignore the fps value and use the interval between timestamps for the timer
-    bool m_useTimelapse {false};
+    bool m_use_timelapse {false};
 
     /// If true: the grabber is paused.
-    bool m_isPaused {false};
+    bool m_is_paused {false};
 
     /// If set to true, loop over the file
-    bool m_loopMatrix {false};
+    bool m_loop_matrix {false};
 
     /// Step between two matrices when calling readNext()/readPrevious() slots
     std::uint64_t m_step {1};
     /// Step value updated in setStep() slot used to compute a shift value when calling readPrevious()/readNext() slots
-    std::uint64_t m_stepChanged {1};
+    std::uint64_t m_step_changed {1};
 
-    static constexpr std::string_view s_MATRIXTL = "matrixTL";
-    sight::data::ptr<sight::data::matrix_tl, sight::data::Access::inout> m_matrixTL {this, s_MATRIXTL};
+    static constexpr std::string_view MATRIXTL = "matrixTL";
+    sight::data::ptr<sight::data::matrix_tl, sight::data::access::inout> m_matrix_tl {this, MATRIXTL};
 };
 
 } // namespace sight::module::io::matrix

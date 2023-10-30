@@ -49,9 +49,9 @@ void menu::initialize()
     // find layout configuration
     if(const auto layout_config = config.get_child_optional("gui.layout"); layout_config.has_value())
     {
-        this->initializeLayoutManager(layout_config.value());
+        this->initialize_layout_manager(layout_config.value());
 
-        m_hideActions = layout_config->get<bool>("hideActions", m_hideActions);
+        m_hide_actions = layout_config->get<bool>("hideActions", m_hide_actions);
     }
 }
 
@@ -59,11 +59,11 @@ void menu::initialize()
 
 void menu::create()
 {
-    ui::container::menu::sptr menu                      = m_registry->getParent();
-    std::vector<ui::menu_item_callback::sptr> callbacks = m_registry->getCallbacks();
+    ui::container::menu::sptr menu                      = m_registry->get_parent();
+    std::vector<ui::menu_item_callback::sptr> callbacks = m_registry->get_callbacks();
 
     SIGHT_ASSERT("Parent menu is unknown.", menu);
-    m_layoutManager->setCallbacks(callbacks);
+    m_layout_manager->set_callbacks(callbacks);
 
     const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
 
@@ -71,12 +71,12 @@ void menu::create()
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(menu, service_id);
+            m_layout_manager->create_layout(menu, service_id);
         })
     ).wait();
 
-    m_registry->manage(m_layoutManager->getMenuItems());
-    m_registry->manage(m_layoutManager->getMenus());
+    m_registry->manage(m_layout_manager->get_menu_items());
+    m_registry->manage(m_layout_manager->get_menus());
 }
 
 //-----------------------------------------------------------------------------
@@ -88,27 +88,27 @@ void menu::destroy()
         std::function<void()>(
             [&]
         {
-            m_layoutManager->destroyLayout();
+            m_layout_manager->destroy_layout();
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void menu::actionServiceStopping(std::string _action_srv_sid)
+void menu::action_service_stopping(std::string _action_srv_sid)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
-    if(m_hideActions)
+    if(m_hide_actions)
     {
         core::thread::get_default_worker()->post_task<void>(
             std::function<void()>(
                 [&]
             {
-                m_layoutManager->menuItemSetVisible(menu_item, false);
+                m_layout_manager->menu_item_set_visible(menu_item, false);
             })
         ).wait();
     }
@@ -118,7 +118,7 @@ void menu::actionServiceStopping(std::string _action_srv_sid)
             std::function<void()>(
                 [&]
             {
-                m_layoutManager->menuItemSetEnabled(menu_item, false);
+                m_layout_manager->menu_item_set_enabled(menu_item, false);
             })
         ).wait();
     }
@@ -126,20 +126,20 @@ void menu::actionServiceStopping(std::string _action_srv_sid)
 
 //-----------------------------------------------------------------------------
 
-void menu::actionServiceStarting(std::string _action_srv_sid)
+void menu::action_service_starting(std::string _action_srv_sid)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
-    if(m_hideActions)
+    if(m_hide_actions)
     {
         core::thread::get_default_worker()->post_task<void>(
             std::function<void()>(
                 [&]
             {
-                m_layoutManager->menuItemSetVisible(menu_item, true);
+                m_layout_manager->menu_item_set_visible(menu_item, true);
             })
         ).wait();
     }
@@ -152,11 +152,11 @@ void menu::actionServiceStarting(std::string _action_srv_sid)
             std::function<void()>(
                 [&]
             {
-                m_layoutManager->menuItemSetEnabled(menu_item, action_srv->enabled());
+                m_layout_manager->menu_item_set_enabled(menu_item, action_srv->enabled());
                 const bool inverted   = action_srv->inverted();
                 const bool is_checked = action_srv->checked();
-                m_layoutManager->menuItemSetChecked(menu_item, inverted ? !is_checked : is_checked);
-                m_layoutManager->menuItemSetVisible(menu_item, action_srv->visible());
+                m_layout_manager->menu_item_set_checked(menu_item, inverted ? !is_checked : is_checked);
+                m_layout_manager->menu_item_set_visible(menu_item, action_srv->visible());
             })
         ).wait();
     }
@@ -164,11 +164,11 @@ void menu::actionServiceStarting(std::string _action_srv_sid)
 
 //-----------------------------------------------------------------------------
 
-void menu::actionServiceSetChecked(std::string _action_srv_sid, bool _is_checked)
+void menu::action_service_set_checked(std::string _action_srv_sid, bool _is_checked)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
     const service::base::csptr service = service::get(_action_srv_sid);
@@ -179,61 +179,61 @@ void menu::actionServiceSetChecked(std::string _action_srv_sid, bool _is_checked
             [&]
         {
             const bool inverted = action_srv->inverted();
-            m_layoutManager->menuItemSetChecked(menu_item, inverted ? !_is_checked : _is_checked);
+            m_layout_manager->menu_item_set_checked(menu_item, inverted ? !_is_checked : _is_checked);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void menu::actionServiceSetEnabled(std::string _action_srv_sid, bool _is_enabled)
+void menu::action_service_set_enabled(std::string _action_srv_sid, bool _is_enabled)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetEnabled(menu_item, _is_enabled);
+            m_layout_manager->menu_item_set_enabled(menu_item, _is_enabled);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void menu::actionServiceSetVisible(std::string _action_srv_sid, bool _is_visible)
+void menu::action_service_set_visible(std::string _action_srv_sid, bool _is_visible)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetVisible(menu_item, _is_visible);
+            m_layout_manager->menu_item_set_visible(menu_item, _is_visible);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void menu::initializeLayoutManager(const ui::config_t& _layout_config)
+void menu::initialize_layout_manager(const ui::config_t& _layout_config)
 {
     ui::object::sptr gui_obj = ui::factory::make(
         ui::layout::menu_manager::REGISTRY_KEY
     );
-    m_layoutManager = std::dynamic_pointer_cast<ui::layout::menu_manager>(gui_obj);
+    m_layout_manager = std::dynamic_pointer_cast<ui::layout::menu_manager>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::layout::menu_manager::REGISTRY_KEY,
-        m_layoutManager
+        m_layout_manager
     );
 
-    m_layoutManager->initialize(_layout_config);
+    m_layout_manager->initialize(_layout_config);
 }
 
 //-----------------------------------------------------------------------------

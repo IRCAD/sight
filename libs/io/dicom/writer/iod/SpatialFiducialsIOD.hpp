@@ -34,7 +34,7 @@ namespace sight::io::dicom::writer::iod
 /**
  * @brief SpatialFiducialsIOD class used to write Spacial Fiducials DICOM files
  */
-class IO_DICOM_CLASS_API SpatialFiducialsIOD : public io::dicom::writer::iod::InformationObjectDefinition
+class IO_DICOM_CLASS_API spatial_fiducials_iod : public io::dicom::writer::iod::information_object_definition
 {
 public:
 
@@ -46,16 +46,16 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API SpatialFiducialsIOD(
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+    IO_DICOM_API spatial_fiducials_iod(
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const std::filesystem::path& _destination_path,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~SpatialFiducialsIOD() override;
+    IO_DICOM_API ~spatial_fiducials_iod() override;
 
     /// Write DICOM file
     IO_DICOM_API void write(const data::series::csptr& _series) override;

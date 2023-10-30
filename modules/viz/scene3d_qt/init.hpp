@@ -42,7 +42,7 @@ inline void init_resources()
             {"currentGLContext", "true"}
         };
 
-        auto* ogre_root = sight::viz::scene3d::utils::getOgreRoot();
+        auto* ogre_root = sight::viz::scene3d::utils::get_ogre_root();
         s_render_window = ogre_root->createRenderWindow("Dummy", 1, 1, false, &params);
         s_render_window->setVisible(false);
         s_render_window->setAutoUpdated(false);

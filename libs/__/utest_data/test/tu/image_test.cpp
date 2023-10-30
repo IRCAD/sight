@@ -48,61 +48,61 @@ void image_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void image_test::generator3DTest()
+void image_test::generator_3d_test()
 {
-    data::image::sptr image            = std::make_shared<data::image>();
-    const data::image::Size size       = {10, 15, 23};
-    const data::image::Spacing spacing = {0.85, 2.6, 1.87};
-    const data::image::Origin origin   = {-45.6, 25.97, -53.9};
-    core::type type                    = core::type::INT32;
+    data::image::sptr image              = std::make_shared<data::image>();
+    const data::image::size_t size       = {10, 15, 23};
+    const data::image::spacing_t spacing = {0.85, 2.6, 1.87};
+    const data::image::origin_t origin   = {-45.6, 25.97, -53.9};
+    core::type type                      = core::type::INT32;
 
-    utest_data::generator::image::generateImage(
+    utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
         type,
-        data::image::PixelFormat::GRAY_SCALE
+        data::image::pixel_format::gray_scale
     );
 
     CPPUNIT_ASSERT(image->size() == size);
-    CPPUNIT_ASSERT(image->getSpacing() == spacing);
-    CPPUNIT_ASSERT(image->getOrigin() == origin);
-    CPPUNIT_ASSERT_EQUAL(type, image->getType());
+    CPPUNIT_ASSERT(image->spacing() == spacing);
+    CPPUNIT_ASSERT(image->origin() == origin);
+    CPPUNIT_ASSERT_EQUAL(type, image->type());
 }
 
 //------------------------------------------------------------------------------
 
-void image_test::generator2DTest()
+void image_test::generator_2d_test()
 {
-    data::image::sptr image            = std::make_shared<data::image>();
-    const data::image::Size size       = {10, 15, 0};
-    const data::image::Spacing spacing = {0.85, 2.6, 0.};
-    const data::image::Origin origin   = {-45.6, 25.97, 0.};
-    core::type type                    = core::type::INT16;
+    data::image::sptr image              = std::make_shared<data::image>();
+    const data::image::size_t size       = {10, 15, 0};
+    const data::image::spacing_t spacing = {0.85, 2.6, 0.};
+    const data::image::origin_t origin   = {-45.6, 25.97, 0.};
+    core::type type                      = core::type::INT16;
 
-    utest_data::generator::image::generateImage(
+    utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
         type,
-        data::image::PixelFormat::GRAY_SCALE
+        data::image::pixel_format::gray_scale
     );
     CPPUNIT_ASSERT(image->size() == size);
-    CPPUNIT_ASSERT(image->getSpacing() == spacing);
-    CPPUNIT_ASSERT(image->getOrigin() == origin);
-    CPPUNIT_ASSERT_EQUAL(type, image->getType());
+    CPPUNIT_ASSERT(image->spacing() == spacing);
+    CPPUNIT_ASSERT(image->origin() == origin);
+    CPPUNIT_ASSERT_EQUAL(type, image->type());
 }
 
 //------------------------------------------------------------------------------
 
-void image_test::deep_copyTest()
+void image_test::deep_copy_test()
 {
     data::image::sptr image = std::make_shared<data::image>();
     data::image::sptr image2;
     core::type type = core::type::INT32;
-    utest_data::generator::image::generateRandomImage(image, type);
+    utest_data::generator::image::generate_random_image(image, type);
 
     image2 = data::object::copy(image);
     CPPUNIT_ASSERT(*image == *image2);
@@ -115,7 +115,7 @@ inline static void stress_test_with_type(core::type _type, int _nb_test)
     for(int nb = 0 ; nb < _nb_test ; ++nb)
     {
         data::image::sptr image = std::make_shared<data::image>();
-        utest_data::generator::image::generateRandomImage(image, _type);
+        utest_data::generator::image::generate_random_image(image, _type);
 
         data::image::sptr image2;
         image2 = data::object::copy(image);
@@ -125,7 +125,7 @@ inline static void stress_test_with_type(core::type _type, int _nb_test)
 
 //------------------------------------------------------------------------------
 
-void image_test::stressTest()
+void image_test::stress_test()
 {
     core::type type = core::type::INT8;
     stress_test_with_type(type, 10);

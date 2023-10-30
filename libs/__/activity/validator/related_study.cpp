@@ -49,15 +49,15 @@ validator::return_t related_study::validate(
         validation.second = "Selected series refers to the same study.";
 
         auto series_ref                    = std::dynamic_pointer_cast<data::series>((*_current_selection)[0]);
-        std::string study_instance_uid_ref = series_ref->getStudyInstanceUID();
+        std::string study_instance_uid_ref = series_ref->get_study_instance_uid();
         boost::algorithm::trim(study_instance_uid_ref);
 
-        data::vector::container_type::const_iterator it;
+        data::vector::container_t::const_iterator it;
         for(it = _current_selection->begin() + 1 ; it != _current_selection->end() ; ++it)
         {
             auto series = std::dynamic_pointer_cast<data::series>(*it);
 
-            std::string study_instance_uid = series->getStudyInstanceUID();
+            std::string study_instance_uid = series->get_study_instance_uid();
             boost::algorithm::trim(study_instance_uid);
 
             if(study_instance_uid_ref != study_instance_uid)

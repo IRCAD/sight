@@ -31,24 +31,24 @@ namespace sight::service::ut
 
 //------------------------------------------------------------------------------
 
-class ServiceRetarder
+class service_retarder
 {
 public:
 
-    ServiceRetarder() :
-        m_startRetarder(500),
-        m_stopRetarder(500),
-        m_updateRetarder(500),
-        m_receiveRetarder(500),
-        m_swapRetarder(500)
+    service_retarder() :
+        m_start_retarder(500),
+        m_stop_retarder(500),
+        m_update_retarder(500),
+        m_receive_retarder(500),
+        m_swap_retarder(500)
     {
     }
 
-    std::chrono::milliseconds m_startRetarder;
-    std::chrono::milliseconds m_stopRetarder;
-    std::chrono::milliseconds m_updateRetarder;
-    std::chrono::milliseconds m_receiveRetarder;
-    std::chrono::milliseconds m_swapRetarder;
+    std::chrono::milliseconds m_start_retarder;
+    std::chrono::milliseconds m_stop_retarder;
+    std::chrono::milliseconds m_update_retarder;
+    std::chrono::milliseconds m_receive_retarder;
+    std::chrono::milliseconds m_swap_retarder;
 };
 
 //------------------------------------------------------------------------------
@@ -74,24 +74,24 @@ public:
 
     SIGHT_DECLARE_SERVICE(basic_srv, service::base);
 
-    static constexpr std::string_view s_BUFFER_INOUT = "buffer";
+    static constexpr std::string_view BUFFER_INOUT = "buffer";
 
 protected:
 
-    data::ptr<buffer, data::Access::inout> m_buffer {this, s_BUFFER_INOUT, true};
+    data::ptr<buffer, data::access::inout> m_buffer {this, BUFFER_INOUT, true};
 };
 
-class SBasicTest : public basic_srv,
-                   public ServiceRetarder
+class s_basic_test : public basic_srv,
+                     public service_retarder
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SBasicTest, basic_srv);
+    SIGHT_DECLARE_SERVICE(s_basic_test, basic_srv);
 
-    bool m_updateFinished {false};
-    bool m_swapFinished {false};
+    bool m_update_finished {false};
+    bool m_swap_finished {false};
 
-    SBasicTest();
+    s_basic_test();
 
 protected:
 
@@ -109,13 +109,13 @@ protected:
 
 //------------------------------------------------------------------------------
 
-class readerTest : public basic_srv
+class reader_test : public basic_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(readerTest, basic_srv);
+    SIGHT_DECLARE_SERVICE(reader_test, basic_srv);
 
-    readerTest()
+    reader_test()
     = default;
 
 protected:
@@ -145,15 +145,15 @@ protected:
 
 //------------------------------------------------------------------------------
 
-class reader2Test : public basic_srv
+class reader2_test : public basic_srv
 {
 public:
 
-    typedef core::com::signal<void ()> changed_signal_t;
+    using changed_signal_t = core::com::signal<void ()>;
 
-    SIGHT_DECLARE_SERVICE(reader2Test, basic_srv);
+    SIGHT_DECLARE_SERVICE(reader2_test, basic_srv);
 
-    reader2Test();
+    reader2_test();
 
     static const core::com::signals::key_t CHANGED_SIG;
 
@@ -181,27 +181,27 @@ protected:
 
     void updating() override;
 
-    changed_signal_t::sptr m_sigChanged;
+    changed_signal_t::sptr m_sig_changed;
 };
 
 //------------------------------------------------------------------------------
 
-class SShowTest : public basic_srv,
-                  public ServiceRetarder
+class s_show_test : public basic_srv,
+                    public service_retarder
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SShowTest, basic_srv);
+    SIGHT_DECLARE_SERVICE(s_show_test, basic_srv);
 
-    SShowTest();
+    s_show_test();
 
-    int m_receiveCount {0};
-    int m_changeCount {0};
+    int m_receive_count {0};
+    int m_change_count {0};
 
     void change();
 
     static const core::com::slots::key_t CHANGE_SLOT;
-    typedef core::com::slot<void ()> change_slot_t;
+    using change_slot_t = core::com::slot<void ()>;
 
 protected:
 
@@ -229,25 +229,25 @@ protected:
 
     connections_t auto_connections() const override;
 
-    change_slot_t::sptr m_slotChange;
+    change_slot_t::sptr m_slot_change;
 
     core::mt::mutex m_mutex;
 };
 
 //------------------------------------------------------------------------------
 
-class SShow2Test : public basic_srv,
-                   public ServiceRetarder
+class s_show2_test : public basic_srv,
+                     public service_retarder
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SShow2Test, basic_srv);
+    SIGHT_DECLARE_SERVICE(s_show2_test, basic_srv);
 
     static const core::com::slots::key_t UPDATE_BUFFER_SLOT;
 
-    SShow2Test();
+    s_show2_test();
 
-    int m_receiveCount {0};
+    int m_receive_count {0};
 
 protected:
 
@@ -274,7 +274,7 @@ protected:
     void updating() override;
 
     /// Slot to receive update
-    void updateBuffer();
+    void update_buffer();
 };
 
 //------------------------------------------------------------------------------

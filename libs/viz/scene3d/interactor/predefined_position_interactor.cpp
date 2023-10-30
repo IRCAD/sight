@@ -64,7 +64,7 @@ predefined_position_interactor::predefined_position_interactor(
             });
            found != m_predefined_positions.end())
         {
-            toPredefinedPosition(std::size_t(found - m_predefined_positions.begin()), false);
+            to_predefined_position(std::size_t(found - m_predefined_positions.begin()), false);
         }
     }
 }
@@ -83,27 +83,27 @@ predefined_position_interactor::~predefined_position_interactor()
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::mouseMoveEvent(
-    MouseButton _button,
-    Modifier /*_mods*/,
+void predefined_position_interactor::mouse_move_event(
+    mouse_button _button,
+    modifier /*_mods*/,
     int /*_x*/,
     int /*_y*/,
     int _dx,
     int _dy
 )
 {
-    if(m_mouseMove)
+    if(m_mouse_move)
     {
-        if(_button == LEFT)
+        if(_button == left)
         {
             if(!m_timer->is_running())
             {
-                this->cameraRotateByMouse(_dx, _dy);
-                m_layer.lock()->requestRender();
+                this->camera_rotate_by_mouse(_dx, _dy);
+                m_layer.lock()->request_render();
             }
             else
             {
-                m_layer.lock()->cancelFurtherInteraction();
+                m_layer.lock()->cancel_further_interaction();
             }
         }
     }
@@ -111,11 +111,11 @@ void predefined_position_interactor::mouseMoveEvent(
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::wheelEvent(Modifier /*_mods*/, double _delta, int _x, int _y)
+void predefined_position_interactor::wheel_event(modifier /*_mods*/, double _delta, int _x, int _y)
 {
     if(auto layer = m_layer.lock())
     {
-        if(isInLayer(_x, _y, layer, m_layerOrderDependant))
+        if(is_in_layer(_x, _y, layer, m_layer_order_dependant))
         {
             constexpr float mouse_scale = 0.01F;
 
@@ -123,45 +123,45 @@ void predefined_position_interactor::wheelEvent(Modifier /*_mods*/, double _delt
             const float new_zoom = m_zoom * std::pow(0.85F, static_cast<float>(_delta) * mouse_scale);
 
             // Moreover we cannot pass through the center of the trackball
-            const float z = (m_zoom - new_zoom) * 200.F / (m_mouseScale);
+            const float z = (m_zoom - new_zoom) * 200.F / (m_mouse_scale);
 
             // Update the center of interest for future rotations
-            m_lookAtZ -= z;
+            m_look_at_z -= z;
 
-            this->updateCameraFocalLength();
+            this->update_camera_focal_length();
 
             m_zoom = new_zoom;
 
             // Translate the camera.
-            Ogre::Camera* const camera      = layer->getDefaultCamera();
+            Ogre::Camera* const camera      = layer->get_default_camera();
             Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
             cam_node->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
 
-            m_layer.lock()->requestRender();
+            m_layer.lock()->request_render();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void predefined_position_interactor::pinchGestureEvent(double _scale_factor, int _center_x, int _center_y)
+void predefined_position_interactor::pinch_gesture_event(double _scale_factor, int _center_x, int _center_y)
 {
-    wheelEvent({}, _scale_factor * 8, _center_x, _center_y);
+    wheel_event({}, _scale_factor * 8, _center_x, _center_y);
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::keyPressEvent(int _key, Modifier /*_mods*/, int _mouse_x, int _mouse_y)
+void predefined_position_interactor::key_press_event(int _key, modifier /*_mods*/, int _mouse_x, int _mouse_y)
 {
     if(_key == 'R' || _key == 'r')
     {
         if(auto layer = m_layer.lock())
         {
-            if(isInLayer(_mouse_x, _mouse_y, layer, m_layerOrderDependant) && !m_timer->is_running())
+            if(is_in_layer(_mouse_x, _mouse_y, layer, m_layer_order_dependant) && !m_timer->is_running())
             {
-                layer->resetCameraCoordinates();
+                layer->reset_camera_coordinates();
                 this->init();
-                this->followTransform();
+                this->follow_transform();
             }
         }
     }
@@ -169,44 +169,44 @@ void predefined_position_interactor::keyPressEvent(int _key, Modifier /*_mods*/,
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::resizeEvent(int _width, int _height)
+void predefined_position_interactor::resize_event(int _width, int _height)
 {
-    const Ogre::SceneManager* const scene_manager = m_layer.lock()->getSceneManager();
+    const Ogre::SceneManager* const scene_manager = m_layer.lock()->get_scene_manager();
     Ogre::Camera* const camera                    =
-        scene_manager->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
+        scene_manager->getCamera(viz::scene3d::layer::DEFAULT_CAMERA_NAME);
 
     SIGHT_ASSERT("Width and height should be strictly positive", _width > 0 && _height > 0);
     const float aspect_ratio = static_cast<float>(_width) / static_cast<float>(_height);
     camera->setAspectRatio(aspect_ratio);
-    m_layer.lock()->requestRender();
+    m_layer.lock()->request_render();
 }
 
 //------------------------------------------------------------------------------
 
 void predefined_position_interactor::init()
 {
-    Ogre::Camera* const camera      = m_layer.lock()->getDefaultCamera();
+    Ogre::Camera* const camera      = m_layer.lock()->get_default_camera();
     Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
 
     // Reset camera
-    cam_node->setPosition(Ogre::Vector3(0, 0, m_lookAtZ));
+    cam_node->setPosition(Ogre::Vector3(0, 0, m_look_at_z));
     cam_node->lookAt(Ogre::Vector3(0, 0, 1), Ogre::Node::TS_WORLD);
 
     // Rotate camera to its initial wanted orientation (180 on -X)
-    this->rotateCamera(cam_node, M_CAMERA_INIT_ROTATION);
+    this->rotate_camera(cam_node, m_camera_init_rotation);
 
     m_current_position_idx = std::nullopt;
-    m_currentOrientation   = cam_node->getOrientation();
+    m_current_orientation  = cam_node->getOrientation();
 }
 
 //------------------------------------------------------------------------------
 
-void predefined_position_interactor::cameraRotateByMouse(int _dx, int _dy)
+void predefined_position_interactor::camera_rotate_by_mouse(int _dx, int _dy)
 {
     auto w_delta = static_cast<Ogre::Real>(_dx);
     auto h_delta = static_cast<Ogre::Real>(_dy);
 
-    Ogre::Camera* const camera      = m_layer.lock()->getDefaultCamera();
+    Ogre::Camera* const camera      = m_layer.lock()->get_default_camera();
     Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
     const Ogre::Viewport* const vp  = camera->getViewport();
 
@@ -249,39 +249,39 @@ void predefined_position_interactor::cameraRotateByMouse(int _dx, int _dy)
     const auto destination = orientation * ry * rx;
 
     // Apply
-    this->rotateCamera(cam_node, destination);
+    this->rotate_camera(cam_node, destination);
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::setSceneLength(float _scene_length)
+void predefined_position_interactor::set_scene_length(float _scene_length)
 {
-    m_mouseScale = static_cast<float>(MOUSE_SCALE_FACTOR) / _scene_length;
-    m_lookAtZ    = _scene_length;
-    m_zoom       = 1.F;
+    m_mouse_scale = static_cast<float>(MOUSE_SCALE_FACTOR) / _scene_length;
+    m_look_at_z   = _scene_length;
+    m_zoom        = 1.F;
 
-    this->updateCameraFocalLength();
+    this->update_camera_focal_length();
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::updateCameraFocalLength()
+void predefined_position_interactor::update_camera_focal_length()
 {
     // Set the focal length using the point of interest of the interactor
     // This works well for the trackball but this would need to be adjusted for an another interactor type
     // For a FPS camera style for instance, we would fix the focal length once and for all according
     // to the scale of the world
-    const float focal_length = std::max(0.001F, std::abs(m_lookAtZ));
+    const float focal_length = std::max(0.001F, std::abs(m_look_at_z));
 
-    const Ogre::SceneManager* const scene_manager = m_layer.lock()->getSceneManager();
+    const Ogre::SceneManager* const scene_manager = m_layer.lock()->get_scene_manager();
     Ogre::Camera* const camera                    =
-        scene_manager->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
+        scene_manager->getCamera(viz::scene3d::layer::DEFAULT_CAMERA_NAME);
     camera->setFocalLength(focal_length);
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::nextPosition()
+void predefined_position_interactor::next_position()
 {
     // Initialization and loop over all positions.
     if(!m_current_position_idx || m_current_position_idx.value() >= m_predefined_positions.size() - 1)
@@ -293,12 +293,12 @@ void predefined_position_interactor::nextPosition()
         m_current_position_idx.value()++;
     }
 
-    this->toPredefinedPosition(m_current_position_idx.value(), m_animate);
+    this->to_predefined_position(m_current_position_idx.value(), m_animate);
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::previousPosition()
+void predefined_position_interactor::previous_position()
 {
     // Initialization and loop over all positions.
     if(!m_current_position_idx || m_current_position_idx.value() == 0)
@@ -310,12 +310,12 @@ void predefined_position_interactor::previousPosition()
         m_current_position_idx.value()--;
     }
 
-    this->toPredefinedPosition(m_current_position_idx.value(), m_animate);
+    this->to_predefined_position(m_current_position_idx.value(), m_animate);
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::toPredefinedPosition(std::size_t _idx, bool _animate)
+void predefined_position_interactor::to_predefined_position(std::size_t _idx, bool _animate)
 {
     SIGHT_ASSERT(
         "Cannot move to position '" << _idx << " / " << m_predefined_positions.size() << "'",
@@ -333,7 +333,7 @@ void predefined_position_interactor::toPredefinedPosition(std::size_t _idx, bool
         // Reset the percentage
         m_percentage = 0.F;
 
-        Ogre::Camera* const camera      = layer->getDefaultCamera();
+        Ogre::Camera* const camera      = layer->get_default_camera();
         Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
 
         // Get destination orientation.
@@ -343,7 +343,7 @@ void predefined_position_interactor::toPredefinedPosition(std::size_t _idx, bool
         const Ogre::Quaternion rotate_x(Ogre::Degree(pos.rx), Ogre::Vector3(1, 0, 0));
         const Ogre::Quaternion rotate_y(Ogre::Degree(pos.ry), Ogre::Vector3(0, 1, 0));
         const Ogre::Quaternion rotate_z(Ogre::Degree(pos.rz), Ogre::Vector3(0, 0, 1));
-        const auto destination = this->transformQuaternion() * M_CAMERA_INIT_ROTATION * rotate_z * rotate_y * rotate_x;
+        const auto destination = this->transform_quaternion() * m_camera_init_rotation * rotate_z * rotate_y * rotate_x;
 
         // Get current orientation.
         const auto origin = cam_node->getOrientation();
@@ -390,11 +390,11 @@ void predefined_position_interactor::toPredefinedPosition(std::size_t _idx, bool
                         true
                     );
 
-                    this->rotateCamera(cam_node, rotation);
+                    this->rotate_camera(cam_node, rotation);
 
-                    m_currentOrientation = cam_node->getOrientation();
+                    m_current_orientation = cam_node->getOrientation();
 
-                    layer->requestRender();
+                    layer->request_render();
 
                     if(is_last_step)
                     {
@@ -423,17 +423,17 @@ void predefined_position_interactor::toPredefinedPosition(std::size_t _idx, bool
         }
         else
         {
-            this->rotateCamera(cam_node, destination);
+            this->rotate_camera(cam_node, destination);
         }
 
         m_current_position_idx = _idx;
-        m_currentOrientation   = cam_node->getOrientation();
+        m_current_orientation  = cam_node->getOrientation();
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::setParameter(ui::parameter_t _value, std::string _key)
+void predefined_position_interactor::set_parameter(ui::parameter_t _value, std::string _key)
 {
     if(_key == "position")
     {
@@ -454,51 +454,51 @@ void predefined_position_interactor::setParameter(ui::parameter_t _value, std::s
             return;
         }
 
-        this->toPredefinedPosition(static_cast<std::size_t>(index), m_animate);
+        this->to_predefined_position(static_cast<std::size_t>(index), m_animate);
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::rotateCamera(Ogre::SceneNode* const _cam, const Ogre::Quaternion& _quat) const
+void predefined_position_interactor::rotate_camera(Ogre::SceneNode* const _cam, const Ogre::Quaternion& _quat) const
 {
-    _cam->translate(Ogre::Vector3(0, 0, -m_lookAtZ), Ogre::Node::TS_LOCAL);
+    _cam->translate(Ogre::Vector3(0, 0, -m_look_at_z), Ogre::Node::TS_LOCAL);
     _cam->setOrientation(_quat);
-    _cam->translate(Ogre::Vector3(0, 0, m_lookAtZ), Ogre::Node::TS_LOCAL);
+    _cam->translate(Ogre::Vector3(0, 0, m_look_at_z), Ogre::Node::TS_LOCAL);
 }
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::followTransform()
+void predefined_position_interactor::follow_transform()
 {
-    Ogre::Camera* const camera      = m_layer.lock()->getDefaultCamera();
+    Ogre::Camera* const camera      = m_layer.lock()->get_default_camera();
     Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
 
     // Initial rotation.
-    const auto referential_r = this->transformQuaternion();
+    const auto referential_r = this->transform_quaternion();
     // Initial translation
     const auto referential_t = m_transform.getTrans();
 
     // 1. Get to origin (remove zoom level)
-    cam_node->translate(Ogre::Vector3(0, 0, -m_lookAtZ), Ogre::Node::TS_LOCAL);
+    cam_node->translate(Ogre::Vector3(0, 0, -m_look_at_z), Ogre::Node::TS_LOCAL);
     const auto current_r = cam_node->getOrientation();
 
     // 2. Apply transform rotation
     // Remove previous transform orientation and go to newest orientation.
-    cam_node->setOrientation(m_lastOrientation.Inverse() * referential_r * current_r);
+    cam_node->setOrientation(m_last_orientation.Inverse() * referential_r * current_r);
 
     // 3. Translate to new target.
     cam_node->setPosition(referential_t);
 
     // 4. Get back to same level of zoom
-    cam_node->translate(Ogre::Vector3(0, 0, m_lookAtZ), Ogre::Node::TS_LOCAL);
+    cam_node->translate(Ogre::Vector3(0, 0, m_look_at_z), Ogre::Node::TS_LOCAL);
 
-    m_currentOrientation = cam_node->getOrientation();
+    m_current_orientation = cam_node->getOrientation();
 
-    m_layer.lock()->requestRender();
+    m_layer.lock()->request_render();
 
     // Store transform orientation for next updates.
-    m_lastOrientation = referential_r;
+    m_last_orientation = referential_r;
 }
 
 } // namespace sight::viz::scene3d::interactor

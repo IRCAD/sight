@@ -36,13 +36,13 @@ image::image(
     double _rescale_slope,
     double _rescale_intercept
 ) :
-    m_samplesPerPixel(_samples_per_pixel),
-    m_bitsAllocated(_bits_allocated),
-    m_bitsStored(_bits_stored),
-    m_highBit(_high_bit),
-    m_pixelRepresentation(_pixel_representation),
-    m_rescaleSlope(_rescale_slope),
-    m_rescaleIntercept(_rescale_intercept)
+    m_samples_per_pixel(_samples_per_pixel),
+    m_bits_allocated(_bits_allocated),
+    m_bits_stored(_bits_stored),
+    m_high_bit(_high_bit),
+    m_pixel_representation(_pixel_representation),
+    m_rescale_slope(_rescale_slope),
+    m_rescale_intercept(_rescale_intercept)
 {
 }
 
@@ -53,28 +53,30 @@ image::~image()
 
 //-----------------------------------------------------------------------------
 
-core::type image::findImageTypeFromMinMaxValues() const
+core::type image::find_image_type_from_min_max_values() const
 {
     core::type result = core::type::NONE;
 
     // Bool & Monochrome values
-    if(m_bitsAllocated == 1 && m_pixelRepresentation == 0)
+    if(m_bits_allocated == 1 && m_pixel_representation == 0)
     {
         result = core::type::INT8;
     }
     else
     {
         // Double
-        if(m_rescaleSlope != (int) m_rescaleSlope || m_rescaleIntercept != (int) m_rescaleIntercept)
+        if(m_rescale_slope != (int) m_rescale_slope || m_rescale_intercept != (int) m_rescale_intercept)
         {
             result = core::type::DOUBLE;
         }
         else
         {
             const auto min =
-                static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMin()) + m_rescaleIntercept);
+                static_cast<int64_t>(m_rescale_slope * static_cast<double>(this->get_pixel_min())
+                                     + m_rescale_intercept);
             const auto max =
-                static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMax()) + m_rescaleIntercept);
+                static_cast<int64_t>(m_rescale_slope * static_cast<double>(this->get_pixel_max())
+                                     + m_rescale_intercept);
 
             SIGHT_ASSERT("Min must be lower than max.", min <= max);
 
@@ -126,17 +128,17 @@ core::type image::findImageTypeFromMinMaxValues() const
 
 //-----------------------------------------------------------------------------
 
-int64_t image::getPixelMin() const
+int64_t image::get_pixel_min() const
 {
-    SIGHT_ASSERT("The number of bits allocated must be known", m_bitsAllocated);
-    SIGHT_ASSERT("The number of bits stored must be less than 33.", m_bitsStored <= 32);
+    SIGHT_ASSERT("The number of bits allocated must be known", m_bits_allocated);
+    SIGHT_ASSERT("The number of bits stored must be less than 33.", m_bits_stored <= 32);
 
-    if(m_pixelRepresentation == 1)
+    if(m_pixel_representation == 1)
     {
-        return (int64_t) (~(((1ULL << m_bitsStored) - 1) >> 1));
+        return (int64_t) (~(((1ULL << m_bits_stored) - 1) >> 1));
     }
 
-    if(m_pixelRepresentation == 0)
+    if(m_pixel_representation == 0)
     {
         return 0;
     }
@@ -147,19 +149,19 @@ int64_t image::getPixelMin() const
 
 //-----------------------------------------------------------------------------
 
-int64_t image::getPixelMax() const
+int64_t image::get_pixel_max() const
 {
-    SIGHT_ASSERT("The number of bits allocated must be known", m_bitsAllocated);
-    SIGHT_ASSERT("The number of bits stored must be less than 33.", m_bitsStored <= 32);
+    SIGHT_ASSERT("The number of bits allocated must be known", m_bits_allocated);
+    SIGHT_ASSERT("The number of bits stored must be less than 33.", m_bits_stored <= 32);
 
-    if(m_pixelRepresentation == 1)
+    if(m_pixel_representation == 1)
     {
-        return (int64_t) (((1ULL << m_bitsStored) - 1) >> 1);
+        return (int64_t) (((1ULL << m_bits_stored) - 1) >> 1);
     }
 
-    if(m_pixelRepresentation == 0)
+    if(m_pixel_representation == 0)
     {
-        return (int64_t) ((1ULL << m_bitsStored) - 1);
+        return (int64_t) ((1ULL << m_bits_stored) - 1);
     }
 
     SIGHT_ASSERT("Unable to determine maximum value of pixel", 0);

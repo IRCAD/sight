@@ -31,7 +31,7 @@ namespace sight::app::parser::ut
 class vector_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(vector_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    parser::vector vectorParser;
+    parser::vector m_vector_parser;
 };
 
 } // namespace sight::app::parser::ut

@@ -40,7 +40,7 @@ void vector::updating()
 
 //------------------------------------------------------------------------------
 
-void vector::createConfig(core::tools::object::sptr _obj)
+void vector::create_config(core::tools::object::sptr _obj)
 {
     // Declaration of attributes values
     const std::string object_build_mode = "src";
@@ -65,11 +65,11 @@ void vector::createConfig(core::tools::object::sptr _obj)
             {
                 // Create and manage object config
                 auto ctm = app::config_manager::make();
-                ctm->app::config_manager::setConfig(elem.second);
+                ctm->app::config_manager::set_config(elem.second);
 
-                m_ctmContainer.push_back(ctm);
+                m_ctm_container.push_back(ctm);
                 ctm->create();
-                data::object::sptr local_obj = ctm->getConfigRoot();
+                data::object::sptr local_obj = ctm->get_config_root();
 
                 // Add object
                 SIGHT_ASSERT("A data::vector can contain only data::object", local_obj);
@@ -85,9 +85,9 @@ void vector::createConfig(core::tools::object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-void vector::startConfig()
+void vector::start_config()
 {
-    for(const app::config_manager::sptr& ctm : m_ctmContainer)
+    for(const app::config_manager::sptr& ctm : m_ctm_container)
     {
         ctm->start();
     }
@@ -95,9 +95,9 @@ void vector::startConfig()
 
 //------------------------------------------------------------------------------
 
-void vector::updateConfig()
+void vector::update_config()
 {
-    for(const app::config_manager::sptr& ctm : m_ctmContainer)
+    for(const app::config_manager::sptr& ctm : m_ctm_container)
     {
         ctm->update();
     }
@@ -105,9 +105,9 @@ void vector::updateConfig()
 
 //------------------------------------------------------------------------------
 
-void vector::stopConfig()
+void vector::stop_config()
 {
-    for(auto& ctm : std::views::reverse(m_ctmContainer))
+    for(auto& ctm : std::views::reverse(m_ctm_container))
     {
         ctm->stop();
     }
@@ -115,14 +115,14 @@ void vector::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void vector::destroyConfig()
+void vector::destroy_config()
 {
-    for(auto& ctm : std::views::reverse(m_ctmContainer))
+    for(auto& ctm : std::views::reverse(m_ctm_container))
     {
         ctm->destroy();
     }
 
-    m_ctmContainer.clear();
+    m_ctm_container.clear();
 }
 
 //------------------------------------------------------------------------------

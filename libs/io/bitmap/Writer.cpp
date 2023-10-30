@@ -31,22 +31,22 @@
 namespace sight::io::bitmap
 {
 
-Writer::Writer() :
+writer::writer() :
     m_pimpl(std::make_unique<detail::WriterImpl>(this))
 {
 }
 
 // Defining the destructor here, allows us to use PImpl with a unique_ptr
-Writer::~Writer() = default;
+writer::~writer() = default;
 
 //------------------------------------------------------------------------------
 
-std::string Writer::extension() const
+std::string writer::extension() const
 {
     try
     {
         const auto& [backend, extensions] = detail::guess_backend_or_extension(
-            Backend::ANY,
+            backend::any,
             get_file().extension().string()
         );
 
@@ -54,20 +54,20 @@ std::string Writer::extension() const
     }
     catch(...)
     {
-        return extensions(Backend::LIBTIFF).front();
+        return extensions(backend::libtiff).front();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Writer::write()
+void writer::write()
 {
-    write(Backend::ANY, Mode::FAST);
+    write(backend::any, mode::fast);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(Backend _backend, Mode _mode)
+std::size_t writer::write(backend _backend, mode _mode)
 {
     auto file = get_file();
 
@@ -123,28 +123,28 @@ std::size_t Writer::write(Backend _backend, Mode _mode)
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::ostream& _ostream, Backend _backend, Mode _mode)
+std::size_t writer::write(std::ostream& _ostream, backend _backend, mode _mode)
 {
     return m_pimpl->write(_ostream, _backend, _mode);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::uint8_t** _buffer, Backend _backend, Mode _mode)
+std::size_t writer::write(std::uint8_t** _buffer, backend _backend, mode _mode)
 {
     return m_pimpl->write(_buffer, _backend, _mode);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::uint8_t* _buffer, Backend _backend, Mode _mode)
+std::size_t writer::write(std::uint8_t* _buffer, backend _backend, mode _mode)
 {
     return m_pimpl->write(_buffer, _backend, _mode);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::vector<uint8_t>& _buffer, Backend _backend, Mode _mode)
+std::size_t writer::write(std::vector<uint8_t>& _buffer, backend _backend, mode _mode)
 {
     return m_pimpl->write(_buffer, _backend, _mode);
 }

@@ -34,15 +34,15 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a SCOORD3D node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRSCoord3DNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_srs_coord3_d_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
-    typedef std::vector<float> graphic_data_container_t;
+    using graphic_data_container_t = std::vector<float>;
 
     /// Constructor
-    IO_DICOM_API DicomSRSCoord3DNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_srs_coord3_d_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
         std::string _graphic_type,
         graphic_data_container_t _graphic_data_container,
@@ -50,7 +50,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRSCoord3DNode() override;
+    IO_DICOM_API ~dicom_srs_coord3_d_node() override;
 
     /**
      * @brief Write the SR node in the dataset
@@ -59,39 +59,39 @@ public:
     IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get Frame of reference UID
-    [[nodiscard]] const std::string& getFrameOfReferenceUID() const
+    [[nodiscard]] const std::string& get_frame_of_reference_uid() const
     {
-        return m_frameOfReferenceUID;
+        return m_frame_of_reference_uid;
     }
 
     ///Set Frame of reference UID
-    void setFrameOfReferenceUID(const std::string& _frame_of_reference_uid)
+    void set_frame_of_reference_uid(const std::string& _frame_of_reference_uid)
     {
-        m_frameOfReferenceUID = _frame_of_reference_uid;
+        m_frame_of_reference_uid = _frame_of_reference_uid;
     }
 
     /// Get Graphic type
     [[nodiscard]] const std::string& get_graphic_type() const
     {
-        return m_graphicType;
+        return m_graphic_type;
     }
 
     ///Set Graphic type
     void set_graphic_type(const std::string& _graphic_type)
     {
-        m_graphicType = _graphic_type;
+        m_graphic_type = _graphic_type;
     }
 
     /// Get Graphic data container
-    [[nodiscard]] const graphic_data_container_t& getGraphicDataContainer() const
+    [[nodiscard]] const graphic_data_container_t& get_graphic_data_container() const
     {
-        return m_graphicDataContainer;
+        return m_graphic_data_container;
     }
 
     ///Set Graphic data container
-    void setGraphicDataContainer(const graphic_data_container_t& _graphic_data_container)
+    void set_graphic_data_container(const graphic_data_container_t& _graphic_data_container)
     {
-        m_graphicDataContainer = _graphic_data_container;
+        m_graphic_data_container = _graphic_data_container;
     }
 
 protected:
@@ -100,13 +100,13 @@ protected:
     void print(std::ostream& _os) const override;
 
     /// Referenced Frame of Reference UID
-    std::string m_frameOfReferenceUID;
+    std::string m_frame_of_reference_uid;
 
     /// Graphic Type
-    std::string m_graphicType;
+    std::string m_graphic_type;
 
     /// Graphic Data
-    graphic_data_container_t m_graphicDataContainer;
+    graphic_data_container_t m_graphic_data_container;
 };
 
 } // namespace sight::io::dicom::container::sr

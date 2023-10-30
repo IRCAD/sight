@@ -28,51 +28,51 @@
 
 #include <QNetworkRequest>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::RequestTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::request_test);
 
 namespace sight::io::http::ut
 {
 
 //------------------------------------------------------------------------------
 
-void RequestTest::setUp()
+void request_test::setUp()
 {
     const std::string dummy_url("http://localhost:8080");
-    m_request = sight::io::http::Request::New(dummy_url);
+    m_request = sight::io::http::request::New(dummy_url);
 }
 
 //------------------------------------------------------------------------------
 
-void RequestTest::tearDown()
+void request_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void RequestTest::testRequest()
+void request_test::test_request()
 {
     const std::string key("Content-Type");
     const std::string value("application/json");
-    m_request->addHeader(key, value);
+    m_request->add_header(key, value);
 
-    sight::io::http::Request::headers_t headers = m_request->getHeaders();
+    sight::io::http::request::headers_t headers = m_request->get_headers();
     CPPUNIT_ASSERT(headers.find(key) != headers.end());
     CPPUNIT_ASSERT_EQUAL(headers[key], value);
 
-    sight::io::http::Request::headers_t new_headers;
+    sight::io::http::request::headers_t new_headers;
     const std::string new_value("application/dicom");
     new_headers.insert(std::pair<std::string, std::string>(key, new_value));
 
-    m_request->setHeaders(new_headers);
-    headers = m_request->getHeaders();
+    m_request->set_headers(new_headers);
+    headers = m_request->get_headers();
 
     CPPUNIT_ASSERT(headers == new_headers);
     CPPUNIT_ASSERT(headers.find(key) != headers.end());
     CPPUNIT_ASSERT_EQUAL(headers[key], new_value);
 
     const std::string new_dummy_url("http://localhost:8080/dummy");
-    m_request->setUrl(new_dummy_url);
-    const std::string& url = m_request->getUrl();
+    m_request->set_url(new_dummy_url);
+    const std::string& url = m_request->get_url();
     CPPUNIT_ASSERT_EQUAL(new_dummy_url, url);
 }
 

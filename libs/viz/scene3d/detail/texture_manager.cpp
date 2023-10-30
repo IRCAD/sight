@@ -50,14 +50,14 @@ void copy_unsigned_image(Ogre::Texture* _texture, const data::image& _image)
     pixel_buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
     const Ogre::PixelBox& pixel_box = pixel_buffer->getCurrentLock();
 
-    using signedType = std::make_signed_t<DST_TYPE>;
+    using signed_type = std::make_signed_t<DST_TYPE>;
     auto p_dest = reinterpret_cast<DST_TYPE*>(pixel_box.data);
 
     const auto low_bound = []
                            {
                                if constexpr(std::is_signed_v<SRC_TYPE>)
                                {
-                                   return std::numeric_limits<signedType>::min();
+                                   return std::numeric_limits<signed_type>::min();
                                }
                                else
                                {
@@ -84,18 +84,18 @@ void copy_unsigned_image(Ogre::Texture* _texture, const data::image& _image)
 
 // ----------------------------------------------------------------------------
 
-TextureLoader::return_t TextureLoader::load(const sight::data::image& _image, Ogre::Texture* _texture)
+texture_loader::return_t texture_loader::load(const sight::data::image& _image, Ogre::Texture* _texture)
 {
-    const auto num_dim = _image.numDimensions();
+    const auto num_dim = _image.num_dimensions();
     SIGHT_ASSERT("Only handle 2D and 3D textures", num_dim >= 2 && num_dim <= 3);
 
-    const data::image::Size size = _image.size();
+    const data::image::size_t size = _image.size();
 
     const auto width  = static_cast<uint32_t>(size[0]);
     const auto height = num_dim >= 2 ? static_cast<uint32_t>(size[1]) : 1;
     const auto depth  = num_dim == 3 ? static_cast<uint32_t>(size[2]) : 1;
 
-    const Ogre::PixelFormat pixel_format = viz::scene3d::utils::getPixelFormatOgre(_image);
+    const Ogre::PixelFormat pixel_format = viz::scene3d::utils::get_pixel_format_ogre(_image);
 
     const auto tex_type = num_dim == 2 ? Ogre::TEX_TYPE_2D : Ogre::TEX_TYPE_3D;
 
@@ -105,7 +105,7 @@ TextureLoader::return_t TextureLoader::load(const sight::data::image& _image, Og
        || _texture->getTextureType() != tex_type
        || _texture->getFormat() != pixel_format)
     {
-        viz::scene3d::utils::allocateTexture(
+        viz::scene3d::utils::allocate_texture(
             _texture,
             size[0],
             size[1],
@@ -121,7 +121,7 @@ TextureLoader::return_t TextureLoader::load(const sight::data::image& _image, Og
     // Workaround because of a bug in Ogre with SNORM formats
     // All SNORM formats are bound to unsigned integers instead of signed integers
     // Thus, we translate the values from [MIN;MAX] to [MIN+(MAX-MIN)/2;MAX+(MAX-MIN)/2]
-    const auto src_type = _image.getType();
+    const auto src_type = _image.type();
 
     if(src_type == core::type::INT8)
     {
@@ -156,7 +156,7 @@ TextureLoader::return_t TextureLoader::load(const sight::data::image& _image, Og
         _texture->getBuffer(0, 0)->blitFromMemory(ogre_image.getPixelBox(0, 0));
     }
 
-    return utils::getTextureWindow(src_type);
+    return utils::get_texture_window(src_type);
 }
 
 // ----------------------------------------------------------------------------

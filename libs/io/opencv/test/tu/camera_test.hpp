@@ -35,7 +35,7 @@ class camera_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(camera_test);
-    CPPUNIT_TEST(copyToCv);
+    CPPUNIT_TEST(copy_to_cv);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,7 +43,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void copyToCv();
+    static void copy_to_cv();
 };
 
 } // namespace sight::io::opencv::ut

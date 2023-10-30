@@ -56,13 +56,13 @@ public:
     APP_API static SPTR(config_manager) make();
 
     /// Return state
-    bool isCreated() const;
+    bool is_created() const;
     bool started() const;
     bool stopped() const;
-    bool isDestroyed() const;
+    bool is_destroyed() const;
 
     /// Set configuration
-    void setConfig(const config_t& _cfg);
+    void set_config(const config_t& _cfg);
 
     /**
      * @brief Set configuration
@@ -70,20 +70,20 @@ public:
      * @param replaceFields the associations between the value and the pattern to replace in the config.
      * @param autoPrefixId prefix every id with the name of the configuration .
      */
-    APP_API virtual void setConfig(
+    APP_API virtual void set_config(
         const std::string& _config_id,
         const field_adaptor_t& _replace_fields = field_adaptor_t(),
         bool _auto_prefix_id                   = true
     )                                          = 0;
 
     /// Get config root
-    APP_API virtual data::object::sptr getConfigRoot() const = 0;
+    APP_API virtual data::object::sptr get_config_root() const = 0;
 
     /// Calls methods : create, start then update.
     APP_API virtual void launch() = 0;
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
-    APP_API virtual void stopAndDestroy() = 0;
+    APP_API virtual void stop_and_destroy() = 0;
 
     /// Creates objects and services from config
     APP_API virtual void create() = 0;
@@ -105,54 +105,54 @@ protected:
     /// Constructor. Does nothing.
     APP_API config_manager() = default;
 
-    enum ConfigState
+    enum config_state
     {
-        STATE_CREATED,
-        STATE_STARTED,
-        STATE_STOPPED,
-        STATE_DESTROYED
+        state_created,
+        state_started,
+        state_stopped,
+        state_destroyed
     };
 
     /// XML Configuration tree
-    core::runtime::config_t m_cfgElem;
+    core::runtime::config_t m_cfg_elem;
 
     /// Running state of the app config manager
-    ConfigState m_state {STATE_DESTROYED};
+    config_state m_state {state_destroyed};
 };
 
 //------------------------------------------------------------------------------
 
-inline bool config_manager::isCreated() const
+inline bool config_manager::is_created() const
 {
-    return m_state == STATE_CREATED;
+    return m_state == state_created;
 }
 
 //------------------------------------------------------------------------------
 
 inline bool config_manager::started() const
 {
-    return m_state == STATE_STARTED;
+    return m_state == state_started;
 }
 
 //------------------------------------------------------------------------------
 
 inline bool config_manager::stopped() const
 {
-    return m_state == STATE_STOPPED;
+    return m_state == state_stopped;
 }
 
 //------------------------------------------------------------------------------
 
-inline bool config_manager::isDestroyed() const
+inline bool config_manager::is_destroyed() const
 {
-    return m_state == STATE_DESTROYED;
+    return m_state == state_destroyed;
 }
 
 //------------------------------------------------------------------------------
 
-inline void config_manager::setConfig(const config_t& _cfg)
+inline void config_manager::set_config(const config_t& _cfg)
 {
-    m_cfgElem = _cfg;
+    m_cfg_elem = _cfg;
 }
 
 //------------------------------------------------------------------------------

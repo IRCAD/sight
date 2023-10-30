@@ -40,16 +40,16 @@ namespace sight::module::ui::qt::calibration
 static const core::com::slots::key_t DISPLAY_IMAGE_SLOT = "displayImage";
 static const core::com::slots::key_t STOP_CONFIG_SLOT   = "stopConfig";
 
-static const std::string s_SINGLE_IMAGE_CONFIG = "singleImageConfig";
+static const std::string SINGLE_IMAGE_CONFIG = "singleImageConfig";
 
-static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
+static const std::string CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
 
 display_calibration_info::display_calibration_info() noexcept
 {
-    new_slot(DISPLAY_IMAGE_SLOT, &display_calibration_info::displayImage, this);
-    new_slot(STOP_CONFIG_SLOT, &display_calibration_info::stopConfig, this);
+    new_slot(DISPLAY_IMAGE_SLOT, &display_calibration_info::display_image, this);
+    new_slot(STOP_CONFIG_SLOT, &display_calibration_info::stop_config, this);
 }
 
 //------------------------------------------------------------------------------
@@ -68,12 +68,12 @@ void display_calibration_info::starting()
 
 void display_calibration_info::stopping()
 {
-    if(m_configMgr)
+    if(m_config_mgr)
     {
         core::com::proxy::sptr proxies = core::com::proxy::get();
         proxies->disconnect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
-        m_configMgr->stopAndDestroy();
-        m_configMgr.reset();
+        m_config_mgr->stop_and_destroy();
+        m_config_mgr.reset();
     }
 }
 
@@ -91,9 +91,9 @@ void display_calibration_info::updating()
 
 //------------------------------------------------------------------------------
 
-void display_calibration_info::stopConfig()
+void display_calibration_info::stop_config()
 {
-    if(m_configMgr)
+    if(m_config_mgr)
     {
         this->stopping();
     }
@@ -101,49 +101,49 @@ void display_calibration_info::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void display_calibration_info::displayImage(std::size_t _idx)
+void display_calibration_info::display_image(std::size_t _idx)
 {
-    if(!m_configMgr)
+    if(!m_config_mgr)
     {
         // Grab images from our composite data
-        const auto cal_info1 = m_calibrationInfo1.lock();
-        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
+        const auto cal_info1 = m_calibration_info1.lock();
+        SIGHT_ASSERT("Object " << CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
 
-        const auto cal_info2 = m_calibrationInfo2.lock();
+        const auto cal_info2 = m_calibration_info2.lock();
 
-        std::string str_config = std::string(s_ONE_IMAGE_CONFIG);
+        std::string str_config = std::string(ONE_IMAGE_CONFIG);
 
         // Prepare configuration
         sight::app::field_adaptor_t replace_map;
 
-        data::image::csptr img1 = cal_info1->getImage(_idx);
+        data::image::csptr img1 = cal_info1->get_image(_idx);
         replace_map["imageId1"]        = img1->get_id();
         replace_map["calibrationData"] = cal_info1->get_id();
-        data::point_list::csptr point_list1 = cal_info1->getPointList(img1);
+        data::point_list::csptr point_list1 = cal_info1->get_point_list(img1);
         replace_map["pointListId1"] = point_list1->get_id();
 
         if(cal_info2)
         {
-            str_config = std::string(s_TWO_IMAGES_CONFIG);
+            str_config = std::string(TWO_IMAGES_CONFIG);
 
-            data::image::csptr img2 = cal_info2->getImage(_idx);
+            data::image::csptr img2 = cal_info2->get_image(_idx);
             replace_map["imageId2"] = img2->get_id();
-            data::point_list::csptr point_list2 = cal_info2->getPointList(img2);
+            data::point_list::csptr point_list2 = cal_info2->get_point_list(img2);
             replace_map["pointListId2"] = point_list2->get_id();
         }
 
-        replace_map[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
+        replace_map[CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
-        const auto config = app::extension::config::getDefault()->getAdaptedTemplateConfig(
+        const auto config = app::extension::config::get_default()->get_adapted_template_config(
             str_config,
             replace_map,
             true
         );
 
         // Launch configuration
-        m_configMgr = app::config_manager::make();
-        m_configMgr->setConfig(config);
-        m_configMgr->launch();
+        m_config_mgr = app::config_manager::make();
+        m_config_mgr->set_config(config);
+        m_config_mgr->launch();
 
         // Proxy to be notified of the window closure
         core::com::proxy::sptr proxies = core::com::proxy::get();

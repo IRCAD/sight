@@ -31,14 +31,14 @@ namespace sight::activity::validator::ut
 class related_study_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(related_study_test);
-CPPUNIT_TEST(studiesAreRelatedTest);
-CPPUNIT_TEST(studiesArentRelatedTest);
+CPPUNIT_TEST(studies_are_related_test);
+CPPUNIT_TEST(studies_arent_related_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void studiesAreRelatedTest();
-    static void studiesArentRelatedTest();
+    static void studies_are_related_test();
+    static void studies_arent_related_test();
 };
 
 } // namespace sight::activity::validator::ut

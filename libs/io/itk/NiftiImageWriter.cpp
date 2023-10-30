@@ -35,42 +35,42 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::itk::NiftiImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::itk::nifti_image_writer);
 
 namespace sight::io::itk
 {
 
-struct NiftiSaverFunctor
+struct nifti_saver_functor
 {
-    struct Parameter
+    struct parameter
     {
         std::string m_filename;
-        data::image::csptr m_dataImage;
-        io::itk::NiftiImageWriter::sptr m_fwWriter;
+        data::image::csptr m_data_image;
+        io::itk::nifti_image_writer::sptr m_fw_writer;
     };
 
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(const Parameter& _param)
+    void operator()(const parameter& _param)
     {
         SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
         // Reader IO (*1*)
-        typename ::itk::NiftiImageIO::Pointer image_io_write = ::itk::NiftiImageIO::New();
+        auto image_io_write = ::itk::NiftiImageIO::New();
 
         // create writer
-        using itkImageType = ::itk::Image<PIXELTYPE, 3>;
-        using writer_t     = typename ::itk::ImageFileWriter<itkImageType>;
-        typename writer_t::Pointer writer = writer_t::New();
+        using itk_image_type = ::itk::Image<PIXELTYPE, 3>;
+        using writer_t       = typename ::itk::ImageFileWriter<itk_image_type>;
+        auto writer = writer_t::New();
 
         // set observation (*2*)
         ::itk::LightProcessObject::Pointer cast_helper = (::itk::LightProcessObject*) (image_io_write.GetPointer());
         assert(cast_helper.IsNotNull());
-        Progressor progress(cast_helper, _param.m_fwWriter, _param.m_filename);
+        progressor progress(cast_helper, _param.m_fw_writer, _param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itk_image = io::itk::move_to_itk<itkImageType>(_param.m_dataImage);
+        auto itk_image = io::itk::move_to_itk<itk_image_type>(_param.m_data_image);
 
         writer->SetFileName(_param.m_filename.c_str());
         writer->SetInput(itk_image);
@@ -83,26 +83,26 @@ struct NiftiSaverFunctor
 
 //------------------------------------------------------------------------------
 
-void NiftiImageWriter::write()
+void nifti_image_writer::write()
 {
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    NiftiSaverFunctor::Parameter saver_param;
-    saver_param.m_filename  = this->get_file().string();
-    saver_param.m_dataImage = getConcreteObject();
-    saver_param.m_fwWriter  = this->get_sptr();
-    assert(saver_param.m_dataImage);
+    nifti_saver_functor::parameter saver_param;
+    saver_param.m_filename   = this->get_file().string();
+    saver_param.m_data_image = get_concrete_object();
+    saver_param.m_fw_writer  = this->get_sptr();
+    assert(saver_param.m_data_image);
 
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, NiftiSaverFunctor>::invoke(
-        saver_param.m_dataImage->getType(),
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, nifti_saver_functor>::invoke(
+        saver_param.m_data_image->type(),
         saver_param
     );
 }
 
 //------------------------------------------------------------------------------
 
-std::string NiftiImageWriter::extension() const
+std::string nifti_image_writer::extension() const
 {
     if(get_file().empty() || (get_file().string().find(".nii") != std::string::npos))
     {

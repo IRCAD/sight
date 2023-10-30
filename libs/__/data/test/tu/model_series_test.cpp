@@ -53,7 +53,7 @@ void model_series_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void model_series_test::modelTest()
+void model_series_test::model_test()
 {
     CPPUNIT_ASSERT(m_series);
 
@@ -64,39 +64,39 @@ void model_series_test::modelTest()
 
     data::mesh::sptr mesh1 = std::make_shared<data::mesh>();
     CPPUNIT_ASSERT(mesh1);
-    utest_data::generator::mesh::generateQuadMesh(mesh1);
+    utest_data::generator::mesh::generate_quad_mesh(mesh1);
 
     data::mesh::sptr mesh2 = std::make_shared<data::mesh>();
     CPPUNIT_ASSERT(mesh2);
-    utest_data::generator::mesh::generateQuadMesh(mesh2);
+    utest_data::generator::mesh::generate_quad_mesh(mesh2);
 
-    rec1->setMesh(mesh1);
-    rec2->setMesh(mesh2);
+    rec1->set_mesh(mesh1);
+    rec2->set_mesh(mesh2);
 
     model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     recs.push_back(rec2);
 
-    m_series->setReconstructionDB(recs);
-    CPPUNIT_ASSERT_EQUAL(2, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
+    m_series->set_reconstruction_db(recs);
+    CPPUNIT_ASSERT_EQUAL(2, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_test::deep_copyTest()
+void model_series_test::deep_copy_test()
 {
     CPPUNIT_ASSERT(m_series);
 
     auto rec1  = std::make_shared<data::reconstruction>();
     auto mesh1 = std::make_shared<data::mesh>();
-    utest_data::generator::mesh::generateQuadMesh(mesh1);
+    utest_data::generator::mesh::generate_quad_mesh(mesh1);
 
-    rec1->setMesh(mesh1);
+    rec1->set_mesh(mesh1);
     model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
-    m_series->setReconstructionDB(recs);
+    m_series->set_reconstruction_db(recs);
 
     auto second_series = std::make_shared<data::model_series>();
 
@@ -106,24 +106,24 @@ void model_series_test::deep_copyTest()
 
     CPPUNIT_ASSERT(*m_series == *second_series);
 
-    CPPUNIT_ASSERT_EQUAL(1, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] != second_series->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(1, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT(m_series->get_reconstruction_db()[0] != second_series->get_reconstruction_db()[0]);
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_test::shallow_copyTest()
+void model_series_test::shallow_copy_test()
 {
     CPPUNIT_ASSERT(m_series);
 
     auto rec1  = std::make_shared<data::reconstruction>();
     auto mesh1 = std::make_shared<data::mesh>();
-    utest_data::generator::mesh::generateQuadMesh(mesh1);
-    rec1->setMesh(mesh1);
+    utest_data::generator::mesh::generate_quad_mesh(mesh1);
+    rec1->set_mesh(mesh1);
     model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
-    m_series->setReconstructionDB(recs);
+    m_series->set_reconstruction_db(recs);
 
     auto second_series = std::make_shared<data::model_series>();
 
@@ -133,18 +133,18 @@ void model_series_test::shallow_copyTest()
 
     CPPUNIT_ASSERT(*m_series == *second_series);
 
-    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] == second_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(m_series->getReconstructionDB()[0], second_series->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT(m_series->get_reconstruction_db()[0] == second_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(m_series->get_reconstruction_db()[0], second_series->get_reconstruction_db()[0]);
 
-    CPPUNIT_ASSERT_EQUAL(recs[0], m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(recs[0], second_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(1, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(recs[0], m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(recs[0], second_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(1, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->get_reconstruction_db().size());
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_test::equalityTest()
+void model_series_test::equality_test()
 {
     auto series1 = std::make_shared<data::model_series>();
     auto series2 = std::make_shared<data::model_series>();
@@ -164,8 +164,8 @@ void model_series_test::equalityTest()
         *series1 == *series2 && !(*series1 != *series2) \
     );
 
-    TEST(setReconstructionDB({std::make_shared<data::reconstruction>()}));
-    TEST(setDicomReference(std::make_shared<data::dicom_series>()));
+    TEST(set_reconstruction_db({std::make_shared<data::reconstruction>()}));
+    TEST(set_dicom_reference(std::make_shared<data::dicom_series>()));
 
     #undef TEST
 }

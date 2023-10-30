@@ -53,10 +53,10 @@ struct CORE_CLASS_API slot_run<void(A ...)>: slot_base
     /**
      * @name Typedefs
      * @{ */
-    typedef void signature_type(A ...);
-    typedef slot_run<signature_type> self_type;
-    typedef SPTR(self_type) sptr;
-    typedef WPTR(self_type) wptr;
+    using signature_type = void (A ...);
+    using self_t         = slot_run<signature_type>;
+    using sptr           = std::shared_ptr<self_t>;
+    using wptr           = std::weak_ptr<self_t>;
     /**  @} */
 
     slot_run() :

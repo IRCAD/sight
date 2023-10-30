@@ -46,22 +46,23 @@ struct CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
     /**
      * @name Typedefs
      * @{ */
-    typedef void signature_type(A ...);
-    typedef slot_connection<signature_type> self_type;
+    using signature_type = void (A ...);
 
-    typedef SPTR(self_type) sptr;
+    using self_t = slot_connection<signature_type>;
 
-    typedef signal<signature_type> signal_type;
-    typedef SPTR(signal_type)      signal_sptr_type;
-    typedef WPTR(signal_type)      signal_wptr_type;
+    using sptr = std::shared_ptr<self_t>;
 
-    typedef slot_run<signature_type> slot_wrapper_type;
-    typedef SPTR(slot_wrapper_type)  slot_wrapper_sptr_type;
+    using signal_type      = signal<signature_type>;
+    using signal_sptr_type = std::shared_ptr<signal_type>;
+    using signal_wptr_type = std::weak_ptr<signal_type>;
 
-    typedef slot_run<signature_type> slot_run_type;
-    typedef SPTR(slot_run_type)      slot_run_sptr_type;
+    using slot_wrapper_type      = slot_run<signature_type>;
+    using slot_wrapper_sptr_type = std::shared_ptr<slot_wrapper_type>;
 
-    typedef std::pair<bool, WPTR(slot_run_type)> pair_type;
+    using slot_run_type      = slot_run<signature_type>;
+    using slot_run_sptr_type = std::shared_ptr<slot_run_type>;
+
+    using pair_type = std::pair<bool, std::weak_ptr<slot_run_type> >;
     /**  @} */
 
     /// Disconnect the related slot.

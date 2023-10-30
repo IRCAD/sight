@@ -82,10 +82,10 @@ public:
     SIGHT_DECLARE_SERVICE(chess_board_detector, sight::service::controller);
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was successful.
-    typedef core::com::signal<void (bool)> chessboard_detected_signal_t;
+    using chessboard_detected_signal_t = core::com::signal<void (bool)>;
 
     /// Signal type sent after a successful detection.
-    typedef core::com::signal<void ()> chessboard_found_signal_t;
+    using chessboard_found_signal_t = core::com::signal<void ()>;
 
     /// Constructor
     MODULE_GEOMETRY_VISION_API chess_board_detector() noexcept;
@@ -113,28 +113,28 @@ protected:
 private:
 
     /// SLOT: stores the last detected chessboard in the CalibrationInfo structure.
-    void recordPoints();
+    void record_points();
 
     /// SLOT: updates the chessboard size from the preferences.
-    void updateChessboardSize();
+    void update_chessboard_size();
 
     /// Runs the detection for the given input index.
-    void doDetection(std::size_t _image_index);
+    void do_detection(std::size_t _image_index);
 
     /// Signal emitted after detection.
-    chessboard_detected_signal_t::sptr m_sigChessboardDetected;
+    chessboard_detected_signal_t::sptr m_sig_chessboard_detected;
 
     /// Signal emitted if a chessboard can be seen in the image.
-    chessboard_found_signal_t::sptr m_sigChessboardFound;
+    chessboard_found_signal_t::sptr m_sig_chessboard_found;
 
     /// Preference key to retrieve the chessboard width.
-    std::string m_widthKey;
+    std::string m_width_key;
 
     /// Preference key to retrieve the chessboard height.
-    std::string m_heightKey;
+    std::string m_height_key;
 
     /// Preference key to retrieve the scaling factor applied to the image before detection.
-    std::string m_scaleKey;
+    std::string m_scale_key;
 
     /// Width of the chessboard we're looking for.
     std::size_t m_width {11};
@@ -145,18 +145,18 @@ private:
     float m_scale {1.F};
 
     /// Last detected chessboard points in each image. Null if detection failed.
-    std::vector<data::point_list::sptr> m_pointLists;
+    std::vector<data::point_list::sptr> m_point_lists;
 
     /// Last images on which a chessboard was detected. Null if detection failed.
     std::vector<data::image::sptr> m_images;
 
-    static constexpr std::string_view s_IMAGE_INPUT     = "image";
-    static constexpr std::string_view s_CALINFO_INOUT   = "calInfo";
-    static constexpr std::string_view s_DETECTION_INOUT = "detection";
+    static constexpr std::string_view IMAGE_INPUT     = "image";
+    static constexpr std::string_view CALINFO_INOUT   = "calInfo";
+    static constexpr std::string_view DETECTION_INOUT = "detection";
 
-    data::ptr_vector<data::image, data::Access::in> m_image {this, s_IMAGE_INPUT, true};
-    data::ptr_vector<data::calibration_info, data::Access::inout> m_calInfo {this, s_CALINFO_INOUT};
-    data::ptr_vector<data::point_list, data::Access::inout> m_detection {this, s_DETECTION_INOUT};
+    data::ptr_vector<data::image, data::access::in> m_image {this, IMAGE_INPUT, true};
+    data::ptr_vector<data::calibration_info, data::access::inout> m_cal_info {this, CALINFO_INOUT};
+    data::ptr_vector<data::point_list, data::access::inout> m_detection {this, DETECTION_INOUT};
 };
 
 } //namespace sight::module::geometry::vision

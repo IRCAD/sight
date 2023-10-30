@@ -40,7 +40,7 @@ class FILTER_IMAGE_CLASS_API line_drawer
 {
 public:
 
-    typedef bresenham_line::coordinates_t coordinates_t;
+    using coordinates_t = bresenham_line::coordinates_t;
 
     /// Constructor, instantiates a drawer with an image and a region of interest.
     FILTER_IMAGE_API line_drawer(data::image::sptr _img, data::image::csptr _roi);
@@ -80,7 +80,7 @@ private:
      * @param[in,out] diff vector storing the differences in the image before and after drawing.
      * @return true if at least one pixel has been drawn, false otherwise.
      */
-    bool drawEllipse(
+    bool draw_ellipse(
         const line_drawer::coordinates_t& _c,
         data::image::buffer_t* _value,
         double _radius,
@@ -104,7 +104,7 @@ private:
      * @param[in,out] diff vector storing the differences in the image before and after drawing.
      * @return true if at least one pixel has been drawn, false otherwise.
      */
-    bool drawPixel(
+    bool draw_pixel(
         data::image::index_t _index,
         data::image::buffer_t* _value,
         bool _overwrite,
@@ -112,25 +112,25 @@ private:
     );
 
     /// Takes ROI into account.
-    bool m_useROI;
+    bool m_use_roi;
 
     /// image pixel size.
-    unsigned char m_imageTypeSize;
+    unsigned char m_image_type_size;
 
     /// ROI pixel size.
-    unsigned char m_roiTypeSize;
+    unsigned char m_roi_type_size;
 
     /// image length.
-    data::image::index_t m_yPitch;
+    data::image::index_t m_y_pitch;
 
     /// image depth.
-    data::image::index_t m_zPitch;
+    data::image::index_t m_z_pitch;
 
     /// image to draw in.
     data::image::sptr m_image;
 
     /// ROI to use.
-    data::image::csptr m_roiImage;
+    data::image::csptr m_roi_image;
 };
 
 } // namespace sight::filter::image

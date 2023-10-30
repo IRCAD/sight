@@ -101,26 +101,26 @@ private:
      * @}
      */
     /// Slot: stop the config.
-    void stopConfig();
+    void stop_config();
 
     /// Slot: Launch an appConfig to display an image on an external window.
-    void displayImage(std::size_t _idx);
+    void display_image(std::size_t _idx);
     /**
      * @}
      */
 
     /// config manager, used to launch the config
-    app::config_manager::sptr m_configMgr;
+    app::config_manager::sptr m_config_mgr;
 
-    static constexpr std::string_view s_ONE_IMAGE_CONFIG {"displayImageConfig"};
-    static constexpr std::string_view s_TWO_IMAGES_CONFIG {"displayTwoImagesConfig"};
+    static constexpr std::string_view ONE_IMAGE_CONFIG {"displayImageConfig"};
+    static constexpr std::string_view TWO_IMAGES_CONFIG {"displayTwoImagesConfig"};
 
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 
-    static constexpr std::string_view s_CALIBRATION_INFO_1 = "calInfo1";
-    static constexpr std::string_view s_CALIBRATION_INFO_2 = "calInfo2";
-    data::ptr<data::calibration_info, data::Access::in> m_calibrationInfo1 {this, s_CALIBRATION_INFO_1, false};
-    data::ptr<data::calibration_info, data::Access::in> m_calibrationInfo2 {this, s_CALIBRATION_INFO_2, false, true};
+    static constexpr std::string_view CALIBRATION_INFO_1 = "calInfo1";
+    static constexpr std::string_view CALIBRATION_INFO_2 = "calInfo2";
+    data::ptr<data::calibration_info, data::access::in> m_calibration_info1 {this, CALIBRATION_INFO_1, false};
+    data::ptr<data::calibration_info, data::access::in> m_calibration_info2 {this, CALIBRATION_INFO_2, false, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

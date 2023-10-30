@@ -47,35 +47,35 @@ static const core::com::slots::key_t CHANGE_FIELD_SLOT = "changeField";
 
 model_series::model_series() noexcept
 {
-    new_slot(CHANGE_FIELD_SLOT, &model_series::showReconstructionsOnFieldChanged, this);
+    new_slot(CHANGE_FIELD_SLOT, &model_series::show_reconstructions_on_field_changed, this);
 }
 
 //------------------------------------------------------------------------------
 
 void model_series::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    this->setTransformId(
+    this->set_transform_id(
         config.get<std::string>(
-            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
             this->get_id() + "_transform"
         )
     );
 
-    static const std::string s_AUTORESET_CAMERA_CONFIG = s_CONFIG + "autoresetcamera";
-    static const std::string s_MATERIAL_CONFIG         = s_CONFIG + "material";
-    static const std::string s_DYNAMIC_CONFIG          = s_CONFIG + "dynamic";
-    static const std::string s_DYNAMIC_VERTICES_CONFIG = s_CONFIG + "dynamicVertices";
-    static const std::string s_QUERY_CONFIG            = s_CONFIG + "queryFlags";
+    static const std::string s_AUTORESET_CAMERA_CONFIG = CONFIG + "autoresetcamera";
+    static const std::string s_MATERIAL_CONFIG         = CONFIG + "material";
+    static const std::string s_DYNAMIC_CONFIG          = CONFIG + "dynamic";
+    static const std::string s_DYNAMIC_VERTICES_CONFIG = CONFIG + "dynamicVertices";
+    static const std::string s_QUERY_CONFIG            = CONFIG + "queryFlags";
 
-    m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
+    m_auto_reset_camera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
-    m_materialTemplateName = config.get<std::string>(s_MATERIAL_CONFIG, m_materialTemplateName);
-    m_isDynamic            = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
-    m_isDynamicVertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
+    m_material_template_name = config.get<std::string>(s_MATERIAL_CONFIG, m_material_template_name);
+    m_is_dynamic             = config.get<bool>(s_DYNAMIC_CONFIG, m_is_dynamic);
+    m_is_dynamic_vertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_is_dynamic_vertices);
 
     if(config.count(s_QUERY_CONFIG) != 0U)
     {
@@ -86,12 +86,12 @@ void model_series::configuring()
             hexa_mask.length() > 2
             && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
+        m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
     if(config.get_optional<bool>("visible"))
     {
-        m_isVisibleTag = true;
+        m_is_visible_tag = true;
     }
 }
 
@@ -109,12 +109,12 @@ void model_series::starting()
 service::connections_t model_series::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_MODEL_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
-    connections.push(s_MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
-    connections.push(s_MODEL_INPUT, data::model_series::ADDED_FIELDS_SIG, CHANGE_FIELD_SLOT);
-    connections.push(s_MODEL_INPUT, data::model_series::REMOVED_FIELDS_SIG, CHANGE_FIELD_SLOT);
-    connections.push(s_MODEL_INPUT, data::model_series::CHANGED_FIELDS_SIG, CHANGE_FIELD_SLOT);
+    connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::ADDED_FIELDS_SIG, CHANGE_FIELD_SLOT);
+    connections.push(MODEL_INPUT, data::model_series::REMOVED_FIELDS_SIG, CHANGE_FIELD_SLOT);
+    connections.push(MODEL_INPUT, data::model_series::CHANGED_FIELDS_SIG, CHANGE_FIELD_SLOT);
     return connections;
 }
 
@@ -131,9 +131,9 @@ void model_series::updating()
     const bool show_rec =
         model_series->get_field("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
 
-    for(const auto& reconstruction : model_series->getReconstructionDB())
+    for(const auto& reconstruction : model_series->get_reconstruction_db())
     {
-        auto adaptor = this->registerService<module::viz::scene3d::adaptor::reconstruction>(
+        auto adaptor = this->register_service<module::viz::scene3d::adaptor::reconstruction>(
             "sight::module::viz::scene3d::adaptor::reconstruction"
         );
         adaptor->set_input(reconstruction, "reconstruction", true);
@@ -141,28 +141,28 @@ void model_series::updating()
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
         adaptor->set_id(this->get_id() + "_" + adaptor->get_id());
 
-        adaptor->setRenderService(this->getRenderService());
-        adaptor->setLayerID(m_layerID);
-        adaptor->setTransformId(this->getTransformId());
-        adaptor->setMaterialTemplateName(m_materialTemplateName);
-        adaptor->setAutoResetCamera(m_autoResetCamera);
-        adaptor->setQueryFlags(m_queryFlags);
+        adaptor->set_render_service(this->render_service());
+        adaptor->set_layer_id(m_layer_id);
+        adaptor->set_transform_id(this->get_transform_id());
+        adaptor->set_material_template_name(m_material_template_name);
+        adaptor->set_auto_reset_camera(m_auto_reset_camera);
+        adaptor->set_query_flags(m_query_flags);
 
         adaptor->start();
 
-        if(m_isVisibleTag)
+        if(m_is_visible_tag)
         {
-            adaptor->updateVisibility(!m_isVisible);
+            adaptor->update_visibility(!m_visible);
             SIGHT_WARN("The value of the modelSeries field will not be taken into account");
         }
         else
         {
-            adaptor->updateVisibility(!show_rec);
+            adaptor->update_visibility(!show_rec);
         }
 
-        module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = adaptor->getMeshAdaptor();
-        mesh_adaptor->setDynamic(m_isDynamic);
-        mesh_adaptor->setDynamicVertices(m_isDynamicVertices);
+        module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = adaptor->get_mesh_adaptor();
+        mesh_adaptor->set_dynamic(m_is_dynamic);
+        mesh_adaptor->set_dynamic_vertices(m_is_dynamic_vertices);
     }
 }
 
@@ -170,35 +170,35 @@ void model_series::updating()
 
 void model_series::stopping()
 {
-    this->unregisterServices();
+    this->unregister_services();
 }
 
 //------------------------------------------------------------------------------
 
-void model_series::setVisible(bool _visible)
+void model_series::set_visible(bool _visible)
 {
-    auto adaptors = this->getRegisteredServices();
+    auto adaptors = this->get_registered_services();
     for(const auto& adaptor : adaptors)
     {
         auto rec_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
-        rec_adaptor->updateVisibility(!_visible);
+        rec_adaptor->update_visibility(!_visible);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void model_series::showReconstructionsOnFieldChanged()
+void model_series::show_reconstructions_on_field_changed()
 {
     const auto model_series = m_model.lock();
 
     const bool show_rec =
         model_series->get_field("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
 
-    auto adaptors = this->getRegisteredServices();
+    auto adaptors = this->get_registered_services();
     for(const auto& adaptor : adaptors)
     {
         auto rec_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
-        rec_adaptor->updateVisibility(!show_rec);
+        rec_adaptor->update_visibility(!show_rec);
     }
 }
 

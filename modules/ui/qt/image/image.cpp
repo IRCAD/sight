@@ -51,7 +51,7 @@ void image::starting()
 {
     this->create();
 
-    const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* const layout = new QVBoxLayout();
     auto* const label  = new QLabel("");
@@ -83,7 +83,7 @@ void image::starting()
     }
 
     layout->addWidget(label);
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 }
 
 //-----------------------------------------------------------------------------

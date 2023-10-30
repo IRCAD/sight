@@ -85,24 +85,24 @@ protected:
     MODULE_NAVIGATION_CALIBRATION_API void stopping() override;
 
     /// Registers matrix slot
-    MODULE_NAVIGATION_CALIBRATION_API void computeRegistration(core::hires_clock::type _timestamp)
+    MODULE_NAVIGATION_CALIBRATION_API void compute_registration(core::hires_clock::type _timestamp)
     override;
 
 private:
 
-    bool m_hasOutputCenter {false};
+    bool m_has_output_center {false};
 
-    static constexpr std::string_view s_MATRIX_CENTER_OUTPUT      = "matrixCenter";
-    static constexpr std::string_view s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
-    static constexpr std::string_view s_MATRICES_VECTOR_INPUT     = "matricesVector";
+    static constexpr std::string_view MATRIX_CENTER_OUTPUT      = "matrixCenter";
+    static constexpr std::string_view MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
+    static constexpr std::string_view MATRICES_VECTOR_INPUT     = "matricesVector";
 
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::out> m_matrixCenter {this, s_MATRIX_CENTER_OUTPUT,
-                                                                                     false, true
+    sight::data::ptr<sight::data::matrix4, sight::data::access::out> m_matrix_center {this, MATRIX_CENTER_OUTPUT,
+                                                                                      false, true
     };
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::out> m_matrixCalibration {this,
-                                                                                          s_MATRIX_CALIBRATION_OUTPUT
+    sight::data::ptr<sight::data::matrix4, sight::data::access::out> m_matrix_calibration {this,
+                                                                                           MATRIX_CALIBRATION_OUTPUT
     };
-    sight::data::ptr<sight::data::vector, sight::data::Access::in> m_matricesVector {this, s_MATRICES_VECTOR_INPUT};
+    sight::data::ptr<sight::data::vector, sight::data::access::in> m_matrices_vector {this, MATRICES_VECTOR_INPUT};
 };
 
 } // namespace sight::module::navigation::calibration

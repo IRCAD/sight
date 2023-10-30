@@ -52,12 +52,12 @@ void image_series::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_dicomReference  = other->m_dicomReference;
-    m_fiducialsSeries = other->m_fiducialsSeries;
+    m_dicom_reference  = other->m_dicom_reference;
+    m_fiducials_series = other->m_fiducials_series;
 
     series::shallow_copy(other);
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -74,27 +74,27 @@ void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr
         !bool(other)
     );
 
-    m_dicomReference = data::object::copy(other->m_dicomReference);
+    m_dicom_reference = data::object::copy(other->m_dicom_reference);
 
-    m_fiducialsSeries = std::make_shared<fiducials_series>();
-    m_fiducialsSeries->deep_copy(other->m_fiducialsSeries, _cache);
+    m_fiducials_series = std::make_shared<fiducials_series>();
+    m_fiducials_series->deep_copy(other->m_fiducials_series, _cache);
 
     series::deep_copy(other, _cache);
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool image_series::operator==(const image_series& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_dicomReference, _other.m_dicomReference))
+    if(!core::tools::is_equal(m_dicom_reference, _other.m_dicom_reference))
     {
         return false;
     }
 
     // Super class last
-    return series::operator==(_other) && base_class::operator==(_other);
+    return series::operator==(_other) && base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -106,97 +106,90 @@ bool image_series::operator!=(const image_series& _other) const noexcept
 
 //------------------------------------------------------------------------------
 
-std::vector<double> image_series::getWindowCenter() const noexcept
+std::vector<double> image_series::window_center() const noexcept
 {
-    return series::getWindowCenter();
+    return series::window_center();
 }
 
 //------------------------------------------------------------------------------
 
-void image_series::setWindowCenter(const std::vector<double>& _window_centers)
+void image_series::set_window_center(const std::vector<double>& _window_centers)
 {
-    series::setWindowCenter(_window_centers);
-    image::setWindowCenter(_window_centers);
+    series::set_window_center(_window_centers);
+    image::set_window_center(_window_centers);
 }
 
 //------------------------------------------------------------------------------
 
-void image_series::setWindowWidth(const std::vector<double>& _window_widths)
+void image_series::set_window_width(const std::vector<double>& _window_widths)
 {
-    series::setWindowWidth(_window_widths);
-    image::setWindowWidth(_window_widths);
+    series::set_window_width(_window_widths);
+    image::set_window_width(_window_widths);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<double> image_series::getWindowWidth() const noexcept
+std::vector<double> image_series::window_width() const noexcept
 {
-    return series::getWindowWidth();
+    return series::window_width();
 }
 
 //------------------------------------------------------------------------------
 
-void image_series::setRows(const std::optional<std::uint16_t>& _rows)
+void image_series::set_rows(const std::optional<std::uint16_t>& _rows)
 {
-    series::setRows(_rows);
+    series::set_rows(_rows);
 
     // Resize the image (if possible and needed...)
-    if(const auto pixel_format = getPixelFormat(); pixel_format != sight::data::image::PixelFormat::UNDEFINED)
+    if(const auto pixel_format = this->pixel_format(); pixel_format != sight::data::image::pixel_format::undefined)
     {
         const auto rows_value = _rows.value_or(1);
 
         if(const auto& original_size = size(); original_size[0] != rows_value)
         {
-            resize({std::size_t(rows_value), original_size[1], original_size[2]}, getType(), pixel_format);
+            resize({std::size_t(rows_value), original_size[1], original_size[2]}, type(), pixel_format);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void image_series::setColumns(const std::optional<std::uint16_t>& _columns)
+void image_series::set_columns(const std::optional<std::uint16_t>& _columns)
 {
-    series::setColumns(_columns);
+    series::set_columns(_columns);
 
     // Resize the image (if possible and needed...)
-    if(const auto pixel_format = getPixelFormat(); pixel_format != sight::data::image::PixelFormat::UNDEFINED)
+    if(const auto pixel_format = this->pixel_format(); pixel_format != sight::data::image::pixel_format::undefined)
     {
         const auto columns_value = _columns.value_or(1);
 
         if(const auto& original_size = size(); original_size[1] != columns_value)
         {
-            resize({original_size[0], std::size_t(columns_value), original_size[2]}, getType(), pixel_format);
+            resize({original_size[0], std::size_t(columns_value), original_size[2]}, type(), pixel_format);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t image_series::resize(const Size& _size, const core::type& _type, PixelFormat _format)
+std::size_t image_series::resize(const image::size_t& _size, const core::type& _type, enum pixel_format _format)
 {
-    series::shrinkFrames(_size[2]);
+    series::shrink_frames(_size[2]);
     return image::resize(_size, _type, _format);
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::csptr image_series::getFiducials() const
+fiducials_series::csptr image_series::get_fiducials() const
 {
-    return m_fiducialsSeries;
+    return m_fiducials_series;
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::sptr image_series::getFiducials()
+fiducials_series::sptr image_series::get_fiducials()
 {
-    return m_fiducialsSeries;
-}
-
-//------------------------------------------------------------------------------
-
-bool image_series::hasFiducials() const
-{
-    return !m_fiducialsSeries->getFiducialSets().empty();
+    return m_fiducials_series;
 }
 
 } // namespace sight::data

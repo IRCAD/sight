@@ -70,13 +70,13 @@ public:
      */
 
     MODULE_UI_QT_API static const core::com::signals::key_t ITEM_ADDED_SIG;
-    typedef core::com::signal<void (int)> item_added_signal_t;
+    using item_added_signal_t = core::com::signal<void (int)>;
 
     MODULE_UI_QT_API static const core::com::signals::key_t ITEM_REMOVED_SIG;
-    typedef core::com::signal<void (int)> item_removed_signal_t;
+    using item_removed_signal_t = core::com::signal<void (int)>;
 
     MODULE_UI_QT_API static const core::com::signals::key_t ITEM_DOUBLE_CLICKED_SIG;
-    typedef core::com::signal<void (int)> ItemDoubleClickedSignalType;
+    using item_double_clicked_signal_t = core::com::signal<void (int)>;
 
     /** @} */
 
@@ -89,10 +89,10 @@ public:
     MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_ITEM_SLOT;
 
     /// SLOT : Called to insert an item at index.
-    void insertItem(int _index, std::string _value);
+    void insert_item(int _index, std::string _value);
 
     /// SLOT : Called to remove the item at the index position.
-    void removeItem(int _index);
+    void remove_item(int _index);
 
     ///@}
 
@@ -115,12 +115,12 @@ protected:
 
 private:
 
-    QPointer<QListWidget> m_listWidget; /// listWidget
+    QPointer<QListWidget> m_list_widget; /// listWidget
 
 private Q_SLOTS:
 
     /// called when an item is double clicked
-    void onItemDoubleClicked(QListWidgetItem* _item);
+    void on_item_double_clicked(QListWidgetItem* _item);
 };
 
 } //namespace sight::module::ui::qt

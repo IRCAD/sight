@@ -8,21 +8,21 @@ and are, therefore, contained in sub-folders according to their specificity.
 ### General
 * **config_launcher**: starts/stops a template configuration.
 
-* **default_action**: defines the default action to have a simple action button.
+* **action**: defines the default action to have a simple action button.
 
 * **frame**: defines the default frame for standard application.
 
-* **job_bar**: displays a progress bar.
+* **jobbar**: displays a progress bar.
 
 * **menu**: defines the default menu for standard application.
 
-* **menu_bar**: defines the default menubar for standard application.
+* **menubar**: defines the default menubar for standard application.
 
 * **modify_layout**: modifies the layout of a configuration.
 
 * **quit**: closes the window and reset root object.
 
-* **tool_bar**: defines the default toolbar for standard application.
+* **toolbar**: defines the default toolbar for standard application.
 
 * **view**: defines the generic layout for application.
 

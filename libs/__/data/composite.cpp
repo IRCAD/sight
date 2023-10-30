@@ -43,21 +43,21 @@ void composite::shallow_copy(const object::csptr& _source)
         !other
     );
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool composite::operator==(const composite& _other) const noexcept
 {
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
 bool composite::operator!=(const composite& _other) const noexcept
 {
-    return base_class::operator!=(_other);
+    return base_class_t::operator!=(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void composite::deep_copy(const object::csptr& _source, const std::unique_ptr<de
         !other
     );
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 } // namespace sight::data

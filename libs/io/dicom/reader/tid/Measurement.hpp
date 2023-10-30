@@ -42,7 +42,7 @@ namespace sight::io::dicom::reader::tid
  * @brief Measurement TID
  * @see TID 300
  */
-class IO_DICOM_CLASS_API Measurement : public io::dicom::reader::tid::TemplateID<data::image>
+class IO_DICOM_CLASS_API measurement : public io::dicom::reader::tid::template_id<data::image>
 {
 public:
 
@@ -54,22 +54,22 @@ public:
      * @param[in] image Sight data object
      * @param[in] logger Logger
      */
-    IO_DICOM_API Measurement(
+    IO_DICOM_API measurement(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::sptr& _image,
         const core::log::logger::sptr& _logger
     );
 
     /// Destructor
-    IO_DICOM_API ~Measurement() override;
+    IO_DICOM_API ~measurement() override;
 
     /**
      * @brief Read a measurement node
      * @param[in] node Node that must be read
      */
-    IO_DICOM_API virtual void readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node);
+    IO_DICOM_API virtual void read_node(const SPTR(io::dicom::container::sr::dicom_sr_node)& _node);
 
 protected:
 
@@ -78,7 +78,7 @@ protected:
      * @param point1 First point
      * @param point2 Second point
      */
-    void addDistance(
+    void add_distance(
         const SPTR(data::point)& _point1,
         const SPTR(data::point)& _point2
     );

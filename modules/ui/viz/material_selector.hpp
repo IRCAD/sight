@@ -79,7 +79,7 @@ public:
      * @{
      */
     MODULE_UI_VIZ_API static const core::com::signals::key_t SELECTED_SIG;
-    typedef core::com::signal<void (std::string)> selected_signal_t;
+    using selected_signal_t = core::com::signal<void (std::string)>;
 /** @} */
 
 protected:
@@ -105,19 +105,19 @@ protected:
 protected Q_SLOTS:
 
     /// SLOT: Called when a material is selected
-    void onSelectedModeItem(const QString& _text);
+    void on_selected_mode_item(const QString& _text);
 
     /// SLOT: Called when the reload button is pushed
-    void onReloadMaterial();
+    void on_reload_material();
 
 private:
 
-    void updateMaterial();
+    void update_material();
 
-    QPointer<QComboBox> m_materialBox;
-    QPointer<QPushButton> m_reloadButton;
+    QPointer<QComboBox> m_material_box;
+    QPointer<QPushButton> m_reload_button;
 
-    data::ptr<data::reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
+    data::ptr<data::reconstruction, data::access::inout> m_reconstruction {this, "reconstruction"};
 };
 
 } // namespace sight::module::ui::viz

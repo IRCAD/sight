@@ -30,9 +30,9 @@ namespace sight::filter::image::ut
 class matrix_regressor_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(matrix_regressor_test);
-CPPUNIT_TEST(identityTest);
-CPPUNIT_TEST(avgTranslationTest);
-CPPUNIT_TEST(avgRotationTest);
+CPPUNIT_TEST(identity_test);
+CPPUNIT_TEST(avg_translation_test);
+CPPUNIT_TEST(avg_rotation_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,9 +41,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void identityTest();
-    static void avgTranslationTest();
-    static void avgRotationTest();
+    static void identity_test();
+    static void avg_translation_test();
+    static void avg_rotation_test();
 };
 
 } // namespace sight::filter::image::ut

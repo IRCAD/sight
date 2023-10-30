@@ -35,10 +35,10 @@ namespace sight::io::opencv
 
 static cv::Mat to_cv(const data::image::csptr& _image, bool _copy)
 {
-    const auto image_type = _image->getType();
-    const auto image_comp = _image->numComponents();
+    const auto image_type = _image->type();
+    const auto image_comp = _image->num_components();
 
-    const auto cv_type = io::opencv::type::toCv(image_type, image_comp);
+    const auto cv_type = io::opencv::type::to_cv(image_type, image_comp);
 
     const auto dump_lock = _image->dump_lock();
 
@@ -46,7 +46,7 @@ static cv::Mat to_cv(const data::image::csptr& _image, bool _copy)
 
     const auto image_size = _image->size();
     std::vector<int> cv_size;
-    for(std::size_t i = 0 ; i < _image->numDimensions() ; ++i)
+    for(std::size_t i = 0 ; i < _image->num_dimensions() ; ++i)
     {
         cv_size.push_back(static_cast<int>(image_size[i]));
     }
@@ -94,16 +94,16 @@ cv::Mat image::move_to_cv(const data::image::csptr& _image)
 
 void image::copy_from_cv(data::image& _image, const cv::Mat& _cv_image)
 {
-    const auto prev_image_type = _image.getType();
-    const auto prev_image_comp = _image.numComponents();
+    const auto prev_image_type = _image.type();
+    const auto prev_image_comp = _image.num_components();
 
-    const auto image_format = io::opencv::type::fromCv(_cv_image.type());
+    const auto image_format = io::opencv::type::from_cv(_cv_image.type());
     const auto image_type   = image_format.first;
     const auto image_comp   = image_format.second;
     SIGHT_ASSERT("Number of components should be between 1 and 4", image_comp >= 1 && image_comp <= 4);
     SIGHT_ASSERT("Number of dimension should be between 1 and 3", _cv_image.dims >= 1 && _cv_image.dims <= 3);
 
-    data::image::Size image_size = {0, 0, 0};
+    data::image::size_t image_size = {0, 0, 0};
 
     if(_cv_image.dims == 1)
     {
@@ -130,23 +130,23 @@ void image::copy_from_cv(data::image& _image, const cv::Mat& _cv_image)
     const auto prev_image_size = _image.size();
     if(prev_image_comp != image_comp || prev_image_type != image_type || image_size != prev_image_size)
     {
-        data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
+        enum data::image::pixel_format format = data::image::pixel_format::gray_scale;
         switch(image_comp)
         {
             case 1:
-                format = data::image::PixelFormat::GRAY_SCALE;
+                format = data::image::pixel_format::gray_scale;
                 break;
 
             case 2:
-                format = data::image::PixelFormat::RG;
+                format = data::image::pixel_format::rg;
                 break;
 
             case 3:
-                format = data::image::PixelFormat::RGB;
+                format = data::image::pixel_format::rgb;
                 break;
 
             case 4:
-                format = data::image::PixelFormat::RGBA;
+                format = data::image::pixel_format::rgba;
                 break;
 
             default:
@@ -157,15 +157,15 @@ void image::copy_from_cv(data::image& _image, const cv::Mat& _cv_image)
     }
 
     const auto dump_lock = _image.dump_lock();
-    SIGHT_ASSERT("Empty image buffer", _image.getAllocatedSizeInBytes() > 0);
+    SIGHT_ASSERT("Empty image buffer", _image.allocated_size_in_bytes() > 0);
 
     auto buffer = _image.begin<std::uint8_t>();
-    std::copy(_cv_image.data, _cv_image.data + _image.getSizeInBytes(), buffer);
+    std::copy(_cv_image.data, _cv_image.data + _image.size_in_bytes(), buffer);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat image::copyToCv(const data::image::csptr& _image)
+cv::Mat image::copy_to_cv(const data::image::csptr& _image)
 {
     return to_cv(_image, true);
 }

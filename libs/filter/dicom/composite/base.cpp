@@ -37,7 +37,7 @@ base::~base()
 
 filter::filter_t base::get_filter_type() const
 {
-    return filter::COMPOSITE;
+    return filter::composite;
 }
 
 //-----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ base::dicom_series_container_t base::apply(
     dicom_series_container_t result;
     result.push_back(_series);
     // For every filter
-    for(const sight::filter::dicom::filter::sptr& filter : m_filterContainer)
+    for(const sight::filter::dicom::filter::sptr& filter : m_filter_container)
     {
         dicom_series_container_t filtered;
         // For every series
@@ -69,7 +69,7 @@ base::dicom_series_container_t base::apply(
 
 //-----------------------------------------------------------------------------
 
-base::dicom_series_container_t base::forcedApply(
+base::dicom_series_container_t base::forced_apply(
     const data::dicom_series::sptr& _series,
     const core::log::logger::sptr& _logger
 ) const
@@ -77,7 +77,7 @@ base::dicom_series_container_t base::forcedApply(
     dicom_series_container_t result;
     result.push_back(_series);
     // For every filters
-    for(const sight::filter::dicom::filter::sptr& filter : m_filterContainer)
+    for(const sight::filter::dicom::filter::sptr& filter : m_filter_container)
     {
         dicom_series_container_t filtered;
         // For every series
@@ -89,9 +89,9 @@ base::dicom_series_container_t base::forcedApply(
                 filtered.reserve(filtered.size() + tempo.size());
                 std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
             }
-            catch(sight::filter::dicom::exceptions::FilterFailure&)
+            catch(sight::filter::dicom::exceptions::filter_failure&)
             {
-                SIGHT_WARN("Unable to apply the filter \"" << filter->getName() << "\".");
+                SIGHT_WARN("Unable to apply the filter \"" << filter->get_name() << "\".");
                 filtered.push_back(s);
             }
         }
@@ -104,27 +104,27 @@ base::dicom_series_container_t base::forcedApply(
 
 //-----------------------------------------------------------------------------
 
-void base::addChild(const sight::filter::dicom::filter::sptr& _filter)
+void base::add_child(const sight::filter::dicom::filter::sptr& _filter)
 {
-    m_filterContainer.push_back(_filter);
+    m_filter_container.push_back(_filter);
 }
 
 //-----------------------------------------------------------------------------
 
-void base::removeChild(const sight::filter::dicom::filter::sptr& _filter)
+void base::remove_child(const sight::filter::dicom::filter::sptr& _filter)
 {
-    auto it = std::find(m_filterContainer.begin(), m_filterContainer.end(), _filter);
-    if(it != m_filterContainer.end())
+    auto it = std::find(m_filter_container.begin(), m_filter_container.end(), _filter);
+    if(it != m_filter_container.end())
     {
-        m_filterContainer.erase(it);
+        m_filter_container.erase(it);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-base::filter_container_t& base::getChildren()
+base::filter_container_t& base::get_children()
 {
-    return m_filterContainer;
+    return m_filter_container;
 }
 
 } // namespace sight::filter::dicom::composite

@@ -49,20 +49,20 @@ void labeling_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void labeling_test::computeCentroids()
+void labeling_test::compute_centroids()
 {
     // Initial image creation
     data::image::sptr img = std::make_shared<data::image>();
 
-    const core::type type                  = core::type::UINT8;
-    const data::image::Size img_size       = {256, 256, 256};
-    const data::image::Spacing img_spacing = {1., 1., 1.};
-    const data::image::Origin img_origin   = {0., 0., 0.};
-    uint8_t val                            = 0;
+    const core::type type                    = core::type::UINT8;
+    const data::image::size_t img_size       = {256, 256, 256};
+    const data::image::spacing_t img_spacing = {1., 1., 1.};
+    const data::image::origin_t img_origin   = {0., 0., 0.};
+    uint8_t val                              = 0;
 
-    img->setSpacing(img_spacing);
-    img->setOrigin(img_origin);
-    img->resize(img_size, type, data::image::PixelFormat::GRAY_SCALE);
+    img->set_spacing(img_spacing);
+    img->set_origin(img_origin);
+    img->resize(img_size, type, data::image::pixel_format::gray_scale);
 
     const auto dump_lock = img->dump_lock();
 
@@ -121,16 +121,16 @@ void labeling_test::computeCentroids()
     // Check that we can get the landmarks
     CPPUNIT_ASSERT(landmarks);
     // Ensure that we have as many landmarks as we defined features
-    CPPUNIT_ASSERT_EQUAL(landmarks->getPoints().size(), feature_origin.size());
+    CPPUNIT_ASSERT_EQUAL(landmarks->get_points().size(), feature_origin.size());
 
     // Check that the landmarks are placed at the centroids of the defined features
     for(unsigned int f = 0 ; f < feature_origin.size() ; ++f)
     {
-        data::point::sptr p = landmarks->getPoints().at(f);
+        data::point::sptr p = landmarks->get_points().at(f);
 
-        CPPUNIT_ASSERT_EQUAL(feature_origin[f][0] + (feature_size[f][0] - 1.0) / 2.0, p->getCoord()[0]);
-        CPPUNIT_ASSERT_EQUAL(feature_origin[f][1] + (feature_size[f][1] - 1.0) / 2.0, p->getCoord()[1]);
-        CPPUNIT_ASSERT_EQUAL(feature_origin[f][2] + (feature_size[f][2] - 1.0) / 2.0, p->getCoord()[2]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][0] + (feature_size[f][0] - 1.0) / 2.0, p->get_coord()[0]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][1] + (feature_size[f][1] - 1.0) / 2.0, p->get_coord()[1]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][2] + (feature_size[f][2] - 1.0) / 2.0, p->get_coord()[2]);
     }
 }
 

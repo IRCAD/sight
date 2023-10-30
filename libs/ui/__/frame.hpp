@@ -65,12 +65,12 @@ class view;
              <style mode="MODAL" />
              <visibility>true</visibility>
          </frame>
-         <toolBar />
-         <menuBar />
+         <toolbar />
+         <menubar />
      </gui>
      <registry>
-         <toolBar sid="toolbar1" start="true" />
-         <menuBar sid="menubar1" start="true" />
+         <toolbar sid="toolbar1" start="true" />
+         <menubar sid="menubar1" start="true" />
          <view sid="myView" start="true" />
      </registry>
    </service>
@@ -85,8 +85,8 @@ class view;
  *   - \b visibility : set the frame visibility when it is created. Possible values are true (default) or false.
  *   - \b minSize : the minimum width and height the application window can have
  *   - \b maxSize : the maximum width and height the application window can have
- * - The toolBar section isn't mandatory.
- * - The menuBar section isn't mandatory.
+ * - The toolbar section isn't mandatory.
+ * - The menubar section isn't mandatory.
 
  */
 class UI_CLASS_API frame : public service::base
@@ -96,7 +96,7 @@ public:
     SIGHT_DECLARE_SERVICE(frame, service::base);
 
     /// Get widget defined for progress bar
-    UI_API static ui::container::widget::sptr getProgressWidget();
+    UI_API static ui::container::widget::sptr get_progress_widget();
 
     /**
      * @name Signals
@@ -105,7 +105,7 @@ public:
 
     /// Signal emitted when frame is closed and onclose policy is notify
     static const core::com::signals::key_t CLOSED_SIG;
-    typedef core::com::signal<void ()> closed_signal_t;
+    using closed_signal_t = core::com::signal<void ()>;
     /**
      * @}
      */
@@ -152,12 +152,12 @@ protected:
     UI_API static const std::string CLOSE_POLICY_MESSAGE;
 
     /// Static reference on a widget defined for progress bar installation
-    UI_API static ui::container::widget::wptr m_progressWidget;
+    UI_API static ui::container::widget::wptr s_progress_widget;
 
 private:
 
     /// SLOT: show/hide the container
-    void setVisible(bool _is_visible);
+    void set_visible(bool _is_visible);
 
     /// SLOT: show the container
     void show();
@@ -165,25 +165,25 @@ private:
     /// SLOT: hide the container
     void hide();
 
-    static void onCloseExit();
-    void onCloseNotify();
-    static void onCloseMessage();
-    void initializeLayoutManager(const ui::config_t& _layout_config);
-    void initializeMenuBarBuilder(const ui::config_t& _menu_bar_config);
-    void initializeToolBarBuilder(const ui::config_t& _tool_bar_config);
+    static void on_close_exit();
+    void on_close_notify();
+    static void on_close_message();
+    void initialize_layout_manager(const ui::config_t& _layout_config);
+    void initialize_menu_bar_builder(const ui::config_t& _menu_bar_config);
+    void initialize_tool_bar_builder(const ui::config_t& _tool_bar_config);
 
-    ui::layout::frame_manager::sptr m_frameLayoutManager;
-    SPTR(ui::detail::registry::view) m_viewRegistry;
-    ui::builder::menubar::sptr m_menuBarBuilder;
-    ui::builder::toolbar::sptr m_toolBarBuilder;
+    ui::layout::frame_manager::sptr m_frame_layout_manager;
+    SPTR(ui::detail::registry::view) m_view_registry;
+    ui::builder::menubar::sptr m_menu_bar_builder;
+    ui::builder::toolbar::sptr m_tool_bar_builder;
 
-    bool m_hasMenuBar {false};
-    bool m_hasToolBar {false};
+    bool m_has_menu_bar {false};
+    bool m_has_tool_bar {false};
 
-    std::string m_closePolicy;
+    std::string m_close_policy;
 
     /// Signal emitted when frame is closed and onclose mode is message
-    closed_signal_t::sptr m_sigClosed;
+    closed_signal_t::sptr m_sig_closed;
 };
 
 } // namespace sight::ui

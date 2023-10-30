@@ -48,16 +48,16 @@ resize_viewport::resize_viewport() noexcept
 
 void resize_viewport::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_WIDTH_CONFIG    = s_CONFIG + "width";
-    static const std::string s_HEIGHT_CONFIG   = s_CONFIG + "height";
-    static const std::string s_H_OFFSET_CONFIG = s_CONFIG + "hOffset";
-    static const std::string s_V_OFFSET_CONFIG = s_CONFIG + "vOffset";
-    static const std::string s_H_ALIGN_CONFIG  = s_CONFIG + "hAlign";
-    static const std::string s_V_ALIGN_CONFIG  = s_CONFIG + "vAlign";
+    static const std::string s_WIDTH_CONFIG    = CONFIG + "width";
+    static const std::string s_HEIGHT_CONFIG   = CONFIG + "height";
+    static const std::string s_H_OFFSET_CONFIG = CONFIG + "hOffset";
+    static const std::string s_V_OFFSET_CONFIG = CONFIG + "vOffset";
+    static const std::string s_H_ALIGN_CONFIG  = CONFIG + "hAlign";
+    static const std::string s_V_ALIGN_CONFIG  = CONFIG + "vAlign";
 
     float x_pos = config.get<float>(s_H_OFFSET_CONFIG, 0.F);
     float y_pos = config.get<float>(s_V_OFFSET_CONFIG, 0.F);
@@ -83,7 +83,7 @@ void resize_viewport::configuring()
     x_pos = horiz_align_to_x.at(h_align);
     y_pos = vert_align_to_y.at(v_align);
 
-    m_newViewportDimensions = std::tie(x_pos, y_pos, width, height);
+    m_new_viewport_dimensions = std::tie(x_pos, y_pos, width, height);
 }
 
 //------------------------------------------------------------------------------
@@ -91,10 +91,10 @@ void resize_viewport::configuring()
 void resize_viewport::starting()
 {
     this->initialize();
-    const auto* const camera = this->getLayer()->getDefaultCamera();
+    const auto* const camera = this->layer()->get_default_camera();
     const auto* const vp     = camera->getViewport();
 
-    m_previousViewportDimensions = std::make_tuple(vp->getLeft(), vp->getTop(), vp->getWidth(), vp->getHeight());
+    m_previous_viewport_dimensions = std::make_tuple(vp->getLeft(), vp->getTop(), vp->getWidth(), vp->getHeight());
 }
 
 //------------------------------------------------------------------------------
@@ -111,32 +111,25 @@ void resize_viewport::stopping() noexcept
 
 //------------------------------------------------------------------------------
 
-void resize_viewport::resizeViewport(bool _resize)
+void resize_viewport::resize(bool _resize = true)
 {
-    auto* const camera = this->getLayer()->getDefaultCamera();
+    auto* const camera = this->layer()->get_default_camera();
     auto* const vp     = camera->getViewport();
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    const auto& new_dimensions = _resize ? m_newViewportDimensions : m_previousViewportDimensions;
+    const auto& new_dimensions = _resize ? m_new_viewport_dimensions : m_previous_viewport_dimensions;
     const auto& [left, top, width, height] = new_dimensions;
     vp->setDimensions(left, top, width, height);
 
-    this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void resize_viewport::resize()
-{
-    this->resizeViewport(true);
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
 void resize_viewport::revert()
 {
-    this->resizeViewport(false);
+    this->resize(false);
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

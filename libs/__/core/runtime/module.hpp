@@ -49,7 +49,7 @@ class CORE_CLASS_API module
 public:
 
     /// Defines the extension container type.
-    typedef std::set<SPTR(extension)> extension_container;
+    using extension_container = std::set<std::shared_ptr<extension> >;
 
     virtual ~module() = default;
 

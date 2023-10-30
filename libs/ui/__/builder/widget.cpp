@@ -50,7 +50,7 @@ void widget::initialize(const ui::config_t& /*unused*/)
 
 //-----------------------------------------------------------------------------
 
-ui::container::widget::sptr widget::getContainer()
+ui::container::widget::sptr widget::get_container()
 {
     return this->m_container;
 }

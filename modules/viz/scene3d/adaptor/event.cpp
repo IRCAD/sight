@@ -33,46 +33,46 @@ namespace sight::module::viz::scene3d::adaptor
 
 const core::com::signals::key_t event::TRIGGERED = "triggered";
 
-using InteractionInfo = sight::viz::scene3d::window_interactor::InteractionInfo;
+using interaction_info = sight::viz::scene3d::window_interactor::interaction_info;
 
-enum class MouseButtons : std::uint8_t
+enum class mouse_buttons : std::uint8_t
 {
-    NONE   = 0,
-    LEFT   = 0 << 1,
-    MIDDLE = 0 << 2,
-    RIGHT  = 0 << 3
+    none   = 0,
+    left   = 0 << 1,
+    middle = 0 << 2,
+    right  = 0 << 3
 };
 
 //------------------------------------------------------------------------------
 
-std::uint8_t& operator|=(std::uint8_t& _a, MouseButtons _b)
+std::uint8_t& operator|=(std::uint8_t& _a, mouse_buttons _b)
 {
     return _a |= static_cast<std::uint8_t>(_b);
 }
 
 //------------------------------------------------------------------------------
 
-std::uint8_t operator&(std::uint8_t _a, MouseButtons _b)
+std::uint8_t operator&(std::uint8_t _a, mouse_buttons _b)
 {
     return _a & static_cast<std::uint8_t>(_b);
 }
 
 event::event()
 {
-    new_signal<TriggeredSignal>(TRIGGERED);
+    new_signal<triggered_signal_t>(TRIGGERED);
 }
 
 //------------------------------------------------------------------------------
 
 bool event::check(
-    InteractionInfo::InteractionEnum _type,
-    std::optional<MouseButton> _button,
-    std::optional<Modifier> _modifiers,
+    interaction_info::interaction_enum _type,
+    std::optional<mouse_button> _button,
+    std::optional<modifier> _modifiers,
     std::optional<int> _key
 )
 {
     bool ok = m_filters.empty();
-    for(const Filter& filter : m_filters)
+    for(const filter& filter : m_filters)
     {
         if(std::ranges::find(filter.type, _type) == filter.type.end())
         {
@@ -81,18 +81,18 @@ bool event::check(
 
         if(_button)
         {
-            MouseButtons mouse_button = MouseButtons::NONE;
-            if(*_button == LEFT)
+            mouse_buttons mouse_button = mouse_buttons::none;
+            if(*_button == left)
             {
-                mouse_button = MouseButtons::LEFT;
+                mouse_button = mouse_buttons::left;
             }
-            else if(*_button == MIDDLE)
+            else if(*_button == middle)
             {
-                mouse_button = MouseButtons::MIDDLE;
+                mouse_button = mouse_buttons::middle;
             }
-            else if(*_button == RIGHT)
+            else if(*_button == right)
             {
-                mouse_button = MouseButtons::RIGHT;
+                mouse_button = mouse_buttons::right;
             }
 
             if(!(filter.buttons == 0 || ((filter.buttons & mouse_button) != 0U)))
@@ -124,262 +124,262 @@ bool event::check(
 
 //------------------------------------------------------------------------------
 
-void event::mouseMoveEvent(MouseButton _button, Modifier _mods, int _x, int _y, int _dx, int _dy)
+void event::mouse_move_event(mouse_button _button, modifier _mods, int _x, int _y, int _dx, int _dy)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::MOUSEMOVE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::mousemove;
     if(check(interaction_type, _button, _mods, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.button          = _button;
-        info.modifiers       = _mods;
-        info.x               = _x;
-        info.y               = _y;
-        info.dx              = _dx;
-        info.dy              = _dy;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.button           = _button;
+        info.modifiers        = _mods;
+        info.x                = _x;
+        info.y                = _y;
+        info.dx               = _dx;
+        info.dy               = _dy;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::wheelEvent(Modifier _mods, double _angle_delta, int _x, int _y)
+void event::wheel_event(modifier _mods, double _angle_delta, int _x, int _y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::WHEELMOVE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::wheelmove;
     if(check(interaction_type, {}, _mods, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.modifiers       = _mods;
-        info.delta           = _angle_delta;
-        info.x               = _x;
-        info.y               = _y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.modifiers        = _mods;
+        info.delta            = _angle_delta;
+        info.x                = _x;
+        info.y                = _y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y)
+void event::button_release_event(mouse_button _button, modifier _mods, int _x, int _y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::BUTTONRELEASE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::buttonrelease;
     if(check(interaction_type, _button, _mods, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.button          = _button;
-        info.modifiers       = _mods;
-        info.x               = _x;
-        info.y               = _y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.button           = _button;
+        info.modifiers        = _mods;
+        info.x                = _x;
+        info.y                = _y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y)
+void event::button_press_event(mouse_button _button, modifier _mods, int _x, int _y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::BUTTONPRESS;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::buttonpress;
     if(check(interaction_type, _button, _mods, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.button          = _button;
-        info.modifiers       = _mods;
-        info.x               = _x;
-        info.y               = _y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.button           = _button;
+        info.modifiers        = _mods;
+        info.x                = _x;
+        info.y                = _y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y)
+void event::button_double_press_event(mouse_button _button, modifier _mods, int _x, int _y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::BUTTONDOUBLEPRESS;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::buttondoublepress;
     if(check(interaction_type, _button, _mods, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.button          = _button;
-        info.modifiers       = _mods;
-        info.x               = _x;
-        info.y               = _y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.button           = _button;
+        info.modifiers        = _mods;
+        info.x                = _x;
+        info.y                = _y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::keyPressEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y)
+void event::key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::KEYPRESS;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::keypress;
     if(check(interaction_type, {}, _mods, _key))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.key             = _key;
-        info.modifiers       = _mods;
-        info.x               = _mouse_x;
-        info.y               = _mouse_y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.key              = _key;
+        info.modifiers        = _mods;
+        info.x                = _mouse_x;
+        info.y                = _mouse_y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::keyReleaseEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y)
+void event::key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse_y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::KEYRELEASE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::keyrelease;
     if(check(interaction_type, {}, _mods, _key))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.key             = _key;
-        info.modifiers       = _mods;
-        info.x               = _mouse_x;
-        info.y               = _mouse_y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.key              = _key;
+        info.modifiers        = _mods;
+        info.x                = _mouse_x;
+        info.y                = _mouse_y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::resizeEvent(int _width, int _height)
+void event::resize_event(int _width, int _height)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::RESIZE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::resize;
     if(check(interaction_type, {}, {}, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.x               = _width;
-        info.y               = _height;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.x                = _width;
+        info.y                = _height;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::pinchGestureEvent(double _scale_factor, int _center_x, int _center_y)
+void event::pinch_gesture_event(double _scale_factor, int _center_x, int _center_y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::PINCH_GESTURE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::pinch_gesture;
     if(check(interaction_type, {}, {}, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.delta           = _scale_factor;
-        info.x               = _center_x;
-        info.y               = _center_y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.delta            = _scale_factor;
+        info.x                = _center_x;
+        info.y                = _center_y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+void event::pan_gesture_move_event(int _x, int _y, int _dx, int _dy)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::PAN_GESTURE_MOVE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::pan_gesture_move;
     if(check(interaction_type, {}, {}, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.x               = _x;
-        info.y               = _y;
-        info.dx              = _dx;
-        info.dy              = _dy;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.x                = _x;
+        info.y                = _y;
+        info.dx               = _dx;
+        info.dy               = _dy;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::panGestureReleaseEvent(int _x, int _y, int _dx, int _dy)
+void event::pan_gesture_release_event(int _x, int _y, int _dx, int _dy)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::PAN_GESTURE_RELEASE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::pan_gesture_release;
     if(check(interaction_type, {}, {}, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.x               = _x;
-        info.y               = _y;
-        info.dx              = _dx;
-        info.dy              = _dy;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.x                = _x;
+        info.y                = _y;
+        info.dx               = _dx;
+        info.dy               = _dy;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void event::longTapGestureEvent(int _x, int _y)
+void event::long_tap_gesture_event(int _x, int _y)
 {
-    InteractionInfo::InteractionEnum interaction_type = InteractionInfo::InteractionEnum::LONG_TAP_GESTURE;
+    interaction_info::interaction_enum interaction_type = interaction_info::interaction_enum::long_tap_gesture;
     if(check(interaction_type, {}, {}, {}))
     {
-        InteractionInfo info;
-        info.interactionType = interaction_type;
-        info.x               = _x;
-        info.y               = _y;
-        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
+        interaction_info info;
+        info.interaction_type = interaction_type;
+        info.x                = _x;
+        info.y                = _y;
+        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-static InteractionInfo::InteractionEnum string_to_interaction_enum(const std::string& _s)
+static interaction_info::interaction_enum string_to_interaction_enum(const std::string& _s)
 {
     if(_s == "mouseMove")
     {
-        return InteractionInfo::InteractionEnum::MOUSEMOVE;
+        return interaction_info::interaction_enum::mousemove;
     }
 
     if(_s == "wheel")
     {
-        return InteractionInfo::InteractionEnum::WHEELMOVE;
+        return interaction_info::interaction_enum::wheelmove;
     }
 
     if(_s == "buttonRelease")
     {
-        return InteractionInfo::InteractionEnum::BUTTONRELEASE;
+        return interaction_info::interaction_enum::buttonrelease;
     }
 
     if(_s == "buttonPress")
     {
-        return InteractionInfo::InteractionEnum::BUTTONPRESS;
+        return interaction_info::interaction_enum::buttonpress;
     }
 
     if(_s == "buttonDoublePress")
     {
-        return InteractionInfo::InteractionEnum::BUTTONDOUBLEPRESS;
+        return interaction_info::interaction_enum::buttondoublepress;
     }
 
     if(_s == "keyPress")
     {
-        return InteractionInfo::InteractionEnum::KEYPRESS;
+        return interaction_info::interaction_enum::keypress;
     }
 
     if(_s == "keyRelease")
     {
-        return InteractionInfo::InteractionEnum::KEYRELEASE;
+        return interaction_info::interaction_enum::keyrelease;
     }
 
     if(_s == "resize")
     {
-        return InteractionInfo::InteractionEnum::RESIZE;
+        return interaction_info::interaction_enum::resize;
     }
 
     if(_s == "pinchGesture")
     {
-        return InteractionInfo::InteractionEnum::PINCH_GESTURE;
+        return interaction_info::interaction_enum::pinch_gesture;
     }
 
     if(_s == "panGestureMove")
     {
-        return InteractionInfo::InteractionEnum::PAN_GESTURE_MOVE;
+        return interaction_info::interaction_enum::pan_gesture_move;
     }
 
     if(_s == "panGestureRelease")
     {
-        return InteractionInfo::InteractionEnum::PAN_GESTURE_RELEASE;
+        return interaction_info::interaction_enum::pan_gesture_release;
     }
 
     SIGHT_THROW("Unknown interaction: " + _s);
@@ -389,14 +389,14 @@ static InteractionInfo::InteractionEnum string_to_interaction_enum(const std::st
 
 void event::configuring()
 {
-    configureParams();
+    configure_params();
 
     const config_t config = this->get_config();
 
     auto [begin, end] = config.equal_range("event");
     for(const auto& [_, event] : boost::make_iterator_range(begin, end))
     {
-        Filter filter;
+        filter filter;
         std::vector<std::string> types;
         boost::split(types, event.get<std::string>("<xmlattr>.type"), boost::is_any_of(" "));
         std::ranges::transform(types, std::back_inserter(filter.type), string_to_interaction_enum);
@@ -409,15 +409,15 @@ void event::configuring()
                 std::string lower_button = boost::to_lower_copy(button);
                 if(lower_button == "left")
                 {
-                    filter.buttons |= MouseButtons::LEFT;
+                    filter.buttons |= mouse_buttons::left;
                 }
                 else if(lower_button == "middle")
                 {
-                    filter.buttons |= MouseButtons::MIDDLE;
+                    filter.buttons |= mouse_buttons::middle;
                 }
                 else if(lower_button == "right")
                 {
-                    filter.buttons |= MouseButtons::RIGHT;
+                    filter.buttons |= mouse_buttons::right;
                 }
                 else
                 {
@@ -428,7 +428,7 @@ void event::configuring()
 
         if(boost::optional<std::string> modifiers = event.get_optional<std::string>("<xmlattr>.modifiers"))
         {
-            filter.modifiers = Modifier::NONE;
+            filter.modifiers = modifier::none;
             std::vector<std::string> modifier_list;
             boost::split(modifier_list, *modifiers, boost::is_any_of(" "));
             for(const std::string& modifier : modifier_list)
@@ -436,19 +436,19 @@ void event::configuring()
                 std::string lower_modifier = boost::to_lower_copy(modifier);
                 if(lower_modifier == "shift")
                 {
-                    *filter.modifiers |= Modifier::SHIFT;
+                    *filter.modifiers |= modifier::shift;
                 }
                 else if(lower_modifier == "ctrl")
                 {
-                    *filter.modifiers |= Modifier::CONTROL;
+                    *filter.modifiers |= modifier::control;
                 }
                 else if(lower_modifier == "alt")
                 {
-                    *filter.modifiers |= Modifier::ALT;
+                    *filter.modifiers |= modifier::alt;
                 }
                 else if(lower_modifier == "meta")
                 {
-                    *filter.modifiers |= Modifier::META;
+                    *filter.modifiers |= modifier::meta;
                 }
                 else if(lower_modifier == "none")
                 {
@@ -480,10 +480,10 @@ void event::configuring()
 void event::starting()
 {
     this->initialize();
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
     auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-    this->getLayer()->addInteractor(interactor);
+    this->layer()->add_interactor(interactor);
 }
 
 //------------------------------------------------------------------------------
@@ -497,7 +497,7 @@ void event::updating()
 void event::stopping()
 {
     auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-    this->getLayer()->removeInteractor(interactor);
+    this->layer()->remove_interactor(interactor);
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

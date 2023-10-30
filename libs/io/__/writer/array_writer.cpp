@@ -39,8 +39,8 @@ void array_writer::write()
 {
     std::filesystem::path file = get_file();
 
-    data::array::csptr array        = this->getConcreteObject();
-    std::size_t array_size_in_bytes = array->getSizeInBytes();
+    data::array::csptr array        = this->get_concrete_object();
+    std::size_t array_size_in_bytes = array->size_in_bytes();
     const auto dump_lock            = array->dump_lock();
     const char* buff                = static_cast<const char*>(array->buffer());
 

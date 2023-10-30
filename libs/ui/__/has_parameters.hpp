@@ -43,16 +43,16 @@ namespace sight::ui
  * interface in the* configuration.
 
  * @section Slots Slots
- * - \b setBoolParameter(bool, std::string) : Receive a boolean parameter along with the identifier.
- * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string) : Receive a color along with the identifier.
- * - \b setDoubleParameter(double, std::string) : Receive a real parameter along with the identifier.
- * - \b setDouble2Parameter(double, double, std::string) : Receive two real parameters along with the identifier.
- * - \b setDouble3Parameter(double, double, double, std::string) : Receive three real parameters along with the
+ * - \b set_bool_parameter(bool, std::string) : Receive a boolean parameter along with the identifier.
+ * - \b set_color_parameter(std::array<std::uint8_t, 4>, std::string) : Receive a color along with the identifier.
+ * - \b set_double_parameter(double, std::string) : Receive a real parameter along with the identifier.
+ * - \b set_double2_parameter(double, double, std::string) : Receive two real parameters along with the identifier.
+ * - \b set_double3_parameter(double, double, double, std::string) : Receive three real parameters along with the
  * identifier.
- * - \b setIntParameter(int, std::string) : Receive an integer parameter along with the identifier.
- * - \b setInt2Parameter(int, int, std::string) : Receive two integer parameters along with the identifier.
- * - \b setInt3Parameter(int, int, int, std::string) : Receive three integer parameters along with the identifier.
- * - \b setEnumParameter(std::string, std::string) : Receive an enum parameter along with the identifier.
+ * - \b set_int_parameter(int, std::string) : Receive an integer parameter along with the identifier.
+ * - \b set_int2_parameter(int, int, std::string) : Receive two integer parameters along with the identifier.
+ * - \b set_int3_parameter(int, int, int, std::string) : Receive three integer parameters along with the identifier.
+ * - \b set_enum_parameter(std::string, std::string) : Receive an enum parameter along with the identifier.
  */
 class UI_CLASS_API has_parameters
 {
@@ -79,34 +79,34 @@ protected:
     UI_API virtual ~has_parameters();
 
     /// Slot: This method is used to set an boolean parameter.
-    UI_API virtual void setParameter(sight::ui::parameter_t _val, std::string _key);
+    UI_API virtual void set_parameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Slot: This method is used to set an boolean parameter.
-    UI_API virtual void setBoolParameter(bool _val, std::string _key);
+    UI_API virtual void set_bool_parameter(bool _val, std::string _key);
 
     /// Slot: This method is used to set a color parameter.
-    UI_API virtual void setColorParameter(std::array<std::uint8_t, 4> _color, std::string _key);
+    UI_API virtual void set_color_parameter(std::array<std::uint8_t, 4> _color, std::string _key);
 
     /// Slot: This method is used to set a double parameter.
-    UI_API virtual void setDoubleParameter(double _val, std::string _key);
+    UI_API virtual void set_double_parameter(double _val, std::string _key);
 
     /// Slot: This method is used to set two double parameters.
-    UI_API virtual void setDouble2Parameter(double _val0, double _val1, std::string _key);
+    UI_API virtual void set_double2_parameter(double _val0, double _val1, std::string _key);
 
     /// Slot: This method is used to set three double parameters.
-    UI_API virtual void setDouble3Parameter(double _val0, double _val1, double _val2, std::string _key);
+    UI_API virtual void set_double3_parameter(double _val0, double _val1, double _val2, std::string _key);
 
     /// Slot: This method is used to set an integer parameter.
-    UI_API virtual void setIntParameter(int _val, std::string _key);
+    UI_API virtual void set_int_parameter(int _val, std::string _key);
 
     /// Slot: This method is used to set two int parameters.
-    UI_API virtual void setInt2Parameter(int _val0, int _val1, std::string _key);
+    UI_API virtual void set_int2_parameter(int _val0, int _val1, std::string _key);
 
     /// Slot: This method is used to set three int parameters.
-    UI_API virtual void setInt3Parameter(int _val0, int _val1, int _val2, std::string _key);
+    UI_API virtual void set_int3_parameter(int _val0, int _val1, int _val2, std::string _key);
 
     /// Slot: This method is used to set an enum parameter.
-    UI_API virtual void setEnumParameter(std::string _val, std::string _key);
+    UI_API virtual void set_enum_parameter(std::string _val, std::string _key);
 };
 
 } // namespace sight::ui

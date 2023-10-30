@@ -36,30 +36,30 @@ namespace sight::module::data::ut
 
 void select_object_test::setUp()
 {
-    m_selectObject = service::add("sight::module::data::select_object");
+    m_select_object = service::add("sight::module::data::select_object");
 }
 
 //------------------------------------------------------------------------------
 
 void select_object_test::tearDown()
 {
-    CPPUNIT_ASSERT_NO_THROW(m_selectObject->stop().get());
-    service::remove(m_selectObject);
+    CPPUNIT_ASSERT_NO_THROW(m_select_object->stop().get());
+    service::remove(m_select_object);
 }
 
 //------------------------------------------------------------------------------
 
-void select_object_test::basicTest()
+void select_object_test::basic_test()
 {
     auto object1 = std::make_shared<sight::data::string>("Hello");
     auto object2 = std::make_shared<sight::data::string>("world");
-    CPPUNIT_ASSERT_NO_THROW(m_selectObject->start().get());
-    m_selectObject->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object1));
-    CPPUNIT_ASSERT(m_selectObject->output<sight::data::string>("object").lock() == object1);
-    m_selectObject->slot("remove")->run();
-    CPPUNIT_ASSERT(m_selectObject->output<sight::data::string>("object").lock() == nullptr);
-    m_selectObject->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object2));
-    CPPUNIT_ASSERT(m_selectObject->output<sight::data::string>("object").lock() == object2);
+    CPPUNIT_ASSERT_NO_THROW(m_select_object->start().get());
+    m_select_object->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object1));
+    CPPUNIT_ASSERT(m_select_object->output<sight::data::string>("object").lock() == object1);
+    m_select_object->slot("remove")->run();
+    CPPUNIT_ASSERT(m_select_object->output<sight::data::string>("object").lock() == nullptr);
+    m_select_object->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object2));
+    CPPUNIT_ASSERT(m_select_object->output<sight::data::string>("object").lock() == object2);
 }
 
 } // namespace sight::module::data::ut

@@ -49,24 +49,24 @@ public:
 
     UI_QT_API core::location::base::sptr show() override;
 
-    UI_QT_API void setType(location::Types _type) override;
+    UI_QT_API void set_type(location::types _type) override;
 
-    UI_QT_API void setOption(location::Options _option) override;
+    UI_QT_API void set_option(location::options _option) override;
 
     // Example ( addFilter("images","*.png *.jpg");
-    UI_QT_API void addFilter(const std::string& _filter_name, const std::string& _wildcard_list) override;
+    UI_QT_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
 protected:
 
-    location::Options m_style {location::NONE};
-    location::Types m_type {location::SINGLE_FILE};
+    location::options m_style {location::none};
+    location::types m_type {location::single_file};
     std::vector<std::pair<std::string, std::string> > m_filters;
 
     /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
-    QString fileFilters();
+    QString file_filters();
 
     /// Gets the current extension file selection
-    UI_QT_API std::string getCurrentSelection() const override;
+    UI_QT_API std::string get_current_selection() const override;
 
     std::string m_wildcard;
 };

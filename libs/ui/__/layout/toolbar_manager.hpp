@@ -94,7 +94,7 @@ namespace sight::ui::layout
 {
 
 /**
- * @brief   Defines the toolBar layout manager for IHM.
+ * @brief   Defines the toolbar layout manager for IHM.
  */
 class UI_CLASS_API toolbar_manager : public ui::object
 {
@@ -102,21 +102,21 @@ public:
 
     SIGHT_DECLARE_CLASS(toolbar_manager, ui::object);
 
-    typedef std::string registry_key_t;
-    typedef std::vector<ui::menu_item_callback::sptr> callbacks_t;
+    using registry_key_t = std::string;
+    using callbacks_t    = std::vector<ui::menu_item_callback::sptr>;
 
-    enum class Accordion
+    enum class accordion
     {
-        NO,
-        FIRST,
-        YES
+        no,
+        first,
+        yes
     };
 
-    class ActionInfo
+    class action_info
     {
     public:
 
-        ActionInfo() :
+        action_info() :
 
             m_icon(""),
             m_icon2("")
@@ -127,13 +127,13 @@ public:
         std::string m_shortcut;
         std::filesystem::path m_icon;
         std::filesystem::path m_icon2;
-        bool m_isCheckable {false};
-        bool m_isRadio {false};
-        bool m_isSeparator {false};
-        bool m_isSpacer {false};
-        bool m_isMenu {false};
-        bool m_isEditor {false};
-        Accordion m_accordion {Accordion::NO};
+        bool m_is_checkable {false};
+        bool m_is_radio {false};
+        bool m_is_separator {false};
+        bool m_is_spacer {false};
+        bool m_is_menu {false};
+        bool m_is_editor {false};
+        accordion m_accordion {accordion::no};
         int m_size {0};
     };
 
@@ -148,17 +148,17 @@ public:
     /**
      * @brief Returns the vector of menu_item managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu_item::sptr> getMenuItems();
+    UI_API virtual std::vector<ui::container::menu_item::sptr> get_menu_items();
 
     /**
      * @brief Returns the vector of menu managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu::sptr> getMenus();
+    UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
 
     /**
      * @brief Returns the vector of widget managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::widget::sptr> getContainers();
+    UI_API virtual std::vector<ui::container::widget::sptr> get_containers();
 
     /**
      * @brief Initialize layout managers & parse configuration.
@@ -166,40 +166,40 @@ public:
     UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
-     * @brief Instantiate actions with parent toolBar.
+     * @brief Instantiate actions with parent toolbar.
      */
-    UI_API virtual void createLayout(ui::container::toolbar::sptr _parent, const std::string& _id) = 0;
+    UI_API virtual void create_layout(ui::container::toolbar::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local actions.
      * @pre services using this actions must be stopped before.
      */
-    UI_API virtual void destroyLayout() = 0;
+    UI_API virtual void destroy_layout() = 0;
 
     /**
      * @brief Set the action visibility.
      */
-    UI_API virtual void menuItemSetVisible(ui::container::menu_item::sptr, bool _is_visible) = 0;
+    UI_API virtual void menu_item_set_visible(ui::container::menu_item::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_API virtual void menuItemSetEnabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
+    UI_API virtual void menu_item_set_enabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_API virtual void menuItemSetChecked(ui::container::menu_item::sptr, bool _is_checked) = 0;
+    UI_API virtual void menu_item_set_checked(ui::container::menu_item::sptr, bool _is_checked) = 0;
 
     /**
      * @brief Set the toolbar visibility.
      */
-    UI_API virtual void setVisible(bool _is_visible) = 0;
+    UI_API virtual void set_visible(bool _is_visible) = 0;
 
     /**
-     * @brief Sets callbacks associate with toolBar items.
+     * @brief Sets callbacks associate with toolbar items.
      */
-    virtual void setCallbacks(callbacks_t _callbacks)
+    virtual void set_callbacks(callbacks_t _callbacks)
     {
         m_callbacks = _callbacks;
     }
@@ -209,10 +209,10 @@ protected:
     /**
      * @brief Helper to destroy local actions.
      */
-    UI_API virtual void destroyActions();
+    UI_API virtual void destroy_actions();
 
     /// All actions managed by this layout.
-    std::vector<ui::container::menu_item::sptr> m_menuItems;
+    std::vector<ui::container::menu_item::sptr> m_menu_items;
 
     /// All menus managed by this layout.
     std::vector<ui::container::menu::sptr> m_menus;
@@ -221,16 +221,16 @@ protected:
     std::vector<ui::container::widget::sptr> m_containers;
 
     /// Save action informations from configuration.
-    std::vector<ActionInfo> m_actionInfo;
+    std::vector<action_info> m_action_info;
 
-    /// Callbacks associate with toolBar items
+    /// Callbacks associate with toolbar items
     callbacks_t m_callbacks;
 
     /// String to describe the tool button style
     std::string m_style {"ToolButtonIconOnly"};
 
     ///If set to true (uniformSize="true"), button will be expended to match the wider one.
-    bool m_unifyButtonSize {false};
+    bool m_unify_button_size {false};
 };
 
 } // namespace sight::ui::layout

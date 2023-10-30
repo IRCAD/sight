@@ -64,7 +64,7 @@ struct ACTIVITY_CLASS_API activity_config_param
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] bool isObjectPath() const
+    [[nodiscard]] bool is_object_path() const
     {
         return (by.substr(0, 1) == "@") || (by.substr(0, 1) == "!");
     }
@@ -101,7 +101,7 @@ struct ACTIVITY_CLASS_API activity_requirement
     ACTIVITY_API activity_requirement() = default;
     ACTIVITY_API activity_requirement(const config_t& _config);
 
-    typedef std::vector<activity_requirement_key> key_t;
+    using key_t = std::vector<activity_requirement_key>;
 
     /// parameter name
     std::string name;
@@ -119,10 +119,10 @@ struct ACTIVITY_CLASS_API activity_requirement
     std::string validator;
 
     /// minimum number of data required
-    unsigned int minOccurs {};
+    unsigned int min_occurs {};
 
     /// maximum number of data required
-    unsigned int maxOccurs {};
+    unsigned int max_occurs {};
 
     /// True if the data must be created if it is not present (only if minOccurs = 0 and maxOccurs = 1)
     bool create {};
@@ -134,7 +134,7 @@ struct ACTIVITY_CLASS_API activity_requirement
     key_t keys;
 
     /// Child configuration, used for instance when invoking object parsers
-    config_t objectConfig;
+    config_t object_config;
 };
 
 /**
@@ -214,33 +214,33 @@ struct ACTIVITY_CLASS_API activity_requirement
  */
 struct ACTIVITY_CLASS_API activity_info
 {
-    typedef std::vector<activity_requirement> requirements_t;
-    typedef std::pair<unsigned int, unsigned int> min_max_t;
-    typedef std::map<std::string, min_max_t> RequirementsMinMaxCount;
-    typedef std::map<std::string, unsigned int> data_count_t;
+    using requirements_t             = std::vector<activity_requirement>;
+    using min_max_t                  = std::pair<unsigned int, unsigned int>;
+    using requirements_min_max_count = std::map<std::string, min_max_t>;
+    using data_count_t               = std::map<std::string, unsigned int>;
 
     ACTIVITY_API activity_info() = default;
     ACTIVITY_API activity_info(const SPTR(core::runtime::extension)& _ext);
 
-    [[nodiscard]] ACTIVITY_API bool usableWith(data_count_t _data_count) const;
+    [[nodiscard]] ACTIVITY_API bool usable_with(data_count_t _data_count) const;
 
     std::string id;
     std::string title;
     std::string description;
     std::string icon;
-    std::string tabInfo;
+    std::string tab_info;
     requirements_t requirements;
-    std::string builderImpl;
-    std::string bundleId; ///< Identifier of the module containing the activity
+    std::string builder_impl;
+    std::string bundle_id; ///< Identifier of the module containing the activity
 
     /// Validator implementations
-    std::vector<std::string> validatorsImpl;
+    std::vector<std::string> validators_impl;
 
-    activity_config appConfig;
+    activity_config app_config;
 
     protected:
 
-        RequirementsMinMaxCount m_requirementCount;
+        requirements_min_max_count m_requirement_count;
 };
 
 /**
@@ -253,12 +253,12 @@ class ACTIVITY_CLASS_API activity : public core::base_object
 {
 public:
 
-    typedef std::vector<activity_info> infos_t;
+    using infos_t = std::vector<activity_info>;
 
     SIGHT_DECLARE_CLASS(activity, core::base_object);
 
     /// Return the default global instance of Activity
-    ACTIVITY_API static activity::sptr getDefault();
+    ACTIVITY_API static activity::sptr get_default();
 
     /// Destructor
     ACTIVITY_API activity()           = default;
@@ -276,36 +276,36 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    ACTIVITY_API activity_info getInfo(const std::string& _extension_id) const;
+    ACTIVITY_API activity_info get_info(const std::string& _extension_id) const;
 
     /**
      * @brief Tests if we have information about operator
      * @note This method is thread safe.
      */
-    ACTIVITY_API bool hasInfo(const std::string& _extension_id) const;
+    ACTIVITY_API bool has_info(const std::string& _extension_id) const;
 
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    static ACTIVITY_API activity_info::data_count_t getDataCount(const CSPTR(data::vector)& _data);
+    static ACTIVITY_API activity_info::data_count_t get_data_count(const CSPTR(data::vector)& _data);
 
     /**
      * @brief Get all infos
      * @note This method is thread safe.
      */
-    ACTIVITY_API infos_t getInfos() const;
+    ACTIVITY_API infos_t get_infos() const;
 
     /**
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    ACTIVITY_API infos_t getInfos(const CSPTR(data::vector)& _data) const;
+    ACTIVITY_API infos_t get_infos(const CSPTR(data::vector)& _data) const;
 
     /**
      * @brief Get all keys
      * @note This method is thread safe.
      */
-    ACTIVITY_API std::vector<std::string> getKeys() const;
+    ACTIVITY_API std::vector<std::string> get_keys() const;
 
     /**
      * @brief Clear the registry.
@@ -313,12 +313,12 @@ public:
      */
     ACTIVITY_API void clear_registry();
 
-    ACTIVITY_API std::tuple<activity_info, std::map<std::string, std::string> > getInfoAndReplacementMap(
+    ACTIVITY_API std::tuple<activity_info, std::map<std::string, std::string> > get_info_and_replacement_map(
         const data::activity& _activity,
         const activity_config_params_type& _parameters = activity_config_params_type()
     ) const;
 
-    static ACTIVITY_API std::map<std::string, std::string> getReplacementMap(
+    static ACTIVITY_API std::map<std::string, std::string> get_replacement_map(
         const data::activity& _activity,
         const activity_info& _info,
         const activity_config_params_type& _parameters = activity_config_params_type()
@@ -326,13 +326,13 @@ public:
 
 protected:
 
-    typedef std::map<std::string, activity_info> Registry;
+    using registry = std::map<std::string, activity_info>;
 
     /// Container of parameter information
-    Registry m_reg;
+    registry m_reg;
 
     /// Used to protect the registry access.
-    mutable core::mt::read_write_mutex m_registryMutex;
+    mutable core::mt::read_write_mutex m_registry_mutex;
 };
 
 } // namespace activity::extension

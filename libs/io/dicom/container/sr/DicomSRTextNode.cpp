@@ -31,37 +31,37 @@ namespace sight::io::dicom::container::sr
 
 //------------------------------------------------------------------------------
 
-DicomSRTextNode::DicomSRTextNode(
-    const DicomCodedAttribute& _coded_attribute,
+dicom_sr_text_node::dicom_sr_text_node(
+    const dicom_coded_attribute& _coded_attribute,
     const std::string& _relationship,
     std::string _text_value
 ) :
-    io::dicom::container::sr::DicomSRNode(_coded_attribute, "TEXT", _relationship),
-    m_textValue(std::move(_text_value))
+    io::dicom::container::sr::dicom_sr_node(_coded_attribute, "TEXT", _relationship),
+    m_text_value(std::move(_text_value))
 {
 }
 
 //------------------------------------------------------------------------------
 
-DicomSRTextNode::~DicomSRTextNode()
+dicom_sr_text_node::~dicom_sr_text_node()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomSRTextNode::write(gdcm::DataSet& _dataset) const
+void dicom_sr_text_node::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(_dataset);
+    io::dicom::container::sr::dicom_sr_node::write(_dataset);
 
     // Text Value - Type 1C
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa160>(m_textValue, _dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0040, 0xa160>(m_text_value, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRTextNode::print(std::ostream& _os) const
+void dicom_sr_text_node::print(std::ostream& _os) const
 {
-    DicomSRNode::print(_os);
-    _os << "\\nText value : [" << m_textValue << "]";
+    dicom_sr_node::print(_os);
+    _os << "\\nText value : [" << m_text_value << "]";
 }
 
 //------------------------------------------------------------------------------

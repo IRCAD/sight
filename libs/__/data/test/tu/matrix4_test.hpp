@@ -32,10 +32,10 @@ class matrix4_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(matrix4_test);
-    CPPUNIT_TEST(getterSetterByCoef);
-    CPPUNIT_TEST(getterSetterByArray);
-    CPPUNIT_TEST(rowMatrixAccessor);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(getter_setter_by_coef);
+    CPPUNIT_TEST(getter_setter_by_array);
+    CPPUNIT_TEST(row_matrix_accessor);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,10 +44,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void getterSetterByCoef();
-    static void getterSetterByArray();
-    static void rowMatrixAccessor();
-    static void equalityTest();
+    static void getter_setter_by_coef();
+    static void getter_setter_by_array();
+    static void row_matrix_accessor();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

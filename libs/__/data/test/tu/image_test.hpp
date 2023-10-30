@@ -32,20 +32,20 @@ class image_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(image_test);
-    CPPUNIT_TEST(testGetterSetter);
-    CPPUNIT_TEST(testAllocation);
-    CPPUNIT_TEST(testReallocation);
-    CPPUNIT_TEST(testSetGetPixel);
-    CPPUNIT_TEST(testSetGetPixelRGBA);
-    CPPUNIT_TEST(testIterator);
-    CPPUNIT_TEST(testRGBIterator);
-    CPPUNIT_TEST(testBGRIterator);
-    CPPUNIT_TEST(testRGBAIterator);
-    CPPUNIT_TEST(testBGRAIterator);
-    CPPUNIT_TEST(benchmarkIterator);
-    CPPUNIT_TEST(imageDeepCopy);
-    CPPUNIT_TEST(emptyIteratorTest);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(test_getter_setter);
+    CPPUNIT_TEST(test_allocation);
+    CPPUNIT_TEST(test_reallocation);
+    CPPUNIT_TEST(test_set_get_pixel);
+    CPPUNIT_TEST(test_set_get_pixel_rgba);
+    CPPUNIT_TEST(test_iterator);
+    CPPUNIT_TEST(test_rgb_iterator);
+    CPPUNIT_TEST(test_bgr_iterator);
+    CPPUNIT_TEST(test_rgba_iterator);
+    CPPUNIT_TEST(test_bgra_iterator);
+    CPPUNIT_TEST(benchmark_iterator);
+    CPPUNIT_TEST(image_deep_copy);
+    CPPUNIT_TEST(empty_iterator_test);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,20 +54,20 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testGetterSetter();
-    static void testAllocation();
-    static void testReallocation();
-    static void testSetGetPixel();
-    static void testSetGetPixelRGBA();
-    static void testIterator();
-    static void testRGBIterator();
-    static void testBGRIterator();
-    static void testRGBAIterator();
-    static void testBGRAIterator();
-    static void benchmarkIterator();
-    static void imageDeepCopy();
-    static void emptyIteratorTest();
-    static void equalityTest();
+    static void test_getter_setter();
+    static void test_allocation();
+    static void test_reallocation();
+    static void test_set_get_pixel();
+    static void test_set_get_pixel_rgba();
+    static void test_iterator();
+    static void test_rgb_iterator();
+    static void test_bgr_iterator();
+    static void test_rgba_iterator();
+    static void test_bgra_iterator();
+    static void benchmark_iterator();
+    static void image_deep_copy();
+    static void empty_iterator_test();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

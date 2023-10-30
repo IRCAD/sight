@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,29 +26,29 @@
 namespace sight::io::igtl::ut
 {
 
-class ClientServerTest : public CPPUNIT_NS::TestFixture
+class client_server_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ClientServerTest);
-CPPUNIT_TEST(clientToServer);
-CPPUNIT_TEST(serverToClient);
-CPPUNIT_TEST(clientToServerTimeout);
-CPPUNIT_TEST(clientHeaderExceptionTest);
-CPPUNIT_TEST(serverHeaderExceptionTest);
-CPPUNIT_TEST(clientBodyExceptionTest);
-CPPUNIT_TEST(serverBodyExceptionTest);
+CPPUNIT_TEST_SUITE(client_server_test);
+CPPUNIT_TEST(client_to_server);
+CPPUNIT_TEST(server_to_client);
+CPPUNIT_TEST(client_to_server_timeout);
+CPPUNIT_TEST(client_header_exception_test);
+CPPUNIT_TEST(server_header_exception_test);
+CPPUNIT_TEST(client_body_exception_test);
+CPPUNIT_TEST(server_body_exception_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     void setUp() override;
     void tearDown() override;
-    static void clientToServer();
-    static void clientToServerTimeout();
-    static void serverToClient();
-    static void clientHeaderExceptionTest();
-    static void serverHeaderExceptionTest();
-    static void clientBodyExceptionTest();
-    static void serverBodyExceptionTest();
+    static void client_to_server();
+    static void client_to_server_timeout();
+    static void server_to_client();
+    static void client_header_exception_test();
+    static void server_header_exception_test();
+    static void client_body_exception_test();
+    static void server_body_exception_test();
 };
 
 } // namespace sight::io::igtl::ut

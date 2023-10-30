@@ -38,13 +38,13 @@ struct CORE_CLASS_API slot_connection_base : core::base_object
     /**
      * @name Typedefs
      * @{ */
-    typedef std::shared_ptr<slot_connection_base> sptr;
-    typedef std::shared_ptr<slot_connection_base const> csptr;
-    typedef std::weak_ptr<slot_connection_base> wptr;
-    typedef std::weak_ptr<slot_connection_base const> cwptr;
+    using sptr  = std::shared_ptr<slot_connection_base>;
+    using csptr = std::shared_ptr<const slot_connection_base>;
+    using wptr  = std::weak_ptr<slot_connection_base>;
+    using cwptr = std::weak_ptr<const slot_connection_base>;
 
-    typedef std::shared_ptr<void> blocker_sptr_type;
-    typedef std::weak_ptr<void> blocker_wptr_type;
+    using blocker_sptr_type = std::shared_ptr<void>;
+    using blocker_wptr_type = std::weak_ptr<void>;
     /**  @} */
 
     slot_connection_base()

@@ -55,7 +55,7 @@ void dump_all::updating()
         buff_info_map = buff_manager->get_buffer_infos().get();
     }
 
-    for(const core::memory::buffer_manager::buffer_info_map_t::value_type& elt : buff_info_map)
+    for(const auto& elt : buff_info_map)
     {
         core::memory::buffer_info dump_buff_info = elt.second;
         bool loaded                              = dump_buff_info.loaded;
@@ -75,7 +75,7 @@ void dump_all::updating()
     sight::ui::dialog::message::show(
         "Dump all",
         stream.str(),
-        sight::ui::dialog::message::INFO
+        sight::ui::dialog::message::info
     );
 }
 
@@ -90,13 +90,13 @@ void dump_all::configuring()
 
 void dump_all::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 }
 
 //------------------------------------------------------------------------------
 void dump_all::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------

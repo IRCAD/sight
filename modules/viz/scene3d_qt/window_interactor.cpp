@@ -60,62 +60,62 @@ window_interactor::~window_interactor()
 {
     // Delete the window container if it is not attached to the parent container.
     // i.e. it is shown in fullscreen.
-    if((m_qOgreWidget != nullptr) && m_qOgreWidget->parent() == nullptr)
+    if((m_ogre_widget != nullptr) && m_ogre_widget->parent() == nullptr)
     {
-        delete m_qOgreWidget;
+        delete m_ogre_widget;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::renderNow()
+void window_interactor::render_now()
 {
-    m_qOgreWidget->renderNow();
+    m_ogre_widget->render_now();
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::requestRender()
+void window_interactor::request_render()
 {
-    m_qOgreWidget->requestRender();
+    m_ogre_widget->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::createContainer(
+void window_interactor::create_container(
     sight::ui::container::widget::sptr _parent,
     bool _fullscreen,
     const std::string& _id
 )
 {
     SIGHT_ASSERT("Invalid parent.", _parent);
-    m_parentContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
+    m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
 
     auto* layout = new QVBoxLayout();
-    m_parentContainer->setLayout(layout);
+    m_parent_container->set_layout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    m_qOgreWidget = new module::viz::scene3d_qt::Window();
+    m_ogre_widget = new module::viz::scene3d_qt::window();
 
-    m_qOgreWidget->setObjectName(QString::fromStdString(_id));
+    m_ogre_widget->setObjectName(QString::fromStdString(_id));
 
-    layout->addWidget(m_qOgreWidget);
-    m_qOgreWidget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-    m_qOgreWidget->setMouseTracking(true);
+    layout->addWidget(m_ogre_widget);
+    m_ogre_widget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    m_ogre_widget->setMouseTracking(true);
 
-    m_qOgreWidget->grabGesture(Qt::PinchGesture); // For zooming
-    m_qOgreWidget->grabGesture(Qt::PanGesture);   // For translating
+    m_ogre_widget->grabGesture(Qt::PinchGesture); // For zooming
+    m_ogre_widget->grabGesture(Qt::PanGesture);   // For translating
 
-    this->setFullscreen(_fullscreen, -1);
+    this->set_fullscreen(_fullscreen, -1);
 
     auto toggle_fullscreen = [this]
                              {
-                                 this->setFullscreen(!m_isFullScreen, -1);
+                                 this->set_fullscreen(!m_is_full_screen, -1);
 
-                                 service::base::sptr render_service                    = m_renderService.lock();
+                                 service::base::sptr render_service                    = m_render_service.lock();
                                  sight::viz::scene3d::render::sptr ogre_render_service =
                                      std::dynamic_pointer_cast<sight::viz::scene3d::render>(render_service);
-                                 if(m_isFullScreen)
+                                 if(m_is_full_screen)
                                  {
                                      auto enable_full_screen_slot = ogre_render_service->slot(
                                          sight::viz::scene3d::render::ENABLE_FULLSCREEN
@@ -131,107 +131,89 @@ void window_interactor::createContainer(
                                  }
                              };
 
-    auto* toggle_fullscreen_shortcut = new QShortcut(QString("F11"), m_qOgreWidget);
+    auto* toggle_fullscreen_shortcut = new QShortcut(QString("F11"), m_ogre_widget);
     QObject::connect(toggle_fullscreen_shortcut, &QShortcut::activated, toggle_fullscreen);
 
-    const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_renderService.lock());
+    const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_render_service.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", render_service);
 
     std::map<int, sight::viz::scene3d::layer::wptr> ordered_layers;
-    for(auto& layer : render_service->getLayers())
+    for(auto& layer : render_service->get_layers())
     {
-        ordered_layers[layer.second->getOrder()] = layer.second;
+        ordered_layers[layer.second->get_order()] = layer.second;
     }
 
     for(auto& layer : ordered_layers)
     {
-        m_qOgreWidget->registerLayer(layer.second);
+        m_ogre_widget->register_layer(layer.second);
     }
 
     QShowEvent show_event;
-    QCoreApplication::sendEvent(m_qOgreWidget, &show_event);
+    QCoreApplication::sendEvent(m_ogre_widget, &show_event);
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::connectToContainer()
+void window_interactor::connect_to_container()
 {
     // Connect widget window render to render service start adaptors
-    const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_renderService.lock());
+    const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_render_service.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", render_service);
 
-    QObject::connect(
-        m_qOgreWidget,
-        SIGNAL(
-            interacted(
-                sight::viz::scene3d::window_interactor::InteractionInfo
-            )
-        ),
-        this,
-        SLOT(onInteracted(sight::viz::scene3d::window_interactor::InteractionInfo))
-    );
+    QObject::connect(m_ogre_widget, &window::interacted, this, &window_interactor::on_interacted);
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::disconnectInteractor()
+void window_interactor::disconnect_interactor()
 {
-    QObject::disconnect(
-        m_qOgreWidget,
-        SIGNAL(
-            interacted(
-                sight::viz::scene3d::window_interactor::InteractionInfo
-            )
-        ),
-        this,
-        SLOT(onInteracted(sight::viz::scene3d::window_interactor::InteractionInfo))
-    );
-    QWidget* const container = m_parentContainer->getQtContainer();
-    container->layout()->removeWidget(m_qOgreWidget);
-    m_qOgreWidget->destroyWindow();
-    delete m_qOgreWidget;
-    m_qOgreWidget = nullptr;
+    QObject::disconnect(m_ogre_widget, &window::interacted, this, &window_interactor::on_interacted);
+    QWidget* const container = m_parent_container->get_qt_container();
+    container->layout()->removeWidget(m_ogre_widget);
+    m_ogre_widget->destroy_window();
+    delete m_ogre_widget;
+    m_ogre_widget = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::makeCurrent()
+void window_interactor::make_current()
 {
-    m_qOgreWidget->makeCurrent();
+    m_ogre_widget->makeCurrent();
 }
 
 //-----------------------------------------------------------------------------
 
-int window_interactor::getWidgetId() const
+int window_interactor::get_widget_id() const
 {
-    return m_qOgreWidget->getId();
+    return m_ogre_widget->get_id();
 }
 
 //-----------------------------------------------------------------------------
 
-int window_interactor::getFrameId() const
+int window_interactor::get_frame_id() const
 {
-    return m_qOgreWidget->getFrameId();
+    return m_ogre_widget->get_frame_id();
 }
 
 //-----------------------------------------------------------------------------
 
-float window_interactor::getLogicalDotsPerInch() const
+float window_interactor::get_logical_dots_per_inch() const
 {
-    SIGHT_ASSERT("Trying to query dots per inch on a non-existing windows.", m_qOgreWidget);
-    return static_cast<float>(m_qOgreWidget->screen()->logicalDotsPerInchY());
+    SIGHT_ASSERT("Trying to query dots per inch on a non-existing windows.", m_ogre_widget);
+    return static_cast<float>(m_ogre_widget->screen()->logicalDotsPerInchY());
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::onInteracted(sight::viz::scene3d::window_interactor::InteractionInfo _info)
+void window_interactor::on_interacted(sight::viz::scene3d::window_interactor::interaction_info _info)
 {
-    service::base::sptr render_service                    = m_renderService.lock();
+    service::base::sptr render_service                    = m_render_service.lock();
     sight::viz::scene3d::render::sptr ogre_render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(
         render_service
     );
 
-    for(const auto& layer_map : ogre_render_service->getLayers())
+    for(const auto& layer_map : ogre_render_service->get_layers())
     {
         sight::viz::scene3d::layer::sptr layer = layer_map.second;
         layer->slot<sight::viz::scene3d::layer::interaction_slot_t>(sight::viz::scene3d::layer::INTERACTION_SLOT)->
@@ -243,20 +225,20 @@ void window_interactor::onInteracted(sight::viz::scene3d::window_interactor::Int
 
 //-----------------------------------------------------------------------------
 
-sight::viz::scene3d::graphics_worker* window_interactor::createGraphicsWorker()
+sight::viz::scene3d::graphics_worker* window_interactor::create_graphics_worker()
 {
-    return new OpenGLWorker(m_qOgreWidget);
+    return new open_gl_worker(m_ogre_widget);
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::setFullscreen(bool _fullscreen, int _screen_number)
+void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
 {
-    QWidget* const container = m_parentContainer->getQtContainer();
-    m_isFullScreen = _fullscreen;
+    QWidget* const container = m_parent_container->get_qt_container();
+    m_is_full_screen = _fullscreen;
     if(_fullscreen)
     {
-        container->layout()->removeWidget(m_qOgreWidget);
+        container->layout()->removeWidget(m_ogre_widget);
 
         const QDesktopWidget* desktop = QApplication::desktop();
 
@@ -275,13 +257,13 @@ void window_interactor::setFullscreen(bool _fullscreen, int _screen_number)
             screenres = QGuiApplication::screens()[_screen_number]->geometry();
         }
 
-        m_qOgreWidget->setParent(nullptr);
-        m_qOgreWidget->showFullScreen();
-        m_qOgreWidget->setGeometry(screenres);
+        m_ogre_widget->setParent(nullptr);
+        m_ogre_widget->showFullScreen();
+        m_ogre_widget->setGeometry(screenres);
     }
     else if(container->layout()->isEmpty())
     {
-        container->layout()->addWidget(m_qOgreWidget);
+        container->layout()->addWidget(m_ogre_widget);
     }
 }
 

@@ -35,9 +35,9 @@ namespace sight::geometry::data::ut
 class matrix4_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(matrix4_test);
-CPPUNIT_TEST(identityMatrixTest);
-CPPUNIT_TEST(matrixTest);
-CPPUNIT_TEST(glmGetterSetterTest);
+CPPUNIT_TEST(identity_matrix_test);
+CPPUNIT_TEST(matrix_test);
+CPPUNIT_TEST(glm_getter_setter_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,9 +46,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void identityMatrixTest();
-    static void matrixTest();
-    static void glmGetterSetterTest();
+    static void identity_matrix_test();
+    static void matrix_test();
+    static void glm_getter_setter_test();
 };
 
 } // namespace sight::geometry::data::ut

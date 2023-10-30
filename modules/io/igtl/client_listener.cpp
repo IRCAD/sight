@@ -68,11 +68,11 @@ void client_listener::configuring()
     {
         const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
         const std::string device_name = attr.get("deviceName", "Sight");
-        m_deviceNames.push_back(device_name);
-        m_client.addAuthorizedDevice(device_name);
+        m_device_names.push_back(device_name);
+        m_client.add_authorized_device(device_name);
     }
 
-    m_client.setFilteringByDeviceName(true);
+    m_client.set_filtering_by_device_name(true);
 
     const std::string server_info = config.get("server", "");
     if(!server_info.empty())
@@ -80,8 +80,8 @@ void client_listener::configuring()
         const std::string::size_type split_position = server_info.find(':');
         SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_hostnameConfig = server_info.substr(0, split_position);
-        m_portConfig     = server_info.substr(split_position + 1, server_info.size());
+        m_hostname_config = server_info.substr(0, split_position);
+        m_port_config     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -91,24 +91,24 @@ void client_listener::configuring()
 
 //-----------------------------------------------------------------------------
 
-void client_listener::runClient()
+void client_listener::run_client()
 {
     // 1. Connection
     try
     {
         ui::preferences preferences;
-        const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
-        const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
+        const auto port     = preferences.delimited_get<std::uint16_t>(m_port_config);
+        const auto hostname = preferences.delimited_get<std::string>(m_hostname_config);
 
         m_client.connect(hostname, port);
-        m_sigConnected->async_emit();
+        m_sig_connected->async_emit();
     }
     catch(core::exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
-        if(this->status() == STARTED)
+        if(this->started())
         {
             sight::ui::dialog::message::show("Connection error", ex.what());
             this->slot(service::slots::STOP)->async_run();
@@ -125,23 +125,23 @@ void client_listener::runClient()
     // 2. Receive messages
     try
     {
-        while(m_client.isConnected())
+        while(m_client.is_connected())
         {
             std::string device_name;
-            data::object::sptr receive_object = m_client.receiveObject(device_name);
+            data::object::sptr receive_object = m_client.receive_object(device_name);
             if(receive_object)
             {
-                const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), device_name);
+                const auto& iter = std::find(m_device_names.begin(), m_device_names.end(), device_name);
 
-                if(iter != m_deviceNames.end())
+                if(iter != m_device_names.end())
                 {
-                    const auto index_receive_object = std::distance(m_deviceNames.begin(), iter);
+                    const auto index_receive_object = std::distance(m_device_names.begin(), iter);
                     const auto obj                  = m_objects[static_cast<std::size_t>(index_receive_object)].lock();
 
                     const bool is_a_timeline = obj->is_a("data::matrix_tl") || obj->is_a("data::frame_tl");
                     if(is_a_timeline)
                     {
-                        this->manageTimeline(receive_object, static_cast<std::size_t>(index_receive_object));
+                        this->manage_timeline(receive_object, static_cast<std::size_t>(index_receive_object));
                     }
                     else
                     {
@@ -160,7 +160,7 @@ void client_listener::runClient()
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
-        if(this->status() == STARTED)
+        if(this->started())
         {
             sight::ui::dialog::message::show("Error", ex.what());
             this->slot(service::slots::STOP)->async_run();
@@ -177,7 +177,7 @@ void client_listener::runClient()
 
 void client_listener::starting()
 {
-    m_clientFuture = std::async(std::launch::async, [this](auto&& ...){runClient();});
+    m_client_future = std::async(std::launch::async, [this](auto&& ...){run_client();});
 }
 
 //-----------------------------------------------------------------------------
@@ -186,14 +186,14 @@ void client_listener::stopping()
 {
     try
     {
-        if(m_client.isConnected())
+        if(m_client.is_connected())
         {
             m_client.disconnect();
         }
 
-        m_clientFuture.wait();
-        m_tlInitialized = false;
-        m_sigDisconnected->async_emit();
+        m_client_future.wait();
+        m_tl_initialized = false;
+        m_sig_disconnected->async_emit();
     }
     catch(core::exception& ex)
     {
@@ -204,7 +204,7 @@ void client_listener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void client_listener::manageTimeline(data::object::sptr _obj, std::size_t _index)
+void client_listener::manage_timeline(data::object::sptr _obj, std::size_t _index)
 {
     core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
 
@@ -215,22 +215,22 @@ void client_listener::manageTimeline(data::object::sptr _obj, std::size_t _index
     //MatrixTL
     if(mat_tl)
     {
-        if(!m_tlInitialized)
+        if(!m_tl_initialized)
         {
-            mat_tl->setMaximumSize(10);
-            mat_tl->initPoolSize(1);
-            m_tlInitialized = true;
+            mat_tl->set_maximum_size(10);
+            mat_tl->init_pool_size(1);
+            m_tl_initialized = true;
         }
 
         SPTR(data::matrix_tl::buffer_t) matrix_buf;
-        matrix_buf = mat_tl->createBuffer(timestamp);
+        matrix_buf = mat_tl->create_buffer(timestamp);
 
         data::matrix4::sptr t = std::dynamic_pointer_cast<data::matrix4>(_obj);
         std::array<float, 16> float_values {};
         std::transform(t->begin(), t->end(), float_values.begin(), boost::numeric_cast<float, double>);
 
-        matrix_buf->setElement(float_values, 0);
-        mat_tl->pushObject(matrix_buf);
+        matrix_buf->set_element(float_values, 0);
+        mat_tl->push_object(matrix_buf);
         auto sig = mat_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
         sig->async_emit(timestamp);
     }
@@ -239,41 +239,41 @@ void client_listener::manageTimeline(data::object::sptr _obj, std::size_t _index
     {
         data::image::sptr im = std::dynamic_pointer_cast<data::image>(_obj);
 
-        if(!m_tlInitialized)
+        if(!m_tl_initialized)
         {
             const auto frame_pixel_format =
-                [](data::image::PixelFormat _image_pixel_format) -> data::frame_tl::PixelFormat
+                [](enum data::image::pixel_format _image_pixel_format)
                 {
                     switch(_image_pixel_format)
                     {
-                        case data::image::PixelFormat::BGR:
-                            return data::frame_tl::PixelFormat::BGR;
+                        case data::image::pixel_format::bgr:
+                            return data::frame_tl::pixel_format::bgr;
 
-                        case data::image::PixelFormat::RGB:
-                            return data::frame_tl::PixelFormat::RGB;
+                        case data::image::pixel_format::rgb:
+                            return data::frame_tl::pixel_format::rgb;
 
-                        case data::image::PixelFormat::RGBA:
-                            return data::frame_tl::PixelFormat::RGBA;
+                        case data::image::pixel_format::rgba:
+                            return data::frame_tl::pixel_format::rgba;
 
-                        case data::image::PixelFormat::BGRA:
-                            return data::frame_tl::PixelFormat::BGRA;
+                        case data::image::pixel_format::bgra:
+                            return data::frame_tl::pixel_format::bgra;
 
-                        case data::image::PixelFormat::GRAY_SCALE:
-                            return data::frame_tl::PixelFormat::GRAY_SCALE;
+                        case data::image::pixel_format::gray_scale:
+                            return data::frame_tl::pixel_format::gray_scale;
 
                         default:
-                            return data::frame_tl::PixelFormat::UNDEFINED;
+                            return data::frame_tl::pixel_format::undefined;
                     }
-                }(im->getPixelFormat());
+                }(im->pixel_format());
 
-            frame_tl->setMaximumSize(10);
-            frame_tl->initPoolSize(im->size()[0], im->size()[1], im->getType(), frame_pixel_format);
-            m_tlInitialized = true;
+            frame_tl->set_maximum_size(10);
+            frame_tl->init_pool_size(im->size()[0], im->size()[1], im->type(), frame_pixel_format);
+            m_tl_initialized = true;
         }
 
-        SPTR(data::frame_tl::buffer_t) buffer = frame_tl->createBuffer(timestamp);
+        SPTR(data::frame_tl::buffer_t) buffer = frame_tl->create_buffer(timestamp);
 
-        auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
+        auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->add_element(0));
 
         const auto dump_lock = im->dump_lock();
         auto itr             = im->begin<std::uint8_t>();
@@ -281,7 +281,7 @@ void client_listener::manageTimeline(data::object::sptr _obj, std::size_t _index
 
         std::copy(itr, end, dest_buffer);
 
-        frame_tl->pushObject(buffer);
+        frame_tl->push_object(buffer);
 
         data::timeline::signals::pushed_t::sptr sig;
         sig = frame_tl->signal<data::timeline::signals::pushed_t>

@@ -109,7 +109,7 @@ public:
      * @name In-Out In-Out API
      * @{
      */
-    MODULE_VIZ_SCENE3D_API static const std::string s_MATERIAL_INOUT;
+    MODULE_VIZ_SCENE3D_API static const std::string MATERIAL_INOUT;
     /** @} */
 
     /// Initializes slots.
@@ -129,34 +129,34 @@ public:
     ) override;
 
     /// Gets Ogre associated material.
-    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial() override;
+    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr get_material() override;
 
     /// Gets material name.
-    MODULE_VIZ_SCENE3D_API std::string getMaterialName() const override;
+    MODULE_VIZ_SCENE3D_API std::string get_material_name() const override;
 
     /// Retrieves the associated texture name.
-    MODULE_VIZ_SCENE3D_API void setTextureName(const std::string& _texture_name) override;
+    MODULE_VIZ_SCENE3D_API void set_texture_name(const std::string& _texture_name) override;
 
     /// Sets material name.
-    MODULE_VIZ_SCENE3D_API void setMaterialName(const std::string& _material_name) override;
+    MODULE_VIZ_SCENE3D_API void set_material_name(const std::string& _material_name) override;
 
     /// Sets material template name.
-    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _material_name) override;
+    MODULE_VIZ_SCENE3D_API void set_material_template_name(const std::string& _material_name) override;
 
     /// Tells if there is a texture currently bound.
-    MODULE_VIZ_SCENE3D_API bool hasDiffuseTexture() const override;
+    MODULE_VIZ_SCENE3D_API bool has_diffuse_texture() const override;
 
     /// Gets the shading mode.
-    MODULE_VIZ_SCENE3D_API const std::string& getShadingMode() const override;
+    MODULE_VIZ_SCENE3D_API const std::string& get_shading_mode() const override;
 
     /// Sets the shading mode.
-    MODULE_VIZ_SCENE3D_API void setShadingMode(const std::string& _shading_mode) override;
+    MODULE_VIZ_SCENE3D_API void set_shading_mode(const std::string& _shading_mode) override;
 
     /// Set the renderable object.
-    MODULE_VIZ_SCENE3D_API void setR2VBObject(sight::viz::scene3d::r2vb_renderable* _r2vb_object) override;
+    MODULE_VIZ_SCENE3D_API void set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object) override;
 
     /// Gets the internal material code.
-    MODULE_VIZ_SCENE3D_API sight::viz::scene3d::material* getMaterialFw() const override;
+    MODULE_VIZ_SCENE3D_API sight::viz::scene3d::material* get_material_fw() const override;
 
 protected:
 
@@ -190,120 +190,120 @@ private:
      * @brief SLOT: updates the material from the input data fields.
      * @param _fields fields to update, only "ogreMaterial" is taken into account.
      */
-    void updateField(data::object::fields_container_t _fields);
+    void update_field(data::object::fields_container_t _fields);
 
     /// SLOT: swaps the texture of the material.
-    void swapTexture();
+    void swap_texture();
 
     /// SLOT: creates a texture adaptor when a texture is added to the material.
     /// This method is also called from the starting in order to create the texture adaptor if the material has a
     /// default texture.
-    void createTextureAdaptor();
+    void create_texture_adaptor();
 
     /// SLOT: removes the texture adaptor when the texture is removed from the material.
-    void removeTextureAdaptor();
+    void remove_texture_adaptor();
 
     /// Creates shader parameters adaptors from resources.
-    void createShaderParameterAdaptors();
+    void create_shader_parameter_adaptors();
 
     /// Defines the material name. It is auto generated.
-    std::string m_materialName;
+    std::string m_material_name;
 
     /// Defines the default template name, given by xml configuration.
     /// It must refer an existing Ogre material which will be used in order to instantiate m_material
-    std::string m_materialTemplateName {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_material_template_name {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
 
     /// Contains the texture adaptor the material adaptor is listening to.
-    module::viz::scene3d::adaptor::texture::sptr m_texAdaptor {nullptr};
+    module::viz::scene3d::adaptor::texture::sptr m_tex_adaptor {nullptr};
 
     /// Defines the texture name.
-    std::string m_textureName;
+    std::string m_texture_name;
 
     /// Stores supported schemes.
-    std::vector<Ogre::String> m_schemesSupported;
+    std::vector<Ogre::String> m_schemes_supported;
 
     /// Handles connections with texture adaptor.
-    core::com::helper::sig_slot_connection m_textureConnection;
+    core::com::helper::sig_slot_connection m_texture_connection;
 
     /// Defines the configured shading mode.
-    std::string m_shadingMode;
+    std::string m_shading_mode;
 
     /// Defines the configured representation mode.
-    std::string m_representationMode {"SURFACE"};
+    std::string m_representation_mode {"SURFACE"};
 
     /// Stores a map to convert from string to data::material::representation_t (ex: "SURFACE" = SURFACE).
-    std::map<std::string, data::material::representation_t> m_representationDict;
+    std::map<std::string, data::material::representation_t> m_representation_dict;
 
     /// Contains the Ogre material.
-    sight::viz::scene3d::material::uptr m_materialFw;
+    sight::viz::scene3d::material::uptr m_material_fw;
 
     /// Contains the renderable object.
-    sight::viz::scene3d::r2vb_renderable* m_r2vbObject {nullptr};
+    sight::viz::scene3d::r2vb_renderable* m_r2vb_object {nullptr};
 
-    data::ptr<data::material, data::Access::inout> m_materialData {this, s_MATERIAL_INOUT, true};
+    data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT, true};
 };
 
 //------------------------------------------------------------------------------
 
-inline Ogre::MaterialPtr material::getMaterial()
+inline Ogre::MaterialPtr material::get_material()
 {
-    return Ogre::MaterialManager::getSingleton().getByName(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
+    return Ogre::MaterialManager::getSingleton().getByName(m_material_name, sight::viz::scene3d::RESOURCE_GROUP);
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setMaterialTemplateName(const std::string& _material_name)
+inline void material::set_material_template_name(const std::string& _material_name)
 {
-    m_materialTemplateName = _material_name;
+    m_material_template_name = _material_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setMaterialName(const std::string& _material_name)
+inline void material::set_material_name(const std::string& _material_name)
 {
-    m_materialName = _material_name;
+    m_material_name = _material_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline std::string material::getMaterialName() const
+inline std::string material::get_material_name() const
 {
-    return m_materialName;
+    return m_material_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline bool material::hasDiffuseTexture() const
+inline bool material::has_diffuse_texture() const
 {
-    return m_texAdaptor && m_texAdaptor->isValid();
+    return m_tex_adaptor && m_tex_adaptor->is_valid();
 }
 
 //------------------------------------------------------------------------------
 
-inline const std::string& material::getShadingMode() const
+inline const std::string& material::get_shading_mode() const
 {
-    return m_shadingMode;
+    return m_shading_mode;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setShadingMode(const std::string& _shading_mode)
+inline void material::set_shading_mode(const std::string& _shading_mode)
 {
-    m_shadingMode = _shading_mode;
+    m_shading_mode = _shading_mode;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setR2VBObject(sight::viz::scene3d::r2vb_renderable* _r2vb_object)
+inline void material::set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object)
 {
-    m_r2vbObject = _r2vb_object;
+    m_r2vb_object = _r2vb_object;
 }
 
 //------------------------------------------------------------------------------
 
-inline sight::viz::scene3d::material* material::getMaterialFw() const
+inline sight::viz::scene3d::material* material::get_material_fw() const
 {
-    return m_materialFw.get();
+    return m_material_fw.get();
 }
 
 //------------------------------------------------------------------------------

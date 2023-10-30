@@ -48,42 +48,42 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void cardinal::createLayout(ui::container::widget::sptr _parent, const std::string& _id)
+void cardinal::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
 {
-    m_parentContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
-    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parentContainer);
+    m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
+    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
     const QString q_id = QString::fromStdString(_id);
-    m_parentContainer->getQtContainer()->setObjectName(q_id);
+    m_parent_container->get_qt_container()->setObjectName(q_id);
 
-    m_qtWindow = new QMainWindow();
+    m_qt_window = new QMainWindow();
 
     auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(m_qtWindow);
+    layout->addWidget(m_qt_window);
 
-    m_parentContainer->setLayout(layout);
+    m_parent_container->set_layout(layout);
 
-    const std::list<ViewInfo>& views = this->getViewsInfo();
+    const std::list<view_info>& views = this->get_views_info();
 
     [[maybe_unused]] bool has_central = false;
 
-    for(std::size_t idx = 0 ; const ViewInfo& view_info : views)
+    for(std::size_t idx = 0 ; const view_info& view_info : views)
     {
         QWidget* inside_widget   = nullptr;
         QScrollArea* scroll_area = nullptr;
 
-        if(view_info.m_align == CENTER)
+        if(view_info.m_align == center)
         {
             if(view_info.m_caption.first)
             {
-                auto* groupbox = new QGroupBox(m_qtWindow);
+                auto* groupbox = new QGroupBox(m_qt_window);
                 groupbox->setObjectName(q_id + '/' + view_info.m_caption.second.c_str());
                 groupbox->setTitle(QString::fromStdString(view_info.m_caption.second));
                 inside_widget = groupbox;
             }
             else
             {
-                inside_widget = new QWidget(m_qtWindow);
+                inside_widget = new QWidget(m_qt_window);
                 inside_widget->setObjectName(q_id + '/' + QString("%1").arg(idx));
             }
 
@@ -93,10 +93,10 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
                 !has_central
             );
 
-            if(!view_info.m_backgroundColor.empty())
+            if(!view_info.m_background_color.empty())
             {
                 std::array<std::uint8_t, 4> rgba {};
-                data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
+                data::tools::color::hexa_string_to_rgba(view_info.m_background_color, rgba);
                 std::stringstream ss;
                 ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                 << static_cast<std::int16_t>(rgba[1]) << ','
@@ -106,15 +106,15 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
                 widget->setStyleSheet(style + qApp->styleSheet());
             }
 
-            if(view_info.m_useScrollBar)
+            if(view_info.m_use_scroll_bar)
             {
-                scroll_area = new QScrollArea(m_qtWindow);
+                scroll_area = new QScrollArea(m_qt_window);
                 scroll_area->setWidget(widget);
                 scroll_area->setWidgetResizable(true);
-                if(!view_info.m_backgroundColor.empty())
+                if(!view_info.m_background_color.empty())
                 {
                     std::array<std::uint8_t, 4> rgba {};
-                    data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
+                    data::tools::color::hexa_string_to_rgba(view_info.m_background_color, rgba);
                     std::stringstream ss;
                     ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                     << static_cast<std::int16_t>(rgba[1]) << ','
@@ -125,44 +125,44 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
                 }
 
                 scroll_area->setMinimumSize(
-                    std::max(view_info.m_minSize.first, 0),
-                    std::max(view_info.m_minSize.second, 0)
+                    std::max(view_info.m_min_size.first, 0),
+                    std::max(view_info.m_min_size.second, 0)
                 );
 
                 scroll_area->setMaximumSize(
-                    std::min(view_info.m_maxSize.first, QWIDGETSIZE_MAX),
-                    std::min(view_info.m_maxSize.second, QWIDGETSIZE_MAX)
+                    std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
+                    std::min(view_info.m_max_size.second, QWIDGETSIZE_MAX)
                 );
 
-                m_qtWindow->setCentralWidget(scroll_area);
+                m_qt_window->setCentralWidget(scroll_area);
             }
             else
             {
                 widget->setMinimumSize(
-                    std::max(view_info.m_minSize.first, 0),
-                    std::max(view_info.m_minSize.second, 0)
+                    std::max(view_info.m_min_size.first, 0),
+                    std::max(view_info.m_min_size.second, 0)
                 );
 
                 widget->setMaximumSize(
-                    std::min(view_info.m_maxSize.first, QWIDGETSIZE_MAX),
-                    std::min(view_info.m_maxSize.second, QWIDGETSIZE_MAX)
+                    std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
+                    std::min(view_info.m_max_size.second, QWIDGETSIZE_MAX)
                 );
 
-                m_qtWindow->setCentralWidget(widget);
+                m_qt_window->setCentralWidget(widget);
             }
 
             inside_widget->setVisible(view_info.m_visible);
 
-            if(!view_info.m_toolTip.empty())
+            if(!view_info.m_tool_tip.empty())
             {
-                inside_widget->setToolTip(QString::fromStdString(view_info.m_toolTip));
+                inside_widget->setToolTip(QString::fromStdString(view_info.m_tool_tip));
             }
 
             has_central = true;
         }
         else
         {
-            auto* dock_widget = new QDockWidget(m_qtWindow);
+            auto* dock_widget = new QDockWidget(m_qt_window);
             inside_widget = new QWidget(dock_widget);
             QDockWidget::DockWidgetFeatures features;
 
@@ -170,19 +170,19 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
 
             Qt::DockWidgetArea area {Qt::NoDockWidgetArea};
 
-            if(view_info.m_align == RIGHT)
+            if(view_info.m_align == right)
             {
                 area = Qt::RightDockWidgetArea;
             }
-            else if(view_info.m_align == LEFT)
+            else if(view_info.m_align == left)
             {
                 area = Qt::LeftDockWidgetArea;
             }
-            else if(view_info.m_align == BOTTOM)
+            else if(view_info.m_align == bottom)
             {
                 area = Qt::BottomDockWidgetArea;
             }
-            else if(view_info.m_align == TOP)
+            else if(view_info.m_align == top)
             {
                 area = Qt::TopDockWidgetArea;
             }
@@ -191,7 +191,7 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
                 area = Qt::NoDockWidgetArea;
             }
 
-            m_qtWindow->addDockWidget(area, dock_widget);
+            m_qt_window->addDockWidget(area, dock_widget);
             dock_widget->setFeatures(features);
 
             if(view_info.m_caption.first)
@@ -225,15 +225,15 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
             dock_child->setLayout(dock_child_layout);
             dock_widget->setWidget(dock_child);
 
-            if(view_info.m_useScrollBar)
+            if(view_info.m_use_scroll_bar)
             {
                 scroll_area = new QScrollArea(dock_child);
                 scroll_area->setWidget(inside_widget);
                 scroll_area->setWidgetResizable(true);
-                if(view_info.m_backgroundColor != "default")
+                if(view_info.m_background_color != "default")
                 {
                     const QString style = QString::fromStdString(
-                        "QWidget { background-color: " + view_info.m_backgroundColor + ";}"
+                        "QWidget { background-color: " + view_info.m_background_color + ";}"
                     );
                     scroll_area->setStyleSheet(style);
                 }
@@ -246,13 +246,13 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
             }
 
             dock_child->setMinimumSize(
-                std::max(view_info.m_minSize.first, 0),
-                std::max(view_info.m_minSize.second, 0)
+                std::max(view_info.m_min_size.first, 0),
+                std::max(view_info.m_min_size.second, 0)
             );
 
             dock_child->setMaximumSize(
-                std::min(view_info.m_maxSize.first, QWIDGETSIZE_MAX),
-                std::min(view_info.m_maxSize.second, QWIDGETSIZE_MAX)
+                std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
+                std::min(view_info.m_max_size.second, QWIDGETSIZE_MAX)
             );
 
             if(!view_info.m_visible)
@@ -260,14 +260,14 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
                 dock_widget->setVisible(false);
             }
 
-            if(!view_info.m_toolTip.empty())
+            if(!view_info.m_tool_tip.empty())
             {
-                dock_widget->setToolTip(QString::fromStdString(view_info.m_toolTip));
+                dock_widget->setToolTip(QString::fromStdString(view_info.m_tool_tip));
             }
 
             dock_widget->adjustSize();
 
-            if(!view_info.m_isResizable)
+            if(!view_info.m_is_resizable)
             {
                 // Freeze the size of the dock widget
                 // Do it at the very end to be sure everything is correctly initialized
@@ -290,24 +290,24 @@ void cardinal::createLayout(ui::container::widget::sptr _parent, const std::stri
         // - viewInfo.m_visible
 
         ui::qt::container::widget::sptr sub_container = ui::qt::container::widget::make();
-        sub_container->setQtContainer(inside_widget);
-        m_subViews.push_back(sub_container);
+        sub_container->set_qt_container(inside_widget);
+        m_sub_views.push_back(sub_container);
     }
 
-    m_qtWindow->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_qt_window->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 //-----------------------------------------------------------------------------
 
-void cardinal::destroyLayout()
+void cardinal::destroy_layout()
 {
-    this->destroySubViews();
-    m_parentContainer->clean();
+    this->destroy_sub_views();
+    m_parent_container->clean();
 }
 
 //-----------------------------------------------------------------------------
 
-void cardinal::modifyLayout(const ui::parameter_t& _parameter, const std::string& _key)
+void cardinal::modify_layout(const ui::parameter_t& _parameter, const std::string& _key)
 {
     if(_key == "swap")
     {
@@ -323,13 +323,13 @@ void cardinal::modifyLayout(const ui::parameter_t& _parameter, const std::string
         SIGHT_ASSERT("Container '" << wid << "' is not a widget.", qt_container);
 
         // Finally, get the underlying QWidget
-        auto* const widget = qt_container->getQtContainer();
+        auto* const widget = qt_container->get_qt_container();
         SIGHT_ASSERT("Container '" << wid << "' have no QWidget.", widget);
 
-        if(m_qtWindow->centralWidget() == widget)
+        if(m_qt_window->centralWidget() == widget)
         {
             // Already central. Just maximize/minimize it
-            for(auto* const child : m_qtWindow->children())
+            for(auto* const child : m_qt_window->children())
             {
                 if(auto* const dock_widget = qobject_cast<QDockWidget*>(child); dock_widget)
                 {
@@ -341,7 +341,7 @@ void cardinal::modifyLayout(const ui::parameter_t& _parameter, const std::string
         {
             // Not central. Move it to the central widget
             // Save the state to restore the sizes later
-            const auto state = m_qtWindow->saveState();
+            const auto state = m_qt_window->saveState();
 
             // Retrieve the dock child widget containing the widget
             auto* const dock_child = widget->parentWidget();
@@ -349,8 +349,8 @@ void cardinal::modifyLayout(const ui::parameter_t& _parameter, const std::string
             // Swap the central widget with the docked widget
             auto* dock_child_layout = dock_child->layout();
             dock_child_layout->removeWidget(widget);
-            auto* const central_widget = m_qtWindow->takeCentralWidget();
-            m_qtWindow->setCentralWidget(widget);
+            auto* const central_widget = m_qt_window->takeCentralWidget();
+            m_qt_window->setCentralWidget(widget);
             dock_child_layout->addWidget(central_widget);
 
             // Restore the state at the end when layouts have been updated
@@ -358,13 +358,13 @@ void cardinal::modifyLayout(const ui::parameter_t& _parameter, const std::string
                 0,
                 [this, state]()
                 {
-                    m_qtWindow->restoreState(state);
+                    m_qt_window->restoreState(state);
                 });
         }
     }
     else
     {
-        view::modifyLayout(_parameter, _key);
+        view::modify_layout(_parameter, _key);
     }
 }
 

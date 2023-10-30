@@ -75,7 +75,7 @@ public:
     /**
      *  @brief Registers Ogre Plugins to load upon root creation.
      */
-    VIZ_SCENE3D_API static void addPlugins(const std::vector<std::string>& _plugins);
+    VIZ_SCENE3D_API static void add_plugins(const std::vector<std::string>& _plugins);
 
     /**
      * @brief utils::addRessourcesPath
@@ -84,23 +84,23 @@ public:
      *        In this case, you can call this method in the plugin.cpp file of this module
      * @param path Relative path to the ressource.cfg file from a specific module
      */
-    VIZ_SCENE3D_API static void addResourcesPath(const std::string& _module_name);
+    VIZ_SCENE3D_API static void add_resources_path(const std::string& _module_name);
 
     /**
      * @brief getOgreRoot
      * @return OgreRoot, if it doesn't exist initialise Ogre Root and default Ogre behavior
      */
-    VIZ_SCENE3D_API static Ogre::Root* getOgreRoot();
+    VIZ_SCENE3D_API static Ogre::Root* get_ogre_root();
 
     /**
      * @brief destroy the OgreRoot
      */
-    VIZ_SCENE3D_API static void destroyOgreRoot();
+    VIZ_SCENE3D_API static void destroy_ogre_root();
 
     /**
      * @brief Convert an Ogre texture into a Sight image data
      */
-    VIZ_SCENE3D_API static void convertFromOgreTexture(
+    VIZ_SCENE3D_API static void convert_from_ogre_texture(
         Ogre::TexturePtr _texture,
         const data::image::sptr _image_fw,
         bool _flip = false
@@ -111,14 +111,14 @@ public:
      * @param imageFw The Sight image
      * @return Pixel format of a data::image
      */
-    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(const data::image& _image_fw);
+    VIZ_SCENE3D_API static Ogre::PixelFormat get_pixel_format_ogre(const data::image& _image_fw);
 
     /**
      * @brief set the pixel format of an image from an Ogre pixel format
      * @param _image The Sight image
      * @param _format Pixel format of Ogre
      */
-    VIZ_SCENE3D_API static std::pair<core::type, data::image::PixelFormat> getPixelFormatFromOgre(
+    VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format> get_pixel_format_from_ogre(
         Ogre::PixelFormat _format
     );
     /**
@@ -126,7 +126,7 @@ public:
      * @param _format Pixel format
      * @return The window that should be used to scale pixel values
      */
-    VIZ_SCENE3D_API static Ogre::Vector2 getTextureWindow(core::type _format);
+    VIZ_SCENE3D_API static Ogre::Vector2 get_texture_window(core::type _format);
 
     /**
      * @brief allocateTexture
@@ -140,7 +140,7 @@ public:
      * @param[in] _dynamic true if the image has to be modified frequently
      * @return
      */
-    VIZ_SCENE3D_API static void allocateTexture(
+    VIZ_SCENE3D_API static void allocate_texture(
         Ogre::Texture* _texture,
         std::size_t _width,
         std::size_t _height,
@@ -151,34 +151,29 @@ public:
     );
 
     /**
-     * @brief convertOgreColorToFwColor
+     * @brief convert an OgreColor into a sight::data::color
      * @param[in] _ogreColor Color to convert into a Sight color
      * @return The converted Sight color
      */
-    VIZ_SCENE3D_API static data::color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogre_color);
+    VIZ_SCENE3D_API static data::color::sptr from_ogre_color(const Ogre::ColourValue& _ogre_color);
 
     /// Creates an ogre matrix from a Sight matrix.
-    VIZ_SCENE3D_API static Ogre::Matrix4 convertTM3DToOgreMx(const data::matrix4::csptr& _tm3d);
+    VIZ_SCENE3D_API static Ogre::Matrix4 to_ogre_matrix(const data::matrix4::csptr& _tm3d);
 
     /// Copies an ogre matrix to a Sight matrix.
-    VIZ_SCENE3D_API static void copyOgreMxToTM3D(
-        const Ogre::Matrix4& _mx,
-        const data::matrix4::sptr& _tm3d
-    );
+    VIZ_SCENE3D_API static void from_ogre_matrix(const Ogre::Matrix4& _mx, const data::matrix4::sptr& _tm3d);
 
     /// Copies the image's spacing and origin into Ogre vectors.
-    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convertSpacingAndOrigin(
+    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
         const data::image::csptr& _img
     );
 
     /// Copies the image's spacing and origin into Ogre vectors.
     /// Version with const reference of image
-    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convertSpacingAndOrigin(
-        const data::image& _img
-    );
+    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(const data::image& _img);
 
     /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
-    VIZ_SCENE3D_API static Ogre::Vector3i worldToSlices(const data::image& _image, const Ogre::Vector3& _world);
+    VIZ_SCENE3D_API static Ogre::Vector3i world_to_slices(const data::image& _image, const Ogre::Vector3& _world);
 
     /**
      * @brief Pick an object from a screen-space position.
@@ -188,7 +183,7 @@ public:
      * @param _layer scene manager where to pick objects from.
      * @return Object and intersection.
      */
-    VIZ_SCENE3D_API static std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > pickObject(
+    VIZ_SCENE3D_API static std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > pick_object(
         int _x,
         int _y,
         std::uint32_t _query_mask,
@@ -203,7 +198,7 @@ public:
      * @param _spacing image spacing.
      * @return True if an object has been selected.
      */
-    VIZ_SCENE3D_API static std::string pickImage(
+    VIZ_SCENE3D_API static std::string pick_image(
         const data::image& _image,
         const Ogre::Vector3& _position,
         const Ogre::Vector3& _origin,
@@ -213,7 +208,7 @@ public:
 private:
 
     /// Parses all resources.cfg files and adds resource locations to the resource group manager.
-    static void loadResources();
+    static void load_resources();
 
     /**
      * @brief Copies an ogre config stream and turns paths absolute.
@@ -223,17 +218,17 @@ private:
      * @param[out] output Output stream, where the new config is copied to.
      * @return whether or not the key was found in the input.
      */
-    static bool makePathsAbsolute(
+    static bool make_paths_absolute(
         const std::string& _key,
         std::istream& _input,
         std::ostream& _output,
         const std::filesystem::path& _module_path
     );
 
-    static viz::scene3d::factory::r2vb_renderable* s_R2VBRenderableFactory;
-    static viz::scene3d::factory::Text* s_textFactory;
+    static viz::scene3d::factory::r2vb_renderable* s_r2_vb_renderable_factory;
+    static viz::scene3d::factory::Text* s_text_factory;
     static viz::scene3d::vr::grid_proxy_geometry_factory* s_grid_proxy_geometry_factory;
-    static viz::scene3d::compositor::material_mgr_listener* s_oitMaterialListener;
+    static viz::scene3d::compositor::material_mgr_listener* s_oit_material_listener;
 };
 
 } // namespace sight::viz::scene3d

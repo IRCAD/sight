@@ -27,10 +27,10 @@
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 
-#include <io/dicom/Reader.hpp>
+#include <io/dicom/reader/file.hpp>
 #include <io/dicom/reader/series_set.hpp>
 
-#include <utest/Filter.hpp>
+#include <utest/filter.hpp>
 
 #include <utest_data/Data.hpp>
 
@@ -40,7 +40,7 @@
 
 #include <filesystem>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::ReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::reader_test);
 
 namespace sight::io::dicom::ut
 {
@@ -56,7 +56,7 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
 
     auto series_set = std::make_shared<data::series_set>();
 
-    auto reader = std::make_shared<io::dicom::Reader>();
+    auto reader = std::make_shared<io::dicom::reader::file>();
     reader->set_object(series_set);
     reader->set_folder(_path);
 
@@ -67,10 +67,10 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::setUp()
+void reader_test::setUp()
 {
     // Set up context before running a test.
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -79,27 +79,27 @@ void ReaderTest::setUp()
         std::cout << std::endl << "Executing slow tests.." << std::endl;
     }
 
-    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::direct);
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::tearDown()
+void reader_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readJMSSeriesSetTest()
+void reader_test::read_jms_series_set_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
     // cspell: ignore Genou
-    const auto& series_set = read(utest_data::Data::dir() / "sight/Patient/Dicom/JMSGenou");
+    const auto& series_set = read(utest_data::dir() / "sight/Patient/Dicom/JMSGenou");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
@@ -113,14 +113,14 @@ void ReaderTest::readJMSSeriesSetTest()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readCTSeriesSetTest()
+void reader_test::read_ct_series_set_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const auto& series_set = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER");
+    const auto& series_set = read(utest_data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
@@ -129,7 +129,7 @@ void ReaderTest::readCTSeriesSetTest()
     const double delta = 0.00001;
 
     // Check number of dimensions
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
     // Check size
     const auto& size = image_series->size();
@@ -138,38 +138,38 @@ void ReaderTest::readCTSeriesSetTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(129), size[2]);
 
     // Check spacing
-    const auto& spacing = image_series->getSpacing();
+    const auto& spacing = image_series->spacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.6), spacing[2], delta);
 
     // Check origin
-    const auto& origin = image_series->getOrigin();
+    const auto& origin = image_series->origin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
     // Check window center
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, image_series->getWindowCenter().front(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, image_series->window_center().front(), delta);
 
     // Check window width
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, image_series->getWindowWidth().front(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, image_series->window_width().front(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::type::INT16, image_series->getType());
+    CPPUNIT_ASSERT_EQUAL(core::type::INT16, image_series->type());
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readMRSeriesSetTest()
+void reader_test::read_mr_series_set_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
     const auto& series_set =
-        read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/46-MR-BARRE-MONO2-12-shoulder");
+        read(utest_data::dir() / "sight/Patient/Dicom/DicomDB/46-MR-BARRE-MONO2-12-shoulder");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
@@ -178,7 +178,7 @@ void ReaderTest::readMRSeriesSetTest()
     const double delta = 0.01;
 
     // Check number of dimensions
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
     // Check size
     const auto& size = image_series->size();
@@ -187,37 +187,37 @@ void ReaderTest::readMRSeriesSetTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
     // Check spacing
-    const auto& spacing = image_series->getSpacing();
+    const auto& spacing = image_series->spacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6.6), spacing[2], delta);
 
     // Check origin
-    const auto& origin = image_series->getOrigin();
+    const auto& origin = image_series->origin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-180.058), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-97.1478), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(112.828), origin[2], delta);
 
     // Check window center
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1000), image_series->getWindowCenter().front(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1000), image_series->window_center().front(), delta);
 
     // Check window width
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2000), image_series->getWindowWidth().front(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2000), image_series->window_width().front(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, image_series->getType());
+    CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, image_series->type());
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readOTSeriesSetTest()
+void reader_test::read_ot_series_set_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const auto& series_set = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/42-OT-BARRE-MONO2-8-colon");
+    const auto& series_set = read(utest_data::dir() / "sight/Patient/Dicom/DicomDB/42-OT-BARRE-MONO2-8-colon");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
@@ -226,7 +226,7 @@ void ReaderTest::readOTSeriesSetTest()
     const double delta = 0.01;
 
     // Check number of dimensions
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
     // Check size
     const auto& size = image_series->size();
@@ -235,37 +235,37 @@ void ReaderTest::readOTSeriesSetTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
     // Check spacing
-    const auto& spacing = image_series->getSpacing();
+    const auto& spacing = image_series->spacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[2], delta);
 
     // Check origin
-    const auto& origin = image_series->getOrigin();
+    const auto& origin = image_series->origin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
     // Check window center
-    CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+    CPPUNIT_ASSERT(image_series->window_center().empty());
 
     // Check window width
-    CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+    CPPUNIT_ASSERT(image_series->window_width().empty());
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+    CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readMultipleRescaleSeriesSetTest()
+void reader_test::read_multiple_rescale_series_set_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const auto& series_set = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/83-CT-MultipleRescale");
+    const auto& series_set = read(utest_data::dir() / "sight/Patient/Dicom/DicomDB/83-CT-MultipleRescale");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
@@ -278,7 +278,7 @@ void ReaderTest::readMultipleRescaleSeriesSetTest()
 
     // Compute sha1 digest
     boost::uuids::detail::sha1 sha1;
-    sha1.process_bytes(static_cast<char*>(buffer), image_series->getSizeInBytes());
+    sha1.process_bytes(static_cast<char*>(buffer), image_series->size_in_bytes());
     boost::uuids::detail::sha1::digest_type digest = {0};
     sha1.get_digest(digest);
 
@@ -292,14 +292,14 @@ void ReaderTest::readMultipleRescaleSeriesSetTest()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readCTWithSurviewSeriesSetTest()
+void reader_test::read_ct_with_surview_series_set_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const auto& series_set = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/84-CT-Surview");
+    const auto& series_set = read(utest_data::dir() / "sight/Patient/Dicom/DicomDB/84-CT-Surview");
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series_set->size());
 
     for(const auto& series : *series_set)
@@ -311,14 +311,14 @@ void ReaderTest::readCTWithSurviewSeriesSetTest()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readMRWithTemporalPositionSeriesSetTest()
+void reader_test::read_mr_with_temporal_position_series_set_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const auto& series_set = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/85-MR-TemporalPosition");
+    const auto& series_set = read(utest_data::dir() / "sight/Patient/Dicom/DicomDB/85-MR-TemporalPosition");
     CPPUNIT_ASSERT_EQUAL(std::size_t(4), series_set->size());
 
     for(const auto& series : *series_set)
@@ -330,14 +330,14 @@ void ReaderTest::readMRWithTemporalPositionSeriesSetTest()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readCTSeriesSetIssue01Test()
+void reader_test::read_ct_series_set_issue01_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const auto& series_set = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/86-CT-Skull");
+    const auto& series_set = read(utest_data::dir() / "sight/Patient/Dicom/DicomDB/86-CT-Skull");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
@@ -346,14 +346,14 @@ void ReaderTest::readCTSeriesSetIssue01Test()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readEnhancedUSVolumeTest()
+void reader_test::read_enhanced_us_volume_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    const auto& series_set = read(utest_data::Data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
+    const auto& series_set = read(utest_data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
@@ -362,7 +362,7 @@ void ReaderTest::readEnhancedUSVolumeTest()
     const double delta = 0.01;
 
     // Check number of dimensions
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
     // Check size
     const auto& size = image_series->size();
@@ -371,32 +371,32 @@ void ReaderTest::readEnhancedUSVolumeTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(3600), size[2]);
 
     // Check spacing
-    const auto& spacing = image_series->getSpacing();
+    const auto& spacing = image_series->spacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, spacing[2], delta);
 
     // Check origin
-    const auto& origin = image_series->getOrigin();
+    const auto& origin = image_series->origin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
     // Check window center
-    CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+    CPPUNIT_ASSERT(image_series->window_center().empty());
 
     // Check window width
-    CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+    CPPUNIT_ASSERT(image_series->window_width().empty());
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+    CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readUltrasoundImageTest()
+void reader_test::read_ultrasound_image_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
@@ -404,7 +404,7 @@ void ReaderTest::readUltrasoundImageTest()
     // cspell:ignore Aixplorer
     // Aixplorer
     {
-        const auto& series_set = read(utest_data::Data::dir() / "us/Ultrasound Image Storage/Aixplorer");
+        const auto& series_set = read(utest_data::dir() / "us/Ultrasound Image Storage/Aixplorer");
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
         for(const auto& series : *series_set)
@@ -417,7 +417,7 @@ void ReaderTest::readUltrasoundImageTest()
                 const double delta = 0.01;
 
                 // Check number of dimensions
-                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
                 // Check size
                 const auto& size = image_series->size();
@@ -426,32 +426,32 @@ void ReaderTest::readUltrasoundImageTest()
                 CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
                 // Check spacing
-                const auto& spacing = image_series->getSpacing();
+                const auto& spacing = image_series->spacing();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.03, spacing[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.03, spacing[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
                 // Check origin
-                const auto& origin = image_series->getOrigin();
+                const auto& origin = image_series->origin();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
                 // Check window center
-                CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+                CPPUNIT_ASSERT(image_series->window_center().empty());
 
                 // Check window width
-                CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+                CPPUNIT_ASSERT(image_series->window_width().empty());
 
                 // Check image type
-                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
             }
             else if(image_series->get_file().filename() == "us_rgb.dcm")
             {
                 const double delta = 0.01;
 
                 // Check number of dimensions
-                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
                 // Check size
                 const auto& size = image_series->size();
@@ -460,32 +460,32 @@ void ReaderTest::readUltrasoundImageTest()
                 CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
                 // Check spacing
-                const auto& spacing = image_series->getSpacing();
+                const auto& spacing = image_series->spacing();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.03, spacing[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.03, spacing[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
                 // Check origin
-                const auto& origin = image_series->getOrigin();
+                const auto& origin = image_series->origin();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
                 // Check window center
-                CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+                CPPUNIT_ASSERT(image_series->window_center().empty());
 
                 // Check window width
-                CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+                CPPUNIT_ASSERT(image_series->window_width().empty());
 
                 // Check image type
-                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
             }
         }
     }
 
     // GE, lossy JPEG
     {
-        const auto& series_set = read(utest_data::Data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
+        const auto& series_set = read(utest_data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
         const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
@@ -494,7 +494,7 @@ void ReaderTest::readUltrasoundImageTest()
         const double delta = 0.01;
 
         // Check number of dimensions
-        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
         // Check size
         const auto& size = image_series->size();
@@ -503,32 +503,32 @@ void ReaderTest::readUltrasoundImageTest()
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
         // Check spacing
-        const auto& spacing = image_series->getSpacing();
+        const auto& spacing = image_series->spacing();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.05, spacing[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.05, spacing[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
         // Check origin
-        const auto& origin = image_series->getOrigin();
+        const auto& origin = image_series->origin();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
         // Check window center
-        CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+        CPPUNIT_ASSERT(image_series->window_center().empty());
 
         // Check window width
-        CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+        CPPUNIT_ASSERT(image_series->window_width().empty());
 
         // Check image type
-        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
     }
 
     // cspell:ignore Kretztechnik
     // GE, pixel spacing, Kretztechnik non-cartesian volume
     {
         const auto& series_set = read(
-            utest_data::Data::dir()
+            utest_data::dir()
             / "us/Ultrasound Image Storage/GE, pixel spacing, Kretztechnik non-cartesian volume"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
@@ -544,7 +544,7 @@ void ReaderTest::readUltrasoundImageTest()
                 const double delta = 0.01;
 
                 // Check number of dimensions
-                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
                 // Check size
                 const auto& size = image_series->size();
@@ -553,32 +553,32 @@ void ReaderTest::readUltrasoundImageTest()
                 CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
                 // Check spacing
-                const auto& spacing = image_series->getSpacing();
+                const auto& spacing = image_series->spacing();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
                 // Check origin
-                const auto& origin = image_series->getOrigin();
+                const auto& origin = image_series->origin();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
                 // Check window center
-                CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+                CPPUNIT_ASSERT(image_series->window_center().empty());
 
                 // Check window width
-                CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+                CPPUNIT_ASSERT(image_series->window_width().empty());
 
                 // Check image type
-                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
             }
             else if(image_series->get_file().filename() == "us_kretz2.dcm")
             {
                 const double delta = 0.01;
 
                 // Check number of dimensions
-                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
                 // Check size
                 const auto& size = image_series->size();
@@ -587,25 +587,25 @@ void ReaderTest::readUltrasoundImageTest()
                 CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
                 // Check spacing
-                const auto& spacing = image_series->getSpacing();
+                const auto& spacing = image_series->spacing();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.01, spacing[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.01, spacing[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
                 // Check origin
-                const auto& origin = image_series->getOrigin();
+                const auto& origin = image_series->origin();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
                 // Check window center
-                CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+                CPPUNIT_ASSERT(image_series->window_center().empty());
 
                 // Check window width
-                CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+                CPPUNIT_ASSERT(image_series->window_width().empty());
 
                 // Check image type
-                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
             }
         }
     }
@@ -613,7 +613,7 @@ void ReaderTest::readUltrasoundImageTest()
     // Philips, 16 bit palette color, aspect ratio
     {
         const auto& series_set = read(
-            utest_data::Data::dir() / "us/Ultrasound Image Storage/Philips, 16 bit palette color, aspect ratio"
+            utest_data::dir() / "us/Ultrasound Image Storage/Philips, 16 bit palette color, aspect ratio"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
@@ -623,7 +623,7 @@ void ReaderTest::readUltrasoundImageTest()
         const double delta = 0.01;
 
         // Check number of dimensions
-        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
         // Check size
         const auto& size = image_series->size();
@@ -632,31 +632,31 @@ void ReaderTest::readUltrasoundImageTest()
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
         // Check spacing
-        const auto& spacing = image_series->getSpacing();
+        const auto& spacing = image_series->spacing();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.01, spacing[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(3.6, spacing[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
         // Check origin
-        const auto& origin = image_series->getOrigin();
+        const auto& origin = image_series->origin();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
         // Check window center
-        CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+        CPPUNIT_ASSERT(image_series->window_center().empty());
 
         // Check window width
-        CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+        CPPUNIT_ASSERT(image_series->window_width().empty());
 
         // Check image type
-        CPPUNIT_ASSERT_EQUAL(core::type::UINT16, image_series->getType());
+        CPPUNIT_ASSERT_EQUAL(core::type::UINT16, image_series->type());
     }
 
     // Philips, RLE, palette color
     {
         const auto& series_set =
-            read(utest_data::Data::dir() / "us/Ultrasound Image Storage/Philips, RLE, palette color");
+            read(utest_data::dir() / "us/Ultrasound Image Storage/Philips, RLE, palette color");
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
         const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
@@ -665,7 +665,7 @@ void ReaderTest::readUltrasoundImageTest()
         const double delta = 0.01;
 
         // Check number of dimensions
-        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
         // Check size
         const auto& size = image_series->size();
@@ -674,33 +674,33 @@ void ReaderTest::readUltrasoundImageTest()
         CPPUNIT_ASSERT_EQUAL(std::size_t(13), size[2]);
 
         // Check spacing
-        const auto& spacing = image_series->getSpacing();
+        const auto& spacing = image_series->spacing();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.01, spacing[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.01, spacing[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
         // Check origin
-        const auto& origin = image_series->getOrigin();
+        const auto& origin = image_series->origin();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
         // Check window center
-        CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+        CPPUNIT_ASSERT(image_series->window_center().empty());
 
         // Check window width
-        CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+        CPPUNIT_ASSERT(image_series->window_width().empty());
 
         // Check image type
-        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::readUltrasoundMultiframeImageTest()
+void reader_test::read_ultrasound_multiframe_image_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
@@ -709,7 +709,7 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
     // Acuson, 2D+t, lossy JPEG
     {
         const auto& series_set = read(
-            utest_data::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Acuson, 2D+t, lossy JPEG"
+            utest_data::dir() / "us/Ultrasound Multi-frame Image Storage/Acuson, 2D+t, lossy JPEG"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
@@ -723,7 +723,7 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
                 const double delta = 0.01;
 
                 // Check number of dimensions
-                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
                 // Check size
                 const auto& size = image_series->size();
@@ -732,32 +732,32 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
                 CPPUNIT_ASSERT_EQUAL(std::size_t(28), size[2]);
 
                 // Check spacing
-                const auto& spacing = image_series->getSpacing();
+                const auto& spacing = image_series->spacing();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
                 // Check origin
-                const auto& origin = image_series->getOrigin();
+                const auto& origin = image_series->origin();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
                 // Check window center
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(128.0, image_series->getWindowCenter().front(), delta);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(128.0, image_series->window_center().front(), delta);
 
                 // Check window width
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(255.0, image_series->getWindowWidth().front(), delta);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(255.0, image_series->window_width().front(), delta);
 
                 // Check image type
-                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
             }
             else if(image_series->get_file().filename() == "us_acuson2.dcm")
             {
                 const double delta = 0.01;
 
                 // Check number of dimensions
-                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+                CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
                 // Check size
                 const auto& size = image_series->size();
@@ -766,25 +766,25 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
                 CPPUNIT_ASSERT_EQUAL(std::size_t(55), size[2]);
 
                 // Check spacing
-                const auto& spacing = image_series->getSpacing();
+                const auto& spacing = image_series->spacing();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
                 // Check origin
-                const auto& origin = image_series->getOrigin();
+                const auto& origin = image_series->origin();
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
                 // Check window center
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(128.0, image_series->getWindowCenter().front(), delta);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(128.0, image_series->window_center().front(), delta);
 
                 // Check window width
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(255.0, image_series->getWindowWidth().front(), delta);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(255.0, image_series->window_width().front(), delta);
 
                 // Check image type
-                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+                CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
             }
         }
     }
@@ -792,7 +792,7 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
     // GE, 2D+t, RLE
     {
         const auto& series_set =
-            read(utest_data::Data::dir() / "us/Ultrasound Multi-frame Image Storage/GE, 2D+t, RLE");
+            read(utest_data::dir() / "us/Ultrasound Multi-frame Image Storage/GE, 2D+t, RLE");
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
         const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
@@ -801,7 +801,7 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
         const double delta = 0.01;
 
         // Check number of dimensions
-        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
         // Check size
         const auto& size = image_series->size();
@@ -810,31 +810,31 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
         CPPUNIT_ASSERT_EQUAL(std::size_t(7), size[2]);
 
         // Check spacing
-        const auto& spacing = image_series->getSpacing();
+        const auto& spacing = image_series->spacing();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.03, spacing[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.03, spacing[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
         // Check origin
-        const auto& origin = image_series->getOrigin();
+        const auto& origin = image_series->origin();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
         // Check window center
-        CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+        CPPUNIT_ASSERT(image_series->window_center().empty());
 
         // Check window width
-        CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+        CPPUNIT_ASSERT(image_series->window_width().empty());
 
         // Check image type
-        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
     }
 
     // Philips, 2D+t,  lossy JPEG
     {
         const auto& series_set = read(
-            utest_data::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Philips, 2D+t,  lossy JPEG"
+            utest_data::dir() / "us/Ultrasound Multi-frame Image Storage/Philips, 2D+t,  lossy JPEG"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
@@ -844,7 +844,7 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
         const double delta = 0.01;
 
         // Check number of dimensions
-        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->numDimensions());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), image_series->num_dimensions());
 
         // Check size
         const auto& size = image_series->size();
@@ -853,25 +853,25 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
         CPPUNIT_ASSERT_EQUAL(std::size_t(292), size[2]);
 
         // Check spacing
-        const auto& spacing = image_series->getSpacing();
+        const auto& spacing = image_series->spacing();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.01, spacing[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.01, spacing[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, spacing[2], delta);
 
         // Check origin
-        const auto& origin = image_series->getOrigin();
+        const auto& origin = image_series->origin();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
 
         // Check window center
-        CPPUNIT_ASSERT(image_series->getWindowCenter().empty());
+        CPPUNIT_ASSERT(image_series->window_center().empty());
 
         // Check window width
-        CPPUNIT_ASSERT(image_series->getWindowWidth().empty());
+        CPPUNIT_ASSERT(image_series->window_width().empty());
 
         // Check image type
-        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->getType());
+        CPPUNIT_ASSERT_EQUAL(core::type::UINT8, image_series->type());
     }
 }
 

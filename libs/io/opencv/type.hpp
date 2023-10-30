@@ -34,10 +34,10 @@ class IO_OPENCV_CLASS_API type
 public:
 
     /// Returns an OpenCV format given a Sight pixel type and a number of components
-    IO_OPENCV_API static std::int32_t toCv(core::type _type, std::size_t _num_components);
+    IO_OPENCV_API static std::int32_t to_cv(core::type _type, std::size_t _num_components);
 
     /// Returns a Sight pixel type and a number of components given an OpenCV format
-    IO_OPENCV_API static std::pair<core::type, std::uint8_t> fromCv(std::int32_t _cv_type);
+    IO_OPENCV_API static std::pair<core::type, std::uint8_t> from_cv(std::int32_t _cv_type);
 };
 
 } // namespace sight::io::opencv

@@ -34,16 +34,16 @@ class transfer_function_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(transfer_function_test);
-    CPPUNIT_TEST(constructorTest);
-    CPPUNIT_TEST(defaultTfTest);
-    CPPUNIT_TEST(classicGetSetTest);
-    CPPUNIT_TEST(setTFDataTest);
-    CPPUNIT_TEST(shallowAndDeepCopyTest);
-    CPPUNIT_TEST(linearColorTest);
-    CPPUNIT_TEST(nearestColorTest);
-    CPPUNIT_TEST(mapValuesTest);
-    CPPUNIT_TEST(piecewiseFunctionTest);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(constructor_test);
+    CPPUNIT_TEST(default_tf_test);
+    CPPUNIT_TEST(classic_get_set_test);
+    CPPUNIT_TEST(set_tf_data_test);
+    CPPUNIT_TEST(shallow_and_deep_copy_test);
+    CPPUNIT_TEST(linear_color_test);
+    CPPUNIT_TEST(nearest_color_test);
+    CPPUNIT_TEST(map_values_test);
+    CPPUNIT_TEST(piecewise_function_test);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,20 +52,20 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void constructorTest();
-    static void defaultTfTest();
-    static void classicGetSetTest();
-    void usingTfTest();
-    void setTFDataTest();
-    static void shallowAndDeepCopyTest();
-    void linearColorTest();
-    void nearestColorTest();
-    static void mapValuesTest();
-    static void piecewiseFunctionTest();
-    static void equalityTest();
+    static void constructor_test();
+    static void default_tf_test();
+    static void classic_get_set_test();
+    void using_tf_test();
+    void set_tf_data_test();
+    static void shallow_and_deep_copy_test();
+    void linear_color_test();
+    void nearest_color_test();
+    static void map_values_test();
+    static void piecewise_function_test();
+    static void equality_test();
 
-    static data::transfer_function::sptr createTFColor();
-    static void checkTFColor(data::transfer_function::sptr _tf);
+    static data::transfer_function::sptr create_tf_color();
+    static void check_tf_color(data::transfer_function::sptr _tf);
 };
 
 } // namespace sight::data::ut

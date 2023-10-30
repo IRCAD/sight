@@ -32,13 +32,13 @@ namespace sight::module::data::ut
 class get_camera_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(get_camera_test);
-CPPUNIT_TEST(extractsCameraFromCameraSet);
-CPPUNIT_TEST(extractsInvalidCameraSet);
-CPPUNIT_TEST(extractsValidExtrinsic);
-CPPUNIT_TEST(extractsValidExtrinsic1);
-CPPUNIT_TEST(extractsInvalidExtrinsic);
-CPPUNIT_TEST(extractsCameraOutOfBoundIndex);
-CPPUNIT_TEST(extractsExtrinsicOutOfBoundIndex);
+CPPUNIT_TEST(extracts_camera_from_camera_set);
+CPPUNIT_TEST(extracts_invalid_camera_set);
+CPPUNIT_TEST(extracts_valid_extrinsic);
+CPPUNIT_TEST(extracts_valid_extrinsic1);
+CPPUNIT_TEST(extracts_invalid_extrinsic);
+CPPUNIT_TEST(extracts_camera_out_of_bound_index);
+CPPUNIT_TEST(extracts_extrinsic_out_of_bound_index);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,13 +47,13 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void extractsCameraFromCameraSet();
-    static void extractsInvalidCameraSet();
-    static void extractsValidExtrinsic();
-    static void extractsValidExtrinsic1();
-    static void extractsCameraOutOfBoundIndex();
-    static void extractsExtrinsicOutOfBoundIndex();
-    static void extractsInvalidExtrinsic();
+    static void extracts_camera_from_camera_set();
+    static void extracts_invalid_camera_set();
+    static void extracts_valid_extrinsic();
+    static void extracts_valid_extrinsic1();
+    static void extracts_camera_out_of_bound_index();
+    static void extracts_extrinsic_out_of_bound_index();
+    static void extracts_invalid_extrinsic();
 };
 
 } // namespace sight::module::data::ut

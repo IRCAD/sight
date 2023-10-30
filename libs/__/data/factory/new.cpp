@@ -46,8 +46,8 @@ data::object::sptr make(const data::registry::key_t& _classname)
     if(data == nullptr)
     {
         std::smatch match;
-        static const std::regex reg("(\\w*)::(?:(core|filter|geometry|io|navigation|ui|viz)::)?(\\w*)::.*");
-        if(std::regex_match(classname, match, reg) && match.size() >= 3)
+        static const std::regex s_REG("(\\w*)::(?:(core|filter|geometry|io|navigation|ui|viz)::)?(\\w*)::.*");
+        if(std::regex_match(classname, match, s_REG) && match.size() >= 3)
         {
             const std::string libname = match[1].str() + '_' + (match[2].length() != 0 ? (match[2].str() + "_") : "")
                                         + match[3].str();

@@ -26,9 +26,9 @@
 namespace sight::data::ut
 {
 
-class containerTest : public CPPUNIT_NS::TestFixture
+class container_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(containerTest);
+CPPUNIT_TEST_SUITE(container_test);
 CPPUNIT_TEST(array_test);
 CPPUNIT_TEST(generic_test);
 CPPUNIT_TEST(map_test);

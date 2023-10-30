@@ -47,7 +47,7 @@ public:
      * @param[in] size lookup table size
      * @param[out] lt vtkLookupTable
      */
-    IO_VTK_API static void toVtkLookupTable(
+    IO_VTK_API static void to_vtk_lookup_table(
         data::transfer_function::csptr _tf,
         vtkSmartPointer<vtkLookupTable> _lt,
         bool _allow_transparency = false,
@@ -63,7 +63,7 @@ public:
      * @param[out] lt vtkLookupTable
      *
      */
-    IO_VTK_API static void toBWVtkLookupTable(
+    IO_VTK_API static void to_bw_vtk_lookup_table(
         double _range_min,
         double _range_max,
         vtkSmartPointer<vtkLookupTable> _lt,

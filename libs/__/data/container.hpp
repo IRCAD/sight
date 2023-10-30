@@ -137,13 +137,13 @@ using sequenced_set = boost::multi_index::multi_index_container<
 
 /// Dummy class.
 template<class C, typename = void>
-class ContainerWrapper
+class container_wrapper
 {
 };
 
 /// Array container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_array<C>::value>
     >: private C
@@ -171,12 +171,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Vector container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_vector<C>::value>
     >: private C
@@ -211,7 +211,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove all matching elements from the container.
     constexpr auto remove(const typename C::value_type& _value)
@@ -233,7 +233,7 @@ public:
 
 /// Deque container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_deque<C>::value>
     >: private C
@@ -268,12 +268,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// List container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_list<C>::value>
     >: private C
@@ -309,12 +309,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Sequenced set container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_sequenced_set<C>::value>
     >: private C
@@ -368,7 +368,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove first matching elements from the container.
     constexpr auto remove(const typename C::value_type& _value)
@@ -386,7 +386,7 @@ public:
 
 /// Map container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_map<C>::value>
     >: private C
@@ -416,12 +416,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Multimap container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_multimap<C>::value>
     >: private C
@@ -451,12 +451,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Set container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_set<C>::value>
     >: private C
@@ -486,12 +486,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Set container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_multiset<C>::value>
     >: private C
@@ -518,12 +518,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered map container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C, typename std::enable_if_t<core::tools::is_unordered_map<C>::value>
     >: private C
 {
@@ -549,12 +549,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered multimap container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_unordered_multimap<C>::value>
     >: private C
@@ -581,12 +581,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered set container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C, typename std::enable_if_t<core::tools::is_unordered_set<C>::value>
     >: private C
 {
@@ -612,12 +612,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered set container class.
 template<class C>
-class DATA_CLASS_API ContainerWrapper<
+class DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_unordered_multiset<C>::value>
     >: private C
@@ -641,7 +641,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~ContainerWrapper() noexcept = default;
+    inline virtual ~container_wrapper() noexcept = default;
 };
 
 #undef USING_CONTAINER
@@ -657,14 +657,14 @@ public:
 /// Generic Sight data container class.
 template<class C>
 class DATA_CLASS_API container : public object,
-                                 public ContainerWrapper<C>
+                                 public container_wrapper<C>
 {
 public:
 
     SIGHT_DECLARE_CLASS(container<C>, object);
 
     /// Could be usefull to keep the underlying container
-    using container_type = C;
+    using container_t = C;
 
     /// Constructors / Destructor / Assignment operators
     /// @{
@@ -674,8 +674,8 @@ public:
     inline ~container() noexcept override = default;
 
     /// To allow assignment from STL containers
-    using ContainerWrapper<C>::ContainerWrapper;
-    using ContainerWrapper<C>::operator=;
+    using container_wrapper<C>::container_wrapper;
+    using container_wrapper<C>::operator=;
     /// @}
 
     /// Equality comparison operators
@@ -687,25 +687,25 @@ public:
     /// Signals
     /// @{
     /// Type of signal when objects are added
-    using added_signal_t = core::com::signal<void (container_type)>;
+    using added_signal_t = core::com::signal<void (container_t)>;
     inline static const core::com::signals::key_t ADDED_OBJECTS_SIG = "addedObjects";
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_signal_t = core::com::signal<void (container_type, container_type)>;
+    using changed_signal_t = core::com::signal<void (container_t, container_t)>;
     inline static const core::com::signals::key_t CHANGED_OBJECTS_SIG = "changedObjects";
 
     /// Type of signal when objects are removed
-    using removed_signal_t = core::com::signal<void (container_type)>;
+    using removed_signal_t = core::com::signal<void (container_t)>;
     inline static const core::com::signals::key_t REMOVED_OBJECTS_SIG = "removedObjects";
     /// @}
 
     /// Returns a copy of the underlying container
     constexpr C get_content() const noexcept;
 
-    struct DATA_CLASS_API ScopedEmitter
+    struct DATA_CLASS_API scoped_emitter
     {
-        constexpr ScopedEmitter(const container& _container) noexcept;
-        inline ~ScopedEmitter() noexcept;
+        constexpr scoped_emitter(const container& _container) noexcept;
+        inline ~scoped_emitter() noexcept;
 
         /// Emits the needed signals
         void emit() noexcept;
@@ -717,8 +717,8 @@ public:
         constexpr void block(const core::com::slot_base::sptr& _slot) noexcept;
 
         const container& m_container;
-        container::container_type m_backup;
-        std::vector<core::com::slot_base::sptr> m_blockedSlots;
+        container::container_t m_backup;
+        std::vector<core::com::slot_base::sptr> m_blocked_slots;
     };
 
     [[nodiscard]] constexpr auto scoped_emit() const noexcept;

@@ -39,17 +39,17 @@ public:
 
     SIGHT_DECLARE_CLASS(toolbar, ui::object);
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
     UI_API const static registry_key_t REGISTRY_KEY;
 
-    typedef enum
+    enum alignment
     {
-        TOP,
-        BOTTOM,
-        RIGHT,
-        LEFT
-    } Alignment;
+        top,
+        bottom,
+        right,
+        left
+    };
 
     /// Constructor. Do nothing.
     UI_API toolbar();
@@ -60,16 +60,16 @@ public:
     /**
      * @brief Returns the builded tool bar.
      */
-    UI_API virtual ui::container::toolbar::sptr getToolBar();
+    UI_API virtual ui::container::toolbar::sptr get_tool_bar();
 
     /**
      * @brief Initialize the tool bar.
      *
      * Example of configuration
      * @code{.xml}
-        <toolBar align="top" backgroundColor="default" spacing="10">
+        <toolbar align="top" backgroundColor="default" spacing="10">
             <toolBitmapSize height= "50" width="50" />
-        </toolBar>
+        </toolbar>
        @endcode
         - \b align : toolbar alignment (top, bottom, left, right).
         - \b backgroundColor (optional) : (hexa) background color.
@@ -80,31 +80,31 @@ public:
     UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
-     * @brief Instantiate layout with parent toolBar.
+     * @brief Instantiate layout with parent toolbar.
      * @pre layout must be initialized before.
-     * @pre parent toolBar must be instanced.
+     * @pre parent toolbar must be instanced.
      */
-    UI_API virtual void createToolBar(ui::container::widget::sptr _parent) = 0;
+    UI_API virtual void create_tool_bar(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_API virtual void destroyToolBar() = 0;
+    UI_API virtual void destroy_tool_bar() = 0;
 
 protected:
 
     /// tool_bar.
-    ui::container::toolbar::sptr m_toolBar;
+    ui::container::toolbar::sptr m_tool_bar;
 
-    std::pair<int, int> m_toolBitmapSize;
+    std::pair<int, int> m_tool_bitmap_size;
 
     int m_spacing {0};
 
-    Alignment m_alignment {TOP};
+    alignment m_alignment {top};
 
     /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
-    std::string m_backgroundColor;
+    std::string m_background_color;
 };
 
 } // namespace sight::ui::builder

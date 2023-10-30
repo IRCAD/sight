@@ -52,11 +52,11 @@ const core::com::slots::key_t manage::CLEAR_SLOT             = "clear";
 manage::manage() noexcept
 {
     new_slot(ADD_SLOT, &manage::add, this);
-    new_slot(ADD_COPY_SLOT, &manage::addCopy, this);
-    new_slot(ADD_OR_SWAP_SLOT, &manage::addOrSwap, this);
+    new_slot(ADD_COPY_SLOT, &manage::add_copy, this);
+    new_slot(ADD_OR_SWAP_SLOT, &manage::add_or_swap, this);
     new_slot(SWAP_OBJ_SLOT, &manage::swap, this);
     new_slot(REMOVE_SLOT, &manage::remove, this);
-    new_slot(REMOVE_IF_PRESENT_SLOT, &manage::removeIfPresent, this);
+    new_slot(REMOVE_IF_PRESENT_SLOT, &manage::remove_if_present, this);
     new_slot(CLEAR_SLOT, &manage::clear, this);
 }
 
@@ -71,8 +71,8 @@ void manage::configuring()
 {
     service::config_t config = this->get_config();
 
-    m_compositeKey = config.get("compositeKey", "");
-    m_fieldName    = config.get("field", "");
+    m_composite_key = config.get("compositeKey", "");
+    m_field_name    = config.get("field", "");
 }
 
 //-----------------------------------------------------------------------------
@@ -97,19 +97,19 @@ void manage::updating()
 
 void manage::add()
 {
-    internalAdd(false);
+    internal_add(false);
 }
 
 //------------------------------------------------------------------------------
 
-void manage::addCopy()
+void manage::add_copy()
 {
-    internalAdd(true);
+    internal_add(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void manage::addOrSwap()
+void manage::add_or_swap()
 {
     SIGHT_ASSERT("Service is not started", this->started());
 
@@ -118,10 +118,10 @@ void manage::addOrSwap()
 
     const auto container = m_container.lock();
 
-    if(!m_fieldName.empty())
+    if(!m_field_name.empty())
     {
         sight::data::helper::field helper(container.get_shared());
-        helper.addOrSwap(m_fieldName, obj.get_shared());
+        helper.add_or_swap(m_field_name, obj.get_shared());
         helper.notify();
     }
     else
@@ -129,7 +129,7 @@ void manage::addOrSwap()
         if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
         {
             const auto scoped_emitter = composite->scoped_emit();
-            composite->insert_or_assign(m_compositeKey, obj.get_shared());
+            composite->insert_or_assign(m_composite_key, obj.get_shared());
         }
         else if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared()); vector)
         {
@@ -177,16 +177,16 @@ void manage::swap()
 
     const auto container = m_container.lock();
 
-    if(!m_fieldName.empty())
+    if(!m_field_name.empty())
     {
         sight::data::helper::field helper(container.get_shared());
-        helper.swap(m_fieldName, obj.get_shared());
+        helper.swap(m_field_name, obj.get_shared());
         helper.notify();
     }
     else if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
     {
         const auto scoped_emitter = composite->scoped_emit();
-        composite->insert_or_assign(m_compositeKey, obj.get_shared());
+        composite->insert_or_assign(m_composite_key, obj.get_shared());
     }
     else
     {
@@ -204,10 +204,10 @@ void manage::remove()
 
     const auto container = m_container.lock();
 
-    if(!m_fieldName.empty())
+    if(!m_field_name.empty())
     {
         sight::data::helper::field helper(container.get_shared());
-        helper.remove(m_fieldName);
+        helper.remove(m_field_name);
         helper.notify();
     }
     else
@@ -215,7 +215,7 @@ void manage::remove()
         if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
         {
             const auto scoped_emitter = composite->scoped_emit();
-            composite->erase(m_compositeKey);
+            composite->erase(m_composite_key);
         }
         else
         {
@@ -244,7 +244,7 @@ void manage::remove()
 
 //-----------------------------------------------------------------------------
 
-void manage::removeIfPresent()
+void manage::remove_if_present()
 {
     SIGHT_ASSERT("Service is not started", this->started());
 
@@ -252,12 +252,12 @@ void manage::removeIfPresent()
 
     const auto container = m_container.lock();
 
-    if(!m_fieldName.empty())
+    if(!m_field_name.empty())
     {
         sight::data::helper::field helper(container.get_shared());
         try
         {
-            helper.remove(m_fieldName);
+            helper.remove(m_field_name);
             helper.notify();
         }
         catch(sight::data::exception&)
@@ -270,7 +270,7 @@ void manage::removeIfPresent()
         if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
         {
             const auto scoped_emitter = composite->scoped_emit();
-            composite->erase(m_compositeKey);
+            composite->erase(m_composite_key);
         }
         else
         {
@@ -315,7 +315,7 @@ void manage::clear()
 
     const auto container = m_container.lock();
 
-    if(!m_fieldName.empty())
+    if(!m_field_name.empty())
     {
         sight::data::helper::field helper(container.get_shared());
         helper.clear();
@@ -348,7 +348,7 @@ void manage::clear()
 
 //------------------------------------------------------------------------------
 
-void manage::internalAdd(bool _copy)
+void manage::internal_add(bool _copy)
 {
     SIGHT_ASSERT("Service is not started", this->started());
 
@@ -363,10 +363,10 @@ void manage::internalAdd(bool _copy)
 
     const auto container = m_container.lock();
 
-    if(!m_fieldName.empty())
+    if(!m_field_name.empty())
     {
         sight::data::helper::field helper(container.get_shared());
-        helper.add(m_fieldName, obj);
+        helper.add(m_field_name, obj);
         helper.notify();
     }
     else
@@ -374,7 +374,7 @@ void manage::internalAdd(bool _copy)
         if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
         {
             const auto scoped_emitter = composite->scoped_emit();
-            composite->insert_or_assign(m_compositeKey, obj);
+            composite->insert_or_assign(m_composite_key, obj);
         }
         else if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared()); vector)
         {

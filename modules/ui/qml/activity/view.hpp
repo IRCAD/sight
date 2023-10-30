@@ -112,16 +112,16 @@ public:
     MODULE_UI_QML_API ~view() override = default;
 
     /// Signal emited when the activity is launched
-    typedef core::com::signal<void ()> activity_launched_signal_t;
+    using activity_launched_signal_t = core::com::signal<void ()>;
 
 Q_SIGNALS:
 
-    void launchRequested(QUrl _path, QVariantMap _replace);
+    void launch_requested(QUrl _path, QVariantMap _replace);
 
 public Q_SLOTS:
 
     /// Emit 'activityLaunched' signal. Should be called by Qml when the activity's Qml file is pushed in the stack view
-    void notifyActivityCreation();
+    void notify_activity_creation();
 
 protected:
 
@@ -140,12 +140,12 @@ protected:
 private:
 
     /// Slot: Launch the given activity in the stackView.
-    void launchActivity(data::activity::sptr _activity);
+    void launch_activity(data::activity::sptr _activity);
 
-    activity_launched_signal_t::sptr m_sigActivityLaunched;
+    activity_launched_signal_t::sptr m_sig_activity_launched;
 
     /// Input data to pass to the configuration
-    data::ptr_vector<data::object, data::Access::inout> m_data {this, "data"};
+    data::ptr_vector<data::object, data::access::inout> m_data {this, "data"};
 };
 
 } // namespace sight::module::ui::qml::activity

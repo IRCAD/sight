@@ -53,28 +53,28 @@ public:
      * @pre layout must be initialized before.
      * @pre parent menu must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::menu::sptr _parent, const std::string& _id) override;
+    UI_QT_API void create_layout(ui::container::menu::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local menus.
      * @pre services using this actions must be stopped before.
      */
-    UI_QT_API void destroyLayout() override;
+    UI_QT_API void destroy_layout() override;
 
     /**
      * @brief Set the action visibility.
      */
-    UI_QT_API void menuItemSetVisible(ui::container::menu_item::sptr _menu_item, bool _is_visible) override;
+    UI_QT_API void menu_item_set_visible(ui::container::menu_item::sptr _menu_item, bool _is_visible) override;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_QT_API void menuItemSetEnabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled) override;
+    UI_QT_API void menu_item_set_enabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled) override;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_QT_API void menuItemSetChecked(ui::container::menu_item::sptr /*menu_item*/, bool _is_checked) override;
+    UI_QT_API void menu_item_set_checked(ui::container::menu_item::sptr /*menu_item*/, bool _is_checked) override;
 
 protected:
 

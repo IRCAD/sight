@@ -33,13 +33,13 @@
 namespace sight::io::dicom::ut
 {
 
-typedef std::set<std::string> exclude_set_t;
-class DicomSeriesWriterTest : public CPPUNIT_NS::TestFixture
+using exclude_set_t = std::set<std::string>;
+class dicom_series_writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DicomSeriesWriterTest);
-CPPUNIT_TEST(writeReadTest);
-CPPUNIT_TEST(writeReadAnonymiseTest);
-CPPUNIT_TEST(writeReadDirArchiveTest);
+CPPUNIT_TEST_SUITE(dicom_series_writer_test);
+CPPUNIT_TEST(write_read_test);
+CPPUNIT_TEST(write_read_anonymise_test);
+CPPUNIT_TEST(write_read_dir_archive_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,9 +48,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void writeReadTest();
-    void writeReadAnonymiseTest();
-    void writeReadDirArchiveTest();
+    void write_read_test();
+    void write_read_anonymise_test();
+    void write_read_dir_archive_test();
 
 private:
 
@@ -62,12 +62,12 @@ private:
      * @param p path to read Dicom series to be compared
      * @param anonymized if true, further attributes related to anonymisation are not compared.
      */
-    void checkDicomSeries(
+    void check_dicom_series(
         const std::filesystem::path& _p,
         bool _anonymized = false
     );
 
-    data::dicom_series::sptr m_srcDicomSeries;
+    data::dicom_series::sptr m_src_dicom_series;
 };
 
 } // namespace sight::io::dicom::ut

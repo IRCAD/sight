@@ -30,7 +30,7 @@ namespace sight::utest_data
 
 //------------------------------------------------------------------------------
 
-bool File::contentEquals(const std::filesystem::path& _l_file, const std::filesystem::path& _r_file)
+bool file::content_equals(const std::filesystem::path& _l_file, const std::filesystem::path& _r_file)
 {
     const std::streambuf::int_type eof = std::streambuf::traits_type::eof();
 

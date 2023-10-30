@@ -45,14 +45,14 @@ public:
     SIGHT_DECLARE_CLASS(frame_tl, generic_tl<uint8_t>);
 
     /// Frame format
-    enum class PixelFormat
+    enum class pixel_format
     {
-        UNDEFINED = 0, ///< Undefined pixel format
-        RGB,           ///< Frame with 3 component RGB.
-        RGBA,          ///< Frame with 4 component RGBA.
-        BGR,           ///< Frame with 3 component BGR.
-        BGRA,          ///< Frame with 4 component BGRA.
-        GRAY_SCALE     ///< Frame with 1 component.
+        undefined = 0, ///< Undefined pixel format
+        rgb,           ///< Frame with 3 component RGB.
+        rgba,          ///< Frame with 4 component RGBA.
+        bgr,           ///< Frame with 3 component BGR.
+        bgra,          ///< Frame with 4 component BGRA.
+        gray_scale     ///< Frame with 1 component.
     };
 
     /**
@@ -65,43 +65,43 @@ public:
     DATA_API ~frame_tl() noexcept override = default;
 
     /// Initializes the size of the pool buffer.
-    DATA_API void initPoolSize(
+    DATA_API void init_pool_size(
         std::size_t _width,
         std::size_t _height,
         const core::type& _type,
-        PixelFormat _format,
+        pixel_format _format,
         unsigned int _max_element_num = 1
     );
 
     /// Returns the width of an image in the timeline
-    std::size_t getWidth() const
+    std::size_t get_width() const
     {
         return m_width;
     }
 
     /// Returns the height of an image in the timeline
-    std::size_t getHeight() const
+    std::size_t get_height() const
     {
         return m_height;
     }
 
     /// Returns the number of components of an image in the timeline
-    std::size_t numComponents() const
+    std::size_t num_components() const
     {
-        return m_numberOfComponents;
+        return m_number_of_components;
     }
 
     /// Returns the type of the frame pixel
-    core::type getType() const
+    core::type type() const
     {
         return m_type;
     }
 
     /// Returns the frame pixel format
-    PixelFormat getPixelFormat() const;
+    pixel_format pixel_format() const;
 
     /// Set the frame pixel format
-    void setPixelFormat(PixelFormat _format);
+    void set_pixel_format(enum pixel_format _format);
 
     /// Equality comparison operators
     /// @{
@@ -126,7 +126,7 @@ public:
 private:
 
     /// Forbid the use of this inherited method.
-    DATA_API void initPoolSize(unsigned int _max_element_num) override;
+    DATA_API void init_pool_size(unsigned int _max_element_num) override;
 
     /// frame width
     std::size_t m_width {0};
@@ -135,27 +135,27 @@ private:
     std::size_t m_height {0};
 
     /// number of components
-    std::size_t m_numberOfComponents {3};
+    std::size_t m_number_of_components {3};
 
     /// type of frame pixel
     core::type m_type;
 
     /// Frame format
-    PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
+    enum pixel_format m_pixel_format {pixel_format::undefined};
 }; // class frame_tl
 
 //-----------------------------------------------------------------------------
 
-inline void frame_tl::setPixelFormat(PixelFormat _format)
+inline void frame_tl::set_pixel_format(enum pixel_format _format)
 {
-    m_pixelFormat = _format;
+    m_pixel_format = _format;
 }
 
 //-----------------------------------------------------------------------------
 
-inline frame_tl::PixelFormat frame_tl::getPixelFormat() const
+inline enum frame_tl::pixel_format frame_tl::pixel_format() const
 {
-    return m_pixelFormat;
+    return m_pixel_format;
 }
 
 } // namespace sight::data

@@ -32,9 +32,9 @@ namespace sight::io::ut
 /**
  * @brief Test many methods to read/create sight dictionary file.
  */
-class DictionaryReaderTest : public CPPUNIT_NS::TestFixture
+class dictionary_reader_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DictionaryReaderTest);
+CPPUNIT_TEST_SUITE(dictionary_reader_test);
 CPPUNIT_TEST(test_1);
 CPPUNIT_TEST(test_2);
 CPPUNIT_TEST(test_3);
@@ -56,11 +56,11 @@ public:
 
 protected:
 
-    static void generateDictionaryFileWithMissingSemiColon(std::filesystem::path _dictionary_file);
-    static void generateDictionaryFileWithWrongCategory(std::filesystem::path _dictionary_file);
-    static void generateDictionaryFileWithWrongClass(std::filesystem::path _dictionary_file);
-    static void generateDictionaryFile(std::filesystem::path _dictionary_file);
-    std::filesystem::path m_tmpDictionaryFilePath;
+    static void generate_dictionary_file_with_missing_semi_colon(std::filesystem::path _dictionary_file);
+    static void generate_dictionary_file_with_wrong_category(std::filesystem::path _dictionary_file);
+    static void generate_dictionary_file_with_wrong_class(std::filesystem::path _dictionary_file);
+    static void generate_dictionary_file(std::filesystem::path _dictionary_file);
+    std::filesystem::path m_tmp_dictionary_file_path;
 };
 
 } // namespace sight::io::ut

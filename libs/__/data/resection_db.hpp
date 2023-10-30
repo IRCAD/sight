@@ -52,33 +52,33 @@ public:
     /// Destructor
     DATA_API ~resection_db() noexcept override = default;
 
-    typedef std::vector<resection::sptr> resection_container_t;
+    using resection_container_t = std::vector<resection::sptr>;
 
     /**
      * @brief Get the number of resections
      */
-    DATA_API resection_container_t::size_type numResections() const;
+    DATA_API resection_container_t::size_type num_resections() const;
 
     /**
      * @brief add resection
      */
-    DATA_API void addResection(const resection::sptr& _resection);
+    DATA_API void add_resection(const resection::sptr& _resection);
 
     /**
      * @{
      * @brief Get/Set value of the resections.
      */
-    const resection_container_t& getResections() const;
-    void setResections(const resection_container_t& _val);
+    const resection_container_t& get_resections() const;
+    void set_resections(const resection_container_t& _val);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the safe resection.
      */
-    resection::sptr getSafeResection();
-    resection::csptr getSafeResection() const;
-    void setSafeResection(const resection::sptr& _safe_resection);
+    resection::sptr get_safe_resection();
+    resection::csptr get_safe_resection() const;
+    void set_safe_resection(const resection::sptr& _safe_resection);
     /// @}
 
     /***
@@ -87,13 +87,13 @@ public:
      */
 
     /// Type of signal when the safe part is added
-    typedef core::com::signal<void ()> SafePartAddedSignalType;
+    using safe_part_added_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigSafePartAdded
     DATA_API static const core::com::signals::key_t SAFE_PART_ADDED_SIG;
 
     /// Type of signal when a resection is added
-    typedef core::com::signal<void ()> resection_added_signal_t;
+    using resection_added_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigResectionAdded
     DATA_API static const core::com::signals::key_t RESECTION_ADDED_SIG;
@@ -124,52 +124,52 @@ public:
 
 protected:
 
-    resection::sptr m_safeResection;
+    resection::sptr m_safe_resection;
 
     resection_container_t m_resections;
 
 private:
 
     /// Signal emitted when the safe part is added
-    SafePartAddedSignalType::sptr m_sigSafePartAdded;
+    safe_part_added_signal_t::sptr m_sig_safe_part_added;
 
     /// Signal emitted when a resection is added
-    resection_added_signal_t::sptr m_sigResectionAdded;
+    resection_added_signal_t::sptr m_sig_resection_added;
 };
 
 //-----------------------------------------------------------------------------
 
-inline const resection_db::resection_container_t& resection_db::getResections() const
+inline const resection_db::resection_container_t& resection_db::get_resections() const
 {
     return m_resections;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection_db::setResections(const resection_db::resection_container_t& _val)
+inline void resection_db::set_resections(const resection_db::resection_container_t& _val)
 {
     m_resections = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline resection::sptr resection_db::getSafeResection()
+inline resection::sptr resection_db::get_safe_resection()
 {
-    return m_safeResection;
+    return m_safe_resection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline resection::csptr resection_db::getSafeResection() const
+inline resection::csptr resection_db::get_safe_resection() const
 {
-    return m_safeResection;
+    return m_safe_resection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection_db::setSafeResection(const resection::sptr& _safe_resection)
+inline void resection_db::set_safe_resection(const resection::sptr& _safe_resection)
 {
-    m_safeResection = _safe_resection;
+    m_safe_resection = _safe_resection;
 }
 
 //-----------------------------------------------------------------------------

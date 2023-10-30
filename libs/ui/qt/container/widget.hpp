@@ -52,8 +52,8 @@ public:
 
     UI_QT_API ~widget() noexcept override;
 
-    UI_QT_API virtual void setQtContainer(QWidget* _container);
-    UI_QT_API virtual QWidget* getQtContainer() const;
+    UI_QT_API virtual void set_qt_container(QWidget* _container);
+    UI_QT_API virtual QWidget* get_qt_container() const;
 
     /**
      * @brief Assign a layout to the container widget. Previous layout and its children are deleted and the container
@@ -61,14 +61,14 @@ public:
      *
      * @param The layout to set on the container widget
      */
-    UI_QT_API virtual void setLayout(QLayout* _layout);
+    UI_QT_API virtual void set_layout(QLayout* _layout);
 
     UI_QT_API void clean() override;
-    UI_QT_API void destroyContainer() override;
-    UI_QT_API bool isShownOnScreen() override;
+    UI_QT_API void destroy_container() override;
+    UI_QT_API bool is_shown_on_screen() override;
 
-    UI_QT_API void setVisible(bool _is_visible) override;
-    UI_QT_API void setEnabled(bool _is_enabled) override;
+    UI_QT_API void set_visible(bool _is_visible) override;
+    UI_QT_API void set_enabled(bool _is_enabled) override;
 
 private:
 

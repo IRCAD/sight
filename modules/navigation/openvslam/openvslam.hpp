@@ -81,20 +81,20 @@ namespace sight::module::navigation::openvslam
  * - \b vocFileLoaded(): Emitted when the vocabulary file is loaded.
  *
  * @section Slots Slots
- * - \b startTracking(): Initialize and start the tracking process.
- * - \b stopTracking(): Stop the tracking process.
+ * - \b start_tracking(): Initialize and start the tracking process.
+ * - \b stop_tracking(): Stop the tracking process.
  * - \b track(timestamp): Call openvslam with the new frame.
  * - \b enableLocalization(bool): Enable the localization mode by stopping mapping thread.
  * - \b activateLocalization(): Activate the localization mode by stopping mapping thread.
  * - \b resetPointCloud(): Reset the pointcloud.
  * - \b saveMap(): Save openvslam's map.
  * - \b loadMap(): Load openvslam's map.
- * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
+ * - \b set_double_parameter(double, string): Calls a double parameter slot according to the given key.
  *   - scaleFactor: to rescale matrix and points (by default Monocular use an arbitrary scale).
  *   - initializer.parallaxDegThr: Parallax threshold in degree for openvslam initializer (advanced).
  *   - initializer.reprojectionErrThr: Reprojection error threshold for openvslam initializer (advanced).
  *   - initializer.scalingFactor: Initial scale magnitude for openvslam initializer (advanced).
- * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
+ * - \b set_int_parameter(int, string): Calls an int parameter slot according to the given key.
  *   - nFeatures: Set the number of features per image.
  *   - nLevels: Set the number of levels in the scale pyramid.
  *   - iniThFAST: Initial FAST Threshold value .
@@ -102,9 +102,9 @@ namespace sight::module::navigation::openvslam
  *   - initializer.numRansacIterations: Number of RANSAC iteration of openvslam initializer (advanced).
  *   - initializer.minNumTriangulatedPts: Minimal number of triangulated points for openvslam initializer (advanced).
  *   - initializer.numBAIterations: Number of iterations of the Bundle-Adjustment for openvslam initializer (advanced).
- * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
+ * - \b set_bool_parameter(bool, string): Calls a bool parameter slot according to the given key.
  *   - showFeatures: Call an imshow to display internal image of openvslam (with features projected).
- * - \b setEnumParameter(string, string): Calls an enum parameter slot according to the given key.
+ * - \b set_enum_parameter(string, string): Calls an enum parameter slot according to the given key.
  * - map_t: "Global" or "Local", fill either the global map or the local map in the pointcloud output.
  *
  * @section XML XML Configuration
@@ -162,11 +162,11 @@ public:
      * - \b STEREO: Use a stereovision system.(NOT IMPLEMENTED)
      * - \b DEPTH : Use a RGB-D sensor. (NOT IMPLEMENTED)
      */
-    enum class MODULE_NAVIGATION_OPENVSLAM_API TrackingMode
+    enum class MODULE_NAVIGATION_OPENVSLAM_API tracking_mode
     {
-        MONO = 0,
-        STEREO,
-        DEPTH
+        mono = 0,
+        stereo,
+        depth
     };
 
 protected:
@@ -192,49 +192,49 @@ private:
      */
 
     /// Slot: called to start the tracking.
-    void startTracking() final;
+    void start_tracking() final;
 
     /// Slot: called to stop the tracking.
-    void stopTracking() final;
+    void stop_tracking() final;
 
     /// Slot: called to enable/disable localization mode (stop/(re)start mapping thread).
-    void enableLocalization(bool _enable);
+    void enable_localization(bool _enable);
 
     /// Slot: called to enable localization mode.
-    void activateLocalization();
+    void activate_localization();
 
     /// Slot: called to disable localization mode.
-    void deactivateLocalization();
+    void deactivate_localization();
 
     /// Slot: called when a integer value is changed.
-    void setIntParameter(int _val, std::string _key);
+    void set_int_parameter(int _val, std::string _key);
 
     /// Slot: called when a double value is changed.
-    void setDoubleParameter(double _val, std::string _key);
+    void set_double_parameter(double _val, std::string _key);
 
     /// Slot: called when a bool value is changed.
-    void setBoolParameter(bool _val, std::string _key);
+    void set_bool_parameter(bool _val, std::string _key);
 
     /// Slot: called when an enum value is changed.
-    void setEnumParameter(std::string _val, std::string _key);
+    void set_enum_parameter(std::string _val, std::string _key);
 
     /// Slot: Load Openvslam map file.
-    void loadMap();
+    void load_map();
 
     /// Slot: Save Openvslam map file.
-    void saveMap();
+    void save_map();
 
     /// Slot: Save trajectories files (both frame & KeyFrames).
-    void saveTrajectories();
+    void save_trajectories();
 
     /// Slot: Pause/resume tracker.
     void pause();
 
     /// Slot: called to reset the pointcloud.
-    void resetPointCloud();
+    void reset_point_cloud();
 
     /// Slot: call openvslam with the new frame.
-    void tracking(core::hires_clock::type& timestamp) final;
+    void tracking(core::hires_clock::type& _timestamp) final;
     /** @} */
 
     /**
@@ -254,112 +254,116 @@ private:
      */
 
     /// Signal: sent when the tracking is initialized.
-    signal_t::sptr m_sigTrackingInitialized;
+    signal_t::sptr m_sig_tracking_initialized;
 
     /// Signal: sended when the tracking is not initialized.
-    signal_t::sptr m_sigTrackingNotInitialized;
+    signal_t::sptr m_sig_tracking_not_initialized;
 
     /// Signal: sent when the tracking is found.
-    signal_t::sptr m_sigTracked;
+    signal_t::sptr m_sig_tracked;
 
     /// Signal: sent when the tracking is lost.
-    signal_t::sptr m_sigTrackingLost;
+    signal_t::sptr m_sig_tracking_lost;
 
     /// Signal: sent when the vocabulary file is unloaded.
-    signal_t::sptr m_sigVocFileUnloaded;
+    signal_t::sptr m_sig_voc_file_unloaded;
 
     /// Signal: sent when the vocabulary file is loading.
-    signal_t::sptr m_sigVocFileLoadingStarted;
+    signal_t::sptr m_sig_voc_file_loading_started;
 
     /// Signal: sent when the vocabulary file is loaded.
-    signal_t::sptr m_sigVocFileLoaded;
+    signal_t::sptr m_sig_voc_file_loaded;
 
     /// Signal: sent when the map file is loaded.
-    signal_t::sptr m_sigMapLoaded;
+    signal_t::sptr m_sig_map_loaded;
     /** @} */
 
     /// Start the tracking with the path of the _mapFile.
-    void startTracking(const std::string& _mapFile);
+    void start_tracking(const std::string& _map_file);
 
     /// Update pointcloud from openvslam's map.
-    void updatePointCloud();
+    void update_point_cloud();
 
 private:
 
     /// ORB Parameters structure
-    sight::navigation::openvslam::OrbParams m_orbParameters;
+    sight::navigation::openvslam::orb_params m_orb_parameters;
 
     /// Openvslam initializer parameters (only used in monocular mode).
-    sight::navigation::openvslam::InitParams m_initializerParameters;
+    sight::navigation::openvslam::init_params m_initializer_parameters;
 
     /// Tracking mode : MONO, STEREO, DEPTH.
-    TrackingMode m_trackingMode {TrackingMode::MONO};
+    tracking_mode m_tracking_mode {tracking_mode::mono};
 
     /// Target width when downsampling is required.
-    std::size_t m_downSampleWidth {0};
+    std::size_t m_down_sample_width {0};
 
     /// Mutex to lock m_slamSystem.
-    std::mutex m_slamLock;
+    std::mutex m_slam_lock;
 
     /// If localization mode is enable
     bool m_localization {false};
 
     /// Unique pointer to SLAM system.
-    std::unique_ptr< ::openvslam::system> m_slamSystem {nullptr};
+    std::unique_ptr< ::openvslam::system> m_slam_system {nullptr};
 
     /// Pointer to a publisher class to get current frame.
-    std::shared_ptr< ::openvslam::publish::frame_publisher> m_ovsFramePublisher {nullptr};
+    std::shared_ptr< ::openvslam::publish::frame_publisher> m_ovs_frame_publisher {nullptr};
 
     /// Pointer to a publisher class to get current map.
-    std::shared_ptr< ::openvslam::publish::map_publisher> m_ovsMapPublisher {nullptr};
+    std::shared_ptr< ::openvslam::publish::map_publisher> m_ovs_map_publisher {nullptr};
 
     /// Path to the vocabulary (could be set only once).
-    std::string m_vocabularyPath;
+    std::string m_vocabulary_path;
 
     /// To show detected features in an external view (using cv::imshow).
-    bool m_showFeatures {false};
+    bool m_show_features {false};
 
     /// Switch between local or global map (pushed in m_pointcloud).
-    bool m_localMap {false};
+    bool m_local_map {false};
 
     ///Calls asynchronously updatePointCloud each 1sec.
     core::thread::timer::sptr m_timer;
 
     /// Worker for pointcloud update
-    core::thread::worker::sptr m_pointcloudWorker;
+    core::thread::worker::sptr m_pointcloud_worker;
 
     /// Pause state.
-    bool m_isPaused {false};
+    bool m_is_paused {false};
 
     /// Stores the filepath to save map.
-    std::string m_saveMapPath;
+    std::string m_save_map_path;
 
     /// Stores the folder where to save trajectories files.
-    core::location::single_file::sptr m_trajectoriesSavePath;
+    core::location::single_file::sptr m_trajectories_save_path;
 
     /// Stores the trajectories format ("KITTI" or "TUM" are internal formats in openvslam).
     /// This is only used when saving trajectories at stop.
     /// KITTI = matrices , TUM = vectors & quaternions.
-    std::string m_trajectoriesFormat {"KITTI"};
+    std::string m_trajectories_format {"KITTI"};
 
     /// Stores the current number of landmarks in the map. (Only used in updatePointCloud thread).
-    unsigned int m_numberOfLandmarks {0};
+    unsigned int m_number_of_landmarks {0};
 
-    static constexpr std::string_view s_VIDEOPOINTS_INPUT     = "videoPoint";
-    static constexpr std::string_view s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
-    static constexpr std::string_view s_TIMELINE2_INPUT       = "timeline2";
-    static constexpr std::string_view s_CAMERA_INPUT          = "camera";
-    static constexpr std::string_view s_SCALE_INPUT           = "scale";
-    static constexpr std::string_view s_POINTCLOUD_OUTPUT     = "pointCloud";
+    static constexpr std::string_view VIDEOPOINTS_INPUT     = "videoPoint";
+    static constexpr std::string_view CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
+    static constexpr std::string_view TIMELIN_E2_INPUT      = "timeline2";
+    static constexpr std::string_view CAMERA_INPUT          = "camera";
+    static constexpr std::string_view SCALE_INPUT           = "scale";
+    static constexpr std::string_view POINTCLOUD_OUTPUT     = "pointCloud";
 
-    sight::data::ptr<sight::data::camera, sight::data::Access::in> m_camera {this, s_CAMERA_INPUT};
-    sight::data::ptr<sight::data::frame_tl, sight::data::Access::in> m_timeline2 {this, s_TIMELINE2_INPUT, false, true};
-    sight::data::ptr<sight::data::matrix_tl, sight::data::Access::inout> m_cameraMatrixTL {this,
-                                                                                           s_CAMERA_MATRIXTL_INOUT,
-                                                                                           false, true
+    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline2 {this, TIMELIN_E2_INPUT, false,
+                                                                                  true
     };
-    sight::data::ptr<sight::data::mesh, sight::data::Access::out> m_pointCloud {this, s_POINTCLOUD_OUTPUT, false, true};
-    sight::data::ptr<sight::data::real, sight::data::Access::in> m_scale {this, s_SCALE_INPUT, false, true};
+    sight::data::ptr<sight::data::matrix_tl, sight::data::access::inout> m_camera_matrix_tl {this,
+                                                                                             CAMERA_MATRIXTL_INOUT,
+                                                                                             false, true
+    };
+    sight::data::ptr<sight::data::mesh, sight::data::access::out> m_point_cloud {this, POINTCLOUD_OUTPUT, false,
+                                                                                 true
+    };
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_scale {this, SCALE_INPUT, false, true};
 };
 
 } // namespace sight::module::navigation::openvslam

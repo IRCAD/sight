@@ -70,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
  *
  * @section Slots Slots
- * - \b setParameter(parameter_t value, std::string key): If key = "position", looking for value in the position name,
+ * - \b set_parameter(parameter_t value, std::string key): If key = "position", looking for value in the position name,
  * then goes to that position if found.
  * - \b nextPosition: Go to the next position (cyclic iteration).
  * - \b previousPosition: Go to the previous position (cyclic iteration).
@@ -85,7 +85,7 @@ public:
     {
         using slots_t = core::com::slots::key_t;
 
-        inline static const slots_t SET_PARAMETER     = "setParameter";
+        inline static const slots_t SET_PARAMETER     = "set_parameter";
         inline static const slots_t NEXT_POSITION     = "nextPosition";
         inline static const slots_t PREVIOUS_POSITION = "previousPosition";
         inline static const slots_t UPDATE_TRANSFORM  = "updateTransform";
@@ -118,13 +118,13 @@ private:
 
     connections_t auto_connections() const final;
 
-    void updateTransform();
-    void setParameter(ui::parameter_t _value, std::string _key);
+    void update_transform();
+    void set_parameter(ui::parameter_t _value, std::string _key);
 
     using predefined_position_t =
         sight::viz::scene3d::interactor::predefined_position_interactor::predefined_position_t;
 
-    std::vector<predefined_position_t> m_cameraPositions;
+    std::vector<predefined_position_t> m_camera_positions;
     /// Contains the interaction handler.
     std::shared_ptr<sight::viz::scene3d::interactor::predefined_position_interactor> m_interactor;
 
@@ -132,21 +132,21 @@ private:
     int m_priority {0};
 
     /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant {true};
+    bool m_layer_order_dependant {true};
 
     /// Defines if one can move using the mouse interaction (default off)
-    bool m_manualRotation {false};
+    bool m_manual_rotation {false};
 
     /// Defines the default position to use.
-    std::optional<std::string> m_defaultPosition;
+    std::optional<std::string> m_default_position;
 
     /// Defines if an animation is performed when switching positions
     bool m_animate {true};
 
     /// Input transform.
-    static constexpr std::string_view s_REGISTRATION_TRANSFORM_IN = "transform";
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_transform {
-        this, s_REGISTRATION_TRANSFORM_IN, true, true
+    static constexpr std::string_view REGISTRATION_TRANSFORM_IN = "transform";
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {
+        this, REGISTRATION_TRANSFORM_IN, true, true
     };
 };
 

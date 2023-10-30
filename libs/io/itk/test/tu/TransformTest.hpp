@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,17 +27,17 @@
 namespace sight::io::itk::ut
 {
 
-class TransformTest : public CPPUNIT_NS::TestFixture
+class transform_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(TransformTest);
-CPPUNIT_TEST(testConversion);
+CPPUNIT_TEST_SUITE(transform_test);
+CPPUNIT_TEST(test_conversion);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     void setUp() override;
     void tearDown() override;
-    static void testConversion();
+    static void test_conversion();
 };
 
 } // namespace sight::io::itk::ut

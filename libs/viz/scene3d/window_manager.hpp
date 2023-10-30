@@ -65,7 +65,7 @@ public:
      * @brief Returns true if there is at least one window.
      * @@return true if at least one window is registered.
      */
-    VIZ_SCENE3D_API bool hasWindow();
+    VIZ_SCENE3D_API bool has_window();
 
 private:
 

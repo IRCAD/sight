@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,32 +26,32 @@
 
 #include <vector>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::DicomCodedAttributeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::dicom_coded_attribute_test);
 
 namespace sight::io::dicom::helper::ut
 {
 
-using helper = helper::DicomCodedAttribute;
+using helper = helper::dicom_coded_attribute;
 
 //------------------------------------------------------------------------------
 
-void DicomCodedAttributeTest::convertEntryToCodedAttributeTest()
+void dicom_coded_attribute_test::convert_entry_to_coded_attribute_test()
 {
-    std::vector<container::DicomCodedAttribute> result = helper::convertEntryToCodedAttribute(
+    std::vector<container::dicom_coded_attribute> result = helper::convert_entry_to_coded_attribute(
         "(AAA;BBB;CCC)(DDD;EEE;FFF)"
     );
-    CPPUNIT_ASSERT_EQUAL(container::DicomCodedAttribute("AAA", "BBB", "CCC"), result[0]);
-    CPPUNIT_ASSERT_EQUAL(container::DicomCodedAttribute("DDD", "EEE", "FFF"), result[1]);
+    CPPUNIT_ASSERT_EQUAL(container::dicom_coded_attribute("AAA", "BBB", "CCC"), result[0]);
+    CPPUNIT_ASSERT_EQUAL(container::dicom_coded_attribute("DDD", "EEE", "FFF"), result[1]);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomCodedAttributeTest::convertEntryToGdcmCodedAttributeTest()
+void dicom_coded_attribute_test::convert_entry_to_gdcm_coded_attribute_test()
 {
     using namespace std::literals::string_literals;
 
     gdcm::Segment::BasicCodedEntryVector result =
-        helper::convertEntryToGDCMCodedAttribute("(AAA;BBB;CCC)(DDD;EEE;FFF)");
+        helper::convert_entry_to_gdcm_coded_attribute("(AAA;BBB;CCC)(DDD;EEE;FFF)");
 
     CPPUNIT_ASSERT_EQUAL("AAA"s, result[0].CV);
     CPPUNIT_ASSERT_EQUAL("BBB"s, result[0].CSD);
@@ -64,57 +64,57 @@ void DicomCodedAttributeTest::convertEntryToGdcmCodedAttributeTest()
 
 //------------------------------------------------------------------------------
 
-void DicomCodedAttributeTest::checkAndFormatEntryWithWrongValueTest()
+void dicom_coded_attribute_test::check_and_format_entry_with_wrong_value_test()
 {
     std::string input = "(AAA;BBB)";
-    CPPUNIT_ASSERT(!helper::checkAndFormatEntry(input));
+    CPPUNIT_ASSERT(!helper::check_and_format_entry(input));
 
     input = "(AAA;BBB;CCC";
-    CPPUNIT_ASSERT(!helper::checkAndFormatEntry(input));
+    CPPUNIT_ASSERT(!helper::check_and_format_entry(input));
 
     input = "AAA;BBB;CCC)";
-    CPPUNIT_ASSERT(!helper::checkAndFormatEntry(input));
+    CPPUNIT_ASSERT(!helper::check_and_format_entry(input));
 }
 
 //------------------------------------------------------------------------------
 
-void DicomCodedAttributeTest::checkAndFormatEntryWithSingleValueTest()
+void dicom_coded_attribute_test::check_and_format_entry_with_single_value_test()
 {
     using namespace std::literals::string_literals;
 
     std::string input = "(AAA;BBB;CCC)";
-    CPPUNIT_ASSERT(helper::checkAndFormatEntry(input));
+    CPPUNIT_ASSERT(helper::check_and_format_entry(input));
     CPPUNIT_ASSERT_EQUAL("(AAA;BBB;CCC)"s, input);
 
     input = "   (AAA;BBB;CCC)   ";
-    CPPUNIT_ASSERT(helper::checkAndFormatEntry(input));
+    CPPUNIT_ASSERT(helper::check_and_format_entry(input));
     CPPUNIT_ASSERT_EQUAL("(AAA;BBB;CCC)"s, input);
 
     input = "   (AAA;BBB;CCC)   ";
-    CPPUNIT_ASSERT(helper::checkAndFormatEntry(input, true));
+    CPPUNIT_ASSERT(helper::check_and_format_entry(input, true));
     CPPUNIT_ASSERT_EQUAL("(AAA;BBB;CCC)"s, input);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomCodedAttributeTest::checkAndFormatEntryWithMultipleValuesTest()
+void dicom_coded_attribute_test::check_and_format_entry_with_multiple_values_test()
 {
     using namespace std::literals::string_literals;
 
     std::string input = "(AAA;BBB;CCC)(DDD;EEE;FFF)";
-    CPPUNIT_ASSERT(!helper::checkAndFormatEntry(input));
+    CPPUNIT_ASSERT(!helper::check_and_format_entry(input));
     CPPUNIT_ASSERT_EQUAL("(AAA;BBB;CCC)(DDD;EEE;FFF)"s, input);
 
     input = "   (AAA;BBB;CCC)   (DDD;EEE;FFF)   ";
-    CPPUNIT_ASSERT(!helper::checkAndFormatEntry(input));
+    CPPUNIT_ASSERT(!helper::check_and_format_entry(input));
     CPPUNIT_ASSERT_EQUAL("   (AAA;BBB;CCC)   (DDD;EEE;FFF)   "s, input); // The input isn't formatted if it is wrong
 
     input = "(AAA;BBB;CCC)(DDD;EEE;FFF)";
-    CPPUNIT_ASSERT(helper::checkAndFormatEntry(input, true));
+    CPPUNIT_ASSERT(helper::check_and_format_entry(input, true));
     CPPUNIT_ASSERT_EQUAL("(AAA;BBB;CCC)(DDD;EEE;FFF)"s, input);
 
     input = "   (AAA;BBB;CCC)   (DDD;EEE;FFF)   ";
-    CPPUNIT_ASSERT(helper::checkAndFormatEntry(input, true));
+    CPPUNIT_ASSERT(helper::check_and_format_entry(input, true));
     CPPUNIT_ASSERT_EQUAL("(AAA;BBB;CCC)(DDD;EEE;FFF)"s, input);
 }
 

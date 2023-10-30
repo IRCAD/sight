@@ -55,16 +55,16 @@ namespace sight::io::bitmap::detail
         SIGHT_ERROR(e.what()); \
     }
 
-class NvJPEGWriter final
+class nv_jpeg_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    NvJPEGWriter(const NvJPEGWriter&)            = delete;
-    NvJPEGWriter& operator=(const NvJPEGWriter&) = delete;
+    nv_jpeg_writer(const nv_jpeg_writer&)            = delete;
+    nv_jpeg_writer& operator=(const nv_jpeg_writer&) = delete;
 
     /// Constructor
-    inline NvJPEGWriter() noexcept
+    inline nv_jpeg_writer() noexcept
     {
         try
         {
@@ -98,7 +98,7 @@ public:
     }
 
     /// Destructor
-    inline ~NvJPEGWriter() noexcept
+    inline ~nv_jpeg_writer() noexcept
     {
         free();
     }
@@ -115,19 +115,19 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::image& image,
-        O& output,
-        Writer::Mode mode,
-        Flag = Flag::NONE
+        const data::image& _image,
+        O& _output,
+        writer::mode _mode,
+        flag = flag::none
 )
     {
-        const auto& pixel_format = image.getPixelFormat();
+        const auto& pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format != data::image::PixelFormat::RGB && pixel_format != data::image::PixelFormat::BGR
+            pixel_format != data::image::pixel_format::rgb && pixel_format != data::image::pixel_format::bgr
         );
 
-        const auto& pixel_type = image.getType();
+        const auto& pixel_type = _image.type();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << pixel_type,
             pixel_type != core::type::UINT8
@@ -137,7 +137,7 @@ public:
         CHECK_CUDA(
             nvjpegEncoderParamsSetOptimizedHuffman(
                 m_params,
-                mode == Writer::Mode::BEST ? 1 : 0,
+                _mode == writer::mode::best ? 1 : 0,
                 m_stream
             ),
             NVJPEG_STATUS_SUCCESS
@@ -145,8 +145,8 @@ public:
 
         // Realloc if GPU buffer is smaller
         // Beware, some images are volume...
-        const auto& sizes = image.size();
-        const auto num_components = image.numComponents();
+        const auto& sizes = _image.size();
+        const auto num_components = _image.num_components();
         const auto size_in_bytes = sizes[0] * sizes[1] * num_components* pixel_type.size();
         if(m_gpu_buffer_size < size_in_bytes)
         {
@@ -163,7 +163,7 @@ public:
         CHECK_CUDA(
             cudaMemcpy(
                 m_gpu_buffer,
-                image.buffer(),
+                _image.buffer(),
                 size_in_bytes,
                 cudaMemcpyHostToDevice
             ),
@@ -182,7 +182,7 @@ public:
                 m_state,
                 m_params,
                 &nv_image,
-                pixel_format == data::image::PixelFormat::RGB ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
+                pixel_format == data::image::pixel_format::rgb ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
                 int(sizes[0]),
                 int(sizes[1]),
                 m_stream
@@ -227,18 +227,18 @@ public:
             CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
 
             // Write to disk...
-            output.write(reinterpret_cast<char*>(m_output_buffer.data()), std::streamsize(encoded_size));
+            _output.write(reinterpret_cast<char*>(m_output_buffer.data()), std::streamsize(encoded_size));
         }
         else if constexpr(std::is_same_v<std::uint8_t**, O>)
         {
-            (*output) = new std::uint8_t[encoded_size];
+            (*_output) = new std::uint8_t[encoded_size];
 
             // Retrieve the buffer from GPU
             CHECK_CUDA(
                 nvjpegEncodeRetrieveBitstream(
                     m_handle,
                     m_state,
-                    (*output),
+                    (*_output),
                     &encoded_size,
                     m_stream
                 ),
@@ -254,7 +254,7 @@ public:
                 nvjpegEncodeRetrieveBitstream(
                     m_handle,
                     m_state,
-                    output,
+                    _output,
                     &encoded_size,
                     m_stream
                 ),
@@ -265,9 +265,9 @@ public:
         }
         else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
         {
-            if(output.size() < encoded_size)
+            if(_output.size() < encoded_size)
             {
-                output.resize(encoded_size);
+                _output.resize(encoded_size);
             }
 
             // Retrieve the buffer from GPU
@@ -275,7 +275,7 @@ public:
                 nvjpegEncodeRetrieveBitstream(
                     m_handle,
                     m_state,
-                    output.data(),
+                    _output.data(),
                     &encoded_size,
                     m_stream
                 ),

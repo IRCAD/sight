@@ -42,7 +42,7 @@ public:
      * @param[inout] _mtl material to which the technique is added
      * @return the newly created technique
      */
-    static VIZ_SCENE3D_API Ogre::Technique* copyToMaterial(
+    static VIZ_SCENE3D_API Ogre::Technique* copy_to_material(
         const Ogre::Technique* _tech,
         const std::string& _scheme_name,
         Ogre::Material* _mtl

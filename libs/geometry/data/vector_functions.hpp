@@ -33,14 +33,14 @@ namespace sight::geometry::data
 /**
  *  @brief Normalize a vector
  */
-GEOMETRY_DATA_API double normalize(fwVec3d& _vec);
+GEOMETRY_DATA_API double normalize(fw_vec3d& _vec);
 
 /**
  *  @brief Return a normalized vector
  *  @param [in] vec vector to normalize
  *  @return normalized vector
  */
-GEOMETRY_DATA_API fwVec3d normalized(const fwVec3d& _vec);
+GEOMETRY_DATA_API fw_vec3d normalized(const fw_vec3d& _vec);
 
 /**
  *  @brief Compute the Dot product between two vectors.
@@ -48,54 +48,54 @@ GEOMETRY_DATA_API fwVec3d normalized(const fwVec3d& _vec);
  *  @param [in] v2
  *  @return the dot product.
  */
-GEOMETRY_DATA_API double dot(const fwVec3d& _v1, const fwVec3d& _v2);
+GEOMETRY_DATA_API double dot(const fw_vec3d& _v1, const fw_vec3d& _v2);
 /**
  *  @brief Compute the Cross product between two vectors.
  *  @param [in] v1
  *  @param [in] v2
  *  @return the cross product.
  */
-GEOMETRY_DATA_API fwVec3d cross(const fwVec3d& _v1, const fwVec3d& _v2);
+GEOMETRY_DATA_API fw_vec3d cross(const fw_vec3d& _v1, const fw_vec3d& _v2);
 
 /**
  *  @brief Compute the length of the vector
  *  @param [in] _vec
  *  @return the vector's length
  */
-GEOMETRY_DATA_API double vec_length(const fwVec3d& _vec);
+GEOMETRY_DATA_API double vec_length(const fw_vec3d& _vec);
 
 /**
  *  @brief Compute the negate of the vector.
  *  @param [in] _vec
  *  @param [out] _vec
  */
-GEOMETRY_DATA_API void negate(fwVec3d& _vec);
+GEOMETRY_DATA_API void negate(fw_vec3d& _vec);
 
 } //namespace sight::geometry::data
 
 /**
- *  @brief operator *= for fwVec3d
+ *  @brief operator *= for fw_vec3d
  *  @param [in] vec1 vector to multiply
  *  @param [in] val value to multiply with vector
  *  @return vec1[0]*=vec2[0], vec1[1]*=vec2[1], vec1[2]*=vec2[2]
  */
-GEOMETRY_DATA_API fwVec3d& operator*=(fwVec3d& _vec1, double _val);
+GEOMETRY_DATA_API fw_vec3d& operator*=(fw_vec3d& _vec1, double _val);
 
 /**
- *  @brief operator /= for fwVec3d
+ *  @brief operator /= for fw_vec3d
  *  @param [in] vec
  *  @param [in] val
  *  @return vec[0]/=val, vec[1]/=val, vec[2]/=val
  */
-GEOMETRY_DATA_API fwVec3d& operator/=(fwVec3d& _vec, double _val);
+GEOMETRY_DATA_API fw_vec3d& operator/=(fw_vec3d& _vec, double _val);
 
 /**
- *  @brief operator += for fwVec3d
+ *  @brief operator += for fw_vec3d
  *  @param [in] vec1
  *  @param [in] vec2
  *  @return  vec1 => vec1[0]+=vec2[0], vec1[1]+=vec2[1], vec1[2]+=vec2[2]
  */
-GEOMETRY_DATA_API fwVec3d& operator+=(fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API fw_vec3d& operator+=(fw_vec3d& _vec1, const fw_vec3d& _vec2);
 
 /**
  *  @brief
@@ -103,60 +103,60 @@ GEOMETRY_DATA_API fwVec3d& operator+=(fwVec3d& _vec1, const fwVec3d& _vec2);
  *  @param [in] vec2
  *  @return vec1[0]-=vec2[0], vec1[1]-=vec2[1], vec1[2]-=vec2[2]
  */
-GEOMETRY_DATA_API fwVec3d& operator-=(fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API fw_vec3d& operator-=(fw_vec3d& _vec1, const fw_vec3d& _vec2);
 
 /**
- *  @brief operator * between fwVec3d and value.
+ *  @brief operator * between fw_vec3d and value.
  *  @param [in] _vec
  *  @param [in] _val
  *  @return the result of the operation _vec*val
  */
-GEOMETRY_DATA_API fwVec3d operator*(const fwVec3d& _vec, double _val);
+GEOMETRY_DATA_API fw_vec3d operator*(const fw_vec3d& _vec, double _val);
 
 /**
- *  @brief operator * between value and fwVec3d.
+ *  @brief operator * between value and fw_vec3d.
  *  @param [in] _val
  *  @param [in] _vec
  *  @return the result of the operation _vec*val
  */
-GEOMETRY_DATA_API fwVec3d operator*(double _val, const fwVec3d& _vec);
+GEOMETRY_DATA_API fw_vec3d operator*(double _val, const fw_vec3d& _vec);
 
 /**
- *  @brief operator / between fwVec3d and value.
+ *  @brief operator / between fw_vec3d and value.
  *  @param [in] _vec
  *  @param [in] val
  *  @return the result of the operation _vec/val
  */
-GEOMETRY_DATA_API fwVec3d operator/(const fwVec3d& _vec, double _val);
+GEOMETRY_DATA_API fw_vec3d operator/(const fw_vec3d& _vec, double _val);
 
 /**
- *  @brief operator + between two fwVec3d.
+ *  @brief operator + between two fw_vec3d.
  *  @param [in] _vec1
  *  @param [in] _vec2
  *  @return the result of the operation _vec1 + _vec2
  */
-GEOMETRY_DATA_API fwVec3d operator+(const fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API fw_vec3d operator+(const fw_vec3d& _vec1, const fw_vec3d& _vec2);
 
 /**
- *  @brief operator - between two fwVec3d data.
+ *  @brief operator - between two fw_vec3d data.
  *  @param [in] _vec1
  *  @param [in] _vec2
  *  @return the difference between two value.
  */
-GEOMETRY_DATA_API fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API fw_vec3d operator-(const fw_vec3d& _vec1, const fw_vec3d& _vec2);
 
 /**
- *  @brief Compare two fwVec3d data.
+ *  @brief Compare two fw_vec3d data.
  *  @param [in] _vec1
  *  @param [in] _vec2
  *  @return return 1 if equal 0 otherwise.
  */
-GEOMETRY_DATA_API bool operator==(const fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API bool operator==(const fw_vec3d& _vec1, const fw_vec3d& _vec2);
 
 /**
- *  @brief Compare two fwVec3d data.
+ *  @brief Compare two fw_vec3d data.
  *  @param [in] _vec1
  *  @param [in] _vec2
  *  @return 1 if different.
  */
-GEOMETRY_DATA_API bool operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API bool operator!=(const fw_vec3d& _vec1, const fw_vec3d& _vec2);

@@ -56,7 +56,7 @@ void get_vector_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void get_vector_test::extractsElementFromVector()
+void get_vector_test::extracts_element_from_vector()
 {
     auto vector = std::make_shared<sight::data::vector>();
 
@@ -117,7 +117,7 @@ void get_vector_test::extractsElementFromVector()
 
 //------------------------------------------------------------------------------
 
-void get_vector_test::invalidVector()
+void get_vector_test::invalid_vector()
 {
     sight::service::base::sptr get_vector = sight::service::add("sight::module::data::get_vector");
 

@@ -31,44 +31,44 @@ namespace sight::module::data::ut
 class manage_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(manage_test);
-CPPUNIT_TEST(addInCompositeTest);
-CPPUNIT_TEST(addInVectorTest);
-CPPUNIT_TEST(addInSeriesSetTest);
-CPPUNIT_TEST(addInFieldTest);
+CPPUNIT_TEST(add_in_composite_test);
+CPPUNIT_TEST(add_in_vector_test);
+CPPUNIT_TEST(add_in_series_set_test);
+CPPUNIT_TEST(add_in_field_test);
 
-CPPUNIT_TEST(addCopyInCompositeTest);
-CPPUNIT_TEST(addCopyInVectorTest);
-CPPUNIT_TEST(addCopyInSeriesSetTest);
-CPPUNIT_TEST(addCopyInFieldTest);
+CPPUNIT_TEST(add_copy_in_composite_test);
+CPPUNIT_TEST(add_copy_in_vector_test);
+CPPUNIT_TEST(add_copy_in_series_set_test);
+CPPUNIT_TEST(add_copy_in_field_test);
 
-CPPUNIT_TEST(addOrSwapAndNotPresentInCompositeTest);
-CPPUNIT_TEST(addOrSwapAndNotPresentInVectorTest);
-CPPUNIT_TEST(addOrSwapAndNotPresentInSeriesSetTest);
-CPPUNIT_TEST(addOrSwapAndNotPresentInFieldTest);
+CPPUNIT_TEST(add_or_swap_and_not_present_in_composite_test);
+CPPUNIT_TEST(add_or_swap_and_not_present_in_vector_test);
+CPPUNIT_TEST(add_or_swap_and_not_present_in_series_set_test);
+CPPUNIT_TEST(add_or_swap_and_not_present_in_field_test);
 
-CPPUNIT_TEST(addOrSwapAndPresentInCompositeTest);
-CPPUNIT_TEST(addOrSwapAndPresentInVectorTest);
-CPPUNIT_TEST(addOrSwapAndPresentInSeriesSetTest);
-CPPUNIT_TEST(addOrSwapAndPresentInFieldTest);
+CPPUNIT_TEST(add_or_swap_and_present_in_composite_test);
+CPPUNIT_TEST(add_or_swap_and_present_in_vector_test);
+CPPUNIT_TEST(add_or_swap_and_present_in_series_set_test);
+CPPUNIT_TEST(add_or_swap_and_present_in_field_test);
 
-CPPUNIT_TEST(swapObjInCompositeTest);
-CPPUNIT_TEST(swapObjAndNotPresentInFieldTest);
-CPPUNIT_TEST(swapObjAndPresentInFieldTest);
+CPPUNIT_TEST(swap_obj_in_composite_test);
+CPPUNIT_TEST(swap_obj_and_not_present_in_field_test);
+CPPUNIT_TEST(swap_obj_and_present_in_field_test);
 
-CPPUNIT_TEST(removeInCompositeTest);
-CPPUNIT_TEST(removeInVectorTest);
-CPPUNIT_TEST(removeInSeriesSetTest);
-CPPUNIT_TEST(removeInFieldTest);
+CPPUNIT_TEST(remove_in_composite_test);
+CPPUNIT_TEST(remove_in_vector_test);
+CPPUNIT_TEST(remove_in_series_set_test);
+CPPUNIT_TEST(remove_in_field_test);
 
-CPPUNIT_TEST(removeIfPresentInCompositeTest);
-CPPUNIT_TEST(removeIfPresentInVectorTest);
-CPPUNIT_TEST(removeIfPresentInSeriesSetTest);
-CPPUNIT_TEST(removeIfPresentInFieldTest);
+CPPUNIT_TEST(remove_if_present_in_composite_test);
+CPPUNIT_TEST(remove_if_present_in_vector_test);
+CPPUNIT_TEST(remove_if_present_in_series_set_test);
+CPPUNIT_TEST(remove_if_present_in_field_test);
 
-CPPUNIT_TEST(clearCompositeTest);
-CPPUNIT_TEST(clearVectorTest);
-CPPUNIT_TEST(clearSeriesSetTest);
-CPPUNIT_TEST(clearFieldTest);
+CPPUNIT_TEST(clear_composite_test);
+CPPUNIT_TEST(clear_vector_test);
+CPPUNIT_TEST(clear_series_set_test);
+CPPUNIT_TEST(clear_field_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -76,56 +76,56 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void addInCompositeTest();
-    void addInVectorTest();
-    void addInSeriesSetTest();
-    void addInFieldTest();
+    void add_in_composite_test();
+    void add_in_vector_test();
+    void add_in_series_set_test();
+    void add_in_field_test();
 
-    void addCopyInCompositeTest();
-    void addCopyInVectorTest();
-    void addCopyInSeriesSetTest();
-    void addCopyInFieldTest();
+    void add_copy_in_composite_test();
+    void add_copy_in_vector_test();
+    void add_copy_in_series_set_test();
+    void add_copy_in_field_test();
 
-    void addOrSwapAndNotPresentInCompositeTest();
-    void addOrSwapAndNotPresentInVectorTest();
-    void addOrSwapAndNotPresentInSeriesSetTest();
-    void addOrSwapAndNotPresentInFieldTest();
+    void add_or_swap_and_not_present_in_composite_test();
+    void add_or_swap_and_not_present_in_vector_test();
+    void add_or_swap_and_not_present_in_series_set_test();
+    void add_or_swap_and_not_present_in_field_test();
 
-    void addOrSwapAndPresentInCompositeTest();
-    void addOrSwapAndPresentInVectorTest();
-    void addOrSwapAndPresentInSeriesSetTest();
-    void addOrSwapAndPresentInFieldTest();
+    void add_or_swap_and_present_in_composite_test();
+    void add_or_swap_and_present_in_vector_test();
+    void add_or_swap_and_present_in_series_set_test();
+    void add_or_swap_and_present_in_field_test();
 
-    void swapObjInCompositeTest();
-    void swapObjAndNotPresentInFieldTest();
-    void swapObjAndPresentInFieldTest();
+    void swap_obj_in_composite_test();
+    void swap_obj_and_not_present_in_field_test();
+    void swap_obj_and_present_in_field_test();
 
-    void removeInCompositeTest();
-    void removeInVectorTest();
-    void removeInSeriesSetTest();
-    void removeInFieldTest();
+    void remove_in_composite_test();
+    void remove_in_vector_test();
+    void remove_in_series_set_test();
+    void remove_in_field_test();
 
-    void removeIfPresentInCompositeTest();
-    void removeIfPresentInVectorTest();
-    void removeIfPresentInSeriesSetTest();
-    void removeIfPresentInFieldTest();
+    void remove_if_present_in_composite_test();
+    void remove_if_present_in_vector_test();
+    void remove_if_present_in_series_set_test();
+    void remove_if_present_in_field_test();
 
-    void clearCompositeTest();
-    void clearVectorTest();
-    void clearSeriesSetTest();
-    void clearFieldTest();
+    void clear_composite_test();
+    void clear_vector_test();
+    void clear_series_set_test();
+    void clear_field_test();
 
 private:
 
-    void genericAddInCompositeTest(const std::string& _slot_name, bool _already_present = false);
-    void genericAddInVectorTest(const std::string& _slot_name, bool _already_present    = false);
-    void genericAddInSeriesSetTest(const std::string& _slot_name, bool _already_present = false);
-    void genericAddInFieldTest(const std::string& _slot_name, bool _already_present     = false);
+    void generic_add_in_composite_test(const std::string& _slot_name, bool _already_present  = false);
+    void generic_add_in_vector_test(const std::string& _slot_name, bool _already_present     = false);
+    void generic_add_in_series_set_test(const std::string& _slot_name, bool _already_present = false);
+    void generic_add_in_field_test(const std::string& _slot_name, bool _already_present      = false);
 
-    void genericRemoveInCompositeTest(const std::string& _slot_name);
-    void genericRemoveInVectorTest(const std::string& _slot_name);
-    void genericRemoveInSeriesSetTest(const std::string& _slot_name);
-    void genericRemoveInFieldTest(const std::string& _slot_name);
+    void generic_remove_in_composite_test(const std::string& _slot_name);
+    void generic_remove_in_vector_test(const std::string& _slot_name);
+    void generic_remove_in_series_set_test(const std::string& _slot_name);
+    void generic_remove_in_field_test(const std::string& _slot_name);
 
     service::base::sptr m_manage;
 };

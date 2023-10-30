@@ -81,7 +81,7 @@ public:
      *
      * @note The cvImage allocates its own buffer and has the ownership.
      */
-    IO_OPENCV_API static void copyToCv(
+    IO_OPENCV_API static void copy_to_cv(
         const data::frame_tl::csptr& _timeline,
         const data::frame_tl::buffer_t::element_t* _buffer,
         cv::Mat& _cv_image

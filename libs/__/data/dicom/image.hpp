@@ -62,36 +62,36 @@ public:
     DATA_API virtual ~image();
 
     /// Find image Type
-    [[nodiscard]] DATA_API core::type findImageTypeFromMinMaxValues() const;
+    [[nodiscard]] DATA_API core::type find_image_type_from_min_max_values() const;
 
 protected:
 
     /// Return minimum possible value of the pixel
-    [[nodiscard]] DATA_API int64_t getPixelMin() const;
+    [[nodiscard]] DATA_API int64_t get_pixel_min() const;
 
     /// Return maximum possible value of the pixel
-    [[nodiscard]] DATA_API int64_t getPixelMax() const;
+    [[nodiscard]] DATA_API int64_t get_pixel_max() const;
 
     /// Samples per pixel
-    std::uint16_t m_samplesPerPixel;
+    std::uint16_t m_samples_per_pixel;
 
     /// Bits allocated
-    std::uint16_t m_bitsAllocated;
+    std::uint16_t m_bits_allocated;
 
     /// Bits stored
-    std::uint16_t m_bitsStored;
+    std::uint16_t m_bits_stored;
 
     /// High bit
-    std::uint16_t m_highBit;
+    std::uint16_t m_high_bit;
 
     /// Pixel representation
-    std::uint16_t m_pixelRepresentation;
+    std::uint16_t m_pixel_representation;
 
     /// Rescale slope
-    double m_rescaleSlope;
+    double m_rescale_slope;
 
     /// Rescale Intercept
-    double m_rescaleIntercept;
+    double m_rescale_intercept;
 };
 
 } // namespace sight::data::dicom

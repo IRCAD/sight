@@ -67,7 +67,7 @@ void images_substract::updating()
     auto image_result = m_result.lock();
 
     // Test if the both images have the same type and it is signed short.
-    const bool is_same_type = (image1->getType() == image2->getType() && image1->getType() == requested_type);
+    const bool is_same_type = (image1->type() == image2->type() && image1->type() == requested_type);
 
     if(is_same_type)
     {
@@ -106,7 +106,7 @@ void images_substract::updating()
             sight::ui::dialog::message::show(
                 "Warning",
                 "Both images must have the same size.",
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
     }
@@ -115,7 +115,7 @@ void images_substract::updating()
         sight::ui::dialog::message::show(
             "Warning",
             "Both Images must have signed short as type.",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
     }
 }

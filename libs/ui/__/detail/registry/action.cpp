@@ -42,35 +42,35 @@ action::action(std::string _sid) :
 
 //-----------------------------------------------------------------------------
 
-void action::actionServiceStopping()
+void action::action_service_stopping()
 {
     ui::registry::action_service_stopping(m_sid);
 }
 
 //-----------------------------------------------------------------------------
 
-void action::actionServiceStarting()
+void action::action_service_starting()
 {
     ui::registry::action_service_starting(m_sid);
 }
 
 //-----------------------------------------------------------------------------
 
-void action::actionServiceSetChecked(bool _is_checked)
+void action::action_service_set_checked(bool _is_checked)
 {
     ui::registry::action_service_set_checked(m_sid, _is_checked);
 }
 
 //-----------------------------------------------------------------------------
 
-void action::actionServiceSetEnabled(bool _is_enabled)
+void action::action_service_set_enabled(bool _is_enabled)
 {
     ui::registry::action_service_set_enabled(m_sid, _is_enabled);
 }
 
 //-----------------------------------------------------------------------------
 
-void action::actionServiceSetVisible(bool _is_visible)
+void action::action_service_set_visible(bool _is_visible)
 {
     ui::registry::action_service_set_visible(m_sid, _is_visible);
 }

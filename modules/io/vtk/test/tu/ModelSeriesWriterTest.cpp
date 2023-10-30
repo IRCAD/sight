@@ -40,7 +40,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ModelSeriesWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::model_series_writer_test);
 
 namespace sight::module::io::vtk::ut
 {
@@ -53,14 +53,14 @@ namespace cell  = sight::data::iterator::cell;
 
 //------------------------------------------------------------------------------
 
-void ModelSeriesWriterTest::setUp()
+void model_series_writer_test::setUp()
 {
     // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
-void ModelSeriesWriterTest::tearDown()
+void model_series_writer_test::tearDown()
 {
     // Clean up after the test run.
 }
@@ -119,9 +119,9 @@ boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files
 
 //------------------------------------------------------------------------------
 
-void ModelSeriesWriterTest::testWriteMeshes()
+void model_series_writer_test::test_write_meshes()
 {
-    data::model_series::sptr model_series = utest_data::generator::series_set::createModelSeries(5);
+    data::model_series::sptr model_series = utest_data::generator::series_set::create_model_series(5);
 
     const std::vector<std::string> all_extensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
@@ -155,7 +155,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Number of saved files",
-            model_series->getReconstructionDB().size(),
+            model_series->get_reconstruction_db().size(),
             files.size()
         );
 
@@ -173,30 +173,30 @@ void ModelSeriesWriterTest::testWriteMeshes()
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", read_series);
 
         using rec_vec_t = data::model_series::reconstruction_vector_t;
-        const rec_vec_t& read_recs = read_series->getReconstructionDB();
+        const rec_vec_t& read_recs = read_series->get_reconstruction_db();
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), read_recs.size());
 
-        const rec_vec_t& ref_recs = model_series->getReconstructionDB();
+        const rec_vec_t& ref_recs = model_series->get_reconstruction_db();
         auto it_ref               = ref_recs.begin();
         auto it_read              = read_recs.begin();
 
         for( ; it_ref != ref_recs.end() ; ++it_ref, ++it_read)
         {
-            data::mesh::csptr ref_mesh  = (*it_ref)->getMesh();
-            data::mesh::csptr read_mesh = (*it_read)->getMesh();
+            data::mesh::csptr ref_mesh  = (*it_ref)->get_mesh();
+            data::mesh::csptr read_mesh = (*it_read)->get_mesh();
 
             const auto reflock        = ref_mesh->dump_lock();
             const auto read_mesh_lock = read_mesh->dump_lock();
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Number of Points.",
-                ref_mesh->numPoints(),
-                read_mesh->numPoints()
+                ref_mesh->num_points(),
+                read_mesh->num_points()
             );
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Number of Cells.",
-                ref_mesh->numCells(),
-                read_mesh->numCells()
+                ref_mesh->num_cells(),
+                read_mesh->num_cells()
             );
 
             // Don't test internal structures for obj, ply and stl, since some of them are missing.
@@ -253,9 +253,9 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
 //------------------------------------------------------------------------------
 
-void ModelSeriesWriterTest::testWriteReconstructions()
+void model_series_writer_test::test_write_reconstructions()
 {
-    data::model_series::sptr model_series = utest_data::generator::series_set::createModelSeries(5);
+    data::model_series::sptr model_series = utest_data::generator::series_set::create_model_series(5);
 
     core::os::temp_dir tmp_dir;
 
@@ -272,7 +272,7 @@ void ModelSeriesWriterTest::testWriteReconstructions()
     }
 
     // Writer generates a .mtl file for each .obj file
-    CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB().size() * 2, files.size());
+    CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db().size() * 2, files.size());
 }
 
 //------------------------------------------------------------------------------

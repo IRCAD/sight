@@ -40,7 +40,7 @@ static tool_bar_map_t m_global_sid_to_fw_tool_bar;
 static menu_map_t m_global_sid_to_fw_menu;
 
 /// Parent sid can be menu sid or tool_bar sid
-static ActionToParentMapType m_action_sid_to_parent_sid;
+static action_to_parent_map_type m_action_sid_to_parent_sid;
 
 //-----------------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ bool has_wid_container(std::string _wid)
 void register_sid_menu_bar(std::string _sid, ui::container::menubar::sptr _menu_bar)
 {
     SIGHT_ASSERT(
-        "The menuBar '" + _sid + "' is already registered in the container map, it cannot be added twice.",
+        "The menubar '" + _sid + "' is already registered in the container map, it cannot be added twice.",
         m_global_sid_to_fw_menu_bar.find(_sid) == m_global_sid_to_fw_menu_bar.end()
     );
     m_global_sid_to_fw_menu_bar[_sid] = _menu_bar;
@@ -164,13 +164,13 @@ void unregister_sid_menu_bar(std::string _sid)
     {
         service::base::sptr service = service::get(_sid);
         SIGHT_ASSERT(
-            "The service '" + _sid + "' must be stopped before unregistering the menuBar.",
+            "The service '" + _sid + "' must be stopped before unregistering the menubar.",
             service->stopped()
         );
     }
 
     SIGHT_ASSERT(
-        "The menuBar '" + _sid + "' is not registered in the container map, it cannot be removed.",
+        "The menubar '" + _sid + "' is not registered in the container map, it cannot be removed.",
         m_global_sid_to_fw_menu_bar.find(_sid) != m_global_sid_to_fw_menu_bar.end()
     );
 
@@ -183,7 +183,7 @@ void unregister_sid_menu_bar(std::string _sid)
 ui::container::menubar::sptr get_sid_menu_bar(std::string _sid)
 {
     SIGHT_ASSERT(
-        "The menuBar '" + _sid + "' is not registered in the container map.",
+        "The menubar '" + _sid + "' is not registered in the container map.",
         m_global_sid_to_fw_menu_bar.find(_sid) != m_global_sid_to_fw_menu_bar.end()
     );
     // returns container in SID container map
@@ -195,7 +195,7 @@ ui::container::menubar::sptr get_sid_menu_bar(std::string _sid)
 void register_sid_tool_bar(std::string _sid, ui::container::toolbar::sptr _tool_bar)
 {
     SIGHT_ASSERT(
-        "The toolBar '" + _sid + "' is already registered in the container map, it cannot be added twice.",
+        "The toolbar '" + _sid + "' is already registered in the container map, it cannot be added twice.",
         m_global_sid_to_fw_tool_bar.find(_sid) == m_global_sid_to_fw_tool_bar.end()
     );
     m_global_sid_to_fw_tool_bar[_sid] = _tool_bar;
@@ -206,18 +206,18 @@ void register_sid_tool_bar(std::string _sid, ui::container::toolbar::sptr _tool_
 void unregister_sid_tool_bar(std::string _sid)
 {
     bool service_exists = core::tools::id::exist(_sid);
-    SIGHT_INFO_IF("The toolBar '" + _sid + "' does not exist.", !service_exists);
+    SIGHT_INFO_IF("The toolbar '" + _sid + "' does not exist.", !service_exists);
     if(service_exists)
     {
         service::base::sptr service = service::get(_sid);
         SIGHT_ASSERT(
-            "The service '" + _sid + "' must be stopped before unregistering the menuBar.",
+            "The service '" + _sid + "' must be stopped before unregistering the menubar.",
             service->stopped()
         );
     }
 
     SIGHT_ASSERT(
-        "The toolBar '" + _sid + "' is not registered in the container map, it cannot be removed.",
+        "The toolbar '" + _sid + "' is not registered in the container map, it cannot be removed.",
         m_global_sid_to_fw_tool_bar.find(_sid) != m_global_sid_to_fw_tool_bar.end()
     );
 
@@ -230,7 +230,7 @@ void unregister_sid_tool_bar(std::string _sid)
 ui::container::toolbar::sptr get_sid_tool_bar(std::string _sid)
 {
     SIGHT_ASSERT(
-        "The toolBar '" + _sid + "' is not registered in the container map.",
+        "The toolbar '" + _sid + "' is not registered in the container map.",
         m_global_sid_to_fw_tool_bar.find(_sid) != m_global_sid_to_fw_tool_bar.end()
     );
     // returns container in SID container map
@@ -366,17 +366,17 @@ void action_service_stopping(std::string _action_sid)
                 ui::toolbar::sptr toolbar_srv = std::dynamic_pointer_cast<ui::toolbar>(service);
                 if(menu_srv)
                 {
-                    menu_srv->actionServiceStopping(_action_sid);
+                    menu_srv->action_service_stopping(_action_sid);
                 }
                 else if(toolbar_srv)
                 {
-                    toolbar_srv->actionServiceStopping(_action_sid);
+                    toolbar_srv->action_service_stopping(_action_sid);
                 }
                 else
                 {
                     SIGHT_FATAL(
                         std::string("The service '") + parent_sid + "' managing the action '"
-                        + _action_sid + "' must be managed by a menu or a toolBar"
+                        + _action_sid + "' must be managed by a menu or a toolbar"
                     );
                 }
             }
@@ -407,17 +407,17 @@ void action_service_starting(std::string _action_sid)
                 ui::toolbar::sptr toolbar_srv = std::dynamic_pointer_cast<ui::toolbar>(service);
                 if(menu_srv)
                 {
-                    menu_srv->actionServiceStarting(_action_sid);
+                    menu_srv->action_service_starting(_action_sid);
                 }
                 else if(toolbar_srv)
                 {
-                    toolbar_srv->actionServiceStarting(_action_sid);
+                    toolbar_srv->action_service_starting(_action_sid);
                 }
                 else
                 {
                     SIGHT_FATAL(
                         std::string("The service '") + parent_sid + "' managing the action '"
-                        + _action_sid + "' must be managed by a menu or a toolBar"
+                        + _action_sid + "' must be managed by a menu or a toolbar"
                     );
                 }
             }
@@ -448,17 +448,17 @@ void action_service_set_checked(std::string _action_sid, bool _is_checked)
                 ui::toolbar::sptr toolbar_srv = std::dynamic_pointer_cast<ui::toolbar>(service);
                 if(menu_srv)
                 {
-                    menu_srv->actionServiceSetChecked(_action_sid, _is_checked);
+                    menu_srv->action_service_set_checked(_action_sid, _is_checked);
                 }
                 else if(toolbar_srv)
                 {
-                    toolbar_srv->actionServiceSetChecked(_action_sid, _is_checked);
+                    toolbar_srv->action_service_set_checked(_action_sid, _is_checked);
                 }
                 else
                 {
                     SIGHT_FATAL(
                         std::string("The service '") + parent_sid + "' managing the action '"
-                        + _action_sid + "' must be managed by a menu or a toolBar"
+                        + _action_sid + "' must be managed by a menu or a toolbar"
                     );
                 }
             }
@@ -489,17 +489,17 @@ void action_service_set_enabled(std::string _action_sid, bool _is_enabled)
                 ui::toolbar::sptr toolbar_srv = std::dynamic_pointer_cast<ui::toolbar>(service);
                 if(menu_srv)
                 {
-                    menu_srv->actionServiceSetEnabled(_action_sid, _is_enabled);
+                    menu_srv->action_service_set_enabled(_action_sid, _is_enabled);
                 }
                 else if(toolbar_srv)
                 {
-                    toolbar_srv->actionServiceSetEnabled(_action_sid, _is_enabled);
+                    toolbar_srv->action_service_set_enabled(_action_sid, _is_enabled);
                 }
                 else
                 {
                     SIGHT_FATAL(
                         std::string("The service '") + parent_sid + "' managing the action '"
-                        + _action_sid + "' must be managed by a menu or a toolBar"
+                        + _action_sid + "' must be managed by a menu or a toolbar"
                     );
                 }
             }
@@ -530,17 +530,17 @@ void action_service_set_visible(std::string _action_sid, bool _is_visible)
                 ui::toolbar::sptr toolbar_srv = std::dynamic_pointer_cast<ui::toolbar>(service);
                 if(menu_srv)
                 {
-                    menu_srv->actionServiceSetVisible(_action_sid, _is_visible);
+                    menu_srv->action_service_set_visible(_action_sid, _is_visible);
                 }
                 else if(toolbar_srv)
                 {
-                    toolbar_srv->actionServiceSetVisible(_action_sid, _is_visible);
+                    toolbar_srv->action_service_set_visible(_action_sid, _is_visible);
                 }
                 else
                 {
                     SIGHT_FATAL(
                         std::string("The service '") + parent_sid + "' managing the action '"
-                        + _action_sid + "' must be managed by a menu or a toolBar"
+                        + _action_sid + "' must be managed by a menu or a toolbar"
                     );
                 }
             }

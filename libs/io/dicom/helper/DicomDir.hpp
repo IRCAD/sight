@@ -57,7 +57,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief DicomDir Helper. This class is used to extract a list of files from a dicomdir file.
  */
-class IO_DICOM_CLASS_API DicomDir
+class IO_DICOM_CLASS_API dicom_dir
 {
 public:
 
@@ -65,7 +65,7 @@ public:
      * @brief Find the DICOMDIR file in the parent arborescence
      * @return Path to the DICOMDIR or empty path if the DICOMDIR has not been found
      */
-    IO_DICOM_API static std::filesystem::path findDicomDir(const std::filesystem::path& _root);
+    IO_DICOM_API static std::filesystem::path find_dicom_dir(const std::filesystem::path& _root);
 
     /**
      * @brief Create DicomSeries from information stored in DICOMDIR.
@@ -73,7 +73,7 @@ public:
      * @param[out] series_set Dicom series created
      * @param[in] fileLookupObserver file lookup observer
      */
-    IO_DICOM_API static void retrieveDicomSeries(
+    IO_DICOM_API static void retrieve_dicom_series(
         const std::filesystem::path& _dicomdir,
         std::vector<SPTR(data::dicom_series)>& _series_set,
         const SPTR(core::log::logger)& _logger,

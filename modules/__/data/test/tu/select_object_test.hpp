@@ -31,7 +31,7 @@ namespace sight::module::data::ut
 class select_object_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(select_object_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    service::base::sptr m_selectObject;
+    service::base::sptr m_select_object;
 };
 
 } // namespace sight::module::data::ut

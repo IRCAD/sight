@@ -45,21 +45,21 @@ void series_set_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void series_set_test::nominalTest()
+void series_set_test::nominal_test()
 {
-    static const auto description1 = core::tools::UUID::generate();
-    static const auto description2 = core::tools::UUID::generate();
-    static const auto description3 = core::tools::UUID::generate();
+    static const auto s_DESCRIPTION1 = core::tools::uuid::generate();
+    static const auto s_DESCRIPTION2 = core::tools::uuid::generate();
+    static const auto s_DESCRIPTION3 = core::tools::uuid::generate();
 
     // Create three series
     const auto& series1 = std::make_shared<series>();
-    series1->setSeriesDescription(description1);
+    series1->set_series_description(s_DESCRIPTION1);
 
     const auto& series2 = std::make_shared<series>();
-    series2->setSeriesDescription(description2);
+    series2->set_series_description(s_DESCRIPTION2);
 
     const auto& series3 = std::make_shared<series>();
-    series3->setSeriesDescription(description3);
+    series3->set_series_description(s_DESCRIPTION3);
 
     // Create an series set and add the three series
     auto series_set1 = std::make_shared<series_set>();
@@ -105,21 +105,21 @@ void series_set_test::nominalTest()
 
 //------------------------------------------------------------------------------
 
-void series_set_test::copyTest()
+void series_set_test::copy_test()
 {
-    static const auto description1 = core::tools::UUID::generate();
-    static const auto description2 = core::tools::UUID::generate();
-    static const auto description3 = core::tools::UUID::generate();
+    static const auto s_DESCRIPTION1 = core::tools::uuid::generate();
+    static const auto s_DESCRIPTION2 = core::tools::uuid::generate();
+    static const auto s_DESCRIPTION3 = core::tools::uuid::generate();
 
     // Create three activities
     const auto& series1 = std::make_shared<series>();
-    series1->setSeriesDescription(description1);
+    series1->set_series_description(s_DESCRIPTION1);
 
     const auto& series2 = std::make_shared<series>();
-    series2->setSeriesDescription(description2);
+    series2->set_series_description(s_DESCRIPTION2);
 
     const auto& series3 = std::make_shared<series>();
-    series3->setSeriesDescription(description3);
+    series3->set_series_description(s_DESCRIPTION3);
 
     // Create an series set and add the three activities
     const auto& original_series_set = std::make_shared<series_set>();

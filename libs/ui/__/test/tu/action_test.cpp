@@ -27,12 +27,12 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::ut::actionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::ut::action_test);
 
 namespace sight::ui::ut
 {
 
-class TestAction : public ui::action
+class test_action : public ui::action
 {
 public:
 
@@ -64,22 +64,22 @@ public:
 
 //------------------------------------------------------------------------------
 
-void actionTest::setUp()
+void action_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void actionTest::tearDown()
+void action_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void actionTest::configuringTest()
+void action_test::configuring_test()
 {
     {
-        auto action = std::make_shared<TestAction>();
+        auto action = std::make_shared<test_action>();
         action->configure();
 
         CPPUNIT_ASSERT_EQUAL(false, action->checked());
@@ -88,7 +88,7 @@ void actionTest::configuringTest()
         CPPUNIT_ASSERT_EQUAL(false, action->inverted());
     }
     {
-        auto action = std::make_shared<TestAction>();
+        auto action = std::make_shared<test_action>();
         std::stringstream xml_config;
         xml_config << ""
                       "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
@@ -105,12 +105,12 @@ void actionTest::configuringTest()
         CPPUNIT_ASSERT_EQUAL(false, action->visible());
         CPPUNIT_ASSERT_EQUAL(false, action->inverted());
 
-        CPPUNIT_ASSERT_EQUAL(true, action->confirmAction());
+        CPPUNIT_ASSERT_EQUAL(true, action->confirm_action());
 
         action->stop();
     }
     {
-        auto action = std::make_shared<TestAction>();
+        auto action = std::make_shared<test_action>();
         std::stringstream xml_config;
         xml_config << ""
                       "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
@@ -128,13 +128,13 @@ void actionTest::configuringTest()
         CPPUNIT_ASSERT_EQUAL(false, action->visible());
         CPPUNIT_ASSERT_EQUAL(false, action->inverted());
 
-        CPPUNIT_ASSERT_EQUAL(false, action->confirmAction());
+        CPPUNIT_ASSERT_EQUAL(false, action->confirm_action());
 
         action->stop();
     }
     {
         // Test deprecated attributes
-        auto action = std::make_shared<TestAction>();
+        auto action = std::make_shared<test_action>();
         std::stringstream xml_config;
         xml_config << ""
                       "<state inverse=\"true\" checked=\"true\" enabled=\"false\" />"
@@ -157,10 +157,10 @@ void actionTest::configuringTest()
 
 //------------------------------------------------------------------------------
 
-void actionTest::propertiesTest()
+void action_test::properties_test()
 {
     {
-        auto action = std::make_shared<TestAction>();
+        auto action = std::make_shared<test_action>();
         action->configure();
 
         CPPUNIT_ASSERT_EQUAL(false, action->checked());

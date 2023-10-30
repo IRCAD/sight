@@ -31,9 +31,9 @@ namespace sight::io::igtl::detail::exception
 
 /// Throw this exception when a conversion between data and igtl message is not possible (error message explains the
 /// reasons)
-struct IO_IGTL_CLASS_API Conversion : core::exception
+struct IO_IGTL_CLASS_API conversion : core::exception
 {
-    IO_IGTL_API Conversion(const std::string& _err) :
+    IO_IGTL_API conversion(const std::string& _err) :
         core::exception(_err)
     {
     }

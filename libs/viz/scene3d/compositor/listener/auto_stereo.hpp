@@ -52,14 +52,11 @@ public:
 
 private:
 
-    /// Pair storing techniques together with their material's name.
-    using TechniqueMaterialPair = std::pair<Ogre::Technique*, std::string>;
-
     /// list of techniques to be removed from the material when destroying the listener
-    std::vector<TechniqueMaterialPair> m_createdTechniques;
+    std::vector<std::pair<Ogre::Technique*, std::string> > m_created_techniques;
 
     /// Number of viewpoints used for stereo rendering.
-    const std::uint8_t M_VIEWPOINT_NUMBER;
+    const std::uint8_t m_viewpoint_number;
 };
 
 } // namespace sight::viz::scene3d::compositor::listener

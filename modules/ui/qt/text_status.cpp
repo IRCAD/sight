@@ -35,22 +35,22 @@
 namespace sight::module::ui::qt
 {
 
-static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-static const core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "setIntParameter";
-static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
+static const core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "set_int_parameter";
+static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "set_bool_parameter";
 static const core::com::slots::key_t SET_STRING_PARAMETER_SLOT = "setStringParameter";
 
 //-----------------------------------------------------------------------------
 
 text_status::text_status() :
-    m_labelStaticText(new QLabel())
+    m_label_static_text(new QLabel())
 {
-    m_labelStaticText->setStyleSheet("font-weight: bold;");
+    m_label_static_text->setStyleSheet("font-weight: bold;");
 
-    new_slot(SET_DOUBLE_PARAMETER_SLOT, &text_status::setDoubleParameter, this);
-    new_slot(SET_INT_PARAMETER_SLOT, &text_status::setIntParameter, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &text_status::setBoolParameter, this);
-    new_slot(SET_STRING_PARAMETER_SLOT, &text_status::setStringParameter, this);
+    new_slot(SET_DOUBLE_PARAMETER_SLOT, &text_status::set_double_parameter, this);
+    new_slot(SET_INT_PARAMETER_SLOT, &text_status::set_int_parameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &text_status::set_bool_parameter, this);
+    new_slot(SET_STRING_PARAMETER_SLOT, &text_status::set_string_parameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -64,9 +64,9 @@ void text_status::configuring()
 {
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    m_labelValue = new QLabel();
-    m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-    m_labelValue->setObjectName(service_id);
+    m_label_value = new QLabel();
+    m_label_value->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
+    m_label_value->setObjectName(service_id);
 
     this->initialize();
 
@@ -75,7 +75,7 @@ void text_status::configuring()
     if(const auto label = config.get_optional<std::string>("label"); label.has_value())
     {
         const QString txt = QString::fromStdString(label.value());
-        m_labelStaticText->setText(QString(txt + ": "));
+        m_label_static_text->setText(QString(txt + ": "));
     }
 
     QString color = "red";
@@ -89,7 +89,7 @@ void text_status::configuring()
         }
     }
 
-    m_labelStaticText->setStyleSheet(m_labelStaticText->styleSheet() + " color: " + color + ";");
+    m_label_static_text->setStyleSheet(m_label_static_text->styleSheet() + " color: " + color + ";");
 }
 
 //------------------------------------------------------------------------------
@@ -97,22 +97,22 @@ void text_status::configuring()
 void text_status::starting()
 {
     this->create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* const layout = new QHBoxLayout();
-    layout->addWidget(m_labelStaticText);
-    layout->addWidget(m_labelValue);
+    layout->addWidget(m_label_static_text);
+    layout->addWidget(m_label_value);
 
     layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
     // Get input data.
     const auto string_input = m_string.lock();
 
     if(string_input)
     {
-        m_labelValue->setText(QString::fromStdString(string_input->value()));
+        m_label_value->setText(QString::fromStdString(string_input->value()));
     }
 }
 
@@ -121,7 +121,7 @@ void text_status::starting()
 service::connections_t text_status::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_STRING_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(STRING_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -135,7 +135,7 @@ void text_status::updating()
 
     if(string_input)
     {
-        m_labelValue->setText(QString::fromStdString(string_input->value()));
+        m_label_value->setText(QString::fromStdString(string_input->value()));
     }
 }
 
@@ -148,35 +148,35 @@ void text_status::stopping()
 
 //------------------------------------------------------------------------------
 
-void text_status::setIntParameter(int _val)
+void text_status::set_int_parameter(int _val)
 {
     QString str;
     str.setNum(_val);
-    m_labelValue->setText(str);
+    m_label_value->setText(str);
 }
 
 //------------------------------------------------------------------------------
 
-void text_status::setDoubleParameter(double _val)
+void text_status::set_double_parameter(double _val)
 {
     QString str;
     str.setNum(_val, 'g', 8); // 8 decimals precision
-    m_labelValue->setText(str);
+    m_label_value->setText(str);
 }
 
 //------------------------------------------------------------------------------
 
-void text_status::setBoolParameter(bool _val)
+void text_status::set_bool_parameter(bool _val)
 {
     QString str(_val ? "ON" : "OFF");
-    m_labelValue->setText(str);
+    m_label_value->setText(str);
 }
 
 //------------------------------------------------------------------------------
 
-void text_status::setStringParameter(std::string _val)
+void text_status::set_string_parameter(std::string _val)
 {
-    m_labelValue->setText(QString::fromStdString(_val));
+    m_label_value->setText(QString::fromStdString(_val));
 }
 
 //------------------------------------------------------------------------------

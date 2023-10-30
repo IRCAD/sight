@@ -37,7 +37,7 @@
 #include <modules/ui/qml/activity/view.hpp>
 #include <modules/ui/qml/image/slice_index_position_editor.hpp>
 #include <modules/ui/qml/model/model_series_list.hpp>
-#include <modules/ui/qml/model/OrganListModel.hpp>
+#include <modules/ui/qml/model/organ_list_model.hpp>
 #include <modules/ui/qml/reconstruction/organ_material_editor.hpp>
 #include <modules/ui/qml/reconstruction/representation_editor.hpp>
 
@@ -78,14 +78,14 @@ void plugin::start()
     auto worker_qt = sight::ui::qt::get_qt_worker(argc, argv, callback, profile->name(), profile->get_version());
     core::thread::set_default_worker(worker_qt);
 
-    auto engine = sight::ui::qml::QmlEngine::getDefault();
+    auto engine = sight::ui::qml::qml_engine::get_default();
 
     // add custom controls and the singleton theme for all qml project
     const auto path = core::runtime::get_module_resource_path("sight::module::ui::qml");
-    engine->importModulePath(path);
+    engine->import_module_path(path);
 
     qmlRegisterType<model::model_series_list>("model", 1, 0, "ModelSeriesList");
-    qmlRegisterType<model::OrganListModel>("model", 1, 0, "OrganListModel");
+    qmlRegisterType<model::organ_list_model>("model", 1, 0, "OrganListModel");
     qmlRegisterType<image::slice_index_position_editor>("image", 1, 0, "SliceIndexPositionEditor");
     qmlRegisterType<reconstruction::organ_material_editor>("reconstruction", 1, 0, "OrganMaterialEditor");
     qmlRegisterType<reconstruction::representation_editor>("reconstruction", 1, 0, "RepresentationEditor");

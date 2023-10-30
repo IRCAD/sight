@@ -75,7 +75,7 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::object, sight::data::Access::inout> m_target {this, "target"};
+    sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "target"};
 
     std::vector<core::memory::buffer_object::lock_t> m_locks;
 };

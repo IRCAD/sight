@@ -23,13 +23,13 @@
                     <view proportion="1" />
                     <view proportion="0" />
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="resultView" start="true" />
                 <view sid="footer" start="true" />
-                <toolBar sid="toolBar" start="true" />
+                <toolbar sid="toolbar" start="true" />
             </registry>
         </service>
 
@@ -45,7 +45,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::tool_bar">
+        <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Start Tracker client" icon="sight::module::ui::icons/Network-Receiving.svg" />

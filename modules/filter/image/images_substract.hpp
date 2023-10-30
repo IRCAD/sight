@@ -74,9 +74,9 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image1 {this, "image1"};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image2 {this, "image2"};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_result {this, "result"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image1 {this, "image1"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image2 {this, "image2"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_result {this, "result"};
 };
 
 } // namespace sight::module::filter::image

@@ -54,7 +54,7 @@ void get_mesh_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void get_mesh_test::extractsMeshByIndex()
+void get_mesh_test::extracts_mesh_by_index()
 {
     // Create new Models Series
     auto m_series = std::make_shared<sight::data::model_series>();
@@ -79,19 +79,19 @@ void get_mesh_test::extractsMeshByIndex()
     sight::data::mesh::sptr mesh3 = std::make_shared<sight::data::mesh>();
     CPPUNIT_ASSERT(mesh3);
 
-    rec1->setMesh(mesh1);
-    rec2->setMesh(mesh2);
-    rec3->setMesh(mesh3);
+    rec1->set_mesh(mesh1);
+    rec2->set_mesh(mesh2);
+    rec3->set_mesh(mesh3);
     sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     recs.push_back(rec2);
     recs.push_back(rec3);
 
-    m_series->setReconstructionDB(recs);
-    CPPUNIT_ASSERT_EQUAL(3, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
-    CPPUNIT_ASSERT_EQUAL(rec3, m_series->getReconstructionDB()[2]);
+    m_series->set_reconstruction_db(recs);
+    CPPUNIT_ASSERT_EQUAL(3, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
+    CPPUNIT_ASSERT_EQUAL(rec3, m_series->get_reconstruction_db()[2]);
 
     service::config_t config;
     std::stringstream config_string;
@@ -119,7 +119,7 @@ void get_mesh_test::extractsMeshByIndex()
 
 //------------------------------------------------------------------------------
 
-void get_mesh_test::extractsMeshWithIndexOutOfBound()
+void get_mesh_test::extracts_mesh_with_index_out_of_bound()
 {
     // Create new Models Series
     auto m_series = std::make_shared<sight::data::model_series>();
@@ -144,19 +144,19 @@ void get_mesh_test::extractsMeshWithIndexOutOfBound()
     sight::data::mesh::sptr mesh3 = std::make_shared<sight::data::mesh>();
     CPPUNIT_ASSERT(mesh3);
 
-    rec1->setMesh(mesh1);
-    rec2->setMesh(mesh2);
-    rec3->setMesh(mesh3);
+    rec1->set_mesh(mesh1);
+    rec2->set_mesh(mesh2);
+    rec3->set_mesh(mesh3);
     sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     recs.push_back(rec2);
     recs.push_back(rec3);
 
-    m_series->setReconstructionDB(recs);
-    CPPUNIT_ASSERT_EQUAL(3, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
-    CPPUNIT_ASSERT_EQUAL(rec3, m_series->getReconstructionDB()[2]);
+    m_series->set_reconstruction_db(recs);
+    CPPUNIT_ASSERT_EQUAL(3, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
+    CPPUNIT_ASSERT_EQUAL(rec3, m_series->get_reconstruction_db()[2]);
 
     service::config_t config;
     std::stringstream config_string;
@@ -179,7 +179,7 @@ void get_mesh_test::extractsMeshWithIndexOutOfBound()
 
 //------------------------------------------------------------------------------
 
-void get_mesh_test::extractsMeshByType()
+void get_mesh_test::extracts_mesh_by_type()
 {
     // Create Models Series Object
     auto m_series = std::make_shared<sight::data::model_series>();
@@ -212,21 +212,21 @@ void get_mesh_test::extractsMeshByType()
     sight::data::mesh::sptr mesh5 = std::make_shared<sight::data::mesh>();
     CPPUNIT_ASSERT(mesh5);
 
-    rec1->setMesh(mesh1);
-    rec2->setMesh(mesh2); //skin, liver , kidney,
-    rec3->setMesh(mesh3);
-    rec4->setMesh(mesh4);
-    rec5->setMesh(mesh5);
+    rec1->set_mesh(mesh1);
+    rec2->set_mesh(mesh2); //skin, liver , kidney,
+    rec3->set_mesh(mesh3);
+    rec4->set_mesh(mesh4);
+    rec5->set_mesh(mesh5);
     rec1->set_structure_type("skin");
     rec2->set_structure_type("liver");
     rec3->set_structure_type("kidney");
     rec4->set_structure_type("kidney");
     rec5->set_structure_type("kidney");
-    rec1->setOrganName("skin-surface");
-    rec2->setOrganName("liver-surface");
-    rec3->setOrganName("kidney-volume-left");
-    rec4->setOrganName("kidney-volume-right");
-    rec5->setOrganName("kidney-surface");
+    rec1->set_organ_name("skin-surface");
+    rec2->set_organ_name("liver-surface");
+    rec3->set_organ_name("kidney-volume-left");
+    rec4->set_organ_name("kidney-volume-right");
+    rec5->set_organ_name("kidney-surface");
     sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
@@ -234,10 +234,10 @@ void get_mesh_test::extractsMeshByType()
     recs.push_back(rec4); // ( kidney , kidney-volume-right )
     recs.push_back(rec5); // ( kidney , kidney-surface )
 
-    m_series->setReconstructionDB(recs);
-    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
+    m_series->set_reconstruction_db(recs);
+    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
 
     service::config_t config;
     std::stringstream config_string;
@@ -270,7 +270,7 @@ void get_mesh_test::extractsMeshByType()
 
 //------------------------------------------------------------------------------
 
-void get_mesh_test::extractsMeshByTypeNotFound()
+void get_mesh_test::extracts_mesh_by_type_not_found()
 {
     // Create Models Series Object
     auto m_series = std::make_shared<sight::data::model_series>();
@@ -303,21 +303,21 @@ void get_mesh_test::extractsMeshByTypeNotFound()
     sight::data::mesh::sptr mesh5 = std::make_shared<sight::data::mesh>();
     CPPUNIT_ASSERT(mesh5);
 
-    rec1->setMesh(mesh1);
-    rec2->setMesh(mesh2);
-    rec3->setMesh(mesh3);
-    rec4->setMesh(mesh4);
-    rec5->setMesh(mesh5);
+    rec1->set_mesh(mesh1);
+    rec2->set_mesh(mesh2);
+    rec3->set_mesh(mesh3);
+    rec4->set_mesh(mesh4);
+    rec5->set_mesh(mesh5);
     rec1->set_structure_type("skin");
     rec2->set_structure_type("liver");
     rec3->set_structure_type("kidney");
     rec4->set_structure_type("kidney");
     rec5->set_structure_type("kidney");
-    rec1->setOrganName("skin-surface");
-    rec2->setOrganName("liver-surface");
-    rec3->setOrganName("kidney-volume-left");
-    rec4->setOrganName("kidney-volume-right");
-    rec5->setOrganName("kidney-surface");
+    rec1->set_organ_name("skin-surface");
+    rec2->set_organ_name("liver-surface");
+    rec3->set_organ_name("kidney-volume-left");
+    rec4->set_organ_name("kidney-volume-right");
+    rec5->set_organ_name("kidney-surface");
     sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
@@ -325,10 +325,10 @@ void get_mesh_test::extractsMeshByTypeNotFound()
     recs.push_back(rec4); // ( kidney , kidney-volume-right )
     recs.push_back(rec5); // ( kidney , kidney-surface )
 
-    m_series->setReconstructionDB(recs);
-    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
+    m_series->set_reconstruction_db(recs);
+    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
 
     service::config_t config;
     std::stringstream config_string;
@@ -352,7 +352,7 @@ void get_mesh_test::extractsMeshByTypeNotFound()
 
 //------------------------------------------------------------------------------
 
-void get_mesh_test::extractsMeshByNameNotFound()
+void get_mesh_test::extracts_mesh_by_name_not_found()
 {
     // Create Models Series Object
     auto m_series = std::make_shared<sight::data::model_series>();
@@ -385,21 +385,21 @@ void get_mesh_test::extractsMeshByNameNotFound()
     sight::data::mesh::sptr mesh5 = std::make_shared<sight::data::mesh>();
     CPPUNIT_ASSERT(mesh5);
 
-    rec1->setMesh(mesh1);
-    rec2->setMesh(mesh2);
-    rec3->setMesh(mesh3);
-    rec4->setMesh(mesh4);
-    rec5->setMesh(mesh5);
+    rec1->set_mesh(mesh1);
+    rec2->set_mesh(mesh2);
+    rec3->set_mesh(mesh3);
+    rec4->set_mesh(mesh4);
+    rec5->set_mesh(mesh5);
     rec1->set_structure_type("skin");
     rec2->set_structure_type("liver");
     rec3->set_structure_type("kidney");
     rec4->set_structure_type("kidney");
     rec5->set_structure_type("kidney");
-    rec1->setOrganName("skin-surface");
-    rec2->setOrganName("liver-surface");
-    rec3->setOrganName("kidney-volume-left");
-    rec4->setOrganName("kidney-volume-right");
-    rec5->setOrganName("kidney-surface");
+    rec1->set_organ_name("skin-surface");
+    rec2->set_organ_name("liver-surface");
+    rec3->set_organ_name("kidney-volume-left");
+    rec4->set_organ_name("kidney-volume-right");
+    rec5->set_organ_name("kidney-surface");
     sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
@@ -407,10 +407,10 @@ void get_mesh_test::extractsMeshByNameNotFound()
     recs.push_back(rec4); // ( kidney , kidney-volume-right )
     recs.push_back(rec5); // ( kidney , kidney-surface )
 
-    m_series->setReconstructionDB(recs);
-    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
+    m_series->set_reconstruction_db(recs);
+    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
 
     service::config_t config;
     std::stringstream config_string;
@@ -433,7 +433,7 @@ void get_mesh_test::extractsMeshByNameNotFound()
 
 //------------------------------------------------------------------------------
 
-void get_mesh_test::extractsWithMeshTypeAndIndex()
+void get_mesh_test::extracts_with_mesh_type_and_index()
 {
     // Create Models Series Object
     auto m_series = std::make_shared<sight::data::model_series>();
@@ -466,21 +466,21 @@ void get_mesh_test::extractsWithMeshTypeAndIndex()
     sight::data::mesh::sptr mesh5 = std::make_shared<sight::data::mesh>();
     CPPUNIT_ASSERT(mesh5);
 
-    rec1->setMesh(mesh1);
-    rec2->setMesh(mesh2);
-    rec3->setMesh(mesh3);
-    rec4->setMesh(mesh4);
-    rec5->setMesh(mesh5);
+    rec1->set_mesh(mesh1);
+    rec2->set_mesh(mesh2);
+    rec3->set_mesh(mesh3);
+    rec4->set_mesh(mesh4);
+    rec5->set_mesh(mesh5);
     rec1->set_structure_type("skin");
     rec2->set_structure_type("liver");
     rec3->set_structure_type("kidney");
     rec4->set_structure_type("kidney");
     rec5->set_structure_type("kidney");
-    rec1->setOrganName("skin-surface");
-    rec2->setOrganName("liver-surface");
-    rec3->setOrganName("kidney-volume-left");
-    rec4->setOrganName("kidney-volume-right");
-    rec5->setOrganName("kidney-surface");
+    rec1->set_organ_name("skin-surface");
+    rec2->set_organ_name("liver-surface");
+    rec3->set_organ_name("kidney-volume-left");
+    rec4->set_organ_name("kidney-volume-right");
+    rec5->set_organ_name("kidney-surface");
     sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
@@ -488,10 +488,10 @@ void get_mesh_test::extractsWithMeshTypeAndIndex()
     recs.push_back(rec4); // ( kidney , kidney-volume-right )
     recs.push_back(rec5); // ( kidney , kidney-surface )
 
-    m_series->setReconstructionDB(recs);
-    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
+    m_series->set_reconstruction_db(recs);
+    CPPUNIT_ASSERT_EQUAL(5, (int) m_series->get_reconstruction_db().size());
+    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
+    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
 
     service::config_t config;
     std::stringstream config_string;
@@ -520,7 +520,7 @@ void get_mesh_test::extractsWithMeshTypeAndIndex()
 
 // //------------------------------------------------------------------------------
 
-void get_mesh_test::extractsWithInvalidModelsSeries()
+void get_mesh_test::extracts_with_invalid_models_series()
 {
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");

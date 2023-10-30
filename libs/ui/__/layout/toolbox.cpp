@@ -54,7 +54,7 @@ void toolbox::initialize(const ui::config_t& _configuration)
     m_views.clear();
     for(const auto& view : boost::make_iterator_range(_configuration.equal_range("view")))
     {
-        ViewInfo vi;
+        view_info vi;
         if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
         {
             if(const auto border = view_cfg->get_optional<int>("border"); border.has_value())
@@ -63,20 +63,20 @@ void toolbox::initialize(const ui::config_t& _configuration)
             }
             else
             {
-                vi.m_leftBorder   = view_cfg->get<int>("leftBorder", vi.m_leftBorder);
-                vi.m_topBorder    = view_cfg->get<int>("topBorder", vi.m_topBorder);
-                vi.m_rightBorder  = view_cfg->get<int>("rightBorder", vi.m_rightBorder);
-                vi.m_bottomBorder = view_cfg->get<int>("bottomBorder", vi.m_bottomBorder);
+                vi.m_left_border   = view_cfg->get<int>("leftBorder", vi.m_left_border);
+                vi.m_top_border    = view_cfg->get<int>("topBorder", vi.m_top_border);
+                vi.m_right_border  = view_cfg->get<int>("rightBorder", vi.m_right_border);
+                vi.m_bottom_border = view_cfg->get<int>("bottomBorder", vi.m_bottom_border);
             }
 
-            vi.m_minSize.first  = view_cfg->get<int>("minWidth", vi.m_minSize.first);
-            vi.m_minSize.second = view_cfg->get<int>("minHeight", vi.m_minSize.second);
-            vi.m_maxSize.first  = view_cfg->get<int>("maxWidth", vi.m_maxSize.first);
-            vi.m_maxSize.second = view_cfg->get<int>("maxHeight", vi.m_maxSize.second);
+            vi.m_min_size.first  = view_cfg->get<int>("minWidth", vi.m_min_size.first);
+            vi.m_min_size.second = view_cfg->get<int>("minHeight", vi.m_min_size.second);
+            vi.m_max_size.first  = view_cfg->get<int>("maxWidth", vi.m_max_size.first);
+            vi.m_max_size.second = view_cfg->get<int>("maxHeight", vi.m_max_size.second);
 
-            vi.m_visible      = view_cfg->get<bool>("visible", vi.m_visible);
-            vi.m_useScrollBar = view_cfg->get<bool>("useScrollBar", vi.m_useScrollBar);
-            vi.m_expanded     = view_cfg->get<bool>("expanded", vi.m_expanded);
+            vi.m_visible        = view_cfg->get<bool>("visible", vi.m_visible);
+            vi.m_use_scroll_bar = view_cfg->get<bool>("useScrollBar", vi.m_use_scroll_bar);
+            vi.m_expanded       = view_cfg->get<bool>("expanded", vi.m_expanded);
 
             vi.m_caption = view_cfg->get<std::string>("caption", "");
 
@@ -88,7 +88,7 @@ void toolbox::initialize(const ui::config_t& _configuration)
                     hexa_color[0] == '#'
                     && (hexa_color.length() == 7 || hexa_color.length() == 9)
                 );
-                vi.m_backgroundColor = hexa_color;
+                vi.m_background_color = hexa_color;
             }
         }
 

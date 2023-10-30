@@ -32,15 +32,15 @@ class DATA_CLASS_API vector final : public data::container<std::vector<object::s
 {
 public:
 
-    SIGHT_DECLARE_CLASS(vector, container<vector::container_type>);
+    SIGHT_DECLARE_CLASS(vector, container<vector::container_t>);
 
     /// Destructor / Assignment operators
     /// @{
     DATA_API ~vector() override = default;
 
     /// This will enable common collection constructors / assignment operators
-    using container<vector::container_type>::container;
-    using container<vector::container_type>::operator=;
+    using container<vector::container_t>::container;
+    using container<vector::container_t>::operator=;
     /// @}
 
     /// Equality comparison operators

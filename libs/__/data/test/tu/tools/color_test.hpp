@@ -32,7 +32,7 @@ class color_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(color_test);
-    CPPUNIT_TEST(hexaStringToRGBA);
+    CPPUNIT_TEST(hexa_string_to_rgba);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,7 +41,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void hexaStringToRGBA();
+    static void hexa_string_to_rgba();
 };
 
 } // namespace sight::data::tools::ut

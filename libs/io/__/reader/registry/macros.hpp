@@ -28,6 +28,6 @@ namespace sight::io::reader::registry
 {
 
 #define SIGHT_REGISTER_IO_READER(classname) \
-    static sight::io::reader::object_reader::Registry<classname> s__factory__record__ ## __LINE__;
+    static sight::io::reader::object_reader::registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace sight::io::reader::registry

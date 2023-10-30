@@ -40,8 +40,8 @@ progress::progress(const std::string& _title, const std::string& _message)
             m_implementation         = std::dynamic_pointer_cast<ui::dialog::progress_base>(gui_obj);
             if(m_implementation)
             {
-                m_implementation->setTitle(_title);
-                m_implementation->setMessage(_message);
+                m_implementation->set_title(_title);
+                m_implementation->set_message(_message);
             }
         }).wait();
 }
@@ -59,28 +59,28 @@ progress::~progress()
 
 //-----------------------------------------------------------------------------
 
-void progress::setTitle(const std::string& _title)
+void progress::set_title(const std::string& _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setTitle(_title);
+                m_implementation->set_title(_title);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void progress::setMessage(const std::string& _msg)
+void progress::set_message(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setMessage(_msg);
+                m_implementation->set_message(_msg);
             }
         }).wait();
 }
@@ -101,33 +101,33 @@ void progress::operator()(float _percent, std::string _msg)
 
 //-----------------------------------------------------------------------------
 
-void progress::setCancelCallback(cancel_callback_t _callback)
+void progress::set_cancel_callback(cancel_callback_t _callback)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setCancelCallback(_callback);
+                m_implementation->set_cancel_callback(_callback);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void progress::cancelPressed()
+void progress::cancel_pressed()
 {
     assert(0);
 }
 
 //-----------------------------------------------------------------------------
 
-void progress::hideCancelButton()
+void progress::hide_cancel_button()
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
-            m_implementation->hideCancelButton();
+            m_implementation->hide_cancel_button();
         }).wait();
 }
 

@@ -33,17 +33,17 @@ namespace sight::module::data
  * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
  */
 
-class MODULE_DATA_CLASS_API IWrapperSrv : public service::base
+class MODULE_DATA_CLASS_API i_wrapper_srv : public service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IWrapperSrv, service::base);
+    SIGHT_DECLARE_SERVICE(i_wrapper_srv, service::base);
 
     ///@brief IWrapperSrv constructor. Do nothing.
-    MODULE_DATA_API IWrapperSrv();
+    MODULE_DATA_API i_wrapper_srv();
 
     ///@brief IWrapperSrv destructor. Do nothing.
-    MODULE_DATA_API ~IWrapperSrv() override;
+    MODULE_DATA_API ~i_wrapper_srv() override;
 };
 
 } // namespace sight::module::data

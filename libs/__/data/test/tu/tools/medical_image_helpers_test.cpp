@@ -48,49 +48,49 @@ struct typeToPixelFormat;
 template<>
 struct typeToPixelFormat<std::array<unsigned char, 1> >
 {
-    static constexpr sight::data::image::PixelFormat value = sight::data::image::PixelFormat::GRAY_SCALE;
+    static constexpr enum sight::data::image::pixel_format VALUE = sight::data::image::pixel_format::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<unsigned char, 3> >
 {
-    static const auto value = sight::data::image::PixelFormat::RGB;
+    static const auto VALUE = sight::data::image::pixel_format::rgb;
 };
 
 template<>
 struct typeToPixelFormat<std::array<unsigned int, 1> >
 {
-    static constexpr sight::data::image::PixelFormat value = sight::data::image::PixelFormat::GRAY_SCALE;
+    static constexpr enum sight::data::image::pixel_format VALUE = sight::data::image::pixel_format::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<unsigned int, 3> >
 {
-    static const auto value = sight::data::image::PixelFormat::RGB;
+    static const auto VALUE = sight::data::image::pixel_format::rgb;
 };
 
 template<>
 struct typeToPixelFormat<std::array<float, 1> >
 {
-    static constexpr sight::data::image::PixelFormat value = sight::data::image::PixelFormat::GRAY_SCALE;
+    static constexpr enum sight::data::image::pixel_format VALUE = sight::data::image::pixel_format::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<float, 3> >
 {
-    static const auto value = sight::data::image::PixelFormat::RGB;
+    static const auto VALUE = sight::data::image::pixel_format::rgb;
 };
 
 template<>
 struct typeToPixelFormat<std::array<double, 1> >
 {
-    static const auto value = sight::data::image::PixelFormat::GRAY_SCALE;
+    static const auto VALUE = sight::data::image::pixel_format::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<double, 3> >
 {
-    static const auto value = sight::data::image::PixelFormat::RGB;
+    static const auto VALUE = sight::data::image::pixel_format::rgb;
 };
 
 //------------------------------------------------------------------------------
@@ -99,16 +99,16 @@ sight::data::image::sptr generate_image()
 {
     data::image::sptr image = std::make_shared<data::image>();
 
-    const data::image::Size size       = {256, 150, 100};
-    const data::image::Spacing spacing = {1., 1., 0.5};
-    const data::image::Origin origin   = {0., 0., 0.};
-    utest_data::generator::image::generateImage(
+    const data::image::size_t size       = {256, 150, 100};
+    const data::image::spacing_t spacing = {1., 1., 0.5};
+    const data::image::origin_t origin   = {0., 0., 0.};
+    utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
         core::type::UINT8,
-        data::image::PixelFormat::GRAY_SCALE
+        data::image::pixel_format::gray_scale
     );
 
     return image;
@@ -130,45 +130,45 @@ void medical_image_helpers_test::tearDown()
 
 // ------------------------------------------------------------------------------
 
-void medical_image_helpers_test::getMinMaxTest()
+void medical_image_helpers_test::get_min_max_test()
 {
     {
         // Test on 3D image of type 'int16'
-        using Type = std::int16_t;
+        using type = std::int16_t;
 
-        const Type min   = 45;
-        const Type max   = 345;
-        const Type range = max - min;
+        const type min   = 45;
+        const type max   = 345;
+        const type range = max - min;
 
         data::image::sptr image = std::make_shared<data::image>();
 
-        const data::image::Size size       = {125, 110, 45};
-        const data::image::Spacing spacing = {1., 1., 1.};
-        const data::image::Origin origin   = {0., 0., 0.};
-        utest_data::generator::image::generateImage(
+        const data::image::size_t size       = {125, 110, 45};
+        const data::image::spacing_t spacing = {1., 1., 1.};
+        const data::image::origin_t origin   = {0., 0., 0.};
+        utest_data::generator::image::generate_image(
             image,
             size,
             spacing,
             origin,
-            core::type::get<Type>(),
-            data::image::PixelFormat::GRAY_SCALE
+            core::type::get<type>(),
+            data::image::pixel_format::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
 
-        auto itr     = image->begin<Type>();
-        auto itr_end = image->end<Type>();
+        auto itr     = image->begin<type>();
+        auto itr_end = image->end<type>();
 
         for( ; itr != itr_end ; ++itr)
         {
-            *itr = static_cast<Type>(min + (safe_rand() % range));
+            *itr = static_cast<type>(min + (safe_rand() % range));
         }
 
-        Type res_min = 0;
-        Type res_max = 0;
+        type res_min = 0;
+        type res_max = 0;
 
-        image->at<Type>(156) = min;
-        image->at<Type>(245) = max;
+        image->at<type>(156) = min;
+        image->at<type>(245) = max;
 
         medImHelper::get_min_max(image, res_min, res_max);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
@@ -177,40 +177,40 @@ void medical_image_helpers_test::getMinMaxTest()
 
     {
         // Test on 3D image of type 'float'
-        using Type = float;
-        const Type min   = -12.3F;
-        const Type max   = 18.2F;
-        const Type range = max - min;
+        using type = float;
+        const type min   = -12.3F;
+        const type max   = 18.2F;
+        const type range = max - min;
 
         data::image::sptr image = std::make_shared<data::image>();
 
-        const data::image::Size size       = {42, 34, 75};
-        const data::image::Spacing spacing = {1., 1., 1.};
-        const data::image::Origin origin   = {0., 0., 0.};
-        utest_data::generator::image::generateImage(
+        const data::image::size_t size       = {42, 34, 75};
+        const data::image::spacing_t spacing = {1., 1., 1.};
+        const data::image::origin_t origin   = {0., 0., 0.};
+        utest_data::generator::image::generate_image(
             image,
             size,
             spacing,
             origin,
-            core::type::get<Type>(),
-            data::image::PixelFormat::GRAY_SCALE
+            core::type::get<type>(),
+            data::image::pixel_format::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
 
-        auto itr           = image->begin<Type>();
-        const auto itr_end = image->end<Type>();
+        auto itr           = image->begin<type>();
+        const auto itr_end = image->end<type>();
 
         for( ; itr != itr_end ; ++itr)
         {
-            *itr = min + static_cast<Type>(safe_rand() % static_cast<int>(range));
+            *itr = min + static_cast<type>(safe_rand() % static_cast<int>(range));
         }
 
-        Type res_min = NAN;
-        Type res_max = NAN;
+        type res_min = NAN;
+        type res_max = NAN;
 
-        image->at<Type>(16)  = min;
-        image->at<Type>(286) = max;
+        image->at<type>(16)  = min;
+        image->at<type>(286) = max;
 
         medImHelper::get_min_max(image, res_min, res_max);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
@@ -220,41 +220,41 @@ void medical_image_helpers_test::getMinMaxTest()
     {
         // test of 2D image of type 'uint8'
 
-        using Type = std::uint8_t;
+        using type = std::uint8_t;
 
-        const Type min   = 3;
-        const Type max   = 245;
-        const Type range = max - min;
+        const type min   = 3;
+        const type max   = 245;
+        const type range = max - min;
 
         data::image::sptr image = std::make_shared<data::image>();
 
-        const data::image::Size size       = {156, 208, 0};
-        const data::image::Spacing spacing = {1., 1., 0.};
-        const data::image::Origin origin   = {0., 0., 0.};
-        utest_data::generator::image::generateImage(
+        const data::image::size_t size       = {156, 208, 0};
+        const data::image::spacing_t spacing = {1., 1., 0.};
+        const data::image::origin_t origin   = {0., 0., 0.};
+        utest_data::generator::image::generate_image(
             image,
             size,
             spacing,
             origin,
-            core::type::get<Type>(),
-            data::image::PixelFormat::GRAY_SCALE
+            core::type::get<type>(),
+            data::image::pixel_format::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
 
-        auto itr           = image->begin<Type>();
-        const auto itr_end = image->end<Type>();
+        auto itr           = image->begin<type>();
+        const auto itr_end = image->end<type>();
 
         for( ; itr != itr_end ; ++itr)
         {
-            *itr = min + static_cast<Type>(safe_rand() % static_cast<int>(range));
+            *itr = min + static_cast<type>(safe_rand() % static_cast<int>(range));
         }
 
-        Type res_min = 0;
-        Type res_max = 0;
+        type res_min = 0;
+        type res_max = 0;
 
-        image->at<Type>(5)    = min;
-        image->at<Type>(2155) = max;
+        image->at<type>(5)    = min;
+        image->at<type>(2155) = max;
 
         medImHelper::get_min_max(image, res_min, res_max);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
@@ -268,14 +268,14 @@ template<class P>
 data::image::sptr create_image_from_pixel_buffer()
 {
     constexpr std::size_t img_dimensions = 100;
-    using SubPixel = typename P::value_type;
+    using sub_pixel_t = typename P::value_type;
 
     // Create a new image
-    auto image             = std::make_shared<data::image>();
-    data::image::Size size = {img_dimensions, img_dimensions, img_dimensions};
-    image->resize(size, core::type::get<SubPixel>(), typeToPixelFormat<P>::value);
-    image->setSpacing({1., 1., 1.});
-    image->setOrigin({0., 0., 0.});
+    auto image               = std::make_shared<data::image>();
+    data::image::size_t size = {img_dimensions, img_dimensions, img_dimensions};
+    image->resize(size, core::type::get<sub_pixel_t>(), typeToPixelFormat<P>::VALUE);
+    image->set_spacing({1., 1., 1.});
+    image->set_origin({0., 0., 0.});
 
     // Zero the buffer
     const auto dump_lock = image->dump_lock();
@@ -289,7 +289,7 @@ data::image::sptr create_image_from_pixel_buffer()
 template<class P>
 void get_pixel_test_helper(const P& _pixel_value)
 {
-    using SubPixel = typename P::value_type;
+    using sub_pixel_t = typename P::value_type;
     constexpr std::size_t n_components = std::tuple_size<P>::value;
     data::image::sptr image            = create_image_from_pixel_buffer<P>();
     const auto size                    = image->size();
@@ -299,22 +299,22 @@ void get_pixel_test_helper(const P& _pixel_value)
     std::generate(coords.begin(), coords.end(), [&](){return static_cast<std::size_t>(safe_rand()) % size[0];});
     const auto dump_lock   = image->dump_lock();
     auto* image_buffer_ptr = image->buffer();
-    SubPixel* pixel_ptr    = static_cast<SubPixel*>(image_buffer_ptr)
+    sub_pixel_t* pixel_ptr = static_cast<sub_pixel_t*>(image_buffer_ptr)
                              + ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * n_components);
     std::copy(_pixel_value.begin(), _pixel_value.end(), pixel_ptr);
 
     // Test that the helper returned pixel value is correct
     P value = image->at<P>(coords[0], coords[1], coords[2]);
-    if(std::is_floating_point_v<SubPixel>)
+    if(std::is_floating_point_v<sub_pixel_t>)
     {
-        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->num_components() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", _pixel_value[i], value[i]);
         }
     }
     else
     {
-        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->num_components() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", _pixel_value[i], value[i]);
         }
@@ -323,7 +323,7 @@ void get_pixel_test_helper(const P& _pixel_value)
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::getPixelTest()
+void medical_image_helpers_test::get_pixel_test()
 {
     {
         std::array<uint8_t, 1> p_gray = {84};
@@ -356,7 +356,7 @@ void medical_image_helpers_test::getPixelTest()
 template<class P>
 void set_pixel_test_helper(P& _pixel_value)
 {
-    using SubPixel = typename P::value_type;
+    using sub_pixel_t = typename P::value_type;
     auto image      = create_image_from_pixel_buffer<P>();
     const auto size = image->size();
 
@@ -365,21 +365,21 @@ void set_pixel_test_helper(P& _pixel_value)
     std::generate(coords.begin(), coords.end(), [&](){return static_cast<std::size_t>(safe_rand()) % size[0];});
     const std::size_t pixel_index = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     const auto dump_lock          = image->dump_lock();
-    image->setPixel(pixel_index, reinterpret_cast<uint8_t*>(_pixel_value.data()));
+    image->set_pixel(pixel_index, reinterpret_cast<uint8_t*>(_pixel_value.data()));
 
     // Test that the helper returned pixel value is correct
     data::image::csptr const_image = image;
     const P value                  = const_image->at<P>(coords[0], coords[1], coords[2]);
-    if(std::is_floating_point_v<SubPixel>)
+    if(std::is_floating_point_v<sub_pixel_t>)
     {
-        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->num_components() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", _pixel_value[i], value[i]);
         }
     }
     else
     {
-        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->num_components() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", _pixel_value[i], value[i]);
         }
@@ -388,7 +388,7 @@ void set_pixel_test_helper(P& _pixel_value)
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::setPixelTest()
+void medical_image_helpers_test::set_pixel_test()
 {
     {
         std::array<uint8_t, 1> p_gray = {84};
@@ -418,14 +418,14 @@ void medical_image_helpers_test::setPixelTest()
 
 //------------------------------------------------------------------------------
 
-void data::tools::ut::medical_image_helpers_test::isBufNull()
+void data::tools::ut::medical_image_helpers_test::is_buf_null()
 {
     auto image = create_image_from_pixel_buffer<std::array<uint8_t, 3> >();
 
     {
         const auto dump_lock                 = image->dump_lock();
         const data::image::buffer_t* pix_buf =
-            static_cast<data::image::buffer_t*>(image->getPixel(0));
+            static_cast<data::image::buffer_t*>(image->get_pixel(0));
 
         bool is_null = medImHelper::is_buf_null(pix_buf, 3);
         CPPUNIT_ASSERT_EQUAL(true, is_null);
@@ -435,18 +435,18 @@ void data::tools::ut::medical_image_helpers_test::isBufNull()
 
         {
             std::array<float, 3> pixel_value = {42.0F, 1487.4F, 0.1445F};
-            image->setPixel(0, reinterpret_cast<uint8_t*>(pixel_value.data()));
+            image->set_pixel(0, reinterpret_cast<uint8_t*>(pixel_value.data()));
 
             is_null = medImHelper::is_buf_null(pix_buf, 3);
             CPPUNIT_ASSERT_EQUAL(false, is_null);
 
             const data::image::buffer_t* pix_buf2 =
-                static_cast<data::image::buffer_t*>(image->getPixel(10));
+                static_cast<data::image::buffer_t*>(image->get_pixel(10));
 
             is_null = medImHelper::is_buf_null(pix_buf2, 3);
             CPPUNIT_ASSERT_EQUAL(true, is_null);
 
-            image->setPixel(15, reinterpret_cast<uint8_t*>(pixel_value.data()));
+            image->set_pixel(15, reinterpret_cast<uint8_t*>(pixel_value.data()));
             is_null = medImHelper::is_buf_null(pix_buf2, 5 * 3);
             CPPUNIT_ASSERT_EQUAL(true, is_null);
             is_null = medImHelper::is_buf_null(pix_buf2, 6 * 3);
@@ -457,7 +457,7 @@ void data::tools::ut::medical_image_helpers_test::isBufNull()
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::testLandmarks()
+void medical_image_helpers_test::test_landmarks()
 {
     data::image::sptr image = generate_image();
 
@@ -468,7 +468,7 @@ void medical_image_helpers_test::testLandmarks()
     /// Set landmarks
     data::point::sptr p       = std::make_shared<data::point>(1., 2., 3.);
     data::point_list::sptr pt = std::make_shared<data::point_list>();
-    pt->pushBack(p);
+    pt->push_back(p);
     CPPUNIT_ASSERT_THROW(medImHelper::set_landmarks(*image, nullptr), data::exception);
     medImHelper::set_landmarks(*image, pt);
 
@@ -476,7 +476,7 @@ void medical_image_helpers_test::testLandmarks()
     const auto landmarks = medImHelper::get_landmarks(*image);
     CPPUNIT_ASSERT(landmarks);
 
-    const auto points = landmarks->getPoints();
+    const auto points = landmarks->get_points();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), points.size());
 
@@ -484,13 +484,13 @@ void medical_image_helpers_test::testLandmarks()
 
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_EQUAL(p->getCoord()[i], point->getCoord()[i]);
+        CPPUNIT_ASSERT_EQUAL(p->get_coord()[i], point->get_coord()[i]);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::testImageValidity()
+void medical_image_helpers_test::test_image_validity()
 {
     // Valid image
     const auto valid_image = generate_image();
@@ -509,13 +509,13 @@ void medical_image_helpers_test::testImageValidity()
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::testSliceIndex()
+void medical_image_helpers_test::test_slice_index()
 {
     const auto image = generate_image();
 
     // AXIAL
     {
-        auto orientation = medImHelper::orientation_t::AXIAL;
+        auto orientation = medImHelper::orientation_t::axial;
 
         auto index = medImHelper::get_slice_index(*image, orientation);
 
@@ -534,7 +534,7 @@ void medical_image_helpers_test::testSliceIndex()
 
     // SAGITTAL
     {
-        auto orientation = medImHelper::orientation_t::SAGITTAL;
+        auto orientation = medImHelper::orientation_t::sagittal;
 
         auto index = medImHelper::get_slice_index(*image, orientation);
 
@@ -553,7 +553,7 @@ void medical_image_helpers_test::testSliceIndex()
 
     // FRONTAL
     {
-        auto orientation = medImHelper::orientation_t::FRONTAL;
+        auto orientation = medImHelper::orientation_t::frontal;
 
         auto index = medImHelper::get_slice_index(*image, orientation);
 
@@ -573,7 +573,7 @@ void medical_image_helpers_test::testSliceIndex()
     // No slice index
     {
         const auto image_no_slices = std::make_shared<data::image>();
-        auto orientation           = medImHelper::orientation_t::AXIAL;
+        auto orientation           = medImHelper::orientation_t::axial;
         const auto index           = medImHelper::get_slice_index(*image_no_slices, orientation);
 
         CPPUNIT_ASSERT_EQUAL(false, index.has_value());
@@ -582,7 +582,7 @@ void medical_image_helpers_test::testSliceIndex()
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::testDistances()
+void medical_image_helpers_test::test_distances()
 {
     const auto image = generate_image();
 
@@ -592,8 +592,8 @@ void medical_image_helpers_test::testDistances()
 
     data::vector::sptr distances      = std::make_shared<data::vector>();
     data::point_list::sptr point_list = std::make_shared<data::point_list>();
-    point_list->getPoints().push_back(std::make_shared<data::point>(0., 1., 2.));
-    point_list->getPoints().push_back(std::make_shared<data::point>(10., 11., 12.));
+    point_list->get_points().push_back(std::make_shared<data::point>(0., 1., 2.));
+    point_list->get_points().push_back(std::make_shared<data::point>(10., 11., 12.));
 
     distances->push_back(point_list);
 
@@ -608,7 +608,7 @@ void medical_image_helpers_test::testDistances()
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::testDistanceVisibility()
+void medical_image_helpers_test::test_distance_visibility()
 {
     const auto image = generate_image();
 
@@ -625,7 +625,7 @@ void medical_image_helpers_test::testDistanceVisibility()
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::testLandmarksVisibility()
+void medical_image_helpers_test::test_landmarks_visibility()
 {
     const auto image = generate_image();
 
@@ -642,7 +642,7 @@ void medical_image_helpers_test::testLandmarksVisibility()
 
 //------------------------------------------------------------------------------
 
-void medical_image_helpers_test::computeHistogram()
+void medical_image_helpers_test::compute_histogram()
 {
     using image_t = std::int16_t;
     const std::size_t size_x     = 50;
@@ -654,7 +654,7 @@ void medical_image_helpers_test::computeHistogram()
     data::image::sptr image = std::make_shared<data::image>();
 
     // Create image.
-    image->resize({size_x, size_y, size_z}, core::type::INT16, data::image::GRAY_SCALE);
+    image->resize({size_x, size_y, size_z}, core::type::INT16, data::image::gray_scale);
 
     const auto dump_lock = image->dump_lock();
 

@@ -40,17 +40,17 @@ bresenham_line::path_t bresenham_line::draw(
 
     switch(_orientation)
     {
-        case Orientation::X_AXIS:
+        case Orientation::x_axis:
             dim0 = 1;
             dim1 = 2;
             break;
 
-        case Orientation::Y_AXIS:
+        case Orientation::y_axis:
             dim0 = 0;
             dim1 = 2;
             break;
 
-        case Orientation::Z_AXIS:
+        case Orientation::z_axis:
             dim0 = 0;
             dim1 = 1;
             break;

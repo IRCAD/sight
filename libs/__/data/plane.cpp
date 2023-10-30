@@ -40,9 +40,9 @@ const core::com::signals::key_t plane::SELECTED_SIG = "selected";
 
 plane::plane()
 {
-    m_vPoints[0] = std::make_shared<data::point>();
-    m_vPoints[1] = std::make_shared<data::point>();
-    m_vPoints[2] = std::make_shared<data::point>();
+    m_v_points[0] = std::make_shared<data::point>();
+    m_v_points[1] = std::make_shared<data::point>();
+    m_v_points[2] = std::make_shared<data::point>();
 
     new_signal<selected_signal_t>(SELECTED_SIG);
 }
@@ -61,9 +61,9 @@ void plane::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_vPoints = other->m_vPoints;
+    m_v_points = other->m_v_points;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -80,34 +80,34 @@ void plane::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
         !bool(other)
     );
 
-    m_vPoints[0] = data::object::copy(other->m_vPoints[0], _cache);
-    m_vPoints[1] = data::object::copy(other->m_vPoints[1], _cache);
-    m_vPoints[2] = data::object::copy(other->m_vPoints[2], _cache);
+    m_v_points[0] = data::object::copy(other->m_v_points[0], _cache);
+    m_v_points[1] = data::object::copy(other->m_v_points[1], _cache);
+    m_v_points[2] = data::object::copy(other->m_v_points[2], _cache);
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void plane::setValue(data::point::sptr _point1, data::point::sptr _point2, data::point::sptr _point3)
+void plane::set_value(data::point::sptr _point1, data::point::sptr _point2, data::point::sptr _point3)
 {
-    m_vPoints[0] = _point1;
-    m_vPoints[1] = _point2;
-    m_vPoints[2] = _point3;
+    m_v_points[0] = _point1;
+    m_v_points[1] = _point2;
+    m_v_points[2] = _point3;
 }
 
 //------------------------------------------------------------------------------
 
 bool plane::operator==(const plane& _other) const noexcept
 {
-    if(m_isIntersection != _other.m_isIntersection
-       || !core::tools::is_equal(m_vPoints, _other.m_vPoints))
+    if(m_is_intersection != _other.m_is_intersection
+       || !core::tools::is_equal(m_v_points, _other.m_v_points))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

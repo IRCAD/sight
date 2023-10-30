@@ -39,9 +39,9 @@ const core::com::slots::key_t flip::FLIP_AXIS_Z_SLOT = "flipAxisZ";
 flip::flip()
 {
     // Initialize the slots
-    new_slot(FLIP_AXIS_X_SLOT, &flip::flipAxisX, this);
-    new_slot(FLIP_AXIS_Y_SLOT, &flip::flipAxisY, this);
-    new_slot(FLIP_AXIS_Z_SLOT, &flip::flipAxisZ, this);
+    new_slot(FLIP_AXIS_X_SLOT, &flip::flip_axis_x, this);
+    new_slot(FLIP_AXIS_Y_SLOT, &flip::flip_axis_y, this);
+    new_slot(FLIP_AXIS_Z_SLOT, &flip::flip_axis_z, this);
 }
 
 //------------------------------------------------------------------------------
@@ -72,11 +72,11 @@ void flip::updating()
     {
         data::image::sptr out_img = std::make_shared<data::image>();
 
-        sight::filter::image::flipper::flip(in_img.get_shared(), out_img, m_flipAxes);
+        sight::filter::image::flipper::flip(in_img.get_shared(), out_img, m_flip_axes);
 
         m_target = out_img;
 
-        m_sigComputed->async_emit();
+        m_sig_computed->async_emit();
     }
     else
     {
@@ -93,25 +93,25 @@ void flip::stopping()
 
 //------------------------------------------------------------------------------
 
-void flip::flipAxisX()
+void flip::flip_axis_x()
 {
-    m_flipAxes[0] = !(m_flipAxes[0]);
+    m_flip_axes[0] = !(m_flip_axes[0]);
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void flip::flipAxisY()
+void flip::flip_axis_y()
 {
-    m_flipAxes[1] = !(m_flipAxes[1]);
+    m_flip_axes[1] = !(m_flip_axes[1]);
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void flip::flipAxisZ()
+void flip::flip_axis_z()
 {
-    m_flipAxes[2] = !(m_flipAxes[2]);
+    m_flip_axes[2] = !(m_flip_axes[2]);
     this->updating();
 }
 
@@ -120,8 +120,8 @@ void flip::flipAxisZ()
 service::connections_t flip::auto_connections() const
 {
     return {
-        {s_IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {s_IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
+        {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
+        {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

@@ -88,7 +88,7 @@ private:
     /// Defines the algorithm used to animate a deformation on the mesh.
     tuto13_mesh_generator_cpp::algo_mesh_deformation m_animator;
 
-    sight::data::ptr<sight::data::mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
+    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, "mesh"};
 };
 
 } // namespace tuto13_mesh_generator_cpp.

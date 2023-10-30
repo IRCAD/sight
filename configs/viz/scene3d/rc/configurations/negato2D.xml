@@ -53,17 +53,17 @@
 
         <service uid="toolbarView" type="sight::module::ui::view">
             <gui>
-                <toolBar backgroundColor="#00000000" />
+                <toolbar backgroundColor="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="toolbar" start="true" />
+                <toolbar sid="toolbar" start="true" />
             </registry>
         </service>
 
-        <service uid="toolbar" type="sight::module::ui::tool_bar">
+        <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Maximize" icon="sight::module::ui::flaticons/YellowMaximize.svg" />

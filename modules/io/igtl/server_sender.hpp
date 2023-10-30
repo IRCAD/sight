@@ -88,19 +88,19 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const data::object::csptr& _obj, std::size_t _index) override;
+    void send_object(const data::object::csptr& _obj, std::size_t _index) override;
 
     /// Server instance
-    sight::io::igtl::Server::sptr m_server;
+    sight::io::igtl::server::sptr m_server;
 
     /// Future used to wait for the server
-    std::future<void> m_serverFuture;
+    std::future<void> m_server_future;
 
     /// port preference key
-    std::string m_portConfig;
+    std::string m_port_config;
 
     /// Vector of device name if the group configuration exists.
-    std::vector<std::string> m_deviceNames;
+    std::vector<std::string> m_device_names;
 };
 
 } // namespace sight::module::io::igtl

@@ -114,7 +114,7 @@ protected:
 private:
 
     /// Represents a 2D triangle by three points, a barycenter, and a center/radius of the circumscribed circle.
-    class Triangle2D
+    class triangle2_d
     {
     public:
 
@@ -124,10 +124,10 @@ private:
          * @param _b second point of the triangle.
          * @param _c third point of the triangle.
          */
-        Triangle2D(const Ogre::Vector2& _a, const Ogre::Vector2& _b, const Ogre::Vector2& _c);
+        triangle2_d(const Ogre::Vector2& _a, const Ogre::Vector2& _b, const Ogre::Vector2& _c);
 
         /// Compare two triangles ID.
-        inline bool operator<(const Triangle2D& _second) const;
+        inline bool operator<(const triangle2_d& _second) const;
 
         /// Defines the first point of the triangle.
         Ogre::Vector2 a;
@@ -157,7 +157,7 @@ private:
     };
 
     /// Represents a 3D triangle by three points.
-    struct Triangle3D
+    struct triangle3_d
     {
         /**
          * @brief Creates a 3D triangle.
@@ -165,7 +165,7 @@ private:
          * @param _b second point of the triangle.
          * @param _c third point of the triangle.
          */
-        inline Triangle3D(const Ogre::Vector3& _a, const Ogre::Vector3& _b, const Ogre::Vector3& _c);
+        inline triangle3_d(const Ogre::Vector3& _a, const Ogre::Vector3& _b, const Ogre::Vector3& _c);
 
         /// Defines the first point of the triangle.
         Ogre::Vector3 a;
@@ -178,20 +178,20 @@ private:
     };
 
     /// Represents an edge (a segment).
-    struct Edge
+    struct edge
     {
         /**
          * @brief Creates an edge.
          * @param _a first point of the edge.
          * @param _b second point of the edge.
          */
-        inline Edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b);
+        inline edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b);
 
         /// Checks if the segment intersects an other one.
-        [[nodiscard]] bool intersect(Edge _edge) const;
+        [[nodiscard]] bool intersect(edge _edge) const;
 
         /// Checks if two segments a equals.
-        inline bool operator==(const Edge& _edge) const;
+        inline bool operator==(const edge& _edge) const;
 
         /// Defines the first point of the triangle.
         Ogre::Vector2 a;
@@ -202,21 +202,21 @@ private:
 
     enum class action
     {
-        ADD,
-        REMOVE
+        add,
+        remove
     };
 
     /// Computes the camera direction vector.
-    static Ogre::Vector3 getCamDirection(const Ogre::Camera* _cam);
+    static Ogre::Vector3 get_cam_direction(const Ogre::Camera* _cam);
 
     /// Sets if the tool is enabled or not.
-    void enableTool(bool _enable);
+    void enable_tool(bool _enable);
 
     /// Deletes the last extruded mesh.
-    void deleteLastMesh();
+    void delete_last_mesh();
 
     /// Cancel the last clicked point during the extrusion
-    void cancelLastClick();
+    void cancel_last_click();
 
     /// Reset all extrusions
     void reset();
@@ -232,7 +232,7 @@ private:
      * @param _y y screen coordinate.
      * @return the tool, near and far 3D intersection in the world space.
      */
-    std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> getNearFarRayPositions(int _x, int _y) const;
+    std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> get_near_far_ray_positions(int _x, int _y) const;
 
     /**
      * @brief Modify the existing lasso
@@ -240,13 +240,13 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void modifyLasso(action _action, int _x = -1, int _y = -1);
+    void modify_lasso(action _action, int _x = -1, int _y = -1);
 
     /**
      * @brief Cancels further interactions.
      * @pre @ref m_interactionEnableState must be true.
      */
-    void wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
+    void wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
 
     /**
      * @brief Adds a new point to the lasso.
@@ -255,7 +255,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
+    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
 
     /**
      * @brief Closes the lasso shape.
@@ -264,7 +264,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
+    void button_double_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
 
     /**
      * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
@@ -273,35 +273,35 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
+    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
 
     /**
      * @brief Ends the drag interaction.
      * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
      */
-    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
+    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /// Draws the lasso from @ref m_lassoNearPositions.
-    void drawLasso();
+    void draw_lasso();
 
     /// Computes the triangulation of the two point lists @ref m_lassoNearPositions and @ref m_lassoFarPositions.
-    void triangulatePoints() const;
+    void triangulate_points() const;
 
     /// Generates the mesh from a list of 3D triangles and adds it to the model series.
-    void generateExtrudedMesh(const std::vector<Triangle3D>& _triangulation) const;
+    void generate_extruded_mesh(const std::vector<triangle3_d>& _triangulation) const;
 
     /**
      * @brief Triangulates a point list.
      * @param _points the point list to triangulate.
      * @param _wordTriangulation vector where all generated triangles are pushed.
      */
-    void generateDelaunayTriangulation(
+    void generate_delaunay_triangulation(
         const std::vector<Ogre::Vector3>& _points,
-        std::vector<Triangle3D>& _word_triangulation
+        std::vector<triangle3_d>& _word_triangulation
     ) const;
 
     /// Adds a point to the triangulation with the delaunay constraints.
-    static void addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const Ogre::Vector2& _sommet);
+    static void add_delaunay_point(std::vector<triangle2_d>& _triangulation, const Ogre::Vector2& _sommet);
 
     /**
      * @brief Add a constrained edge to the triangulation. IT inserts a new point corresponding to the midpoint of the
@@ -313,9 +313,9 @@ private:
      * @param _depth used only by this method because it is recursive, it avoids stack overflow.
      * @return a list of new constrained generated points.
      */
-    std::list<Ogre::Vector2> addConstraints(
-        std::vector<Triangle2D>& _triangulation,
-        const Edge& _edge,
+    std::list<Ogre::Vector2> add_constraints(
+        std::vector<triangle2_d>& _triangulation,
+        const edge& _edge,
         int _depth = 0
     ) const;
 
@@ -328,74 +328,74 @@ private:
     data::material::sptr m_material {nullptr};
 
     /// Contains the adaptor used to create the Ogre material from the material data.
-    module::viz::scene3d::adaptor::material::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
 
     /// Defines the color of the lasso's line.
-    Ogre::ColourValue m_lineColor {Ogre::ColourValue::White};
+    Ogre::ColourValue m_line_color {Ogre::ColourValue::White};
 
     /// Defines the color of the lasso's edge.
-    Ogre::ColourValue m_edgeColor {Ogre::ColourValue::White};
+    Ogre::ColourValue m_edge_color {Ogre::ColourValue::White};
 
     /// Handles the tool activation state.
-    bool m_toolEnableState {false};
+    bool m_tool_enable_state {false};
 
     /// Defines if the interaction as begin.
-    bool m_interactionEnableState {false};
+    bool m_interaction_enable_state {false};
 
     /// Handles the left button move state.
-    bool m_leftButtonMoveState {false};
+    bool m_left_button_move_state {false};
 
     /// Defines the plane where the lasso tool is drawn.
-    Ogre::Plane m_lassoToolPlane;
+    Ogre::Plane m_lasso_tool_plane;
 
     /// Defines the near plane where the lasso work.
-    Ogre::Plane m_lassoNearPlane;
+    Ogre::Plane m_lasso_near_plane;
 
     /// Defines the far plane where the lasso work.
-    Ogre::Plane m_lassoFarPlane;
+    Ogre::Plane m_lasso_far_plane;
 
     /// Stores all position clicked or clicked and moved that are at near to the camera.
-    std::vector<Ogre::Vector3> m_lassoToolPositions;
+    std::vector<Ogre::Vector3> m_lasso_tool_positions;
 
     /// Stores all position clicked or clicked and moved that are near to the camera.
-    std::vector<Ogre::Vector3> m_lassoNearPositions;
+    std::vector<Ogre::Vector3> m_lasso_near_positions;
 
     /// Stores same position than near ones, but at the edge of the world bounding box.
-    std::vector<Ogre::Vector3> m_lassoFarPositions;
+    std::vector<Ogre::Vector3> m_lasso_far_positions;
 
     /// Stores all clicked position.
-    std::vector<Ogre::Vector3> m_lassoEdgePositions;
+    std::vector<Ogre::Vector3> m_lasso_edge_positions;
 
     /// Defines the radius of each point drawn at edges positions.
-    const float M_LASSO_EDGE_SIZE {0.005F};
+    const float m_lasso_edge_size {0.005F};
 
     /// Contains the node where all manual objects that represent the lasso are attached.
-    Ogre::SceneNode* m_lassoNode {nullptr};
+    Ogre::SceneNode* m_lasso_node {nullptr};
 
     /// Contains the lasso object.
     Ogre::ManualObject* m_lasso {nullptr};
 
     /// Contains the last lasso line, this line is drawn between the last position and the current mouse position.
-    Ogre::ManualObject* m_lastLassoLine {nullptr};
+    Ogre::ManualObject* m_last_lasso_line {nullptr};
 
     /// Contains the signal sent when interactions are finished.
-    core::com::signal<void()>::sptr m_toolDisabledSig;
+    core::com::signal<void()>::sptr m_tool_disabled_sig;
 
-    sight::data::ptr<sight::data::model_series, sight::data::Access::inout> m_extrudedMeshes {this, "extrudedMeshes"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_extruded_meshes {this, "extrudedMeshes"};
 
-    bool m_validationByDoubleClick {true};
+    bool m_validation_by_double_click {true};
 };
 
 //------------------------------------------------------------------------------
 
-bool shape_extruder::Triangle2D::operator<(const Triangle2D& _second) const
+bool shape_extruder::triangle2_d::operator<(const triangle2_d& _second) const
 {
     return id < _second.id;
 }
 
 //------------------------------------------------------------------------------
 
-shape_extruder::Triangle3D::Triangle3D(
+shape_extruder::triangle3_d::triangle3_d(
     const Ogre::Vector3& _a,
     const Ogre::Vector3& _b,
     const Ogre::Vector3& _c
@@ -408,7 +408,7 @@ shape_extruder::Triangle3D::Triangle3D(
 
 //------------------------------------------------------------------------------
 
-shape_extruder::Edge::Edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b) :
+shape_extruder::edge::edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b) :
     a(_a),
     b(_b)
 {
@@ -416,7 +416,7 @@ shape_extruder::Edge::Edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b) :
 
 //------------------------------------------------------------------------------
 
-bool shape_extruder::Edge::operator==(const Edge& _edge) const
+bool shape_extruder::edge::operator==(const edge& _edge) const
 {
     return (a == _edge.a && b == _edge.b) || (a == _edge.b && b == _edge.a);
 }

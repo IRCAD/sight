@@ -44,25 +44,25 @@ namespace sight::io::dicom::writer::iod
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::SpatialFiducialsIOD(
-    const SPTR(io::dicom::container::DicomInstance)& _instance,
+spatial_fiducials_iod::spatial_fiducials_iod(
+    const SPTR(io::dicom::container::dicom_instance)& _instance,
     const std::filesystem::path& _destination_path,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::writer::iod::InformationObjectDefinition(_instance, _destination_path, _logger, _progress, _cancel)
+    io::dicom::writer::iod::information_object_definition(_instance, _destination_path, _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::~SpatialFiducialsIOD()
+spatial_fiducials_iod::~spatial_fiducials_iod()
 = default;
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::write(const data::series::csptr& _series)
+void spatial_fiducials_iod::write(const data::series::csptr& _series)
 {
     // Retrieve image series
     data::image_series::csptr image_series = std::dynamic_pointer_cast<const data::image_series>(_series);
@@ -75,41 +75,41 @@ void SpatialFiducialsIOD::write(const data::series::csptr& _series)
     SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patient_ie(writer, m_instance, _series);
-    io::dicom::writer::ie::Study study_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::patient patient_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::study study_ie(writer, m_instance, _series);
     io::dicom::writer::ie::series series_ie(writer, m_instance, _series);
-    io::dicom::writer::ie::Equipment equipment_ie(writer, m_instance, _series);
-    io::dicom::writer::ie::SpatialFiducials spatial_fiducials_ie(writer, m_instance, image_series);
+    io::dicom::writer::ie::equipment equipment_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::spatial_fiducials spatial_fiducials_ie(writer, m_instance, image_series);
 
     // Write Patient Module - PS 3.3 C.7.1.1
-    patient_ie.writePatientModule();
+    patient_ie.write_patient_module();
 
     // Write General Study Module - PS 3.3 C.7.2.1
-    study_ie.writeGeneralStudyModule();
+    study_ie.write_general_study_module();
 
     // Write Patient Study Module - PS 3.3 C.7.2.2
-    study_ie.writePatientStudyModule();
+    study_ie.write_patient_study_module();
 
     // Write General Series Module - PS 3.3 C.7.3.1
-    series_ie.writeGeneralSeriesModule();
+    series_ie.write_general_series_module();
 
     // Write General Series Module - PS 3.3 C.21.1
-    series_ie.writeSpatialFiducialsSeriesModule();
+    series_ie.write_spatial_fiducials_series_module();
 
     // Write General Equipment Module - PS 3.3 C.7.5.1
-    equipment_ie.writeGeneralEquipmentModule();
+    equipment_ie.write_general_equipment_module();
 
     // Write Spatial Fiducials Module - PS 3.3 C.21.2
-    spatial_fiducials_ie.writeSpatialFiducialsModule();
+    spatial_fiducials_ie.write_spatial_fiducials_module();
 
     // Write Common Instance Reference Module - PS 3.3 C.12.2
-    spatial_fiducials_ie.writeCommonInstanceReferenceModule();
+    spatial_fiducials_ie.write_common_instance_reference_module();
 
     // Write SOP Common Module - PS 3.3 C.12.1
-    spatial_fiducials_ie.writeSOPCommonModule();
+    spatial_fiducials_ie.write_sop_common_module();
 
     // Write document
-    io::dicom::helper::FileWriter::write(m_destinationPath, writer);
+    io::dicom::helper::file_writer::write(m_destination_path, writer);
 }
 
 //------------------------------------------------------------------------------

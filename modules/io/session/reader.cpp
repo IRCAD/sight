@@ -31,8 +31,8 @@
 #include <core/location/single_folder.hpp>
 #include <core/tools/system.hpp>
 
-#include <io/session/SessionReader.hpp>
-#include <io/zip/exception/Read.hpp>
+#include <io/session/session_reader.hpp>
+#include <io/zip/exception/read.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/input.hpp>
@@ -44,7 +44,7 @@ namespace sight::module::io::session
 
 using core::crypto::password_keeper;
 using core::crypto::secure_string;
-using sight::io::zip::Archive;
+using sight::io::zip::archive;
 
 /// Private reader implementation
 class reader::ReaderImpl
@@ -59,8 +59,8 @@ public:
 
     /// Constructor
     inline explicit ReaderImpl(reader* const _reader) noexcept :
-        M_READER(_reader),
-        m_job_created_signal(_reader->new_signal<signals::JobCreatedSignal>("jobCreated"))
+        m_reader(_reader),
+        m_job_created_signal(_reader->new_signal<signals::job_created_signal_t>("jobCreated"))
     {
     }
 
@@ -68,7 +68,7 @@ public:
     inline ~ReaderImpl() noexcept = default;
 
     /// Pointer to the public interface
-    reader* const M_READER;
+    reader* const m_reader;
 
     /// Extension name to use for session file
     std::string m_extension_name {".zip"};
@@ -77,19 +77,19 @@ public:
     std::string m_extension_description {"Sight session"};
 
     /// Dialog policy to use for the file location
-    DialogPolicy m_dialog_policy = {DialogPolicy::NEVER};
+    dialog_policy m_dialog_policy = {dialog_policy::never};
 
     /// Password policy to use
-    password_keeper::password_policy m_password_policy {password_keeper::password_policy::NEVER};
+    password_keeper::password_policy m_password_policy {password_keeper::password_policy::never};
 
     /// Encryption policy to use
-    password_keeper::encryption_policy m_encryption_policy {password_keeper::encryption_policy::PASSWORD};
+    password_keeper::encryption_policy m_encryption_policy {password_keeper::encryption_policy::password};
 
     /// Archive format to use
-    Archive::ArchiveFormat m_archive_format {Archive::ArchiveFormat::DEFAULT};
+    archive::archive_format m_archive_format {archive::archive_format::DEFAULT};
 
     /// Signal emitted when job created.
-    signals::JobCreatedSignal::sptr m_job_created_signal;
+    signals::job_created_signal_t::sptr m_job_created_signal;
 
     /// Used in case of bad password
     int m_password_retry {0};
@@ -98,8 +98,8 @@ public:
 reader::reader() noexcept :
     m_pimpl(std::make_unique<ReaderImpl>(this))
 {
-    new_signal<signals::SessionPathSignal>(signals::SESSION_LOADED);
-    new_signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED);
+    new_signal<signals::session_path_t>(signals::SESSION_LOADED);
+    new_signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED);
 }
 
 // Defining the destructor here, allows us to use PImpl with a unique_ptr
@@ -116,9 +116,9 @@ void reader::starting()
 void reader::stopping()
 {
     m_pimpl->m_password_retry = 0;
-    if(m_pimpl->m_dialog_policy != DialogPolicy::NEVER)
+    if(m_pimpl->m_dialog_policy != dialog_policy::never)
     {
-        clearLocations();
+        clear_locations();
     }
 }
 
@@ -136,11 +136,11 @@ void reader::configuring()
     {
         m_pimpl->m_extension_name        = dialog->get<std::string>("extension");
         m_pimpl->m_extension_description = dialog->get<std::string>("description");
-        m_pimpl->m_dialog_policy         = stringToDialogPolicy(dialog->get<std::string>("policy", "default"));
+        m_pimpl->m_dialog_policy         = string_to_dialog_policy(dialog->get<std::string>("policy", "default"));
 
         SIGHT_THROW_IF(
             "Cannot read dialog policy.",
-            m_pimpl->m_dialog_policy == DialogPolicy::INVALID
+            m_pimpl->m_dialog_policy == dialog_policy::invalid
         );
     }
 
@@ -155,7 +155,7 @@ void reader::configuring()
 
         SIGHT_THROW_IF(
             "Cannot read password policy.",
-            m_pimpl->m_password_policy == password_keeper::password_policy::INVALID
+            m_pimpl->m_password_policy == password_keeper::password_policy::invalid
         );
 
         // Encryption policy
@@ -165,7 +165,7 @@ void reader::configuring()
 
         SIGHT_THROW_IF(
             "Cannot read encryption policy.",
-            m_pimpl->m_encryption_policy == password_keeper::encryption_policy::INVALID
+            m_pimpl->m_encryption_policy == password_keeper::encryption_policy::invalid
         );
     }
 
@@ -173,16 +173,16 @@ void reader::configuring()
     const auto& archive = tree.get_child_optional("archive.<xmlattr>");
     if(archive.is_initialized())
     {
-        const auto& format                          = archive->get<std::string>("format", "default");
-        const Archive::ArchiveFormat archive_format = Archive::stringToArchiveFormat(format);
+        const auto& format                           = archive->get<std::string>("format", "default");
+        const archive::archive_format archive_format = archive::string_to_archive_format(format);
 
-        if(archive_format != Archive::ArchiveFormat::INVALID)
+        if(archive_format != archive::archive_format::invalid)
         {
             m_pimpl->m_archive_format = archive_format;
         }
         else if(format == "archive")
         {
-            m_pimpl->m_archive_format = Archive::ArchiveFormat::DEFAULT;
+            m_pimpl->m_archive_format = archive::archive_format::DEFAULT;
         }
         else
         {
@@ -196,17 +196,17 @@ void reader::configuring()
 void reader::updating()
 {
     // Set to failed until successful
-    m_readFailed = true;
+    m_read_failed = true;
 
     // Show the save dialog if the path is empty
-    if((!hasLocationDefined() && m_pimpl->m_dialog_policy != DialogPolicy::NEVER)
-       || (m_pimpl->m_dialog_policy == DialogPolicy::ALWAYS && m_pimpl->m_password_retry == 0))
+    if((!has_location_defined() && m_pimpl->m_dialog_policy != dialog_policy::never)
+       || (m_pimpl->m_dialog_policy == dialog_policy::always && m_pimpl->m_password_retry == 0))
     {
-        openLocationDialog();
+        open_location_dialog();
     }
 
     // If the user did not choose a file, we stop here
-    if(!hasLocationDefined())
+    if(!has_location_defined())
     {
         return;
     }
@@ -218,7 +218,7 @@ void reader::updating()
     const secure_string& password =
         [&]
         {
-            if(m_pimpl->m_password_policy == password_keeper::password_policy::NEVER)
+            if(m_pimpl->m_password_policy == password_keeper::password_policy::never)
             {
                 // No password management
                 return secure_string();
@@ -227,16 +227,16 @@ void reader::updating()
             const secure_string& global_password = password_keeper::get_global_password();
 
             if(m_pimpl->m_password_retry > 0
-               || (m_pimpl->m_password_policy == password_keeper::password_policy::ALWAYS)
-               || (m_pimpl->m_password_policy == password_keeper::password_policy::GLOBAL
+               || (m_pimpl->m_password_policy == password_keeper::password_policy::always)
+               || (m_pimpl->m_password_policy == password_keeper::password_policy::global
                    && global_password.empty()))
             {
                 const auto& [newPassword, ok] =
-                    sight::ui::dialog::input::showInputDialog(
+                    sight::ui::dialog::input::show_input_dialog(
                         "Enter Password",
                         "Password:",
                         global_password.c_str(), // NOLINT(readability-redundant-string-cstr)
-                        sight::ui::dialog::input::EchoMode::PASSWORD
+                        sight::ui::dialog::input::echo_mode::password
                     );
 
                 return secure_string(newPassword);
@@ -252,20 +252,20 @@ void reader::updating()
             _running_job.done_work(10);
 
             // Create the session reader
-            auto reader = std::make_shared<sight::io::session::SessionReader>();
+            auto reader = std::make_shared<sight::io::session::session_reader>();
             reader->set_file(filepath);
-            reader->setPassword(password);
-            reader->setEncryptionPolicy(m_pimpl->m_encryption_policy);
-            reader->setArchiveFormat(m_pimpl->m_archive_format);
+            reader->set_password(password);
+            reader->set_encryption_policy(m_pimpl->m_encryption_policy);
+            reader->set_archive_format(m_pimpl->m_archive_format);
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::BusyCursor busy_cursor;
+            const sight::ui::busy_cursor busy_cursor;
 
             // Read the file
             reader->read();
 
             // Set output
-            auto new_data = std::dynamic_pointer_cast<data::object>(reader->getObject());
+            auto new_data = std::dynamic_pointer_cast<data::object>(reader->get_object());
             SIGHT_THROW_IF("Invalid session", !new_data);
 
             auto data = m_data.lock();
@@ -291,25 +291,25 @@ void reader::updating()
     try
     {
         jobs->run().get();
-        m_readFailed              = false;
+        m_read_failed             = false;
         m_pimpl->m_password_retry = 0;
 
         // Signal that we successfully read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADED)->async_emit(filepath);
+        this->signal<signals::session_path_t>(signals::SESSION_LOADED)->async_emit(filepath);
     }
-    catch(sight::io::zip::exception::BadPassword&)
+    catch(sight::io::zip::exception::bad_password&)
     {
         // Ask if the user want to retry.
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Wrong password");
-        message_box.setMessage(
+        message_box.set_title("Wrong password");
+        message_box.set_message(
             "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
         );
-        message_box.setIcon(ui::dialog::message::QUESTION);
-        message_box.addButton(ui::dialog::message::RETRY);
-        message_box.addButton(ui::dialog::message::CANCEL);
+        message_box.set_icon(ui::dialog::message::question);
+        message_box.add_button(ui::dialog::message::retry);
+        message_box.add_button(ui::dialog::message::cancel);
 
-        if(message_box.show() == sight::ui::dialog::message::RETRY)
+        if(message_box.show() == sight::ui::dialog::message::retry)
         {
             m_pimpl->m_password_retry++;
             updating();
@@ -320,7 +320,7 @@ void reader::updating()
         }
 
         // Signal that we failed to read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
     }
     catch(const std::exception& e)
     {
@@ -329,11 +329,11 @@ void reader::updating()
         sight::ui::dialog::message::show(
             "Session reader failed",
             e.what(),
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
 
         // Signal that we failed to read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
     }
     catch(...)
     {
@@ -341,37 +341,37 @@ void reader::updating()
         sight::ui::dialog::message::show(
             "Session reader aborted",
             "Reading process aborted",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
 
         // Signal that we failed to read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void reader::openLocationDialog()
+void reader::open_location_dialog()
 {
     static auto default_location = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location location_dialog;
 
     // Set window title
-    if(!m_windowTitle.empty())
+    if(!m_window_title.empty())
     {
-        location_dialog.setTitle(m_windowTitle);
+        location_dialog.set_title(m_window_title);
     }
     else
     {
-        location_dialog.setTitle("Enter file name");
+        location_dialog.set_title("Enter file name");
     }
 
-    location_dialog.setDefaultLocation(default_location);
-    location_dialog.setOption(ui::dialog::location::READ);
-    location_dialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
-    location_dialog.setType(ui::dialog::location::SINGLE_FILE);
-    location_dialog.addFilter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
+    location_dialog.set_default_location(default_location);
+    location_dialog.set_option(ui::dialog::location::read);
+    location_dialog.set_option(ui::dialog::location::file_must_exist);
+    location_dialog.set_type(ui::dialog::location::single_file);
+    location_dialog.add_filter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
 
     // Show the dialog
     const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
@@ -380,15 +380,15 @@ void reader::openLocationDialog()
     {
         const auto& filepath = result->get_file();
         set_file(filepath);
-        m_pimpl->m_extension_name = location_dialog.getSelectedExtensions().front();
+        m_pimpl->m_extension_name = location_dialog.get_selected_extensions().front();
 
         // Save default location for later use
         default_location->set_folder(filepath.parent_path());
-        location_dialog.saveDefaultLocation(default_location);
+        location_dialog.save_default_location(default_location);
     }
     else
     {
-        clearLocations();
+        clear_locations();
     }
 }
 

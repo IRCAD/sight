@@ -51,25 +51,25 @@ class spy_logger
 {
 public:
 
-    enum level_type
+    enum level_t
     {
-        SL_TRACE,
-        SL_DEBUG,
-        SL_INFO,
-        SL_WARN,
-        SL_ERROR,
-        SL_FATAL
+        sl_trace,
+        sl_debug,
+        sl_info,
+        sl_warn,
+        sl_error,
+        sl_fatal
     };
 
     /// Adds a console sink to the logger from the given output stream.
     /// @param os The output stream to use.
     /// @param level The minimum level to log.
-    static CORE_API void add_console_log(std::ostream& _os = std::clog, level_type _level = SL_TRACE);
+    static CORE_API void add_console_log(std::ostream& _os = std::clog, level_t _level = sl_trace);
 
     /// Adds a file sink to the logger.
     /// @param path The path to the log file.
     /// @param level The minimum level to log.
-    static CORE_API void add_file_log(const std::filesystem::path& _log_file = LOG_FILE, level_type _level = SL_TRACE);
+    static CORE_API void add_file_log(const std::filesystem::path& _log_file = LOG_FILE, level_t _level = sl_trace);
 
     /// Adds an encrypted file sink to the logger. It will start a separated detached child process that will perform
     /// the encryption. The real file name will have an extension suffix with an index counter which will be incremented
@@ -81,7 +81,7 @@ public:
     /// @param ask_password If true, the password will be asked to the user.
     CORE_API void start_encrypted_logger(
         const std::filesystem::path& _log_archive    = ENCRYPTED_LOG_FILE,
-        level_type _level                            = SL_TRACE,
+        level_t _level                               = sl_trace,
         const core::crypto::secure_string& _password = "",
         bool _ask_password                           = false
     );
@@ -92,7 +92,7 @@ public:
     /// @param level The minimum level to log.
     CORE_API void start_logger(
         const std::filesystem::path& _log_archive = LOG_FILE,
-        level_type _level                         = SL_TRACE
+        level_t _level                            = sl_trace
     );
 
     /// Close the current logger.

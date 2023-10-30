@@ -26,49 +26,49 @@
 
 #include <data/dicom_series.hpp>
 
-#include <filter/dicom/splitter/TagValueSplitter.hpp>
+#include <filter/dicom/splitter/tag_value_splitter.hpp>
 
 namespace sight::ui::dicom::splitter
 {
 
 /**
- * @brief Filter that uses a tag to split the instances.
+ * @brief filter that uses a tag to split the instances.
  */
-class UI_DICOM_CLASS_API TagValueConfigurableSplitter : public sight::filter::dicom::splitter::TagValueSplitter
+class UI_DICOM_CLASS_API tag_value_configurable_splitter : public sight::filter::dicom::splitter::tag_value_splitter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        TagValueConfigurableSplitter,
-        sight::filter::dicom::splitter::TagValueSplitter,
-        sight::filter::dicom::factory::make<TagValueConfigurableSplitter>
+        tag_value_configurable_splitter,
+        sight::filter::dicom::splitter::tag_value_splitter,
+        sight::filter::dicom::factory::make<tag_value_configurable_splitter>
     );
 
     /// Destructor
-    UI_DICOM_API ~TagValueConfigurableSplitter() override = default;
+    UI_DICOM_API ~tag_value_configurable_splitter() override = default;
 
     /// Return the name of the filter
-    UI_DICOM_API std::string getName() const override;
+    UI_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    UI_DICOM_API std::string getDescription() const override;
+    UI_DICOM_API std::string get_description() const override;
 
     /// Return true if a configuration is required
-    UI_DICOM_API bool isConfigurationRequired() const override;
+    UI_DICOM_API bool is_configuration_required() const override;
 
     /// Return true if the filter is configurable using GUI
-    UI_DICOM_API bool isConfigurableWithGUI() const override;
+    UI_DICOM_API bool is_configurable_with_gui() const override;
 
     /// Configure the filter using GUI dialog
-    UI_DICOM_API void configureWithGUI() override;
+    UI_DICOM_API void configure_with_gui() override;
 
 protected:
 
-    /// Filter name
-    UI_DICOM_API static const std::string s_FILTER_NAME;
+    /// filter name
+    UI_DICOM_API static const std::string FILTER_NAME;
 
-    /// Filter description
-    UI_DICOM_API static const std::string s_FILTER_DESCRIPTION;
+    /// filter description
+    UI_DICOM_API static const std::string FILTER_DESCRIPTION;
 };
 
 } // namespace sight::ui::dicom::splitter

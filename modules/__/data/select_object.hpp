@@ -97,7 +97,7 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::object, sight::data::Access::out> m_object {this, "object"};
+    sight::data::ptr<sight::data::object, sight::data::access::out> m_object {this, "object"};
 };
 
 } // namespace sight::module::data

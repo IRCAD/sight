@@ -39,11 +39,11 @@ namespace sight::geometry::data
 //-----------------------------------------------------------------------------
 
 bool intersect_triangle(
-    fwVec3d _orig,
-    fwVec3d _dir,
-    fwVec3d _vert0,
-    fwVec3d _vert1,
-    fwVec3d _vert2,
+    fw_vec3d _orig,
+    fw_vec3d _dir,
+    fw_vec3d _vert0,
+    fw_vec3d _vert1,
+    fw_vec3d _vert2,
     double& _t,
     double& _u,
     double& _v
@@ -51,11 +51,11 @@ bool intersect_triangle(
 {
     const double epsilon = 0.000001;
 
-    fwVec3d edge1;
-    fwVec3d edge2;
-    fwVec3d tvec;
-    fwVec3d pvec;
-    fwVec3d qvec;
+    fw_vec3d edge1;
+    fw_vec3d edge2;
+    fw_vec3d tvec;
+    fw_vec3d pvec;
+    fw_vec3d qvec;
 
     /* find vectors for two edges sharing vert0 */
     edge1 = _vert1 - _vert0;
@@ -101,7 +101,7 @@ bool intersect_triangle(
 
 //------------------------------------------------------------------------------
 
-bool is_inclosed_volume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertex_index, const fwVec3d& _p)
+bool is_inclosed_volume(const fw_vertex_position& _vertex, const fw_vertex_index& _vertex_index, const fw_vec3d& _p)
 {
     const unsigned int x          = 0;
     const unsigned int y          = 1;
@@ -117,15 +117,15 @@ bool is_inclosed_volume(const fwVertexPosition& _vertex, const fwVertexIndex& _v
     for(std::size_t i = 0 ; i < element_nbr ; ++i)
     {
         // get triangle vertices.
-        const fwVec3d p1 =
+        const fw_vec3d p1 =
         {_vertex[std::size_t(_vertex_index[i][0])][0], _vertex[std::size_t(_vertex_index[i][0])][1],
          _vertex[std::size_t(_vertex_index[i][0])][2]
         };
-        const fwVec3d p2 =
+        const fw_vec3d p2 =
         {_vertex[std::size_t(_vertex_index[i][1])][0], _vertex[std::size_t(_vertex_index[i][1])][1],
          _vertex[std::size_t(_vertex_index[i][1])][2]
         };
-        const fwVec3d p3 =
+        const fw_vec3d p3 =
         {_vertex[std::size_t(_vertex_index[i][2])][0], _vertex[std::size_t(_vertex_index[i][2])][1],
          _vertex[std::size_t(_vertex_index[i][2])][2]
         };
@@ -158,15 +158,15 @@ bool is_inclosed_volume(const fwVertexPosition& _vertex, const fwVertexIndex& _v
 
             if(!stop)
             {
-                fwVec3d orig = {_p[0], _p[1], _p[2]};
+                fw_vec3d orig = {_p[0], _p[1], _p[2]};
 
-                fwVec3d dir   = {0.F, 0.F, 1.F};
-                fwVec3d vert0 = {p1[0], p1[1], p1[2]};
-                fwVec3d vert1 = {p2[0], p2[1], p2[2]};
-                fwVec3d vert2 = {p3[0], p3[1], p3[2]};
-                double t      = NAN;
-                double u      = NAN;
-                double v      = NAN;
+                fw_vec3d dir   = {0.F, 0.F, 1.F};
+                fw_vec3d vert0 = {p1[0], p1[1], p1[2]};
+                fw_vec3d vert1 = {p2[0], p2[1], p2[2]};
+                fw_vec3d vert2 = {p3[0], p3[1], p3[2]};
+                double t       = NAN;
+                double u       = NAN;
+                double v       = NAN;
                 if(intersect_triangle(orig, dir, vert0, vert1, vert2, t, u, v))
                 {
                     // We only keep points below _p (following Oz axis).
@@ -184,14 +184,14 @@ bool is_inclosed_volume(const fwVertexPosition& _vertex, const fwVertexIndex& _v
 
 //-----------------------------------------------------------------------------
 
-bool is_borderless_surface(const fwVertexIndex& _vertex_index)
+bool is_borderless_surface(const fw_vertex_index& _vertex_index)
 {
-    using Edge          = std::pair<int, int>; // always Edge.first < Edge.second !!
-    using EdgeHistogram = boost::unordered_map<Edge, int>;
-    EdgeHistogram edges_histogram;
+    using edge           = std::pair<int, int>; // always edge_t.first < edge_t.second !!
+    using edge_histogram = boost::unordered_map<edge, int>;
+    edge_histogram edges_histogram;
     bool is_borderless = true;
 
-    for(const fwVertexIndex::value_type& vertex : _vertex_index)
+    for(const auto& vertex : _vertex_index)
     {
         SIGHT_ASSERT("Invalid vertex size: " << vertex.size(), vertex.size() > 2);
         ++edges_histogram[std::make_pair(std::min(vertex[0], vertex[1]), std::max(vertex[0], vertex[1]))];
@@ -199,7 +199,7 @@ bool is_borderless_surface(const fwVertexIndex& _vertex_index)
         ++edges_histogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]))];
     }
 
-    for(const EdgeHistogram::value_type& h : edges_histogram)
+    for(const auto& h : edges_histogram)
     {
         if(h.second < 2)
         {
@@ -215,15 +215,15 @@ bool is_borderless_surface(const fwVertexIndex& _vertex_index)
 
 // container of connected component
 void find_border_edges(
-    const fwVertexIndex& _vertex_index,
+    const fw_vertex_index& _vertex_index,
     std::vector<std::vector<std::pair<std::size_t, std::size_t> > >& _contours
 )
 {
-    using Edge    = std::pair<std::size_t, std::size_t>;
-    using Contour = std::vector<Edge>; // at Border
+    using edge_t    = std::pair<std::size_t, std::size_t>;
+    using contour_t = std::vector<edge_t>; // at Border
 
-    std::map<Edge, int> edges_histogram;
-    for(fwVertexIndex::value_type vertex : _vertex_index)
+    std::map<edge_t, int> edges_histogram;
+    for(fw_vertex_index::value_type vertex : _vertex_index)
     {
         assert(vertex.size() > 2);
         int i1 = vertex[0];
@@ -234,27 +234,27 @@ void find_border_edges(
         edges_histogram[std::make_pair(std::min(i3, i2), std::max(i3, i2))]++;
     }
 
-    for(const std::map<Edge, int>::value_type& elt1 : edges_histogram)
+    for(const auto& elt1 : edges_histogram)
     {
         if(elt1.second < 2) // an orphan found
         {
-            Contour contour;
+            contour_t contour;
             contour.reserve(1000);
-            std::list<Edge> fifo;
-            Edge orphan = elt1.first;
+            std::list<edge_t> fifo;
+            edge_t orphan = elt1.first;
 
             fifo.push_back(orphan);
             while(!fifo.empty())
             {
-                Edge current = fifo.front();
+                edge_t current = fifo.front();
                 contour.push_back(current);
                 fifo.pop_front();
                 edges_histogram[current] = 2; // to mark it processed;
 
                 // search neighbor at border and insert in fifo
-                for(const std::map<Edge, int>::value_type& elt2 : edges_histogram)
+                for(const auto& elt2 : edges_histogram)
                 {
-                    Edge candidate = elt2.first;
+                    edge_t candidate = elt2.first;
                     if(elt2.second < 2) // at border
                     {
                         if(candidate.first == current.first || candidate.second == current.second // neighbor
@@ -275,23 +275,23 @@ void find_border_edges(
 
 //-----------------------------------------------------------------------------
 
-bool close_surface(fwVertexPosition& _vertex, fwVertexIndex& _vertex_index)
+bool close_surface(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index)
 {
-    using Edge     = std::pair<std::size_t, std::size_t>;
-    using Contour  = std::vector<Edge>; // at Border
-    using Contours = std::vector<Contour>;
+    using edge_t     = std::pair<std::size_t, std::size_t>;
+    using contour_t  = std::vector<edge_t>; // at Border
+    using contours_t = std::vector<contour_t>;
 
-    Contours contours;
+    contours_t contours;
     find_border_edges(_vertex_index, contours);
     bool closure_performed = !contours.empty();
     // close each hole
-    for(const Contours::value_type& contour : contours)
+    for(const auto& contour : contours)
     {
         std::size_t new_vertex_index = _vertex.size();
         // create gravity point & insert new triangle
         std::vector<float> mass_center(3, 0);
 
-        for(const Contour::value_type& edge : contour)
+        for(const auto& edge : contour)
         {
             for(std::size_t i = 0 ; i < 3 ; ++i)
             {
@@ -320,14 +320,14 @@ bool close_surface(fwVertexPosition& _vertex, fwVertexIndex& _vertex_index)
 
 //-----------------------------------------------------------------------------
 
-bool remove_orphan_vertices(fwVertexPosition& _vertex, fwVertexIndex& _vertex_index)
+bool remove_orphan_vertices(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index)
 {
-    fwVertexPosition new_vertex;
+    fw_vertex_position new_vertex;
     new_vertex.reserve(_vertex.size());
 
     std::set<int> index_point_to_keep;
 
-    for(const fwVertexIndex::value_type& vertex : _vertex_index)
+    for(const auto& vertex : _vertex_index)
     {
         index_point_to_keep.insert(vertex[0]);
         index_point_to_keep.insert(vertex[1]);
@@ -348,7 +348,7 @@ bool remove_orphan_vertices(fwVertexPosition& _vertex, fwVertexIndex& _vertex_in
             new_vertex.push_back(_vertex[std::size_t(index_pt)]);
         }
 
-        for(fwVertexIndex::value_type& vertex : _vertex_index)
+        for(fw_vertex_index::value_type& vertex : _vertex_index)
         {
             vertex[0] = translate[vertex[0]];
             vertex[1] = translate[vertex[1]];

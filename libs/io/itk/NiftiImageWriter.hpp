@@ -33,20 +33,20 @@
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API NiftiImageWriter : public writer::generic_object_writer<data::image>,
-                                          public core::location::single_file,
-                                          public core::tools::progress_adviser
+class IO_ITK_CLASS_API nifti_image_writer : public writer::generic_object_writer<data::image>,
+                                            public core::location::single_file,
+                                            public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        NiftiImageWriter,
+        nifti_image_writer,
         io::writer::generic_object_writer<data::image>,
-        io::writer::factory::make<NiftiImageWriter>
+        io::writer::factory::make<nifti_image_writer>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API ~NiftiImageWriter() override = default;
+    IO_ITK_API ~nifti_image_writer() override = default;
 
     IO_ITK_API void write() override;
 

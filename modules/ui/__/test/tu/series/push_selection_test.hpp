@@ -31,7 +31,7 @@ namespace sight::module::ui::series::ut
 class push_selection_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(push_selection_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    service::base::sptr m_pushSelection;
+    service::base::sptr m_push_selection;
 };
 
 } // namespace sight::module::ui::series::ut

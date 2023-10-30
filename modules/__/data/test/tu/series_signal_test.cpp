@@ -39,7 +39,7 @@ namespace sight::module::data::ut
 
 void series_signal_test::setUp()
 {
-    m_seriesSignal = service::add("sight::module::data::series_signal");
+    m_series_signal = service::add("sight::module::data::series_signal");
 }
 
 //------------------------------------------------------------------------------
@@ -47,16 +47,16 @@ void series_signal_test::setUp()
 void series_signal_test::tearDown()
 {
     m_worker->stop();
-    CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->stop().get());
-    service::remove(m_seriesSignal);
+    CPPUNIT_ASSERT_NO_THROW(m_series_signal->stop().get());
+    service::remove(m_series_signal);
 }
 
 //------------------------------------------------------------------------------
 
-void series_signal_test::basicTest()
+void series_signal_test::basic_test()
 {
     auto series_set = std::make_shared<sight::data::series_set>();
-    m_seriesSignal->set_input(series_set, "seriesSet");
+    m_series_signal->set_input(series_set, "seriesSet");
     std::vector<sight::data::series::sptr> series_list;
     auto series_added_slot = core::com::new_slot(
         [&](sight::data::series::sptr _series)
@@ -65,10 +65,10 @@ void series_signal_test::basicTest()
         });
     m_worker = core::thread::worker::make();
     series_added_slot->set_worker(m_worker);
-    m_seriesSignal->signal("seriesAdded")->connect(series_added_slot);
-    series_set->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
-    CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->start().get());
+    m_series_signal->signal("seriesAdded")->connect(series_added_slot);
+    series_set->signal("addedObjects")->connect(m_series_signal->slot("reportSeries"));
+    CPPUNIT_ASSERT_NO_THROW(m_series_signal->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_series_signal->start().get());
 
     auto series = std::make_shared<sight::data::series>();
     {
@@ -83,10 +83,10 @@ void series_signal_test::basicTest()
 
 //------------------------------------------------------------------------------
 
-void series_signal_test::includeTest()
+void series_signal_test::include_test()
 {
     auto series_set = std::make_shared<sight::data::series_set>();
-    m_seriesSignal->set_input(series_set, "seriesSet");
+    m_series_signal->set_input(series_set, "seriesSet");
     std::vector<sight::data::series::sptr> series_list;
     auto series_added_slot = core::com::new_slot(
         [&](sight::data::series::sptr _series)
@@ -95,14 +95,14 @@ void series_signal_test::includeTest()
         });
     m_worker = core::thread::worker::make();
     series_added_slot->set_worker(m_worker);
-    m_seriesSignal->signal("seriesAdded")->connect(series_added_slot);
-    series_set->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
+    m_series_signal->signal("seriesAdded")->connect(series_added_slot);
+    series_set->signal("addedObjects")->connect(m_series_signal->slot("reportSeries"));
     boost::property_tree::ptree ptree;
     ptree.put("filter.mode", "include");
     ptree.put("filter.type", "sight::data::image_series");
-    m_seriesSignal->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->start().get());
+    m_series_signal->set_config(ptree);
+    CPPUNIT_ASSERT_NO_THROW(m_series_signal->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_series_signal->start().get());
 
     auto image_series = std::make_shared<sight::data::image_series>();
     auto model_series = std::make_shared<sight::data::model_series>();
@@ -118,10 +118,10 @@ void series_signal_test::includeTest()
 
 //------------------------------------------------------------------------------
 
-void series_signal_test::excludeTest()
+void series_signal_test::exclude_test()
 {
     auto series_set = std::make_shared<sight::data::series_set>();
-    m_seriesSignal->set_input(series_set, "seriesSet");
+    m_series_signal->set_input(series_set, "seriesSet");
     std::vector<sight::data::series::sptr> series_list;
     auto series_added_slot = core::com::new_slot(
         [&](sight::data::series::sptr _series)
@@ -130,14 +130,14 @@ void series_signal_test::excludeTest()
         });
     m_worker = core::thread::worker::make();
     series_added_slot->set_worker(m_worker);
-    m_seriesSignal->signal("seriesAdded")->connect(series_added_slot);
-    series_set->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
+    m_series_signal->signal("seriesAdded")->connect(series_added_slot);
+    series_set->signal("addedObjects")->connect(m_series_signal->slot("reportSeries"));
     boost::property_tree::ptree ptree;
     ptree.put("filter.mode", "exclude");
     ptree.put("filter.type", "sight::data::image_series");
-    m_seriesSignal->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->start().get());
+    m_series_signal->set_config(ptree);
+    CPPUNIT_ASSERT_NO_THROW(m_series_signal->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_series_signal->start().get());
 
     auto image_series = std::make_shared<sight::data::image_series>();
     auto model_series = std::make_shared<sight::data::model_series>();

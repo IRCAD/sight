@@ -26,7 +26,7 @@
 
 #include "viz/scene3d/utils.hpp"
 
-#include <utest/Filter.hpp>
+#include <utest/filter.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/window_manager.hpp>
@@ -82,7 +82,7 @@ void compare_point(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
 
 //------------------------------------------------------------------------------
 
-void camera_test::computeProjectionMatrix()
+void camera_test::compute_projection_matrix()
 {
     // Sorry for this incomprehensible test but this is better than 16 loops
     const double cx          = 988.898;
@@ -102,44 +102,44 @@ void camera_test::computeProjectionMatrix()
 
     // Original camera
     data::camera::sptr camera = std::make_shared<data::camera>();
-    camera->setCx(cx);
-    camera->setCy(cy);
-    camera->setFx(fx);
-    camera->setFy(fy);
-    camera->setWidth(width);
-    camera->setHeight(height);
+    camera->set_cx(cx);
+    camera->set_cy(cy);
+    camera->set_fx(fx);
+    camera->set_fy(fy);
+    camera->set_width(width);
+    camera->set_height(height);
 
     {
         // Function of the camera to set, followed by the new value in the expected matrix
-        using tupleType = std::tuple<std::function<void (const data::camera::sptr, double)>, double, unsigned int,
-                                     unsigned int, float>;
-        const std::vector<tupleType> permutation {
-            tupleType(&sight::data::camera::setCx, cx, 0, 2, -0.0295966863632202F),
-            tupleType(&sight::data::camera::setCy, cy, 1, 2, 0.0245949625968933F),
-            tupleType(&sight::data::camera::setFx, fx, 0, 0, 1.65686452388763F),
-            tupleType(&sight::data::camera::setFy, fy, 1, 1, 3.01612949371338F),
+        using tuple_type_t = std::tuple<std::function<void (const data::camera::sptr, double)>, double, unsigned int,
+                                        unsigned int, float>;
+        const std::vector<tuple_type_t> permutation {
+            tuple_type_t(&sight::data::camera::set_cx, cx, 0, 2, -0.0295966863632202F),
+            tuple_type_t(&sight::data::camera::set_cy, cy, 1, 2, 0.0245949625968933F),
+            tuple_type_t(&sight::data::camera::set_fx, fx, 0, 0, 1.65686452388763F),
+            tuple_type_t(&sight::data::camera::set_fy, fy, 1, 1, 3.01612949371338F),
 
-            tupleType(&sight::data::camera::setCx, 0., 0, 2, 1.00104212760925F),
-            tupleType(&sight::data::camera::setCy, 0., 1, 2, -1.00185346603394F),
-            tupleType(&sight::data::camera::setFx, 0., 0, 0, 0.F),
-            tupleType(&sight::data::camera::setFy, 0., 1, 1, 0.F),
+            tuple_type_t(&sight::data::camera::set_cx, 0., 0, 2, 1.00104212760925F),
+            tuple_type_t(&sight::data::camera::set_cy, 0., 1, 2, -1.00185346603394F),
+            tuple_type_t(&sight::data::camera::set_fx, 0., 0, 0, 0.F),
+            tuple_type_t(&sight::data::camera::set_fy, 0., 1, 1, 0.F),
 
-            tupleType(&sight::data::camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925F),
-            tupleType(&sight::data::camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394F),
-            tupleType(&sight::data::camera::setFx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41F),
-            tupleType(&sight::data::camera::setFy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41F),
+            tuple_type_t(&sight::data::camera::set_cx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925F),
+            tuple_type_t(&sight::data::camera::set_cy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394F),
+            tuple_type_t(&sight::data::camera::set_fx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41F),
+            tuple_type_t(&sight::data::camera::set_fy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41F),
 
-            tupleType(&sight::data::camera::setCx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35F),
-            tupleType(&sight::data::camera::setCy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35F),
-            tupleType(
-                &sight::data::camera::setFx,
+            tuple_type_t(&sight::data::camera::set_cx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35F),
+            tuple_type_t(&sight::data::camera::set_cy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35F),
+            tuple_type_t(
+                &sight::data::camera::set_fx,
                 std::numeric_limits<float>::max(),
                 0,
                 0,
                 std::numeric_limits<float>::infinity()
             ),
-            tupleType(
-                &sight::data::camera::setFy,
+            tuple_type_t(
+                &sight::data::camera::set_fy,
                 std::numeric_limits<float>::max(),
                 1,
                 1,
@@ -159,10 +159,10 @@ void camera_test::computeProjectionMatrix()
             expected[std::get<2>(tu)][std::get<3>(tu)] = std::get<4>(tu);
 
             Ogre::Matrix4 actual =
-                viz::scene3d::helper::camera::computeProjectionMatrix(
+                viz::scene3d::helper::camera::compute_projection_matrix(
                     *camera,
-                    static_cast<float>(camera->getWidth()),
-                    static_cast<float>(camera->getHeight()),
+                    static_cast<float>(camera->get_width()),
+                    static_cast<float>(camera->get_height()),
                     n,
                     f
                 );
@@ -172,24 +172,24 @@ void camera_test::computeProjectionMatrix()
 
     {
         // Function of the camera to set, followed by the new value in the expected matrix
-        using tupleType = std::tuple<std::function<void (const data::camera::sptr, std::size_t)>, std::size_t,
-                                     unsigned int, unsigned int, float>;
-        const std::vector<tupleType> permutation {
-            tupleType(&sight::data::camera::setWidth, width, 0, 2, -3.5464549820937e+35F),
-            tupleType(&sight::data::camera::setHeight, height, 1, 2, 6.30736510970334e+35F),
+        using tuple_type_t = std::tuple<std::function<void (const data::camera::sptr, std::size_t)>, std::size_t,
+                                        unsigned int, unsigned int, float>;
+        const std::vector<tuple_type_t> permutation {
+            tuple_type_t(&sight::data::camera::set_width, width, 0, 2, -3.5464549820937e+35F),
+            tuple_type_t(&sight::data::camera::set_height, height, 1, 2, 6.30736510970334e+35F),
 
-            tupleType(&sight::data::camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()),
-            tupleType(&sight::data::camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()),
+            tuple_type_t(&sight::data::camera::set_width, 1, 0, 2, -std::numeric_limits<float>::infinity()),
+            tuple_type_t(&sight::data::camera::set_height, 1, 1, 2, std::numeric_limits<float>::infinity()),
 
-            tupleType(
-                &sight::data::camera::setWidth,
+            tuple_type_t(
+                &sight::data::camera::set_width,
                 std::numeric_limits<std::size_t>::max(),
                 0,
                 2,
                 -3.68934859483958e+19F
             ),
-            tupleType(
-                &sight::data::camera::setHeight,
+            tuple_type_t(
+                &sight::data::camera::set_height,
                 std::numeric_limits<std::size_t>::max(),
                 1,
                 2,
@@ -209,10 +209,10 @@ void camera_test::computeProjectionMatrix()
             expected[std::get<2>(tu)][std::get<3>(tu)] = std::get<4>(tu);
 
             Ogre::Matrix4 actual =
-                viz::scene3d::helper::camera::computeProjectionMatrix(
+                viz::scene3d::helper::camera::compute_projection_matrix(
                     *camera,
-                    static_cast<float>(camera->getWidth()),
-                    static_cast<float>(camera->getHeight()),
+                    static_cast<float>(camera->get_width()),
+                    static_cast<float>(camera->get_height()),
                     n,
                     f
                 );
@@ -223,9 +223,9 @@ void camera_test::computeProjectionMatrix()
 
 //------------------------------------------------------------------------------
 
-void camera_test::convertPixelToWorldSpace()
+void camera_test::convert_pixel_to_world_space()
 {
-    auto* const root          = viz::scene3d::utils::getOgreRoot();
+    auto* const root          = viz::scene3d::utils::get_ogre_root();
     auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
 
     sight::viz::scene3d::window_manager::sptr mgr = sight::viz::scene3d::window_manager::get();
@@ -258,7 +258,7 @@ void camera_test::convertPixelToWorldSpace()
         // Unproject the projected point
         const Ogre::Vector3 point             = viewport_point * Ogre::Vector3(width, height, 1);
         const Ogre::Vector3 unprojected_point =
-            viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, point);
+            viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, point);
 
         compare_point(standard_point, unprojected_point);
     }
@@ -279,7 +279,7 @@ void camera_test::convertPixelToWorldSpace()
         // Unproject the projected point
         const Ogre::Vector3 point             = viewport_point * Ogre::Vector3(width, height, 1);
         const Ogre::Vector3 unprojected_point =
-            viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, point);
+            viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, point);
 
         compare_point(standard_point, unprojected_point);
     }
@@ -289,9 +289,9 @@ void camera_test::convertPixelToWorldSpace()
 
 //------------------------------------------------------------------------------
 
-void camera_test::convertWorldSpaceToScreenSpace()
+void camera_test::convert_world_space_to_screen_space()
 {
-    auto* const root          = viz::scene3d::utils::getOgreRoot();
+    auto* const root          = viz::scene3d::utils::get_ogre_root();
     auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
 
     sight::viz::scene3d::window_manager::sptr mgr = sight::viz::scene3d::window_manager::get();
@@ -314,7 +314,7 @@ void camera_test::convertWorldSpaceToScreenSpace()
     camera->setProjectionType(Ogre::ProjectionType::PT_PERSPECTIVE);
     {
         const Ogre::Vector3 standard_point(-4.F, 4.F, 3.F);
-        const Ogre::Vector2 projected_point = viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(
+        const Ogre::Vector2 projected_point = viz::scene3d::helper::camera::convert_world_space_to_screen_space(
             *camera,
             standard_point
         );
@@ -328,7 +328,7 @@ void camera_test::convertWorldSpaceToScreenSpace()
     camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     {
         const Ogre::Vector3 standard_point(-4.F, 87.F, 3.F);
-        const Ogre::Vector2 projected_point = viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(
+        const Ogre::Vector2 projected_point = viz::scene3d::helper::camera::convert_world_space_to_screen_space(
             *camera,
             standard_point
         );

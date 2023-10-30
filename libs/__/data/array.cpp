@@ -60,13 +60,13 @@ inline static std::size_t compute_size(
 
 //------------------------------------------------------------------------------
 
-data::array::offset_t array::computeStrides(size_t _size, std::size_t _size_of_type)
+data::array::offset_t array::compute_strides(size_t _size, std::size_t _size_of_type)
 {
     data::array::offset_t strides;
     strides.reserve(_size.size());
 
     std::size_t current_stride = _size_of_type;
-    for(const size_t::value_type& s : _size)
+    for(const auto& s : _size)
     {
         strides.push_back(current_stride);
         current_stride *= s;
@@ -78,7 +78,7 @@ data::array::offset_t array::computeStrides(size_t _size, std::size_t _size_of_t
 //------------------------------------------------------------------------------
 
 array::array() :
-    m_bufferObject(std::make_shared<core::memory::buffer_object>())
+    m_buffer_object(std::make_shared<core::memory::buffer_object>())
 {
 }
 
@@ -96,10 +96,10 @@ void array::swap(array::sptr _source) noexcept
     m_fields.swap(_source->m_fields);
     m_strides.swap(_source->m_strides);
     m_size.swap(_source->m_size);
-    m_bufferObject->swap(_source->m_bufferObject);
+    m_buffer_object->swap(_source->m_buffer_object);
 
     std::swap(m_type, _source->m_type);
-    std::swap(m_isBufferOwner, _source->m_isBufferOwner);
+    std::swap(m_is_buffer_owner, _source->m_is_buffer_owner);
 }
 
 //------------------------------------------------------------------------------
@@ -123,10 +123,10 @@ void array::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
         !bool(other)
     );
 
-    if(!other->m_bufferObject->is_empty())
+    if(!other->m_buffer_object->is_empty())
     {
         resize(other->m_size, other->m_type, true);
-        std::memcpy(m_bufferObject->buffer(), other->m_bufferObject->buffer(), other->getSizeInBytes());
+        std::memcpy(m_buffer_object->buffer(), other->m_buffer_object->buffer(), other->size_in_bytes());
     }
     else
     {
@@ -137,7 +137,7 @@ void array::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
         m_size    = other->m_size;
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -150,16 +150,16 @@ std::size_t array::resize(
 {
     const std::size_t buf_size = compute_size(_type.size(), _size);
 
-    if(_reallocate && buf_size != m_bufferObject->size())
+    if(_reallocate && buf_size != m_buffer_object->size())
     {
-        if(m_bufferObject->is_empty())
+        if(m_buffer_object->is_empty())
         {
-            m_isBufferOwner = true;
-            m_bufferObject->allocate(buf_size);
+            m_is_buffer_owner = true;
+            m_buffer_object->allocate(buf_size);
         }
-        else if(m_isBufferOwner)
+        else if(m_is_buffer_owner)
         {
-            m_bufferObject->reallocate(buf_size);
+            m_buffer_object->reallocate(buf_size);
         }
         else
         {
@@ -170,7 +170,7 @@ std::size_t array::resize(
         }
     }
 
-    m_strides = computeStrides(_size, _type.size());
+    m_strides = compute_strides(_size, _type.size());
     m_type    = _type;
     m_size    = _size;
 
@@ -188,11 +188,11 @@ std::size_t array::resize(const size_t& _size, bool _reallocate)
 
 void array::clear()
 {
-    if(!this->m_bufferObject->is_empty())
+    if(!this->m_buffer_object->is_empty())
     {
-        if(m_isBufferOwner)
+        if(m_is_buffer_owner)
         {
-            this->m_bufferObject->destroy();
+            this->m_buffer_object->destroy();
         }
 
         m_strides.clear();
@@ -210,21 +210,21 @@ bool array::empty() const
 
 //------------------------------------------------------------------------------
 
-std::size_t array::getElementSizeInBytes() const
+std::size_t array::element_size_in_bytes() const
 {
     return m_type.size();
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t array::numElements() const
+std::size_t array::num_elements() const
 {
     return compute_size(1, m_size);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t array::getSizeInBytes() const
+std::size_t array::size_in_bytes() const
 {
     return compute_size(m_type.size(), m_size);
 }
@@ -238,42 +238,42 @@ const data::array::size_t& array::size() const
 
 //------------------------------------------------------------------------------
 
-const data::array::offset_t& array::getStrides() const
+const data::array::offset_t& array::get_strides() const
 {
     return m_strides;
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t array::numDimensions() const
+std::size_t array::num_dimensions() const
 {
     return m_size.size();
 }
 
 //------------------------------------------------------------------------------
 
-void array::setIsBufferOwner(const bool _own)
+void array::set_is_buffer_owner(const bool _own)
 {
-    m_isBufferOwner = _own;
+    m_is_buffer_owner = _own;
 }
 
 //------------------------------------------------------------------------------
 
-bool array::getIsBufferOwner() const
+bool array::get_is_buffer_owner() const
 {
-    return m_isBufferOwner;
+    return m_is_buffer_owner;
 }
 
 //------------------------------------------------------------------------------
 
-core::type array::getType() const
+core::type array::type() const
 {
     return m_type;
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t array::getBufferOffset(const data::array::index_t& _id) const
+std::size_t array::get_buffer_offset(const data::array::index_t& _id) const
 {
     SIGHT_THROW_EXCEPTION_IF(
         data::exception(
@@ -307,9 +307,9 @@ void* array::buffer()
             "The buffer cannot be accessed if the array is not locked for dump "
             "(see lock())"
         ),
-        !m_bufferObject->is_locked()
+        !m_buffer_object->is_locked()
     );
-    return m_bufferObject->buffer();
+    return m_buffer_object->buffer();
 }
 
 //-----------------------------------------------------------------------------
@@ -318,35 +318,35 @@ const void* array::buffer() const
 {
     SIGHT_THROW_EXCEPTION_IF(
         data::exception("The buffer cannot be accessed if the array is not locked"),
-        !m_bufferObject->is_locked()
+        !m_buffer_object->is_locked()
     );
-    return m_bufferObject->buffer();
+    return m_buffer_object->buffer();
 }
 
 //------------------------------------------------------------------------------
 
-void array::setBuffer(void* _buf, bool _take_ownership, core::memory::buffer_allocation_policy::sptr _policy)
+void array::set_buffer(void* _buf, bool _take_ownership, core::memory::buffer_allocation_policy::sptr _policy)
 {
-    if(m_bufferObject)
+    if(m_buffer_object)
     {
-        if(!m_bufferObject->is_empty())
+        if(!m_buffer_object->is_empty())
         {
-            m_bufferObject->destroy();
+            m_buffer_object->destroy();
         }
     }
     else
     {
         core::memory::buffer_object::sptr new_buffer_object = std::make_shared<core::memory::buffer_object>();
-        m_bufferObject->swap(new_buffer_object);
+        m_buffer_object->swap(new_buffer_object);
     }
 
-    m_bufferObject->set_buffer(_buf, (_buf == nullptr) ? 0 : this->getSizeInBytes(), _policy);
-    this->setIsBufferOwner(_take_ownership);
+    m_buffer_object->set_buffer(_buf, (_buf == nullptr) ? 0 : this->size_in_bytes(), _policy);
+    this->set_is_buffer_owner(_take_ownership);
 }
 
 //------------------------------------------------------------------------------
 
-void array::setBuffer(
+void array::set_buffer(
     void* _buf,
     bool _take_ownership,
     const data::array::size_t& _size,
@@ -355,23 +355,23 @@ void array::setBuffer(
 )
 {
     this->resize(_size, _type, false);
-    this->setBuffer(_buf, _take_ownership, _policy);
+    this->set_buffer(_buf, _take_ownership, _policy);
 }
 
 //-----------------------------------------------------------------------------
 
-char* array::getBufferPtr(const data::array::index_t& _id)
+char* array::get_buffer_ptr(const data::array::index_t& _id)
 {
-    const std::size_t offset = this->getBufferOffset(_id);
+    const std::size_t offset = this->get_buffer_offset(_id);
     char* item               = static_cast<char*>(this->buffer()) + offset;
     return item;
 }
 
 //------------------------------------------------------------------------------
 
-const char* array::getBufferPtr(const data::array::index_t& _id) const
+const char* array::get_buffer_ptr(const data::array::index_t& _id) const
 {
-    const std::size_t offset = this->getBufferOffset(_id);
+    const std::size_t offset = this->get_buffer_offset(_id);
     const char* item         = static_cast<const char*>(this->buffer()) + offset;
     return item;
 }
@@ -380,7 +380,7 @@ const char* array::getBufferPtr(const data::array::index_t& _id) const
 
 void array::dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const
 {
-    _locks.push_back(m_bufferObject->lock());
+    _locks.push_back(m_buffer_object->lock());
 }
 
 //------------------------------------------------------------------------------
@@ -395,7 +395,7 @@ array::iterator<char> array::begin()
 array::iterator<char> array::end()
 {
     auto itr = iterator<char>(static_cast<char*>(buffer()));
-    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
+    itr += static_cast<std::ptrdiff_t>(this->size_in_bytes());
     return itr;
 }
 
@@ -411,7 +411,7 @@ array::const_iterator<char> array::begin() const
 array::const_iterator<char> array::end() const
 {
     auto itr = const_iterator<char>(static_cast<const char*>(buffer()));
-    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
+    itr += static_cast<std::ptrdiff_t>(this->size_in_bytes());
     return itr;
 }
 
@@ -422,13 +422,13 @@ bool array::operator==(const array& _other) const noexcept
     if(m_strides != _other.m_strides
        || m_type != _other.m_type
        || m_size != _other.m_size
-       || !core::tools::is_equal(m_bufferObject, _other.m_bufferObject))
+       || !core::tools::is_equal(m_buffer_object, _other.m_buffer_object))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

@@ -36,16 +36,16 @@ namespace sight::io::vtk::ut
 class image_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(image_test);
-CPPUNIT_TEST(testImageToVtk);
-CPPUNIT_TEST(testFromVtk);
+CPPUNIT_TEST(test_image_to_vtk);
+CPPUNIT_TEST(test_from_vtk);
 
-CPPUNIT_TEST(fromToVtkTest);
-CPPUNIT_TEST(mhdReaderTest);
-CPPUNIT_TEST(mhdWriterTest);
-CPPUNIT_TEST(vtiReaderTest);
-CPPUNIT_TEST(vtiWriterTest);
-CPPUNIT_TEST(vtkReaderTest);
-CPPUNIT_TEST(vtkWriterTest);
+CPPUNIT_TEST(from_to_vtk_test);
+CPPUNIT_TEST(mhd_reader_test);
+CPPUNIT_TEST(mhd_writer_test);
+CPPUNIT_TEST(vti_reader_test);
+CPPUNIT_TEST(vti_writer_test);
+CPPUNIT_TEST(vtk_reader_test);
+CPPUNIT_TEST(vtk_writer_test);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -55,16 +55,16 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testImageToVtk();
-    static void testFromVtk();
+    static void test_image_to_vtk();
+    static void test_from_vtk();
 
-    static void fromToVtkTest();
-    static void mhdReaderTest();
-    static void mhdWriterTest();
-    static void vtiReaderTest();
-    static void vtiWriterTest();
-    static void vtkReaderTest();
-    static void vtkWriterTest();
+    static void from_to_vtk_test();
+    static void mhd_reader_test();
+    static void mhd_writer_test();
+    static void vti_reader_test();
+    static void vti_writer_test();
+    static void vtk_reader_test();
+    static void vtk_writer_test();
 };
 
 } // namespace sight::io::vtk::ut

@@ -31,23 +31,23 @@ base_ptr::base_ptr(
     std::string_view _key,
     bool _auto_connect,
     bool _optional,
-    Access _access,
+    enum access _access,
     std::optional<std::size_t> _index
 ) :
     m_holder(_holder),
     m_key(_key),
-    m_autoConnect(_auto_connect),
+    m_auto_connect(_auto_connect),
     m_optional(_optional),
     m_access(_access)
 {
-    _holder->registerPtr(_key, this, _index);
+    _holder->register_ptr(_key, this, _index);
 }
 
 //------------------------------------------------------------------------------
 
 base_ptr::~base_ptr()
 {
-    m_holder->unregisterPtr(this);
+    m_holder->unregister_ptr(this);
 }
 
 //------------------------------------------------------------------------------

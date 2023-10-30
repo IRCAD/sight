@@ -36,29 +36,29 @@ namespace sight::io::vtk::ut
 class mesh_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(mesh_test);
-CPPUNIT_TEST(testMeshToVtk);
-CPPUNIT_TEST(testMeshToGrid);
-CPPUNIT_TEST(testSyntheticMesh);
-CPPUNIT_TEST(testExportImportSyntheticMesh);
-CPPUNIT_TEST(testPointCloud);
-CPPUNIT_TEST(testReadVtkFile);
-CPPUNIT_TEST(testReadVtpFile);
-CPPUNIT_TEST(testReadObjFile);
-CPPUNIT_TEST(testReadStlFile);
-CPPUNIT_TEST(testReadPlyFile);
-CPPUNIT_TEST(testWriteVtkFile);
-CPPUNIT_TEST(testWriteVtpFile);
-CPPUNIT_TEST(testWriteObjFile);
-CPPUNIT_TEST(testWriteStlFile);
-CPPUNIT_TEST(testWritePlyFile);
+CPPUNIT_TEST(test_mesh_to_vtk);
+CPPUNIT_TEST(test_mesh_to_grid);
+CPPUNIT_TEST(test_synthetic_mesh);
+CPPUNIT_TEST(test_export_import_synthetic_mesh);
+CPPUNIT_TEST(test_point_cloud);
+CPPUNIT_TEST(test_read_vtk_file);
+CPPUNIT_TEST(test_read_vtp_file);
+CPPUNIT_TEST(test_read_obj_file);
+CPPUNIT_TEST(test_read_stl_file);
+CPPUNIT_TEST(test_read_ply_file);
+CPPUNIT_TEST(test_write_vtk_file);
+CPPUNIT_TEST(test_write_vtp_file);
+CPPUNIT_TEST(test_write_obj_file);
+CPPUNIT_TEST(test_write_stl_file);
+CPPUNIT_TEST(test_write_ply_file);
 
-CPPUNIT_TEST(toVtkMeshWithLinesTest);
-CPPUNIT_TEST(toVtkMeshWithTetrasTest);
-CPPUNIT_TEST(toVtkMeshWithCellTexCoordsTest);
-CPPUNIT_TEST(fromVtkMeshWithLinesTest);
-CPPUNIT_TEST(fromVtkMeshWithQuadsTest);
-CPPUNIT_TEST(fromVtkMeshWithCellTexCoordsTest);
-CPPUNIT_TEST(fromVtkMeshWith3ComponentsCellColorsTest);
+CPPUNIT_TEST(to_vtk_mesh_with_lines_test);
+CPPUNIT_TEST(to_vtk_mesh_with_tetras_test);
+CPPUNIT_TEST(to_vtk_mesh_with_cell_tex_coords_test);
+CPPUNIT_TEST(from_vtk_mesh_with_lines_test);
+CPPUNIT_TEST(from_vtk_mesh_with_quads_test);
+CPPUNIT_TEST(from_vtk_mesh_with_cell_tex_coords_test);
+CPPUNIT_TEST(from_vtk_mesh_with3_components_cell_colors_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -67,29 +67,29 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testMeshToVtk();
-    static void testMeshToGrid();
-    static void testSyntheticMesh();
-    static void testExportImportSyntheticMesh();
-    static void testPointCloud();
-    static void testReadVtkFile();
-    static void testReadVtpFile();
-    static void testReadObjFile();
-    static void testReadPlyFile();
-    static void testReadStlFile();
-    static void testWriteVtkFile();
-    static void testWriteVtpFile();
-    static void testWriteObjFile();
-    static void testWritePlyFile();
-    static void testWriteStlFile();
+    static void test_mesh_to_vtk();
+    static void test_mesh_to_grid();
+    static void test_synthetic_mesh();
+    static void test_export_import_synthetic_mesh();
+    static void test_point_cloud();
+    static void test_read_vtk_file();
+    static void test_read_vtp_file();
+    static void test_read_obj_file();
+    static void test_read_ply_file();
+    static void test_read_stl_file();
+    static void test_write_vtk_file();
+    static void test_write_vtp_file();
+    static void test_write_obj_file();
+    static void test_write_ply_file();
+    static void test_write_stl_file();
 
-    static void toVtkMeshWithLinesTest();
-    static void toVtkMeshWithTetrasTest();
-    static void toVtkMeshWithCellTexCoordsTest();
-    static void fromVtkMeshWithLinesTest();
-    static void fromVtkMeshWithQuadsTest();
-    static void fromVtkMeshWithCellTexCoordsTest();
-    static void fromVtkMeshWith3ComponentsCellColorsTest();
+    static void to_vtk_mesh_with_lines_test();
+    static void to_vtk_mesh_with_tetras_test();
+    static void to_vtk_mesh_with_cell_tex_coords_test();
+    static void from_vtk_mesh_with_lines_test();
+    static void from_vtk_mesh_with_quads_test();
+    static void from_vtk_mesh_with_cell_tex_coords_test();
+    static void from_vtk_mesh_with3_components_cell_colors_test();
 };
 
 } // namespace sight::io::vtk::ut

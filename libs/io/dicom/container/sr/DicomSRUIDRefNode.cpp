@@ -31,37 +31,37 @@ namespace sight::io::dicom::container::sr
 
 //------------------------------------------------------------------------------
 
-DicomSRUIDRefNode::DicomSRUIDRefNode(
-    const DicomCodedAttribute& _coded_attribute,
+dicom_sruid_ref_node::dicom_sruid_ref_node(
+    const dicom_coded_attribute& _coded_attribute,
     const std::string& _relationship,
     std::string _uid_value
 ) :
-    io::dicom::container::sr::DicomSRNode(_coded_attribute, "UIDREF", _relationship),
-    m_uidValue(std::move(_uid_value))
+    io::dicom::container::sr::dicom_sr_node(_coded_attribute, "UIDREF", _relationship),
+    m_uid_value(std::move(_uid_value))
 {
 }
 
 //------------------------------------------------------------------------------
 
-DicomSRUIDRefNode::~DicomSRUIDRefNode()
+dicom_sruid_ref_node::~dicom_sruid_ref_node()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomSRUIDRefNode::write(gdcm::DataSet& _dataset) const
+void dicom_sruid_ref_node::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(_dataset);
+    io::dicom::container::sr::dicom_sr_node::write(_dataset);
 
     // UID Value - Type 1C
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa124>(m_uidValue, _dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0040, 0xa124>(m_uid_value, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRUIDRefNode::print(std::ostream& _os) const
+void dicom_sruid_ref_node::print(std::ostream& _os) const
 {
-    DicomSRNode::print(_os);
-    _os << "\\nUID value : [" << m_uidValue << "]";
+    dicom_sr_node::print(_os);
+    _os << "\\nUID value : [" << m_uid_value << "]";
 }
 
 //------------------------------------------------------------------------------

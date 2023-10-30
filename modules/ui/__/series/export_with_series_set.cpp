@@ -45,10 +45,10 @@ static const core::com::slots::key_t FORWARD_JOB_SLOT     = "forwardJob";
 //------------------------------------------------------------------------------
 
 export_with_series_set::export_with_series_set() noexcept :
-    m_ioSelectorSrvConfig("IOSelectorServiceConfigVRRenderReader")
+    m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader")
 {
-    m_sigJobCreated  = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
-    m_slotForwardJob = new_slot(FORWARD_JOB_SLOT, &export_with_series_set::forwardJob, this);
+    m_sig_job_created  = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
+    m_slot_forward_job = new_slot(FORWARD_JOB_SLOT, &export_with_series_set::forward_job, this);
 }
 
 //------------------------------------------------------------------------------
@@ -65,14 +65,14 @@ void export_with_series_set::configuring()
     this->sight::ui::action::initialize();
 
     const auto& config = this->get_config();
-    m_ioSelectorSrvConfig = config.get<std::string>("IOSelectorSrvConfig.<xmlattr>.name", m_ioSelectorSrvConfig);
+    m_io_selector_srv_config = config.get<std::string>("IOSelectorSrvConfig.<xmlattr>.name", m_io_selector_srv_config);
 }
 
 //------------------------------------------------------------------------------
 
 void export_with_series_set::updating()
 {
-    sight::ui::LockAction lock(this->get_sptr());
+    sight::ui::lock_action lock(this->get_sptr());
 
     // Create a new series_set
     auto local_series_set = std::make_shared<data::series_set>();
@@ -88,13 +88,13 @@ void export_with_series_set::updating()
     // Create IOSelectorService on the new series_set and execute it.
 
     // Get the config
-    const auto io_cfg = service::extension::config::getDefault()->get_service_config(
-        m_ioSelectorSrvConfig,
+    const auto io_cfg = service::extension::config::get_default()->get_service_config(
+        m_io_selector_srv_config,
         "sight::module::ui::io::selector"
     );
     SIGHT_ASSERT(
         "There is no service configuration "
-        << m_ioSelectorSrvConfig
+        << m_io_selector_srv_config
         << " for module::ui::editor::selector",
         !io_cfg.empty()
     );
@@ -102,14 +102,14 @@ void export_with_series_set::updating()
     // Init and execute the service
     service::base::sptr io_selector_srv;
     io_selector_srv = service::add("sight::module::ui::io::selector");
-    io_selector_srv->set_inout(local_series_set, io::service::s_DATA_KEY);
+    io_selector_srv->set_inout(local_series_set, io::service::DATA_KEY);
 
     io_selector_srv->set_worker(this->worker());
 
-    auto job_created_signal = io_selector_srv->signal("jobCreated");
-    if(job_created_signal)
+    auto job_created_signal_t = io_selector_srv->signal("jobCreated");
+    if(job_created_signal_t)
     {
-        job_created_signal->connect(m_slotForwardJob);
+        job_created_signal_t->connect(m_slot_forward_job);
     }
 
     io_selector_srv->set_config(io_cfg);
@@ -124,7 +124,7 @@ void export_with_series_set::updating()
 
 void export_with_series_set::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 
     const auto series = m_series.lock();
     SIGHT_FATAL_IF("The associated object must be a data::series.", !series);
@@ -134,14 +134,14 @@ void export_with_series_set::starting()
 
 void export_with_series_set::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------
 
-void export_with_series_set::forwardJob(core::jobs::base::sptr _job)
+void export_with_series_set::forward_job(core::jobs::base::sptr _job)
 {
-    m_sigJobCreated->emit(_job);
+    m_sig_job_created->emit(_job);
 }
 
 } // namespace sight::module::ui::series

@@ -71,19 +71,19 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
      * @name typedefs
      * @{
      * Slot pointer types. */
-    typedef SPTR(slot_base) sptr;
-    typedef WPTR(slot_base) wptr;
-    typedef SPTR(slot_base const) csptr;
-    typedef WPTR(slot_base const) cwptr;
+    using sptr  = std::shared_ptr<slot_base>;
+    using wptr  = std::weak_ptr<slot_base>;
+    using csptr = std::shared_ptr<const slot_base>;
+    using cwptr = std::weak_ptr<const slot_base>;
 
-    typedef std::string idtype;
+    using idtype = std::string;
     /**  @} */
 
     /// SlotBase::async_run return type.
-    typedef std::shared_future<void> void_shared_future_type;
+    using void_shared_future_type = std::shared_future<void>;
 
     /// Connections container type
-    typedef std::set<CSPTR(slot_connection_base)> connection_set_type;
+    using connection_set_type = std::set<std::shared_ptr<const slot_connection_base> >;
 
     ~slot_base() override
     = default;
@@ -94,7 +94,7 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
      */
     unsigned int arity() const
     {
-        return M_ARITY;
+        return m_arity;
     }
 
     /// Sets Slot's Worker.
@@ -228,7 +228,7 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
         }
 
         slot_base(unsigned int _arity) :
-            M_ARITY(_arity)
+            m_arity(_arity)
         {
         }
 
@@ -236,7 +236,7 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
         std::string m_signature;
 
         /// Slot's arity.
-        const unsigned int M_ARITY;
+        const unsigned int m_arity;
 
         /// Slot's Worker.
         SPTR(core::thread::worker) m_worker;

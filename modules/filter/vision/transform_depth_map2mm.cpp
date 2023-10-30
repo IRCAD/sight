@@ -63,16 +63,16 @@ void transform_depth_map2mm::configuring()
 void transform_depth_map2mm::updating()
 {
     const auto camera_set = m_camera_set.lock();
-    SIGHT_ASSERT("missing '" << s_CAMERA_SET_INPUT << "' cameraSet", camera_set);
+    SIGHT_ASSERT("missing '" << CAMERA_SET_INPUT << "' cameraSet", camera_set);
 
     data::camera::csptr depth_camera = camera_set->get_camera(0);
 
-    const double scale = depth_camera->getScale();
+    const double scale = depth_camera->get_scale();
 
-    auto origin_frame = m_originDepth.lock();
-    SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_INPUT << "' image", origin_frame);
+    auto origin_frame = m_origin_depth.lock();
+    SIGHT_ASSERT("missing '" << ORIGIN_FRAME_INPUT << "' image", origin_frame);
 
-    const auto type = origin_frame->getType();
+    const auto type = origin_frame->type();
     if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
@@ -81,19 +81,19 @@ void transform_depth_map2mm::updating()
 
     const auto size = origin_frame->size();
 
-    auto scaled_frame = m_scaledDepth.lock();
-    SIGHT_ASSERT("missing '" << s_SCALED_FRAME_INOUT << "' image", scaled_frame);
+    auto scaled_frame = m_scaled_depth.lock();
+    SIGHT_ASSERT("missing '" << SCALED_FRAME_INOUT << "' image", scaled_frame);
 
     if(size != scaled_frame->size())
     {
-        scaled_frame->resize(size, origin_frame->getType(), origin_frame->getPixelFormat());
+        scaled_frame->resize(size, origin_frame->type(), origin_frame->pixel_format());
 
-        const data::image::Origin origin = {0., 0., 0.};
-        scaled_frame->setOrigin(origin);
-        const data::image::Spacing spacing = {1., 1., 1.};
-        scaled_frame->setSpacing(spacing);
-        scaled_frame->setWindowWidth({1});
-        scaled_frame->setWindowCenter({0});
+        const data::image::origin_t origin = {0., 0., 0.};
+        scaled_frame->set_origin(origin);
+        const data::image::spacing_t spacing = {1., 1., 1.};
+        scaled_frame->set_spacing(spacing);
+        scaled_frame->set_window_width({1});
+        scaled_frame->set_window_center({0});
     }
 
     const auto orig_dump_lock   = origin_frame->dump_lock();
@@ -111,7 +111,7 @@ void transform_depth_map2mm::updating()
     auto sig = scaled_frame->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
     sig->async_emit();
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //-----------------------------------------------------------------------------

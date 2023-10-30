@@ -43,10 +43,10 @@ class UI_QML_CLASS_API logger : public QObject,
                                 public ui::dialog::logger_base
 {
 Q_OBJECT
-Q_PROPERTY(QUrl hidden MEMBER m_hidden WRITE emitHidden NOTIFY hiddenChanged)
-Q_PROPERTY(QUrl icon MEMBER m_icon WRITE emitIcon NOTIFY iconChanged)
-Q_PROPERTY(QString message MEMBER m_message WRITE emitMessage NOTIFY messageChanged)
-Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emitShown NOTIFY shownChanged)
+Q_PROPERTY(QUrl hidden MEMBER m_hidden WRITE emit_hidden NOTIFY hidden_changed)
+Q_PROPERTY(QUrl icon MEMBER m_icon WRITE emit_icon NOTIFY icon_changed)
+Q_PROPERTY(QString message MEMBER m_message WRITE emit_message NOTIFY message_changed)
+Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emit_shown NOTIFY shown_changed)
 
 public:
 
@@ -59,19 +59,19 @@ public:
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    UI_QML_API void setTitle(const std::string& _title) override;
+    UI_QML_API void set_title(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    UI_QML_API void setMessage(const std::string& _message) override;
+    UI_QML_API void set_message(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    UI_QML_API void setLogger(const core::log::logger::sptr& _logger) override;
+    UI_QML_API void set_logger(const core::log::logger::sptr& _logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
@@ -81,15 +81,15 @@ public:
 Q_SIGNALS:
 
     /// notify the qml of property change
-    void hiddenChanged();
-    void iconChanged();
-    void messageChanged();
-    void shownChanged();
+    void hidden_changed();
+    void icon_changed();
+    void message_changed();
+    void shown_changed();
 
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(bool _is_ok);
+    void result_dialog(bool _is_ok);
 
 private:
 
@@ -103,7 +103,7 @@ private:
     core::log::logger::sptr m_logger;
 
     /// get pushed button and clicked one
-    bool m_isOk {false};
+    bool m_is_ok {false};
 
     /// Resume the biggest error get with an icon
     QUrl m_icon;
@@ -113,10 +113,10 @@ private:
     QUrl m_shown;
 
     /// Setter to QProperty and emit signal
-    UI_QML_API void emitHidden(const QUrl& /*hidden*/);
-    UI_QML_API void emitIcon(const QUrl& /*path*/);
-    UI_QML_API void emitMessage(const QString& /*message*/);
-    UI_QML_API void emitShown(const QUrl& /*shown*/);
+    UI_QML_API void emit_hidden(const QUrl& /*hidden*/);
+    UI_QML_API void emit_icon(const QUrl& /*path*/);
+    UI_QML_API void emit_message(const QString& /*message*/);
+    UI_QML_API void emit_shown(const QUrl& /*shown*/);
 };
 
 } // namespace sight::ui::qml::dialog

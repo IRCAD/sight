@@ -32,19 +32,19 @@
 namespace sight::io::session::detail::material
 {
 
-constexpr static auto s_ShadingMode {"ShadingMode"};
-constexpr static auto s_RepresentationMode {"RepresentationMode"};
-constexpr static auto s_OptionsMode {"OptionsMode"};
-constexpr static auto s_DiffuseTextureFiltering {"DiffuseTextureFiltering"};
-constexpr static auto s_DiffuseTextureWrapping {"DiffuseTextureWrapping"};
-constexpr static auto s_Ambient {"Ambient"};
-constexpr static auto s_Diffuse {"Diffuse"};
-constexpr static auto s_DiffuseTexture {"DiffuseTexture"};
+constexpr static auto SHADING_MODE {"ShadingMode"};
+constexpr static auto REPRESENTATION_MODE {"RepresentationMode"};
+constexpr static auto OPTIONS_MODE {"OptionsMode"};
+constexpr static auto DIFFUSE_TEXTURE_FILTERING {"DiffuseTextureFiltering"};
+constexpr static auto DIFFUSE_TEXTURE_WRAPPING {"DiffuseTextureWrapping"};
+constexpr static auto AMBIENT {"Ambient"};
+constexpr static auto DIFFUSE {"Diffuse"};
+constexpr static auto DIFFUSE_TEXTURE {"DiffuseTexture"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -56,21 +56,21 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::material>(_tree, 1);
 
-    _tree.put(s_ShadingMode, material->getShadingMode());
-    _tree.put(s_RepresentationMode, material->getRepresentationMode());
-    _tree.put(s_OptionsMode, material->getOptionsMode());
-    _tree.put(s_DiffuseTextureFiltering, material->getDiffuseTextureFiltering());
-    _tree.put(s_DiffuseTextureWrapping, material->getDiffuseTextureWrapping());
+    _tree.put(SHADING_MODE, static_cast<int>(material->get_shading_mode()));
+    _tree.put(REPRESENTATION_MODE, material->get_representation_mode());
+    _tree.put(OPTIONS_MODE, material->get_options_mode());
+    _tree.put(DIFFUSE_TEXTURE_FILTERING, material->get_diffuse_texture_filtering());
+    _tree.put(DIFFUSE_TEXTURE_WRAPPING, material->get_diffuse_texture_wrapping());
 
-    _children[s_Ambient]        = material->ambient();
-    _children[s_Diffuse]        = material->diffuse();
-    _children[s_DiffuseTexture] = material->getDiffuseTexture();
+    _children[AMBIENT]         = material->ambient();
+    _children[DIFFUSE]         = material->diffuse();
+    _children[DIFFUSE_TEXTURE] = material->get_diffuse_texture();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::material::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -83,27 +83,27 @@ inline static data::material::sptr read(
     // Check version number. Not mandatory, but could help for future release
     helper::read_version<data::material>(_tree, 0, 1);
 
-    material->setShadingMode(static_cast<data::material::shading_t>(_tree.get<int>(s_ShadingMode)));
-    material->setRepresentationMode(
+    material->set_shading_mode(static_cast<data::material::shading_t>(_tree.get<int>(SHADING_MODE)));
+    material->set_representation_mode(
         static_cast<data::material::representation_t>(
-            _tree.get<int>(s_RepresentationMode)
+            _tree.get<int>(REPRESENTATION_MODE)
         )
     );
-    material->setOptionsMode(static_cast<data::material::options_t>(_tree.get<int>(s_OptionsMode)));
-    material->setDiffuseTextureFiltering(
+    material->set_options_mode(static_cast<data::material::options_t>(_tree.get<int>(OPTIONS_MODE)));
+    material->set_diffuse_texture_filtering(
         static_cast<data::material::filtering_t>(
-            _tree.get<int>(s_DiffuseTextureFiltering)
+            _tree.get<int>(DIFFUSE_TEXTURE_FILTERING)
         )
     );
-    material->setDiffuseTextureWrapping(
+    material->set_diffuse_texture_wrapping(
         static_cast<data::material::wrapping_t>(
-            _tree.get<int>(s_DiffuseTextureWrapping)
+            _tree.get<int>(DIFFUSE_TEXTURE_WRAPPING)
         )
     );
 
-    material->setAmbient(std::dynamic_pointer_cast<data::color>(_children.at(s_Ambient)));
-    material->setDiffuse(std::dynamic_pointer_cast<data::color>(_children.at(s_Diffuse)));
-    material->setDiffuseTexture(std::dynamic_pointer_cast<data::image>(_children.at(s_DiffuseTexture)));
+    material->set_ambient(std::dynamic_pointer_cast<data::color>(_children.at(AMBIENT)));
+    material->set_diffuse(std::dynamic_pointer_cast<data::color>(_children.at(DIFFUSE)));
+    material->set_diffuse_texture(std::dynamic_pointer_cast<data::image>(_children.at(DIFFUSE_TEXTURE)));
 
     return material;
 }

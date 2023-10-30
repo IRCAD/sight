@@ -100,7 +100,7 @@ protected:
 private:
 
     /// Updates the height of the cylinder.
-    void updateHeight(double /*height*/);
+    void update_height(double /*height*/);
 
     /// radius of the cylinder.
     double m_radius {1.0};
@@ -112,32 +112,32 @@ private:
     int m_resolution {42};
 
     /// offset.
-    bool m_offsetToOrigin {false};
+    bool m_offset_to_origin {false};
 
     /// Needle mode or cylinder mode.
-    bool m_needleMode {false};
+    bool m_needle_mode {false};
 
     /// Needle base color.
-    std::array<unsigned char, 4> m_needleColor {255, 255, 255, 255};
+    std::array<unsigned char, 4> m_needle_color {255, 255, 255, 255};
 
     /// Needle minor steps color.
-    std::array<unsigned char, 4> m_needleMinorStepsColor {175, 175, 175, 255};
+    std::array<unsigned char, 4> m_needle_minor_steps_color {175, 175, 175, 255};
 
     /// Needle minor steps length.
-    double m_needleMinorStepsLength {10.0};
+    double m_needle_minor_steps_length {10.0};
 
     /// Needle major steps color.
-    std::array<unsigned char, 4> m_needleMajorStepsColor {255, 0, 0, 255};
+    std::array<unsigned char, 4> m_needle_major_steps_color {255, 0, 0, 255};
 
     /// Needle major steps, i.e. put a major step every 5 minor steps by default.
-    unsigned int m_needleMajorSteps {5};
+    unsigned int m_needle_major_steps {5};
 
     /**
      * \brief Construct a needle if in needle mode.
      *
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the constructed needle.
      */
-    vtkSmartPointer<vtkPolyData> constructNeedle();
+    vtkSmartPointer<vtkPolyData> construct_needle();
 
     /**
      * \brief Construct a source object regarding the class template T (works with vtkCylinderSource and vtkConeSource).
@@ -148,17 +148,17 @@ private:
      * \return vtkSmartPointer on a class T type source object (i.e. vtkCylinderSource or vtkConeSource).
      */
     template<class T>
-    vtkSmartPointer<T> constructSourceObject(double _height, double _center);
+    vtkSmartPointer<T> construct_source_object(double _height, double _center);
 
     /**
-     * \brief Filter and color an object through its source algorithm (i.e. source->GetOutputPort()).
+     * \brief filter and color an object through its source algorithm (i.e. source->GetOutputPort()).
      *
      * \param _sourceAlgorithm Source algorithm of the object that needs to be filtered and colored.
      * \param _rgba Needed RGBA color to apply on the object.
      *
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the filtered and colored object.
      */
-    static vtkSmartPointer<vtkPolyData> filterAndColorSourceObject(
+    static vtkSmartPointer<vtkPolyData> filter_and_color_source_object(
         vtkAlgorithmOutput* _source_algorithm,
         const std::array<unsigned char, 4>& _rgba
     );
@@ -171,9 +171,9 @@ private:
      *
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the torus.
      */
-    vtkSmartPointer<vtkPolyData> generateTorus(double _center, const std::array<unsigned char, 4>& _rgba) const;
+    vtkSmartPointer<vtkPolyData> generate_torus(double _center, const std::array<unsigned char, 4>& _rgba) const;
 
-    sight::data::ptr<sight::data::mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
+    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, "mesh"};
 };
 
 } // namespace sight::module::filter::mesh::generator

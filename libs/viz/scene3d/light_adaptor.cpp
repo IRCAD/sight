@@ -33,15 +33,15 @@ namespace sight::viz::scene3d
 
 const std::string light_adaptor::REGISTRY_KEY = "sight::viz::scene3d::light_adaptor::REGISTRY_KEY";
 
-const std::string light_adaptor::s_POINT_LIGHT       = "Point";
-const std::string light_adaptor::s_DIRECTIONAL_LIGHT = "Directional";
-const std::string light_adaptor::s_SPOT_LIGHT        = "Spot";
+const std::string light_adaptor::POINT_LIGHT       = "Point";
+const std::string light_adaptor::DIRECTIONAL_LIGHT = "Directional";
+const std::string light_adaptor::SPOT_LIGHT        = "Spot";
 
-const int viz::scene3d::light_adaptor::s_OFFSET_RANGE = 180;
+const int viz::scene3d::light_adaptor::OFFSET_RANGE = 180;
 
 //-----------------------------------------------------------------------------
 
-viz::scene3d::light_adaptor::sptr light_adaptor::createLightAdaptor(
+viz::scene3d::light_adaptor::sptr light_adaptor::create_light_adaptor(
     data::color::sptr _diffuse,
     data::color::sptr _specular
 )
@@ -61,7 +61,7 @@ viz::scene3d::light_adaptor::sptr light_adaptor::createLightAdaptor(
 
 //-----------------------------------------------------------------------------
 
-void light_adaptor::destroyLightAdaptor(light_adaptor::sptr _light_adaptor)
+void light_adaptor::destroy_light_adaptor(light_adaptor::sptr _light_adaptor)
 {
     if(_light_adaptor)
     {

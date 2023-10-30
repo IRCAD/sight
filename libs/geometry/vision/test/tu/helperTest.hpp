@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,16 +27,16 @@
 namespace sight::geometry::vision::ut
 {
 
-class helperTest : public CPPUNIT_NS::TestFixture
+class helper_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(helperTest);
-CPPUNIT_TEST(reprojectionIdentity);
-CPPUNIT_TEST(reprojectionRealDatasetTest1);
-CPPUNIT_TEST(reprojectionRealDatasetTest2);
-CPPUNIT_TEST(toolCalibrationBasic);
-CPPUNIT_TEST(toolCalibration);
-CPPUNIT_TEST(chessboardDetectionTest);
-CPPUNIT_TEST(chessboardDetectionScaleTest);
+CPPUNIT_TEST_SUITE(helper_test);
+CPPUNIT_TEST(reprojection_identity);
+CPPUNIT_TEST(reprojection_real_dataset_test1);
+CPPUNIT_TEST(reprojection_real_dataset_test2);
+CPPUNIT_TEST(tool_calibration_basic);
+CPPUNIT_TEST(tool_calibration);
+CPPUNIT_TEST(chessboard_detection_test);
+CPPUNIT_TEST(chessboard_detection_scale_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,13 +45,13 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void reprojectionRealDatasetTest1();
-    static void reprojectionRealDatasetTest2();
-    static void reprojectionIdentity();
-    static void toolCalibrationBasic();
-    static void toolCalibration();
-    static void chessboardDetectionTest();
-    static void chessboardDetectionScaleTest();
+    static void reprojection_real_dataset_test1();
+    static void reprojection_real_dataset_test2();
+    static void reprojection_identity();
+    static void tool_calibration_basic();
+    static void tool_calibration();
+    static void chessboard_detection_test();
+    static void chessboard_detection_scale_test();
 };
 
 } // namespace sight::geometry::vision::ut

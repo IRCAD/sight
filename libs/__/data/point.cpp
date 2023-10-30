@@ -34,39 +34,39 @@ namespace sight::data
 {
 
 // Note: for compatibility, use the same name as in MedicalImageHelper, to be changed in the future.
-static constexpr std::string_view field_label_id = "m_labelId";
+static constexpr std::string_view FIELD_LABEL_ID = "m_labelId";
 
 //------------------------------------------------------------------------------
 
 point::point()
 {
-    m_vCoord[0] = 0.0;
-    m_vCoord[1] = 0.0;
-    m_vCoord[2] = 0.0;
+    m_v_coord[0] = 0.0;
+    m_v_coord[1] = 0.0;
+    m_v_coord[2] = 0.0;
 }
 
 //------------------------------------------------------------------------------
 
 point::point(float _x, float _y, float _z)
 {
-    m_vCoord[0] = _x;
-    m_vCoord[1] = _y;
-    m_vCoord[2] = _z;
+    m_v_coord[0] = _x;
+    m_v_coord[1] = _y;
+    m_v_coord[2] = _z;
 }
 
 //------------------------------------------------------------------------------
 
 point::point(double _x, double _y, double _z)
 {
-    m_vCoord[0] = _x;
-    m_vCoord[1] = _y;
-    m_vCoord[2] = _z;
+    m_v_coord[0] = _x;
+    m_v_coord[1] = _y;
+    m_v_coord[2] = _z;
 }
 
 //------------------------------------------------------------------------------
 
 point::point(const point_coord_array_t& _coord) :
-    m_vCoord(_coord)
+    m_v_coord(_coord)
 {
 }
 
@@ -74,9 +74,9 @@ point::point(const point_coord_array_t& _coord) :
 
 point::point(const point::sptr& _p)
 {
-    m_vCoord[0] = _p->m_vCoord[0];
-    m_vCoord[1] = _p->m_vCoord[1];
-    m_vCoord[2] = _p->m_vCoord[2];
+    m_v_coord[0] = _p->m_v_coord[0];
+    m_v_coord[1] = _p->m_v_coord[1];
+    m_v_coord[2] = _p->m_v_coord[2];
 }
 
 //------------------------------------------------------------------------------
@@ -93,9 +93,9 @@ void point::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_vCoord = other->m_vCoord;
+    m_v_coord = other->m_v_coord;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -112,20 +112,20 @@ void point::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
         !bool(other)
     );
 
-    m_vCoord = other->m_vCoord;
+    m_v_coord = other->m_v_coord;
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-std::string point::getLabel() const
+std::string point::get_label() const
 {
     //TODO: In the future label should be an attribute of point class, and should be serialized.
     std::string label;
-    if(this->get_field(std::string(field_label_id)))
+    if(this->get_field(std::string(FIELD_LABEL_ID)))
     {
-        label = this->get_field<data::string>(std::string(field_label_id))->value();
+        label = this->get_field<data::string>(std::string(FIELD_LABEL_ID))->value();
     }
 
     return label;
@@ -133,23 +133,23 @@ std::string point::getLabel() const
 
 //------------------------------------------------------------------------------
 
-void point::setLabel(const std::string& _label)
+void point::set_label(const std::string& _label)
 {
     //TODO: In the future label should be an attribute of point class, and should be serialized.
-    this->set_field(std::string(field_label_id), std::make_shared<data::string>(_label));
+    this->set_field(std::string(FIELD_LABEL_ID), std::make_shared<data::string>(_label));
 }
 
 //------------------------------------------------------------------------------
 
 bool point::operator==(const point& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_vCoord, _other.m_vCoord))
+    if(!core::tools::is_equal(m_v_coord, _other.m_v_coord))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ std::ostream& operator<<(std::ostream& _out, const point& _p)
 {
     _out << "{";
     bool first = true;
-    for(double e : _p.getCoord())
+    for(double e : _p.get_coord())
     {
         if(!first)
         {

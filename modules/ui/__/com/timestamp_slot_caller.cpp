@@ -56,7 +56,7 @@ void timestamp_slot_caller::configuring()
             SIGHT_ASSERT("Missing hasSlotsId attribute", !uid.empty());
             SIGHT_ASSERT("Missing slotKey attribute", !key.empty());
 
-            m_slotInfos.emplace_back(uid, key);
+            m_slot_infos.emplace_back(uid, key);
         }
     }
 }
@@ -65,7 +65,7 @@ void timestamp_slot_caller::configuring()
 
 void timestamp_slot_caller::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,9 +74,9 @@ void timestamp_slot_caller::updating()
 {
     core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
 
-    for(const slot_info_t& info : m_slotInfos)
+    for(const slot_info_t& info : m_slot_infos)
     {
-        HasSlotIDType has_slot_id        = info.first;
+        has_slot_id_type has_slot_id     = info.first;
         core::com::slots::key_t slot_key = info.second;
 
         if(core::tools::id::exist(has_slot_id))
@@ -96,7 +96,7 @@ void timestamp_slot_caller::updating()
 
 void timestamp_slot_caller::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------

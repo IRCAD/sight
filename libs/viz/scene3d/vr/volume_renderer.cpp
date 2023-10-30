@@ -33,7 +33,7 @@
 namespace sight::viz::scene3d::vr
 {
 
-const std::array<Ogre::Vector3, 8> volume_renderer::s_imagePositions =
+const std::array<Ogre::Vector3, 8> volume_renderer::IMAGE_POSITIONS =
 {
     Ogre::Vector3(1, 1, 1),
     Ogre::Vector3(1, 0, 1),
@@ -58,29 +58,29 @@ volume_renderer::volume_renderer(
     bool _with_buffer,
     bool _preintegration
 ) :
-    M_PARENT_ID(std::move(_parent_id)),
-    M_SCENE_MANAGER(_scene_manager),
-    m_3DOgreTexture(std::make_shared<sight::viz::scene3d::texture>(_image)),
-    m_maskTexture(std::make_shared<sight::viz::scene3d::texture>(_mask)),
-    m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::transfer_function>(_tf)),
-    M_WITH_BUFFER(_with_buffer),
+    m_parent_id(std::move(_parent_id)),
+    m_scene_manager(_scene_manager),
+    m_3d_ogre_texture(std::make_shared<sight::viz::scene3d::texture>(_image)),
+    m_mask_texture(std::make_shared<sight::viz::scene3d::texture>(_mask)),
+    m_gpu_volume_tf(std::make_shared<sight::viz::scene3d::transfer_function>(_tf)),
+    m_with_buffer(_with_buffer),
     m_preintegration(_preintegration),
-    m_volumeSceneNode(_volume_node),
-    m_camera(M_SCENE_MANAGER->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME)),
-    m_nbSlices(_samples),
-    m_clippedImagePositions(s_imagePositions)
+    m_volume_scene_node(_volume_node),
+    m_camera(m_scene_manager->getCamera(viz::scene3d::layer::DEFAULT_CAMERA_NAME)),
+    m_nb_slices(_samples),
+    m_clipped_image_positions(IMAGE_POSITIONS)
 {
     //Transfer function and preintegration table
     {
-        m_preIntegrationTable.createTexture(M_PARENT_ID);
+        m_pre_integration_table.create_texture(m_parent_id);
     }
 
     // 3D source texture instantiation
 
-    if(M_WITH_BUFFER)
+    if(m_with_buffer)
     {
         // 3D source texture instantiation
-        m_bufferingTexture = std::make_shared<sight::viz::scene3d::texture>(_image, "_buffered");
+        m_buffering_texture = std::make_shared<sight::viz::scene3d::texture>(_image, "_buffered");
     }
 }
 
@@ -88,80 +88,80 @@ volume_renderer::volume_renderer(
 
 volume_renderer::~volume_renderer()
 {
-    m_maskTexture.reset();
-    m_3DOgreTexture.reset();
+    m_mask_texture.reset();
+    m_3d_ogre_texture.reset();
 
-    if(m_bufferingTexture)
+    if(m_buffering_texture)
     {
-        m_bufferingTexture.reset();
+        m_buffering_texture.reset();
     }
 
-    m_preIntegrationTable.removeTexture();
+    m_pre_integration_table.remove_texture();
 }
 
 //------------------------------------------------------------------------------
 
-void volume_renderer::loadImage()
+void volume_renderer::load_image()
 {
-    if(M_WITH_BUFFER)
+    if(m_with_buffer)
     {
-        m_bufferingTexture->update();
+        m_buffering_texture->update();
 
         // Swap texture pointers.
         {
-            std::lock_guard<std::mutex> swap_lock(m_bufferSwapMutex);
-            std::swap(m_3DOgreTexture, m_bufferingTexture);
+            std::lock_guard<std::mutex> swap_lock(m_buffer_swap_mutex);
+            std::swap(m_3d_ogre_texture, m_buffering_texture);
         }
     }
     else
     {
-        m_3DOgreTexture->update();
+        m_3d_ogre_texture->update();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void volume_renderer::loadMask()
+void volume_renderer::load_mask()
 {
-    m_maskTexture->update();
+    m_mask_texture->update();
 }
 
 //-----------------------------------------------------------------------------
 
-void volume_renderer::clipImage(const Ogre::AxisAlignedBox& _clipping_box)
+void volume_renderer::clip_image(const Ogre::AxisAlignedBox& _clipping_box)
 {
     const Ogre::Vector3 min = _clipping_box.getMinimum();
     const Ogre::Vector3 max = _clipping_box.getMaximum();
 
     for(unsigned i = 0 ; i < 8 ; ++i)
     {
-        m_clippedImagePositions[i] = Ogre::Vector3(
-            boost::algorithm::clamp(s_imagePositions[i].x, min.x, max.x),
-            boost::algorithm::clamp(s_imagePositions[i].y, min.y, max.y),
-            boost::algorithm::clamp(s_imagePositions[i].z, min.z, max.z)
+        m_clipped_image_positions[i] = Ogre::Vector3(
+            boost::algorithm::clamp(IMAGE_POSITIONS[i].x, min.x, max.x),
+            boost::algorithm::clamp(IMAGE_POSITIONS[i].y, min.y, max.y),
+            boost::algorithm::clamp(IMAGE_POSITIONS[i].z, min.z, max.z)
         );
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void volume_renderer::resizeViewport(int /*w*/, int /*h*/)
+void volume_renderer::resize_viewport(int /*w*/, int /*h*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void volume_renderer::scaleTranslateCube(
-    const data::image::Spacing& _spacing,
-    const data::image::Origin& _origin
+void volume_renderer::scale_translate_cube(
+    const data::image::spacing_t& _spacing,
+    const data::image::origin_t& _origin
 )
 {
     // Scale the volume based on the image's spacing and move it to the image origin.
-    m_volumeSceneNode->resetToInitialState();
+    m_volume_scene_node->resetToInitialState();
 
-    const double width  = static_cast<double>(m_3DOgreTexture->width()) * _spacing[0];
-    const double height = static_cast<double>(m_3DOgreTexture->height()) * _spacing[1];
-    const double depth  = static_cast<double>(m_3DOgreTexture->depth()) * _spacing[2];
+    const double width  = static_cast<double>(m_3d_ogre_texture->width()) * _spacing[0];
+    const double height = static_cast<double>(m_3d_ogre_texture->height()) * _spacing[1];
+    const double depth  = static_cast<double>(m_3d_ogre_texture->depth()) * _spacing[2];
 
     const Ogre::Vector3 scale_factors(
         static_cast<float>(width),
@@ -173,62 +173,62 @@ void volume_renderer::scaleTranslateCube(
         static_cast<float>(_origin[1]),
         static_cast<float>(_origin[2]));
 
-    m_volumeSceneNode->setScale(scale_factors);
-    m_volumeSceneNode->setPosition(ogre_origin);
+    m_volume_scene_node->setScale(scale_factors);
+    m_volume_scene_node->setPosition(ogre_origin);
 }
 
 //-----------------------------------------------------------------------------
 
-void volume_renderer::updateSampleDistance()
+void volume_renderer::update_sample_distance()
 {
     //Update the plane with the current position and direction
-    m_cameraInfo.plane = Ogre::Plane(
-        m_volumeSceneNode->convertWorldToLocalDirection(m_camera->getRealDirection(), true).normalisedCopy(),
-        m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition())
+    m_camera_info.plane = Ogre::Plane(
+        m_volume_scene_node->convertWorldToLocalDirection(m_camera->getRealDirection(), true).normalisedCopy(),
+        m_volume_scene_node->convertWorldToLocalPosition(m_camera->getRealPosition())
     );
 
     //Compares the distances to the camera plane to get the cube's closest and furthest vertex to the camera
     const auto comp = [this](const Ogre::Vector3& _v1, const Ogre::Vector3& _v2)
-                      {return m_cameraInfo.plane.getDistance(_v1) < m_cameraInfo.plane.getDistance(_v2);};
+                      {return m_camera_info.plane.getDistance(_v1) < m_camera_info.plane.getDistance(_v2);};
 
     //Closest vertex
     {
         const auto iterator = std::min_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
-            m_clippedImagePositions.begin(),
-            m_clippedImagePositions.end(),
+            m_clipped_image_positions.begin(),
+            m_clipped_image_positions.end(),
             comp
         );
-        const auto index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
-        m_cameraInfo.closest       = *iterator;
-        m_cameraInfo.closest_index = index;
+        const auto index = static_cast<std::size_t>(std::distance(m_clipped_image_positions.begin(), iterator));
+        m_camera_info.closest       = *iterator;
+        m_camera_info.closest_index = index;
     }
 
     //Furthest vertex
     {
         const auto iterator = std::max_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
-            m_clippedImagePositions.begin(),
-            m_clippedImagePositions.end(),
+            m_clipped_image_positions.begin(),
+            m_clipped_image_positions.end(),
             comp
         );
-        const auto index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
+        const auto index = static_cast<std::size_t>(std::distance(m_clipped_image_positions.begin(), iterator));
 
-        m_cameraInfo.furthest       = *iterator;
-        m_cameraInfo.furthest_index = index;
+        m_camera_info.furthest       = *iterator;
+        m_camera_info.furthest_index = index;
     }
 
     //The total distance between the vertices
     const float total_distance =
         std::abs(
-            m_cameraInfo.plane.getDistance(m_cameraInfo.closest)
-            - m_cameraInfo.plane.getDistance(m_cameraInfo.furthest)
+            m_camera_info.plane.getDistance(m_camera_info.closest)
+            - m_camera_info.plane.getDistance(m_camera_info.furthest)
         );
 
     //Then simply uniformly divide it according to the total number of slices
-    m_sampleDistance = total_distance / static_cast<float>(m_nbSlices);
+    m_sample_distance = total_distance / static_cast<float>(m_nb_slices);
 
     //Validation
-    SIGHT_ASSERT("Sampled distance is NaN.", !std::isnan(m_sampleDistance)); //NaN
-    SIGHT_ASSERT("Sample distance is denormalized.", m_sampleDistance > std::numeric_limits<float>::min());
+    SIGHT_ASSERT("Sampled distance is NaN.", !std::isnan(m_sample_distance)); //NaN
+    SIGHT_ASSERT("Sample distance is denormalized.", m_sample_distance > std::numeric_limits<float>::min());
 }
 
 //-----------------------------------------------------------------------------

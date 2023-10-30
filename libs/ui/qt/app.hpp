@@ -45,7 +45,7 @@ public:
 public Q_SLOTS:
 
     void aboutToQuit();
-    static void onExit();
+    static void on_exit();
 };
 
 } // namespace sight::ui::qt

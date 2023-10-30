@@ -35,17 +35,17 @@
                         <name>ExStereoARCV</name>
                         <icon>ExStereoARCV/app.ico</icon>
                     </frame>
-                    <menuBar />
-                    <toolBar />
+                    <menubar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
-                    <toolBar sid="toolbarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="cameraView" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -82,7 +82,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -545,8 +545,8 @@
             <!-- then process a new frame -->
             <connect>
                 <signal>syncGenericSceneSrv/allReceived</signal>
-                <slot>leftGenericSceneSrv/requestRender</slot>
-                <slot>rightGenericSceneSrv/requestRender</slot>
+                <slot>leftGenericSceneSrv/request_render</slot>
+                <slot>rightGenericSceneSrv/request_render</slot>
                 <slot>frameMatrixSynchronizerSrv/synchronize</slot>
             </connect>
 
@@ -589,18 +589,18 @@
 
             <connect>
                 <signal>reprojectionParamsSrv/parameterChanged</signal>
-                <slot>leftReprojectionErrorSrv/setParameter</slot>
-                <slot>rightReprojectionErrorSrv/setParameter</slot>
+                <slot>leftReprojectionErrorSrv/set_parameter</slot>
+                <slot>rightReprojectionErrorSrv/set_parameter</slot>
             </connect>
 
             <connect>
                 <signal>leftReprojectionErrorSrv/errorComputed</signal>
-                <slot>errorLabelLeftSrv/setDoubleParameter</slot>
+                <slot>errorLabelLeftSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
                 <signal>rightReprojectionErrorSrv/errorComputed</signal>
-                <slot>errorLabelRightSrv/setDoubleParameter</slot>
+                <slot>errorLabelRightSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
@@ -620,8 +620,8 @@
 
             <connect>
                 <signal>arucoParamsSrv/parameterChanged</signal>
-                <slot>arucoTracker1Srv/setParameter</slot>
-                <slot>arucoTracker2Srv/setParameter</slot>
+                <slot>arucoTracker1Srv/set_parameter</slot>
+                <slot>arucoTracker2Srv/set_parameter</slot>
             </connect>
 
             <connect>
@@ -643,12 +643,12 @@
 
             <connect>
                 <signal>arucoTracker1Srv/markerDetected</signal>
-                <slot>LAxisAdp/updateVisibility</slot>
+                <slot>LAxisAdp/update_visibility</slot>
             </connect>
 
             <connect>
                 <signal>arucoTracker2Srv/markerDetected</signal>
-                <slot>RAxisAdp/updateVisibility</slot>
+                <slot>RAxisAdp/update_visibility</slot>
             </connect>
 
             <connect>
@@ -658,8 +658,8 @@
 
             <connect>
                 <signal>hideAxisSrv/isChecked</signal>
-                <slot>LAxisAdp/updateVisibility</slot>
-                <slot>RAxisAdp/updateVisibility</slot>
+                <slot>LAxisAdp/update_visibility</slot>
+                <slot>RAxisAdp/update_visibility</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -33,7 +33,7 @@ namespace sight::data::tools
 
 //------------------------------------------------------------------------------
 
-void color::hexaStringToRGBA(const std::string& _hexa_color, std::array<std::uint8_t, 4>& _rgba)
+void color::hexa_string_to_rgba(const std::string& _hexa_color, std::array<std::uint8_t, 4>& _rgba)
 {
     SIGHT_THROW_IF(
         "Color string should start with '#' and followed by 6 or 8 "

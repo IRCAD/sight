@@ -59,7 +59,7 @@ void slot_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-struct A
+struct a
 {
     //------------------------------------------------------------------------------
 
@@ -112,13 +112,13 @@ int three_sum(int _a, int _b, int _c)
 
 void slot_test::build_test()
 {
-    A a;
+    a a;
 
     auto slot1 = core::com::new_slot(&sum);
-    auto slot2 = core::com::new_slot(&A::method0, &a);
-    auto slot3 = core::com::new_slot(&A::method1, &a);
+    auto slot2 = core::com::new_slot(&a::method0, &a);
+    auto slot3 = core::com::new_slot(&a::method1, &a);
     auto slot4 = core::com::new_slot(&three_sum);
-    auto slot5 = core::com::new_slot(&A::method2, &a);
+    auto slot5 = core::com::new_slot(&a::method2, &a);
 
     auto fn    = [object_ptr = &a]{object_ptr->method2(4321);};
     auto slot6 = std::make_shared<slot<std::function<void(void)> > >(fn);
@@ -180,13 +180,13 @@ void slot_test::build_test()
 
 void slot_test::run_test()
 {
-    A a;
+    a a;
 
     auto slot1 = core::com::new_slot(&sum);
-    auto slot2 = core::com::new_slot(&A::method0, &a);
-    auto slot3 = core::com::new_slot(&A::method1, &a);
+    auto slot2 = core::com::new_slot(&a::method0, &a);
+    auto slot3 = core::com::new_slot(&a::method1, &a);
     auto slot4 = core::com::new_slot(&three_sum);
-    auto slot5 = core::com::new_slot(&A::method2, &a);
+    auto slot5 = core::com::new_slot(&a::method2, &a);
     auto slot6 = core::com::new_slot([&a](){a.method2(4321);});
     auto slot7 = core::com::new_slot([&a](int _x){a.method2(_x);});
 
@@ -218,11 +218,11 @@ void slot_test::run_test()
 
 void slot_test::call_test()
 {
-    A a;
+    a a;
 
     auto slot1 = core::com::new_slot(&sum);
-    auto slot2 = core::com::new_slot(&A::method0, &a);
-    auto slot3 = core::com::new_slot(&A::method1, &a);
+    auto slot2 = core::com::new_slot(&a::method0, &a);
+    auto slot3 = core::com::new_slot(&a::method1, &a);
     auto slot4 = core::com::new_slot(&three_sum);
     auto slot5 = core::com::new_slot([&a](){a.method2(4321);});
 
@@ -240,11 +240,11 @@ void slot_test::call_test()
 
 void slot_test::async_test()
 {
-    A a;
+    a a;
 
     auto slot1 = core::com::new_slot(&sum);
-    auto slot2 = core::com::new_slot(&A::method0, &a);
-    auto slot3 = core::com::new_slot(&A::method1, &a);
+    auto slot2 = core::com::new_slot(&a::method0, &a);
+    auto slot3 = core::com::new_slot(&a::method1, &a);
     auto slot4 = core::com::new_slot(&three_sum);
     auto slot5 = core::com::new_slot([&a](){return a.method2(4321);});
 
@@ -311,11 +311,11 @@ void slot_test::async_test()
 
 void slot_test::slot_base_test()
 {
-    A a;
+    a a;
 
     core::com::slot_base::sptr slot1 = core::com::new_slot(&sum);
-    core::com::slot_base::sptr slot2 = core::com::new_slot(&A::method0, &a);
-    core::com::slot_base::sptr slot3 = core::com::new_slot(&A::method1, &a);
+    core::com::slot_base::sptr slot2 = core::com::new_slot(&a::method0, &a);
+    core::com::slot_base::sptr slot3 = core::com::new_slot(&a::method1, &a);
     core::com::slot_base::sptr slot4 = core::com::new_slot(&three_sum);
     core::com::slot_base::sptr slot5 = core::com::new_slot([&a](){a.method2(4321);});
 
@@ -419,9 +419,9 @@ void slot_test::exception_test()
 
 //-----------------------------------------------------------------------------
 
-struct B
+struct b
 {
-    B()
+    b()
     = default;
 
     //------------------------------------------------------------------------------
@@ -456,12 +456,12 @@ void slot_test::worker_swap_test()
     {
         using signature = std::thread::id(const unsigned int);
 
-        B b;
+        b b;
 
         core::thread::worker::sptr w1 = core::thread::worker::make();
         core::thread::worker::sptr w2 = core::thread::worker::make();
 
-        core::com::slot<signature>::sptr m0 = core::com::new_slot(&B::wait_seconds, &b);
+        core::com::slot<signature>::sptr m0 = core::com::new_slot(&b::wait_seconds, &b);
 
         CPPUNIT_ASSERT(b.m_thread_id == std::thread::id());
 
@@ -489,12 +489,12 @@ void slot_test::worker_swap_test()
     {
         using signature = std::thread::id(const unsigned int);
 
-        B b;
+        b b;
 
         core::thread::worker::sptr w1 = core::thread::worker::make();
         core::thread::worker::sptr w2 = core::thread::worker::make();
 
-        core::com::slot<signature>::sptr m0 = core::com::new_slot(&B::wait_seconds, &b);
+        core::com::slot<signature>::sptr m0 = core::com::new_slot(&b::wait_seconds, &b);
 
         CPPUNIT_ASSERT(b.m_thread_id == std::thread::id());
 
@@ -524,12 +524,12 @@ void slot_test::worker_swap_test()
     {
         using signature = std::thread::id(const unsigned int);
 
-        B b;
+        b b;
 
         core::thread::worker::sptr w1 = core::thread::worker::make();
         core::thread::worker::sptr w2 = core::thread::worker::make();
 
-        core::com::slot<signature>::sptr m0 = core::com::new_slot(&B::wait_seconds, &b);
+        core::com::slot<signature>::sptr m0 = core::com::new_slot(&b::wait_seconds, &b);
 
         CPPUNIT_ASSERT(b.m_thread_id == std::thread::id());
 
@@ -564,12 +564,12 @@ void slot_test::sloppiness_test()
 {
     // Tests whether fallback when calling a slot with too many arguments works
     // correctly.
-    A a;
+    a a;
     last_sum_result = 0;
 
     core::com::slot_base::sptr slot1 = core::com::new_slot(&sum);
-    core::com::slot_base::sptr slot2 = core::com::new_slot(&A::method0, &a);
-    core::com::slot_base::sptr slot3 = core::com::new_slot(&A::method1, &a);
+    core::com::slot_base::sptr slot2 = core::com::new_slot(&a::method0, &a);
+    core::com::slot_base::sptr slot3 = core::com::new_slot(&a::method1, &a);
 
     slot1->run(40, 2, 3);
     slot2->run("Hello world");

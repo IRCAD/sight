@@ -93,7 +93,7 @@ protected:
 protected Q_SLOTS:
 
     /// Called when the slider moves
-    void changeOpacity(int _value);
+    void change_opacity(int _value);
 
 private:
 
@@ -106,9 +106,9 @@ private:
     /// Previous value, used to scale the opacity when it changes
     int m_previous_value {50};
 
-    static constexpr std::string_view s_TF = "tf";
+    static constexpr std::string_view TF = "tf";
 
-    data::ptr<data::transfer_function, data::Access::inout> m_tf {this, s_TF, true};
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF, true};
 };
 
 } // namespace sight::module::ui::qt::image

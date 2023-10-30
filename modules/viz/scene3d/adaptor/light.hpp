@@ -88,99 +88,99 @@ public:
      * @brief Gets the name of the light.
      * @return The name of the light.
      */
-    MODULE_VIZ_SCENE3D_API const std::string& getName() const final;
+    MODULE_VIZ_SCENE3D_API const std::string& get_name() const final;
 
     /**
      * @brief Sets the name of the light.
      * @param _name the new light name.
      */
-    MODULE_VIZ_SCENE3D_API void setName(const std::string& _name) final;
+    MODULE_VIZ_SCENE3D_API void set_name(const std::string& _name) final;
 
     /**
      * @brief Gets the type of the light.
      * @return The light type.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::Light::LightTypes getType() const final;
+    MODULE_VIZ_SCENE3D_API Ogre::Light::LightTypes type() const final;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the new light type.
      */
-    MODULE_VIZ_SCENE3D_API void setType(Ogre::Light::LightTypes _type) final;
+    MODULE_VIZ_SCENE3D_API void set_type(Ogre::Light::LightTypes _type) final;
 
     /**
      * @brief Gets the diffuse color of the light.
      * @return The light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getDiffuseColor() const final;
+    MODULE_VIZ_SCENE3D_API Ogre::ColourValue get_diffuse_color() const final;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the new light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API void setDiffuseColor(Ogre::ColourValue _diffuse_color) final;
+    MODULE_VIZ_SCENE3D_API void set_diffuse_color(Ogre::ColourValue _diffuse_color) final;
 
     /**
      * @brief Gets the specular color of the light.
      * @return The light specular color.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getSpecularColor() const final;
+    MODULE_VIZ_SCENE3D_API Ogre::ColourValue get_specular_color() const final;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _specularColor the new light specular color.
      */
-    MODULE_VIZ_SCENE3D_API void setSpecularColor(Ogre::ColourValue _specular_color) final;
+    MODULE_VIZ_SCENE3D_API void set_specular_color(Ogre::ColourValue _specular_color) final;
 
     /**
      * @brief Gets the light activation state.
      * @return The light activation state.
      */
-    MODULE_VIZ_SCENE3D_API bool isSwitchedOn() const final;
+    MODULE_VIZ_SCENE3D_API bool is_switched_on() const final;
 
     /**
      * @brief Sets the light activation state.
      * @param _on the light new activation state.
      */
-    MODULE_VIZ_SCENE3D_API void switchOn(bool _on) final;
+    MODULE_VIZ_SCENE3D_API void switch_on(bool _on) final;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around x axis.
      * @return The theta offset of the light.
      */
-    MODULE_VIZ_SCENE3D_API float getThetaOffset() const final;
+    MODULE_VIZ_SCENE3D_API float get_theta_offset() const final;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
      * @param _thetaOffset the value of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void setThetaOffset(float _theta_offset) final;
+    MODULE_VIZ_SCENE3D_API void set_theta_offset(float _theta_offset) final;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around y axis.
      * @return The phi of the light.
      */
-    MODULE_VIZ_SCENE3D_API float getPhiOffset() const final;
+    MODULE_VIZ_SCENE3D_API float get_phi_offset() const final;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
      * @param _phiOffset the phi of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void setPhiOffset(float _phi_offset) final;
+    MODULE_VIZ_SCENE3D_API void set_phi_offset(float _phi_offset) final;
 
     /**
      * @brief Enables the light visual feedback.
      * @param _enable the visual feedback visibility state.
      */
-    MODULE_VIZ_SCENE3D_API void enableVisualFeedback(bool _enable) final;
+    MODULE_VIZ_SCENE3D_API void enable_visual_feedback(bool _enable) final;
 
     /**
      * @brief Indicates if the visual feedback is enabled.
      * @return True if the visual feedback is activated.
      */
-    MODULE_VIZ_SCENE3D_API bool isVisualFeedbackOn() const final;
+    MODULE_VIZ_SCENE3D_API bool is_visual_feedback_on() const final;
 
 protected:
 
@@ -211,100 +211,100 @@ private:
     Ogre::Light* m_light {nullptr};
 
     /// Defines the name of the associated Ogre light.
-    std::string m_lightName;
+    std::string m_light_name;
 
     /// Sets the type of the associated Ogre light.
-    Ogre::Light::LightTypes m_lightType {Ogre::Light::LT_DIRECTIONAL};
+    Ogre::Light::LightTypes m_light_type {Ogre::Light::LT_DIRECTIONAL};
 
     /// Enables the light.
-    bool m_switchedOn {true};
+    bool m_switched_on {true};
 
     /// Defines the angle in degrees defining the rotation of the light around x axis.
-    float m_thetaOffset {0.F};
+    float m_theta_offset {0.F};
 
     /// Defines the angle in degrees defining the rotation of the light around y axis.
-    float m_phiOffset {0.F};
+    float m_phi_offset {0.F};
 
     /// Contains the node used to attach the light
-    Ogre::SceneNode* m_lightNode {nullptr};
+    Ogre::SceneNode* m_light_node {nullptr};
 
     /// Defines the visual feedback visibility state.
-    bool m_visualFeedback {false};
+    bool m_visual_feedback {false};
 
     /// Contains the material used for the feedback visualization.
     data::material::sptr m_material {nullptr};
 
     /// Contains the sphere at the light position.
-    Ogre::ManualObject* m_lightPosition {nullptr};
+    Ogre::ManualObject* m_light_position {nullptr};
 
     /// Defines the length of the visual feedback object.
     float m_length {50.F};
 
     /// Contains objects used for the directional light visual feedback.
-    std::pair<Ogre::ManualObject*, Ogre::ManualObject*> m_directionalFeedback {nullptr, nullptr};
+    std::pair<Ogre::ManualObject*, Ogre::ManualObject*> m_directional_feedback {nullptr, nullptr};
 };
 
 //------------------------------------------------------------------------------
 
-inline const std::string& light::getName() const
+inline const std::string& light::get_name() const
 {
-    return m_lightName;
+    return m_light_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void light::setName(const std::string& _name)
+inline void light::set_name(const std::string& _name)
 {
-    m_lightName = _name;
+    m_light_name = _name;
 }
 
 //------------------------------------------------------------------------------
 
-inline Ogre::Light::LightTypes light::getType() const
+inline Ogre::Light::LightTypes light::type() const
 {
-    return m_lightType;
+    return m_light_type;
 }
 
 //------------------------------------------------------------------------------
 
-inline Ogre::ColourValue light::getDiffuseColor() const
+inline Ogre::ColourValue light::get_diffuse_color() const
 {
     return m_light->getDiffuseColour();
 }
 
 //------------------------------------------------------------------------------
 
-inline Ogre::ColourValue light::getSpecularColor() const
+inline Ogre::ColourValue light::get_specular_color() const
 {
     return m_light->getSpecularColour();
 }
 
 //------------------------------------------------------------------------------
 
-inline bool light::isSwitchedOn() const
+inline bool light::is_switched_on() const
 {
-    return m_switchedOn;
+    return m_switched_on;
 }
 
 //------------------------------------------------------------------------------
 
-inline float light::getThetaOffset() const
+inline float light::get_theta_offset() const
 {
-    return m_thetaOffset;
+    return m_theta_offset;
 }
 
 //------------------------------------------------------------------------------
 
-inline float light::getPhiOffset() const
+inline float light::get_phi_offset() const
 {
-    return m_phiOffset;
+    return m_phi_offset;
 }
 
 //------------------------------------------------------------------------------
 
-inline bool light::isVisualFeedbackOn() const
+inline bool light::is_visual_feedback_on() const
 {
-    return m_visualFeedback;
+    return m_visual_feedback;
 }
 
 //------------------------------------------------------------------------------

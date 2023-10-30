@@ -29,14 +29,14 @@
 #include <io/bitmap/Writer.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::bitmap::ut::ReaderWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::bitmap::ut::reader_writer_test);
 
 namespace sight::io::bitmap::ut
 {
 
 //------------------------------------------------------------------------------
 
-template<data::image::PixelFormat F, core::type::type_t T, Backend B>
+template<enum data::image::pixel_format F, core::type::type_t T, backend B>
 inline static void test_backend(bool _write_must_fail = false)
 {
     // Create a temporary directory
@@ -46,16 +46,16 @@ inline static void test_backend(bool _write_must_fail = false)
     const auto& expected_image = get_synthetic_image(0, T, F);
 
     // Create the writer
-    auto writer = std::make_shared<Writer>();
+    auto writer = std::make_shared<io::bitmap::writer>();
     CPPUNIT_ASSERT_NO_THROW_MESSAGE(backend_to_string(B).first, writer->set_object(expected_image));
 
     // Create the reader
     auto actual_image = std::make_shared<data::image>();
-    auto reader       = std::make_shared<Reader>();
+    auto reader       = std::make_shared<io::bitmap::reader>();
     reader->set_object(actual_image);
 
     // Test write modes
-    for(const auto& mode : {Writer::Mode::BEST, Writer::Mode::FAST})
+    for(const auto& mode : {writer::mode::best, writer::mode::fast})
     {
         constexpr core::type type = T;
 
@@ -80,7 +80,7 @@ inline static void test_backend(bool _write_must_fail = false)
         CPPUNIT_ASSERT_NO_THROW(reader->read(B));
 
         // Check the image
-        if constexpr(B != Backend::LIBJPEG && B != Backend::NVJPEG)
+        if constexpr(B != backend::libjpeg && B != backend::nvjpeg)
         {
             CPPUNIT_ASSERT_MESSAGE(
                 "The image are not equal for backend '" + backend_to_string(B).first + "', mode '" + mode_to_string(
@@ -100,13 +100,13 @@ inline static void test_backend(bool _write_must_fail = false)
             CPPUNIT_ASSERT_EQUAL_MESSAGE(backend_to_string(B).first, expected_size[2], actual_size[2]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 backend_to_string(B).first,
-                expected_image->getPixelFormat(),
-                actual_image->getPixelFormat()
+                expected_image->pixel_format(),
+                actual_image->pixel_format()
             );
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 backend_to_string(B).first,
-                expected_image->getType(),
-                actual_image->getType()
+                expected_image->type(),
+                actual_image->type()
             );
 
             // Ensure that psnr is at least > 20
@@ -125,253 +125,253 @@ inline static void test_backend(bool _write_must_fail = false)
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::setUp()
+void reader_writer_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::tearDown()
+void reader_writer_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::grayscaleUINT8Test()
+void reader_writer_test::grayscale_uin_t8_test()
 {
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::LIBJPEG>();
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::LIBPNG>();
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t8, backend::libjpeg>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t8, backend::libpng>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t8, backend::libtiff>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t8, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t8, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::NVJPEG2K>();
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t8, backend::nvjpeg2k>();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::grayscaleUINT16Test()
+void reader_writer_test::grayscale_uin_t16_test()
 {
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::LIBPNG>();
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t16, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t16, backend::libpng>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t16, backend::libtiff>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t16, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t16, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::NVJPEG2K>();
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::uin_t16, backend::nvjpeg2k>();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::grayscaleINT8Test()
+void reader_writer_test::grayscale_in_t8_test()
 {
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::LIBPNG>(true);
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t8, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t8, backend::libpng>(true);
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t8, backend::libtiff>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t8, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t8, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::NVJPEG2K>(true);
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t8, backend::nvjpeg2k>(true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::grayscaleINT16Test()
+void reader_writer_test::grayscale_in_t16_test()
 {
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::LIBPNG>(true);
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t16, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t16, backend::libpng>(true);
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t16, backend::libtiff>();
+    test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t16, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t16, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::NVJPEG2K>(true);
+        test_backend<data::image::pixel_format::gray_scale, core::type::type_t::in_t16, backend::nvjpeg2k>(true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbUINT8Test()
+void reader_writer_test::rgb_uin_t8_test()
 {
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::LIBJPEG>();
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::LIBPNG>();
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t8, backend::libjpeg>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t8, backend::libpng>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t8, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t8, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::NVJPEG>();
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t8, backend::nvjpeg>();
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::NVJPEG2K>();
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t8, backend::nvjpeg2k>();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbUINT16Test()
+void reader_writer_test::rgb_uin_t16_test()
 {
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::LIBPNG>();
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t16, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t16, backend::libpng>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t16, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t16, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t16, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::NVJPEG2K>();
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::uin_t16, backend::nvjpeg2k>();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbINT8Test()
+void reader_writer_test::rgb_in_t8_test()
 {
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT8, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT8, Backend::LIBPNG>(true);
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT8, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT8, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t8, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t8, backend::libpng>(true);
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t8, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t8, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT8, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t8, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT8, Backend::NVJPEG2K>(true);
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t8, backend::nvjpeg2k>(true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbINT16Test()
+void reader_writer_test::rgb_in_t16_test()
 {
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT16, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT16, Backend::LIBPNG>(true);
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT16, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT16, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t16, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t16, backend::libpng>(true);
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t16, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t16, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT16, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t16, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGB, core::type::type_t::INT16, Backend::NVJPEG2K>(true);
+        test_backend<data::image::pixel_format::rgb, core::type::type_t::in_t16, backend::nvjpeg2k>(true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbaUINT8Test()
+void reader_writer_test::rgba_uin_t8_test()
 {
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::LIBPNG>();
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t8, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t8, backend::libpng>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t8, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t8, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t8, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::NVJPEG2K>();
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t8, backend::nvjpeg2k>();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbaUINT16Test()
+void reader_writer_test::rgba_uin_t16_test()
 {
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::LIBPNG>();
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t16, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t16, backend::libpng>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t16, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t16, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t16, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::NVJPEG2K>(true);
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::uin_t16, backend::nvjpeg2k>(true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbaINT8Test()
+void reader_writer_test::rgba_in_t8_test()
 {
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::LIBPNG>(true);
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t8, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t8, backend::libpng>(true);
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t8, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t8, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t8, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::NVJPEG2K>(true);
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t8, backend::nvjpeg2k>(true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::rgbaINT16Test()
+void reader_writer_test::rgba_in_t16_test()
 {
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::LIBJPEG>(true);
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::LIBPNG>(true);
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::LIBTIFF>();
-    test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::OPENJPEG>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t16, backend::libjpeg>(true);
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t16, backend::libpng>(true);
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t16, backend::libtiff>();
+    test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t16, backend::openjpeg>();
 
     if(io::bitmap::nv_jpeg())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::NVJPEG>(true);
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t16, backend::nvjpeg>(true);
     }
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        test_backend<data::image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::NVJPEG2K>(true);
+        test_backend<data::image::pixel_format::rgba, core::type::type_t::in_t16, backend::nvjpeg2k>(true);
     }
 }
 

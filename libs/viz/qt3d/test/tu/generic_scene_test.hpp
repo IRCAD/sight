@@ -30,7 +30,7 @@ namespace sight::viz::qt3d_test::ut
 class generic_scene_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(generic_scene_test);
-CPPUNIT_TEST(initializeEmptyScene);
+CPPUNIT_TEST(initialize_empty_scene);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,7 +43,7 @@ public:
 
     void tearDown() override;
 
-    static void initializeEmptyScene();
+    static void initialize_empty_scene();
 };
 
 } // namespace sight::viz::qt3dTest::ut

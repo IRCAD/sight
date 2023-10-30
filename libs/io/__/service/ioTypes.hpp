@@ -31,18 +31,18 @@
 namespace sight::io::service
 {
 
-//! IOPathType defines different types of paths used by service readers/writers
-typedef enum
+//! path_type_t defines different types of paths used by service readers/writers
+enum path_type_t
 {
-    FILE             = (1 << 0), /*!< io service can manage file and cannot manage a list of file*/
-    FILES            = (1 << 1), /*!< io service can manage a list of file ()*/
-    FOLDER           = (1 << 2), /*!< io service can manage folder*/
-    TYPE_NOT_DEFINED = (1 << 3)  /*!< io service not used path parameter to works */
-} IOPathType;
+    file             = (1 << 0), /*!< io service can manage file and cannot manage a list of file*/
+    files            = (1 << 1), /*!< io service can manage a list of file ()*/
+    folder           = (1 << 2), /*!< io service can manage folder*/
+    type_not_defined = (1 << 3)  /*!< io service not used path parameter to works */
+};
 
 /// List of paths managed by io services
-typedef std::vector<std::filesystem::path> locations_t;
+using locations_t = std::vector<std::filesystem::path>;
 
-IO_API extern const std::string s_DATA_KEY;
+IO_API extern const std::string DATA_KEY;
 
 } // namespace sight::io::service

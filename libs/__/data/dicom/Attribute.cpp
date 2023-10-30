@@ -3183,7 +3183,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ColorFilterArrayPatternRows>::s_element = 0x000E;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ColorFilterArrayPatternRows>::s_name =
-    "Color Filter Array Pattern Rows";
+    "Color filter Array Pattern Rows";
 template<>
 DATA_API const VR Attribute<Keyword::ColorFilterArrayPatternRows>::s_vr = VR::IS;
 template<>
@@ -3197,7 +3197,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ColorFilterArrayPatternColumns>::s_element = 0x000F;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ColorFilterArrayPatternColumns>::s_name =
-    "Color Filter Array Pattern Columns";
+    "Color filter Array Pattern Columns";
 template<>
 DATA_API const VR Attribute<Keyword::ColorFilterArrayPatternColumns>::s_vr = VR::IS;
 template<>
@@ -3211,7 +3211,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ColorFilterArrayPatternValues>::s_element = 0x0010;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ColorFilterArrayPatternValues>::s_name =
-    "Color Filter Array Pattern Values";
+    "Color filter Array Pattern Values";
 template<>
 DATA_API const VR Attribute<Keyword::ColorFilterArrayPatternValues>::s_vr = VR::DS;
 template<>
@@ -6047,7 +6047,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FilterType>::s_group = 0x0018;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FilterType>::s_element = 0x1160;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FilterType>::s_name = "Filter Type";
+DATA_API const std::string_view Attribute<Keyword::FilterType>::s_name = "filter Type";
 template<>
 DATA_API const VR Attribute<Keyword::FilterType>::s_vr = VR::SH;
 template<>
@@ -8658,7 +8658,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FilterMaterial>::s_group = 0x001
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FilterMaterial>::s_element = 0x7050;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FilterMaterial>::s_name = "Filter Material";
+DATA_API const std::string_view Attribute<Keyword::FilterMaterial>::s_name = "filter Material";
 template<>
 DATA_API const VR Attribute<Keyword::FilterMaterial>::s_vr = VR::CS;
 template<>
@@ -8670,7 +8670,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FilterThicknessMinimum>::s_group
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FilterThicknessMinimum>::s_element = 0x7052;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FilterThicknessMinimum>::s_name = "Filter Thickness Minimum";
+DATA_API const std::string_view Attribute<Keyword::FilterThicknessMinimum>::s_name = "filter Thickness Minimum";
 template<>
 DATA_API const VR Attribute<Keyword::FilterThicknessMinimum>::s_vr = VR::DS;
 template<>
@@ -8682,7 +8682,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FilterThicknessMaximum>::s_group
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FilterThicknessMaximum>::s_element = 0x7054;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FilterThicknessMaximum>::s_name = "Filter Thickness Maximum";
+DATA_API const std::string_view Attribute<Keyword::FilterThicknessMaximum>::s_name = "filter Thickness Maximum";
 template<>
 DATA_API const VR Attribute<Keyword::FilterThicknessMaximum>::s_vr = VR::DS;
 template<>
@@ -8696,7 +8696,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::FilterBeamPathLengthMinimum>::s_element = 0x7056;
 template<>
 DATA_API const std::string_view Attribute<Keyword::FilterBeamPathLengthMinimum>::s_name =
-    "Filter Beam Path Length Minimum";
+    "filter Beam Path Length Minimum";
 template<>
 DATA_API const VR Attribute<Keyword::FilterBeamPathLengthMinimum>::s_vr = VR::FL;
 template<>
@@ -8710,7 +8710,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::FilterBeamPathLengthMaximum>::s_element = 0x7058;
 template<>
 DATA_API const std::string_view Attribute<Keyword::FilterBeamPathLengthMaximum>::s_name =
-    "Filter Beam Path Length Maximum";
+    "filter Beam Path Length Maximum";
 template<>
 DATA_API const VR Attribute<Keyword::FilterBeamPathLengthMaximum>::s_vr = VR::FL;
 template<>
@@ -10473,7 +10473,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ImageFilter>::s_group = 0x0018;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ImageFilter>::s_element = 0x9320;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ImageFilter>::s_name = "Image Filter";
+DATA_API const std::string_view Attribute<Keyword::ImageFilter>::s_name = "Image filter";
 template<>
 DATA_API const VR Attribute<Keyword::ImageFilter>::s_vr = VR::SH;
 template<>
@@ -12391,7 +12391,7 @@ DATA_API const std::uint16_t Attribute<Keyword::XRayFilterSequence>::s_group = 0
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::XRayFilterSequence>::s_element = 0x9556;
 template<>
-DATA_API const std::string_view Attribute<Keyword::XRayFilterSequence>::s_name = "X-Ray Filter Sequence";
+DATA_API const std::string_view Attribute<Keyword::XRayFilterSequence>::s_name = "X-Ray filter Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::XRayFilterSequence>::s_vr = VR::SQ;
 template<>
@@ -14706,7 +14706,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::LightPathFilterPassThroughWavelength>::s_element = 0x0001;
 template<>
 DATA_API const std::string_view Attribute<Keyword::LightPathFilterPassThroughWavelength>::s_name =
-    "Light Path Filter Pass-Through Wavelength";
+    "Light Path filter Pass-Through Wavelength";
 template<>
 DATA_API const VR Attribute<Keyword::LightPathFilterPassThroughWavelength>::s_vr = VR::US;
 template<>
@@ -14718,7 +14718,7 @@ DATA_API const std::uint16_t Attribute<Keyword::LightPathFilterPassBand>::s_grou
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::LightPathFilterPassBand>::s_element = 0x0002;
 template<>
-DATA_API const std::string_view Attribute<Keyword::LightPathFilterPassBand>::s_name = "Light Path Filter Pass Band";
+DATA_API const std::string_view Attribute<Keyword::LightPathFilterPassBand>::s_name = "Light Path filter Pass Band";
 template<>
 DATA_API const VR Attribute<Keyword::LightPathFilterPassBand>::s_vr = VR::US;
 template<>
@@ -14732,7 +14732,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ImagePathFilterPassThroughWavelength>::s_element = 0x0003;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ImagePathFilterPassThroughWavelength>::s_name =
-    "Image Path Filter Pass-Through Wavelength";
+    "Image Path filter Pass-Through Wavelength";
 template<>
 DATA_API const VR Attribute<Keyword::ImagePathFilterPassThroughWavelength>::s_vr = VR::US;
 template<>
@@ -14744,7 +14744,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ImagePathFilterPassBand>::s_grou
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ImagePathFilterPassBand>::s_element = 0x0004;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ImagePathFilterPassBand>::s_name = "Image Path Filter Pass Band";
+DATA_API const std::string_view Attribute<Keyword::ImagePathFilterPassBand>::s_name = "Image Path filter Pass Band";
 template<>
 DATA_API const VR Attribute<Keyword::ImagePathFilterPassBand>::s_vr = VR::US;
 template<>
@@ -14910,7 +14910,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::LightPathFilterTypeStackCodeSequence>::s_element = 0x0017;
 template<>
 DATA_API const std::string_view Attribute<Keyword::LightPathFilterTypeStackCodeSequence>::s_name =
-    "Light Path Filter Type Stack Code Sequence";
+    "Light Path filter Type Stack Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::LightPathFilterTypeStackCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -14924,7 +14924,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ImagePathFilterTypeStackCodeSequence>::s_element = 0x0018;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ImagePathFilterTypeStackCodeSequence>::s_name =
-    "Image Path Filter Type Stack Code Sequence";
+    "Image Path filter Type Stack Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::ImagePathFilterTypeStackCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -17331,7 +17331,7 @@ DATA_API const std::uint16_t Attribute<Keyword::DisplayFilterPercentage>::s_grou
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::DisplayFilterPercentage>::s_element = 0x9411;
 template<>
-DATA_API const std::string_view Attribute<Keyword::DisplayFilterPercentage>::s_name = "Display Filter Percentage";
+DATA_API const std::string_view Attribute<Keyword::DisplayFilterPercentage>::s_name = "Display filter Percentage";
 template<>
 DATA_API const VR Attribute<Keyword::DisplayFilterPercentage>::s_vr = VR::FL;
 template<>

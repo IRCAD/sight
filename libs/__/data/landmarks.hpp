@@ -40,21 +40,21 @@ class DATA_CLASS_API landmarks : public object
 {
 public:
 
-    typedef std::array<float, 4> color_t;
-    typedef std::array<double, 3> point_t;
-    typedef float size_t;
-    typedef std::vector<point_t> PointContainer;
-    typedef std::vector<std::string> GroupNameContainer;
+    using color_t            = std::array<float, 4>;
+    using point_t            = std::array<double, 3>;
+    using size_t             = float;
+    using point_container    = std::vector<point_t>;
+    using GroupNameContainer = std::vector<std::string>;
 
-    enum class Shape
+    enum class shape
     {
-        SPHERE,
-        CUBE
+        sphere,
+        cube
     };
 
-    struct DATA_CLASS_API LandmarksGroup
+    struct DATA_CLASS_API landmarks_group
     {
-        LandmarksGroup(color_t _color, size_t _size, Shape _shape, bool _visibility) :
+        landmarks_group(color_t _color, size_t _size, shape _shape, bool _visibility) :
             m_color(_color),
             m_size(_size),
             m_shape(_shape),
@@ -64,15 +64,15 @@ public:
 
         /// Equality comparison operators
         /// @{
-        DATA_API bool operator==(const LandmarksGroup& _other) const noexcept;
-        DATA_API bool operator!=(const LandmarksGroup& _other) const noexcept;
+        DATA_API bool operator==(const landmarks_group& _other) const noexcept;
+        DATA_API bool operator!=(const landmarks_group& _other) const noexcept;
         /// @}
 
         color_t m_color;
         size_t m_size;
-        Shape m_shape;
+        shape m_shape;
         bool m_visibility;
-        PointContainer m_points;
+        point_container m_points;
     };
 
     SIGHT_DECLARE_CLASS(landmarks, object);
@@ -91,49 +91,49 @@ public:
      *
      * @throw data::exception if a group exists with the given name
      */
-    DATA_API void addGroup(
+    DATA_API void add_group(
         const std::string& _name,
         const color_t& _color = {{1.0F, 1.0F, 1.0F, 1.0F}},
         size_t _size          = 1.0F,
-        Shape _shape          = Shape::SPHERE,
+        shape _shape          = shape::sphere,
         bool _visibility      = true
     );
 
     /// Return all group names
-    DATA_API GroupNameContainer getGroupNames() const;
+    DATA_API GroupNameContainer get_group_names() const;
 
     /**
      * @brief Get the group properties
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API const LandmarksGroup& getGroup(const std::string& _name) const;
+    DATA_API const landmarks_group& get_group(const std::string& _name) const;
 
     /**
      * @brief Get the group properties
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API LandmarksGroup& getGroup(const std::string& _name);
+    DATA_API landmarks_group& get_group(const std::string& _name);
 
     /**
      * @brief Check if the group exists
      */
-    DATA_API bool hasGroup(const std::string& _name) const noexcept;
+    DATA_API bool has_group(const std::string& _name) const noexcept;
 
     /**
      * @brief Rename the group
      *
      * @throw data::exception if the group does not exist or if a group exists with the new name
      */
-    DATA_API void renameGroup(const std::string& _old_name, const std::string& _new_name);
+    DATA_API void rename_group(const std::string& _old_name, const std::string& _new_name);
 
     /**
      * @brief Remove the group
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void removeGroup(const std::string& _name);
+    DATA_API void remove_group(const std::string& _name);
 
     /**
      * @brief Set the group's color.
@@ -142,129 +142,129 @@ public:
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void setGroupColor(const std::string& _name, const color_t& _color);
+    DATA_API void set_group_color(const std::string& _name, const color_t& _color);
 
     /**
      * @brief Set the group's landmark size
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void setGroupSize(const std::string& _name, size_t _size);
+    DATA_API void set_group_size(const std::string& _name, size_t _size);
 
     /**
      * @brief Set the group's shape (SPHERE or CUBE)
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void setGroupShape(const std::string& _name, Shape _shape);
+    DATA_API void set_group_shape(const std::string& _name, shape _shape);
 
     /**
      * @brief Set the group's visibility
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void setGroupVisibility(const std::string& _name, bool _visibility);
+    DATA_API void set_group_visibility(const std::string& _name, bool _visibility);
 
     /**
      * @brief Add a point to the group
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void addPoint(const std::string& _name, const point_t& _point);
+    DATA_API void add_point(const std::string& _name, const point_t& _point);
 
     /**
      * @brief Insert a point to the group at the given index
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void insertPoint(const std::string& _name, std::size_t _index, const point_t& _point);
+    DATA_API void insert_point(const std::string& _name, std::size_t _index, const point_t& _point);
 
     /**
      * @brief Get the point at the given index
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API const point_t& getPoint(const std::string& _name, std::size_t _index) const;
+    DATA_API const point_t& get_point(const std::string& _name, std::size_t _index) const;
 
     /**
      * @brief Get the point at the given index
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API point_t& getPoint(const std::string& _name, std::size_t _index);
+    DATA_API point_t& get_point(const std::string& _name, std::size_t _index);
 
     /**
      * @brief Get all group's points
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API const PointContainer& getPoints(const std::string& _name) const;
+    DATA_API const point_container& get_points(const std::string& _name) const;
 
     /**
      * @brief Remove the point at the given index
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void removePoint(const std::string& _name, std::size_t _index);
+    DATA_API void remove_point(const std::string& _name, std::size_t _index);
 
     /**
      * @brief Remove all the group's points
      *
      * @throw data::exception if the group does not exist
      */
-    DATA_API void clearPoints(const std::string& _name);
+    DATA_API void clear_points(const std::string& _name);
 
     /// Return the number of groups
-    std::size_t numGroups() const;
+    std::size_t num_groups() const;
 
     /// Return the number of points in the entire structure
-    DATA_API std::size_t numPoints() const;
+    DATA_API std::size_t num_points() const;
 
     /// Return the number of points in the group
-    DATA_API std::size_t numPoints(const std::string& _name) const;
+    DATA_API std::size_t num_points(const std::string& _name) const;
 
     /**
      * @name Signals
      * @{
      */
     /// Type of signal when a group is added
-    typedef core::com::signal<void (std::string _name)> group_added_signal_t;
+    using group_added_signal_t = core::com::signal<void (std::string)>;
     DATA_API static const core::com::signals::key_t GROUP_ADDED_SIG;
 
     /// Type of signal when a group is removed
-    typedef core::com::signal<void (std::string _name)> group_removed_signal_t;
+    using group_removed_signal_t = core::com::signal<void (std::string)>;
     DATA_API static const core::com::signals::key_t GROUP_REMOVED_SIG;
 
     /// Type of signal when a point is added
-    typedef core::com::signal<void (std::string _name)> point_added_signal_t;
+    using point_added_signal_t = core::com::signal<void (std::string)>;
     DATA_API static const core::com::signals::key_t POINT_ADDED_SIG;
 
     /// Type of signal when a point is removed
-    typedef core::com::signal<void (std::string _name, std::size_t _index)> point_removed_signal_t;
+    using point_removed_signal_t = core::com::signal<void (std::string, std::size_t)>;
     DATA_API static const core::com::signals::key_t POINT_REMOVED_SIG;
 
     /// Type of signal when a point is inserted
-    typedef core::com::signal<void (std::string _name, std::size_t _index)> point_inserted_signal_t;
+    using point_inserted_signal_t = core::com::signal<void (std::string, std::size_t)>;
     DATA_API static const core::com::signals::key_t POINT_INSERTED_SIG;
 
     /// Type of signal when a point is modified
-    typedef core::com::signal<void (std::string _name, std::size_t _index)> point_modified_sig_t;
+    using point_modified_sig_t = core::com::signal<void (std::string, std::size_t)>;
     DATA_API static const core::com::signals::key_t POINT_MODIFIED_SIG;
 
     /// Type of signal when group properties changed
-    typedef core::com::signal<void (std::string _name)> group_modified_signal_t;
+    using group_modified_signal_t = core::com::signal<void (std::string)>;
     DATA_API static const core::com::signals::key_t GROUP_MODIFIED_SIG;
 
     /// Type of signal when a group is renamed
-    typedef core::com::signal<void (std::string _old_name, std::string _new_name)> group_renamed_signal_t;
+    using group_renamed_signal_t = core::com::signal<void (std::string, std::string)>;
     DATA_API static const core::com::signals::key_t GROUP_RENAMED_SIG;
 
     /// Type of signal when point is selected
-    typedef core::com::signal<void (std::string _name, std::size_t _index)> point_selected_signal_t;
+    using point_selected_signal_t = core::com::signal<void (std::string, std::size_t)>;
     DATA_API static const core::com::signals::key_t POINT_SELECTED_SIG;
 
     /// Type of signal when point is deselected
-    typedef core::com::signal<void (std::string _name, std::size_t _index)> point_deselected_signal_t;
+    using point_deselected_signal_t = core::com::signal<void (std::string, std::size_t)>;
     DATA_API static const core::com::signals::key_t POINT_DESELECTED_SIG;
 
 /**
@@ -293,13 +293,13 @@ public:
 
 private:
 
-    typedef std::map<std::string, LandmarksGroup> LandmarksContainer;
-    LandmarksContainer m_landmarks;
+    using landmarks_container = std::map<std::string, landmarks_group>;
+    landmarks_container m_landmarks;
 }; // end class landmarks
 
 //------------------------------------------------------------------------------
 
-inline std::size_t landmarks::numGroups() const
+inline std::size_t landmarks::num_groups() const
 {
     return m_landmarks.size();
 }

@@ -130,14 +130,14 @@ protected:
 
     enum action_t
     {
-        START,
-        STOP,
-        START_OR_STOP,
-        START_IF_EXISTS,
-        START_ONLY,
-        START_ONLY_OR_STOP,
-        STOP_IF_EXISTS,
-        DO_NOTHING
+        start,
+        stop,
+        start_or_stop,
+        start_if_exists,
+        start_only,
+        start_only_or_stop,
+        stop_if_exists,
+        do_nothing
     };
 
     /**
@@ -166,14 +166,14 @@ protected:
 
 private:
 
-    typedef core::tools::id::type IDSrvType;
-    typedef std::pair<IDSrvType, action_t> PairIDActionType;
-    typedef std::vector<PairIDActionType> VectPairIDActionType;
-    typedef std::set<IDSrvType> SetIDSrvType;
+    using id_srv_t              = core::tools::id::type;
+    using pair_id_action_t      = std::pair<id_srv_t, action_t>;
+    using vect_pair_id_action_t = std::vector<pair_id_action_t>;
+    using set_id_srv_t          = std::set<id_srv_t>;
 
     // vector representing uuid's services that must be started (true) or stopped (false)
-    VectPairIDActionType m_uuidServices;
-    SetIDSrvType m_idStartedSrvSet;
+    vect_pair_id_action_t m_uuid_services;
+    set_id_srv_t m_id_started_srv_set;
 };
 
 } // namespace sight::module::ui::com

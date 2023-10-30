@@ -60,11 +60,11 @@ public:
 
     std::string group;
     std::string desc;
-    typedef std::map<std::string, std::string> parameters_t;
+    using parameters_t = std::map<std::string, std::string>;
     parameters_t parameters;
     core::runtime::config_t config;
-    std::string moduleId;      ///< Module identifier (used to start the module when the appConfig is launched)
-    std::string moduleVersion; ///< Module version (used to start the module when the appConfig is launched)
+    std::string module_id;      ///< Module identifier (used to start the module when the appConfig is launched)
+    std::string module_version; ///< Module version (used to start the module when the appConfig is launched)
 };
 
 /**
@@ -121,7 +121,7 @@ public:
      * @param replaceFields associations between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    APP_API core::runtime::config_t getAdaptedTemplateConfig(
+    APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
         const field_adaptor_t _replace_fields,
         bool _auto_prefix_id
@@ -133,7 +133,7 @@ public:
      * @param replaceFields composite of association between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    APP_API core::runtime::config_t getAdaptedTemplateConfig(
+    APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
         data::composite::csptr _replace_fields,
         bool _auto_prefix_id
@@ -150,13 +150,13 @@ public:
      * @brief Return all configurations ( standard and template ) register in the registry.
      * @note This method is thread safe.
      */
-    APP_API std::vector<std::string> getAllConfigs() const;
+    APP_API std::vector<std::string> get_all_configs() const;
 
     /**
      * @brief Return all configurations with specified group.
      * @note This method is thread safe.
      */
-    APP_API std::vector<std::string> getConfigsFromGroup(const std::string& _group) const;
+    APP_API std::vector<std::string> get_configs_from_group(const std::string& _group) const;
 
     /**
      * @brief Clear the registry.
@@ -168,33 +168,33 @@ public:
      * @brief Create an unique identifier
      * @note This method is thread safe.
      */
-    APP_API static std::string getUniqueIdentifier(const std::string& _service_uid = "");
+    APP_API static std::string get_unique_identifier(const std::string& _service_uid = "");
 
     /// Return an instance of config.
-    APP_API static config::sptr getDefault();
+    APP_API static config::sptr get_default();
 
 protected:
 
-    typedef std::map<std::string, app_info::sptr> Registry;
+    using registry = std::map<std::string, app_info::sptr>;
 
     /// Container of <configId, config information>
-    Registry m_reg;
+    registry m_reg;
 
 private:
 
-    typedef std::unordered_set<std::string> uid_parameter_replace_t;
+    using uid_parameter_replace_t = std::unordered_set<std::string>;
 
     /// Convert the composite into map <pattern, value>.
-    static field_adaptor_t compositeToFieldAdaptor(data::composite::csptr _field_adaptors);
+    static field_adaptor_t composite_to_field_adaptor(data::composite::csptr _field_adaptors);
 
-    static void collectUIDForParameterReplace(
+    static void collect_uid_for_parameter_replace(
         const std::string& _name,
         const core::runtime::config_t& _cfg_elem,
         uid_parameter_replace_t& _replace_map
     );
 
     /// Adapts the configuration : replace field thanks to field adaptors
-    static core::runtime::config_t adaptConfig(
+    static core::runtime::config_t adapt_config(
         const core::runtime::config_t& _cfg_elem,
         const field_adaptor_t& _field_adaptors,
         const uid_parameter_replace_t& _uid_parameter_replace,
@@ -202,17 +202,17 @@ private:
     );
 
     /// Adapts field thanks to field adaptors
-    static std::string adaptField(const std::string& _str, const field_adaptor_t& _variables_map);
+    static std::string adapt_field(const std::string& _str, const field_adaptor_t& _variables_map);
 
     /// Used to protect the registry access.
-    mutable core::mt::read_write_mutex m_registryMutex;
+    mutable core::mt::read_write_mutex m_registry_mutex;
 
     /// The static identifier for mandatory parameters.
-    static std::string s_mandatoryParameterIdentifier;
+    static std::string s_mandatory_parameter_identifier;
 
     /// Associations of <tag id, generic-uid attribute>.
-    typedef std::multimap<std::string, std::string> uid_definition_t;
-    static uid_definition_t s_uidDefinitionDictionary;
+    using uid_definition_t = std::multimap<std::string, std::string>;
+    static uid_definition_t s_uid_definition_dictionary;
 };
 
 } // namespace extension

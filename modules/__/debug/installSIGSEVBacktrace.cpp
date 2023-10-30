@@ -44,7 +44,7 @@
 #if defined(REG_EIP)
 constexpr int debugReg = REG_EIP;
 #elif defined(REG_RIP)
-constexpr int debugReg = REG_RIP;
+constexpr int DEBUG_REG = REG_RIP;
 #else
 #error Neither REG_EIP nor REG_RIP is defined.
 #endif
@@ -112,14 +112,14 @@ void bt_sighandler(
     if(_sig == SIGSEGV)
     {
         ss << " faulty address is " << _info->si_addr;
-        ss << " from " << uc->uc_mcontext.gregs[debugReg];
+        ss << " from " << uc->uc_mcontext.gregs[DEBUG_REG];
     }
 
     ss << std::endl;
 
     trace_size = backtrace(trace.data(), 16);
     /* overwrite sigaction with caller's address */
-    trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[debugReg]);
+    trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[DEBUG_REG]);
 
     char** messages = backtrace_symbols(trace.data(), trace_size);
     /* skip first stack frame (points here) */

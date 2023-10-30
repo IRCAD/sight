@@ -38,7 +38,7 @@ cursor::cursor()
 
 //-----------------------------------------------------------------------------
 
-void cursor::setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default)
+void cursor::set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default)
 {
     if(m_implementation)
     {
@@ -49,14 +49,14 @@ void cursor::setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_
         core::thread::get_default_worker()->post_task<void>(
             [cursor_implementation, _cursor, _set_overriden_as_default]()
             {
-                cursor_implementation->setCursor(_cursor, _set_overriden_as_default);
+                cursor_implementation->set_cursor(_cursor, _set_overriden_as_default);
             });
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void cursor::setDefaultCursor()
+void cursor::set_default_cursor()
 {
     if(m_implementation)
     {
@@ -67,7 +67,7 @@ void cursor::setDefaultCursor()
         core::thread::get_default_worker()->post_task<void>(
             [cursor_implementation]
             {
-                cursor_implementation->setDefaultCursor();
+                cursor_implementation->set_default_cursor();
             });
     }
 }

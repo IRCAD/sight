@@ -29,20 +29,20 @@ namespace sight::module::io::session::ut
 /**
  * @brief Test basic reader/writer for series_set.
  */
-class SessionTest : public CPPUNIT_NS::TestFixture
+class session_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(SessionTest);
-CPPUNIT_TEST(basicArchiveTest);
-CPPUNIT_TEST(basicRawTest);
-CPPUNIT_TEST(readerBadDialogPolicyTest);
-CPPUNIT_TEST(readerBadPasswordPolicyTest);
-CPPUNIT_TEST(readerBadPasswordEncryptionTest);
-CPPUNIT_TEST(readerBadFile);
-CPPUNIT_TEST(writerBadDialogPolicyTest);
-CPPUNIT_TEST(writerBadPasswordPolicyTest);
-CPPUNIT_TEST(writerBadPasswordEncryptionTest);
-CPPUNIT_TEST(fileDialogTest);
-CPPUNIT_TEST(passwordTest);
+CPPUNIT_TEST_SUITE(session_test);
+CPPUNIT_TEST(basic_archive_test);
+CPPUNIT_TEST(basic_raw_test);
+CPPUNIT_TEST(reader_bad_dialog_policy_test);
+CPPUNIT_TEST(reader_bad_password_policy_test);
+CPPUNIT_TEST(reader_bad_password_encryption_test);
+CPPUNIT_TEST(reader_bad_file);
+CPPUNIT_TEST(writer_bad_dialog_policy_test);
+CPPUNIT_TEST(writer_bad_password_policy_test);
+CPPUNIT_TEST(writer_bad_password_encryption_test);
+CPPUNIT_TEST(file_dialog_test);
+CPPUNIT_TEST(password_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,19 +51,19 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void basicArchiveTest();
-    static void basicRawTest();
+    static void basic_archive_test();
+    static void basic_raw_test();
 
-    static void readerBadDialogPolicyTest();
-    static void readerBadPasswordPolicyTest();
-    static void readerBadPasswordEncryptionTest();
-    static void readerBadFile();
-    static void writerBadDialogPolicyTest();
-    static void writerBadPasswordPolicyTest();
-    static void writerBadPasswordEncryptionTest();
+    static void reader_bad_dialog_policy_test();
+    static void reader_bad_password_policy_test();
+    static void reader_bad_password_encryption_test();
+    static void reader_bad_file();
+    static void writer_bad_dialog_policy_test();
+    static void writer_bad_password_policy_test();
+    static void writer_bad_password_encryption_test();
 
-    static void fileDialogTest();
-    static void passwordTest();
+    static void file_dialog_test();
+    static void password_test();
 };
 
 } // namespace sight::module::io::session::ut

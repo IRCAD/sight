@@ -66,10 +66,10 @@ const ray_tracing_volume_renderer& m_renderer;
 std::weak_ptr<layer> m_layer;
 
 /// Material name used to retrieve the pass
-std::string m_currentMtlName;
+std::string m_current_mtl_name;
 
 /// Frame ID.
-int m_frameId {0};
+int m_frame_id {0};
 
 public:
 
@@ -77,7 +77,7 @@ public:
     CameraListener(const ray_tracing_volume_renderer& _renderer, layer::wptr _layer) :
         m_renderer(_renderer),
         m_layer(std::move(_layer)),
-        m_currentMtlName("VolIllum")
+        m_current_mtl_name("VolIllum")
     {
     }
 
@@ -87,24 +87,24 @@ public:
     {
         if(auto layer = m_layer.lock())
         {
-            const int frame_id = layer->getRenderService()->getInteractorManager()->getFrameId();
-            if(frame_id != m_frameId)
+            const int frame_id = layer->render_service()->get_interactor_manager()->get_frame_id();
+            if(frame_id != m_frame_id)
             {
                 if(m_renderer.m_shadows.parameters.soft_shadows)
                 {
                     // Set light directions in shader.
                     const Ogre::LightList closest_lights =
-                        m_renderer.m_volumeSceneNode->getAttachedObject(0)->queryLights();
+                        m_renderer.m_volume_scene_node->getAttachedObject(0)->queryLights();
 
                     if(!closest_lights.empty())
                     {
-                        Ogre::Vector3 light_dir = m_renderer.m_volumeSceneNode->convertLocalToWorldDirection(
+                        Ogre::Vector3 light_dir = m_renderer.m_volume_scene_node->convertLocalToWorldDirection(
                             closest_lights[0]->getDerivedDirection(),
                             true
                         );
 
                         const auto& material = Ogre::MaterialManager::getSingleton().getByName(
-                            m_currentMtlName,
+                            m_current_mtl_name,
                             RESOURCE_GROUP
                         );
                         const Ogre::Pass* const sat_illum_pass = material->getTechnique(0)->getPass(0);
@@ -115,16 +115,16 @@ public:
                     }
                 }
 
-                m_frameId = frame_id;
+                m_frame_id = frame_id;
             }
         }
     }
 
     //------------------------------------------------------------------------------
 
-    void setCurrentMtlName(const std::string& _current_mtl_name)
+    void set_current_mtl_name(const std::string& _current_mtl_name)
     {
-        m_currentMtlName = _current_mtl_name;
+        m_current_mtl_name = _current_mtl_name;
     }
 };
 
@@ -145,7 +145,7 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
     std::optional<std::string> _shader
 ) :
     volume_renderer(_parent_id,
-                    _layer->getSceneManager(),
+                    _layer->get_scene_manager(),
                     _parent_node,
                     _image,
                     _mask,
@@ -156,8 +156,8 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
     m_shader(_shader.value_or("RayTracedVolume_FP.glsl")),
     m_shadows({_shadows.value_or(shadows_parameters_t {})}),
     m_layer(_layer),
-    m_sat(M_PARENT_ID,
-          M_SCENE_MANAGER,
+    m_sat(m_parent_id,
+          m_scene_manager,
           (m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled),
           m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled,
           _sat.value_or(illum_ambient_occlusion_sat::sat_parameters_t {}))
@@ -169,12 +169,12 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
     }
 
     //Compositor parameters
-    const std::uint8_t num_view_points   = m_layer.lock()->numCameras();
-    const auto stereo_mode               = _layer->getStereoMode();
+    const std::uint8_t num_view_points   = m_layer.lock()->num_cameras();
+    const auto stereo_mode               = _layer->get_stereo_mode();
     const auto ray_entry_compositor_name = "VolumeEntries" + std::to_string(num_view_points);
 
     //Compositor for ray entry
-    m_rayEntryCompositor = std::make_unique<ray_entry_compositor>(
+    m_ray_entry_compositor = std::make_unique<ray_entry_compositor>(
         ray_entry_compositor_name,
         defines::PROXY_GEOMETRY_RQ_GROUP,
         stereo_mode,
@@ -184,7 +184,7 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
     //Compositor manager
     {
         Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
-        auto* const viewport                        = _layer->getViewport();
+        auto* const viewport                        = _layer->get_viewport();
         auto* const compositor_instance             =
             compositor_manager.addCompositor(viewport, ray_entry_compositor_name, 0);
         SIGHT_ERROR_IF("Compositor '" + ray_entry_compositor_name + "' not found.", compositor_instance == nullptr);
@@ -201,26 +201,26 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
             Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
         if(!sp_map[rtv_shared_params_name])
         {
-            m_RTVSharedParameters = Ogre::GpuProgramManager::getSingleton().createSharedParameters(
+            m_rtv_shared_parameters = Ogre::GpuProgramManager::getSingleton().createSharedParameters(
                 rtv_shared_params_name
             );
         }
         else
         {
-            m_RTVSharedParameters = sp_map[rtv_shared_params_name];
+            m_rtv_shared_parameters = sp_map[rtv_shared_params_name];
         }
 
         // define the shared param structure
-        m_RTVSharedParameters->addConstantDefinition("u_f3TFWindow", Ogre::GCT_FLOAT3);
-        m_RTVSharedParameters->addConstantDefinition("u_fSampleDis_Ms", Ogre::GCT_FLOAT1);
-        m_RTVSharedParameters->addConstantDefinition("u_f4VolIllumFactor", Ogre::GCT_FLOAT4);
-        m_RTVSharedParameters->addConstantDefinition("u_f3VolumeClippingBoxMinPos_Ms", Ogre::GCT_FLOAT3);
-        m_RTVSharedParameters->addConstantDefinition("u_f3VolumeClippingBoxMaxPos_Ms", Ogre::GCT_FLOAT3);
-        m_RTVSharedParameters->addConstantDefinition("u_iMinImageValue", Ogre::GCT_INT1);
-        m_RTVSharedParameters->addConstantDefinition("u_iMaxImageValue", Ogre::GCT_INT1);
-        m_RTVSharedParameters->addConstantDefinition("u_fOpacityCorrectionFactor", Ogre::GCT_FLOAT1);
-        m_RTVSharedParameters->addConstantDefinition("u_window", Ogre::GCT_FLOAT2);
-        m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
+        m_rtv_shared_parameters->addConstantDefinition("u_f3TFWindow", Ogre::GCT_FLOAT3);
+        m_rtv_shared_parameters->addConstantDefinition("u_fSampleDis_Ms", Ogre::GCT_FLOAT1);
+        m_rtv_shared_parameters->addConstantDefinition("u_f4VolIllumFactor", Ogre::GCT_FLOAT4);
+        m_rtv_shared_parameters->addConstantDefinition("u_f3VolumeClippingBoxMinPos_Ms", Ogre::GCT_FLOAT3);
+        m_rtv_shared_parameters->addConstantDefinition("u_f3VolumeClippingBoxMaxPos_Ms", Ogre::GCT_FLOAT3);
+        m_rtv_shared_parameters->addConstantDefinition("u_iMinImageValue", Ogre::GCT_INT1);
+        m_rtv_shared_parameters->addConstantDefinition("u_iMaxImageValue", Ogre::GCT_INT1);
+        m_rtv_shared_parameters->addConstantDefinition("u_fOpacityCorrectionFactor", Ogre::GCT_FLOAT1);
+        m_rtv_shared_parameters->addConstantDefinition("u_window", Ogre::GCT_FLOAT2);
+        m_rtv_shared_parameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacity_correction_factor);
     }
 }
 
@@ -228,9 +228,9 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
 
 void ray_tracing_volume_renderer::update(const data::transfer_function::csptr& _tf)
 {
-    initEntryPoints(); //Does nothing after the first call
-    updateRayTracingMaterial();
-    setSampling(m_nbSlices, _tf);
+    init_entry_points(); //Does nothing after the first call
+    update_ray_tracing_material();
+    set_sampling(m_nb_slices, _tf);
 }
 
 //-----------------------------------------------------------------------------
@@ -239,78 +239,81 @@ ray_tracing_volume_renderer::~ray_tracing_volume_renderer()
 {
     if(m_camera != nullptr)
     {
-        m_camera->removeListener(m_cameraListener.get());
-        m_cameraListener.reset();
+        m_camera->removeListener(m_camera_listener.get());
+        m_camera_listener.reset();
     }
 
     //Notes:
     //- Cannot use smart pointers otherwise the destructor is called twice (which is bad)
 
-    if(m_entryPointGeometry != nullptr)
+    if(m_entry_point_geometry != nullptr)
     {
-        m_volumeSceneNode->detachObject(m_entryPointGeometry);
-        M_SCENE_MANAGER->destroyManualObject(m_entryPointGeometry);
-        m_entryPointGeometry = nullptr;
+        m_volume_scene_node->detachObject(m_entry_point_geometry);
+        m_scene_manager->destroyManualObject(m_entry_point_geometry);
+        m_entry_point_geometry = nullptr;
     }
 
-    if(m_proxyGeometry != nullptr)
+    if(m_proxy_geometry != nullptr)
     {
-        m_volumeSceneNode->detachObject(m_proxyGeometry);
-        M_SCENE_MANAGER->destroyMovableObject(m_proxyGeometry);
-        m_proxyGeometry = nullptr;
+        m_volume_scene_node->detachObject(m_proxy_geometry);
+        m_scene_manager->destroyMovableObject(m_proxy_geometry);
+        m_proxy_geometry = nullptr;
     }
 
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
-    auto* const viewport                        = m_layer.lock()->getViewport();
+    auto* const viewport                        = m_layer.lock()->get_viewport();
 
-    const auto& ray_entry_compositor_name = m_rayEntryCompositor->getName();
+    const auto& ray_entry_compositor_name = m_ray_entry_compositor->get_name();
     compositor_manager.setCompositorEnabled(viewport, ray_entry_compositor_name, false);
     compositor_manager.removeCompositor(viewport, ray_entry_compositor_name);
 
-    m_RTVSharedParameters->removeAllConstantDefinitions();
+    m_rtv_shared_parameters->removeAllConstantDefinitions();
 
     // FIXME_DW: Doesn't seem to be a resource any longer
 //    Ogre::GpuProgramManager::getSingleton().remove(m_RTVSharedParameters->getName(), RESOURCE_GROUP);
 
-    Ogre::MaterialManager::getSingleton().remove(m_currentMtlName, RESOURCE_GROUP);
+    Ogre::MaterialManager::getSingleton().remove(m_current_mtl_name, RESOURCE_GROUP);
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateImage(const data::image::csptr _image, const data::transfer_function::csptr _tf)
+void ray_tracing_volume_renderer::update_image(
+    const data::image::csptr _image,
+    const data::transfer_function::csptr _tf
+)
 {
     if(!data::helper::medical_image::check_image_validity(_image))
     {
         return;
     }
 
-    this->scaleTranslateCube(_image->getSpacing(), _image->getOrigin());
+    this->scale_translate_cube(_image->spacing(), _image->origin());
 
-    const data::image::Size& new_size = _image->size();
+    const data::image::size_t& new_size = _image->size();
 
     // Create new grid texture + proxy geometry if image size changed.
-    if(m_imageSize != new_size)
+    if(m_image_size != new_size)
     {
-        m_imageSize = new_size;
+        m_image_size = new_size;
 
-        m_proxyGeometry->updateGridSize();
+        m_proxy_geometry->update_grid_size();
     }
     else
     {
-        m_proxyGeometry->computeGrid();
+        m_proxy_geometry->compute_grid();
     }
 
-    const auto material = Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName, RESOURCE_GROUP);
+    const auto material = Ogre::MaterialManager::getSingleton().getByName(m_current_mtl_name, RESOURCE_GROUP);
     if(m_preintegration)
     {
-        m_preIntegrationTable.imageUpdate(_image, _tf, m_sampleDistance);
+        m_pre_integration_table.image_update(_image, _tf, m_sample_distance);
 
         // After having updated the preintegrated transfer function
         // We update the corresponding shader parameters
-        const auto min_max = m_preIntegrationTable.get_min_max();
+        const auto min_max = m_pre_integration_table.get_min_max();
 
-        m_RTVSharedParameters->setNamedConstant("u_iMinImageValue", min_max.first);
-        m_RTVSharedParameters->setNamedConstant("u_iMaxImageValue", min_max.second);
+        m_rtv_shared_parameters->setNamedConstant("u_iMinImageValue", min_max.first);
+        m_rtv_shared_parameters->setNamedConstant("u_iMaxImageValue", min_max.second);
     }
     else
     {
@@ -318,109 +321,109 @@ void ray_tracing_volume_renderer::updateImage(const data::image::csptr _image, c
         SIGHT_ASSERT("technique not found", technique);
         const auto* const pass = technique->getPass(0);
         SIGHT_ASSERT("Pass not found", pass);
-        m_gpuVolumeTF->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpu_volume_tf->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_rtv_shared_parameters);
     }
 
-    m_RTVSharedParameters->setNamedConstant("u_window", m_3DOgreTexture->window());
+    m_rtv_shared_parameters->setNamedConstant("u_window", m_3d_ogre_texture->window());
 
     // The depth technique always used the transfer function
     const auto* const technique = material->getTechnique(1);
     SIGHT_ASSERT("technique not found", technique);
     const auto* const pass = technique->getPass(0);
-    m_gpuVolumeTF->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+    m_gpu_volume_tf->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_rtv_shared_parameters);
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateMask(const data::image::csptr _mask)
+void ray_tracing_volume_renderer::update_mask(const data::image::csptr _mask)
 {
     if(!data::helper::medical_image::check_image_validity(_mask))
     {
         return;
     }
 
-    this->loadMask();
+    this->load_mask();
 
-    m_proxyGeometry->computeGrid();
+    m_proxy_geometry->compute_grid();
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateSATSizeRatio(unsigned _ratio)
+void ray_tracing_volume_renderer::update_sat_size_ratio(unsigned _ratio)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.updateSatFromRatio(static_cast<float>(_ratio));
-        updateSAT();
+        m_sat.update_sat_from_ratio(static_cast<float>(_ratio));
+        update_sat();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateSATShellsNumber(unsigned _count)
+void ray_tracing_volume_renderer::update_sat_shells_number(unsigned _count)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.setNbShells(_count);
-        updateSAT();
+        m_sat.set_nb_shells(_count);
+        update_sat();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateSATShellRadius(unsigned _radius)
+void ray_tracing_volume_renderer::update_sat_shell_radius(unsigned _radius)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.setShellRadius(_radius);
-        updateSAT();
+        m_sat.set_shell_radius(_radius);
+        update_sat();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateSATConeAngle(float _angle)
+void ray_tracing_volume_renderer::update_sat_cone_angle(float _angle)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.setConeAngle(_angle);
-        updateSAT();
+        m_sat.set_cone_angle(_angle);
+        update_sat();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateSATConeSamples(unsigned _samples)
+void ray_tracing_volume_renderer::update_sat_cone_samples(unsigned _samples)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.setSamplesAlongCone(_samples);
-        updateSAT();
+        m_sat.set_samples_along_cone(_samples);
+        update_sat();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateSAT()
+void ray_tracing_volume_renderer::update_sat()
 {
-    m_sat.SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_sampleDistance);
+    m_sat.sat_update(m_3d_ogre_texture, m_gpu_volume_tf, m_sample_distance);
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateVolumeTF(const data::transfer_function::csptr& _tf)
+void ray_tracing_volume_renderer::update_volume_tf(const data::transfer_function::csptr& _tf)
 {
     //Update the attributes
     {
-        m_gpuVolumeTF->update();
+        m_gpu_volume_tf->update();
     }
 
     if(m_preintegration)
     {
-        m_preIntegrationTable.tfUpdate(_tf, m_sampleDistance);
+        m_pre_integration_table.tf_update(_tf, m_sample_distance);
     }
 
-    const auto material = Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName, RESOURCE_GROUP);
+    const auto material = Ogre::MaterialManager::getSingleton().getByName(m_current_mtl_name, RESOURCE_GROUP);
 
     if(!m_preintegration)
     {
@@ -428,7 +431,7 @@ void ray_tracing_volume_renderer::updateVolumeTF(const data::transfer_function::
         SIGHT_ASSERT("technique not found", technique);
         const auto* const pass = technique->getPass(0);
         SIGHT_ASSERT("Pass not found", pass);
-        m_gpuVolumeTF->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpu_volume_tf->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_rtv_shared_parameters);
     }
 
     // The depth technique always uses the transfer function
@@ -437,57 +440,57 @@ void ray_tracing_volume_renderer::updateVolumeTF(const data::transfer_function::
 
     const auto* const pass = technique->getPass(0);
     SIGHT_ASSERT("Pass not found", pass);
-    m_gpuVolumeTF->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+    m_gpu_volume_tf->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_rtv_shared_parameters);
 
-    m_proxyGeometry->computeGrid();
+    m_proxy_geometry->compute_grid();
 
     const auto& shadows = m_shadows.parameters;
 
     if(shadows.ao.enabled || shadows.colour_bleeding.enabled || shadows.soft_shadows)
     {
-        updateSAT();
+        update_sat();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::setSampling(std::uint16_t _nb_samples, const data::transfer_function::csptr& _tf)
+void ray_tracing_volume_renderer::set_sampling(std::uint16_t _nb_samples, const data::transfer_function::csptr& _tf)
 {
     if(_nb_samples == 0)
     {
         throw std::invalid_argument("Sample count cannot be 0.");
     }
 
-    m_nbSlices = _nb_samples;
+    m_nb_slices = _nb_samples;
 
-    updateSampleDistance();
+    update_sample_distance();
 
     // Update the sample distance in the shaders
-    m_RTVSharedParameters->setNamedConstant("u_fSampleDis_Ms", m_sampleDistance);
+    m_rtv_shared_parameters->setNamedConstant("u_fSampleDis_Ms", m_sample_distance);
     if(m_shadows.parameters.enabled())
     {
-        updateSAT();
+        update_sat();
     }
 
     if(m_preintegration)
     {
-        m_preIntegrationTable.tfUpdate(_tf, m_sampleDistance);
+        m_pre_integration_table.tf_update(_tf, m_sample_distance);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::setOpacityCorrection(int _opacity_correction)
+void ray_tracing_volume_renderer::set_opacity_correction(int _opacity_correction)
 {
-    m_opacityCorrectionFactor = static_cast<float>(_opacity_correction);
+    m_opacity_correction_factor = static_cast<float>(_opacity_correction);
 
     // Update shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
+    m_rtv_shared_parameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacity_correction_factor);
 }
 
 //-----------------------------------------------------------------------------
 
-bool ray_tracing_volume_renderer::setAOFactor(float _factor)
+bool ray_tracing_volume_renderer::set_ao_factor(float _factor)
 {
     m_shadows.parameters.ao.factor = _factor;
 
@@ -500,21 +503,21 @@ bool ray_tracing_volume_renderer::setAOFactor(float _factor)
     };
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_shadows.factors);
+    m_rtv_shared_parameters->setNamedConstant("u_f4VolIllumFactor", m_shadows.factors);
 
     return m_shadows.parameters.ao.enabled;
 }
 
 //-----------------------------------------------------------------------------
 
-bool ray_tracing_volume_renderer::setColorBleedingFactor(float _factor)
+bool ray_tracing_volume_renderer::set_color_bleeding_factor(float _factor)
 {
-    return setColorBleedingFactor({_factor, _factor, _factor});
+    return set_color_bleeding_factor({_factor, _factor, _factor});
 }
 
 //------------------------------------------------------------------------------
 
-bool ray_tracing_volume_renderer::setColorBleedingFactor(const Ogre::Vector3& _factors)
+bool ray_tracing_volume_renderer::set_color_bleeding_factor(const Ogre::Vector3& _factors)
 {
     //Update the parameters
     {
@@ -532,140 +535,140 @@ bool ray_tracing_volume_renderer::setColorBleedingFactor(const Ogre::Vector3& _f
     };
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_shadows.factors);
+    m_rtv_shared_parameters->setNamedConstant("u_f4VolIllumFactor", m_shadows.factors);
 
     return m_shadows.parameters.colour_bleeding.enabled;
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::toggleAmbientOcclusion(bool _enable)
+void ray_tracing_volume_renderer::toggle_ambient_occlusion(bool _enable)
 {
     if(_enable)
     {
-        enableAmbientOcclusion();
+        enable_ambient_occlusion();
     }
     else
     {
-        disableAmbientOcclusion();
+        disable_ambient_occlusion();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::enableAmbientOcclusion()
+void ray_tracing_volume_renderer::enable_ambient_occlusion()
 {
     if(!m_shadows.parameters.ao.enabled)
     {
         m_shadows.parameters.ao.enabled = true;
-        m_sat.setAO(true);
+        m_sat.set_ao(true);
 
-        this->updateSAT();
-        this->updateRayTracingMaterial();
-        this->updateVolumeIlluminationMaterial();
+        this->update_sat();
+        this->update_ray_tracing_material();
+        this->update_volume_illumination_material();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::disableAmbientOcclusion()
+void ray_tracing_volume_renderer::disable_ambient_occlusion()
 {
     if(m_shadows.parameters.ao.enabled) //Don't reallocate the material if it makes no sense
     {
         m_shadows.parameters.ao.enabled = false;
-        m_sat.setAO(false);
+        m_sat.set_ao(false);
 
-        this->updateRayTracingMaterial();
-        this->updateVolumeIlluminationMaterial();
-        this->updateSAT();
+        this->update_ray_tracing_material();
+        this->update_volume_illumination_material();
+        this->update_sat();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::setPreIntegratedRendering(bool _pre_integrated_rendering)
+void ray_tracing_volume_renderer::set_pre_integrated_rendering(bool _pre_integrated_rendering)
 {
     m_preintegration = _pre_integrated_rendering;
 
-    this->updateRayTracingMaterial();
+    this->update_ray_tracing_material();
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::toggleColorBleeding(bool _enable)
+void ray_tracing_volume_renderer::toggle_color_bleeding(bool _enable)
 {
     m_shadows.parameters.colour_bleeding.enabled = _enable;
 
-    this->updateRayTracingMaterial();
-    this->updateVolumeIlluminationMaterial();
+    this->update_ray_tracing_material();
+    this->update_volume_illumination_material();
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::toggleShadows(bool _enable)
+void ray_tracing_volume_renderer::toggle_shadows(bool _enable)
 {
     m_shadows.parameters.soft_shadows = _enable;
-    m_sat.setShadows(_enable);
+    m_sat.set_shadows(_enable);
 
-    this->updateSAT();
-    this->updateRayTracingMaterial();
-    this->updateVolumeIlluminationMaterial();
+    this->update_sat();
+    this->update_ray_tracing_material();
+    this->update_volume_illumination_material();
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::setFocalLength(float _focal_length)
+void ray_tracing_volume_renderer::set_focal_length(float _focal_length)
 {
-    m_focalLength = _focal_length;
-    computeRealFocalLength();
+    m_focal_length = _focal_length;
+    compute_real_focal_length();
 }
 
 //------------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::clipImage(const Ogre::AxisAlignedBox& _clipping_box)
+void ray_tracing_volume_renderer::clip_image(const Ogre::AxisAlignedBox& _clipping_box)
 {
     const Ogre::AxisAlignedBox max_box_size(Ogre::Vector3::ZERO, Ogre::Vector3(1.F, 1.F, 1.F));
     const Ogre::AxisAlignedBox clamped_clipping_box = max_box_size.intersection(_clipping_box);
 
-    volume_renderer::clipImage(clamped_clipping_box);
+    volume_renderer::clip_image(clamped_clipping_box);
 
-    if(m_entryPointGeometry == nullptr) //Prevent misusage
+    if(m_entry_point_geometry == nullptr) //Prevent misusage
     {
-        initEntryPoints();
+        init_entry_points();
     }
 
-    m_entryPointGeometry->beginUpdate(0);
+    m_entry_point_geometry->beginUpdate(0);
     {
-        for(const auto& face : s_cubeFaces)
+        for(const auto& face : CUBE_FACES)
         {
-            const CubeFacePositionList& face_position_list = face.second;
+            const cube_face_position_list_t& face_position_list = face.second;
 
-            m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[0]]);
-            m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[1]]);
-            m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[2]]);
-            m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[2]]);
-            m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[3]]);
-            m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[0]]);
+            m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[0]]);
+            m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[1]]);
+            m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[2]]);
+            m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[2]]);
+            m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[3]]);
+            m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[0]]);
         }
     }
-    m_entryPointGeometry->end();
+    m_entry_point_geometry->end();
 
-    m_proxyGeometry->clipGrid(clamped_clipping_box);
+    m_proxy_geometry->clip_grid(clamped_clipping_box);
 
-    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMinPos_Ms", clamped_clipping_box.getMinimum());
-    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMaxPos_Ms", clamped_clipping_box.getMaximum());
+    m_rtv_shared_parameters->setNamedConstant("u_f3VolumeClippingBoxMinPos_Ms", clamped_clipping_box.getMinimum());
+    m_rtv_shared_parameters->setNamedConstant("u_f3VolumeClippingBoxMaxPos_Ms", clamped_clipping_box.getMaximum());
 }
 
 //-----------------------------------------------------------------------------
 
-bool ray_tracing_volume_renderer::isVisible() const
+bool ray_tracing_volume_renderer::is_visible() const
 {
-    return m_entryPointGeometry->isVisible() && m_proxyGeometry->isVisible();
+    return m_entry_point_geometry->isVisible() && m_proxy_geometry->isVisible();
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::setRayCastingPassTextureUnits(Ogre::Pass* const _ray_casting_pass) const
+void ray_tracing_volume_renderer::set_ray_casting_pass_texture_units(Ogre::Pass* const _ray_casting_pass) const
 {
     //Fragment shaders parameters
     Ogre::GpuProgramParametersSharedPtr fp_params = _ray_casting_pass->getFragmentProgramParameters();
@@ -676,14 +679,19 @@ void ray_tracing_volume_renderer::setRayCastingPassTextureUnits(Ogre::Pass* cons
     // Volume data
     {
         Ogre::TextureUnitState* const tex_unit_state = _ray_casting_pass->createTextureUnitState();
-        m_3DOgreTexture->bind(tex_unit_state, Ogre::TEX_TYPE_3D, Ogre::TFO_BILINEAR, Ogre::TextureUnitState::TAM_CLAMP);
+        m_3d_ogre_texture->bind(
+            tex_unit_state,
+            Ogre::TEX_TYPE_3D,
+            Ogre::TFO_BILINEAR,
+            Ogre::TextureUnitState::TAM_CLAMP
+        );
     }
     fp_params->setNamedConstant("u_s3Image", num_tex_unit++);
 
     // Crop mask
     {
         Ogre::TextureUnitState* const tex_unit_state = _ray_casting_pass->createTextureUnitState();
-        m_maskTexture->bind(tex_unit_state, Ogre::TEX_TYPE_3D, Ogre::TFO_BILINEAR, Ogre::TextureUnitState::TAM_CLAMP);
+        m_mask_texture->bind(tex_unit_state, Ogre::TEX_TYPE_3D, Ogre::TFO_BILINEAR, Ogre::TextureUnitState::TAM_CLAMP);
     }
     fp_params->setNamedConstant("u_s1Mask", num_tex_unit++);
 
@@ -691,7 +699,7 @@ void ray_tracing_volume_renderer::setRayCastingPassTextureUnits(Ogre::Pass* cons
     if(m_options.fragment.find(defines::PREINTEGRATION) != std::string::npos)
     {
         Ogre::TextureUnitState* const tex_unit_state =
-            _ray_casting_pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
+            _ray_casting_pass->createTextureUnitState(m_pre_integration_table.get_texture()->getName());
         tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
         fp_params->setNamedConstant("u_s2PreintegratedTFTexture", num_tex_unit++);
     }
@@ -701,7 +709,7 @@ void ray_tracing_volume_renderer::setRayCastingPassTextureUnits(Ogre::Pass* cons
         tex_unit_state->setName(defines::VOLUME_TF_TEXUNIT_NAME);
         tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
         tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-        m_gpuVolumeTF->bind(_ray_casting_pass, tex_unit_state->getName(), fp_params);
+        m_gpu_volume_tf->bind(_ray_casting_pass, tex_unit_state->getName(), fp_params);
         fp_params->setNamedConstant("u_s2TFTexture", num_tex_unit++);
     }
 
@@ -710,20 +718,20 @@ void ray_tracing_volume_renderer::setRayCastingPassTextureUnits(Ogre::Pass* cons
         Ogre::TextureUnitState* const tex_unit_state = _ray_casting_pass->createTextureUnitState();
         tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
         tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-        tex_unit_state->setTexture(m_sat.getIlluminationVolume());
+        tex_unit_state->setTexture(m_sat.get_illumination_volume());
 
         // Update the shader parameter
         fp_params->setNamedConstant("u_s3IlluminationVolume", num_tex_unit++);
-        m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_shadows.factors);
+        m_rtv_shared_parameters->setNamedConstant("u_f4VolIllumFactor", m_shadows.factors);
     }
 
     // Entry points texture
     Ogre::TextureUnitState* const tex_unit_state = _ray_casting_pass->createTextureUnitState();
     tex_unit_state->setName("entryPoints");
 
-    if(m_layer.lock()->numCameras() == 1)
+    if(m_layer.lock()->num_cameras() == 1)
     {
-        const auto& ray_entry_compositor_name = m_rayEntryCompositor->getName();
+        const auto& ray_entry_compositor_name = m_ray_entry_compositor->get_name();
         tex_unit_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
         tex_unit_state->setCompositorReference(ray_entry_compositor_name, ray_entry_compositor_name + "texture");
     }
@@ -736,27 +744,27 @@ void ray_tracing_volume_renderer::setRayCastingPassTextureUnits(Ogre::Pass* cons
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateRayTracingMaterial()
+void ray_tracing_volume_renderer::update_ray_tracing_material()
 {
     //Update the current options
-    updateOptions();
+    update_options();
 
-    m_currentMtlName = "RTV_Mat_" + M_PARENT_ID;
+    m_current_mtl_name = "RTV_Mat_" + m_parent_id;
 
     Ogre::MaterialManager& material_manager = Ogre::MaterialManager::getSingleton();
 
     // The material needs to be destroyed only if it already exists
     {
-        const Ogre::ResourcePtr mat_resource = material_manager.getResourceByName(m_currentMtlName, RESOURCE_GROUP);
+        const Ogre::ResourcePtr mat_resource = material_manager.getResourceByName(m_current_mtl_name, RESOURCE_GROUP);
         if(mat_resource)
         {
             material_manager.remove(mat_resource);
             // Our manual object still references the material and uses the material name to know if it should modify
             // its pointer (see manual_object::ManualObjectSection::setMaterialName() in OgreManualObject.cpp)
             // So we just force it to release the pointer otherwise the material is not destroyed
-            if(m_entryPointGeometry != nullptr)
+            if(m_entry_point_geometry != nullptr)
             {
-                m_entryPointGeometry->setMaterialName(0, "");
+                m_entry_point_geometry->setMaterialName(0, "");
             }
         }
     }
@@ -800,12 +808,12 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
     }
 
     // Create the material
-    const Ogre::MaterialPtr mat = material_manager.create(m_currentMtlName, viz::scene3d::RESOURCE_GROUP);
+    const Ogre::MaterialPtr mat = material_manager.create(m_current_mtl_name, viz::scene3d::RESOURCE_GROUP);
 
     // Create the technique
     {
         // Ensure that we have the color parameters set for the current material
-        this->setMaterialLightParams(mat);
+        this->set_material_light_params(mat);
         // Get the already created pass through the already created technique
         const Ogre::Technique* const tech = mat->getTechnique(0);
 
@@ -855,10 +863,10 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
             Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX
         );
         fp_params->setNamedAutoConstant("u_worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-        fp_params->addSharedParameters(m_RTVSharedParameters->getName());
+        fp_params->addSharedParameters(m_rtv_shared_parameters->getName());
 
         // Setup texture unit states
-        this->setRayCastingPassTextureUnits(pass);
+        this->set_ray_casting_pass_texture_units(pass);
     }
 
     // Compile the depth fragment shader
@@ -919,7 +927,7 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
                 program_parameters_t::ACT_INVERSE_WORLDVIEWPROJ_MATRIX
             );
             fp_params->setNamedAutoConstant("u_worldViewProj", program_parameters_t::ACT_WORLDVIEWPROJ_MATRIX);
-            fp_params->addSharedParameters(m_RTVSharedParameters->getName());
+            fp_params->addSharedParameters(m_rtv_shared_parameters->getName());
         }
 
         //texture unit state updates
@@ -933,7 +941,7 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
                 Ogre::TextureUnitState* const tex_unit_state = pass->createTextureUnitState();
                 SIGHT_ASSERT("texUnitState is nullptr.", tex_unit_state != nullptr);
 
-                m_3DOgreTexture->bind(
+                m_3d_ogre_texture->bind(
                     tex_unit_state,
                     Ogre::TEX_TYPE_3D,
                     Ogre::TFO_BILINEAR,
@@ -945,7 +953,7 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
             // Crop mask
             {
                 Ogre::TextureUnitState* const tex_unit_state = pass->createTextureUnitState();
-                m_maskTexture->bind(
+                m_mask_texture->bind(
                     tex_unit_state,
                     Ogre::TEX_TYPE_3D,
                     Ogre::TFO_BILINEAR,
@@ -962,7 +970,7 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
                     tex_unit_state->setName(defines::VOLUME_TF_TEXUNIT_NAME);
                     tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
                     tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-                    m_gpuVolumeTF->bind(pass, tex_unit_state->getName(), fp_params);
+                    m_gpu_volume_tf->bind(pass, tex_unit_state->getName(), fp_params);
                     fp_params->setNamedConstant("u_s2TFTexture", num_tex_unit++);
                 }
 
@@ -971,9 +979,9 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
                     Ogre::TextureUnitState* const tex_unit_state = pass->createTextureUnitState();
                     tex_unit_state->setName("entryPoints");
 
-                    if(m_layer.lock()->numCameras() == 1)
+                    if(m_layer.lock()->num_cameras() == 1)
                     {
-                        const auto& ray_entry_compositor_name = m_rayEntryCompositor->getName();
+                        const auto& ray_entry_compositor_name = m_ray_entry_compositor->get_name();
                         tex_unit_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                         tex_unit_state->setCompositorReference(
                             ray_entry_compositor_name,
@@ -992,30 +1000,30 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
     //3D texture to render
     {
         Ogre::MaterialManager& mm          = Ogre::MaterialManager::getSingleton();
-        Ogre::MaterialPtr current_material = mm.getByName(m_currentMtlName, RESOURCE_GROUP);
-        SIGHT_ASSERT("Missing material '" + m_currentMtlName + "'.", current_material);
+        Ogre::MaterialPtr current_material = mm.getByName(m_current_mtl_name, RESOURCE_GROUP);
+        SIGHT_ASSERT("Missing material '" + m_current_mtl_name + "'.", current_material);
         const Ogre::Technique* const tech = current_material->getTechnique(0);
-        SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no techniques.", tech);
+        SIGHT_ASSERT("Material '" + m_current_mtl_name + "' has no techniques.", tech);
         Ogre::Pass* const pass = tech->getPass(0);
-        SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no passes.", pass);
+        SIGHT_ASSERT("Material '" + m_current_mtl_name + "' has no passes.", pass);
 
         Ogre::TextureUnitState* const tex_unit_state = pass->getTextureUnitState(0);
-        SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no texture units.", tex_unit_state);
-        tex_unit_state->setTextureName(m_3DOgreTexture->name(), Ogre::TEX_TYPE_3D);
+        SIGHT_ASSERT("Material '" + m_current_mtl_name + "' has no texture units.", tex_unit_state);
+        tex_unit_state->setTextureName(m_3d_ogre_texture->name(), Ogre::TEX_TYPE_3D);
 
-        m_proxyGeometry->set3DImageTexture(m_3DOgreTexture);
-        m_proxyGeometry->setMaskTexture(m_maskTexture);
+        m_proxy_geometry->set_3d_image_texture(m_3d_ogre_texture);
+        m_proxy_geometry->set_mask_texture(m_mask_texture);
     }
 
-    if(static_cast<bool>(m_entryPointGeometry))
+    if(static_cast<bool>(m_entry_point_geometry))
     {
-        m_entryPointGeometry->setMaterialName(0, m_currentMtlName, RESOURCE_GROUP);
+        m_entry_point_geometry->setMaterialName(0, m_current_mtl_name, RESOURCE_GROUP);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateOptions()
+void ray_tracing_volume_renderer::update_options()
 {
     std::ostringstream vp_pp_defs;
     std::ostringstream fp_pp_defs;
@@ -1051,75 +1059,75 @@ void ray_tracing_volume_renderer::updateOptions()
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::initEntryPoints()
+void ray_tracing_volume_renderer::init_entry_points()
 {
     //Entry point geometry
-    if(m_entryPointGeometry == nullptr)
+    if(m_entry_point_geometry == nullptr)
     {
-        m_entryPointGeometry = M_SCENE_MANAGER->createManualObject(M_PARENT_ID + "_RayTracingVREntryPoints");
+        m_entry_point_geometry = m_scene_manager->createManualObject(m_parent_id + "_RayTracingVREntryPoints");
 
         {
             // Use the default material before the raytracing material is created otherwise we get an error.
-            m_entryPointGeometry->begin("Default", Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
-            for(const auto& face : s_cubeFaces)
+            m_entry_point_geometry->begin("Default", Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
+            for(const auto& face : CUBE_FACES)
             {
-                const CubeFacePositionList& face_position_list = face.second;
+                const cube_face_position_list_t& face_position_list = face.second;
 
-                m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[0]]);
-                m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[1]]);
-                m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[2]]);
-                m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[2]]);
-                m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[3]]);
-                m_entryPointGeometry->position(m_clippedImagePositions[face_position_list[0]]);
+                m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[0]]);
+                m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[1]]);
+                m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[2]]);
+                m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[2]]);
+                m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[3]]);
+                m_entry_point_geometry->position(m_clipped_image_positions[face_position_list[0]]);
             }
 
-            m_entryPointGeometry->end();
+            m_entry_point_geometry->end();
         }
 
         // Render volumes after surfaces.
-        m_entryPointGeometry->setRenderQueueGroup(rq::s_VOLUME_ID);
+        m_entry_point_geometry->setRenderQueueGroup(rq::VOLUME_ID);
 
-        m_volumeSceneNode->attachObject(m_entryPointGeometry);
+        m_volume_scene_node->attachObject(m_entry_point_geometry);
     }
 
     //Proxy geometry
-    if(m_proxyGeometry == nullptr)
+    if(m_proxy_geometry == nullptr)
     {
-        m_proxyGeometry =
+        m_proxy_geometry =
             viz::scene3d::vr::grid_proxy_geometry::make(
-                this->M_PARENT_ID + "_GridProxyGeometry",
-                M_SCENE_MANAGER,
-                m_3DOgreTexture,
-                m_maskTexture,
-                m_gpuVolumeTF,
+                this->m_parent_id + "_GridProxyGeometry",
+                m_scene_manager,
+                m_3d_ogre_texture,
+                m_mask_texture,
+                m_gpu_volume_tf,
                 "RayEntryPoints"
             );
 
-        m_proxyGeometry->setRenderQueueGroup(defines::PROXY_GEOMETRY_RQ_GROUP);
+        m_proxy_geometry->setRenderQueueGroup(defines::PROXY_GEOMETRY_RQ_GROUP);
 
-        m_volumeSceneNode->attachObject(m_proxyGeometry);
+        m_volume_scene_node->attachObject(m_proxy_geometry);
     }
 
     //Camera listener
-    if(m_cameraListener == nullptr)
+    if(m_camera_listener == nullptr)
     {
-        m_cameraListener = std::make_unique<CameraListener>(*this, m_layer);
-        m_camera->addListener(m_cameraListener.get());
+        m_camera_listener = std::make_unique<CameraListener>(*this, m_layer);
+        m_camera->addListener(m_camera_listener.get());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::computeRealFocalLength()
+void ray_tracing_volume_renderer::compute_real_focal_length()
 {
     const Ogre::Plane camera_plane(m_camera->getRealDirection(), m_camera->getRealPosition());
     const auto camera_dist_comparator = [&camera_plane](const Ogre::Vector3& _v1, const Ogre::Vector3& _v2)
                                         {return camera_plane.getDistance(_v1) < camera_plane.getDistance(_v2);};
 
     const auto closest_furthest_img_points =
-        std::minmax_element(m_clippedImagePositions.begin(), m_clippedImagePositions.end(), camera_dist_comparator);
+        std::minmax_element(m_clipped_image_positions.begin(), m_clipped_image_positions.end(), camera_dist_comparator);
 
-    const auto focus_point = *closest_furthest_img_points.first + m_focalLength
+    const auto focus_point = *closest_furthest_img_points.first + m_focal_length
                              * (*closest_furthest_img_points.second - *closest_furthest_img_points.first);
 
     const float real_focal_length = m_camera->getRealPosition().distance(focus_point);
@@ -1129,15 +1137,15 @@ void ray_tracing_volume_renderer::computeRealFocalLength()
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::updateVolumeIlluminationMaterial()
+void ray_tracing_volume_renderer::update_volume_illumination_material()
 {
     std::string vol_illum_mtl = "VolIllum";
 
     vol_illum_mtl += m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled ? "_AO" : "";
     vol_illum_mtl += m_shadows.parameters.soft_shadows ? "_Shadows" : "";
 
-    SIGHT_ASSERT("Camera listener not instantiated", m_cameraListener);
-    m_cameraListener->setCurrentMtlName(vol_illum_mtl);
+    SIGHT_ASSERT("Camera listener not instantiated", m_camera_listener);
+    m_camera_listener->set_current_mtl_name(vol_illum_mtl);
 }
 
 //-----------------------------------------------------------------------------

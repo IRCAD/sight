@@ -32,15 +32,15 @@
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
-class Synchronization : public sight::ui::test_core::test
+class synchronization : public sight::ui::test_core::test
 {
-CPPUNIT_TEST_SUITE(Synchronization);
+CPPUNIT_TEST_SUITE(synchronization);
 CPPUNIT_TEST(test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    std::filesystem::path getProfilePath() override;
+    std::filesystem::path get_profile_path() override;
 
     void test();
 };

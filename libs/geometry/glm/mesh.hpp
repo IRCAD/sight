@@ -182,7 +182,7 @@ bool is_borderless_surface(
         }
     }
 
-    for(const typename EdgeHistogram::value_type& h : edges_histogram)
+    for(const auto& h : edges_histogram)
     {
         if(h.second != 2)
         {

@@ -42,8 +42,8 @@ class CORE_CLASS_API has_slots
 {
 public:
 
-    typedef std::shared_ptr<has_slots> sptr;
-    typedef std::shared_ptr<const has_slots> csptr;
+    using sptr  = std::shared_ptr<has_slots>;
+    using csptr = std::shared_ptr<const has_slots>;
 
     has_slots()
     = default;

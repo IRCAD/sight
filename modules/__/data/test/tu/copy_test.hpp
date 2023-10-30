@@ -31,8 +31,8 @@ namespace sight::module::data::ut
 class copy_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(copy_test);
-CPPUNIT_TEST(onStartTest);
-CPPUNIT_TEST(onUpdateTest);
+CPPUNIT_TEST(on_start_test);
+CPPUNIT_TEST(on_update_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,8 +40,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void onStartTest();
-    void onUpdateTest();
+    void on_start_test();
+    void on_update_test();
 
 private:
 

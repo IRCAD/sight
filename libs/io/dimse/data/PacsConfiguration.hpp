@@ -33,23 +33,23 @@ namespace sight::io::dimse::data
 /**
  * @brief   This class defines a Pacs configuration.
  */
-class IO_DIMSE_CLASS_API PacsConfiguration : public sight::data::object
+class IO_DIMSE_CLASS_API pacs_configuration : public sight::data::object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PacsConfiguration, sight::data::object, sight::data::factory::make<PacsConfiguration>);
+    SIGHT_DECLARE_CLASS(pacs_configuration, sight::data::object, sight::data::factory::make<pacs_configuration>);
 
     /// Destructor
-    IO_DIMSE_API ~PacsConfiguration() noexcept override = default;
+    IO_DIMSE_API ~pacs_configuration() noexcept override = default;
 
     /**
      * @brief Retrieve Method
      */
-    typedef enum
+    enum class retrieve_method
     {
-        MOVE_RETRIEVE_METHOD = 1,
-        GET_RETRIEVE_METHOD  = 2
-    } RETRIEVE_METHOD;
+        move = 1,
+        get  = 2
+    };
 
     /**
      * @name Getters / Setters
@@ -58,16 +58,16 @@ public:
     /**
      * @brief Local application title
      * @{ */
-    const std::string& getLocalApplicationTitle() const
+    const std::string& get_local_application_title() const
     {
-        return m_localApplicationTitle;
+        return m_local_application_title;
     }
 
     //------------------------------------------------------------------------------
 
-    void setLocalApplicationTitle(const std::string& _local_application_title)
+    void set_local_application_title(const std::string& _local_application_title)
     {
-        m_localApplicationTitle = _local_application_title;
+        m_local_application_title = _local_application_title;
     }
 
     /**  @} */
@@ -75,16 +75,16 @@ public:
     /**
      * @brief Pacs host name
      * @{ */
-    const std::string& getPacsHostName() const
+    const std::string& get_pacs_host_name() const
     {
-        return m_pacsHostName;
+        return m_pacs_host_name;
     }
 
     //------------------------------------------------------------------------------
 
-    void setPacsHostName(const std::string& _pacs_host_name)
+    void set_pacs_host_name(const std::string& _pacs_host_name)
     {
-        m_pacsHostName = _pacs_host_name;
+        m_pacs_host_name = _pacs_host_name;
     }
 
     /**  @} */
@@ -92,16 +92,16 @@ public:
     /**
      * @brief Pacs application title
      * @{ */
-    const std::string& getPacsApplicationTitle() const
+    const std::string& get_pacs_application_title() const
     {
-        return m_pacsApplicationTitle;
+        return m_pacs_application_title;
     }
 
     //------------------------------------------------------------------------------
 
-    void setPacsApplicationTitle(const std::string& _pacs_application_title)
+    void set_pacs_application_title(const std::string& _pacs_application_title)
     {
-        m_pacsApplicationTitle = _pacs_application_title;
+        m_pacs_application_title = _pacs_application_title;
     }
 
     /**  @} */
@@ -109,16 +109,16 @@ public:
     /**
      * @brief Pacs port
      * @{ */
-    const std::uint16_t& getPacsApplicationPort() const
+    const std::uint16_t& get_pacs_application_port() const
     {
-        return m_pacsApplicationPort;
+        return m_pacs_application_port;
     }
 
     //------------------------------------------------------------------------------
 
-    void setPacsApplicationPort(const std::uint16_t& _pacs_application_port)
+    void set_pacs_application_port(const std::uint16_t& _pacs_application_port)
     {
-        m_pacsApplicationPort = _pacs_application_port;
+        m_pacs_application_port = _pacs_application_port;
     }
 
     /**  @} */
@@ -126,16 +126,16 @@ public:
     /**
      * @brief Move application title
      * @{ */
-    const std::string& getMoveApplicationTitle() const
+    const std::string& get_move_application_title() const
     {
-        return m_moveApplicationTitle;
+        return m_move_application_title;
     }
 
     //------------------------------------------------------------------------------
 
-    void setMoveApplicationTitle(const std::string& _move_application_title)
+    void set_move_application_title(const std::string& _move_application_title)
     {
-        m_moveApplicationTitle = _move_application_title;
+        m_move_application_title = _move_application_title;
     }
 
     /**  @} */
@@ -143,16 +143,16 @@ public:
     /**
      * @brief Move application port
      * @{ */
-    std::uint16_t getMoveApplicationPort() const
+    std::uint16_t get_move_application_port() const
     {
-        return m_moveApplicationPort;
+        return m_move_application_port;
     }
 
     //------------------------------------------------------------------------------
 
-    void setMoveApplicationPort(std::uint16_t _move_application_port)
+    void set_move_application_port(std::uint16_t _move_application_port)
     {
-        m_moveApplicationPort = _move_application_port;
+        m_move_application_port = _move_application_port;
     }
 
     /**  @} */
@@ -160,16 +160,16 @@ public:
     /**
      * @brief Request mode
      * @{ */
-    RETRIEVE_METHOD getRetrieveMethod() const
+    retrieve_method get_retrieve_method() const
     {
-        return m_retrieveMethod;
+        return m_retrieve_method;
     }
 
     //------------------------------------------------------------------------------
 
-    void setRetrieveMethod(RETRIEVE_METHOD _retrieve_method)
+    void set_retrieve_method(retrieve_method _retrieve_method)
     {
-        m_retrieveMethod = _retrieve_method;
+        m_retrieve_method = _retrieve_method;
     }
 
 /**  @} */
@@ -184,25 +184,25 @@ protected:
     IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& _source) override;
 
     /// Local application title
-    std::string m_localApplicationTitle;
+    std::string m_local_application_title;
 
     /// Pacs host name
-    std::string m_pacsHostName;
+    std::string m_pacs_host_name;
 
     /// Pacs application title
-    std::string m_pacsApplicationTitle;
+    std::string m_pacs_application_title;
 
     /// Pacs application port
-    std::uint16_t m_pacsApplicationPort {0};
+    std::uint16_t m_pacs_application_port {0};
 
     /// Move application title
-    std::string m_moveApplicationTitle;
+    std::string m_move_application_title;
 
     /// Move application port
-    std::uint16_t m_moveApplicationPort {0};
+    std::uint16_t m_move_application_port {0};
 
     /// Retrieve method
-    RETRIEVE_METHOD m_retrieveMethod {MOVE_RETRIEVE_METHOD};
+    retrieve_method m_retrieve_method {retrieve_method::move};
 };
 
 } // namespace sight::io::dimse::data

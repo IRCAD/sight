@@ -52,13 +52,13 @@ public:
 
     enum class stereo_mode_t : std::uint8_t
     {
-        NONE,
-        AUTOSTEREO_5,
-        AUTOSTEREO_8,
-        STEREO
+        none,
+        autostereo_5,
+        autostereo_8,
+        stereo
     };
 
-    typedef std::shared_ptr<core> sptr;
+    using sptr = std::shared_ptr<core>;
 
     /// Default Compositor, one per "default" layer
     VIZ_SCENE3D_API core(Ogre::Viewport* _viewport);
@@ -67,24 +67,24 @@ public:
     VIZ_SCENE3D_API ~core();
 
     /// Return the OIT selected
-    VIZ_SCENE3D_API transparencyTechnique getTransparencyTechnique();
+    VIZ_SCENE3D_API transparency_technique get_transparency_technique();
 
     /// Return the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
-    [[nodiscard]] VIZ_SCENE3D_API int getTransparencyDepth() const;
+    [[nodiscard]] VIZ_SCENE3D_API int get_transparency_depth() const;
 
     /// Set the OIT desired
     /// Deactivate OIT compositor
-    VIZ_SCENE3D_API bool setTransparencyTechnique(transparencyTechnique _technique);
+    VIZ_SCENE3D_API bool set_transparency_technique(transparency_technique _technique);
 
     /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     /// Deactivate OIT compositor
-    VIZ_SCENE3D_API void setTransparencyDepth(int _depth);
+    VIZ_SCENE3D_API void set_transparency_depth(int _depth);
 
     /// Set the stereo mode. Keep in mind that OIT techniques disable stereo for now.
-    VIZ_SCENE3D_API void setStereoMode(stereo_mode_t _stereo_mode);
+    VIZ_SCENE3D_API void set_stereo_mode(stereo_mode_t _stereo_mode);
 
     /// Return the enabled stereo mode.
-    [[nodiscard]] VIZ_SCENE3D_API stereo_mode_t getStereoMode() const;
+    [[nodiscard]] VIZ_SCENE3D_API stereo_mode_t get_stereo_mode() const;
 
     /// Re/check OIT compositor
     VIZ_SCENE3D_API void update();
@@ -96,20 +96,20 @@ private:
     //                                      const Ogre::LightList* pLightList, bool suppressRenderStateChanges);
 
     /// Set number of ping pong peels for Depth Peeling compositor
-    VIZ_SCENE3D_API void setTransparencyDepthOfDepthPeeling(int _depth);
+    VIZ_SCENE3D_API void set_transparency_depth_of_depth_peeling(int _depth);
 
     /// Set number of ping pong peels for Dual Depth Peeling compositor
-    VIZ_SCENE3D_API void setTransparencyDepthOfDualDepthPeeling(int _depth);
+    VIZ_SCENE3D_API void set_transparency_depth_of_dual_depth_peeling(int _depth);
 
     /// Set number of Depth Peeling ping pong peels for Hybrid Transparency compositor
     /// - other peels computed with Weighted Blended OIT
-    VIZ_SCENE3D_API void setTransparencyDepthOfHybridTransparency(int _depth);
+    VIZ_SCENE3D_API void set_transparency_depth_of_hybrid_transparency(int _depth);
 
     /// Setup Default compositor (without OIT)
-    VIZ_SCENE3D_API void setupDefaultTransparency();
+    VIZ_SCENE3D_API void setup_default_transparency();
 
     /// Setup OIT current compositor
-    VIZ_SCENE3D_API void setupTransparency();
+    VIZ_SCENE3D_API void setup_transparency();
 
     //VIZ_SCENE3D_API void setupQueries();
 
@@ -118,18 +118,18 @@ private:
     //int m_transparencyTechniqueMaxDepth;
 
     /// OIT used
-    transparencyTechnique m_transparencyTechnique {DEFAULT};
+    transparency_technique m_transparency_technique {DEFAULT};
 
     /// OIT used - string name
-    Ogre::String m_coreCompositorName;
+    Ogre::String m_core_compositor_name;
 
     /// OIT compositor instance used
-    Ogre::CompositorInstance* m_compositorInstance {nullptr};
+    Ogre::CompositorInstance* m_compositor_instance {nullptr};
 
     /// Cel shading activated
-    Ogre::String m_cellShadingName;
+    Ogre::String m_cell_shading_name;
 
-    stereo_mode_t m_stereoMode {stereo_mode_t::NONE};
+    stereo_mode_t m_stereo_mode {stereo_mode_t::none};
 
     //bool m_useOcclusionQuery;
 
@@ -140,7 +140,7 @@ private:
     //Ogre::HardwareOcclusionQuery* m_activeQuery;
 
     /// Number of peels computed for Depth Peeling or 2x Dual Depth Peeling
-    int m_numPass {8};
+    int m_num_pass {8};
 
     //int m_currNumPass;
 

@@ -45,13 +45,13 @@ slice_selector::slice_selector(
     QWidget* const _parent
 ) noexcept :
     QWidget(_parent),
-    m_sliceIndex(new QSlider(Qt::Horizontal, this)),
-    m_pSliceIndexText(new QLineEdit(this))
+    m_slice_index(new QSlider(Qt::Horizontal, this)),
+    m_p_slice_index_text(new QLineEdit(this))
 {
-    m_sliceIndexStyle = new AbsoluteProxyStyle(m_sliceIndex->style());
-    m_sliceIndex->setStyle(m_sliceIndexStyle);
-    m_fctChangeIndexCallback = [this](int _i){printIndex(_i);};
-    m_fctChangeTypeCallback  = [this](int _t){printType(_t);};
+    m_slice_index_style = new absolute_proxy_style(m_slice_index->style());
+    m_slice_index->setStyle(m_slice_index_style);
+    m_fct_change_index_callback = [this](int _i){print_index(_i);};
+    m_fct_change_type_callback  = [this](int _t){print_type(_t);};
 
     auto* layout = new QHBoxLayout(this);
     if(_display_axis_selector)
@@ -60,17 +60,17 @@ slice_selector::slice_selector(
         QStringList slice_types_array;
         slice_types_array << tr("Sagittal") << tr("Frontal") << tr("Axial");
 
-        m_sliceType = new QComboBox(this);
-        m_sliceType->addItems(slice_types_array);
-        layout->addWidget(m_sliceType, 0);
-        QObject::connect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
+        m_slice_type = new QComboBox(this);
+        m_slice_type->addItems(slice_types_array);
+        layout->addWidget(m_slice_type, 0);
+        QObject::connect(m_slice_type, SIGNAL(currentIndexChanged(int)), this, SLOT(on_slice_type_change(int)));
     }
 
-    m_pSliceIndexText->setReadOnly(true);
-    m_pSliceIndexText->setMaximumWidth(80);
+    m_p_slice_index_text->setReadOnly(true);
+    m_p_slice_index_text->setMaximumWidth(80);
 
-    layout->addWidget(m_sliceIndex, 1);
-    layout->addWidget(m_pSliceIndexText, 0);
+    layout->addWidget(m_slice_index, 1);
+    layout->addWidget(m_p_slice_index_text, 0);
 
     if(_display_step_buttons)
     {
@@ -86,8 +86,8 @@ slice_selector::slice_selector(
             &QToolButton::clicked,
             [this]()
             {
-                m_sliceIndex->setValue(
-                    std::max(m_sliceIndex->minimum(), m_sliceIndex->value() - m_sliceIndex->singleStep())
+                m_slice_index->setValue(
+                    std::max(m_slice_index->minimum(), m_slice_index->value() - m_slice_index->singleStep())
                 );
             });
 
@@ -104,8 +104,8 @@ slice_selector::slice_selector(
             &QToolButton::clicked,
             [this]()
             {
-                m_sliceIndex->setValue(
-                    std::min(m_sliceIndex->maximum(), m_sliceIndex->value() + m_sliceIndex->singleStep())
+                m_slice_index->setValue(
+                    std::min(m_slice_index->maximum(), m_slice_index->value() + m_slice_index->singleStep())
                 );
             });
 
@@ -116,7 +116,7 @@ slice_selector::slice_selector(
 
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+    QObject::connect(m_slice_index, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
 
     this->setLayout(layout);
 }
@@ -125,98 +125,98 @@ slice_selector::slice_selector(
 
 slice_selector::~slice_selector() noexcept
 {
-    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+    QObject::disconnect(m_slice_index, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
 
-    if(!m_sliceType.isNull())
+    if(!m_slice_type.isNull())
     {
-        QObject::disconnect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
+        QObject::disconnect(m_slice_type, SIGNAL(currentIndexChanged(int)), this, SLOT(on_slice_type_change(int)));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::setSliceRange(int _min, int _max)
+void slice_selector::set_slice_range(int _min, int _max)
 {
-    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    this->m_sliceIndex->setRange(_min, _max);
-    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+    QObject::disconnect(m_slice_index, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
+    this->m_slice_index->setRange(_min, _max);
+    QObject::connect(m_slice_index, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::setSliceValue(int _index)
+void slice_selector::set_slice_value(int _index)
 {
-    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    this->m_sliceIndex->setValue(_index);
-    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+    QObject::disconnect(m_slice_index, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
+    this->m_slice_index->setValue(_index);
+    QObject::connect(m_slice_index, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
 
     std::stringstream ss;
-    ss << _index << " / " << this->m_sliceIndex->maximum();
-    this->m_pSliceIndexText->setText(QString::fromStdString(ss.str()));
+    ss << _index << " / " << this->m_slice_index->maximum();
+    this->m_p_slice_index_text->setText(QString::fromStdString(ss.str()));
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::setTypeSelection(int _type)
+void slice_selector::set_type_selection(int _type)
 {
-    if(!m_sliceType.isNull())
+    if(!m_slice_type.isNull())
     {
-        this->m_sliceType->setCurrentIndex(_type);
+        this->m_slice_type->setCurrentIndex(_type);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::onSliceIndexChange(int _value) noexcept
+void slice_selector::on_slice_index_change(int _value) noexcept
 {
-    m_fctChangeIndexCallback(_value);
-    this->setSliceValue(_value);
+    m_fct_change_index_callback(_value);
+    this->set_slice_value(_value);
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::setChangeIndexCallback(ChangeIndexCallback _fct)
+void slice_selector::set_change_index_callback(ChangeIndexCallback _fct)
 {
-    m_fctChangeIndexCallback = _fct;
+    m_fct_change_index_callback = _fct;
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::setChangeTypeCallback(ChangeTypeCallback _fct)
+void slice_selector::set_change_type_callback(ChangeTypeCallback _fct)
 {
-    m_fctChangeTypeCallback = _fct;
+    m_fct_change_type_callback = _fct;
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::printIndex(int /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void slice_selector::printType(int /*unused*/)
+void slice_selector::print_index(int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::setEnable(bool _enable)
+void slice_selector::print_type(int /*unused*/)
 {
-    if(!m_sliceType.isNull())
+}
+
+//------------------------------------------------------------------------------
+
+void slice_selector::set_enable(bool _enable)
+{
+    if(!m_slice_type.isNull())
     {
-        m_sliceType->setEnabled(_enable);
+        m_slice_type->setEnabled(_enable);
     }
 
-    m_sliceIndex->setEnabled(_enable);
-    m_pSliceIndexText->setEnabled(_enable);
+    m_slice_index->setEnabled(_enable);
+    m_p_slice_index_text->setEnabled(_enable);
 }
 
 //------------------------------------------------------------------------------
-void slice_selector::onSliceTypeChange(int _index)
+void slice_selector::on_slice_type_change(int _index)
 {
-    m_fctChangeTypeCallback(_index);
-    this->setSliceValue(this->m_sliceIndex->value());
+    m_fct_change_type_callback(_index);
+    this->set_slice_value(this->m_slice_index->value());
 }
 
 //------------------------------------------------------------------------------

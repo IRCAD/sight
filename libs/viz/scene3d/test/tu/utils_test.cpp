@@ -53,12 +53,12 @@ void utils_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void utils_test::convertOgreColorToFwColor()
+void utils_test::from_ogre_color()
 {
     data::color::sptr ref_color = std::make_shared<data::color>();
-    ref_color->setRGBA(1.F, 1.F, 1.F, 1.F);
+    ref_color->set_rgba(1.F, 1.F, 1.F, 1.F);
 
-    data::color::sptr result_color = viz::scene3d::utils::convertOgreColorToFwColor(Ogre::ColourValue());
+    data::color::sptr result_color = viz::scene3d::utils::from_ogre_color(Ogre::ColourValue());
     CPPUNIT_ASSERT(static_cast<int>(result_color->red()) == static_cast<int>(ref_color->red()));
     CPPUNIT_ASSERT(static_cast<int>(result_color->green()) == static_cast<int>(ref_color->green()));
     CPPUNIT_ASSERT(static_cast<int>(result_color->blue()) == static_cast<int>(ref_color->blue()));
@@ -67,7 +67,7 @@ void utils_test::convertOgreColorToFwColor()
 
 //------------------------------------------------------------------------------
 
-void utils_test::convertOgreMatrixToTM3D()
+void utils_test::convert_ogre_matrix_to_t_m_3d()
 {
     std::mt19937 rng {std::random_device {}()};
     std::uniform_real_distribution<float> dist(-10., 10.);
@@ -81,7 +81,7 @@ void utils_test::convertOgreMatrixToTM3D()
             coeff = dist(rng);
         }
 
-        const Ogre::Matrix4 ogre_mat0 = viz::scene3d::utils::convertTM3DToOgreMx(mat0);
+        const Ogre::Matrix4 ogre_mat0 = viz::scene3d::utils::to_ogre_matrix(mat0);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
@@ -94,7 +94,7 @@ void utils_test::convertOgreMatrixToTM3D()
         // Convert back to TM3D.
         data::matrix4::sptr mat0_copy = std::make_shared<data::matrix4>();
 
-        viz::scene3d::utils::copyOgreMxToTM3D(ogre_mat0, mat0_copy);
+        viz::scene3d::utils::from_ogre_matrix(ogre_mat0, mat0_copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
@@ -118,7 +118,7 @@ void utils_test::convertOgreMatrixToTM3D()
         }
 
         data::matrix4::sptr mat1_copy = std::make_shared<data::matrix4>();
-        viz::scene3d::utils::copyOgreMxToTM3D(ogre_mat1, mat1_copy);
+        viz::scene3d::utils::from_ogre_matrix(ogre_mat1, mat1_copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
@@ -128,7 +128,7 @@ void utils_test::convertOgreMatrixToTM3D()
             }
         }
 
-        const Ogre::Matrix4 ogre_mat1_copy = viz::scene3d::utils::convertTM3DToOgreMx(mat1_copy);
+        const Ogre::Matrix4 ogre_mat1_copy = viz::scene3d::utils::to_ogre_matrix(mat1_copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
@@ -143,7 +143,7 @@ void utils_test::convertOgreMatrixToTM3D()
 
 //------------------------------------------------------------------------------
 
-void utils_test::worldToSliceTest()
+void utils_test::world_to_slice_test()
 {
     data::image::sptr image = std::make_shared<data::image>();
 
@@ -151,26 +151,26 @@ void utils_test::worldToSliceTest()
     Ogre::Vector3 world_outside_im = {50., -1., 5.};
 
     // Spacing is 0, throw exception.
-    CPPUNIT_ASSERT_THROW(utils::worldToSlices(*image, world_inside_im), core::exception);
+    CPPUNIT_ASSERT_THROW(utils::world_to_slices(*image, world_inside_im), core::exception);
 
-    utest_data::generator::image::generateImage(
+    utest_data::generator::image::generate_image(
         image,
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
         core::type::UINT8,
-        data::image::PixelFormat::GRAY_SCALE
+        data::image::pixel_format::gray_scale
     );
 
     Ogre::Vector3i slice_idx;
 
-    CPPUNIT_ASSERT_NO_THROW(slice_idx = utils::worldToSlices(*image, world_inside_im));
+    CPPUNIT_ASSERT_NO_THROW(slice_idx = utils::world_to_slices(*image, world_inside_im));
 
     CPPUNIT_ASSERT_EQUAL(20, slice_idx[0]);
     CPPUNIT_ASSERT_EQUAL(10, slice_idx[1]);
     CPPUNIT_ASSERT_EQUAL(5, slice_idx[2]);
 
-    CPPUNIT_ASSERT_THROW(utils::worldToSlices(*image, world_outside_im), core::exception);
+    CPPUNIT_ASSERT_THROW(utils::world_to_slices(*image, world_outside_im), core::exception);
 }
 
 //------------------------------------------------------------------------------

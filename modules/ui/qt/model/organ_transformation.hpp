@@ -97,43 +97,43 @@ protected:
 
 private Q_SLOTS:
 
-    void onReconstructionCheck(QListWidgetItem* _current_item);
-    void onResetClick();
-    void onSaveClick();
-    void onLoadClick();
+    void on_reconstruction_check(QListWidgetItem* _current_item);
+    void on_reset_click();
+    void on_save_click();
+    void on_load_click();
 
     /// Slot to check all the organs of the list
-    void onSelectAllChanged(int _state);
+    void on_select_all_changed(int _state);
 
 private:
 
     void refresh();
-    static void notifyTransformationMatrix(data::matrix4::sptr _a_trans_mat);
+    static void notify_transformation_matrix(data::matrix4::sptr _a_trans_mat);
 
     /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
-    void addMeshTransform();
+    void add_mesh_transform();
 
     // reconstruction_map_t
-    typedef std::map<std::string, data::reconstruction::sptr> reconstruction_map_t;
-    typedef std::map<std::string, data::matrix4::sptr> inner_mat_mapping_t;
-    typedef std::map<std::string, inner_mat_mapping_t> save_mapping_t;
+    using reconstruction_map_t = std::map<std::string, data::reconstruction::sptr>;
+    using inner_mat_mapping_t  = std::map<std::string, data::matrix4::sptr>;
+    using save_mapping_t       = std::map<std::string, inner_mat_mapping_t>;
 
-    reconstruction_map_t m_reconstructionMap;
-    QPointer<QPushButton> m_saveButton;
-    QPointer<QPushButton> m_loadButton;
-    QPointer<QPushButton> m_resetButton;
-    QPointer<QListWidget> m_reconstructionListBox;
-    QPointer<QComboBox> m_saveSelectionComboBox;
-    QPointer<QCheckBox> m_selectAllCheckBox;
+    reconstruction_map_t m_reconstruction_map;
+    QPointer<QPushButton> m_save_button;
+    QPointer<QPushButton> m_load_button;
+    QPointer<QPushButton> m_reset_button;
+    QPointer<QListWidget> m_reconstruction_list_box;
+    QPointer<QComboBox> m_save_selection_combo_box;
+    QPointer<QCheckBox> m_select_all_check_box;
 
     //variables for the functionalities of saving & loading
-    save_mapping_t m_saveListing;
-    unsigned int m_saveCount {0};
+    save_mapping_t m_save_listing;
+    unsigned int m_save_count {0};
 
-    static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
-    static constexpr std::string_view s_COMPOSITE    = "composite";
-    data::ptr<data::model_series, data::Access::inout> m_modelSeries {this, "modelSeries", true};
-    data::ptr<data::composite, data::Access::inout> m_composite {this, "composite", true};
+    static constexpr std::string_view MODEL_SERIES = "modelSeries";
+    static constexpr std::string_view COMPOSITE    = "composite";
+    data::ptr<data::model_series, data::access::inout> m_model_series {this, "modelSeries", true};
+    data::ptr<data::composite, data::access::inout> m_composite {this, "composite", true};
 };
 
 } // namespace sight::module::ui::qt::model

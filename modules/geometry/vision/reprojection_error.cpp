@@ -37,7 +37,7 @@ namespace sight::module::geometry::vision
 {
 
 const core::com::slots::key_t reprojection_error::COMPUTE_SLOT       = "compute";
-const core::com::slots::key_t reprojection_error::SET_PARAMETER_SLOT = "setParameter";
+const core::com::slots::key_t reprojection_error::SET_PARAMETER_SLOT = "set_parameter";
 
 static const core::com::signals::key_t ERROR_COMPUTED_SIG = "errorComputed";
 
@@ -45,12 +45,12 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG = "errorComputed";
 
 reprojection_error::reprojection_error() :
 
-    m_cvColor(cv::Scalar(255, 255, 255, 255))
+    m_cv_color(cv::Scalar(255, 255, 255, 255))
 {
     new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
 
     new_slot(COMPUTE_SLOT, &reprojection_error::compute, this);
-    new_slot(SET_PARAMETER_SLOT, &reprojection_error::setParameter, this);
+    new_slot(SET_PARAMETER_SLOT, &reprojection_error::set_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,20 +58,20 @@ reprojection_error::reprojection_error() :
 void reprojection_error::configuring()
 {
     service::config_t config = this->get_config();
-    m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
-    SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
+    m_pattern_width = config.get<double>("patternWidth", m_pattern_width);
+    SIGHT_ASSERT("patternWidth setting is set to " << m_pattern_width << " but should be > 0.", m_pattern_width > 0);
 
     auto in_cfg = config.equal_range("in");
     for(auto it_cfg = in_cfg.first ; it_cfg != in_cfg.second ; ++it_cfg)
     {
         const auto group = it_cfg->second.get<std::string>("<xmlattr>.group", "");
-        if(group == s_MATRIX_INPUT)
+        if(group == MATRIX_INPUT)
         {
             auto key_cfg = it_cfg->second.equal_range("key");
             for(auto it_key_cfg = key_cfg.first ; it_key_cfg != key_cfg.second ; ++it_key_cfg)
             {
                 const auto key = it_key_cfg->second.get<std::string>("<xmlattr>.id");
-                m_matricesTag.push_back(key);
+                m_matrices_tag.push_back(key);
             }
 
             break;
@@ -84,12 +84,12 @@ void reprojection_error::configuring()
 void reprojection_error::starting()
 {
     //3D Points
-    const float half_width = static_cast<float>(m_patternWidth) * .5F;
+    const float half_width = static_cast<float>(m_pattern_width) * .5F;
 
-    m_objectPoints.emplace_back(-half_width, half_width, 0.F);
-    m_objectPoints.emplace_back(half_width, half_width, 0.F);
-    m_objectPoints.emplace_back(half_width, -half_width, 0.F);
-    m_objectPoints.emplace_back(-half_width, -half_width, 0.F);
+    m_object_points.emplace_back(-half_width, half_width, 0.F);
+    m_object_points.emplace_back(half_width, half_width, 0.F);
+    m_object_points.emplace_back(half_width, -half_width, 0.F);
+    m_object_points.emplace_back(-half_width, -half_width, 0.F);
 
     //TODO: Add an option to use a chessboard instead of a marker
     // --> configure height, width and square size(in mm)
@@ -98,9 +98,9 @@ void reprojection_error::starting()
     SIGHT_ASSERT("Camera is not found", camera);
 
     cv::Size img_size;
-    std::tie(m_cameraMatrix, img_size, m_distorsionCoef) = io::opencv::camera::copyToCv(camera.get_shared());
+    std::tie(m_camera_matrix, img_size, m_distorsion_coef) = io::opencv::camera::copy_to_cv(camera.get_shared());
 
-    m_cvExtrinsic = cv::Mat::eye(4, 4, CV_64F);
+    m_cv_extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
     auto extrinsic = m_extrinsic.lock();
     if(extrinsic)
@@ -109,7 +109,7 @@ void reprojection_error::starting()
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
-                m_cvExtrinsic.at<double>(i, j) = (*extrinsic)(i, j);
+                m_cv_extrinsic.at<double>(i, j) = (*extrinsic)(i, j);
             }
         }
     }
@@ -119,7 +119,7 @@ void reprojection_error::starting()
 
 void reprojection_error::stopping()
 {
-    m_objectPoints.clear();
+    m_object_points.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -131,22 +131,22 @@ void reprojection_error::compute(core::hires_clock::type _timestamp)
         return;
     }
 
-    if(_timestamp > m_lastTimestamp)
+    if(_timestamp > m_last_timestamp)
     {
         std::vector<sight::geometry::vision::helper::error_and_points_t> errors;
 
         {
-            auto marker_map = m_markerMap.lock();
+            auto marker_map = m_marker_map.lock();
 
             // For each matrix
             unsigned int i = 0;
-            for(const auto& marker_key : m_matricesTag)
+            for(const auto& marker_key : m_matrices_tag)
             {
-                const auto* marker = marker_map->getMarker(marker_key);
+                const auto* marker = marker_map->get_marker(marker_key);
 
                 if(marker != nullptr)
                 {
-                    std::vector<cv::Point2f> points2_d;
+                    std::vector<cv::Point2f> points_2d;
 
                     cv::Mat mat = cv::Mat::eye(4, 4, CV_64F);
                     {
@@ -160,7 +160,7 @@ void reprojection_error::compute(core::hires_clock::type _timestamp)
                         }
                     }
 
-                    const cv::Mat pose = m_cvExtrinsic * mat;
+                    const cv::Mat pose = m_cv_extrinsic * mat;
 
                     cv::Mat rot = pose(cv::Rect(0, 0, 3, 3));
 
@@ -175,17 +175,17 @@ void reprojection_error::compute(core::hires_clock::type _timestamp)
 
                     for(const auto& p : *marker)
                     {
-                        points2_d.emplace_back(p[0], p[1]);
+                        points_2d.emplace_back(p[0], p[1]);
                     }
 
                     sight::geometry::vision::helper::error_and_points_t err_p =
                         sight::geometry::vision::helper::compute_reprojection_error(
-                            m_objectPoints,
-                            points2_d,
+                            m_object_points,
+                            points_2d,
                             rvec,
                             tvec,
-                            m_cameraMatrix,
-                            m_distorsionCoef
+                            m_camera_matrix,
+                            m_distorsion_coef
                         );
 
                     this->signal<error_computed_signal_t>(ERROR_COMPUTED_SIG)->async_emit(err_p.first);
@@ -203,9 +203,9 @@ void reprojection_error::compute(core::hires_clock::type _timestamp)
             for(const auto& err : errors)
             {
                 auto frame = m_frame.lock();
-                SIGHT_ASSERT("The input " << s_FRAME_INOUT << " is not valid.", frame);
+                SIGHT_ASSERT("The input " << FRAME_INOUT << " is not valid.", frame);
 
-                if(frame->getSizeInBytes() > 0)
+                if(frame->size_in_bytes() > 0)
                 {
                     cv::Mat cv_image = io::opencv::image::move_to_cv(frame.get_shared());
 
@@ -213,7 +213,7 @@ void reprojection_error::compute(core::hires_clock::type _timestamp)
 
                     for(auto& j : reprojected_p)
                     {
-                        cv::circle(cv_image, j, 7, m_cvColor, 1, cv::LINE_8);
+                        cv::circle(cv_image, j, 7, m_cv_color, 1, cv::LINE_8);
                     }
                 }
             }
@@ -223,7 +223,7 @@ void reprojection_error::compute(core::hires_clock::type _timestamp)
 
 //-----------------------------------------------------------------------------
 
-void reprojection_error::setParameter(sight::ui::parameter_t _val, std::string _key)
+void reprojection_error::set_parameter(sight::ui::parameter_t _val, std::string _key)
 {
     if(_key == "display")
     {
@@ -232,7 +232,7 @@ void reprojection_error::setParameter(sight::ui::parameter_t _val, std::string _
     else if(_key == "color")
     {
         const auto color = std::get<sight::ui::color_t>(_val);
-        m_cvColor = cv::Scalar(color[0], color[1], color[2], 255);
+        m_cv_color = cv::Scalar(color[0], color[1], color[2], 255);
     }
     else
     {
@@ -256,7 +256,7 @@ void reprojection_error::updating()
 service::connections_t reprojection_error::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

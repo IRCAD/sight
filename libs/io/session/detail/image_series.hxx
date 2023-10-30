@@ -32,12 +32,12 @@
 namespace sight::io::session::detail::image_series
 {
 
-constexpr static auto s_DicomReference {"DicomReference"};
+constexpr static auto DICOM_REFERENCE {"DicomReference"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& _archive,
+    zip::archive_writer& _archive,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -54,13 +54,13 @@ inline static void write(
     image::write(_archive, _tree, image_series, _children, _password);
 
     // Serialize other attributes
-    _children[s_DicomReference] = image_series->getDicomReference();
+    _children[DICOM_REFERENCE] = image_series->get_dicom_reference();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::image_series::sptr read(
-    zip::ArchiveReader& _archive,
+    zip::archive_reader& _archive,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -78,7 +78,7 @@ inline static data::image_series::sptr read(
     series::read(_archive, _tree, _children, image_series, _password);
 
     // Deserialize other attributes
-    image_series->setDicomReference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(s_DicomReference)));
+    image_series->set_dicom_reference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(DICOM_REFERENCE)));
 
     return image_series;
 }

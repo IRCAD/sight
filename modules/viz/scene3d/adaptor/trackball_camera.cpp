@@ -29,12 +29,12 @@ namespace sight::module::viz::scene3d::adaptor
 
 void trackball_camera::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    m_priority            = config.get<int>(s_CONFIG + "priority", m_priority);
-    m_layerOrderDependant = config.get<bool>(s_CONFIG + "layerOrderDependant", m_layerOrderDependant);
+    m_priority              = config.get<int>(CONFIG + "priority", m_priority);
+    m_layer_order_dependant = config.get<bool>(CONFIG + "layerOrderDependant", m_layer_order_dependant);
 }
 
 //-----------------------------------------------------------------------------
@@ -43,11 +43,11 @@ void trackball_camera::starting()
 {
     this->initialize();
 
-    const auto layer = this->getLayer();
+    const auto layer = this->layer();
     m_trackball =
-        std::make_shared<sight::viz::scene3d::interactor::trackball_interactor>(layer, m_layerOrderDependant);
+        std::make_shared<sight::viz::scene3d::interactor::trackball_interactor>(layer, m_layer_order_dependant);
 
-    layer->addInteractor(m_trackball, m_priority);
+    layer->add_interactor(m_trackball, m_priority);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,8 +60,8 @@ void trackball_camera::updating() noexcept
 
 void trackball_camera::stopping()
 {
-    const auto layer = this->getLayer();
-    layer->removeInteractor(m_trackball);
+    const auto layer = this->layer();
+    layer->remove_interactor(m_trackball);
 }
 
 //-----------------------------------------------------------------------------

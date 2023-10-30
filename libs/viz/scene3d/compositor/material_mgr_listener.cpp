@@ -102,7 +102,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
     if(_scheme_name == "DepthPeeling/depthMap"
        || _scheme_name == "HybridTransparency/backDepth")
     {
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(depth_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(depth_tech, _scheme_name, _original_material);
 
         const Ogre::Technique::Passes& passes = new_tech->getPasses();
         for(auto* const pass : passes)
@@ -122,7 +122,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             || Ogre::StringUtil::startsWith(_scheme_name, "CelShadingDepthPeeling/peel", false)
             || Ogre::StringUtil::startsWith(_scheme_name, "HybridTransparency/peel", false))
     {
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(default_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(default_tech, _scheme_name, _original_material);
 
         const Ogre::Technique::Passes& passes = new_tech->getPasses();
         for(auto* const pass : passes)
@@ -136,18 +136,18 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
                && pass->getName() != "EdgePass")
             {
                 auto vp_name  = pass->getVertexProgramName();
-                auto new_name = viz::scene3d::helper::shading::setTechniqueInProgramName(vp_name, algo_name);
+                auto new_name = viz::scene3d::helper::shading::set_technique_in_program_name(vp_name, algo_name);
                 pass->setVertexProgram(new_name);
             }
 
             // replace fragment program and build it if needed
             const auto fp_base_name   = pass->getFragmentProgramName();
             const auto fp_source_name = pass->getFragmentProgram()->getSourceFile();
-            auto new_name             = viz::scene3d::helper::shading::setTechniqueInProgramName(
+            auto new_name             = viz::scene3d::helper::shading::set_technique_in_program_name(
                 fp_base_name,
                 algo_name + "/peel"
             );
-            sight::viz::scene3d::compositor::material_mgr_listener::ensureFPCreated(
+            sight::viz::scene3d::compositor::material_mgr_listener::ensure_fp_created(
                 new_name,
                 algo_name,
                 algo_pass_name,
@@ -193,7 +193,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
     else if(_scheme_name == "WeightedBlended/occlusionMap"
             || _scheme_name == "HybridTransparency/occlusionMap")
     {
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(default_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(default_tech, _scheme_name, _original_material);
 
         const Ogre::Technique::Passes& passes = new_tech->getPasses();
         for(auto* const pass : passes)
@@ -202,8 +202,8 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             const auto fp_base_name   = pass->getFragmentProgramName();
             const auto fp_source_name = pass->getFragmentProgram()->getSourceFile();
             auto new_name             =
-                viz::scene3d::helper::shading::setTechniqueInProgramName(fp_base_name, algo_name + "/occlusionMap");
-            sight::viz::scene3d::compositor::material_mgr_listener::ensureFPCreated(
+                viz::scene3d::helper::shading::set_technique_in_program_name(fp_base_name, algo_name + "/occlusionMap");
+            sight::viz::scene3d::compositor::material_mgr_listener::ensure_fp_created(
                 new_name,
                 algo_name,
                 algo_pass_name,
@@ -220,7 +220,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
     else if(_scheme_name == "WeightedBlended/weightBlend"
             || _scheme_name == "HybridTransparency/weightBlend")
     {
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(default_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(default_tech, _scheme_name, _original_material);
 
         const Ogre::Technique::Passes& passes = new_tech->getPasses();
         for(auto* const pass : passes)
@@ -228,11 +228,11 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             // replace fragment program and build it if needed
             const auto fp_base_name   = pass->getFragmentProgramName();
             const auto fp_source_name = pass->getFragmentProgram()->getSourceFile();
-            auto new_name             = viz::scene3d::helper::shading::setTechniqueInProgramName(
+            auto new_name             = viz::scene3d::helper::shading::set_technique_in_program_name(
                 fp_base_name,
                 algo_name + "/weightBlend"
             );
-            sight::viz::scene3d::compositor::material_mgr_listener::ensureFPCreated(
+            sight::viz::scene3d::compositor::material_mgr_listener::ensure_fp_created(
                 new_name,
                 algo_name,
                 algo_pass_name,
@@ -275,7 +275,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
     else if(_scheme_name == "WeightedBlended/transmittanceBlend"
             || _scheme_name == "HybridTransparency/transmittanceBlend")
     {
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(default_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(default_tech, _scheme_name, _original_material);
 
         const Ogre::Technique::Passes& passes = new_tech->getPasses();
         for(auto* const pass : passes)
@@ -283,11 +283,11 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             // replace fragment program and build it if needed
             const auto fp_base_name   = pass->getFragmentProgramName();
             const auto fp_source_name = pass->getFragmentProgram()->getSourceFile();
-            auto new_name             = viz::scene3d::helper::shading::setTechniqueInProgramName(
+            auto new_name             = viz::scene3d::helper::shading::set_technique_in_program_name(
                 fp_base_name,
                 algo_name + "/transmittanceBlend"
             );
-            sight::viz::scene3d::compositor::material_mgr_listener::ensureFPCreated(
+            sight::viz::scene3d::compositor::material_mgr_listener::ensure_fp_created(
                 new_name,
                 algo_name,
                 algo_pass_name,
@@ -331,7 +331,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
     }
     else if(Ogre::StringUtil::startsWith(_scheme_name, "DualDepthPeeling/peelInit", false))
     {
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(depth_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(depth_tech, _scheme_name, _original_material);
 
         const Ogre::Technique::Passes& passes = new_tech->getPasses();
         for(auto* const pass : passes)
@@ -347,7 +347,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
     }
     else if(Ogre::StringUtil::startsWith(_scheme_name, "DualDepthPeeling/peel", false))
     {
-        new_tech = viz::scene3d::helper::technique::copyToMaterial(default_tech, _scheme_name, _original_material);
+        new_tech = viz::scene3d::helper::technique::copy_to_material(default_tech, _scheme_name, _original_material);
 
         const Ogre::Technique::Passes& passes = new_tech->getPasses();
         for(auto* const pass : passes)
@@ -361,11 +361,11 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             // replace fragment program and build it if needed
             const auto fp_base_name   = pass->getFragmentProgramName();
             const auto fp_source_name = pass->getFragmentProgram()->getSourceFile();
-            auto new_name             = viz::scene3d::helper::shading::setTechniqueInProgramName(
+            auto new_name             = viz::scene3d::helper::shading::set_technique_in_program_name(
                 fp_base_name,
                 algo_name + "/peel"
             );
-            sight::viz::scene3d::compositor::material_mgr_listener::ensureFPCreated(
+            sight::viz::scene3d::compositor::material_mgr_listener::ensure_fp_created(
                 new_name,
                 algo_name,
                 algo_pass_name,
@@ -423,7 +423,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
 
 // ----------------------------------------------------------------------------
 
-Ogre::GpuProgramPtr material_mgr_listener::ensureFPCreated(
+Ogre::GpuProgramPtr material_mgr_listener::ensure_fp_created(
     const std::string& _name,
     const std::string& _algo_name,
     const std::string& _algo_pass_name,
@@ -485,7 +485,7 @@ Ogre::GpuProgramPtr material_mgr_listener::ensureFPCreated(
         SIGHT_FATAL("Unreachable code");
     }
 
-    return viz::scene3d::helper::shading::createProgramFrom(
+    return viz::scene3d::helper::shading::create_program_from(
         _name,
         _source_name,
         parameters,

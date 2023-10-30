@@ -93,10 +93,10 @@ protected:
 private:
 
     /// config manager
-    app::helper::config_launcher::uptr m_configLauncher;
+    app::helper::config_launcher::uptr m_config_launcher;
 
     /// Input data to pass to the configuration
-    data::ptr_vector<data::object, data::Access::inout> m_data {this, app::helper::config_launcher::s_DATA_GROUP};
+    data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};
 };
 
 } // namespace sight::app

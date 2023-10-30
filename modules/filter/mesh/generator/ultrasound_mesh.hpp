@@ -46,12 +46,12 @@ namespace sight::module::filter::mesh::generator
  * @brief Generates the mesh used to display the ultrasound image.
  *
  * @section Slots Slots
- * - \b setIntParameter(int, std::string): Called to modify the simulation parameters.
+ * - \b set_int_parameter(int, std::string): Called to modify the simulation parameters.
  *   - depth: Sets the depth of the US plane.
  *   - angle: Sets angle of the US beam.
  *   - width: Sets the width of the US plane.
  *   - deltaDepth: Sets the delta depth of the US plane.
- * - \b setBoolParameter(bool, std::string): Called to modify the simulation parameters.
+ * - \b set_bool_parameter(bool, std::string): Called to modify the simulation parameters.
  *   - shape: rectangle or US beam.
  *
  * @section XML XML Configuration
@@ -103,39 +103,39 @@ protected:
 private:
 
     /// Updates the mesh points position.
-    void updateMeshPosition();
+    void update_mesh_position();
 
     /**
      * @brief Creates the mesh.
      * @param _mesh the data used to store information.
      */
-    void createQuadMesh(const data::mesh::sptr& _mesh) const;
+    void create_quad_mesh(const data::mesh::sptr& _mesh) const;
 
     /**
      * @brief Updates the mesh.
      * @param _mesh the data used to store information.
      */
-    void updateQuadMesh(const data::mesh::sptr& _mesh);
+    void update_quad_mesh(const data::mesh::sptr& _mesh);
 
     /**
      * @brief Sets an integer parameter.
      * @param _val value to set.
      * @param _key the key used to select the member to change.
      */
-    void setIntParameter(int _val, std::string _key);
+    void set_int_parameter(int _val, std::string _key);
 
     /**
      * @brief Sets a boolean parameter.
      * @param _val value to set.
      * @param _key the key used to select the member to change.
      */
-    void setBoolParameter(bool _val, std::string _key);
+    void set_bool_parameter(bool _val, std::string _key);
 
     /// Defines the resolution in X.
-    std::size_t m_resolutionX {25U};
+    std::size_t m_resolution_x {25U};
 
     /// Defines the resolution in Y.
-    std::size_t m_resolutionY {25U};
+    std::size_t m_resolution_y {25U};
 
     /// Defines the depth of the US plane.
     int m_depth {132};
@@ -147,17 +147,17 @@ private:
     int m_width {90};
 
     /// Defines the delta depth of the US plane.
-    int m_deltaDepth {50};
+    int m_delta_depth {50};
 
     /// Defines the shape of the US plane, rectangle or US beam.
     bool m_shape {true};
 
     /// Stores mesh positions.
-    boost::multi_array<float, 3> m_meshPositionArray;
+    boost::multi_array<float, 3> m_mesh_position_array;
 
-    static constexpr std::string_view s_MESH_INOUT = "mesh";
+    static constexpr std::string_view MESH_INOUT = "mesh";
 
-    sight::data::ptr<sight::data::mesh, sight::data::Access::inout> m_mesh {this, s_MESH_INOUT};
+    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, MESH_INOUT};
 };
 
 } // namespace sight::module::filter::mesh::generator

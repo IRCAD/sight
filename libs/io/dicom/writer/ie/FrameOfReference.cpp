@@ -31,37 +31,37 @@ namespace sight::io::dicom::writer::ie
 
 //------------------------------------------------------------------------------
 
-FrameOfReference::FrameOfReference(
+frame_of_reference::frame_of_reference(
     const SPTR(gdcm::Writer)& _writer,
-    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const SPTR(io::dicom::container::dicom_instance)& _instance,
     const data::series::csptr& _series,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::series>(_writer, _instance, _series,
-                                                           _logger, _progress, _cancel)
+    io::dicom::writer::ie::information_entity<data::series>(_writer, _instance, _series,
+                                                            _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-FrameOfReference::~FrameOfReference()
+frame_of_reference::~frame_of_reference()
 = default;
 
 //------------------------------------------------------------------------------
 
-void FrameOfReference::writeFrameOfReferenceModule()
+void frame_of_reference::write_frame_of_reference_module()
 {
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Frame of Reference UID
-    const std::string frame_of_reference_uid = m_instance->getFrameOfReferenceUID();
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0052>(frame_of_reference_uid, dataset);
+    const std::string frame_of_reference_uid = m_instance->get_frame_of_reference_uid();
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0020, 0x0052>(frame_of_reference_uid, dataset);
 
     // Position Reference Indicator - Type 2
-    io::dicom::helper::DicomDataWriter::setEmptyTagValue<0x0020, 0x1040>(dataset);
+    io::dicom::helper::dicom_data_writer::set_empty_tag_value<0x0020, 0x1040>(dataset);
 }
 
 //------------------------------------------------------------------------------

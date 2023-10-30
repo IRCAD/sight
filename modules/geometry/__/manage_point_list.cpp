@@ -36,17 +36,17 @@ namespace sight::module::geometry
 static const core::com::slots::key_t PICK_SLOT         = "pick";
 static const core::com::slots::key_t CLEAR_POINTS_SLOT = "clearPoints";
 
-static const std::string s_MAX_CONFIG       = "max";
-static const std::string s_REMOVABLE_CONFIG = "removable";
-static const std::string s_LABEL_CONFIG     = "label";
-static const std::string s_TOLERANCE_CONFIG = "tolerance";
+static const std::string MAX_CONFIG       = "max";
+static const std::string REMOVABLE_CONFIG = "removable";
+static const std::string LABEL_CONFIG     = "label";
+static const std::string TOLERANCE_CONFIG = "tolerance";
 
 //------------------------------------------------------------------------------
 
 manage_point_list::manage_point_list() noexcept
 {
     new_slot(PICK_SLOT, &manage_point_list::pick, this);
-    new_slot(CLEAR_POINTS_SLOT, &manage_point_list::clearPoints, this);
+    new_slot(CLEAR_POINTS_SLOT, &manage_point_list::clear_points, this);
 }
 
 //------------------------------------------------------------------------------
@@ -63,10 +63,10 @@ void manage_point_list::configuring()
 
     if(config)
     {
-        m_max       = config->get<std::size_t>(s_MAX_CONFIG, m_max);
-        m_removable = config->get<bool>(s_REMOVABLE_CONFIG, m_removable);
-        m_label     = config->get<bool>(s_LABEL_CONFIG, m_label);
-        m_tolerance = config->get<float>(s_TOLERANCE_CONFIG, m_tolerance);
+        m_max       = config->get<std::size_t>(MAX_CONFIG, m_max);
+        m_removable = config->get<bool>(REMOVABLE_CONFIG, m_removable);
+        m_label     = config->get<bool>(LABEL_CONFIG, m_label);
+        m_tolerance = config->get<float>(TOLERANCE_CONFIG, m_tolerance);
     }
 }
 
@@ -92,7 +92,7 @@ void manage_point_list::stopping()
 
 void manage_point_list::pick(data::tools::picking_info _info) const
 {
-    if((_info.m_modifierMask & data::tools::picking_info::CTRL) != 0)
+    if((_info.m_modifier_mask & data::tools::picking_info::ctrl) != 0)
     {
         const data::point::sptr point = std::make_shared<data::point>();
 
@@ -100,52 +100,52 @@ void manage_point_list::pick(data::tools::picking_info _info) const
 
         if(matrix)
         {
-            const std::array<double, 3>& picked_coord = _info.m_worldPos;
+            const std::array<double, 3>& picked_coord = _info.m_world_pos;
             const glm::dvec4 picked_point             =
                 glm::dvec4 {picked_coord[0], picked_coord[1], picked_coord[2], 1.0
             };
             const glm::dmat4x4 mat = sight::geometry::data::to_glm_mat(*matrix);
 
             const glm::dvec4 modified_picked_point = mat * picked_point;
-            point->setCoord({modified_picked_point[0], modified_picked_point[1], modified_picked_point[2]});
+            point->set_coord({modified_picked_point[0], modified_picked_point[1], modified_picked_point[2]});
         }
         else
         {
-            point->setCoord({_info.m_worldPos[0], _info.m_worldPos[1], _info.m_worldPos[2]});
+            point->set_coord({_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2]});
         }
 
-        if(_info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_UP)
+        if(_info.m_event_id == data::tools::picking_info::event::mouse_left_up)
         {
-            this->addPoint(point);
+            this->add_point(point);
         }
-        else if(_info.m_eventId == data::tools::picking_info::Event::MOUSE_RIGHT_UP)
+        else if(_info.m_event_id == data::tools::picking_info::event::mouse_right_up)
         {
-            this->removePoint(point);
+            this->remove_point(point);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void manage_point_list::addPoint(const data::point::sptr _point) const
+void manage_point_list::add_point(const data::point::sptr _point) const
 {
-    const auto point_list = m_pointList.lock();
+    const auto point_list = m_point_list.lock();
 
     if(m_label)
     {
-        const auto counter = point_list->getPoints().size();
-        _point->setLabel(std::to_string(counter));
+        const auto counter = point_list->get_points().size();
+        _point->set_label(std::to_string(counter));
     }
 
-    point_list->pushBack(_point);
+    point_list->push_back(_point);
     const auto& sig_added = point_list->signal<data::point_list::point_added_signal_t>(
         data::point_list::POINT_ADDED_SIG
     );
     sig_added->async_emit(_point);
 
-    if(m_max != 0 && point_list->getPoints().size() > m_max)
+    if(m_max != 0 && point_list->get_points().size() > m_max)
     {
-        const data::point::sptr removed_point = point_list->getPoints().front();
+        const data::point::sptr removed_point = point_list->get_points().front();
         point_list->remove(0);
         const auto& sig_removed = point_list->signal<data::point_list::point_removed_signal_t>(
             data::point_list::POINT_REMOVED_SIG
@@ -156,13 +156,13 @@ void manage_point_list::addPoint(const data::point::sptr _point) const
 
 //------------------------------------------------------------------------------
 
-void manage_point_list::removePoint(const data::point::csptr _point) const
+void manage_point_list::remove_point(const data::point::csptr _point) const
 {
     if(m_removable)
     {
-        const auto point_list             = m_pointList.lock();
+        const auto point_list             = m_point_list.lock();
         const data::point::sptr point_res =
-            sight::geometry::data::point_list::removeClosestPoint(point_list.get_shared(), _point, m_tolerance);
+            sight::geometry::data::point_list::remove_closest_point(point_list.get_shared(), _point, m_tolerance);
 
         if(point_res != nullptr)
         {
@@ -176,12 +176,12 @@ void manage_point_list::removePoint(const data::point::csptr _point) const
 
 //------------------------------------------------------------------------------
 
-void manage_point_list::clearPoints() const
+void manage_point_list::clear_points() const
 {
-    const auto point_list = m_pointList.lock();
+    const auto point_list = m_point_list.lock();
 
-    using PLContainer = data::point_list::PointListContainer;
-    const PLContainer container = point_list->getPoints();
+    using pl_container_t = data::point_list::container_t;
+    const pl_container_t container = point_list->get_points();
     point_list->clear();
 
     for(const auto& point : container)

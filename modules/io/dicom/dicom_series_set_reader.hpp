@@ -76,7 +76,7 @@ class MODULE_IO_DICOM_CLASS_API dicom_series_set_reader : public sight::io::serv
 {
 public:
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     SIGHT_DECLARE_SERVICE(dicom_series_set_reader, sight::io::service::reader);
 
@@ -94,11 +94,11 @@ public:
 protected:
 
     /// Enum for DicomDir support mode
-    enum DicomDirSupport
+    enum dicom_dir_support
     {
-        ALWAYS = 0,    /*! Always use the DicomDir if present */
-        NEVER,         /*! Never use the DicomDir */
-        USER_SELECTION /*! Let the user decide whether using the DicomDir or not */
+        always = 0,    /*! Always use the DicomDir if present */
+        never,         /*! Never use the DicomDir */
+        user_selection /*! Let the user decide whether using the DicomDir or not */
     };
 
     /// Override
@@ -114,16 +114,16 @@ protected:
     MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
 
     /// Override
-    MODULE_IO_DICOM_API std::string getSelectorDialogTitle() override;
+    MODULE_IO_DICOM_API std::string get_selector_dialog_title() override;
 
     /// Configuring method. This method is used to configure the service.
     MODULE_IO_DICOM_API void configuring() override;
 
     /// Configure using GUI.
-    MODULE_IO_DICOM_API void openLocationDialog() override;
+    MODULE_IO_DICOM_API void open_location_dialog() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override;
 
 private:
 
@@ -131,19 +131,19 @@ private:
      * @brief Create a series_set and fill it using the data of the DICOM files
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(data::series_set) createSeriesSet(const std::filesystem::path& _dicom_dir);
+    SPTR(data::series_set) create_series_set(const std::filesystem::path& _dicom_dir);
 
     /// Signal emitted when a job is created
-    SPTR(JobCreatedSignal) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 
     /// Cancel information for jobs
     bool m_cancelled;
 
     /// Show log dialog
-    bool m_showLogDialog;
+    bool m_show_log_dialog;
 
     /// Specify how to use dicomdir files
-    DicomDirSupport m_dicomDirSupport;
+    dicom_dir_support m_dicom_dir_support;
 };
 
 } // namespace sight::module::io::dicom

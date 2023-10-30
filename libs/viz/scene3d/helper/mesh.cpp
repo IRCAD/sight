@@ -31,7 +31,12 @@ namespace sight::viz::scene3d::helper
 
 //-----------------------------------------------------------------------------
 
-void mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, std::size_t _num_points, std::size_t _num_components)
+void mesh::copy_colors(
+    Ogre::RGBA* _dest,
+    const std::uint8_t* _src,
+    std::size_t _num_points,
+    std::size_t _num_components
+)
 {
     if(_num_components == 3)
     {

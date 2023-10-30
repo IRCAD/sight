@@ -25,21 +25,21 @@
 
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
-                    <menuBar />
-                    <toolBar />
+                    <menubar />
+                    <toolbar />
                     <frame>
                         <name>ExOpenvslam</name>
                         <icon>ExOpenvslam/app.ico</icon>
                     </frame>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
-                    <toolBar sid="toolbarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="containerView" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <menuItem name="Load calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -422,7 +422,7 @@
                 <slot>resetOpenvslamAct/show</slot>
                 <slot>startOpenvslamAct/hide</slot>
                 <slot>stopOpenvslamAct/show</slot>
-                <slot>openvslamSrv/startTracking</slot>
+                <slot>openvslamSrv/start_tracking</slot>
                 <slot>EditorViews/hide</slot>
                 <slot>openvslamInitSrvStatus/changeToOrange</slot>
                 <slot>saveMapAct/show</slot>
@@ -475,7 +475,7 @@
                 <slot>resetOpenvslamAct/hide</slot>
                 <slot>stopOpenvslamAct/hide</slot>
                 <slot>startOpenvslamAct/show</slot>
-                <slot>openvslamSrv/stopTracking</slot>
+                <slot>openvslamSrv/stop_tracking</slot>
                 <slot>EditorViews/show</slot>
                 <slot>openvslamTrackingStatusSrv/changeToRed</slot>
                 <slot>openvslamInitSrvStatus/changeToRed</slot>
@@ -550,23 +550,23 @@
             <connect>
                 <signal>openvslamOrbSrv/intChanged</signal>
                 <signal>openvslamInitSrv/intChanged</signal>
-                <slot>openvslamSrv/setIntParameter</slot>
+                <slot>openvslamSrv/set_int_parameter</slot>
             </connect>
 
             <connect>
                 <signal>openvslamOrbSrv/doubleChanged</signal>
                 <signal>openvslamInitSrv/doubleChanged</signal>
-                <slot>openvslamSrv/setDoubleParameter</slot>
+                <slot>openvslamSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
                 <signal>openvslamOrbSrv/boolChanged</signal>
-                <slot>openvslamSrv/setBoolParameter</slot>
+                <slot>openvslamSrv/set_bool_parameter</slot>
             </connect>
 
             <connect>
                 <signal>openvslamOrbSrv/enumChanged</signal>
-                <slot>openvslamSrv/setEnumParameter</slot>
+                <slot>openvslamSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
@@ -580,7 +580,7 @@
                 <slot>resetOpenvslamAct/show</slot>
                 <slot>startOpenvslamAct/hide</slot>
                 <slot>stopOpenvslamAct/show</slot>
-                <slot>openvslamSrv/startTracking</slot>
+                <slot>openvslamSrv/start_tracking</slot>
                 <slot>EditorViews/hide</slot>
                 <slot>openvslamInitSrvStatus/changeToOrange</slot>
                 <slot>saveMapAct/show</slot>

@@ -42,11 +42,11 @@
 #include <glm/common.hpp>
 #include <glm/gtc/epsilon.hpp>
 
-static const double s_EPSILON = 1e-5;
+static const double EPSILON = 1e-5;
 
 // There might be some uncertainty when sampling, so we need to include an epsilon when testing equality
 #define ASSERT_COLOR_EQUALS(c1, c2) \
-    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, s_EPSILON)));
+    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, EPSILON)));
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::data_parser_test);
@@ -79,20 +79,20 @@ void data_parser_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void data_parser_test::testObjectCreationWithConfig()
+void data_parser_test::test_object_creation_with_config()
 {
     const std::string object_uuid    = "objectUUID";
     const std::string service_uui_d1 = "myTestService1";
     const std::string service_uui_d2 = "myTestService2";
 
     // Create object configuration
-    const auto config = buildObjectConfig();
+    const auto config = build_object_config();
 
     // Create the object and its services from the configuration
     auto config_manager = app::config_manager::make();
-    config_manager->app::config_manager::setConfig(config);
+    config_manager->app::config_manager::set_config(config);
     config_manager->create();
-    auto image = std::dynamic_pointer_cast<data::image>(config_manager->getConfigRoot());
+    auto image = std::dynamic_pointer_cast<data::image>(config_manager->get_config_root());
 
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(object_uuid, image->get_id());
@@ -105,12 +105,12 @@ void data_parser_test::testObjectCreationWithConfig()
     CPPUNIT_ASSERT(srv2->started());
 
     // Test if object's service is created
-    CPPUNIT_ASSERT(image == srv1->data::has_data::object("data", data::Access::in));
+    CPPUNIT_ASSERT(image == srv1->data::has_data::object("data", data::access::in));
 
     // Test update services
     config_manager->update();
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::TestConfigService>(srv1)->getIsUpdated());
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::TestConfigService>(srv2)->getIsUpdated() == false);
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv1)->get_is_updated());
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv2)->get_is_updated() == false);
 
     // Test stop services
     config_manager->stop();
@@ -122,7 +122,7 @@ void data_parser_test::testObjectCreationWithConfig()
 
 //------------------------------------------------------------------------------
 
-void data_parser_test::testImageParser()
+void data_parser_test::test_image_parser()
 {
     const std::string object_uuid = "objectUUID";
     service::config_t config;
@@ -136,14 +136,14 @@ void data_parser_test::testImageParser()
 
     // Create the object and its services from the configuration
     auto config_manager = app::config_manager::make();
-    config_manager->app::config_manager::setConfig(config);
+    config_manager->app::config_manager::set_config(config);
     config_manager->create();
     auto image = std::dynamic_pointer_cast<data::image>(core::tools::id::get_object(object_uuid));
 
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(object_uuid, image->get_id());
-    CPPUNIT_ASSERT_EQUAL(sight::data::image::RGBA, image->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(sight::core::type::UINT8, image->getType());
+    CPPUNIT_ASSERT_EQUAL(sight::data::image::rgba, image->pixel_format());
+    CPPUNIT_ASSERT_EQUAL(sight::core::type::UINT8, image->type());
 
     // We only test the image content, we do not really care about the image size and other attributes for now
     const auto dump_lock = image->dump_lock();
@@ -163,7 +163,7 @@ void data_parser_test::testImageParser()
 
 //------------------------------------------------------------------------------
 
-void data_parser_test::testTransferFunctionParser()
+void data_parser_test::test_transfer_function_parser()
 {
     service::config_t config;
 
@@ -180,42 +180,42 @@ void data_parser_test::testTransferFunctionParser()
     boost::property_tree::read_xml(config_string, config);
 
     auto parser = sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
-    parser->setObjectConfig(config);
+    parser->set_object_config(config);
 
     auto tf = std::make_shared<sight::data::transfer_function>();
-    parser->createConfig(tf);
+    parser->create_config(tf);
 
     const auto piece = tf->pieces().front();
     CPPUNIT_ASSERT_EQUAL(std::size_t(7), piece->size());
 
-    CPPUNIT_ASSERT_EQUAL(-200., piece->minMax().first);
-    CPPUNIT_ASSERT_EQUAL(5000., piece->minMax().second);
+    CPPUNIT_ASSERT_EQUAL(-200., piece->min_max().first);
+    CPPUNIT_ASSERT_EQUAL(5000., piece->min_max().second);
     CPPUNIT_ASSERT_EQUAL(5200., piece->window());
     CPPUNIT_ASSERT_EQUAL(2400., piece->level());
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), piece->sampleLinear(-200));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sampleLinear(0));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sampleLinear(250));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sampleLinear(500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), piece->sampleLinear(1000));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), piece->sampleLinear(1500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sampleLinear(5000));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), piece->sample_linear(-200));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(0));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(250));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(500));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), piece->sample_linear(1000));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), piece->sample_linear(1500));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(5000));
 
-    CPPUNIT_ASSERT_EQUAL(-200., tf->minMax().first);
-    CPPUNIT_ASSERT_EQUAL(5000., tf->minMax().second);
+    CPPUNIT_ASSERT_EQUAL(-200., tf->min_max().first);
+    CPPUNIT_ASSERT_EQUAL(5000., tf->min_max().second);
     CPPUNIT_ASSERT_EQUAL(5200., tf->window());
     CPPUNIT_ASSERT_EQUAL(2400., tf->level());
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), tf->sampleLinear(-200));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sampleLinear(0));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sampleLinear(250));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sampleLinear(500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), tf->sampleLinear(1000));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), tf->sampleLinear(1500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sampleLinear(5000));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), tf->sample_linear(-200));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(0));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(250));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(500));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), tf->sample_linear(1000));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), tf->sample_linear(1500));
+    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(5000));
 }
 
 //------------------------------------------------------------------------------
 
-service::config_t data_parser_test::buildObjectConfig()
+service::config_t data_parser_test::build_object_config()
 {
     service::config_t config;
 
@@ -228,7 +228,7 @@ service::config_t data_parser_test::buildObjectConfig()
     // Object's service A
     service::config_t service_a;
     service_a.add("<xmlattr>.uid", "myTestService1");
-    service_a.add("<xmlattr>.type", "sight::app::ut::STest1Image");
+    service_a.add("<xmlattr>.type", "sight::app::ut::test1_image");
 
     service::config_t data_service_a;
     data_service_a.add("<xmlattr>.key", "data");
@@ -239,7 +239,7 @@ service::config_t data_parser_test::buildObjectConfig()
     // Object's service B
     service::config_t service_b;
     service_b.add("<xmlattr>.uid", "myTestService2");
-    service_b.add("<xmlattr>.type", "sight::app::ut::STest1Image");
+    service_b.add("<xmlattr>.type", "sight::app::ut::test1_image");
     config.add_child("service", service_b);
 
     // Start method from object's services

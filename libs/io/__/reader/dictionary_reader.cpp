@@ -70,7 +70,7 @@ SIGHT_REGISTER_IO_READER(sight::io::reader::dictionary_reader);
 namespace sight::io
 {
 
-struct Line
+struct line
 {
     std::string type;
     double red {};
@@ -78,32 +78,32 @@ struct Line
     double blue {};
     double alpha {};
     std::string category;
-    std::string organClass;
+    std::string organ_class;
     std::string attachment;
-    std::string nativeExp;
-    std::string nativeExpGeo;
-    std::string anatomicRegion;
-    std::string propertyCategory;
-    std::string propertyType;
+    std::string native_exp;
+    std::string native_exp_geo;
+    std::string anatomic_region;
+    std::string property_category;
+    std::string property_type;
 };
 
 } // namespace sight::io
 
 BOOST_FUSION_ADAPT_STRUCT(
-    sight::io::Line,
+    sight::io::line,
     (std::string, type)
         (double, red)
         (double, green)
         (double, blue)
         (double, alpha)
         (std::string, category)
-        (std::string, organClass)
+        (std::string, organ_class)
         (std::string, attachment)
-        (std::string, nativeExp)
-        (std::string, nativeExpGeo)
-        (std::string, anatomicRegion)
-        (std::string, propertyCategory)
-        (std::string, propertyType)
+        (std::string, native_exp)
+        (std::string, native_exp_geo)
+        (std::string, anatomic_region)
+        (std::string, property_category)
+        (std::string, property_type)
 )
 
 //------------------------------------------------------------------------------
@@ -152,11 +152,11 @@ namespace qi    = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 template<typename Iterator>
-struct LineParser : qi::grammar<Iterator,
-                                std::vector<Line>()>
+struct line_parser : qi::grammar<Iterator,
+                                 std::vector<line>()>
 {
-    LineParser() :
-        LineParser::base_type(lines)
+    line_parser() :
+        line_parser::base_type(lines)
     {
         using qi::int_;
         using qi::lit;
@@ -177,7 +177,7 @@ struct LineParser : qi::grammar<Iterator,
         lines   = +(line[phx::push_back(qi::_val, qi::_1)] | comment) >> eoi;
         comment = *blank >> lit('#') >> *(char_ - eol) >> +qi::eol;
 
-        line = trimmedString >> lit(';')
+        line = trimmed_string >> lit(';')
                >> omit[*blank] >> lit('(')
                >> dbl >> lit(',')
                >> dbl >> lit(',')
@@ -185,32 +185,32 @@ struct LineParser : qi::grammar<Iterator,
                >> dbl
                >> lit(')') >> omit[*blank]
                >> lit(';')
-               >> stringSet >> lit(';')
-               >> trimmedString >> lit(';')
-               >> trimmedString >> lit(';')
-               >> trimmedStringExpr >> lit(';')
-               >> trimmedStringExpr >> lit(';')
-               >> trimmedString >> lit(';')
-               >> trimmedString >> lit(';')
-               >> trimmedString
+               >> string_set >> lit(';')
+               >> trimmed_string >> lit(';')
+               >> trimmed_string >> lit(';')
+               >> trimmed_string_expr >> lit(';')
+               >> trimmed_string_expr >> lit(';')
+               >> trimmed_string >> lit(';')
+               >> trimmed_string >> lit(';')
+               >> trimmed_string
                >> +qi::eol;
 
-        trimmedString = str[qi::_val = phx::bind(trim, qi::_1)];
-        str           = *((alnum | char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
+        trimmed_string = str[qi::_val = phx::bind(trim, qi::_1)];
+        str            = *((alnum | char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
 
-        trimmedStringExpr = stringExpr[qi::_val = phx::bind(trim, qi::_1)];
-        stringExpr        = *((alnum | char_("()_,.+-"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
+        trimmed_string_expr = string_expr[qi::_val = phx::bind(trim, qi::_1)];
+        string_expr         = *((alnum | char_("()_,.+-"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
 
-        stringSet       = stringWithComma[qi::_val = phx::bind(trim, qi::_1)];
-        stringWithComma = *((alnum | char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
+        string_set        = string_with_comma[qi::_val = phx::bind(trim, qi::_1)];
+        string_with_comma = *((alnum | char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
 
         dbl = omit[*blank] >> double_ >> omit[*blank];
 
     #ifdef BOOST_SPIRIT_DEBUG
         BOOST_SPIRIT_DEBUG_NODE(comment);
-        BOOST_SPIRIT_DEBUG_NODE(trimmedString);
-        BOOST_SPIRIT_DEBUG_NODE(trimmedStringExpr);
-        BOOST_SPIRIT_DEBUG_NODE(stringSet);
+        BOOST_SPIRIT_DEBUG_NODE(trimmed_string);
+        BOOST_SPIRIT_DEBUG_NODE(trimmed_string_expr);
+        BOOST_SPIRIT_DEBUG_NODE(string_set);
         BOOST_SPIRIT_DEBUG_NODE(dbl);
         BOOST_SPIRIT_DEBUG_NODE(line);
         BOOST_SPIRIT_DEBUG_NODE(lines);
@@ -234,16 +234,16 @@ struct LineParser : qi::grammar<Iterator,
 
     qi::rule<Iterator, double()> dbl;
     qi::rule<Iterator, std::string()> str;
-    qi::rule<Iterator, std::string()> stringExpr;
-    qi::rule<Iterator, std::string()> stringWithComma;
+    qi::rule<Iterator, std::string()> string_expr;
+    qi::rule<Iterator, std::string()> string_with_comma;
 
     qi::rule<Iterator, std::string()> comment;
-    qi::rule<Iterator, std::string()> trimmedStringExpr;
-    qi::rule<Iterator, std::string()> trimmedString;
-    qi::rule<Iterator, std::string()> stringSet;
+    qi::rule<Iterator, std::string()> trimmed_string_expr;
+    qi::rule<Iterator, std::string()> trimmed_string;
+    qi::rule<Iterator, std::string()> string_set;
 
-    qi::rule<Iterator, io::Line()> line;
-    qi::rule<Iterator, std::vector<io::Line>()> lines;
+    qi::rule<Iterator, io::line()> line;
+    qi::rule<Iterator, std::vector<io::line>()> lines;
     std::stringstream error;
 };
 
@@ -252,7 +252,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::Line>& _lines)
+std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::line>& _lines)
 {
     using boost::spirit::ascii::space;
     using boost::spirit::ascii::blank;
@@ -261,7 +261,7 @@ std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::Line>& _li
     using boost::spirit::qi::phrase_parse;
 
     using iterator_type = std::string::const_iterator;
-    using line_parser   = io::LineParser<iterator_type>;
+    using line_parser   = io::line_parser<iterator_type>;
 
     iterator_type iter = _buf.begin();
     iterator_type end  = _buf.end();
@@ -301,33 +301,33 @@ void dictionary_reader::read()
     file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
-    std::vector<io::Line> dico_lines;
+    std::vector<io::line> dico_lines;
     std::pair<bool, std::string> result = parse(buf, dico_lines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
     SIGHT_THROW_IF(error, !result.first);
 
     // File the dictionary Structure
-    data::structure_traits_dictionary::sptr struct_dico = getConcreteObject();
+    data::structure_traits_dictionary::sptr struct_dico = get_concrete_object();
 
-    for(io::Line line : dico_lines)
+    for(io::line line : dico_lines)
     {
         data::structure_traits::sptr new_organ = std::make_shared<data::structure_traits>();
-        new_organ->setType(line.type);
+        new_organ->set_type(line.type);
 
         std::string class_reformated = reformat_string(
-            line.organClass
+            line.organ_class
         );
         data::structure_traits_helper::class_translator_t::right_const_iterator str_class_iter =
-            data::structure_traits_helper::s_CLASSTRANSLATOR.right.find(class_reformated);
-        std::string available_values = get_values(data::structure_traits_helper::s_CLASSTRANSLATOR.right);
+            data::structure_traits_helper::CLASSTRANSLATOR.right.find(class_reformated);
+        std::string available_values = get_values(data::structure_traits_helper::CLASSTRANSLATOR.right);
         error =
             std::string("Organ class ") + class_reformated + " isn't available. Authorized type are "
             + available_values;
-        SIGHT_THROW_IF(error, !(str_class_iter != data::structure_traits_helper::s_CLASSTRANSLATOR.right.end()));
-        new_organ->setClass(str_class_iter->second);
+        SIGHT_THROW_IF(error, !(str_class_iter != data::structure_traits_helper::CLASSTRANSLATOR.right.end()));
+        new_organ->set_class(str_class_iter->second);
 
-        new_organ->setColor(
+        new_organ->set_color(
             std::make_shared<data::color>(
                 static_cast<float>(line.red) / 255.0F,
                 static_cast<float>(line.green) / 255.0F,
@@ -337,35 +337,35 @@ void dictionary_reader::read()
         );
         std::vector<std::string> categorylist;
         boost::algorithm::split(categorylist, line.category, boost::algorithm::is_any_of(","));
-        data::structure_traits::CategoryContainer categories;
+        data::structure_traits::category_container_t categories;
         for(std::string category : categorylist)
         {
             std::string cat_reformated = reformat_string(
                 category
             );
             data::structure_traits_helper::category_translator_t::right_const_iterator str_category_iter =
-                data::structure_traits_helper::s_CATEGORYTRANSLATOR.right.find(cat_reformated);
+                data::structure_traits_helper::CATEGORYTRANSLATOR.right.find(cat_reformated);
             available_values = get_values(
-                data::structure_traits_helper::s_CATEGORYTRANSLATOR.right
+                data::structure_traits_helper::CATEGORYTRANSLATOR.right
             );
             error =
                 std::string("Category ") + cat_reformated + " isn't available. Authorized type are "
                 + available_values;
             SIGHT_THROW_IF(
                 error,
-                !(str_category_iter != data::structure_traits_helper::s_CATEGORYTRANSLATOR.right.end())
+                !(str_category_iter != data::structure_traits_helper::CATEGORYTRANSLATOR.right.end())
             );
             categories.push_back(str_category_iter->second);
         }
 
-        new_organ->setCategories(categories);
+        new_organ->set_categories(categories);
         new_organ->set_attachment_type(line.attachment);
-        new_organ->setNativeExp(line.nativeExp);
-        new_organ->setNativeGeometricExp(line.nativeExpGeo);
-        new_organ->setAnatomicRegion(line.anatomicRegion);
-        new_organ->setPropertyCategory(line.propertyCategory);
-        new_organ->set_property_type(line.propertyType);
-        struct_dico->addStructure(new_organ);
+        new_organ->set_native_exp(line.native_exp);
+        new_organ->set_native_geometric_exp(line.native_exp_geo);
+        new_organ->set_anatomic_region(line.anatomic_region);
+        new_organ->set_property_category(line.property_category);
+        new_organ->set_property_type(line.property_type);
+        struct_dico->add_structure(new_organ);
     }
 }
 
@@ -378,7 +378,7 @@ std::string dictionary_reader::extension() const
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path dictionary_reader::getDefaultDictionaryPath()
+std::filesystem::path dictionary_reader::get_default_dictionary_path()
 {
     return core::runtime::get_library_resource_file_path("io/OrganDictionary.dic");
 }

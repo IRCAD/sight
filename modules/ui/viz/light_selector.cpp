@@ -63,7 +63,7 @@ const core::com::slots::key_t INIT_LIGHT_LIST_SLOT = "initLightList";
 light_selector::light_selector() noexcept
 {
     new_signal<light_selected_signal_t>(LIGHT_SELECTED_SIG);
-    new_slot(INIT_LIGHT_LIST_SLOT, &light_selector::initLightList, this);
+    new_slot(INIT_LIGHT_LIST_SLOT, &light_selector::init_light_list, this);
 }
 
 //------------------------------------------------------------------------------
@@ -87,57 +87,62 @@ void light_selector::starting()
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
-    qt_container->getQtContainer()->setObjectName(service_id);
+    qt_container->get_qt_container()->setObjectName(service_id);
 
-    m_layersBox = new QComboBox();
-    m_layersBox->setObjectName(service_id + "/layersBox");
-    m_lightsList = new QListWidget();
-    m_lightsList->setObjectName(service_id + "/lightsList");
-    m_addLightBtn = new QPushButton("Add light");
-    m_addLightBtn->setObjectName(service_id + "/" + m_addLightBtn->text());
-    m_removeLightBtn = new QPushButton("Remove light");
-    m_removeLightBtn->setObjectName(service_id + "/" + m_removeLightBtn->text());
-    m_ambientColorBtn = new QPushButton("scene ambient color");
-    m_ambientColorBtn->setObjectName(service_id + "/" + m_ambientColorBtn->text());
+    m_layers_box = new QComboBox();
+    m_layers_box->setObjectName(service_id + "/layersBox");
+    m_lights_list = new QListWidget();
+    m_lights_list->setObjectName(service_id + "/lightsList");
+    m_add_light_btn = new QPushButton("Add light");
+    m_add_light_btn->setObjectName(service_id + "/" + m_add_light_btn->text());
+    m_remove_light_btn = new QPushButton("Remove light");
+    m_remove_light_btn->setObjectName(service_id + "/" + m_remove_light_btn->text());
+    m_ambient_color_btn = new QPushButton("scene ambient color");
+    m_ambient_color_btn->setObjectName(service_id + "/" + m_ambient_color_btn->text());
 
     auto* layout_button = new QHBoxLayout;
-    m_checkAllButton = new QPushButton(tr("Check all"));
-    m_checkAllButton->setObjectName(service_id + "/" + m_checkAllButton->text());
-    layout_button->addWidget(m_checkAllButton, 0);
+    m_check_all_button = new QPushButton(tr("Check all"));
+    m_check_all_button->setObjectName(service_id + "/" + m_check_all_button->text());
+    layout_button->addWidget(m_check_all_button, 0);
 
-    m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
-    m_unCheckAllButton->setObjectName(service_id + "/" + m_unCheckAllButton->text());
-    layout_button->addWidget(m_unCheckAllButton, 0);
+    m_un_check_all_button = new QPushButton(tr("UnCheck all"));
+    m_un_check_all_button->setObjectName(service_id + "/" + m_un_check_all_button->text());
+    layout_button->addWidget(m_un_check_all_button, 0);
 
     auto* layout = new QVBoxLayout();
-    layout->addWidget(m_layersBox);
+    layout->addWidget(m_layers_box);
     layout->addLayout(layout_button);
-    layout->addWidget(m_lightsList);
+    layout->addWidget(m_lights_list);
 
     auto* add_remove_layout = new QHBoxLayout();
-    add_remove_layout->addWidget(m_addLightBtn);
-    add_remove_layout->addWidget(m_removeLightBtn);
-    m_removeLightBtn->setEnabled(false);
+    add_remove_layout->addWidget(m_add_light_btn);
+    add_remove_layout->addWidget(m_remove_light_btn);
+    m_remove_light_btn->setEnabled(false);
 
     layout->addLayout(add_remove_layout);
-    layout->addWidget(m_ambientColorBtn);
+    layout->addWidget(m_ambient_color_btn);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
-    this->refreshLayers();
+    this->refresh_layers();
 
-    this->updateLightsList();
+    this->update_lights_list();
 
-    QObject::connect(m_layersBox, qOverload<int>(&QComboBox::activated), this, &light_selector::onSelectedLayerItem);
-    QObject::connect(m_lightsList, &QListWidget::currentItemChanged, this, &light_selector::onSelectedLightItem);
-    QObject::connect(m_lightsList, &QListWidget::itemChanged, this, &light_selector::onCheckedLightItem);
-    QObject::connect(m_addLightBtn, &QPushButton::clicked, this, &light_selector::onAddLight);
-    QObject::connect(m_removeLightBtn, &QPushButton::clicked, this, &light_selector::onRemoveLight);
-    QObject::connect(m_ambientColorBtn, &QPushButton::clicked, this, &light_selector::onEditAmbientColor);
-    QObject::connect(m_checkAllButton, &QPushButton::clicked, this, &light_selector::onCheckAllCheckBox);
-    QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this, &light_selector::onUnCheckAllCheckBox);
+    QObject::connect(
+        m_layers_box,
+        qOverload<int>(&QComboBox::activated),
+        this,
+        &light_selector::on_selected_layer_item
+    );
+    QObject::connect(m_lights_list, &QListWidget::currentItemChanged, this, &light_selector::on_selected_light_item);
+    QObject::connect(m_lights_list, &QListWidget::itemChanged, this, &light_selector::on_checked_light_item);
+    QObject::connect(m_add_light_btn, &QPushButton::clicked, this, &light_selector::on_add_light);
+    QObject::connect(m_remove_light_btn, &QPushButton::clicked, this, &light_selector::on_remove_light);
+    QObject::connect(m_ambient_color_btn, &QPushButton::clicked, this, &light_selector::on_edit_ambient_color);
+    QObject::connect(m_check_all_button, &QPushButton::clicked, this, &light_selector::on_check_all_check_box);
+    QObject::connect(m_un_check_all_button, &QPushButton::clicked, this, &light_selector::on_un_check_all_check_box);
 }
 
 //------------------------------------------------------------------------------
@@ -152,61 +157,61 @@ void light_selector::stopping()
 {
     m_connections.disconnect();
 
-    for(auto& light : m_managedLightAdaptors)
+    for(auto& light : m_managed_light_adaptors)
     {
-        light_adaptor::destroyLightAdaptor(light.m_light);
+        light_adaptor::destroy_light_adaptor(light.m_light);
     }
 
-    m_managedLightAdaptors.clear();
+    m_managed_light_adaptors.clear();
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onSelectedLayerItem(int _index)
+void light_selector::on_selected_layer_item(int _index)
 {
-    m_currentLayer  = m_layers[static_cast<std::size_t>(_index)];
-    m_lightAdaptors = m_currentLayer.lock()->getLightAdaptors();
+    m_current_layer  = m_layers[static_cast<std::size_t>(_index)];
+    m_light_adaptors = m_current_layer.lock()->get_light_adaptors();
 
-    this->updateLightsList();
+    this->update_lights_list();
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* /*unused*/)
+void light_selector::on_selected_light_item(QListWidgetItem* _item, QListWidgetItem* /*unused*/)
 {
     if(_item != nullptr)
     {
-        m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
+        m_current_light = this->retrieve_light_adaptor(_item->text().toStdString());
 
         auto sig = this->signal<light_selected_signal_t>(LIGHT_SELECTED_SIG);
-        sig->async_emit(m_currentLight);
+        sig->async_emit(m_current_light);
 
-        m_removeLightBtn->setEnabled(true);
+        m_remove_light_btn->setEnabled(true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onCheckedLightItem(QListWidgetItem* _item)
+void light_selector::on_checked_light_item(QListWidgetItem* _item)
 {
     light_adaptor::sptr checked_light_adaptor =
-        this->retrieveLightAdaptor(_item->text().toStdString());
+        this->retrieve_light_adaptor(_item->text().toStdString());
 
-    checked_light_adaptor->switchOn(_item->checkState() == Qt::Checked);
+    checked_light_adaptor->switch_on(_item->checkState() == Qt::Checked);
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onAddLight(bool /*unused*/)
+void light_selector::on_add_light(bool /*unused*/)
 {
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
-    QWidget* const container = qt_container->getQtContainer();
+    QWidget* const container = qt_container->get_qt_container();
 
-    auto* light_dialog = new module::ui::viz::NewLightDialog(container);
+    auto* light_dialog = new module::ui::viz::new_light_dialog(container);
 
     if(light_dialog->exec() == QDialog::Accepted)
     {
@@ -214,106 +219,106 @@ void light_selector::onAddLight(bool /*unused*/)
 
         auto existing_light =
             std::find_if(
-                m_lightAdaptors.begin(),
-                m_lightAdaptors.end(),
+                m_light_adaptors.begin(),
+                m_light_adaptors.end(),
                 [light_name](light_adaptor::sptr _light_adaptor)
             {
-                return _light_adaptor->getName() == light_name;
+                return _light_adaptor->get_name() == light_name;
             });
 
-        if(existing_light == m_lightAdaptors.end())
+        if(existing_light == m_light_adaptors.end())
         {
-            this->createLightAdaptor(light_name);
+            this->create_light_adaptor(light_name);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onRemoveLight(bool /*unused*/)
+void light_selector::on_remove_light(bool /*unused*/)
 {
-    if(m_currentLight)
+    if(m_current_light)
     {
-        layer::sptr current_layer = m_currentLayer.lock();
+        layer::sptr current_layer = m_current_layer.lock();
 
         const auto position =
             std::find_if(
-                m_managedLightAdaptors.begin(),
-                m_managedLightAdaptors.end(),
-                [&](const Light& _light)
+                m_managed_light_adaptors.begin(),
+                m_managed_light_adaptors.end(),
+                [&](const light& _light)
             {
-                return _light.m_light == m_currentLight;
+                return _light.m_light == m_current_light;
             });
 
-        if(position != m_managedLightAdaptors.end())
+        if(position != m_managed_light_adaptors.end())
         {
-            m_managedLightAdaptors.erase(position);
+            m_managed_light_adaptors.erase(position);
         }
 
-        if(current_layer->isDefaultLight(m_currentLight))
+        if(current_layer->is_default_light(m_current_light))
         {
-            current_layer->removeDefaultLight();
+            current_layer->remove_default_light();
         }
         else
         {
-            light_adaptor::destroyLightAdaptor(m_currentLight);
+            light_adaptor::destroy_light_adaptor(m_current_light);
         }
 
-        m_currentLight.reset();
+        m_current_light.reset();
 
-        m_lightAdaptors = current_layer->getLightAdaptors();
-        this->updateLightsList();
+        m_light_adaptors = current_layer->get_light_adaptors();
+        this->update_lights_list();
 
-        m_removeLightBtn->setEnabled(false);
+        m_remove_light_btn->setEnabled(false);
 
         auto sig = this->signal<light_selected_signal_t>(LIGHT_SELECTED_SIG);
         sig->async_emit(nullptr);
 
-        current_layer->requestRender();
+        current_layer->request_render();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onEditAmbientColor(bool /*unused*/)
+void light_selector::on_edit_ambient_color(bool /*unused*/)
 {
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
-    QWidget* const container = qt_container->getQtContainer();
+    QWidget* const container = qt_container->get_qt_container();
 
-    layer::sptr layer            = m_currentLayer.lock();
-    Ogre::ColourValue ogre_color = layer->getSceneManager()->getAmbientLight();
+    layer::sptr layer            = m_current_layer.lock();
+    Ogre::ColourValue ogre_color = layer->get_scene_manager()->getAmbientLight();
 
     QColor q_color = QColorDialog::getColor(
-        module::ui::viz::helper::utils::convertOgreColorToQColor(ogre_color),
+        module::ui::viz::helper::utils::convert_ogre_color_to_q_color(ogre_color),
         container,
         "scene ambient color"
     );
 
-    ogre_color = module::ui::viz::helper::utils::convertQColorToOgreColor(q_color);
+    ogre_color = module::ui::viz::helper::utils::convert_q_color_to_ogre_color(q_color);
 
-    layer->getSceneManager()->setAmbientLight(ogre_color);
-    layer->requestRender();
+    layer->get_scene_manager()->setAmbientLight(ogre_color);
+    layer->request_render();
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::initLightList(layer::sptr _layer)
+void light_selector::init_light_list(layer::sptr _layer)
 {
-    m_currentLayer = m_layers[0];
+    m_current_layer = m_layers[0];
 
-    if(_layer == m_currentLayer.lock())
+    if(_layer == m_current_layer.lock())
     {
-        this->onSelectedLayerItem(0);
+        this->on_selected_layer_item(0);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::refreshLayers()
+void light_selector::refresh_layers()
 {
-    m_layersBox->clear();
+    m_layers_box->clear();
 
     const auto renderers = sight::service::get_services("sight::viz::scene3d::render");
 
@@ -322,11 +327,11 @@ void light_selector::refreshLayers()
     {
         auto render = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
 
-        for(auto& layer_map : render->getLayers())
+        for(auto& layer_map : render->get_layers())
         {
             const std::string id  = layer_map.first;
             std::string render_id = render->get_id();
-            m_layersBox->addItem(QString::fromStdString(render_id + " : " + id));
+            m_layers_box->addItem(QString::fromStdString(render_id + " : " + id));
             m_layers.push_back(layer_map.second);
 
             m_connections.connect(
@@ -341,24 +346,24 @@ void light_selector::refreshLayers()
     // Default to the first layer
     if(!m_layers.empty())
     {
-        m_currentLayer  = m_layers[0];
-        m_lightAdaptors = m_currentLayer.lock()->getLightAdaptors();
+        m_current_layer  = m_layers[0];
+        m_light_adaptors = m_current_layer.lock()->get_light_adaptors();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::updateLightsList()
+void light_selector::update_lights_list()
 {
-    m_lightsList->clear();
+    m_lights_list->clear();
 
-    for(const auto& light_adaptor : m_lightAdaptors)
+    for(const auto& light_adaptor : m_light_adaptors)
     {
-        QString light_name         = light_adaptor->getName().c_str();
-        Qt::CheckState light_state = light_adaptor->isSwitchedOn() ? Qt::Checked
-                                                                   : Qt::Unchecked;
+        QString light_name         = light_adaptor->get_name().c_str();
+        Qt::CheckState light_state = light_adaptor->is_switched_on() ? Qt::Checked
+                                                                     : Qt::Unchecked;
 
-        auto* next_light = new QListWidgetItem(light_name, m_lightsList);
+        auto* next_light = new QListWidgetItem(light_name, m_lights_list);
         next_light->setFlags(next_light->flags() | Qt::ItemIsUserCheckable);
         next_light->setCheckState(light_state);
     }
@@ -366,33 +371,33 @@ void light_selector::updateLightsList()
 
 //------------------------------------------------------------------------------
 
-void light_selector::createLightAdaptor(const std::string& _name)
+void light_selector::create_light_adaptor(const std::string& _name)
 {
-    layer::sptr current_layer = m_currentLayer.lock();
+    layer::sptr current_layer = m_current_layer.lock();
 
     if(current_layer)
     {
         data::color::sptr light_diffuse_color  = std::make_shared<data::color>();
         data::color::sptr light_specular_color = std::make_shared<data::color>();
 
-        light_adaptor::sptr light_adaptor = light_adaptor::createLightAdaptor(
+        light_adaptor::sptr light_adaptor = light_adaptor::create_light_adaptor(
             light_diffuse_color,
             light_specular_color
         );
-        light_adaptor->setType(Ogre::Light::LT_DIRECTIONAL);
-        light_adaptor->setLayerID(current_layer->getLayerID());
-        light_adaptor->setRenderService(current_layer->getRenderService());
+        light_adaptor->set_type(Ogre::Light::LT_DIRECTIONAL);
+        light_adaptor->set_layer_id(current_layer->layer_id());
+        light_adaptor->set_render_service(current_layer->render_service());
         service::config_t config;
         config.add("config.<xmlattr>.name", this->get_id() + "_light");
-        config.add("config.<xmlattr>.layer", current_layer->getLayerID());
+        config.add("config.<xmlattr>.layer", current_layer->layer_id());
         light_adaptor->set_config(config);
         light_adaptor->configure();
-        light_adaptor->setName(_name);
+        light_adaptor->set_name(_name);
         light_adaptor->start();
 
-        m_managedLightAdaptors.push_back({light_adaptor, light_diffuse_color, light_specular_color});
-        m_lightAdaptors = current_layer->getLightAdaptors();
-        this->updateLightsList();
+        m_managed_light_adaptors.push_back({light_adaptor, light_diffuse_color, light_specular_color});
+        m_light_adaptors = current_layer->get_light_adaptors();
+        this->update_lights_list();
 
         const auto material_services = sight::service::get_services("sight::module::viz::scene3d::adaptor::material");
 
@@ -400,7 +405,7 @@ void light_selector::createLightAdaptor(const std::string& _name)
         {
             auto material_adaptor = std::dynamic_pointer_cast<sight::viz::scene3d::adaptor>(srv);
 
-            if(material_adaptor->getLayerID() == current_layer->getLayerID())
+            if(material_adaptor->layer_id() == current_layer->layer_id())
             {
                 // Update materials of the scene to take the new light into account
                 material_adaptor->update();
@@ -411,83 +416,83 @@ void light_selector::createLightAdaptor(const std::string& _name)
 
 //------------------------------------------------------------------------------
 
-light_adaptor::sptr light_selector::retrieveLightAdaptor(const std::string& _name) const
+light_adaptor::sptr light_selector::retrieve_light_adaptor(const std::string& _name) const
 {
     auto it = std::find_if(
-        m_lightAdaptors.begin(),
-        m_lightAdaptors.end(),
+        m_light_adaptors.begin(),
+        m_light_adaptors.end(),
         [_name](light_adaptor::sptr _light_adaptor)
         {
-            return _light_adaptor->getName() == _name;
+            return _light_adaptor->get_name() == _name;
         });
 
-    return it != m_lightAdaptors.end() ? *it : nullptr;
+    return it != m_light_adaptors.end() ? *it : nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onCheckAllCheckBox()
+void light_selector::on_check_all_check_box()
 {
-    this->onCheckAllBoxes(true);
+    this->on_check_all_boxes(true);
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onUnCheckAllCheckBox()
+void light_selector::on_un_check_all_check_box()
 {
-    this->onCheckAllBoxes(false);
+    this->on_check_all_boxes(false);
 }
 
 //------------------------------------------------------------------------------
 
-void light_selector::onCheckAllBoxes(bool _visible)
+void light_selector::on_check_all_boxes(bool _visible)
 {
-    for(int i = 0 ; i < m_lightsList->count() ; ++i)
+    for(int i = 0 ; i < m_lights_list->count() ; ++i)
     {
-        auto* item = m_lightsList->item(i);
+        auto* item = m_lights_list->item(i);
         item->setCheckState(_visible ? Qt::Checked : Qt::Unchecked);
     }
 }
 
 //------------------------------------------------------------------------------
 
-NewLightDialog::NewLightDialog(QWidget* _parent) :
+new_light_dialog::new_light_dialog(QWidget* _parent) :
     QDialog(_parent),
-    m_lightNameEdit(new QLineEdit(this))
+    m_light_name_edit(new QLineEdit(this))
 {
-    m_lightNameLbl = new QLabel("Name :", this);
+    m_light_name_lbl = new QLabel("Name :", this);
 
-    m_okBtn = new QPushButton("Ok", this);
+    m_ok_btn = new QPushButton("Ok", this);
 
     auto* light_name_layout = new QHBoxLayout();
-    light_name_layout->addWidget(m_lightNameLbl);
-    light_name_layout->addWidget(m_lightNameEdit);
+    light_name_layout->addWidget(m_light_name_lbl);
+    light_name_layout->addWidget(m_light_name_edit);
 
     auto* new_light_layout = new QVBoxLayout();
     new_light_layout->addLayout(light_name_layout);
-    new_light_layout->addWidget(m_okBtn);
+    new_light_layout->addWidget(m_ok_btn);
 
     this->setWindowTitle("New light");
     this->setModal(true);
     this->setLayout(new_light_layout);
 
-    QObject::connect(m_okBtn, &QPushButton::clicked, this, &NewLightDialog::onOkBtn);
+    QObject::connect(m_ok_btn, &QPushButton::clicked, this, &new_light_dialog::on_ok_btn);
 }
 
 //------------------------------------------------------------------------------
 
-NewLightDialog::~NewLightDialog()
+new_light_dialog::~new_light_dialog()
 {
-    QObject::disconnect(m_okBtn, &QPushButton::clicked, this, &NewLightDialog::onOkBtn);
+    QObject::disconnect(m_ok_btn, &QPushButton::clicked, this, &new_light_dialog::on_ok_btn);
 }
 
 //------------------------------------------------------------------------------
 
-void NewLightDialog::onOkBtn(bool /*unused*/)
+void new_light_dialog::on_ok_btn(bool /*unused*/)
 {
-    if(!m_lightNameEdit->text().isEmpty())
+    if(!m_light_name_edit->text().isEmpty())
     {
-        this->setProperty("lightName", QVariant(m_lightNameEdit->text()));
+        this->setProperty("lightName", QVariant(m_light_name_edit->text()));
         this->accept();
     }
 }

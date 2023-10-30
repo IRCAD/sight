@@ -54,20 +54,20 @@ public:
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::widget::sptr _parent, const std::string& _id) override;
+    UI_QT_API void create_layout(ui::container::widget::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroyLayout() override;
+    UI_QT_API void destroy_layout() override;
 
 private:
 
-    ui::qt::container::widget::sptr m_parentContainer;
+    ui::qt::container::widget::sptr m_parent_container;
 
     // Layout manager of this view
-    QPointer<QTabWidget> m_tabWidget;
+    QPointer<QTabWidget> m_tab_widget;
 };
 
 } // namespace sight::ui::qt::layout

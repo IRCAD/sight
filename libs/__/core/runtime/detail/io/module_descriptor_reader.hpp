@@ -54,9 +54,10 @@ class module_descriptor_reader
 {
 public:
 
-    typedef std::vector<std::shared_ptr<module> > module_container;
+    using module_container = std::vector<std::shared_ptr<module> >;
     /// Pair of created extension point associated with extensions
-    typedef std::pair<SPTR(extension_point), std::vector<SPTR(extension)> > point_extensions_pair_type;
+    using point_extensions_pair_type = std::pair<std::shared_ptr<extension_point>,
+                                                 std::vector<std::shared_ptr<extension> > >;
 
     /**
      * @brief       Creates all modules that are found at the given location.

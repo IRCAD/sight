@@ -44,7 +44,7 @@
 namespace sight::module::viz::scene3d_qt
 {
 
-class Window final : public QOpenGLWidget
+class window final : public QOpenGLWidget
 {
 Q_OBJECT
 
@@ -53,36 +53,36 @@ public:
     /**
      * @brief Initializes members and connect screenChanged to onScreenChanged.
      */
-    Window();
+    window();
 
     /// Destroys associated pointers by calling @ref destroy().
-    ~Window() override = default;
+    ~window() override = default;
 
-    void registerLayer(sight::viz::scene3d::layer::wptr _layer);
-    void createRenderTextures(int _w, int _h);
+    void register_layer(sight::viz::scene3d::layer::wptr _layer);
+    void create_render_textures(int _w, int _h);
 
     /// Gets this window ID.
-    [[nodiscard]] int getId() const;
+    [[nodiscard]] int get_id() const;
 
     /// Makes the OpenGL context as current one on this thread against this window.
     void makeCurrent();
 
     /// Destroy the Ogre window.
-    void destroyWindow();
+    void destroy_window();
 
     /// Returns current frame number of the render window.
-    [[nodiscard]] int getFrameId() const;
+    [[nodiscard]] int get_frame_id() const;
 
     /// Renders immediately the frame.
-    void renderNow();
+    void render_now();
 
     /// Renders the frame as soon as possible.
-    void requestRender();
+    void request_render();
 
 Q_SIGNALS:
 
     /// Emits when the user interacts with the scene using the mouse and keyboard.
-    void interacted(sight::viz::scene3d::window_interactor::InteractionInfo);
+    void interacted(sight::viz::scene3d::window_interactor::interaction_info);
 
 private:
 
@@ -117,14 +117,14 @@ private:
     void enterEvent(QEvent* _e) override;
 
     /// Manages gestures.
-    void gestureEvent(QGestureEvent* _e);
+    void gesture_event(QGestureEvent* _e);
 
-    using InteractionInfo = sight::viz::scene3d::window_interactor::InteractionInfo;
+    using interaction_info = sight::viz::scene3d::window_interactor::interaction_info;
 
     /// Converts the mouse event to be able to handle it with ogre.
-    InteractionInfo convertMouseEvent(
+    interaction_info convert_mouse_event(
         const QMouseEvent* _evt,
-        InteractionInfo::InteractionEnum _interaction_type
+        interaction_info::interaction_enum _interaction_type
     ) const;
 
     /// Creates the Ogre render window associated to this window,
@@ -135,60 +135,60 @@ private:
 
     /// Forwards the resize event.
     /// @param _newSize size in hidpi, you must multiplicate with devicePixelRatioF to get the real pixel value
-    void ogreResize(const QSize& _new_size);
+    void ogre_resize(const QSize& _new_size);
 
     /// Defines a counter to get the widget ID.
-    static int m_counter;
+    static int s_counter;
 
     /// Defines the unique identifier of the widget
     int m_id;
 
     /// Contains the Ogre root.
-    Ogre::Root* m_ogreRoot {nullptr};
+    Ogre::Root* m_ogre_root {nullptr};
 
     /// Tells if an update is requested
     bool m_update_pending {false};
 
     /// Stores previous mouse positions.
-    std::optional<QPoint> m_lastMousePosition;
+    std::optional<QPoint> m_last_mouse_position;
 
     /// Counts the number of frames rendered since the window's creation.
-    int m_frameId {0};
+    int m_frame_id {0};
 
     /// Contains the OpenGL context used for offscreen rendering.
     // std::shared_ptr<QOpenGLContext> m_glContext;
 
     /// Defines the last size sent to Ogre. In hidpi
-    QSize m_ogreSize;
+    QSize m_ogre_size;
 
     /// Workaround to fix multiple scenes rendering with NVidia Prime
     bool m_init {false};
 
-    Ogre::MeshPtr m_fsQuadPlane {};
+    Ogre::MeshPtr m_fs_quad_plane {};
 
-    struct RenderTarget
+    struct render_target
     {
         sight::viz::scene3d::layer::wptr layer;
         Ogre::MaterialPtr material;
         Ogre::TexturePtr texture;
     };
-    std::vector<RenderTarget> m_renderTargets;
+    std::vector<render_target> m_render_targets;
 
-    enum class GestureState : std::uint8_t
+    enum class gesture_state : std::uint8_t
     {
-        NoGesture = 0,
-        PanGesture,
-        PinchGesture
+        no_gesture = 0,
+        pan_gesture,
+        pinch_gesture
     };
 
-    GestureState m_gestureState {GestureState::NoGesture};
+    gesture_state m_gesture_state {gesture_state::no_gesture};
 };
 
 //-----------------------------------------------------------------------------
 
-inline int Window::getFrameId() const
+inline int window::get_frame_id() const
 {
-    return m_frameId;
+    return m_frame_id;
 }
 
 } // namespace sight::module::viz::scene3d_qt.

@@ -39,7 +39,7 @@ namespace sight::module::ui::qt
  * @section Slots Slots
  * - \b pop(): Adds a popup in the queue & display it.
  * - \b closeNotification(std::string channel): Close the popup associated with the given channel.
- * - \b setEnumParameter(std::string value, std::string key): Changes the position of notifications (key "position"),
+ * - \b set_enum_parameter(std::string value, std::string key): Changes the position of notifications (key "position"),
  * accepted values are the same than the "position" tag in the XML configuration.
  *
  * @section XML XML Configuration
@@ -109,15 +109,15 @@ public:
     MODULE_UI_QT_API ~notifier() noexcept override = default;
 
     /// Slot: This method is used to set an enum parameter.
-    MODULE_UI_QT_API void setEnumParameter(std::string _val, std::string _key);
+    MODULE_UI_QT_API void set_enum_parameter(std::string _val, std::string _key);
 
     /// Slot: pops a notification.
     /// @param notification notification.
-    MODULE_UI_QT_API void pop(service::Notification _notification);
+    MODULE_UI_QT_API void pop(service::notification _notification);
 
     /// Slot: close a notification identified by the channel name.
     /// @param channel notification channel.
-    MODULE_UI_QT_API void closeNotification(std::string _channel);
+    MODULE_UI_QT_API void close_notification(std::string _channel);
 
 protected:
 
@@ -146,13 +146,13 @@ protected:
 private:
 
     /// Called when a notification is closed
-    void onNotificationClosed(const sight::ui::dialog::notification::sptr& _notif);
+    void on_notification_closed(const sight::ui::dialog::notification::sptr& _notif);
 
     /// Erase a notification from m_popups and move down the remaining
     /// @param position The stack where we need to erase a notification
     /// @param it the iterator pointing on the element to erase
-    std::list<sight::ui::dialog::notification::sptr>::iterator eraseNotification(
-        const service::Notification::Position& _position,
+    std::list<sight::ui::dialog::notification::sptr>::iterator erase_notification(
+        const enum service::notification::position& _position,
         const std::list<sight::ui::dialog::notification::sptr>::iterator& _it
     );
 
@@ -160,29 +160,29 @@ private:
     /// @param position The stack to clean
     /// @param max The maximum number of element
     /// @param skipPermanent if true, only non permanent notifications are counted
-    void cleanNotifications(
-        const service::Notification::Position& _position,
+    void clean_notifications(
+        const enum service::notification::position& _position,
         std::size_t _max,
         std::array<int, 2> _size,
         bool _skip_permanent = true
     );
 
     /// Default message (if message in slot are empty), the default message can be configured in xml.
-    std::string m_defaultMessage {"Notification"};
+    std::string m_default_message {"Notification"};
 
-    struct Configuration final
+    struct configuration final
     {
-        std::optional<service::Notification::Position> position {std::nullopt};
+        std::optional<enum service::notification::position> position {std::nullopt};
         std::optional<std::chrono::milliseconds> duration {std::nullopt};
         std::optional<std::array<int, 2> > size {std::nullopt};
         std::optional<std::size_t> max {std::nullopt};
         std::optional<bool> closable {std::nullopt};
     };
 
-    std::map<std::string, Configuration> m_channels {{"", {.max = {3}}}};
+    std::map<std::string, configuration> m_channels {{"", {.max = {3}}}};
 
     /// A stack of notification
-    struct Stack final
+    struct stack final
     {
         std::optional<std::array<int, 2> > size {std::nullopt};
         std::optional<std::size_t> max {std::nullopt};
@@ -190,21 +190,21 @@ private:
     };
 
     /// Map of displayed Stack
-    std::map<service::Notification::Position, Stack> m_stacks {
-        {service::Notification::Position::TOP_RIGHT, {}},
-        {service::Notification::Position::TOP_LEFT, {}},
-        {service::Notification::Position::BOTTOM_RIGHT, {}},
-        {service::Notification::Position::BOTTOM_LEFT, {}},
-        {service::Notification::Position::CENTERED, {}},
-        {service::Notification::Position::CENTERED_TOP, {}},
-        {service::Notification::Position::CENTERED_BOTTOM, {}},
+    std::map<enum service::notification::position, stack> m_stacks {
+        {service::notification::position::top_right, {}},
+        {service::notification::position::top_left, {}},
+        {service::notification::position::bottom_right, {}},
+        {service::notification::position::bottom_left, {}},
+        {service::notification::position::centered, {}},
+        {service::notification::position::centered_top, {}},
+        {service::notification::position::centered_bottom, {}},
     };
 
     /// widget where notifications will be displayed in, nullptr by default.
-    sight::ui::container::widget::csptr m_containerWhereToDisplayNotifs {nullptr};
+    sight::ui::container::widget::csptr m_container_where_to_display_notifs {nullptr};
 
     /// Parent container ID (SID or WID), empty by default.
-    std::string m_parentContainerID;
+    std::string m_parent_container_id;
 };
 
 } //namespace sight::module::ui::qt

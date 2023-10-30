@@ -36,7 +36,7 @@ void object_writer::set_object(core::tools::object::csptr _object)
 
 //------------------------------------------------------------------------------
 
-core::tools::object::csptr object_writer::getObject() const
+core::tools::object::csptr object_writer::get_object() const
 {
     auto object = m_object.lock();
     SIGHT_ASSERT("Object expired.", object);
@@ -54,7 +54,7 @@ std::string object_writer::extension() const
 
 void object_writer::cancel()
 {
-    auto job = this->getJob();
+    auto job = this->get_job();
     if(job)
     {
         job->cancel();

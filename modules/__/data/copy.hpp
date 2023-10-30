@@ -92,19 +92,19 @@ private:
 
     enum class mode_t : std::int8_t
     {
-        START,
-        UPDATE,
+        start,
+        update,
     };
 
     /// Copies the object to the output.
     void make_copy();
 
     /// Determines when the data is copied (start or update)
-    mode_t m_mode {mode_t::UPDATE};
+    mode_t m_mode {mode_t::update};
 
-    sight::data::ptr<sight::data::object, sight::data::Access::in> m_source {this, "source"};
-    sight::data::ptr<sight::data::object, sight::data::Access::inout> m_target {this, "target", false, true};
-    sight::data::ptr<sight::data::object, sight::data::Access::out> m_outTarget {this, "outTarget", false};
+    sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, "source"};
+    sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "target", false, true};
+    sight::data::ptr<sight::data::object, sight::data::access::out> m_out_target {this, "outTarget", false};
 };
 
 } // namespace sight::module::data.

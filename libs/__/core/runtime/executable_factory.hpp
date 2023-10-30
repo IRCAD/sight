@@ -70,7 +70,7 @@ public:
      *
      * @return  a string containing an executable type
      */
-    [[nodiscard]] CORE_API std::string get_type() const;
+    [[nodiscard]] CORE_API std::string type() const;
 
 private:
 

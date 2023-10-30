@@ -72,7 +72,7 @@ void app::aboutToQuit()
 
 //-----------------------------------------------------------------------------
 
-void app::onExit()
+void app::on_exit()
 {
     QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QGuiApplication::restoreOverrideCursor();

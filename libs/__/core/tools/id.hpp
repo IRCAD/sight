@@ -46,12 +46,12 @@ public:
 
     using type = std::string;
 
-    typedef enum
+    enum class policy
     {
-        EMPTY = 1, ///< return an empty id if no one set
-        GENERATE,  ///< generate a new id if necessary
-        MUST_EXIST ///< throw an exception if object has not id.
-    } policy;
+        empty = 1, ///< return an empty id if no one set
+        generate,  ///< generate a new id if necessary
+        must_exist ///< throw an exception if object has not id.
+    };
 
     /**
      * Test if the given id exist (i.e recorded in fwID dictionary)
@@ -87,7 +87,7 @@ protected:
      * @note We consider an object be constant whatever if its id is generated.
      * @note This method is thread-safe.
      */
-    CORE_API type get_id(policy _policy = GENERATE) const;
+    CORE_API type get_id(policy _policy = policy::generate) const;
 
     /**
      * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
@@ -137,11 +137,11 @@ private:
     /// The ID associated with the object. It is mutable, as it may be modified with a call to get_id(GENERATE).
     mutable type m_id;
 
-    typedef std::unordered_map<type, WPTR(core::tools::object)> dictionary;
-    typedef std::unordered_map<std::string, std::uint32_t> categorized_counter;
+    using dictionary          = std::unordered_map<type, std::weak_ptr<core::tools::object> >;
+    using categorized_counter = std::unordered_map<std::string, std::uint32_t>;
 
-    static dictionary m_dictionary;
-    static categorized_counter m_categorized_counter;
+    static dictionary s_dictionary;
+    static categorized_counter s_categorized_counter;
 
     /// Mutex used to lock dictionary access
     static core::mt::read_write_mutex s_dictionary_mutex;

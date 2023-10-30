@@ -159,7 +159,7 @@ cv::Matx44f camera_pose_stereo(
     //Cost function for image 1
     for(std::size_t i = 0 ; i < _img_points1.size() ; ++i)
     {
-        ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
+        ::ceres::CostFunction* cost_function = detail::reprojection_error::create(
             _camera_matrix1,
             _dist_coeffs1,
             _img_points1[i],
@@ -176,7 +176,7 @@ cv::Matx44f camera_pose_stereo(
     //image 2
     for(std::size_t i = 0 ; i < _img_points2.size() ; ++i)
     {
-        ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
+        ::ceres::CostFunction* cost_function = detail::reprojection_error::create(
             _camera_matrix2,
             _dist_coeffs2,
             _img_points2[i],
@@ -353,7 +353,7 @@ data::point_list::sptr detect_chessboard(
         cv::cornerSubPix(gray_img, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
         pointlist = std::make_shared<data::point_list>();
-        data::point_list::PointListContainer& points = pointlist->getPoints();
+        data::point_list::container_t& points = pointlist->get_points();
         points.reserve(corners.size());
 
         const auto cv2_sight_pt = [](const cv::Point2f& _p){return std::make_shared<data::point>(_p.x, _p.y);};

@@ -25,12 +25,12 @@
 namespace sight::io::http::exceptions
 {
 
-ContentNotFound::ContentNotFound(const std::string& _message) :
-    io::http::exceptions::Base(_message)
+content_not_found::content_not_found(const std::string& _message) :
+    io::http::exceptions::base(_message)
 {
 }
 
-ContentNotFound::~ContentNotFound() noexcept =
+content_not_found::~content_not_found() noexcept =
     default;
 
 } // namespace sight::io::http::exceptions

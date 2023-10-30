@@ -109,20 +109,20 @@ private:
      */
     MODULE_IO_DIMSE_API connections_t auto_connections() const override;
 
-    typedef data::series_set::container_type dicom_series_container_t;
-    typedef core::com::slot<void (dicom_series_container_t)> read_dicom_slot_t;
-    typedef core::com::signal<void (std::string)> progress_started_signal_t;
-    typedef core::com::signal<void (std::string, float, std::string)> progressed_signal_t;
-    typedef core::com::signal<void (std::string)> progress_stopped_signal_t;
+    using dicom_series_container_t  = data::series_set::container_t;
+    using read_dicom_slot_t         = core::com::slot<void (dicom_series_container_t)>;
+    using progress_started_signal_t = core::com::signal<void (std::string)>;
+    using progressed_signal_t       = core::com::signal<void (std::string, float, std::string)>;
+    using progress_stopped_signal_t = core::com::signal<void (std::string)>;
 
     /// Pulls series from the PACS.
-    void pullSeries();
+    void pull_series();
 
     /**
      * @brief Reads local series.
      * @param _selectedSeries DICOM series that must be read.
      */
-    void readLocalSeries(dicom_series_container_t _selected_series);
+    void read_local_series(dicom_series_container_t _selected_series);
 
     /**
      * @brief Stores instance callback.
@@ -130,59 +130,59 @@ private:
      * @param _instanceNumber instance number.
      * @param _filePath file path.
      */
-    void storeInstanceCallback(
+    void store_instance_callback(
         const std::string& _series_instance_uid,
         unsigned _instance_number,
         const std::string& _file_path
     );
 
     ///SLOT: removes series from m_localSeries, when deleted in a gui selector for instance.
-    void removeSeries(data::series_set::container_type _removed_series);
+    void remove_series(data::series_set::container_t _removed_series);
 
     /// Defines the worker of the series enquire thread.
-    core::thread::worker::sptr m_requestWorker;
+    core::thread::worker::sptr m_request_worker;
 
     /// Defines the DICOM reader implementation.
-    std::string m_dicomReaderImplementation;
+    std::string m_dicom_reader_implementation;
 
     /// Contains the optional configuration to set to reader implementation.
-    std::string m_readerConfig;
+    std::string m_reader_config;
 
     /// Contains the DICOM reader.
-    sight::io::service::reader::sptr m_dicomReader {nullptr};
+    sight::io::service::reader::sptr m_dicom_reader {nullptr};
 
     /// Contains the series_set where the DICOM reader sets its output.
     data::series_set::sptr m_series_set {nullptr};
 
     /// Contains the slot to call storeInstanceCallback method using C-MOVE requests.
-    sight::io::dimse::SeriesRetriever::progress_callback_slot_t::sptr m_slotStoreInstance {nullptr};
+    sight::io::dimse::series_retriever::progress_callback_slot_t::sptr m_slot_store_instance {nullptr};
 
     /// Contains the signal emitted when the progress bar is started.
-    progress_started_signal_t::sptr m_sigProgressStarted {nullptr};
+    progress_started_signal_t::sptr m_sig_progress_started {nullptr};
 
     /// Contains the signal emitted when the progress bar is updated.
-    progressed_signal_t::sptr m_sigProgressed {nullptr};
+    progressed_signal_t::sptr m_sig_progressed {nullptr};
 
     /// Contains the signal emitted when the progress bar is stopped.
-    progress_stopped_signal_t::sptr m_sigProgressStopped {nullptr};
+    progress_stopped_signal_t::sptr m_sig_progress_stopped {nullptr};
 
     /// Stores local series.
-    std::set<std::string> m_localSeries;
+    std::set<std::string> m_local_series;
 
     /// Defines the progress bar ID.
-    std::string m_progressbarId {"pullDicomProgressBar"};
+    std::string m_progressbar_id {"pullDicomProgressBar"};
 
     /// Defines the total number of instances that must be downloaded.
-    std::size_t m_instanceCount {0};
+    std::size_t m_instance_count {0};
 
     /// Stores a map of DICOM series being pulled.
-    std::map<std::string, data::dicom_series::wptr> m_pullingDicomSeriesMap;
+    std::map<std::string, data::dicom_series::wptr> m_pulling_dicom_series_map;
 
-    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
-    data::ptr<sight::data::vector, data::Access::in> m_selectedSeries {this, "selectedSeries"};
+    data::ptr<sight::io::dimse::data::pacs_configuration, data::access::in> m_config {this, "pacsConfig"};
+    data::ptr<sight::data::vector, data::access::in> m_selected_series {this, "selectedSeries"};
 
-    static constexpr std::string_view s_SERIES_SET_INOUT = "seriesSet";
-    data::ptr<sight::data::series_set, data::Access::inout> m_destSeriesSet {this, s_SERIES_SET_INOUT};
+    static constexpr std::string_view SERIES_SET_INOUT = "seriesSet";
+    data::ptr<sight::data::series_set, data::access::inout> m_dest_series_set {this, SERIES_SET_INOUT};
 };
 
 } // namespace sight::module::io::dimse.

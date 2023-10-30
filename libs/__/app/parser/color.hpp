@@ -63,7 +63,7 @@ private:
      * @brief Parse a color XML configuration.
      * @param _obj color in which apply the configuration.
      */
-    void createConfig(core::tools::object::sptr _obj) override;
+    void create_config(core::tools::object::sptr _obj) override;
 };
 
 } // namespace sight::app::parser

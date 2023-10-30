@@ -39,16 +39,16 @@ class vtkLookupTable;
 namespace sight::io::vtk
 {
 
-struct TypeTranslator
+struct type_translator
 {
-    typedef std::map<core::type, int> fwToolsToVtkMap;
-    typedef std::map<int, core::type> VtkTofwToolsMap;
+    using to_vtk_map_t   = std::map<core::type, int>;
+    using from_vtk_map_t = std::map<int, core::type>;
 
-    IO_VTK_API static fwToolsToVtkMap::mapped_type translate(const fwToolsToVtkMap::key_type& _key);
-    IO_VTK_API static VtkTofwToolsMap::mapped_type translate(const VtkTofwToolsMap::key_type& _key);
+    IO_VTK_API static to_vtk_map_t::mapped_type translate(const to_vtk_map_t::key_type& _key);
+    IO_VTK_API static from_vtk_map_t::mapped_type translate(const from_vtk_map_t::key_type& _key);
 
-    static const fwToolsToVtkMap s_toVtk;
-    static const VtkTofwToolsMap s_fromVtk;
+    static const to_vtk_map_t TO_VTK;
+    static const from_vtk_map_t FROM_VTK;
 };
 
 /**

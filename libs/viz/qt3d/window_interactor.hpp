@@ -32,7 +32,7 @@
 
 #include <ui/__/container/widget.hpp>
 
-namespace Qt3DExtras
+namespace Qt3DExtras // NOLINT(readability-identifier-naming)
 {
 
 class Qt3DWindow;
@@ -57,11 +57,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry(std::string _functor_key)
+        registry(std::string _functor_key)
         {
             viz::qt3d::registry::get()->add_factory(_functor_key, &sight::viz::qt3d::factory::make<T>);
         }
@@ -69,11 +69,11 @@ public:
 
     SIGHT_DECLARE_CLASS(window_interactor, sight::core::base_object);
 
-    typedef std::string factory_registry_key_t;
+    using factory_registry_key_t = std::string;
 
     VIZ_QT3D_API static const factory_registry_key_t REGISTRY_KEY;
 
-    VIZ_QT3D_API static window_interactor::sptr createManager();
+    VIZ_QT3D_API static window_interactor::sptr create_manager();
 
     /// Constructor. Do nothing.
     VIZ_QT3D_API window_interactor();
@@ -82,20 +82,20 @@ public:
     VIZ_QT3D_API ~window_interactor() override;
 
     /// Creates an interactor and installs it in window.
-    VIZ_QT3D_API virtual void createContainer(ui::container::widget::sptr _parent) = 0;
+    VIZ_QT3D_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
 
     /// Converts 3DView to QWidget and attach it to the container.
-    VIZ_QT3D_API virtual void set3DView(Qt3DExtras::Qt3DWindow* _3d_view) = 0;
+    VIZ_QT3D_API virtual void set_3d_view(Qt3DExtras::Qt3DWindow* _3d_view) = 0;
 
     /// Set the render service using the renderwindow_interactor
-    virtual void setRenderService(service::base::sptr _srv)
+    virtual void set_render_service(service::base::sptr _srv)
     {
-        m_renderService = _srv;
+        m_render_service = _srv;
     }
 
 protected:
 
-    service::base::wptr m_renderService;
+    service::base::wptr m_render_service;
 };
 
 } // namespace sight::viz::qt3d

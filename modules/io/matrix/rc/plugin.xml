@@ -2,14 +2,14 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
-        <service>sight::module::io::matrix::Matrix4ReaderService</service>
+        <service>sight::module::io::matrix::matrix4_trf_reader</service>
         <object>sight::data::matrix4</object>
         <desc>Matrix4 Reader</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::writer</type>
-        <service>sight::module::io::matrix::Matrix4WriterService</service>
+        <service>sight::module::io::matrix::matrix4_trf_writer</service>
         <object>sight::data::matrix4</object>
         <desc>Matrix4 Writer</desc>
     </extension>

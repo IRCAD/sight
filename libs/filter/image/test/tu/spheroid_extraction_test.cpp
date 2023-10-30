@@ -131,11 +131,11 @@ void spheroid_extraction_test::extractionTest()
 {
     data::image::sptr image = std::make_shared<data::image>();
 
-    const data::image::Size SIZE = {{128, 128, 128}};
+    const data::image::size_t SIZE = {{128, 128, 128}};
 
-    const data::image::Spacing SPACING = {{1., 1., 1.}};
-    const data::image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::type TYPE              = core::type::INT16;
+    const data::image::spacing_t SPACING = {{1., 1., 1.}};
+    const data::image::origin_t ORIGIN   = {{0., 0., 0.}};
+    const core::type TYPE                = core::type::INT16;
 
     utest_data::generator::image::generateImage(
         image,
@@ -143,7 +143,7 @@ void spheroid_extraction_test::extractionTest()
         SPACING,
         ORIGIN,
         TYPE,
-        data::image::PixelFormat::GRAY_SCALE
+        data::image::pixel_format::gray_scale
     );
 
     makeNoise<std::int16_t>(image, 0, 128);

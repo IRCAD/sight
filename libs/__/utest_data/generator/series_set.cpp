@@ -49,7 +49,7 @@ using core::tools::random::safe_rand;
 
 //------------------------------------------------------------------------------
 
-data::series_set::sptr series_set::createSeriesSet(
+data::series_set::sptr series_set::create_series_set(
     const unsigned char _nb_img_series,
     const unsigned char _nb_model_series
 )
@@ -59,14 +59,14 @@ data::series_set::sptr series_set::createSeriesSet(
     for(unsigned char nb = 0 ; nb < _nb_img_series ; ++nb)
     {
         data::series::sptr img_series;
-        img_series = series_set::createImageSeries();
+        img_series = series_set::create_image_series();
         series_set->push_back(img_series);
     }
 
     for(unsigned char nb = 0 ; nb < _nb_model_series ; ++nb)
     {
         data::series::sptr model_series;
-        model_series = series_set::createModelSeries(static_cast<unsigned char>(safe_rand() % 5 + 1));
+        model_series = series_set::create_model_series(static_cast<unsigned char>(safe_rand() % 5 + 1));
         series_set->push_back(model_series);
     }
 
@@ -75,7 +75,7 @@ data::series_set::sptr series_set::createSeriesSet(
 
 //------------------------------------------------------------------------------
 
-void series_set::generateSeriesInformation(data::series::sptr _series)
+void series_set::generate_series_information(data::series::sptr _series)
 {
     static unsigned int count = 1;
     std::stringstream str;
@@ -90,19 +90,19 @@ void series_set::generateSeriesInformation(data::series::sptr _series)
     const std::string description = "Description";
 
     data::dicom_values_t performing_physician_name;
-    _series->setPerformingPhysicianName(
+    _series->set_performing_physician_name(
         "Adams^John Robert Quincy^^Rev.^B.A. M.Div.\\Morrison-Jones^Susan^^^Ph.D., Chief Executive Officer\\Doe^John"
     );
 
-    _series->setSeriesInstanceUID(uid);
-    _series->setModality(modality);
-    _series->setSeriesDate(date);
-    _series->setSeriesTime(time);
-    _series->setSeriesDescription(description);
+    _series->set_series_instance_uid(uid);
+    _series->set_modality(modality);
+    _series->set_series_date(date);
+    _series->set_series_time(time);
+    _series->set_series_description(description);
 
     const std::string institution = "IRCAD";
 
-    _series->setInstitutionName(institution);
+    _series->set_institution_name(institution);
 
     const std::string patient_name      = "NomSeriesSet1";
     const std::string patient_firstname = "PrenomSeriesSet1";
@@ -110,10 +110,10 @@ void series_set::generateSeriesInformation(data::series::sptr _series)
     const std::string patient_birthdate = "19710418";
     const std::string patient_sex       = "O ";
 
-    _series->setPatientName((patient_name + "^") + patient_firstname);
-    _series->setPatientID(patient_id);
-    _series->setPatientBirthDate(patient_birthdate);
-    _series->setPatientSex(patient_sex);
+    _series->set_patient_name((patient_name + "^") + patient_firstname);
+    _series->set_patient_id(patient_id);
+    _series->set_patient_birth_date(patient_birthdate);
+    _series->set_patient_sex(patient_sex);
 
     // studies informations
     const std::string study_uid         = "1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str();
@@ -123,58 +123,58 @@ void series_set::generateSeriesInformation(data::series::sptr _series)
     const std::string study_description = "Say 33.";
     const std::string patient_age       = "042Y";
 
-    _series->setStudyInstanceUID(study_uid);
-    _series->setStudyDate(study_date);
-    _series->setStudyTime(study_time);
-    _series->setReferringPhysicianName(study_physician);
-    _series->setStudyDescription(study_description);
-    _series->setPatientAge(patient_age);
+    _series->set_study_instance_uid(study_uid);
+    _series->set_study_date(study_date);
+    _series->set_study_time(study_time);
+    _series->set_referring_physician_name(study_physician);
+    _series->set_study_description(study_description);
+    _series->set_patient_age(patient_age);
 }
 
 //------------------------------------------------------------------------------
 
-data::image_series::sptr series_set::createImageSeries()
+data::image_series::sptr series_set::create_image_series()
 {
     data::image_series::sptr img_series = std::make_shared<data::image_series>();
 
-    series_set::generateSeriesInformation(img_series);
+    series_set::generate_series_information(img_series);
 
-    image::generateRandomImage(img_series, core::type::INT16);
+    image::generate_random_image(img_series, core::type::INT16);
 
     return img_series;
 }
 
 //------------------------------------------------------------------------------
 
-data::model_series::sptr series_set::createModelSeries(unsigned char _nb_reconstruction)
+data::model_series::sptr series_set::create_model_series(unsigned char _nb_reconstruction)
 {
     data::model_series::sptr model_series = std::make_shared<data::model_series>();
 
-    series_set::generateSeriesInformation(model_series);
+    series_set::generate_series_information(model_series);
 
     data::model_series::reconstruction_vector_t rec_db;
     for(unsigned char nb = 0 ; nb < _nb_reconstruction ; ++nb)
     {
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
         // Generates reconstruction with a prefixed index in organName "0_Liver", "1_Liver", ...
-        series_set::generateReconstruction(rec, static_cast<int>(nb));
+        series_set::generate_reconstruction(rec, static_cast<int>(nb));
 
         rec_db.push_back(rec);
     }
 
-    model_series->setReconstructionDB(rec_db);
+    model_series->set_reconstruction_db(rec_db);
 
     return model_series;
 }
 
 //------------------------------------------------------------------------------
 
-data::activity::sptr series_set::createActivity()
+data::activity::sptr series_set::create_activity()
 {
     data::activity::sptr activity = std::make_shared<data::activity>();
 
     const std::string config_id = "IdOfTheConfig";
-    activity->setActivityConfigId(config_id);
+    activity->set_activity_config_id(config_id);
 
     (*activity)["key1"] = std::make_shared<data::string>("ValueOfKey1");
 
@@ -183,9 +183,9 @@ data::activity::sptr series_set::createActivity()
 
 //------------------------------------------------------------------------------
 
-void series_set::generateReconstruction(data::reconstruction::sptr _rec, int _index)
+void series_set::generate_reconstruction(data::reconstruction::sptr _rec, int _index)
 {
-    _rec->setIsVisible(true);
+    _rec->set_is_visible(true);
     const std::string name = "Liver";
     std::string organ_name;
     //If needed, prefix organ name by the number of the reconstruction, to ensure the same reading order for tests.
@@ -198,12 +198,12 @@ void series_set::generateReconstruction(data::reconstruction::sptr _rec, int _in
         organ_name = name;
     }
 
-    _rec->setOrganName(organ_name);
+    _rec->set_organ_name(organ_name);
     _rec->set_structure_type("Liver");
 
     data::image::sptr img = std::make_shared<data::image>();
-    image::generateRandomImage(img, core::type::UINT16);
-    _rec->setImage(img);
+    image::generate_random_image(img, core::type::UINT16);
+    _rec->set_image(img);
 
     data::material::sptr material = std::make_shared<data::material>();
     material->ambient()->red()   = 0.75F;
@@ -214,12 +214,12 @@ void series_set::generateReconstruction(data::reconstruction::sptr _rec, int _in
     material->diffuse()->green() = 0.20F;
     material->diffuse()->blue()  = 0.66F;
     material->diffuse()->alpha() = 0.9F;
-    _rec->setMaterial(material);
+    _rec->set_material(material);
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
-    mesh::generateMesh(mesh);
+    mesh::generate_mesh(mesh);
 
-    _rec->setMesh(mesh);
+    _rec->set_mesh(mesh);
 }
 
 } // namespace sight::utest_data::generator

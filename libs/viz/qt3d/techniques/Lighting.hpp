@@ -42,95 +42,95 @@ namespace sight::viz::qt3d::techniques
 /**
  * @brief Manages a lighting technique.
  */
-class VIZ_QT3D_CLASS_API Lighting : public Qt3DRender::QTechnique
+class VIZ_QT3D_CLASS_API lighting : public Qt3DRender::QTechnique
 {
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
-Q_PROPERTY(QVector3D lightPosition READ getLightPosition WRITE setLightPosition NOTIFY lightPositionChanged)
-Q_PROPERTY(QVector3D lightIntensity READ getLightIntensity WRITE setLightIntensity NOTIFY lightIntensityChanged)
+Q_PROPERTY(QVector3D light_position READ get_light_position WRITE set_light_position NOTIFY light_position_changed)
+Q_PROPERTY(QVector3D light_intensity READ get_light_intensity WRITE set_light_intensity NOTIFY light_intensity_changed)
 
 public:
 
     /**
      * @brief Lighting mode
      */
-    typedef enum
+    enum lighting_mode
     {
-        AMBIENT = 0,
-        FLAT    = 1,
-        PHONG   = 2
-    } LightingMode;
+        ambient = 0,
+        flat    = 1,
+        phong   = 2
+    };
 
     /// Constructs a lighting rendering technique.
-    VIZ_QT3D_API Lighting();
+    VIZ_QT3D_API lighting();
 
     /// Destroys the technique.
-    VIZ_QT3D_API ~Lighting() override;
+    VIZ_QT3D_API ~lighting() override;
 
     /// @returns light position value.
-    VIZ_QT3D_API QVector3D getLightPosition();
+    VIZ_QT3D_API QVector3D get_light_position();
 
     /// @returns light intensity value.
-    VIZ_QT3D_API QVector3D getLightIntensity();
+    VIZ_QT3D_API QVector3D get_light_intensity();
 
     /// @returns light mode.
-    VIZ_QT3D_API LightingMode getLightingMode();
+    VIZ_QT3D_API lighting_mode get_lighting_mode();
 
     /// Updates light position.
-    VIZ_QT3D_API void setLightPosition(QVector3D _light_position);
+    VIZ_QT3D_API void set_light_position(QVector3D _light_position);
 
     /// Updates light intensity.
-    VIZ_QT3D_API void setLightIntensity(QVector3D _light_intensity);
+    VIZ_QT3D_API void set_light_intensity(QVector3D _light_intensity);
 
     /// Updates light intensity.
-    VIZ_QT3D_API void setLightingMode(LightingMode _lighting_mode);
+    VIZ_QT3D_API void set_lighting_mode(lighting_mode _lighting_mode);
 
     /// Enables/Disables cells normals visualization.
-    VIZ_QT3D_API Q_INVOKABLE void enableCellsNormals(bool _is_enable);
+    VIZ_QT3D_API Q_INVOKABLE void enable_cells_normals(bool _is_enable);
 
     /// Enables/Disables normals visualization.
-    VIZ_QT3D_API Q_INVOKABLE void showNormals(bool _is_enable);
+    VIZ_QT3D_API Q_INVOKABLE void show_normals(bool _is_enable);
 
     /// Modifies raster mode (SURFACE, POINT, LINE, EDGE).
-    VIZ_QT3D_API Q_INVOKABLE void updateRasterMode(int _raster_mode);
+    VIZ_QT3D_API Q_INVOKABLE void update_raster_mode(int _raster_mode);
 
 Q_SIGNALS:
 
     /// Signal emitted when light position is modified.
-    void lightPositionChanged();
+    void light_position_changed();
 
     /// Signal emitted when light intensity is modified.
-    void lightIntensityChanged();
+    void light_intensity_changed();
 
 private:
 
     /// Contains light position parameter.
-    QPointer<Qt3DRender::QParameter> m_lightPosition;
+    QPointer<Qt3DRender::QParameter> m_light_position;
 
     /// Contains light intensity parameter.
-    QPointer<Qt3DRender::QParameter> m_lightIntensity;
+    QPointer<Qt3DRender::QParameter> m_light_intensity;
 
     /// Contains light mode parameter.
-    QPointer<Qt3DRender::QParameter> m_lightingMode;
+    QPointer<Qt3DRender::QParameter> m_lighting_mode;
 
     /// Contains default render pass.
-    QPointer<Qt3DRender::QRenderPass> m_renderPass;
+    QPointer<Qt3DRender::QRenderPass> m_render_pass;
 
     /// Contains a second render pass used for EDGE rendering.
-    QPointer<Qt3DRender::QRenderPass> m_edgeRenderPass;
+    QPointer<Qt3DRender::QRenderPass> m_edge_render_pass;
 
     /// Contains a render pass used for point normals visualization.
-    QPointer<Qt3DRender::QRenderPass> m_normalPass;
+    QPointer<Qt3DRender::QRenderPass> m_normal_pass;
 
     /// Contains a render pass used for cell normals visualization.
-    QPointer<Qt3DRender::QRenderPass> m_cellNormalPass;
+    QPointer<Qt3DRender::QRenderPass> m_cell_normal_pass;
 
     /// Contains a render state used to control raster mode.
-    QPointer<Qt3DRender::QRasterMode> m_rasterModeRenderState;
+    QPointer<Qt3DRender::QRasterMode> m_raster_mode_render_state;
 
     /// Specifies if normal visualization is set to point or cell.
-    bool m_isCellsNormalsEnabled {false};
+    bool m_is_cells_normals_enabled {false};
 };
 
 } // namespace sight::viz::qt3d::techniques

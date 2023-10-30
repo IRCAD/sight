@@ -29,48 +29,48 @@ namespace sight::io::dicom::container
 
 //------------------------------------------------------------------------------
 
-DicomCodedAttribute::DicomCodedAttribute(
+dicom_coded_attribute::dicom_coded_attribute(
     std::string _code_value,
     std::string _coding_scheme_designator,
     std::string _code_meaning,
     std::string _coding_scheme_version
 ) :
-    m_codeValue(std::move(_code_value)),
-    m_codingSchemeDesignator(std::move(_coding_scheme_designator)),
-    m_codeMeaning(std::move(_code_meaning)),
-    m_codingSchemeVersion(std::move(_coding_scheme_version))
+    m_code_value(std::move(_code_value)),
+    m_coding_scheme_designator(std::move(_coding_scheme_designator)),
+    m_code_meaning(std::move(_code_meaning)),
+    m_coding_scheme_version(std::move(_coding_scheme_version))
 {
 }
 
 //------------------------------------------------------------------------------
 
-bool DicomCodedAttribute::isEmpty() const
+bool dicom_coded_attribute::is_empty() const
 {
-    return m_codeValue.empty()
-           && m_codingSchemeDesignator.empty()
-           && m_codeMeaning.empty()
-           && m_codingSchemeVersion.empty();
+    return m_code_value.empty()
+           && m_coding_scheme_designator.empty()
+           && m_code_meaning.empty()
+           && m_coding_scheme_version.empty();
 }
 
 //------------------------------------------------------------------------------
 
-bool DicomCodedAttribute::operator==(const DicomCodedAttribute& _other) const
+bool dicom_coded_attribute::operator==(const dicom_coded_attribute& _other) const
 {
-    return m_codeValue == _other.m_codeValue
-           && m_codingSchemeDesignator == _other.m_codingSchemeDesignator
-           && m_codeMeaning == _other.m_codeMeaning
-           && m_codingSchemeVersion == _other.m_codingSchemeVersion;
+    return m_code_value == _other.m_code_value
+           && m_coding_scheme_designator == _other.m_coding_scheme_designator
+           && m_code_meaning == _other.m_code_meaning
+           && m_coding_scheme_version == _other.m_coding_scheme_version;
 }
 
 //------------------------------------------------------------------------------
 
-gdcm::SegmentHelper::BasicCodedEntry DicomCodedAttribute::toGDCMFormat() const
+gdcm::SegmentHelper::BasicCodedEntry dicom_coded_attribute::to_gdcm_format() const
 {
     return {
-        m_codeValue.c_str(),
-        m_codingSchemeDesignator.c_str(),
-        m_codingSchemeVersion.c_str(),
-        m_codeMeaning.c_str()
+        m_code_value.c_str(),
+        m_coding_scheme_designator.c_str(),
+        m_coding_scheme_version.c_str(),
+        m_code_meaning.c_str()
     };
 }
 

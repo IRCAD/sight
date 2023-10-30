@@ -46,26 +46,26 @@ namespace sight::module::viz::qt3d
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::createContainer(ui::container::widget::sptr _parent)
+void window_interactor::create_container(ui::container::widget::sptr _parent)
 {
     SIGHT_ASSERT("Invalid parent.", _parent);
-    m_parentContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
+    m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
 
-    auto* view3_d = new Qt3DExtras::Qt3DWindow();
-    this->set3DView(view3_d);
+    auto* view_3d = new Qt3DExtras::Qt3DWindow();
+    this->set_3d_view(view_3d);
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::set3DView(Qt3DExtras::Qt3DWindow* _3d_view)
+void window_interactor::set_3d_view(Qt3DExtras::Qt3DWindow* _3d_view)
 {
-    m_parentContainer->clean();
+    m_parent_container->clean();
 
-    m_windowContainer = QWidget::createWindowContainer(_3d_view);
+    m_window_container = QWidget::createWindowContainer(_3d_view);
     QPointer<QVBoxLayout> layout = new QVBoxLayout;
-    layout->addWidget(m_windowContainer);
+    layout->addWidget(m_window_container);
     layout->setContentsMargins(0, 0, 0, 0);
-    m_parentContainer->setLayout(layout);
+    m_parent_container->set_layout(layout);
 }
 
 } // namespace sight::module::viz::qt3d

@@ -28,55 +28,55 @@
 
 #include <service/macros.hpp>
 
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STestNoData);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STestNoData2);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest1Input);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest1OptInput);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest2Inputs);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest2InputsV2);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest4Inputs);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest1Inout);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest3Inouts);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest3InoutsV2);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest2Inouts1Input);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest2InputGroups);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest1Input1Output2Inouts);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest1Input1InputGroup);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STest1Input1OptInput1OptInOut);
-SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::STestOut);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_no_data);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_no_data2);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_opt_input);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test2_inputs);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test2_inputs_v2);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test4_inputs);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_inout);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test3_inouts);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test3_inouts_v2);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test2_inouts1_input);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test2_input_groups);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_output2_inouts);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_input_group);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_opt_input1_opt_in_out);
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_out);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_data);
 
 namespace sight::app::ut
 {
 
-unsigned int test_service::s_START_COUNTER  = 0;
-unsigned int test_service::s_UPDATE_COUNTER = 0;
+unsigned int test_service::s_start_counter  = 0;
+unsigned int test_service::s_update_counter = 0;
 
-const std::string test_service::s_OPTION_KEY   = "option";
-const std::string test_service::s_UNCONFIGURED = "UNCONFIGURED";
-const std::string test_service::s_NOT_DEFINED  = "NOT_DEFINED";
+const std::string test_service::OPTION_KEY   = "option";
+const std::string test_service::UNCONFIGURED = "UNCONFIGURED";
+const std::string test_service::NOT_DEFINED  = "NOT_DEFINED";
 
-const service::base::key_t test_service_with_data::s_INPUT       = "input";
-const service::base::key_t test_service_with_data::s_INOUT_GROUP = "inoutGroup";
-const service::base::key_t test_service_with_data::s_OUTPUT      = "output";
+const service::base::key_t test_service_with_data::INPUT       = "input";
+const service::base::key_t test_service_with_data::INOUT_GROUP = "inoutGroup";
+const service::base::key_t test_service_with_data::OUTPUT      = "output";
 
 //------------------------------------------------------------------------------
 
 void test_service::starting()
 {
-    if(m_raiseException)
+    if(m_raise_exception)
     {
         throw core::exception("start error");
     }
 
-    m_startOrder = s_START_COUNTER++;
+    m_start_order = s_start_counter++;
 }
 
 //------------------------------------------------------------------------------
 
 void test_service::stopping()
 {
-    if(m_raiseException)
+    if(m_raise_exception)
     {
         throw core::exception("stop error");
     }
@@ -86,12 +86,12 @@ void test_service::stopping()
 
 void test_service::updating()
 {
-    if(m_raiseException)
+    if(m_raise_exception)
     {
         throw core::exception("update error");
     }
 
-    m_updateOrder = s_UPDATE_COUNTER++;
+    m_update_order = s_update_counter++;
 }
 
 //------------------------------------------------------------------------------

@@ -34,27 +34,27 @@ namespace sight::io::bitmap::detail
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_TIFF(func) SIGHT_THROW_IF("The function " #func " failed.", (func) == 0)
 
-class LibTIFFReader final
+class lib_tiff_reader final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibTIFFReader(const LibTIFFReader&)            = delete;
-    LibTIFFReader& operator=(const LibTIFFReader&) = delete;
+    lib_tiff_reader(const lib_tiff_reader&)            = delete;
+    lib_tiff_reader& operator=(const lib_tiff_reader&) = delete;
 
     /// Constructor
-    inline LibTIFFReader() noexcept = default;
+    inline lib_tiff_reader() noexcept = default;
 
     /// Destructor
-    inline ~LibTIFFReader() noexcept = default;
+    inline ~lib_tiff_reader() noexcept = default;
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, Flag /*flag*/)
+    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
     {
         // Create an RAII to be sure everything is cleaned at exit
-        struct Keeper final
+        struct keeper final
         {
-            inline ~Keeper()
+            inline ~keeper()
             {
                 if(m_tiff != nullptr)
                 {
@@ -67,7 +67,7 @@ public:
         } keeper;
 
         // Open the tiff file for reading
-        keeper.m_tiff = tiffStreamOpen(_istream);
+        keeper.m_tiff = tiff_stream_open(_istream);
         SIGHT_THROW_IF("TIFFOpen() failed.", keeper.m_tiff == nullptr);
 
         // Get the image size and format
@@ -107,7 +107,7 @@ public:
             _image.resize(
                 {width, height, 0},
                 sample_format == SAMPLEFORMAT_INT ? core::type::INT8 : core::type::UINT8,
-                data::image::PixelFormat::RGBA
+                data::image::pixel_format::rgba
             );
 
             CHECK_TIFF(
@@ -195,16 +195,16 @@ public:
                     switch(samples_per_pixels)
                     {
                         case 1:
-                            return data::image::PixelFormat::GRAY_SCALE;
+                            return data::image::pixel_format::gray_scale;
 
                         case 2:
-                            return data::image::PixelFormat::RG;
+                            return data::image::pixel_format::rg;
 
                         case 3:
-                            return data::image::PixelFormat::RGB;
+                            return data::image::pixel_format::rgb;
 
                         case 4:
-                            return data::image::PixelFormat::RGBA;
+                            return data::image::pixel_format::rgba;
 
                         default:
                             SIGHT_THROW("Unsupported sample per pixels: '" << samples_per_pixels << "'");
@@ -216,7 +216,7 @@ public:
 
             for(std::uint32_t row = 0 ; row < height ; ++row)
             {
-                CHECK_TIFF(TIFFReadScanline(keeper.m_tiff, _image.getPixel(row * width), row));
+                CHECK_TIFF(TIFFReadScanline(keeper.m_tiff, _image.get_pixel(row * width), row));
             }
         }
     }
@@ -233,7 +233,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static TIFF* tiffStreamOpen(std::istream& _istream)
+    inline static TIFF* tiff_stream_open(std::istream& _istream)
     {
         tiff_stream_data* const data = new tiff_stream_data {.istream = _istream, .start_pos = _istream.tellg()};
 
@@ -242,11 +242,11 @@ private:
             "istream",
             "r",
             reinterpret_cast<thandle_t>(data),
-            tiffReadProc,
-            tiffWriteProc,
-            tiffSeekProc,
-            tiffCloseProc,
-            tiffSizeProc,
+            tiff_read_proc,
+            tiff_write_proc,
+            tiff_seek_proc,
+            tiff_close_proc,
+            tiff_size_proc,
             tiff::map_proc,
             tiff::unmap_proc
         );
@@ -256,7 +256,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiffReadProc(thandle_t _fd, void* _buff, tmsize_t _size)
+    inline static tmsize_t tiff_read_proc(thandle_t _fd, void* _buff, tmsize_t _size)
     {
         tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
         data->istream.read(reinterpret_cast<char*>(_buff), _size);
@@ -265,14 +265,14 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiffWriteProc(thandle_t, void*, tmsize_t)
+    inline static tmsize_t tiff_write_proc(thandle_t, void*, tmsize_t)
     {
         return -1;
     }
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSeekProc(thandle_t _fd, toff_t _off, int _whence)
+    inline static toff_t tiff_seek_proc(thandle_t _fd, toff_t _off, int _whence)
     {
         tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 
@@ -296,7 +296,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static int tiffCloseProc(thandle_t _fd)
+    inline static int tiff_close_proc(thandle_t _fd)
     {
         // Our stream was not allocated by us, so it shouldn't be closed by us.
         delete reinterpret_cast<tiff_stream_data*>(_fd);
@@ -305,7 +305,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSizeProc(thandle_t _fd)
+    inline static toff_t tiff_size_proc(thandle_t _fd)
     {
         tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 

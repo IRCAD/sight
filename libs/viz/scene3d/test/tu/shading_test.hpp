@@ -32,15 +32,15 @@ namespace sight::viz::scene3d::helper::ut
 class shading_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(shading_test);
-CPPUNIT_TEST(isColorTechnique);
-CPPUNIT_TEST(isPeelTechnique);
-CPPUNIT_TEST(isGeometricTechnique);
-CPPUNIT_TEST(isDepthOnlyTechnique);
-CPPUNIT_TEST(getPermutation);
-CPPUNIT_TEST(getR2VBGeometryProgramName);
-CPPUNIT_TEST(setPermutationInProgramName);
-CPPUNIT_TEST(setTechniqueInProgramName);
-CPPUNIT_TEST(createObjectFromShaderParameter);
+CPPUNIT_TEST(is_color_technique);
+CPPUNIT_TEST(is_peel_technique);
+CPPUNIT_TEST(is_geometric_technique);
+CPPUNIT_TEST(is_depth_only_technique);
+CPPUNIT_TEST(get_permutation);
+CPPUNIT_TEST(get_r2_vb_geometry_program_name);
+CPPUNIT_TEST(set_permutation_in_program_name);
+CPPUNIT_TEST(set_technique_in_program_name);
+CPPUNIT_TEST(create_object_from_shader_parameter);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,15 +51,15 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void isColorTechnique();
-    void isPeelTechnique();
-    void isGeometricTechnique();
-    void isDepthOnlyTechnique();
-    static void getPermutation();
-    static void getR2VBGeometryProgramName();
-    static void setPermutationInProgramName();
-    static void setTechniqueInProgramName();
-    static void createObjectFromShaderParameter();
+    void is_color_technique();
+    void is_peel_technique();
+    void is_geometric_technique();
+    void is_depth_only_technique();
+    static void get_permutation();
+    static void get_r2_vb_geometry_program_name();
+    static void set_permutation_in_program_name();
+    static void set_technique_in_program_name();
+    static void create_object_from_shader_parameter();
 
 private:
 

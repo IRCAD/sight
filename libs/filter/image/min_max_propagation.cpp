@@ -42,26 +42,25 @@ namespace sight::filter::image
 {
 
 template<typename TImage>
-class MinMaxPropagCriterion : public itk::ImageFunction<TImage,
-                                                        bool>
+class min_max_propag_criterion : public itk::ImageFunction<TImage,
+                                                           bool>
 {
 public:
 
-    using Self         = MinMaxPropagCriterion;
-    using Superclass   = itk::ImageFunction<TImage, bool>;
-    using Pointer      = itk::SmartPointer<Self>;
-    using ConstPointer = itk::SmartPointer<const Self>;
+    using self_t       = min_max_propag_criterion;
+    using superclass_t = itk::ImageFunction<TImage, bool>;
+    using Pointer      = itk::SmartPointer<self_t>;
 
-    itkNewMacro(Self);
+    itkNewMacro(self_t);
     itkTypeMacro(MinMaxPropagCriterion, ImageFunction);
 
-    using pixel_t   = typename Superclass::InputPixelType;
+    using pixel_t   = typename superclass_t::InputPixelType;
     using index_t   = typename TImage::IndexType;
     using spacing_t = typename TImage::SpacingType;
 
     //-----------------------------------------------------------------------------
 
-    MinMaxPropagCriterion() :
+    min_max_propag_criterion() :
         m_min(itk::NumericTraits<pixel_t>::max()),
         m_max(itk::NumericTraits<pixel_t>::min()),
         m_radius(std::numeric_limits<double>::infinity())
@@ -70,12 +69,12 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    void setParams(
+    void set_params(
         data::image::csptr _roi,
         const std::vector<index_t>& _seeds,
         double _radius,
         bool _overwrite,
-        min_max_propagation::Mode _mode
+        min_max_propagation::mode _mode
 )
     {
         std::vector<pixel_t> seed_values(_seeds.size());
@@ -87,7 +86,7 @@ public:
 
         if(!seed_values.empty())
         {
-            if(_mode == min_max_propagation::MIN || _mode == min_max_propagation::MINMAX)
+            if(_mode == min_max_propagation::min || _mode == min_max_propagation::minmax)
             {
                 m_min = *std::min_element(seed_values.begin(), seed_values.end());
             }
@@ -96,7 +95,7 @@ public:
                 m_min = itk::NumericTraits<pixel_t>::min();
             }
 
-            if(_mode == min_max_propagation::MAX || _mode == min_max_propagation::MINMAX)
+            if(_mode == min_max_propagation::max || _mode == min_max_propagation::minmax)
             {
                 m_max = *std::max_element(seed_values.begin(), seed_values.end());
             }
@@ -119,7 +118,7 @@ public:
             distance2 += real_dim * real_dim;
         }
 
-        m_useRadius = (r2 <= distance2);
+        m_use_radius = (r2 <= distance2);
 
         m_roi       = _roi;
         m_radius    = _radius;
@@ -129,7 +128,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    bool Evaluate(const typename Superclass::PointType& point) const override // NOLINT(readability-identifier-naming)
+    bool Evaluate(const typename superclass_t::PointType& point) const override // NOLINT(readability-identifier-naming)
     {
         index_t index;
         this->ConvertPointToNearestIndex(point, index);
@@ -155,19 +154,19 @@ public:
         }
 
         // Check if the pixel is inside the roi.
-        if(m_roi != nullptr && !isInROI(index))
+        if(m_roi != nullptr && !is_in_roi(index))
         {
             return false;
         }
 
         // Check if the max distance was reached
-        return !(m_useRadius && !isInsideRadius(index));
+        return !(m_use_radius && !is_inside_radius(index));
     }
 
     //-----------------------------------------------------------------------------
 
     // NOLINTNEXTLINE(readability-identifier-naming)
-    bool EvaluateAtContinuousIndex(const typename Superclass::ContinuousIndexType& contIndex) const override
+    bool EvaluateAtContinuousIndex(const typename superclass_t::ContinuousIndexType& contIndex) const override
     {
         index_t index;
         this->ConvertContinuousIndexToNearestIndex(contIndex, index);
@@ -176,7 +175,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    bool isInsideRadius(const index_t& _index) const
+    bool is_inside_radius(const index_t& _index) const
     {
         const spacing_t& img_spacing = this->GetInputImage()->GetSpacing();
 
@@ -204,20 +203,20 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    bool isInROI(const index_t& _index) const
+    bool is_in_roi(const index_t& _index) const
     {
         const auto dump_lock = m_roi->dump_lock();
         const auto size      = m_roi->size();
 
         const auto* roi_val =
             reinterpret_cast<const data::image::buffer_t*>(
-                m_roi->getPixel(
+                m_roi->get_pixel(
                     std::size_t(_index[0]) + std::size_t(_index[1]) * size[0] + std::size_t(_index[2])
                     * size[0] * size[1]
                 )
             );
 
-        return !data::helper::medical_image::is_buf_null(roi_val, std::uint32_t(m_roi->getType().size()));
+        return !data::helper::medical_image::is_buf_null(roi_val, std::uint32_t(m_roi->type().size()));
     }
 
 private:
@@ -230,7 +229,7 @@ private:
 
     std::vector<index_t> m_seeds;
 
-    bool m_useRadius {false};
+    bool m_use_radius {false};
 
     double m_radius;
 
@@ -239,30 +238,30 @@ private:
 
 //-----------------------------------------------------------------------------
 
-struct MinMaxPropagator
+struct min_max_propagator
 {
-    struct Parameters
+    struct parameters
     {
-        data::image::csptr inputImage;
-        data::image::sptr outputImage;
+        data::image::csptr input_image;
+        data::image::sptr output_image;
         data::image::csptr roi;
         image_diff diff;
         data::image::buffer_t* value {};
         min_max_propagation::seeds_t seeds;
         double radius {};
         bool overwrite {};
-        min_max_propagation::Mode mode {min_max_propagation::Mode::MINMAX};
+        min_max_propagation::mode mode {min_max_propagation::mode::minmax};
     };
 
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameters& _params)
+    void operator()(parameters& _params)
     {
         using image_t     = typename itk::Image<PIXELTYPE, 3>;
-        using criterion_t = MinMaxPropagCriterion<image_t>;
+        using criterion_t = min_max_propag_criterion<image_t>;
 
-        const typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(_params.inputImage);
+        const typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(_params.input_image);
 
         std::vector<typename image_t::IndexType> itk_seeds;
         for(const auto& seed : _params.seeds)
@@ -279,16 +278,16 @@ struct MinMaxPropagator
 
         typename criterion_t::Pointer criterion = criterion_t::New();
         criterion->SetInputImage(itk_image);
-        criterion->setParams(_params.roi, itk_seeds, _params.radius, _params.overwrite, _params.mode);
+        criterion->set_params(_params.roi, itk_seeds, _params.radius, _params.overwrite, _params.mode);
 
         itk::FloodFilledImageFunctionConditionalIterator<image_t, criterion_t> iter(
             itk_image, criterion, itk_seeds);
 
-        const auto dump_lock = _params.outputImage->dump_lock();
+        const auto dump_lock = _params.output_image->dump_lock();
 
         const std::uint8_t out_img_pixel_size = std::uint8_t(
-            _params.outputImage->getType().size()
-            * _params.outputImage->numComponents()
+            _params.output_image->type().size()
+            * _params.output_image->num_components()
         );
 
         for( ; !iter.IsAtEnd() ; ++iter)
@@ -298,12 +297,12 @@ struct MinMaxPropagator
             const auto buffer_index = static_cast<std::size_t>(itk_image->ComputeOffset(current_index));
 
             const data::image::buffer_t* pix_buf =
-                reinterpret_cast<data::image::buffer_t*>(_params.outputImage->getPixel(buffer_index));
+                reinterpret_cast<data::image::buffer_t*>(_params.output_image->get_pixel(buffer_index));
 
             if(!std::equal(pix_buf, pix_buf + out_img_pixel_size, _params.value))
             {
-                _params.diff.addDiff(buffer_index, pix_buf, _params.value);
-                _params.outputImage->setPixel(buffer_index, _params.value);
+                _params.diff.add_diff(buffer_index, pix_buf, _params.value);
+                _params.output_image->set_pixel(buffer_index, _params.value);
             }
         }
     }
@@ -316,9 +315,9 @@ min_max_propagation::min_max_propagation(
     data::image::sptr _out_image,
     data::image::csptr _roi
 ) :
-    m_inImage(std::move(_in_image)),
+    m_in_image(std::move(_in_image)),
     m_roi(std::move(_roi)),
-    m_outImage(std::move(_out_image))
+    m_out_image(std::move(_out_image))
 {
 }
 
@@ -329,24 +328,24 @@ image_diff min_max_propagation::propagate(
     data::image::buffer_t* _value,
     const double _radius,
     const bool _overwrite,
-    const Mode _mode
+    const mode _mode
 )
 {
-    const core::type type                  = m_inImage->getType();
-    const std::size_t out_image_pixel_size = m_outImage->getType().size() * m_outImage->numComponents();
+    const core::type type                  = m_in_image->type();
+    const std::size_t out_image_pixel_size = m_out_image->type().size() * m_out_image->num_components();
 
-    MinMaxPropagator::Parameters params;
-    params.inputImage  = m_inImage;
-    params.outputImage = m_outImage;
-    params.roi         = m_roi;
-    params.diff        = image_diff(out_image_pixel_size);
-    params.seeds       = _seeds;
-    params.value       = _value;
-    params.overwrite   = _overwrite;
-    params.mode        = _mode;
-    params.radius      = _radius;
+    min_max_propagator::parameters params;
+    params.input_image  = m_in_image;
+    params.output_image = m_out_image;
+    params.roi          = m_roi;
+    params.diff         = image_diff(out_image_pixel_size);
+    params.seeds        = _seeds;
+    params.value        = _value;
+    params.overwrite    = _overwrite;
+    params.mode         = _mode;
+    params.radius       = _radius;
 
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, MinMaxPropagator>::invoke(type, params);
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, min_max_propagator>::invoke(type, params);
 
     m_seeds.clear();
 

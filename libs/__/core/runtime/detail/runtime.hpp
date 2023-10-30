@@ -58,7 +58,7 @@ public:
     //@}
 
     /// Regex used in different places to find the module part in a path
-    static const std::regex s_match_module_path;
+    static const std::regex MATCH_MODULE_PATH;
 
     /// Retrieves the singleton
     static runtime& get();
@@ -266,7 +266,7 @@ private:
     ///< Defines the plugin container type.
     using plugin_container = std::vector<std::shared_ptr<plugin> >;
 
-    static std::shared_ptr<runtime> m_instance; ///< The runtime instance.
+    static std::shared_ptr<runtime> s_instance; ///< The runtime instance.
 
     executable_factory_container m_executable_factories; ///< Contains all executable factories.
     extension_container m_extensions;                    ///< Contains all registered extensions.

@@ -42,10 +42,10 @@ public:
 
     SIGHT_DECLARE_CLASS(selector_base, ui::object);
 
-    typedef std::string factory_registry_key_t;
-    using choices_t        = std::vector<std::string>;
-    using choices_preset_t = std::vector<std::pair<std::string, bool> >;
-    using selections_t     = std::vector<std::string>;
+    using factory_registry_key_t = std::string;
+    using choices_t              = std::vector<std::string>;
+    using choices_preset_t       = std::vector<std::pair<std::string, bool> >;
+    using selections_t           = std::vector<std::string>;
 
     /// this *unique* key should  be used *for all* factory for specific selector(qt,wx,...)
     UI_API static const factory_registry_key_t REGISTRY_KEY;
@@ -63,7 +63,7 @@ public:
     UI_API virtual void set_choices_preset(choices_preset_t _choices) = 0;
 
     /// Sets the selector title.
-    UI_API virtual void setTitle(std::string _title) = 0;
+    UI_API virtual void set_title(std::string _title) = 0;
 
     /// Allows multiple selections (default = false).
     UI_API virtual void set_multiple(bool _multiple) = 0;
@@ -72,10 +72,10 @@ public:
     UI_API virtual selections_t show() = 0;
 
     /// Set the message
-    UI_API virtual void setMessage(const std::string& _msg) = 0;
+    UI_API virtual void set_message(const std::string& _msg) = 0;
 
     /// Add a custom button to this dialog
-    UI_API virtual void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) = 0;
+    UI_API virtual void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) = 0;
 };
 
 } // namespace sight::ui::dialog

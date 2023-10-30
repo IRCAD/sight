@@ -89,30 +89,30 @@ parameters::parameters() noexcept
     new_signal<signals::boolean_changed_signal_t>(signals::BOOLEAN_CHANGED_SIG);
     new_signal<signals::color_changed_signal_t>(signals::COLOR_CHANGED_SIG);
     new_signal<signals::double_changed_signal_t>(signals::DOUBLE_CHANGED_SIG);
-    new_signal<signals::Double2ChangedSignalType>(signals::DOUBLE2_CHANGED_SIG);
-    new_signal<signals::Double3ChangedSignalType>(signals::DOUBLE3_CHANGED_SIG);
+    new_signal<signals::double2_changed_signal_t>(signals::DOUBLE2_CHANGED_SIG);
+    new_signal<signals::double3_changed_signal_t>(signals::DOUBLE3_CHANGED_SIG);
     new_signal<signals::integer_changed_signal_t>(signals::INTEGER_CHANGED_SIG);
-    new_signal<signals::Integer2ChangedSignalType>(signals::INTEGER2_CHANGED_SIG);
-    new_signal<signals::Integer3ChangedSignalType>(signals::INTEGER3_CHANGED_SIG);
+    new_signal<signals::integer2_changed_signal_t>(signals::INTEGER2_CHANGED_SIG);
+    new_signal<signals::integer3_changed_signal_t>(signals::INTEGER3_CHANGED_SIG);
     new_signal<signals::enum_changed_signal_t>(signals::ENUM_CHANGED_SIG);
-    new_signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG);
+    new_signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG);
 
-    new_slot(slots::SET_PARAMETER_SLOT, &parameters::setParameter, this);
-    new_slot(slots::SET_BOOL_PARAMETER_SLOT, &parameters::setBoolParameter, this);
-    new_slot(slots::SET_COLOR_PARAMETER_SLOT, &parameters::setColorParameter, this);
-    new_slot(slots::SET_DOUBLE_PARAMETER_SLOT, &parameters::setDoubleParameter, this);
-    new_slot(slots::SET_DOUBLE2_PARAMETER_SLOT, &parameters::setDouble2Parameter, this);
-    new_slot(slots::SET_DOUBLE3_PARAMETER_SLOT, &parameters::setDouble3Parameter, this);
-    new_slot(slots::SET_INT_PARAMETER_SLOT, &parameters::setIntParameter, this);
-    new_slot(slots::SET_INT2_PARAMETER_SLOT, &parameters::setInt2Parameter, this);
-    new_slot(slots::SET_INT3_PARAMETER_SLOT, &parameters::setInt3Parameter, this);
-    new_slot(slots::SET_ENUM_PARAMETER_SLOT, &parameters::setEnumParameter, this);
-    new_slot(slots::SET_ENUM_INDEX_PARAMETER_SLOT, &parameters::setEnumIndexParameter, this);
-    new_slot(slots::UPDATE_ENUM_RANGE_SLOT, &parameters::updateEnumRange, this);
-    new_slot(slots::UPDATE_INT_MIN_PARAMETER_SLOT, &parameters::updateIntMinParameter, this);
-    new_slot(slots::UPDATE_INT_MAX_PARAMETER_SLOT, &parameters::updateIntMaxParameter, this);
-    new_slot(slots::UPDATE_DOUBLE_MIN_PARAMETER_SLOT, &parameters::updateDoubleMinParameter, this);
-    new_slot(slots::UPDATE_DOUBLE_MAX_PARAMETER_SLOT, &parameters::updateDoubleMaxParameter, this);
+    new_slot(slots::SET_PARAMETER_SLOT, &parameters::set_parameter, this);
+    new_slot(slots::SET_BOOL_PARAMETER_SLOT, &parameters::set_bool_parameter, this);
+    new_slot(slots::SET_COLOR_PARAMETER_SLOT, &parameters::set_color_parameter, this);
+    new_slot(slots::SET_DOUBLE_PARAMETER_SLOT, &parameters::set_double_parameter, this);
+    new_slot(slots::SET_DOUBLE2_PARAMETER_SLOT, &parameters::set_double2_parameter, this);
+    new_slot(slots::SET_DOUBLE3_PARAMETER_SLOT, &parameters::set_double3_parameter, this);
+    new_slot(slots::SET_INT_PARAMETER_SLOT, &parameters::set_int_parameter, this);
+    new_slot(slots::SET_INT2_PARAMETER_SLOT, &parameters::set_int2_parameter, this);
+    new_slot(slots::SET_INT3_PARAMETER_SLOT, &parameters::set_int3_parameter, this);
+    new_slot(slots::SET_ENUM_PARAMETER_SLOT, &parameters::set_enum_parameter, this);
+    new_slot(slots::SET_ENUM_INDEX_PARAMETER_SLOT, &parameters::set_enum_index_parameter, this);
+    new_slot(slots::UPDATE_ENUM_RANGE_SLOT, &parameters::update_enum_range, this);
+    new_slot(slots::UPDATE_INT_MIN_PARAMETER_SLOT, &parameters::update_int_min_parameter, this);
+    new_slot(slots::UPDATE_INT_MAX_PARAMETER_SLOT, &parameters::update_int_max_parameter, this);
+    new_slot(slots::UPDATE_DOUBLE_MIN_PARAMETER_SLOT, &parameters::update_double_min_parameter, this);
+    new_slot(slots::UPDATE_DOUBLE_MAX_PARAMETER_SLOT, &parameters::update_double_max_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -185,8 +185,8 @@ void parameters::starting()
 
     const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    qt_container->getQtContainer()->setObjectName(QString::fromStdString(service_id));
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    qt_container->get_qt_container()->setObjectName(QString::fromStdString(service_id));
 
     auto* layout             = new QGridLayout();
     QScrollArea* scroll_area = nullptr;
@@ -197,10 +197,10 @@ void parameters::starting()
     const bool scrollable                   = parameters_cfg.get<bool>("<xmlattr>.scrollable", false);
     if(scrollable)
     {
-        scroll_area = new QScrollArea(qt_container->getQtContainer()->parentWidget());
+        scroll_area = new QScrollArea(qt_container->get_qt_container()->parentWidget());
         scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        viewport = new QWidget(qt_container->getQtContainer());
+        viewport = new QWidget(qt_container->get_qt_container());
     }
 
     int row = 0;
@@ -235,11 +235,11 @@ void parameters::starting()
 
         if(type == "bool")
         {
-            this->createBoolWidget(*layout, row, key, default_value, reset_button);
+            this->create_bool_widget(*layout, row, key, default_value, reset_button);
         }
         else if(type == "color")
         {
-            this->createColorWidget(*layout, row, key, default_value, reset_button);
+            this->create_color_widget(*layout, row, key, default_value, reset_button);
         }
         else if(type == "double" || type == "double2" || type == "double3")
         {
@@ -253,7 +253,7 @@ void parameters::starting()
 
             if(widget == "spin")
             {
-                this->createDoubleWidget(*layout, row, key, default_value_double, min, max, count, reset_button);
+                this->create_double_widget(*layout, row, key, default_value_double, min, max, count, reset_button);
             }
             else if(widget == "slider")
             {
@@ -262,7 +262,7 @@ void parameters::starting()
 
                 const std::uint8_t decimals = cfg.get<std::uint8_t>("<xmlattr>.decimals", 2);
                 const bool on_release       = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
-                this->createDoubleSliderWidget(
+                this->create_double_slider_widget(
                     *layout,
                     row,
                     key,
@@ -296,7 +296,16 @@ void parameters::starting()
 
             if(widget == "spin")
             {
-                this->createIntegerSpinWidget(*layout, row, key, default_value_double, min, max, count, reset_button);
+                this->create_integer_spin_widget(
+                    *layout,
+                    row,
+                    key,
+                    default_value_double,
+                    min,
+                    max,
+                    count,
+                    reset_button
+                );
             }
             else if(widget == "slider")
             {
@@ -304,7 +313,7 @@ void parameters::starting()
                 SIGHT_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
                 const bool on_release = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
-                this->createIntegerSliderWidget(
+                this->create_integer_slider_widget(
                     *layout,
                     row,
                     key,
@@ -336,8 +345,8 @@ void parameters::starting()
                 std::vector<std::string> values;
                 std::vector<std::string> data;
 
-                sight::module::ui::qt::parameters::parseEnumString(options, values, data);
-                this->createEnumWidget(*layout, row, key, default_value, values, data);
+                sight::module::ui::qt::parameters::parse_enum_string(options, values, data);
+                this->create_enum_widget(*layout, row, key, default_value, values, data);
             }
             else if(widget == "slider")
             {
@@ -346,9 +355,9 @@ void parameters::starting()
                 std::vector<std::string> values;
                 std::vector<std::string> data;
 
-                sight::module::ui::qt::parameters::parseEnumString(options, values, data);
+                sight::module::ui::qt::parameters::parse_enum_string(options, values, data);
                 const bool on_release = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
-                this->createSliderEnumWidget(
+                this->create_slider_enum_widget(
                     *layout,
                     row,
                     key,
@@ -367,7 +376,7 @@ void parameters::starting()
                 const std::string style = cfg.get<std::string>("<xmlattr>.style", "iconOnly");
 
                 const auto value_config = cfg.equal_range("item");
-                std::vector<enumButtonParam> button_list;
+                std::vector<enum_button_param> button_list;
                 for(auto value_config_it = value_config.first ;
                     value_config_it != value_config.second ;
                     ++value_config_it)
@@ -390,7 +399,7 @@ void parameters::starting()
                         core::runtime::get_module_resource_file_path(icon_path_relative).generic_string();
 
                     button_list.push_back(
-                        enumButtonParam(
+                        enum_button_param(
                         {
                             value,
                             label,
@@ -399,7 +408,7 @@ void parameters::starting()
                     );
                 }
 
-                this->createButtonBarEnumWidget(
+                this->create_button_bar_enum_widget(
                     *layout,
                     row,
                     key,
@@ -446,9 +455,9 @@ void parameters::starting()
                         this,
                         [ = ]
                         {
-                            onDependsChanged(check_box, widget, dependsreverse);
+                            on_depends_changed(check_box, widget, dependsreverse);
                         });
-                    onDependsChanged(check_box, widget, dependsreverse);
+                    on_depends_changed(check_box, widget, dependsreverse);
                 }
                 else
                 {
@@ -463,9 +472,9 @@ void parameters::starting()
                             this,
                             [ = ]
                             {
-                                onDependsChanged(combo_box, widget, depends_value, dependsreverse);
+                                on_depends_changed(combo_box, widget, depends_value, dependsreverse);
                             });
-                        onDependsChanged(combo_box, widget, depends_value, dependsreverse);
+                        on_depends_changed(combo_box, widget, depends_value, dependsreverse);
                     }
                 }
             }
@@ -478,7 +487,7 @@ void parameters::starting()
         scroll_area->setWidgetResizable(true);
         scroll_area->setWidget(viewport);
         auto* main_layout = new QGridLayout();
-        qt_container->setLayout(main_layout);
+        qt_container->set_layout(main_layout);
         main_layout->addWidget(scroll_area);
 
         // The size of the vertical scroll bar isn't taken into account when the QGridLayout fill the space, as such
@@ -490,7 +499,7 @@ void parameters::starting()
     }
     else
     {
-        qt_container->setLayout(layout);
+        qt_container->set_layout(layout);
     }
 
     this->blockSignals(false);
@@ -500,8 +509,8 @@ void parameters::starting()
 
 void parameters::updating()
 {
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    QWidget* widget   = qt_container->getQtContainer();
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    QWidget* widget   = qt_container->get_qt_container();
 
     service::config_t config                = this->get_config();
     const service::config_t& parameters_cfg = config.get_child("parameters");
@@ -525,7 +534,7 @@ void parameters::updating()
 
                 const bool state = (box->checkState() == Qt::Checked);
 
-                if(!m_blockSignals)
+                if(!m_block_signals)
                 {
                     this->signal<signals::boolean_changed_signal_t>(signals::BOOLEAN_CHANGED_SIG)->async_emit(
                         state,
@@ -541,15 +550,15 @@ void parameters::updating()
             else if(type == "color")
             {
                 const auto color_qt = child->property("color").value<QColor>();
-                this->emitColorSignal(color_qt, key);
+                this->emit_color_signal(color_qt, key);
             }
             else if(type == "double" || type == "double2" || type == "double3")
             {
-                this->emitDoubleSignal(child);
+                this->emit_double_signal(child);
             }
             else if(type == "int" || type == "int2" || type == "int3")
             {
-                this->emitIntegerSignal(child);
+                this->emit_integer_signal(child);
             }
             else if(type == "enum")
             {
@@ -557,7 +566,7 @@ void parameters::updating()
                 {
                     const QString data = box->itemData(box->currentIndex()).toString();
 
-                    if(!m_blockSignals)
+                    if(!m_block_signals)
                     {
                         this->signal<signals::enum_changed_signal_t>(signals::ENUM_CHANGED_SIG)->async_emit(
                             data.toStdString(),
@@ -570,7 +579,7 @@ void parameters::updating()
                         SIGHT_DEBUG(
                             "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")"
                         );
-                        this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)->async_emit(
+                        this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)->async_emit(
                             box->currentIndex(),
                             key
                         );
@@ -587,7 +596,7 @@ void parameters::updating()
                 else if(auto* slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(child);
                         slider != nullptr)
                 {
-                    if(!m_blockSignals)
+                    if(!m_block_signals)
                     {
                         int value = slider->value();
                         this->signal<signals::integer_changed_signal_t>(signals::INTEGER_CHANGED_SIG)->async_emit(
@@ -612,7 +621,7 @@ void parameters::updating()
                             key
                         );
                         SIGHT_DEBUG("[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << value << ", " << key << ")");
-                        this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)->async_emit(
+                        this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)->async_emit(
                             int(slider->index()),
                             key
                         );
@@ -636,7 +645,7 @@ void parameters::updating()
                         SIGHT_DEBUG(
                             "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << value << ", " << key << ")"
                         );
-                        this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)
+                        this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)
                         ->async_emit(button_index, key);
                     }
                 }
@@ -682,7 +691,7 @@ bool parameters::eventFilter(QObject* _watched, QEvent* _event)
 
 //-----------------------------------------------------------------------------
 
-void parameters::onDependsChanged(QCheckBox* _check_box, QWidget* _widget, bool _reverse)
+void parameters::on_depends_changed(QCheckBox* _check_box, QWidget* _widget, bool _reverse)
 {
     if(!_check_box->isEnabled())
     {
@@ -700,7 +709,7 @@ void parameters::onDependsChanged(QCheckBox* _check_box, QWidget* _widget, bool 
 
 //------------------------------------------------------------------------------
 
-void parameters::onDependsChanged(QComboBox* _combo_box, QWidget* _widget, const std::string& _value, bool _reverse)
+void parameters::on_depends_changed(QComboBox* _combo_box, QWidget* _widget, const std::string& _value, bool _reverse)
 {
     if(!_combo_box->isEnabled())
     {
@@ -718,7 +727,7 @@ void parameters::onDependsChanged(QComboBox* _combo_box, QWidget* _widget, const
 
 //-----------------------------------------------------------------------------
 
-void parameters::onChangeEnum(int _value)
+void parameters::on_change_enum(int _value)
 {
     const QObject* sender = this->sender();
     const QString key     = sender->property("key").toString();
@@ -729,7 +738,7 @@ void parameters::onChangeEnum(int _value)
 
     const QString data = box->itemData(_value).toString();
 
-    if(!m_blockSignals)
+    if(!m_block_signals)
     {
         this->signal<signals::enum_changed_signal_t>(signals::ENUM_CHANGED_SIG)->async_emit(
             data.toStdString(),
@@ -743,7 +752,7 @@ void parameters::onChangeEnum(int _value)
             "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString()
             << ")"
         );
-        this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)->async_emit(
+        this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)->async_emit(
             _value,
             key.toStdString()
         );
@@ -757,13 +766,13 @@ void parameters::onChangeEnum(int _value)
 
 //-----------------------------------------------------------------------------
 
-void parameters::onChangeBoolean(int _value)
+void parameters::on_change_boolean(int _value)
 {
     const QObject* sender = this->sender();
     const QString key     = sender->property("key").toString();
     const bool checked    = _value == Qt::Checked;
 
-    if(!m_blockSignals)
+    if(!m_block_signals)
     {
         this->signal<signals::boolean_changed_signal_t>(signals::BOOLEAN_CHANGED_SIG)->async_emit(
             checked,
@@ -782,13 +791,13 @@ void parameters::onChangeBoolean(int _value)
 
 //------------------------------------------------------------------------------
 
-void parameters::onColorButton()
+void parameters::on_color_button()
 {
     QObject* sender = this->sender();
 
     // Create Color choice dialog.
-    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    QWidget* const container = qt_container->getQtContainer();
+    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    QWidget* const container = qt_container->get_qt_container();
     SIGHT_ASSERT("container not instanced", container);
 
     const auto old_color  = sender->property("color").value<QColor>();
@@ -806,23 +815,23 @@ void parameters::onColorButton()
 
         colour_button->setIcon(QIcon(pix));
 
-        this->emitColorSignal(color_qt, key.toStdString());
+        this->emit_color_signal(color_qt, key.toStdString());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::onChangeInteger(int /*unused*/)
+void parameters::on_change_integer(int /*unused*/)
 {
     QObject* sender = this->sender();
-    this->emitIntegerSignal(sender);
+    this->emit_integer_signal(sender);
 }
 
 //------------------------------------------------------------------------------
 
-void parameters::emitIntegerSignal(QObject* _widget)
+void parameters::emit_integer_signal(QObject* _widget)
 {
-    if(!m_blockSignals)
+    if(!m_block_signals)
     {
         SIGHT_ASSERT("widget is null", _widget != nullptr);
 
@@ -881,7 +890,7 @@ void parameters::emitIntegerSignal(QObject* _widget)
 
             if(count == 2)
             {
-                this->signal<signals::Integer2ChangedSignalType>(signals::INTEGER2_CHANGED_SIG)->async_emit(
+                this->signal<signals::integer2_changed_signal_t>(signals::INTEGER2_CHANGED_SIG)->async_emit(
                     value1,
                     value2,
                     key.toStdString()
@@ -910,7 +919,7 @@ void parameters::emitIntegerSignal(QObject* _widget)
                     value3 = spin3->value();
                 }
 
-                this->signal<signals::Integer3ChangedSignalType>(signals::INTEGER3_CHANGED_SIG)->async_emit(
+                this->signal<signals::integer3_changed_signal_t>(signals::INTEGER3_CHANGED_SIG)->async_emit(
                     value1,
                     value2,
                     value3,
@@ -932,17 +941,17 @@ void parameters::emitIntegerSignal(QObject* _widget)
 
 //-----------------------------------------------------------------------------
 
-void parameters::onChangeDouble(double /*unused*/)
+void parameters::on_change_double(double /*unused*/)
 {
     QObject* sender = this->sender();
-    this->emitDoubleSignal(sender);
+    this->emit_double_signal(sender);
 }
 
 //------------------------------------------------------------------------------
 
-void parameters::emitDoubleSignal(QObject* _widget)
+void parameters::emit_double_signal(QObject* _widget)
 {
-    if(!m_blockSignals)
+    if(!m_block_signals)
     {
         const QString key = _widget->property("key").toString();
         const int count   = _widget->property("count").toInt();
@@ -952,7 +961,7 @@ void parameters::emitDoubleSignal(QObject* _widget)
 
         if(slider != nullptr)
         {
-            const double value = sight::module::ui::qt::parameters::getDoubleSliderValue(slider);
+            const double value = sight::module::ui::qt::parameters::get_double_slider_value(slider);
             this->signal<signals::double_changed_signal_t>(signals::DOUBLE_CHANGED_SIG)->async_emit(
                 value,
                 key.toStdString()
@@ -992,7 +1001,7 @@ void parameters::emitDoubleSignal(QObject* _widget)
 
                 if(count == 2)
                 {
-                    this->signal<signals::Double2ChangedSignalType>(signals::DOUBLE2_CHANGED_SIG)->async_emit(
+                    this->signal<signals::double2_changed_signal_t>(signals::DOUBLE2_CHANGED_SIG)->async_emit(
                         value1,
                         value2,
                         key.toStdString()
@@ -1012,7 +1021,7 @@ void parameters::emitDoubleSignal(QObject* _widget)
                     const QDoubleSpinBox* spin3 = spinbox->property("widget#2").value<QDoubleSpinBox*>();
                     const double value3         = spin3->value();
 
-                    this->signal<signals::Double3ChangedSignalType>(signals::DOUBLE3_CHANGED_SIG)->async_emit(
+                    this->signal<signals::double3_changed_signal_t>(signals::DOUBLE3_CHANGED_SIG)->async_emit(
                         value1,
                         value2,
                         value3,
@@ -1035,22 +1044,22 @@ void parameters::emitDoubleSignal(QObject* _widget)
 
 //-----------------------------------------------------------------------------
 
-void parameters::onChangeDoubleSlider(int /*unused*/)
+void parameters::on_change_double_slider(int /*unused*/)
 {
     auto* sender = qobject_cast<QSlider*>(this->sender());
-    this->emitDoubleSignal(sender);
+    this->emit_double_signal(sender);
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::onSliderMapped(QLabel* _label, QSlider* _slider)
+void parameters::on_slider_mapped(QLabel* _label, QSlider* _slider)
 {
     _label->setText(QString::number(_slider->value()));
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::onSliderRangeMapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider)
+void parameters::on_slider_range_mapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider)
 {
     const int min = _slider->minimum();
     const int max = _slider->maximum();
@@ -1061,9 +1070,9 @@ void parameters::onSliderRangeMapped(QLabel* _min_label, QLabel* _max_label, QSl
 
 //-----------------------------------------------------------------------------
 
-void parameters::onDoubleSliderMapped(QLabel* _label, QSlider* _slider)
+void parameters::on_double_slider_mapped(QLabel* _label, QSlider* _slider)
 {
-    const double new_value = getDoubleSliderValue(_slider);
+    const double new_value = get_double_slider_value(_slider);
     const int decimals     = _slider->property("decimals").toInt();
 
     _label->setText(QString::number(new_value, 'f', decimals));
@@ -1071,7 +1080,7 @@ void parameters::onDoubleSliderMapped(QLabel* _label, QSlider* _slider)
 
 //-----------------------------------------------------------------------------
 
-void parameters::onDoubleSliderRangeMapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider)
+void parameters::on_double_slider_range_mapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider)
 {
     const double min   = _slider->property("min").toDouble();
     const double max   = _slider->property("max").toDouble();
@@ -1083,7 +1092,7 @@ void parameters::onDoubleSliderRangeMapped(QLabel* _min_label, QLabel* _max_labe
 
 //-----------------------------------------------------------------------------
 
-void parameters::onResetBooleanMapped(QWidget* _widget)
+void parameters::on_reset_boolean_mapped(QWidget* _widget)
 {
     auto* checkbox = qobject_cast<QCheckBox*>(_widget);
     if(checkbox != nullptr)
@@ -1092,7 +1101,7 @@ void parameters::onResetBooleanMapped(QWidget* _widget)
         checkbox->setCheckState(Qt::CheckState(value));
 
         const QString key = checkbox->property("key").toString();
-        if(!m_blockSignals)
+        if(!m_block_signals)
         {
             this->signal<signals::boolean_changed_signal_t>(signals::BOOLEAN_CHANGED_SIG)->async_emit(
                 value != 0,
@@ -1112,7 +1121,7 @@ void parameters::onResetBooleanMapped(QWidget* _widget)
 
 //-----------------------------------------------------------------------------
 
-void parameters::onResetColorMapped(QWidget* _widget)
+void parameters::on_reset_color_mapped(QWidget* _widget)
 {
     auto* colour_button = qobject_cast<QPushButton*>(_widget);
     if(colour_button != nullptr)
@@ -1133,7 +1142,7 @@ void parameters::onResetColorMapped(QWidget* _widget)
             static_cast<std::uint8_t>(color.alpha())
         }
         };
-        if(!m_blockSignals)
+        if(!m_block_signals)
         {
             this->signal<signals::color_changed_signal_t>(signals::COLOR_CHANGED_SIG)->async_emit(
                 new_color,
@@ -1154,7 +1163,7 @@ void parameters::onResetColorMapped(QWidget* _widget)
 
 //-----------------------------------------------------------------------------
 
-void parameters::onResetIntegerMapped(QWidget* _widget)
+void parameters::on_reset_integer_mapped(QWidget* _widget)
 {
     auto* slider  = dynamic_cast<QSlider*>(_widget);
     auto* spinbox = dynamic_cast<QSpinBox*>(_widget);
@@ -1188,12 +1197,12 @@ void parameters::onResetIntegerMapped(QWidget* _widget)
     }
 
     this->blockSignals(false);
-    this->emitIntegerSignal(_widget);
+    this->emit_integer_signal(_widget);
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::onResetDoubleMapped(QWidget* _widget)
+void parameters::on_reset_double_mapped(QWidget* _widget)
 {
     auto* spinbox = qobject_cast<QDoubleSpinBox*>(_widget);
     auto* slider  = qobject_cast<QSlider*>(_widget);
@@ -1232,12 +1241,12 @@ void parameters::onResetDoubleMapped(QWidget* _widget)
     }
 
     this->blockSignals(false);
-    this->emitDoubleSignal(_widget);
+    this->emit_double_signal(_widget);
 }
 
 //-----------------------------------------------------------------------------
 
-QPushButton* parameters::createResetButton(const std::string& _key)
+QPushButton* parameters::create_reset_button(const std::string& _key)
 {
     std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
     auto* reset_button     = new QPushButton("R");
@@ -1251,7 +1260,7 @@ QPushButton* parameters::createResetButton(const std::string& _key)
 
 //-----------------------------------------------------------------------------
 
-void parameters::createBoolWidget(
+void parameters::create_bool_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1271,23 +1280,27 @@ void parameters::createBoolWidget(
     checkbox->setProperty("key", QString(_key.c_str()));
     checkbox->setProperty("defaultValue", checkbox->checkState());
     _layout.addWidget(checkbox, _row, 1);
-    QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(onChangeBoolean(int)));
+    QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(on_change_boolean(int)));
 
     // Reset button
     if(_add_reset_button)
     {
-        QPushButton* reset_button = this->createResetButton(_key);
+        QPushButton* reset_button = this->create_reset_button(_key);
 
         _layout.addWidget(reset_button, _row, 2);
 
         // Connect reset button to the slider
-        QObject::connect(reset_button, &QPushButton::clicked, this, [this, checkbox]{onResetBooleanMapped(checkbox);});
+        QObject::connect(
+            reset_button,
+            &QPushButton::clicked,
+            this,
+            [this, checkbox]{on_reset_boolean_mapped(checkbox);});
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::createColorWidget(
+void parameters::create_color_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1305,13 +1318,13 @@ void parameters::createColorWidget(
     {
         std::array<std::uint8_t, 4> color {};
 
-        data::tools::color::hexaStringToRGBA(_default_value, color);
+        data::tools::color::hexa_string_to_rgba(_default_value, color);
 
         color_str = _default_value;
     }
 
     std::array<std::uint8_t, 4> color {};
-    data::tools::color::hexaStringToRGBA(color_str, color);
+    data::tools::color::hexa_string_to_rgba(color_str, color);
 
     const int icon_size = colour_button->style()->pixelMetric(QStyle::PM_LargeIconSize);
     QPixmap pix(icon_size, icon_size);
@@ -1327,12 +1340,12 @@ void parameters::createColorWidget(
 
     _layout.addWidget(colour_button, _row, 1);
 
-    QObject::connect(colour_button, &QPushButton::clicked, this, &parameters::onColorButton);
+    QObject::connect(colour_button, &QPushButton::clicked, this, &parameters::on_color_button);
 
     // Reset button
     if(_add_reset_button)
     {
-        QPushButton* reset_button = this->createResetButton(_key);
+        QPushButton* reset_button = this->create_reset_button(_key);
 
         _layout.addWidget(reset_button, _row, 2);
 
@@ -1343,14 +1356,14 @@ void parameters::createColorWidget(
             this,
             [this, colour_button]
             {
-                onResetColorMapped(colour_button);
+                on_reset_color_mapped(colour_button);
             });
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::createDoubleWidget(
+void parameters::create_double_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1398,7 +1411,7 @@ void parameters::createDoubleWidget(
 
         sub_layout->addWidget(spinbox, 0, int(i));
 
-        QObject::connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onChangeDouble(double)));
+        QObject::connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(on_change_double(double)));
     }
 
     QDoubleSpinBox* spinbox = spinboxes[0];
@@ -1417,18 +1430,18 @@ void parameters::createDoubleWidget(
     // Reset button
     if(_add_reset_button)
     {
-        QPushButton* reset_button = this->createResetButton(_key);
+        QPushButton* reset_button = this->create_reset_button(_key);
 
         _layout.addWidget(reset_button, _row, 2);
 
         // Connect reset button to the spinbox
-        QObject::connect(reset_button, &QPushButton::clicked, this, [this, spinbox]{onResetDoubleMapped(spinbox);});
+        QObject::connect(reset_button, &QPushButton::clicked, this, [this, spinbox]{on_reset_double_mapped(spinbox);});
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::createDoubleSliderWidget(
+void parameters::create_double_slider_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1469,7 +1482,7 @@ void parameters::createDoubleSliderWidget(
     // tracking true: emit signal when value change, false: emit signal when slider released.
     slider->setTracking(!_on_release);
 
-    setDoubleSliderRange(slider, _default_value);
+    set_double_slider_range(slider, _default_value);
 
     const int default_slider_value =
         int(std::round(((_default_value - _min) / value_range) * double(slider->maximum())));
@@ -1495,7 +1508,7 @@ void parameters::createDoubleSliderWidget(
     value_label->setStyleSheet("QLabel { font: bold; }");
     value_label->setText(QString::number(_default_value, 'f', _decimals));
     value_label->setToolTip("Current value.");
-    sight::module::ui::qt::parameters::setLabelMinimumSize(value_label, _min, _max, _decimals);
+    sight::module::ui::qt::parameters::set_label_minimum_size(value_label, _min, _max, _decimals);
     value_label->setObjectName(QString::fromStdString(_key + "/valueLabel"));
 
     if(_orientation)
@@ -1518,7 +1531,7 @@ void parameters::createDoubleSliderWidget(
     }
 
     // Connect slider value with our editor
-    QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeDoubleSlider(int)));
+    QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_change_double_slider(int)));
 
     // Connect slider value to the label
     QObject::connect(
@@ -1527,7 +1540,7 @@ void parameters::createDoubleSliderWidget(
         this,
         [this, value_label, slider]
         {
-            this->onDoubleSliderMapped(value_label, slider);
+            this->on_double_slider_mapped(value_label, slider);
         });
     QObject::connect(
         slider,
@@ -1535,7 +1548,7 @@ void parameters::createDoubleSliderWidget(
         this,
         [ = ]
         {
-            onDoubleSliderRangeMapped(
+            on_double_slider_range_mapped(
                 min_value_label,
                 max_value_label,
                 slider
@@ -1548,7 +1561,7 @@ void parameters::createDoubleSliderWidget(
     // Reset button
     if(_add_reset_button)
     {
-        QPushButton* reset_button = this->createResetButton(_key);
+        QPushButton* reset_button = this->create_reset_button(_key);
 
         if(_orientation)
         {
@@ -1560,7 +1573,7 @@ void parameters::createDoubleSliderWidget(
         }
 
         // Connect reset button to the slider
-        QObject::connect(reset_button, &QPushButton::clicked, this, [this, slider]{onResetDoubleMapped(slider);});
+        QObject::connect(reset_button, &QPushButton::clicked, this, [this, slider]{on_reset_double_mapped(slider);});
     }
 
     if(_hide_min_max)
@@ -1572,7 +1585,7 @@ void parameters::createDoubleSliderWidget(
 
 //-----------------------------------------------------------------------------
 
-void parameters::createIntegerSliderWidget(
+void parameters::create_integer_slider_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1626,7 +1639,7 @@ void parameters::createIntegerSliderWidget(
     value_label->setStyleSheet("QLabel { font: bold; }");
     value_label->setText(QString("%1").arg(slider->value()));
     value_label->setToolTip("Current value.");
-    sight::module::ui::qt::parameters::setLabelMinimumSize(value_label, _min, _max);
+    sight::module::ui::qt::parameters::set_label_minimum_size(value_label, _min, _max);
     value_label->setObjectName(QString::fromStdString(_key + "/valueLabel"));
 
     if(_orientation)
@@ -1653,7 +1666,7 @@ void parameters::createIntegerSliderWidget(
     slider->setProperty("defaultValue", slider->value());
 
     // Connect slider value with our editor
-    QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeInteger(int)));
+    QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_change_integer(int)));
 
     // Connect slider value to the label
     QObject::connect(
@@ -1662,7 +1675,7 @@ void parameters::createIntegerSliderWidget(
         this,
         [this, value_label, slider]
         {
-            this->onSliderMapped(value_label, slider);
+            this->on_slider_mapped(value_label, slider);
         });
     QObject::connect(
         slider,
@@ -1670,7 +1683,7 @@ void parameters::createIntegerSliderWidget(
         this,
         [ = ]
         {
-            onSliderRangeMapped(
+            on_slider_range_mapped(
                 min_value_label,
                 max_value_label,
                 slider
@@ -1683,7 +1696,7 @@ void parameters::createIntegerSliderWidget(
     // Reset button
     if(_add_reset_button)
     {
-        QPushButton* reset_button = this->createResetButton(_key);
+        QPushButton* reset_button = this->create_reset_button(_key);
 
         if(_orientation)
         {
@@ -1695,7 +1708,7 @@ void parameters::createIntegerSliderWidget(
         }
 
         // Connect reset button to the slider
-        QObject::connect(reset_button, &QPushButton::clicked, this, [this, slider]{onResetIntegerMapped(slider);});
+        QObject::connect(reset_button, &QPushButton::clicked, this, [this, slider]{on_reset_integer_mapped(slider);});
     }
 
     if(_hide_min_max)
@@ -1707,7 +1720,7 @@ void parameters::createIntegerSliderWidget(
 
 //-----------------------------------------------------------------------------
 
-void parameters::createIntegerSpinWidget(
+void parameters::create_integer_spin_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1741,7 +1754,7 @@ void parameters::createIntegerSpinWidget(
         sub_layout->addWidget(spinbox, 0, int(i));
 
         // Connect spinbox value with our editor
-        QObject::connect(spinbox, SIGNAL(valueChanged(int)), this, SLOT(onChangeInteger(int)));
+        QObject::connect(spinbox, SIGNAL(valueChanged(int)), this, SLOT(on_change_integer(int)));
     }
 
     QSpinBox* spinbox = spinboxes[0];
@@ -1760,18 +1773,18 @@ void parameters::createIntegerSpinWidget(
     // Reset button
     if(_add_reset_button)
     {
-        QPushButton* reset_button = this->createResetButton(_key);
+        QPushButton* reset_button = this->create_reset_button(_key);
 
         _layout.addWidget(reset_button, _row, 2);
 
         // Connect reset button to the spinbox
-        QObject::connect(reset_button, &QPushButton::clicked, this, [this, spinbox]{onResetIntegerMapped(spinbox);});
+        QObject::connect(reset_button, &QPushButton::clicked, this, [this, spinbox]{on_reset_integer_mapped(spinbox);});
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void parameters::updateEnumList(const std::vector<std::string>& _list, const std::string _key)
+void parameters::update_enum_list(const std::vector<std::string>& _list, const std::string _key)
 {
     std::vector<std::string> labels;
     std::vector<std::string> keys;
@@ -1791,7 +1804,7 @@ void parameters::updateEnumList(const std::vector<std::string>& _list, const std
 
     this->blockSignals(true);
 
-    QObject* widget = this->getParamWidget(_key);
+    QObject* widget = this->get_param_widget(_key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -1819,8 +1832,8 @@ void parameters::updateEnumList(const std::vector<std::string>& _list, const std
     {
         std::vector<int> values;
         std::ranges::transform(labels, std::back_inserter(values), [](const std::string& _s){return std::stoi(_s);});
-        non_linear_slider->setValues(values);
-        non_linear_slider->setValue(values[0]);
+        non_linear_slider->set_values(values);
+        non_linear_slider->set_value(values[0]);
     }
 
     this->blockSignals(false);
@@ -1828,7 +1841,7 @@ void parameters::updateEnumList(const std::vector<std::string>& _list, const std
 
 //-----------------------------------------------------------------------------
 
-void parameters::parseEnumString(
+void parameters::parse_enum_string(
     const std::string& _options,
     std::vector<std::string>& _labels,
     std::vector<std::string>& _keys,
@@ -1856,7 +1869,7 @@ void parameters::parseEnumString(
 
 //------------------------------------------------------------------------------
 
-void parameters::createEnumWidget(
+void parameters::create_enum_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1886,7 +1899,7 @@ void parameters::createEnumWidget(
 
     _layout.addWidget(menu, _row, 1);
 
-    QObject::connect(menu, SIGNAL(currentIndexChanged(int)), this, SLOT(onChangeEnum(int)));
+    QObject::connect(menu, SIGNAL(currentIndexChanged(int)), this, SLOT(on_change_enum(int)));
 
     //Set the comboBox to the default value
     menu->setCurrentText(QString::fromStdString(_default_value));
@@ -1894,7 +1907,7 @@ void parameters::createEnumWidget(
 
 //------------------------------------------------------------------------------
 
-void parameters::createSliderEnumWidget(
+void parameters::create_slider_enum_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
@@ -1911,21 +1924,21 @@ void parameters::createSliderEnumWidget(
     auto* slider = new sight::ui::qt::widget::non_linear_slider();
     if(_orientation)
     {
-        slider->setOrientation(Qt::Horizontal);
+        slider->set_orientation(Qt::Horizontal);
     }
     else
     {
-        slider->setOrientation(Qt::Vertical);
+        slider->set_orientation(Qt::Vertical);
     }
 
     slider->setObjectName(QString::fromStdString(_key));
     slider->setProperty("key", QString::fromStdString(_key));
     std::vector<int> int_values;
     std::ranges::transform(_values, std::back_inserter(int_values), [](const std::string& _s){return std::stoi(_s);});
-    slider->setValues(int_values);
-    slider->setValue(std::stoi(_default_value));
+    slider->set_values(int_values);
+    slider->set_value(std::stoi(_default_value));
 
-    slider->setTracking(!_on_release);
+    slider->set_tracking(!_on_release);
 
     QFont font;
     font.setPointSize(7);
@@ -1947,7 +1960,7 @@ void parameters::createSliderEnumWidget(
     value_label->setStyleSheet("QLabel { font: bold; }");
     value_label->setText(QString::number(slider->value()));
     value_label->setToolTip("Current value.");
-    setLabelMinimumSize(value_label, int_values.front(), int_values.back());
+    set_label_minimum_size(value_label, int_values.front(), int_values.back());
     value_label->setObjectName(QString::fromStdString(_key + "/valueLabel"));
 
     if(_orientation)
@@ -1971,10 +1984,10 @@ void parameters::createSliderEnumWidget(
 
     QObject::connect(
         slider,
-        &sight::ui::qt::widget::non_linear_slider::valueChanged,
+        &sight::ui::qt::widget::non_linear_slider::value_changed,
         [this, _key, slider, value_label](int _value)
         {
-            if(!m_blockSignals)
+            if(!m_block_signals)
             {
                 this->signal<signals::integer_changed_signal_t>(signals::INTEGER_CHANGED_SIG)->async_emit(_value, _key);
                 this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)->async_emit(_value, _key);
@@ -1984,7 +1997,7 @@ void parameters::createSliderEnumWidget(
                 this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)
                 ->async_emit(std::to_string(_value), _key);
                 SIGHT_DEBUG("[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << _value << ", " << _key << ")");
-                this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)
+                this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)
                 ->async_emit(int(slider->index()), _key);
             }
 
@@ -1992,7 +2005,7 @@ void parameters::createSliderEnumWidget(
         });
     QObject::connect(
         slider,
-        &sight::ui::qt::widget::non_linear_slider::rangeChanged,
+        &sight::ui::qt::widget::non_linear_slider::range_changed,
         [ = ](int _min, int _max)
         {
             min_value_label->setText(QString::number(_min));
@@ -2008,12 +2021,12 @@ void parameters::createSliderEnumWidget(
 
 //-----------------------------------------------------------------------------
 
-void parameters::createButtonBarEnumWidget(
+void parameters::create_button_bar_enum_widget(
     QGridLayout& _layout,
     int _row,
     const std::string& _key,
     const std::string& _default_value,
-    const std::vector<enumButtonParam>& _button_list,
+    const std::vector<enum_button_param>& _button_list,
     const int _requested_width,
     const int _requested_height,
     const int _h_offset,
@@ -2043,7 +2056,7 @@ void parameters::createButtonBarEnumWidget(
         //The name needs to be the ky_value, to find it when the SParam is updated through a slot
         enum_button->setObjectName((QString::fromStdString(_key + "_" + button_param.value)));
 
-        enum_button->setIcon(QIcon(QString::fromStdString(button_param.iconPath)));
+        enum_button->setIcon(QIcon(QString::fromStdString(button_param.icon_path)));
         enum_button->setToolTip(QString::fromStdString(button_param.label));
         enum_button->setMinimumSize(120, 24);
         enum_button->setCheckable(true);
@@ -2106,7 +2119,7 @@ void parameters::createButtonBarEnumWidget(
             &QToolButton::clicked,
             [this, button_param, _key, button_index]
             {
-                if(!m_blockSignals)
+                if(!m_block_signals)
                 {
                     this->signal<signals::enum_changed_signal_t>(signals::ENUM_CHANGED_SIG)
                     ->async_emit(button_param.value, _key);
@@ -2115,7 +2128,7 @@ void parameters::createButtonBarEnumWidget(
                     SIGHT_DEBUG(
                         "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << button_param.value << ", " << _key << ")"
                     );
-                    this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)
+                    this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)
                     ->async_emit(button_index, _key);
                 }
             });
@@ -2143,7 +2156,7 @@ void parameters::createButtonBarEnumWidget(
 
 //-----------------------------------------------------------------------------
 
-double parameters::getDoubleSliderValue(const QSlider* _slider)
+double parameters::get_double_slider_value(const QSlider* _slider)
 {
     const double min = _slider->property("min").toDouble();
     const double max = _slider->property("max").toDouble();
@@ -2160,51 +2173,51 @@ double parameters::getDoubleSliderValue(const QSlider* _slider)
 
 //------------------------------------------------------------------------------
 
-void parameters::setParameter(sight::ui::parameter_t _val, std::string _key)
+void parameters::set_parameter(sight::ui::parameter_t _val, std::string _key)
 {
     this->blockSignals(true);
 
     if(std::holds_alternative<bool>(_val))
     {
-        this->setBoolParameter(std::get<bool>(_val), _key);
+        this->set_bool_parameter(std::get<bool>(_val), _key);
     }
     else if(std::holds_alternative<sight::ui::color_t>(_val))
     {
-        this->setColorParameter(std::get<sight::ui::color_t>(_val), _key);
+        this->set_color_parameter(std::get<sight::ui::color_t>(_val), _key);
     }
     else if(std::holds_alternative<double>(_val))
     {
-        this->setDoubleParameter(std::get<double>(_val), _key);
+        this->set_double_parameter(std::get<double>(_val), _key);
     }
     else if(std::holds_alternative<sight::ui::double2_t>(_val))
     {
         const auto values = std::get<sight::ui::double2_t>(_val);
-        this->setDouble2Parameter(values[0], values[1], _key);
+        this->set_double2_parameter(values[0], values[1], _key);
     }
     else if(std::holds_alternative<sight::ui::double3_t>(_val))
     {
         const auto values = std::get<sight::ui::double3_t>(_val);
-        this->setDouble3Parameter(values[0], values[1], values[2], _key);
+        this->set_double3_parameter(values[0], values[1], values[2], _key);
     }
     else if(std::holds_alternative<sight::ui::int2_t>(_val))
     {
         const auto values = std::get<sight::ui::int2_t>(_val);
-        this->setInt2Parameter(values[0], values[1], _key);
+        this->set_int2_parameter(values[0], values[1], _key);
     }
     else if(std::holds_alternative<sight::ui::int3_t>(_val))
     {
         const auto values = std::get<sight::ui::int3_t>(_val);
-        this->setInt3Parameter(values[0], values[1], values[2], _key);
+        this->set_int3_parameter(values[0], values[1], values[2], _key);
     }
     else if(std::holds_alternative<std::string>(_val))
     {
-        this->setEnumParameter(std::get<std::string>(_val), _key);
+        this->set_enum_parameter(std::get<std::string>(_val), _key);
     }
     else if(std::holds_alternative<int>(_val))
     {
         // This can be either an int or a enum index
         // Solve the ambiguity by testing the widget type
-        QObject* child = this->getParamWidget(_key);
+        QObject* child = this->get_param_widget(_key);
 
         auto* spinbox           = qobject_cast<QSpinBox*>(child);
         auto* slider            = qobject_cast<QSlider*>(child);
@@ -2212,16 +2225,16 @@ void parameters::setParameter(sight::ui::parameter_t _val, std::string _key)
 
         if(spinbox != nullptr || slider != nullptr || non_linear_slider != nullptr)
         {
-            this->setIntParameter(std::get<int>(_val), _key);
+            this->set_int_parameter(std::get<int>(_val), _key);
         }
         else
         {
-            this->setEnumIndexParameter(std::get<int>(_val), _key);
+            this->set_enum_index_parameter(std::get<int>(_val), _key);
         }
     }
     else if(std::holds_alternative<sight::ui::enum_list_t>(_val))
     {
-        this->updateEnumList(std::get<sight::ui::enum_list_t>(_val), _key);
+        this->update_enum_list(std::get<sight::ui::enum_list_t>(_val), _key);
     }
 
     this->blockSignals(false);
@@ -2229,10 +2242,10 @@ void parameters::setParameter(sight::ui::parameter_t _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::setBoolParameter(bool _val, std::string _key)
+void parameters::set_bool_parameter(bool _val, std::string _key)
 {
     this->blockSignals(true);
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
     auto* checkbox = qobject_cast<QCheckBox*>(child);
 
     if(checkbox != nullptr)
@@ -2245,10 +2258,10 @@ void parameters::setBoolParameter(bool _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::setColorParameter(std::array<std::uint8_t, 4> _color, std::string _key)
+void parameters::set_color_parameter(std::array<std::uint8_t, 4> _color, std::string _key)
 {
     this->blockSignals(true);
-    QObject* child     = this->getParamWidget(_key);
+    QObject* child     = this->get_param_widget(_key);
     auto* color_button = qobject_cast<QPushButton*>(child);
 
     if(color_button != nullptr)
@@ -2267,10 +2280,10 @@ void parameters::setColorParameter(std::array<std::uint8_t, 4> _color, std::stri
 
 //------------------------------------------------------------------------------
 
-void parameters::setDoubleParameter(double _val, std::string _key)
+void parameters::set_double_parameter(double _val, std::string _key)
 {
     this->blockSignals(true);
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2297,10 +2310,10 @@ void parameters::setDoubleParameter(double _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::setDouble2Parameter(double _val0, double _val1, std::string _key)
+void parameters::set_double2_parameter(double _val0, double _val1, std::string _key)
 {
     this->blockSignals(true);
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     if(child != nullptr)
     {
@@ -2316,10 +2329,10 @@ void parameters::setDouble2Parameter(double _val0, double _val1, std::string _ke
 
 //------------------------------------------------------------------------------
 
-void parameters::setDouble3Parameter(double _val0, double _val1, double _val2, std::string _key)
+void parameters::set_double3_parameter(double _val0, double _val1, double _val2, std::string _key)
 {
     this->blockSignals(true);
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     if(child != nullptr)
     {
@@ -2337,10 +2350,10 @@ void parameters::setDouble3Parameter(double _val0, double _val1, double _val2, s
 
 //------------------------------------------------------------------------------
 
-void parameters::setIntParameter(int _val, std::string _key)
+void parameters::set_int_parameter(int _val, std::string _key)
 {
     this->blockSignals(true);
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     auto* spinbox = qobject_cast<QSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2356,7 +2369,7 @@ void parameters::setIntParameter(int _val, std::string _key)
     else if(auto* non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(child);
             non_linear_slider != nullptr)
     {
-        non_linear_slider->setValue(_val);
+        non_linear_slider->set_value(_val);
     }
 
     this->blockSignals(false);
@@ -2364,10 +2377,10 @@ void parameters::setIntParameter(int _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::setInt2Parameter(int _val0, int _val1, std::string _key)
+void parameters::set_int2_parameter(int _val0, int _val1, std::string _key)
 {
     this->blockSignals(true);
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     if(child != nullptr)
     {
@@ -2383,10 +2396,10 @@ void parameters::setInt2Parameter(int _val0, int _val1, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::setInt3Parameter(int _val0, int _val1, int _val2, std::string _key)
+void parameters::set_int3_parameter(int _val0, int _val1, int _val2, std::string _key)
 {
     this->blockSignals(true);
-    QObject* widget = this->getParamWidget(_key);
+    QObject* widget = this->get_param_widget(_key);
 
     if(widget != nullptr)
     {
@@ -2404,11 +2417,11 @@ void parameters::setInt3Parameter(int _val0, int _val1, int _val2, std::string _
 
 //------------------------------------------------------------------------------
 
-void parameters::setEnumParameter(std::string _val, std::string _key)
+void parameters::set_enum_parameter(std::string _val, std::string _key)
 {
     this->blockSignals(true);
 
-    QObject* widget = this->getParamWidget(_key);
+    QObject* widget = this->get_param_widget(_key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -2434,12 +2447,12 @@ void parameters::setEnumParameter(std::string _val, std::string _key)
     else if(auto* non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
             non_linear_slider != nullptr)
     {
-        non_linear_slider->setValue(std::stoi(_val));
+        non_linear_slider->set_value(std::stoi(_val));
     }
     else if(auto* button_group = qobject_cast<QButtonGroup*>(widget);
             button_group != nullptr)
     {
-        QObject* button_object = this->getParamWidget(_key + "_" + _val);
+        QObject* button_object = this->get_param_widget(_key + "_" + _val);
         auto* button           = qobject_cast<QToolButton*>(button_object);
 
         if(button != nullptr)
@@ -2453,11 +2466,11 @@ void parameters::setEnumParameter(std::string _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::setEnumIndexParameter(int _val, std::string _key)
+void parameters::set_enum_index_parameter(int _val, std::string _key)
 {
     this->blockSignals(true);
 
-    QObject* widget = this->getParamWidget(_key);
+    QObject* widget = this->get_param_widget(_key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -2471,11 +2484,11 @@ void parameters::setEnumIndexParameter(int _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::updateEnumRange(std::string _options, std::string _key)
+void parameters::update_enum_range(std::string _options, std::string _key)
 {
     this->blockSignals(true);
 
-    QObject* widget = this->getParamWidget(_key);
+    QObject* widget = this->get_param_widget(_key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -2486,7 +2499,7 @@ void parameters::updateEnumRange(std::string _options, std::string _key)
         std::vector<std::string> values;
         std::vector<std::string> data;
 
-        this->parseEnumString(_options, values, data);
+        this->parse_enum_string(_options, values, data);
 
         int idx = 0;
         for(const auto& value : values)
@@ -2509,7 +2522,7 @@ void parameters::updateEnumRange(std::string _options, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void parameters::emitColorSignal(const QColor _color, const std::string& _key)
+void parameters::emit_color_signal(const QColor _color, const std::string& _key)
 {
     const std::array<std::uint8_t, 4> new_color = {{static_cast<std::uint8_t>(_color.red()),
         static_cast<std::uint8_t>(_color.green()),
@@ -2517,7 +2530,7 @@ void parameters::emitColorSignal(const QColor _color, const std::string& _key)
         static_cast<std::uint8_t>(_color.alpha())
     }
     };
-    if(!m_blockSignals)
+    if(!m_block_signals)
     {
         this->signal<signals::color_changed_signal_t>(signals::COLOR_CHANGED_SIG)->async_emit(new_color, _key);
         this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)->async_emit(new_color, _key);
@@ -2532,14 +2545,14 @@ void parameters::emitColorSignal(const QColor _color, const std::string& _key)
 
 void parameters::blockSignals(bool _block)
 {
-    m_blockSignals = _block;
+    m_block_signals = _block;
 }
 
 //------------------------------------------------------------------------------
 
-void parameters::updateIntMinParameter(int _min, std::string _key)
+void parameters::update_int_min_parameter(int _min, std::string _key)
 {
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     auto* spinbox = qobject_cast<QSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2574,9 +2587,9 @@ void parameters::updateIntMinParameter(int _min, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::updateIntMaxParameter(int _max, std::string _key)
+void parameters::update_int_max_parameter(int _max, std::string _key)
 {
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     auto* spinbox = qobject_cast<QSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2612,9 +2625,9 @@ void parameters::updateIntMaxParameter(int _max, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::updateDoubleMinParameter(double _min, std::string _key)
+void parameters::update_double_min_parameter(double _min, std::string _key)
 {
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2640,9 +2653,9 @@ void parameters::updateDoubleMinParameter(double _min, std::string _key)
     }
     else if(slider != nullptr)
     {
-        const double value = getDoubleSliderValue(slider);
+        const double value = get_double_slider_value(slider);
         slider->setProperty("min", _min);
-        setDoubleSliderRange(slider, value);
+        set_double_slider_range(slider, value);
     }
     else
     {
@@ -2652,9 +2665,9 @@ void parameters::updateDoubleMinParameter(double _min, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void parameters::updateDoubleMaxParameter(double _max, std::string _key)
+void parameters::update_double_max_parameter(double _max, std::string _key)
 {
-    QObject* child = this->getParamWidget(_key);
+    QObject* child = this->get_param_widget(_key);
 
     auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2680,9 +2693,9 @@ void parameters::updateDoubleMaxParameter(double _max, std::string _key)
     }
     else if(slider != nullptr)
     {
-        const double value = getDoubleSliderValue(slider);
+        const double value = get_double_slider_value(slider);
         slider->setProperty("max", _max);
-        setDoubleSliderRange(slider, value);
+        set_double_slider_range(slider, value);
     }
     else
     {
@@ -2692,7 +2705,7 @@ void parameters::updateDoubleMaxParameter(double _max, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void parameters::setDoubleSliderRange(QSlider* _slider, double _current_value)
+void parameters::set_double_slider_range(QSlider* _slider, double _current_value)
 {
     const std::string key       = _slider->property("key").toString().toStdString();
     const double min            = _slider->property("min").toDouble();
@@ -2746,10 +2759,10 @@ void parameters::setDoubleSliderRange(QSlider* _slider, double _current_value)
 
 //-----------------------------------------------------------------------------
 
-QObject* parameters::getParamWidget(const std::string& _key)
+QObject* parameters::get_param_widget(const std::string& _key)
 {
-    auto qt_container     = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    const QObject* object = qt_container->getQtContainer();
+    auto qt_container     = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    const QObject* object = qt_container->get_qt_container();
 
     auto* child = object->findChild<QObject*>(QString::fromStdString(_key));
     SIGHT_ERROR_IF("object '" + _key + "' is not found", !child);

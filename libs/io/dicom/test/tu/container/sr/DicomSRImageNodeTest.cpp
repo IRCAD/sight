@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 #include <gdcmDataSet.h>
 #include <gdcmSequenceOfItems.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::DicomSRImageNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::dicom_sr_image_node_test);
 
 #define IMAGE_NODE 0x0008, 0x1199
 #define CLASS 0x0008, 0x1150
@@ -42,21 +42,21 @@ namespace sight::io::dicom::container::sr::ut
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNodeTest::basicTest()
+void dicom_sr_image_node_test::basic_test()
 {
     using namespace std::literals::string_literals;
 
     gdcm::DataSet dataset;
-    DicomSRImageNode({}, "friend", "class", "instance", 42).write(dataset);
-    CPPUNIT_ASSERT_EQUAL("IMAGE"s, (io::dicom::helper::DicomDataReader::getTagValue<TYPE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::DicomDataReader::getTagValue<RELATIONSHIP>(dataset)));
+    dicom_sr_image_node({}, "friend", "class", "instance", 42).write(dataset);
+    CPPUNIT_ASSERT_EQUAL("IMAGE"s, (io::dicom::helper::dicom_data_reader::get_tag_value<TYPE>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::dicom_data_reader::get_tag_value<RELATIONSHIP>(dataset)));
     gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
         dataset.GetDataElement(gdcm::Attribute<IMAGE_NODE>::GetTag()).GetValueAsSQ();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), sequence->GetNumberOfItems());
     gdcm::DataSet& item = sequence->GetItem(1).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("class"s, (io::dicom::helper::DicomDataReader::getTagValue<CLASS>(item)));
-    CPPUNIT_ASSERT_EQUAL("instance"s, (io::dicom::helper::DicomDataReader::getTagValue<INSTANCE>(item)));
-    CPPUNIT_ASSERT_EQUAL(42, (io::dicom::helper::DicomDataReader::getTagValue<FRAME, int>(item)));
+    CPPUNIT_ASSERT_EQUAL("class"s, (io::dicom::helper::dicom_data_reader::get_tag_value<CLASS>(item)));
+    CPPUNIT_ASSERT_EQUAL("instance"s, (io::dicom::helper::dicom_data_reader::get_tag_value<INSTANCE>(item)));
+    CPPUNIT_ASSERT_EQUAL(42, (io::dicom::helper::dicom_data_reader::get_tag_value<FRAME, int>(item)));
 }
 
 } // namespace sight::io::dicom::container::sr::ut

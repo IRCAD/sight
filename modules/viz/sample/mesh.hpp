@@ -65,7 +65,7 @@ public:
 
     MODULE_VIZ_SAMPLE_API static const core::com::signals::key_t CAM_UPDATED_SIG;
 
-    typedef core::com::signal<void (data::matrix4::sptr)> cam_updated_signal_t;
+    using cam_updated_signal_t = core::com::signal<void (data::matrix4::sptr)>;
 
     /// Creates slots and the signal.
     MODULE_VIZ_SAMPLE_API mesh() noexcept;
@@ -100,33 +100,33 @@ private:
 private:
 
     /// SLOT: receives new camera transform and update the camera.
-    void updateCamPosition(data::matrix4::sptr _transform);
+    void update_cam_position(data::matrix4::sptr _transform);
 
     /// SLOT: receives new camera transform from the camera service and trigger the signal.
-    void updateCamTransform();
+    void update_cam_transform();
 
     /// Contains the render service.
-    sight::service::base::sptr m_renderSrv;
+    sight::service::base::sptr m_render_srv;
 
     /// Contains the trackball interactor adaptor.
-    service::base::sptr m_interactorSrv;
+    service::base::sptr m_interactor_srv;
 
     /// Contains the mesh adaptor.
-    service::base::sptr m_meshSrv;
+    service::base::sptr m_mesh_srv;
 
     /// Contains the camera adaptor.
-    service::base::sptr m_cameraSrv;
+    service::base::sptr m_camera_srv;
 
     /// Contains the transformation adaptor.
-    data::matrix4::sptr m_cameraTransform;
+    data::matrix4::sptr m_camera_transform;
 
     /// Contains the signal emitted when camera position is updated.
-    cam_updated_signal_t::sptr m_sigCamUpdated;
+    cam_updated_signal_t::sptr m_sig_cam_updated;
 
     /// Stores connection with the camera transform.
     core::com::helper::sig_slot_connection m_connections;
 
-    data::ptr<data::mesh, data::Access::in> m_mesh {this, "mesh", false};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh", false};
 };
 
 } // namespace sight::module::viz::sample.

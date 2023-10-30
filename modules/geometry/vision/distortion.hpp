@@ -86,7 +86,7 @@ public:
      * @{
      */
     MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t CHANGE_STATE_SLOT;
-    typedef core::com::slot<void ()> change_state_slot_t;
+    using change_state_slot_t = core::com::slot<void ()>;
     ///@}
 
     /// Constructor.
@@ -121,22 +121,22 @@ private:
     void remap();
 
     /// Slot: enable/disable the distort correction.
-    void changeState();
+    void change_state();
 
     /// Slot: compute the distortion map.
     void calibrate();
 
     /// True if the undistortion is enabled.
-    bool m_isEnabled {false};
+    bool m_is_enabled {false};
 
     /// If true, distort the output image, otherwise we undistort it
     bool m_distort {true};
 
     /// True when a calibration mismatch is detected, this avoids to pop-up the error at each update
-    bool m_calibrationMismatch {false};
+    bool m_calibration_mismatch {false};
 
     /// This is used to reset m_calibrationMismatch when the image resolution changes
-    data::image::Size m_prevImageSize {0, 0, 0};
+    data::image::size_t m_prev_image_size {0, 0, 0};
 
 #if OPENCV_CUDA_SUPPORT
     cv::cuda::GpuMat m_map_x;
@@ -146,15 +146,15 @@ private:
     cv::Mat m_map_y;
 #endif // OPENCV_CUDA_SUPPORT
 
-    static constexpr std::string_view s_CAMERA_INPUT = "camera";
-    static constexpr std::string_view s_IMAGE_INPUT  = "input";
-    static constexpr std::string_view s_IMAGE_INOUT  = "output";
-    static constexpr std::string_view s_MAP_INOUT    = "map";
+    static constexpr std::string_view CAMERA_INPUT = "camera";
+    static constexpr std::string_view IMAGE_INPUT  = "input";
+    static constexpr std::string_view IMAGE_INOUT  = "output";
+    static constexpr std::string_view MAP_INOUT    = "map";
 
-    sight::data::ptr<sight::data::camera, sight::data::Access::in> m_camera {this, s_CAMERA_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_output {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_map {this, s_MAP_INOUT};
+    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_output {this, IMAGE_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_map {this, MAP_INOUT};
 };
 
 } // namespace sight::module::geometry::vision

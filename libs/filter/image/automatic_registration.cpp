@@ -69,14 +69,14 @@ public:
 
     /// Constructor
     inline explicit automatic_registrationImpl(automatic_registration* const _automatic_registration) :
-        m_automaticRegistration(_automatic_registration)
+        m_automatic_registration(_automatic_registration)
     {
     }
 
     /// Default destructor
     inline ~automatic_registrationImpl() noexcept = default;
 
-    automatic_registration* m_automaticRegistration {nullptr};
+    automatic_registration* m_automatic_registration {nullptr};
 
     optimizer_t::Pointer m_optimizer {nullptr};
 
@@ -86,7 +86,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void convertfrom_eigenMatrix(const transform_t* _itk_mat, const data::matrix4::sptr& _f4s_mat) const
+    inline void convertfrom_eigen_matrix(const transform_t* _itk_mat, const data::matrix4::sptr& _f4s_mat) const
     {
         itk::Matrix<real_t, 3, 3> rigid_mat = _itk_mat->GetMatrix();
         itk::Vector<real_t, 3> offset       = _itk_mat->GetOffset();
@@ -110,9 +110,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static double computeVolume(const data::image::csptr& _img)
+    inline static double compute_volume(const data::image::csptr& _img)
     {
-        const auto& spacing = _img->getSpacing();
+        const auto& spacing = _img->spacing();
         const auto& size    = _img->size();
 
         SIGHT_ASSERT(
@@ -134,14 +134,14 @@ public:
 
 //------------------------------------------------------------------------------
 
-class RegistrationObserver : public itk::Command
+class registration_observer : public itk::Command
 {
 public:
 
-    using Self       = RegistrationObserver;
-    using Superclass = itk::Command;
-    using Pointer    = itk::SmartPointer<Self>;
-    itkNewMacro(Self)
+    using self_t     = registration_observer;
+    using superclass = itk::Command;
+    using Pointer    = itk::SmartPointer<self_t>;
+    itkNewMacro(self_t)
 
     /// Command to be executed. Updates the progress bar.
     void Execute(itk::Object* _caller, const itk::EventObject& _event) override
@@ -156,24 +156,24 @@ public:
         {
             if(itk::IterationEvent().CheckEvent(&_event))
             {
-                m_iterationCallback();
+                m_iteration_callback();
             }
         }
     }
 
     //------------------------------------------------------------------------------
 
-    void setCallback(std::function<void()> _callback)
+    void set_callback(std::function<void()> _callback)
     {
-        m_iterationCallback = _callback;
+        m_iteration_callback = _callback;
     }
 
 private:
 
     /// Constructor, initializes progress dialog and sets the user cancel callback.
-    RegistrationObserver() = default;
+    registration_observer() = default;
 
-    std::function<void()> m_iterationCallback;
+    std::function<void()> m_iteration_callback;
 };
 
 automatic_registration::automatic_registration() noexcept :
@@ -185,7 +185,7 @@ automatic_registration::~automatic_registration() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::registerImage(
+void automatic_registration::register_image(
     const data::image::csptr& _target,
     const data::image::csptr& _reference,
     const data::matrix4::sptr& _trf,
@@ -203,7 +203,7 @@ void automatic_registration::registerImage(
     data::image::csptr ref = _reference;
     data::image::csptr tgt = _target;
 
-    m_pimpl->m_invert = m_pimpl->computeVolume(tgt) < m_pimpl->computeVolume(ref);
+    m_pimpl->m_invert = m_pimpl->compute_volume(tgt) < m_pimpl->compute_volume(ref);
 
     // Always register images with the largest one being fixed.
     // Otherwise, our metric may not find any matching points between them.
@@ -219,19 +219,19 @@ void automatic_registration::registerImage(
     // Choose a metric.
     switch(_metric)
     {
-        case MEAN_SQUARES:
+        case mean_squares:
             metric =
                 itk::MeanSquaresImageToImageMetricv4<registered_image_t, registered_image_t, registered_image_t,
                                                      real_t>::New();
             break;
 
-        case NORMALIZED_CORRELATION:
+        case normalized_correlation:
             metric =
                 itk::CorrelationImageToImageMetricv4<registered_image_t, registered_image_t, registered_image_t,
                                                      real_t>::New();
             break;
 
-        case MUTUAL_INFORMATION:
+        case mutual_information:
         {
             auto mut_info_metric =
                 itk::MattesMutualInformationImageToImageMetricv4<registered_image_t, registered_image_t,
@@ -348,11 +348,11 @@ void automatic_registration::registerImage(
     m_pimpl->m_registrator->SetShrinkFactorsPerLevel(shrink_factors_per_level);
     m_pimpl->m_registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
 
-    RegistrationObserver::Pointer observer = RegistrationObserver::New();
+    auto observer = registration_observer::New();
 
     if(_callback)
     {
-        observer->setCallback(_callback);
+        observer->set_callback(_callback);
         m_pimpl->m_optimizer->AddObserver(itk::IterationEvent(), observer);
     }
 
@@ -360,7 +360,7 @@ void automatic_registration::registerImage(
     {
         // Time for lift-off.
         m_pimpl->m_registrator->Update();
-        this->getCurrentMatrix(_trf);
+        this->get_current_matrix(_trf);
     }
     catch(itk::ExceptionObject& err)
     {
@@ -370,7 +370,7 @@ void automatic_registration::registerImage(
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::stopRegistration()
+void automatic_registration::stop_registration()
 {
     if((m_pimpl->m_optimizer != nullptr) && (m_pimpl->m_registrator != nullptr))
     {
@@ -382,7 +382,7 @@ void automatic_registration::stopRegistration()
 
 //------------------------------------------------------------------------------
 
-automatic_registration::real_t automatic_registration::getCurrentMetricValue() const
+automatic_registration::real_t automatic_registration::get_current_metric_value() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetCurrentMetricValue();
@@ -390,7 +390,7 @@ automatic_registration::real_t automatic_registration::getCurrentMetricValue() c
 
 //------------------------------------------------------------------------------
 
-const automatic_registration::optimizer_t::ParametersType& automatic_registration::getCurrentParameters() const
+const automatic_registration::optimizer_t::ParametersType& automatic_registration::get_current_parameters() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetCurrentPosition();
@@ -398,7 +398,7 @@ const automatic_registration::optimizer_t::ParametersType& automatic_registratio
 
 //------------------------------------------------------------------------------
 
-automatic_registration::real_t automatic_registration::getRelaxationFactor() const
+automatic_registration::real_t automatic_registration::get_relaxation_factor() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetRelaxationFactor();
@@ -406,7 +406,7 @@ automatic_registration::real_t automatic_registration::getRelaxationFactor() con
 
 //------------------------------------------------------------------------------
 
-automatic_registration::real_t automatic_registration::getLearningRate() const
+automatic_registration::real_t automatic_registration::get_learning_rate() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetLearningRate();
@@ -414,7 +414,7 @@ automatic_registration::real_t automatic_registration::getLearningRate() const
 
 //------------------------------------------------------------------------------
 
-automatic_registration::real_t automatic_registration::getGradientMagnitudeTolerance() const
+automatic_registration::real_t automatic_registration::get_gradient_magnitude_tolerance() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetGradientMagnitudeTolerance();
@@ -422,7 +422,7 @@ automatic_registration::real_t automatic_registration::getGradientMagnitudeToler
 
 //------------------------------------------------------------------------------
 
-itk::SizeValueType automatic_registration::getCurrentIteration() const
+itk::SizeValueType automatic_registration::get_current_iteration() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetCurrentIteration();
@@ -430,7 +430,7 @@ itk::SizeValueType automatic_registration::getCurrentIteration() const
 
 //------------------------------------------------------------------------------
 
-itk::SizeValueType filter::image::automatic_registration::getCurrentLevel() const
+itk::SizeValueType filter::image::automatic_registration::get_current_level() const
 {
     SIGHT_ASSERT("No registration process running.", m_pimpl->m_registrator);
     return m_pimpl->m_registrator->GetCurrentLevel();
@@ -438,11 +438,11 @@ itk::SizeValueType filter::image::automatic_registration::getCurrentLevel() cons
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::getCurrentMatrix(const data::matrix4::sptr& _trf) const
+void automatic_registration::get_current_matrix(const data::matrix4::sptr& _trf) const
 {
     SIGHT_ASSERT("No registration process running.", m_pimpl->m_registrator);
     const auto* itk_matrix = m_pimpl->m_registrator->GetTransform();
-    m_pimpl->convertfrom_eigenMatrix(itk_matrix, _trf);
+    m_pimpl->convertfrom_eigen_matrix(itk_matrix, _trf);
 }
 
 //------------------------------------------------------------------------------

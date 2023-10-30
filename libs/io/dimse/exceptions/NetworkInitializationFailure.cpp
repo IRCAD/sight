@@ -25,14 +25,14 @@
 namespace sight::io::dimse::exceptions
 {
 
-NetworkInitializationFailure::NetworkInitializationFailure(const std::string& _message) :
-    io::dimse::exceptions::Base(_message)
+network_initialization_failure::network_initialization_failure(const std::string& _message) :
+    io::dimse::exceptions::base(_message)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-NetworkInitializationFailure::~NetworkInitializationFailure() noexcept =
+network_initialization_failure::~network_initialization_failure() noexcept =
     default;
 
 } // namespace sight::io::dimse::exceptions

@@ -23,13 +23,13 @@
 
 #include "io/session/config.hpp"
 #include "io/session/detail/session.hpp"
-#include "io/session/SessionReader.hpp"
+#include "io/session/session_reader.hpp"
 
 #include <core/crypto/password_keeper.hpp>
 
 #include <data/object.hpp>
 
-#include <io/zip/Archive.hpp>
+#include <io/zip/archive.hpp>
 
 #include <filesystem>
 
@@ -57,25 +57,25 @@ public:
 
     /// Deserialize a data::object from archive
     /// @param archivePath archive file path
-    /// @param archiveFormat how files are stored in the archive. @see sight::io::zip::Archive::ArchiveFormat
+    /// @param archiveFormat how files are stored in the archive. @see sight::io::zip::archive::archiveFormat
     /// @param password password to use for optional decryption. Empty password means no decryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     sight::data::object::sptr deserialize(
         const std::filesystem::path& _archive_path,
-        io::zip::Archive::ArchiveFormat _archive_format                     = io::zip::Archive::ArchiveFormat::DEFAULT,
+        io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::DEFAULT,
         const core::crypto::secure_string& _password                        = "",
-        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::encryption_policy::PASSWORD
+        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::encryption_policy::password
     ) const;
 
     /// Set a deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
-    void setCustomDeserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
+    void set_custom_deserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
 
     /// Set a default deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
-    static void setDeserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
+    static void set_deserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
 
     /// Return the registered deserialization function for an object
     /// @param className the name of the object to deserialize
@@ -85,11 +85,11 @@ public:
 private:
 
     /// Custom serializers that override default one
-    std::unordered_map<std::string, deserializer_t> m_customDeserializers;
+    std::unordered_map<std::string, deserializer_t> m_custom_deserializers;
 
     /// Return a deserializer from a data object class name
     /// @param className the name of the object to find a deserializer
-    deserializer_t findDeserializer(const std::string& _classname) const;
+    deserializer_t find_deserializer(const std::string& _classname) const;
 
     /// Deserializes recursively an initialized archive to a data::object using an opened property tree
     /// @param cache object cache
@@ -97,9 +97,9 @@ private:
     /// @param tree property tree used to retrieve object index
     /// @param password password to use for optional encryption. Empty password means no encryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
-    data::object::sptr deepDeserialize(
+    data::object::sptr deep_deserialize(
         std::map<std::string, data::object::sptr>& _cache,
-        zip::ArchiveReader& _archive,
+        zip::archive_reader& _archive,
         const boost::property_tree::ptree& _tree,
         const core::crypto::secure_string& _password,
         core::crypto::password_keeper::encryption_policy _encryption_policy

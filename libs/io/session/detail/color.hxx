@@ -30,15 +30,15 @@
 namespace sight::io::session::detail::color
 {
 
-constexpr static auto s_Red {"Red"};
-constexpr static auto s_Green {"Green"};
-constexpr static auto s_Blue {"Blue"};
-constexpr static auto s_Alpha {"Alpha"};
+constexpr static auto RED {"Red"};
+constexpr static auto GREEN {"Green"};
+constexpr static auto BLUE {"Blue"};
+constexpr static auto ALPHA {"Alpha"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -50,16 +50,16 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::color>(_tree, 1);
 
-    _tree.put(s_Red, color->red());
-    _tree.put(s_Green, color->green());
-    _tree.put(s_Blue, color->blue());
-    _tree.put(s_Alpha, color->alpha());
+    _tree.put(RED, color->red());
+    _tree.put(GREEN, color->green());
+    _tree.put(BLUE, color->blue());
+    _tree.put(ALPHA, color->alpha());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::color::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -72,11 +72,11 @@ inline static data::color::sptr read(
     // Check version number. Not mandatory, but could help for future release
     helper::read_version<data::color>(_tree, 0, 1);
 
-    color->setRGBA(
-        _tree.get<float>(s_Red),
-        _tree.get<float>(s_Green),
-        _tree.get<float>(s_Blue),
-        _tree.get<float>(s_Alpha)
+    color->set_rgba(
+        _tree.get<float>(RED),
+        _tree.get<float>(GREEN),
+        _tree.get<float>(BLUE),
+        _tree.get<float>(ALPHA)
     );
 
     return color;

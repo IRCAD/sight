@@ -33,23 +33,23 @@ void exporter::updating()
 {
     auto data = m_data.lock();
 
-    const auto& [description, ok] = sight::ui::dialog::input::showInputDialog(
+    const auto& [description, ok] = sight::ui::dialog::input::show_input_dialog(
         "Export series",
         "Enter the series description",
-        data->getSeriesDescription()
+        data->get_series_description()
     );
 
     if(ok && !description.empty())
     {
-        data->setSeriesDescription(description);
+        data->set_series_description(description);
 
-        std::string physicians = data->getPerformingPhysicianName();
+        std::string physicians = data->get_performing_physician_name();
         if(physicians.empty())
         {
             physicians = core::tools::os::get_env("USERNAME", core::tools::os::get_env("LOGNAME", "Unknown"));
         }
 
-        data->setPerformingPhysicianName(physicians);
+        data->set_performing_physician_name(physicians);
 
         {
             auto container            = m_container.lock();
@@ -57,7 +57,7 @@ void exporter::updating()
             container->push_back(data.get_shared());
         }
 
-        this->setEnabled(false);
+        this->set_enabled(false);
     }
 }
 

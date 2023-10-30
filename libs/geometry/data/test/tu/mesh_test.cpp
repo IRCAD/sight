@@ -47,7 +47,7 @@ namespace sight::geometry::data::ut
 namespace point = sight::data::iterator::point;
 namespace cell  = sight::data::iterator::cell;
 
-const double epsilon = 10e-6;
+const double EPSILON = 10e-6;
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ void mesh_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::colorizePointsTest()
+void mesh_test::colorize_points_test()
 {
     {
         const std::uint8_t r = 214;
@@ -74,16 +74,16 @@ void mesh_test::colorizePointsTest()
         const std::uint8_t a = 63;
 
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleMesh(mesh);
+        utest_data::generator::mesh::generate_triangle_mesh(mesh);
 
         mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->get_cell_type(),
-            sight::data::mesh::Attributes::POINT_COLORS
+            mesh->num_points(),
+            mesh->num_cells(),
+            mesh->cell_type(),
+            sight::data::mesh::attribute::point_colors
         );
 
-        geometry::data::mesh::colorizeMeshPoints(mesh, r, g, b, a);
+        geometry::data::mesh::colorize_mesh_points(mesh, r, g, b, a);
 
         const auto dump_lock = mesh->dump_lock();
 
@@ -106,21 +106,21 @@ void mesh_test::colorizePointsTest()
         const std::uint8_t a = 124;
 
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleMesh(mesh);
+        utest_data::generator::mesh::generate_triangle_mesh(mesh);
 
         mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->get_cell_type(),
-            sight::data::mesh::Attributes::POINT_COLORS
+            mesh->num_points(),
+            mesh->num_cells(),
+            mesh->cell_type(),
+            sight::data::mesh::attribute::point_colors
         );
 
         std::vector<std::size_t> vector_num_triangle = {{0, 12, 1, 3, 21}};
 
         // fill color with 0
-        geometry::data::mesh::colorizeMeshPoints(mesh, 0, 0, 0, 0);
+        geometry::data::mesh::colorize_mesh_points(mesh, 0, 0, 0, 0);
 
-        geometry::data::mesh::colorizeMeshPoints(mesh, vector_num_triangle, r, g, b, a);
+        geometry::data::mesh::colorize_mesh_points(mesh, vector_num_triangle, r, g, b, a);
 
         const auto dump_lock = mesh->dump_lock();
 
@@ -162,7 +162,7 @@ void mesh_test::colorizePointsTest()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::colorizeCellsTest()
+void mesh_test::colorize_cells_test()
 {
     // Check to colorize all the mesh with RGB
     {
@@ -171,16 +171,16 @@ void mesh_test::colorizeCellsTest()
         const std::uint8_t b = 3;
 
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleMesh(mesh);
+        utest_data::generator::mesh::generate_triangle_mesh(mesh);
 
         mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->get_cell_type(),
-            sight::data::mesh::Attributes::CELL_COLORS
+            mesh->num_points(),
+            mesh->num_cells(),
+            mesh->cell_type(),
+            sight::data::mesh::attribute::cell_colors
         );
 
-        geometry::data::mesh::colorizeMeshCells(mesh, r, g, b);
+        geometry::data::mesh::colorize_mesh_cells(mesh, r, g, b);
 
         const auto dump_lock = mesh->dump_lock();
 
@@ -203,16 +203,16 @@ void mesh_test::colorizeCellsTest()
         const std::uint8_t a = 63;
 
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleMesh(mesh);
+        utest_data::generator::mesh::generate_triangle_mesh(mesh);
 
         mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->get_cell_type(),
-            sight::data::mesh::Attributes::CELL_COLORS
+            mesh->num_points(),
+            mesh->num_cells(),
+            mesh->cell_type(),
+            sight::data::mesh::attribute::cell_colors
         );
 
-        geometry::data::mesh::colorizeMeshCells(mesh, r, g, b, a);
+        geometry::data::mesh::colorize_mesh_cells(mesh, r, g, b, a);
 
         const auto dump_lock = mesh->dump_lock();
 
@@ -234,21 +234,21 @@ void mesh_test::colorizeCellsTest()
         const std::uint8_t b = 3;
 
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleMesh(mesh);
+        utest_data::generator::mesh::generate_triangle_mesh(mesh);
 
         mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->get_cell_type(),
-            sight::data::mesh::Attributes::CELL_COLORS
+            mesh->num_points(),
+            mesh->num_cells(),
+            mesh->cell_type(),
+            sight::data::mesh::attribute::cell_colors
         );
 
         std::vector<std::size_t> vector_num_triangle = {{2, 3, 18, 23, 6}};
 
         // fill color with 0
-        geometry::data::mesh::colorizeMeshCells(mesh, 0, 0, 0, 0);
+        geometry::data::mesh::colorize_mesh_cells(mesh, 0, 0, 0, 0);
 
-        geometry::data::mesh::colorizeMeshCells(mesh, vector_num_triangle, r, g, b);
+        geometry::data::mesh::colorize_mesh_cells(mesh, vector_num_triangle, r, g, b);
 
         const auto dump_lock = mesh->dump_lock();
 
@@ -283,21 +283,21 @@ void mesh_test::colorizeCellsTest()
         const std::uint8_t a = 55;
 
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleMesh(mesh);
+        utest_data::generator::mesh::generate_triangle_mesh(mesh);
 
         mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->get_cell_type(),
-            sight::data::mesh::Attributes::CELL_COLORS
+            mesh->num_points(),
+            mesh->num_cells(),
+            mesh->cell_type(),
+            sight::data::mesh::attribute::cell_colors
         );
 
         std::vector<std::size_t> vector_num_triangle = {{2, 3, 18, 23, 6, 5}};
 
         // fill color with 0
-        geometry::data::mesh::colorizeMeshCells(mesh, 0, 0, 0, 0);
+        geometry::data::mesh::colorize_mesh_cells(mesh, 0, 0, 0, 0);
 
-        geometry::data::mesh::colorizeMeshCells(mesh, vector_num_triangle, r, g, b, a);
+        geometry::data::mesh::colorize_mesh_cells(mesh, vector_num_triangle, r, g, b, a);
 
         const auto dump_lock = mesh->dump_lock();
 
@@ -327,7 +327,7 @@ void mesh_test::colorizeCellsTest()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::transformTest()
+void mesh_test::transform_test()
 {
     auto vec3_length = [](auto _v) -> float
                        {
@@ -361,18 +361,18 @@ void mesh_test::transformTest()
     {
         sight::data::mesh::sptr in = std::make_shared<sight::data::mesh>();
         const auto in_lock         = in->dump_lock();
-        in->pushPoint(1, 2, 3);
-        in->pushPoint(4, 5, 6);
-        in->pushPoint(7, 8, 9);
+        in->push_point(1, 2, 3);
+        in->push_point(4, 5, 6);
+        in->push_point(7, 8, 9);
         sight::data::mesh::sptr out = sight::data::mesh::copy(in);
         const auto out_lock         = out->dump_lock();
         geometry::data::mesh::transform(in, out, trans);
         std::size_t i = 0;
         for(const auto& point : out->crange<point::xyz>())
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], point.x, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], point.y, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], point.z, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], point.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], point.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], point.z, EPSILON);
             i++;
         }
     }
@@ -380,27 +380,27 @@ void mesh_test::transformTest()
     // Points + Point normals
     {
         sight::data::mesh::sptr in = std::make_shared<sight::data::mesh>();
-        in->reserve(3, 1, sight::data::mesh::cell_type_t::POINT, sight::data::mesh::Attributes::POINT_NORMALS);
+        in->reserve(3, 1, sight::data::mesh::cell_type_t::point, sight::data::mesh::attribute::point_normals);
         const auto in_lock = in->dump_lock();
-        auto id            = in->pushPoint(1, 2, 3);
-        in->setPointNormal(id, 1, 2, 3);
-        id = in->pushPoint(4, 5, 6);
-        in->setPointNormal(id, 4, 5, 6);
-        id = in->pushPoint(7, 8, 9);
-        in->setPointNormal(id, 7, 8, 9);
+        auto id            = in->push_point(1, 2, 3);
+        in->set_point_normal(id, 1, 2, 3);
+        id = in->push_point(4, 5, 6);
+        in->set_point_normal(id, 4, 5, 6);
+        id = in->push_point(7, 8, 9);
+        in->set_point_normal(id, 7, 8, 9);
         sight::data::mesh::sptr out = sight::data::mesh::copy(in);
         const auto out_lock         = out->dump_lock();
         geometry::data::mesh::transform(in, out, trans);
         std::size_t i = 0;
         for(const auto& [p, n] : out->czip_range<point::xyz, point::nxyz>())
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], p.x, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], p.y, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], p.z, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], p.z, EPSILON);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], n.nx, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], n.ny, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], n.nz, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], n.nz, EPSILON);
 
             i++;
         }
@@ -409,30 +409,30 @@ void mesh_test::transformTest()
     // Points + Cell normals
     {
         sight::data::mesh::sptr in = std::make_shared<sight::data::mesh>();
-        in->reserve(3, 3, sight::data::mesh::cell_type_t::POINT, sight::data::mesh::Attributes::CELL_NORMALS);
+        in->reserve(3, 3, sight::data::mesh::cell_type_t::point, sight::data::mesh::attribute::cell_normals);
         const auto in_lock = in->dump_lock();
-        auto id_p          = in->pushPoint(1, 2, 3);
-        auto id_c          = in->pushCell(id_p);
-        in->setCellNormal(id_c, 1, 2, 3);
-        id_p = in->pushPoint(4, 5, 6);
-        id_c = in->pushCell(id_p);
-        in->setCellNormal(id_c, 4, 5, 6);
-        id_p = in->pushPoint(7, 8, 9);
-        id_c = in->pushCell(id_p);
-        in->setCellNormal(id_c, 7, 8, 9);
+        auto id_p          = in->push_point(1, 2, 3);
+        auto id_c          = in->push_cell(id_p);
+        in->set_cell_normal(id_c, 1, 2, 3);
+        id_p = in->push_point(4, 5, 6);
+        id_c = in->push_cell(id_p);
+        in->set_cell_normal(id_c, 4, 5, 6);
+        id_p = in->push_point(7, 8, 9);
+        id_c = in->push_cell(id_p);
+        in->set_cell_normal(id_c, 7, 8, 9);
         sight::data::mesh::sptr out = sight::data::mesh::copy(in);
         const auto out_lock         = out->dump_lock();
         geometry::data::mesh::transform(in, out, trans);
         std::size_t i = 0;
         for(const auto& [p, n] : out->czip_range<point::xyz, cell::nxyz>())
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], p.x, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], p.y, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], p.z, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], p.z, EPSILON);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], n.nx, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], n.ny, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], n.nz, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], n.nz, EPSILON);
 
             i++;
         }
@@ -444,39 +444,39 @@ void mesh_test::transformTest()
         in->reserve(
             3,
             3,
-            sight::data::mesh::cell_type_t::POINT,
-            sight::data::mesh::Attributes::POINT_NORMALS | sight::data::mesh::Attributes::CELL_NORMALS
+            sight::data::mesh::cell_type_t::point,
+            sight::data::mesh::attribute::point_normals | sight::data::mesh::attribute::cell_normals
         );
         const auto in_lock = in->dump_lock();
-        auto id_p          = in->pushPoint(1, 2, 3);
-        in->setPointNormal(id_p, 1, 2, 3);
-        auto id_c = in->pushCell(id_p);
-        in->setCellNormal(id_c, 1, 2, 3);
-        id_p = in->pushPoint(4, 5, 6);
-        in->setPointNormal(id_p, 4, 5, 6);
-        id_c = in->pushCell(id_p);
-        in->setCellNormal(id_c, 4, 5, 6);
-        id_p = in->pushPoint(7, 8, 9);
-        in->setPointNormal(id_p, 7, 8, 9);
-        id_c = in->pushCell(id_p);
-        in->setCellNormal(id_c, 7, 8, 9);
+        auto id_p          = in->push_point(1, 2, 3);
+        in->set_point_normal(id_p, 1, 2, 3);
+        auto id_c = in->push_cell(id_p);
+        in->set_cell_normal(id_c, 1, 2, 3);
+        id_p = in->push_point(4, 5, 6);
+        in->set_point_normal(id_p, 4, 5, 6);
+        id_c = in->push_cell(id_p);
+        in->set_cell_normal(id_c, 4, 5, 6);
+        id_p = in->push_point(7, 8, 9);
+        in->set_point_normal(id_p, 7, 8, 9);
+        id_c = in->push_cell(id_p);
+        in->set_cell_normal(id_c, 7, 8, 9);
         sight::data::mesh::sptr out = sight::data::mesh::copy(in);
         const auto out_lock         = out->dump_lock();
         geometry::data::mesh::transform(in, out, trans);
         std::size_t i = 0;
         for(const auto& [p, pn, cn] : out->czip_range<point::xyz, point::nxyz, cell::nxyz>())
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], p.x, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], p.y, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], p.z, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][0], p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][1], p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_points[i][2], p.z, EPSILON);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], pn.nx, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], pn.ny, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], pn.nz, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], pn.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], pn.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], pn.nz, EPSILON);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], cn.nx, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], cn.ny, epsilon);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], cn.nz, epsilon);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][0] / expected_normal_lengths[i], cn.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][1] / expected_normal_lengths[i], cn.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_normals[i][2] / expected_normal_lengths[i], cn.nz, EPSILON);
 
             i++;
         }
@@ -485,31 +485,31 @@ void mesh_test::transformTest()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::isClosedTest()
+void mesh_test::is_closed_test()
 {
     {
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleMesh(mesh);
+        utest_data::generator::mesh::generate_triangle_mesh(mesh);
 
-        const bool is_closed = geometry::data::mesh::isClosed(mesh);
-
-        CPPUNIT_ASSERT_EQUAL(false, is_closed);
-    }
-
-    {
-        sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateQuadMesh(mesh);
-
-        const bool is_closed = geometry::data::mesh::isClosed(mesh);
+        const bool is_closed = geometry::data::mesh::is_closed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(false, is_closed);
     }
 
     {
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
-        utest_data::generator::mesh::generateTriangleQuadMesh(mesh);
+        utest_data::generator::mesh::generate_quad_mesh(mesh);
 
-        const bool is_closed = geometry::data::mesh::isClosed(mesh);
+        const bool is_closed = geometry::data::mesh::is_closed(mesh);
+
+        CPPUNIT_ASSERT_EQUAL(false, is_closed);
+    }
+
+    {
+        sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
+        utest_data::generator::mesh::generate_triangle_quad_mesh(mesh);
+
+        const bool is_closed = geometry::data::mesh::is_closed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(false, is_closed);
     }
@@ -518,23 +518,23 @@ void mesh_test::isClosedTest()
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
         const auto dump_lock         = mesh->dump_lock();
 
-        mesh->pushPoint(0.F, 0.F, 0.F);
-        mesh->pushPoint(1.F, 0.F, 0.F);
-        mesh->pushPoint(1.F, 1.F, 0.F);
-        mesh->pushPoint(0.F, 1.F, 0.F);
-        mesh->pushPoint(0.F, 0.F, 1.F);
-        mesh->pushPoint(1.F, 0.F, 1.F);
-        mesh->pushPoint(1.F, 1.F, 1.F);
-        mesh->pushPoint(0.F, 1.F, 1.F);
+        mesh->push_point(0.F, 0.F, 0.F);
+        mesh->push_point(1.F, 0.F, 0.F);
+        mesh->push_point(1.F, 1.F, 0.F);
+        mesh->push_point(0.F, 1.F, 0.F);
+        mesh->push_point(0.F, 0.F, 1.F);
+        mesh->push_point(1.F, 0.F, 1.F);
+        mesh->push_point(1.F, 1.F, 1.F);
+        mesh->push_point(0.F, 1.F, 1.F);
 
-        mesh->pushCell(0, 1, 2, 3);
-        mesh->pushCell(0, 4, 5, 1);
-        mesh->pushCell(1, 5, 6, 2);
-        mesh->pushCell(4, 5, 6, 7);
-        mesh->pushCell(0, 4, 7, 3);
-        mesh->pushCell(3, 7, 6, 2);
+        mesh->push_cell(0, 1, 2, 3);
+        mesh->push_cell(0, 4, 5, 1);
+        mesh->push_cell(1, 5, 6, 2);
+        mesh->push_cell(4, 5, 6, 7);
+        mesh->push_cell(0, 4, 7, 3);
+        mesh->push_cell(3, 7, 6, 2);
 
-        const bool is_closed = geometry::data::mesh::isClosed(mesh);
+        const bool is_closed = geometry::data::mesh::is_closed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(true, is_closed);
     }
@@ -543,29 +543,29 @@ void mesh_test::isClosedTest()
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
         const auto dump_lock         = mesh->dump_lock();
 
-        mesh->pushPoint(0.F, 0.F, 0.F);
-        mesh->pushPoint(1.F, 0.F, 0.F);
-        mesh->pushPoint(1.F, 1.F, 0.F);
-        mesh->pushPoint(0.F, 1.F, 0.F);
-        mesh->pushPoint(0.F, 0.F, 1.F);
-        mesh->pushPoint(1.F, 0.F, 1.F);
-        mesh->pushPoint(1.F, 1.F, 1.F);
-        mesh->pushPoint(0.F, 1.F, 1.F);
+        mesh->push_point(0.F, 0.F, 0.F);
+        mesh->push_point(1.F, 0.F, 0.F);
+        mesh->push_point(1.F, 1.F, 0.F);
+        mesh->push_point(0.F, 1.F, 0.F);
+        mesh->push_point(0.F, 0.F, 1.F);
+        mesh->push_point(1.F, 0.F, 1.F);
+        mesh->push_point(1.F, 1.F, 1.F);
+        mesh->push_point(0.F, 1.F, 1.F);
 
-        mesh->pushCell(0, 1, 3);
-        mesh->pushCell(3, 1, 2);
-        mesh->pushCell(0, 4, 1);
-        mesh->pushCell(1, 4, 5);
-        mesh->pushCell(1, 5, 2);
-        mesh->pushCell(5, 6, 2);
-        mesh->pushCell(4, 5, 7);
-        mesh->pushCell(5, 6, 7);
-        mesh->pushCell(0, 4, 3);
-        mesh->pushCell(4, 7, 3);
-        mesh->pushCell(3, 7, 2);
-        mesh->pushCell(7, 6, 2);
+        mesh->push_cell(0, 1, 3);
+        mesh->push_cell(3, 1, 2);
+        mesh->push_cell(0, 4, 1);
+        mesh->push_cell(1, 4, 5);
+        mesh->push_cell(1, 5, 2);
+        mesh->push_cell(5, 6, 2);
+        mesh->push_cell(4, 5, 7);
+        mesh->push_cell(5, 6, 7);
+        mesh->push_cell(0, 4, 3);
+        mesh->push_cell(4, 7, 3);
+        mesh->push_cell(3, 7, 2);
+        mesh->push_cell(7, 6, 2);
 
-        const bool is_closed = geometry::data::mesh::isClosed(mesh);
+        const bool is_closed = geometry::data::mesh::is_closed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(true, is_closed);
     }
@@ -574,29 +574,29 @@ void mesh_test::isClosedTest()
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
         const auto dump_lock         = mesh->dump_lock();
 
-        mesh->pushPoint(0.F, 0.F, 0.F);
-        mesh->pushPoint(1.F, 0.F, 0.F);
-        mesh->pushPoint(1.F, 1.F, 0.F);
-        mesh->pushPoint(0.F, 1.F, 0.F);
-        mesh->pushPoint(0.F, 0.F, 1.F);
-        mesh->pushPoint(1.F, 0.F, 1.F);
-        mesh->pushPoint(1.F, 1.F, 1.F);
-        mesh->pushPoint(0.F, 1.F, 1.F);
+        mesh->push_point(0.F, 0.F, 0.F);
+        mesh->push_point(1.F, 0.F, 0.F);
+        mesh->push_point(1.F, 1.F, 0.F);
+        mesh->push_point(0.F, 1.F, 0.F);
+        mesh->push_point(0.F, 0.F, 1.F);
+        mesh->push_point(1.F, 0.F, 1.F);
+        mesh->push_point(1.F, 1.F, 1.F);
+        mesh->push_point(0.F, 1.F, 1.F);
 
-        mesh->pushCell(0, 1, 3);
-        mesh->pushCell(3, 1, 2);
-        mesh->pushCell(0, 4, 1);
-        mesh->pushCell(1, 4, 5);
-        mesh->pushCell(1, 5, 2);
-        mesh->pushCell(5, 6, 2);
-        mesh->pushCell(4, 5, 7);
-        mesh->pushCell(5, 6, 7);
-        mesh->pushCell(0, 4, 3);
+        mesh->push_cell(0, 1, 3);
+        mesh->push_cell(3, 1, 2);
+        mesh->push_cell(0, 4, 1);
+        mesh->push_cell(1, 4, 5);
+        mesh->push_cell(1, 5, 2);
+        mesh->push_cell(5, 6, 2);
+        mesh->push_cell(4, 5, 7);
+        mesh->push_cell(5, 6, 7);
+        mesh->push_cell(0, 4, 3);
         // removed this cell mesh->pushCell(4, 7, 3);
-        mesh->pushCell(3, 7, 2);
-        mesh->pushCell(7, 6, 2);
+        mesh->push_cell(3, 7, 2);
+        mesh->push_cell(7, 6, 2);
 
-        const bool is_closed = geometry::data::mesh::isClosed(mesh);
+        const bool is_closed = geometry::data::mesh::is_closed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(false, is_closed);
     }
@@ -604,28 +604,28 @@ void mesh_test::isClosedTest()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::cellNormalTest()
+void mesh_test::cell_normal_test()
 {
     sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
     const auto dump_lock         = mesh->dump_lock();
 
-    mesh->pushPoint(0.F, 0.F, 0.F);
-    mesh->pushPoint(1.F, 0.F, 0.F);
-    mesh->pushPoint(1.F, 1.F, 0.F);
-    mesh->pushPoint(0.F, 1.F, 0.F);
-    mesh->pushPoint(0.F, 0.F, 1.F);
-    mesh->pushPoint(1.F, 0.F, 1.F);
-    mesh->pushPoint(1.F, 1.F, 1.F);
-    mesh->pushPoint(0.F, 1.F, 1.F);
+    mesh->push_point(0.F, 0.F, 0.F);
+    mesh->push_point(1.F, 0.F, 0.F);
+    mesh->push_point(1.F, 1.F, 0.F);
+    mesh->push_point(0.F, 1.F, 0.F);
+    mesh->push_point(0.F, 0.F, 1.F);
+    mesh->push_point(1.F, 0.F, 1.F);
+    mesh->push_point(1.F, 1.F, 1.F);
+    mesh->push_point(0.F, 1.F, 1.F);
 
-    mesh->pushCell(0, 3, 2, 1);
-    mesh->pushCell(0, 4, 5, 1);
-    mesh->pushCell(1, 2, 6, 5);
-    mesh->pushCell(4, 5, 6, 7);
-    mesh->pushCell(0, 4, 7, 3);
-    mesh->pushCell(3, 2, 6, 7);
+    mesh->push_cell(0, 3, 2, 1);
+    mesh->push_cell(0, 4, 5, 1);
+    mesh->push_cell(1, 2, 6, 5);
+    mesh->push_cell(4, 5, 6, 7);
+    mesh->push_cell(0, 4, 7, 3);
+    mesh->push_cell(3, 2, 6, 7);
 
-    CPPUNIT_ASSERT_NO_THROW(geometry::data::mesh::generateCellNormals(mesh));
+    CPPUNIT_ASSERT_NO_THROW(geometry::data::mesh::generate_cell_normals(mesh));
 
     auto cell_iter = mesh->begin<cell::nxyz>();
 
@@ -673,85 +673,86 @@ void mesh_test::cellNormalTest()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::pointNormalTest()
+void mesh_test::point_normal_test()
 {
     sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
     const auto dump_lock         = mesh->dump_lock();
 
-    mesh->pushPoint(0.F, 0.F, 0.F);
-    mesh->pushPoint(1.F, 0.F, 0.F);
-    mesh->pushPoint(1.F, 1.F, 0.F);
-    mesh->pushPoint(0.F, 1.F, 0.F);
-    mesh->pushPoint(0.F, 0.F, 1.F);
-    mesh->pushPoint(1.F, 0.F, 1.F);
-    mesh->pushPoint(1.F, 1.F, 1.F);
-    mesh->pushPoint(0.F, 1.F, 1.F);
+    mesh->push_point(0.F, 0.F, 0.F);
+    mesh->push_point(1.F, 0.F, 0.F);
+    mesh->push_point(1.F, 1.F, 0.F);
+    mesh->push_point(0.F, 1.F, 0.F);
+    mesh->push_point(0.F, 0.F, 1.F);
+    mesh->push_point(1.F, 0.F, 1.F);
+    mesh->push_point(1.F, 1.F, 1.F);
+    mesh->push_point(0.F, 1.F, 1.F);
 
-    mesh->pushCell(0, 3, 2, 1);
-    mesh->pushCell(0, 4, 5, 1);
-    mesh->pushCell(1, 2, 6, 5);
-    mesh->pushCell(4, 5, 6, 7);
-    mesh->pushCell(0, 4, 7, 3);
-    mesh->pushCell(3, 2, 6, 7);
+    mesh->push_cell(0, 3, 2, 1);
+    mesh->push_cell(0, 4, 5, 1);
+    mesh->push_cell(1, 2, 6, 5);
+    mesh->push_cell(4, 5, 6, 7);
+    mesh->push_cell(0, 4, 7, 3);
+    mesh->push_cell(3, 2, 6, 7);
 
-    CPPUNIT_ASSERT_NO_THROW(geometry::data::mesh::generatePointNormals(mesh));
+    CPPUNIT_ASSERT_NO_THROW(geometry::data::mesh::generate_point_normals(mesh));
 
     auto point_iter = mesh->begin<point::nxyz>();
 
     // check first point normal = {-0.57735, 0.57735, -0.57735}
+    const float epsilon    = 0.00001F;
     std::array<float, 3> n = {-0.57735F, 0.57735F, -0.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 2 normal = {0.57735, 0.57735, -0.57735}
     ++point_iter;
     n = {0.57735F, 0.57735F, -0.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 3 normal = {0.57735, -0.57735, -0.57735}
     ++point_iter;
     n = {0.57735F, -0.57735F, -.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 4 normal = {-0.57735, -0.57735, -0.57735}
     ++point_iter;
     n = {-0.57735F, -0.57735F, -0.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 5 normal = {-0.57735, 0.57735, 0.57735}
     ++point_iter;
     n = {-0.57735F, 0.57735F, 0.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 6 normal = {0.57735, 0.57735, 0.57735}
     ++point_iter;
     n = {0.57735F, 0.57735F, 0.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 7 normal = {0.57735, -0.57735, 0.57735}
     ++point_iter;
     n = {0.57735F, -0.57735F, 0.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 8 normal = {-0.57735, -0.57735, 0.57735}
     ++point_iter;
     n = {-0.57735F, -0.57735F, 0.57735F};
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 }
 
 //------------------------------------------------------------------------------

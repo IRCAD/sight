@@ -38,9 +38,9 @@ namespace sight::module::ui
  * @note This action is not executable if the object already exists in the container.
  *
  * @section Slots Slots
- * - \b checkAddedObjects(data::set::container_type): make the action executable if the added objects matches
+ * - \b checkAddedObjects(data::set::container_t): make the action executable if the added objects matches
  * the object we want to export.
- * - \b checkRemovedObjects(data::set::container_type): make the action inexecutable if the added objects matches
+ * - \b checkRemovedObjects(data::set::container_t): make the action inexecutable if the added objects matches
  * the object we want to export.
 
  * @section XML XML Configuration

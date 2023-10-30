@@ -67,7 +67,7 @@ public:
     SIGHT_DECLARE_SERVICE(camera_set_editor, sight::ui::editor);
 
     static const core::com::slots::key_t UPDATE_INFOS_SLOT;
-    typedef core::com::slot<void ()> update_infos_slot_t;
+    using update_infos_slot_t = core::com::slot<void ()>;
 
     /**
      * @brief Constructor.
@@ -114,22 +114,22 @@ protected:
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.
      */
-    void updateInformations();
+    void update_informations();
 
     /**
      * @brief Clear all the labels.
      */
-    void clearLabels();
+    void clear_labels();
 
     QPointer<QLabel> m_description; ///< description of camera series
 
-    QVector<QPointer<QLabel> > m_matrixLabels; ///< Labels for matrix's elements
+    QVector<QPointer<QLabel> > m_matrix_labels; ///< Labels for matrix's elements
 
     /// Index of the camera in cameraSet used to display extrinsic matrix.
-    std::size_t m_camIndex;
+    std::size_t m_cam_index;
 
-    static constexpr std::string_view s_CAMERASET = "cameraSet";
-    data::ptr<data::camera_set, data::Access::in> m_camera_set {this, s_CAMERASET, true};
+    static constexpr std::string_view CAMERASET = "cameraSet";
+    data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERASET, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

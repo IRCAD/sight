@@ -37,7 +37,7 @@ class UI_HISTORY_CLASS_API command
 {
 public:
 
-    typedef std::shared_ptr<command> sptr;
+    using sptr = std::shared_ptr<command>;
 
     /**
      * @brief Virtual destructor.
@@ -63,7 +63,7 @@ public:
     /**
      * @brief Return an optional description of the command.
      */
-    [[nodiscard]] UI_HISTORY_API virtual std::string getDescription() const
+    [[nodiscard]] UI_HISTORY_API virtual std::string get_description() const
     {
         return "";
     }

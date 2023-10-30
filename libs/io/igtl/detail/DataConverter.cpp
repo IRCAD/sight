@@ -37,38 +37,38 @@ namespace sight::io::igtl::detail
 
 //------------------------------------------------------------------------------
 
-DataConverter::sptr DataConverter::getInstance()
+data_converter::sptr data_converter::get_instance()
 {
-    return core::lazy_instantiator<DataConverter>::get_instance();
+    return core::lazy_instantiator<data_converter>::get_instance();
 }
 
 //-----------------------------------------------------------------------------
 
-void DataConverter::registerConverter(converter::base::sptr _c)
+void data_converter::register_converter(converter::base::sptr _c)
 {
-    (DataConverter::getInstance())->m_converters.push_back(_c);
+    (data_converter::get_instance())->m_converters.push_back(_c);
 }
 
 //-----------------------------------------------------------------------------
 
-DataConverter::DataConverter()
+data_converter::data_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-DataConverter::~DataConverter()
+data_converter::~data_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::fromFwObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer data_converter::from_fw_object(data::object::csptr _src) const
 {
     const std::string classname = _src->get_classname();
     for(const converter::base::sptr& converter : m_converters)
     {
-        if(converter->getFwDataObjectType() == classname)
+        if(converter->get_fw_data_object_type() == classname)
         {
-            return converter->fromFwDataObject(_src);
+            return converter->from_fw_data_object(_src);
         }
     }
 
@@ -77,7 +77,7 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr data_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     data::object::sptr obj;
     const std::string device_type = _src->GetDeviceType();
@@ -86,7 +86,7 @@ data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     {
         if(converter->get_igtl_type() == device_type)
         {
-            obj = converter->fromIgtlMessage(_src);
+            obj = converter->from_igtl_message(_src);
             return obj;
         }
     }
@@ -96,7 +96,7 @@ data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::getStatusMessage(
+::igtl::MessageBase::Pointer data_converter::get_status_message(
     int _igtl_code,
     int _igtl_sub_code,
     const std::string& _err_msg
@@ -113,7 +113,7 @@ data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::getCapabilitiesMessage() const
+::igtl::MessageBase::Pointer data_converter::get_capabilities_message() const
 {
     ::igtl::CapabilityMessage::Pointer msg = ::igtl::CapabilityMessage::New();
     msg->SetNumberOfTypes(static_cast<int>(m_converters.size()));

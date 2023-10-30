@@ -73,12 +73,12 @@ public:
     SIGHT_DECLARE_SERVICE(writer, sight::service::base);
 
     /// Enum to define a dialog policy
-    enum class DialogPolicy : uint8_t
+    enum class dialog_policy : uint8_t
     {
-        NEVER   = 0,  /// Never use show the dialog
-        ONCE    = 1,  /// Show only once, store the location as long as the service is started
-        ALWAYS  = 2,  /// Always show the location dialog
-        INVALID = 255 /// Used for error management
+        never   = 0,  /// Never use show the dialog
+        once    = 1,  /// Show only once, store the location as long as the service is started
+        always  = 2,  /// Always show the location dialog
+        invalid = 255 /// Used for error management
     };
 
     /**
@@ -88,7 +88,7 @@ public:
 
     IO_API static const core::com::signals::key_t PREFIX_SET_SIG;
     IO_API static const core::com::signals::key_t BASE_FOLDER_SET_SIG;
-    typedef core::com::signal<void ()> void_signal_t;
+    using void_signal_t = core::com::signal<void ()>;
 
     /**
      * @name Slots API
@@ -104,7 +104,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IO_API virtual void openLocationDialog() = 0;
+    IO_API virtual void open_location_dialog() = 0;
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -114,7 +114,7 @@ public:
      * A reader can support file and folder, or files and folder, but not
      * file and files ( because files include file concept ).
      */
-    IO_API virtual io::service::IOPathType getIOPathType() const;
+    IO_API virtual io::service::path_type_t get_path_type() const;
 
     /**
      * @brief Returns the file path set by the user or set during service configuration
@@ -152,13 +152,13 @@ public:
     /**
      * @brief Clear any location set by the set_file/set_files/set_folder setter
      */
-    IO_API void clearLocations();
+    IO_API void clear_locations();
 
     /**
      * @brief Returns file/files/folder paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
-    IO_API const io::service::locations_t& getLocations() const;
+    IO_API const io::service::locations_t& get_locations() const;
 
     /**
      * @brief Sets folder path
@@ -170,29 +170,29 @@ public:
      * @brief Slot: Inserts a path prefix generated via a signal sent to the service.
      *
      */
-    IO_API void setPrefix(std::string _prefix);
+    IO_API void set_prefix(std::string _prefix);
 
     /**
      * @brief Slot: Sets the output base folder.
      *
      */
-    IO_API virtual void setBaseFolder(std::string _path);
+    IO_API virtual void set_base_folder(std::string _path);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
-    IO_API bool hasLocationDefined() const;
+    IO_API bool has_location_defined() const;
 
     /// Returns if reading has been cancelled by user
-    IO_API bool hasFailed() const;
+    IO_API bool has_failed() const;
 
     /// Convenience function to convert from DialogPolicy enum value to string
-    constexpr static std::string_view dialogPolicyToString(DialogPolicy _policy) noexcept
+    constexpr static std::string_view dialog_policy_to_string(dialog_policy _policy) noexcept
     {
         switch(_policy)
         {
-            case DialogPolicy::ONCE:
+            case dialog_policy::once:
                 return "once";
 
-            case DialogPolicy::ALWAYS:
+            case dialog_policy::always:
                 return "always";
 
             default:
@@ -201,26 +201,26 @@ public:
     }
 
     /// Convenience function to convert from string to DialogPolicy enum value
-    constexpr static DialogPolicy stringToDialogPolicy(std::string_view _policy) noexcept
+    constexpr static dialog_policy string_to_dialog_policy(std::string_view _policy) noexcept
     {
-        if(constexpr auto never = dialogPolicyToString(DialogPolicy::NEVER);
+        if(constexpr auto never = dialog_policy_to_string(dialog_policy::never);
            _policy == never || _policy.empty() || _policy == "default")
         {
-            return DialogPolicy::NEVER;
+            return dialog_policy::never;
         }
 
-        if(constexpr auto once = dialogPolicyToString(DialogPolicy::ONCE); _policy == once)
+        if(constexpr auto once = dialog_policy_to_string(dialog_policy::once); _policy == once)
         {
-            return DialogPolicy::ONCE;
+            return dialog_policy::once;
         }
 
-        if(constexpr auto always = dialogPolicyToString(DialogPolicy::ALWAYS); _policy == always)
+        if(constexpr auto always = dialog_policy_to_string(dialog_policy::always); _policy == always)
         {
-            return DialogPolicy::ALWAYS;
+            return dialog_policy::always;
         }
 
         // Error case
-        return DialogPolicy::INVALID;
+        return dialog_policy::invalid;
     }
 
 protected:
@@ -267,31 +267,31 @@ protected:
     IO_API void configuring() override;
 
     /**
-     * @brief Title of the window that will open when the `openLocationDialog` slot is called
+     * @brief Title of the window that will open when the `open_location_dialog` slot is called
      */
-    std::string m_windowTitle;
+    std::string m_window_title;
 
     /// Defines whether writing was performed correctly, or if user has cancelled the process.
-    bool m_writeFailed {false};
+    bool m_write_failed {false};
 
     /// Generic input data
-    data::ptr<data::object, data::Access::in> m_data {this, sight::io::service::s_DATA_KEY};
+    data::ptr<data::object, data::access::in> m_data {this, sight::io::service::DATA_KEY};
 
 private:
 
     /// Triggers an update of the base folder, and outputs it via a reference.
     // We need to check for potential updates, notably in the case
     // where the user updates an associated preference during runtime.
-    void updateBaseFolder(std::string& /*outBaseFolder*/) const;
+    void update_base_folder(std::string& /*outBaseFolder*/) const;
 
     /// Value to store file or folder paths
     io::service::locations_t m_locations;
 
     /// Prefix to be inserted
-    std::string m_currentPrefix;
+    std::string m_current_prefix;
 
     /// Base folder
-    std::string m_baseFolder;
+    std::string m_base_folder;
 };
 
 } //namespace sight::io::service

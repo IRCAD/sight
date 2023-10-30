@@ -62,20 +62,20 @@ void reconstruction_test::methode1() //test des setters et getters
     // process
     auto p1 = std::make_shared<data::reconstruction>();
 
-    p1->setIsVisible(is_visible);
-    p1->setOrganName(organ_name);
+    p1->set_is_visible(is_visible);
+    p1->set_organ_name(organ_name);
     p1->set_structure_type(structure_type);
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), is_visible);
-    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), organ_name);
+    CPPUNIT_ASSERT_EQUAL(p1->get_is_visible(), is_visible);
+    CPPUNIT_ASSERT_EQUAL(p1->get_organ_name(), organ_name);
     CPPUNIT_ASSERT_EQUAL(p1->get_structure_type(), structure_type);
 
     auto p2 = std::make_shared<data::reconstruction>();
     CPPUNIT_ASSERT(*p1 != *p2);
 
-    p2->setIsVisible(is_visible);
-    p2->setOrganName(organ_name);
+    p2->set_is_visible(is_visible);
+    p2->set_organ_name(organ_name);
     p2->set_structure_type(structure_type);
 }
 
@@ -86,13 +86,13 @@ void reconstruction_test::image()
     data::reconstruction::sptr p1 = std::make_shared<data::reconstruction>();
     data::image::sptr i1(std::make_shared<data::image>());
 
-    p1->setImage(i1);
-    CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1);
+    p1->set_image(i1);
+    CPPUNIT_ASSERT_EQUAL(p1->get_image(), i1);
 }
 
 //------------------------------------------------------------------------------
 
-void reconstruction_test::equalityTest()
+void reconstruction_test::equality_test()
 {
     auto reconstruction1 = std::make_shared<data::reconstruction>();
     auto reconstruction2 = std::make_shared<data::reconstruction>();
@@ -112,21 +112,21 @@ void reconstruction_test::equalityTest()
         *reconstruction1 == *reconstruction2 && !(*reconstruction1 != *reconstruction2) \
     );
 
-    TEST(setIsVisible(true));
-    TEST(setOrganName("1"));
+    TEST(set_is_visible(true));
+    TEST(set_organ_name("1"));
     TEST(set_structure_type("2"));
-    TEST(setImage(std::make_shared<data::image>()));
-    TEST(setMesh(std::make_shared<data::mesh>()));
+    TEST(set_image(std::make_shared<data::image>()));
+    TEST(set_mesh(std::make_shared<data::mesh>()));
     auto material = std::make_shared<data::material>();
-    material->setAmbient(std::make_shared<data::color>(3.F, 4.F, 5.F));
-    material->setDiffuse(std::make_shared<data::color>(6.F, 7.F, 8.F));
-    material->setShadingMode(data::material::AMBIENT);
-    material->setRepresentationMode(data::material::POINT);
-    material->setOptionsMode(data::material::NORMALS);
-    material->setDiffuseTextureFiltering(data::material::LINEAR);
-    material->setDiffuseTextureWrapping(data::material::CLAMP);
-    TEST(setMaterial(material));
-    TEST(setComputedMaskVolume(9));
+    material->set_ambient(std::make_shared<data::color>(3.F, 4.F, 5.F));
+    material->set_diffuse(std::make_shared<data::color>(6.F, 7.F, 8.F));
+    material->set_shading_mode(data::material::shading_t::ambient);
+    material->set_representation_mode(data::material::point);
+    material->set_options_mode(data::material::normals);
+    material->set_diffuse_texture_filtering(data::material::linear);
+    material->set_diffuse_texture_wrapping(data::material::clamp);
+    TEST(set_material(material));
+    TEST(set_computed_mask_volume(9));
 
     #undef TEST
 }

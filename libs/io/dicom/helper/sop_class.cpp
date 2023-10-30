@@ -31,7 +31,7 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-const sop_class::op_classContainerType sop_class::s_SOP_CLASS_LIST = {
+const sop_class::op_class_container_t sop_class::SOP_CLASS_LIST = {
     // Media Storage Directory Storage (DICOMDIR)
     {"1.2.840.10008.1.3.10", {"Media Storage Directory Storage", false}},
 
@@ -177,18 +177,18 @@ const sop_class::op_classContainerType sop_class::s_SOP_CLASS_LIST = {
 
 //------------------------------------------------------------------------------
 
-std::string sop_class::getSOPClassName(const std::string& _sop_class_uid)
+std::string sop_class::get_sop_class_name(const std::string& _sop_class_uid)
 {
-    auto it = s_SOP_CLASS_LIST.find(_sop_class_uid);
-    return it != s_SOP_CLASS_LIST.end() ? it->second.first : _sop_class_uid;
+    auto it = SOP_CLASS_LIST.find(_sop_class_uid);
+    return it != SOP_CLASS_LIST.end() ? it->second.first : _sop_class_uid;
 }
 
 //------------------------------------------------------------------------------
 
-bool sop_class::isHazardousSOPClass(const std::string& _sop_class_uid)
+bool sop_class::is_hazardous_sop_class(const std::string& _sop_class_uid)
 {
-    auto it = s_SOP_CLASS_LIST.find(_sop_class_uid);
-    return it != s_SOP_CLASS_LIST.end() ? it->second.second : true;
+    auto it = SOP_CLASS_LIST.find(_sop_class_uid);
+    return it != SOP_CLASS_LIST.end() ? it->second.second : true;
 }
 
 //------------------------------------------------------------------------------

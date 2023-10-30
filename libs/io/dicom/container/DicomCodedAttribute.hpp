@@ -38,7 +38,7 @@ namespace sight::io::dicom::container
  * Coding Scheme Version and Code Meaning.
  * See DICOM PS 3.3 - Table 8.8-1a. Basic Code Sequence Macro Attributes
  */
-class IO_DICOM_CLASS_API DicomCodedAttribute
+class IO_DICOM_CLASS_API dicom_coded_attribute
 {
 public:
 
@@ -49,7 +49,7 @@ public:
      * @param[in] codeMeaning Code Meaning (0008,0104)
      * @param[in] codingSchemeVersion Coding Scheme Version (0003,0103)
      */
-    IO_DICOM_API DicomCodedAttribute(
+    IO_DICOM_API dicom_coded_attribute(
         std::string _code_value               = "",
         std::string _coding_scheme_designator = "",
         std::string _code_meaning             = "",
@@ -57,88 +57,88 @@ public:
     );
 
     /// Returns true if the attribute is empty
-    [[nodiscard]] IO_DICOM_API bool isEmpty() const;
+    [[nodiscard]] IO_DICOM_API bool is_empty() const;
 
     /**
      * @brief Comparison operators overloading
      * @{ */
-    IO_DICOM_API bool operator==(const DicomCodedAttribute& _other) const;
+    IO_DICOM_API bool operator==(const dicom_coded_attribute& _other) const;
     /**  @} */
 
     /// Dump operator
-    IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const DicomCodedAttribute& _attribute)
+    IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const dicom_coded_attribute& _attribute)
     {
-        _os << "\\\"" << _attribute.m_codeValue << "\\\" ";
-        _os << "\\\"" << _attribute.m_codingSchemeDesignator << "\\\" ";
-        _os << "\\\"" << _attribute.m_codeMeaning << "\\\" ";
-        _os << "\\\"" << _attribute.m_codingSchemeVersion << "\\\" ";
+        _os << "\\\"" << _attribute.m_code_value << "\\\" ";
+        _os << "\\\"" << _attribute.m_coding_scheme_designator << "\\\" ";
+        _os << "\\\"" << _attribute.m_code_meaning << "\\\" ";
+        _os << "\\\"" << _attribute.m_coding_scheme_version << "\\\" ";
         return _os;
     }
 
     /// Get code value
-    [[nodiscard]] std::string getCodeValue() const
+    [[nodiscard]] std::string get_code_value() const
     {
-        return m_codeValue;
+        return m_code_value;
     }
 
     /// Set code value
-    void setCodeValue(const std::string& _code_value)
+    void set_code_value(const std::string& _code_value)
     {
-        m_codeValue = _code_value;
+        m_code_value = _code_value;
     }
 
     /// Get coding scheme designator
-    [[nodiscard]] std::string getCodingSchemeDesignator() const
+    [[nodiscard]] std::string get_coding_scheme_designator() const
     {
-        return m_codingSchemeDesignator;
+        return m_coding_scheme_designator;
     }
 
     /// Set coding scheme designator
-    void setCodingSchemeDesignator(const std::string& _coding_scheme_designator)
+    void set_coding_scheme_designator(const std::string& _coding_scheme_designator)
     {
-        m_codingSchemeDesignator = _coding_scheme_designator;
+        m_coding_scheme_designator = _coding_scheme_designator;
     }
 
     /// Get code meaning
-    [[nodiscard]] std::string getCodeMeaning() const
+    [[nodiscard]] std::string get_code_meaning() const
     {
-        return m_codeMeaning;
+        return m_code_meaning;
     }
 
     /// Set code meaning
-    void setCodeMeaning(const std::string& _code_meaning)
+    void set_code_meaning(const std::string& _code_meaning)
     {
-        m_codeMeaning = _code_meaning;
+        m_code_meaning = _code_meaning;
     }
 
     /// Get coding scheme version
-    [[nodiscard]] std::string getCodingSchemeVersion() const
+    [[nodiscard]] std::string get_coding_scheme_version() const
     {
-        return m_codingSchemeVersion;
+        return m_coding_scheme_version;
     }
 
     /// Set coding scheme version
-    void setCodingSchemeVersion(const std::string& _coding_scheme_version)
+    void set_coding_scheme_version(const std::string& _coding_scheme_version)
     {
-        m_codingSchemeVersion = _coding_scheme_version;
+        m_coding_scheme_version = _coding_scheme_version;
     }
 
     /// Convert entry to GDCM format
-    [[nodiscard]] IO_DICOM_API gdcm::SegmentHelper::BasicCodedEntry toGDCMFormat() const;
+    [[nodiscard]] IO_DICOM_API gdcm::SegmentHelper::BasicCodedEntry to_gdcm_format() const;
 
 private:
 
     /// Code Value (see : Tag(0008,0100) )
-    std::string m_codeValue;
+    std::string m_code_value;
 
     /// Coding Scheme Designator (see : Tag(0008,0102) )
-    std::string m_codingSchemeDesignator;
+    std::string m_coding_scheme_designator;
 
     /// Code Meaning (see : Tag(0008,0103) )
-    std::string m_codeMeaning;
+    std::string m_code_meaning;
 
     /// Coding Scheme Version (see : Tag(0008,0104) )
-    std::string m_codingSchemeVersion;
+    std::string m_coding_scheme_version;
 };
 
 } // namespace sight::io::dicom::container

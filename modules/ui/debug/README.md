@@ -4,15 +4,15 @@ This module contains editors and actions for debugging purposes.
 
 ## Services
 
-- **DumpEditor**: dumps or restores selected buffer via an editor.
-- **ComponentsTree**: shows module information via an action.
-- **ClassFactoryRegistryInfo**: shows services registered in the factory via an action.
+- **dump_editor**: dumps or restores selected buffer via an editor.
+- **components_tree**: shows module information via an action.
+- **class_factory_registry_info**: shows services registered in the factory via an action.
 
 ### action
 This sub-folder contains classes defining some actions.
 
-- **ClassFactoryRegistryInfo**: implements an action to show services registered in a factory.
-- **ComponentsTree**: implements an action that shows a module's information.
+- **class_factory_registry_info**: implements an action to show services registered in a factory.
+- **components_tree**: implements an action that shows a module's information.
 
 ## CMake
 

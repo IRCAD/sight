@@ -44,14 +44,14 @@ namespace id
 {
 
 // Note: keeping old name to preserve compatibility, should be harmonized in the future.
-static constexpr std::string_view axial_slice_index    = "Axial Slice Index";
-static constexpr std::string_view frontal_slice_index  = "Frontal Slice Index";
-static constexpr std::string_view sagittal_slice_index = "Sagittal Slice Index";
-static constexpr std::string_view landmarks            = "m_imageLandmarksId";
-static constexpr std::string_view distances            = "m_imageDistancesId";
-static constexpr std::string_view distance_visibility  = "ShowDistances";
-static constexpr std::string_view transferFunction     = "m_transferFunctionCompositeId";
-static constexpr std::string_view landmarks_visibility = "ShowLandmarks";
+static constexpr std::string_view AXIAL_SLICE_INDEX    = "Axial Slice Index";
+static constexpr std::string_view FRONTAL_SLICE_INDEX  = "Frontal Slice Index";
+static constexpr std::string_view SAGITTAL_SLICE_INDEX = "Sagittal Slice Index";
+static constexpr std::string_view LANDMARKS            = "m_imageLandmarksId";
+static constexpr std::string_view DISTANCES            = "m_imageDistancesId";
+static constexpr std::string_view DISTANCE_VISIBILITY  = "ShowDistances";
+static constexpr std::string_view TRANSFER_FUNCTION    = "m_transferFunctionCompositeId";
+static constexpr std::string_view LANDMARKS_VISIBILITY = "ShowLandmarks";
 
 } // namespace id
 
@@ -70,11 +70,11 @@ bool check_image_validity(data::image::csptr _p_img)
 bool check_image_validity(const data::image& _image)
 {
     // Test if the image is allocated
-    bool data_image_is_allocated = (_image.getAllocatedSizeInBytes() > 0);
+    bool data_image_is_allocated = (_image.allocated_size_in_bytes() > 0);
 
     if(data_image_is_allocated)
     {
-        std::size_t nb_dim = _image.numDimensions();
+        std::size_t nb_dim = _image.num_dimensions();
         data_image_is_allocated &= nb_dim > 1;
 
         for(std::size_t k = 0 ; data_image_is_allocated && k < nb_dim ; ++k)
@@ -94,11 +94,11 @@ bool check_image_slice_index(data::image::sptr _p_img)
 
     bool field_is_modified = false;
 
-    const data::image::Size& image_size = _p_img->size();
+    const data::image::size_t& image_size = _p_img->size();
 
-    const auto axial_idx    = get_slice_index(*_p_img, orientation_t::AXIAL);
-    const auto frontal_idx  = get_slice_index(*_p_img, orientation_t::FRONTAL);
-    const auto sagittal_idx = get_slice_index(*_p_img, orientation_t::SAGITTAL);
+    const auto axial_idx    = get_slice_index(*_p_img, orientation_t::axial);
+    const auto frontal_idx  = get_slice_index(*_p_img, orientation_t::frontal);
+    const auto sagittal_idx = get_slice_index(*_p_img, orientation_t::sagittal);
 
     std::array<std::int64_t, 3> index_values = {0, 0, 0};
 
@@ -130,9 +130,9 @@ bool check_image_slice_index(data::image::sptr _p_img)
     // Update or create fields.
     if(field_is_modified)
     {
-        set_slice_index(*_p_img, orientation_t::AXIAL, index_values[orientation_t::AXIAL]);
-        set_slice_index(*_p_img, orientation_t::FRONTAL, index_values[orientation_t::FRONTAL]);
-        set_slice_index(*_p_img, orientation_t::SAGITTAL, index_values[orientation_t::SAGITTAL]);
+        set_slice_index(*_p_img, orientation_t::axial, index_values[orientation_t::axial]);
+        set_slice_index(*_p_img, orientation_t::frontal, index_values[orientation_t::frontal]);
+        set_slice_index(*_p_img, orientation_t::sagittal, index_values[orientation_t::sagittal]);
     }
 
     return field_is_modified;
@@ -163,16 +163,16 @@ std::optional<std::int64_t> get_slice_index(
     std::string orientation_index;
     switch(_orientation)
     {
-        case orientation_t::AXIAL:
-            orientation_index = std::string(id::axial_slice_index);
+        case orientation_t::axial:
+            orientation_index = std::string(id::AXIAL_SLICE_INDEX);
             break;
 
-        case orientation_t::SAGITTAL:
-            orientation_index = std::string(id::sagittal_slice_index);
+        case orientation_t::sagittal:
+            orientation_index = std::string(id::SAGITTAL_SLICE_INDEX);
             break;
 
-        case orientation_t::FRONTAL:
-            orientation_index = std::string(id::frontal_slice_index);
+        case orientation_t::frontal:
+            orientation_index = std::string(id::FRONTAL_SLICE_INDEX);
             break;
 
         default:
@@ -205,21 +205,21 @@ void set_slice_index(
 )
 {
     data::integer::sptr value = std::make_shared<data::integer>();
-    value->setValue(_slice_idx);
+    value->set_value(_slice_idx);
 
     std::string orientation_index;
     switch(_orientation)
     {
-        case orientation_t::AXIAL:
-            orientation_index = std::string(id::axial_slice_index);
+        case orientation_t::axial:
+            orientation_index = std::string(id::AXIAL_SLICE_INDEX);
             break;
 
-        case orientation_t::SAGITTAL:
-            orientation_index = std::string(id::sagittal_slice_index);
+        case orientation_t::sagittal:
+            orientation_index = std::string(id::SAGITTAL_SLICE_INDEX);
             break;
 
-        case orientation_t::FRONTAL:
-            orientation_index = std::string(id::frontal_slice_index);
+        case orientation_t::frontal:
+            orientation_index = std::string(id::FRONTAL_SLICE_INDEX);
             break;
 
         default:
@@ -234,7 +234,7 @@ void set_slice_index(
 
 data::point_list::sptr get_landmarks(const data::image& _image)
 {
-    return _image.get_field<data::point_list>(std::string(id::landmarks));
+    return _image.get_field<data::point_list>(std::string(id::LANDMARKS));
 }
 
 //------------------------------------------------------------------------------
@@ -243,7 +243,7 @@ void set_landmarks(data::image& _image, const data::point_list::sptr& _landmarks
 {
     if(_landmarks)
     {
-        _image.set_field(std::string(id::landmarks), _landmarks);
+        _image.set_field(std::string(id::LANDMARKS), _landmarks);
     }
     else
     {
@@ -255,7 +255,7 @@ void set_landmarks(data::image& _image, const data::point_list::sptr& _landmarks
 
 data::vector::sptr get_distances(const data::image& _image)
 {
-    return _image.get_field<data::vector>(std::string(id::distances));
+    return _image.get_field<data::vector>(std::string(id::DISTANCES));
 }
 
 //------------------------------------------------------------------------------
@@ -264,7 +264,7 @@ void set_distances(data::image& _image, const data::vector::sptr& _distances)
 {
     if(_distances)
     {
-        _image.set_field(std::string(id::distances), _distances);
+        _image.set_field(std::string(id::DISTANCES), _distances);
     }
     else
     {
@@ -276,7 +276,7 @@ void set_distances(data::image& _image, const data::vector::sptr& _distances)
 
 bool get_distance_visibility(const data::image& _image)
 {
-    const auto visibility = _image.get_field<boolean>(std::string(id::distance_visibility));
+    const auto visibility = _image.get_field<boolean>(std::string(id::DISTANCE_VISIBILITY));
 
     if(visibility)
     {
@@ -291,14 +291,14 @@ bool get_distance_visibility(const data::image& _image)
 
 void set_distance_visibility(data::image& _image, bool _visibility)
 {
-    _image.set_field(std::string(id::distance_visibility), std::make_shared<data::boolean>(_visibility));
+    _image.set_field(std::string(id::DISTANCE_VISIBILITY), std::make_shared<data::boolean>(_visibility));
 }
 
 //------------------------------------------------------------------------------
 
 bool get_landmarks_visibility(const data::image& _image)
 {
-    const auto visibility = _image.get_field<boolean>(std::string(id::landmarks_visibility));
+    const auto visibility = _image.get_field<boolean>(std::string(id::LANDMARKS_VISIBILITY));
 
     if(visibility)
     {
@@ -313,21 +313,21 @@ bool get_landmarks_visibility(const data::image& _image)
 
 void set_landmarks_visibility(data::image& _image, bool _visibility)
 {
-    _image.set_field(std::string(id::landmarks_visibility), std::make_shared<data::boolean>(_visibility));
+    _image.set_field(std::string(id::LANDMARKS_VISIBILITY), std::make_shared<data::boolean>(_visibility));
 }
 
 //------------------------------------------------------------------------------
 
 data::transfer_function::sptr get_transfer_function(const data::image& _image)
 {
-    return _image.get_field<data::transfer_function>(std::string(id::transferFunction));
+    return _image.get_field<data::transfer_function>(std::string(id::TRANSFER_FUNCTION));
 }
 
 //------------------------------------------------------------------------------
 
 void set_transfer_function(data::image& _image, const data::transfer_function::sptr& _cmp)
 {
-    _image.set_field(std::string(id::transferFunction), _cmp);
+    _image.set_field(std::string(id::TRANSFER_FUNCTION), _cmp);
 }
 
 //------------------------------------------------------------------------------

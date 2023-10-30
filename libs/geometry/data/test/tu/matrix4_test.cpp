@@ -53,7 +53,7 @@ void matrix4_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::identityMatrixTest()
+void matrix4_test::identity_matrix_test()
 {
     sight::data::matrix4 tm1;
     sight::data::matrix4 tm2;
@@ -130,14 +130,14 @@ void matrix4_test::identityMatrixTest()
 #else
     geometry::data::multiply(tm1, *p1, *p2);
 #endif
-    CPPUNIT_ASSERT_EQUAL(p1->getCoord()[0], p2->getCoord()[0]);
-    CPPUNIT_ASSERT_EQUAL(p1->getCoord()[1], p2->getCoord()[1]);
-    CPPUNIT_ASSERT_EQUAL(p1->getCoord()[2], p2->getCoord()[2]);
+    CPPUNIT_ASSERT_EQUAL(p1->get_coord()[0], p2->get_coord()[0]);
+    CPPUNIT_ASSERT_EQUAL(p1->get_coord()[1], p2->get_coord()[1]);
+    CPPUNIT_ASSERT_EQUAL(p1->get_coord()[2], p2->get_coord()[2]);
 }
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::matrixTest()
+void matrix4_test::matrix_test()
 {
     sight::data::matrix4 tm1;
     sight::data::matrix4 tm2;
@@ -146,7 +146,7 @@ void matrix4_test::matrixTest()
 
     geometry::data::identity(tm2);
 
-    sight::data::matrix4::container_type tm1_coefs;
+    sight::data::matrix4::container_t tm1_coefs;
     for(std::size_t i = 0 ; i < 16 ; ++i)
     {
         tm1_coefs[i] = double(i + 1);
@@ -198,10 +198,10 @@ void matrix4_test::matrixTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(3, 2), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4(3, 3), 0.00001);
 
-    sight::data::matrix4::container_type tm2_coefs = {3.1, 1., -7.9689, 4.9,
-                                                      5., -21., -1.3646, 14.4,
-                                                      9., -7.2, -23.36, 79.04,
-                                                      0.1, -3., -1.234, -49.94
+    sight::data::matrix4::container_t tm2_coefs = {3.1, 1., -7.9689, 4.9,
+                                                   5., -21., -1.3646, 14.4,
+                                                   9., -7.2, -23.36, 79.04,
+                                                   0.1, -3., -1.234, -49.94
     };
     tm2 = tm2_coefs;
     geometry::data::invert(tm2, tm4);
@@ -231,9 +231,9 @@ void matrix4_test::matrixTest()
     auto p2 = std::make_shared<sight::data::point>();
 
     geometry::data::multiply(tm1, *p1, *p2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9, p2->getCoord()[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(62.5, p2->getCoord()[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(100.1, p2->getCoord()[2], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9, p2->get_coord()[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(62.5, p2->get_coord()[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(100.1, p2->get_coord()[2], 0.00001);
 
     geometry::data::identity(tm1);
     geometry::data::identity(tm2);
@@ -243,12 +243,12 @@ void matrix4_test::matrixTest()
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::glmGetterSetterTest()
+void matrix4_test::glm_getter_setter_test()
 {
-    sight::data::matrix4::container_type coefs = {2, -2, .3, .12,
-                                                  4, 8.9, 4.2, 1.2,
-                                                  7.8, -12.1, 2.3, 1.2,
-                                                  .3, 1.21, -3.1, 1.2
+    sight::data::matrix4::container_t coefs = {2, -2, .3, .12,
+                                               4, 8.9, 4.2, 1.2,
+                                               7.8, -12.1, 2.3, 1.2,
+                                               .3, 1.21, -3.1, 1.2
     };
 
     sight::data::matrix4 mat;

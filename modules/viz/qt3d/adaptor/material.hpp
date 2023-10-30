@@ -67,13 +67,13 @@ public:
     MODULE_VIZ_QT3D_API ~material() noexcept override;
 
     /// Updates associated material.
-    MODULE_VIZ_QT3D_API void setMaterial(sight::viz::qt3d::data::material* _material);
+    MODULE_VIZ_QT3D_API void set_material(sight::viz::qt3d::data::material* _material);
 
     /// @returns associated material.
-    MODULE_VIZ_QT3D_API sight::viz::qt3d::data::material* getMaterial();
+    MODULE_VIZ_QT3D_API sight::viz::qt3d::data::material* get_material();
 
     /// @returns material name.
-    MODULE_VIZ_QT3D_API std::string getMaterialName();
+    MODULE_VIZ_QT3D_API std::string get_material_name();
 
 protected:
 
@@ -104,10 +104,10 @@ private:
     QPointer<sight::viz::qt3d::data::material> m_material;
 
     /// Specifies adaptor's name.
-    std::string m_materialName;
+    std::string m_material_name;
 
-    static constexpr std::string_view s_MATERIAL_INOUT = "material";
-    sight::data::ptr<sight::data::material, sight::data::Access::inout> m_materialInOut {this, s_MATERIAL_INOUT};
+    static constexpr std::string_view MATERIAL_INOUT = "material";
+    sight::data::ptr<sight::data::material, sight::data::access::inout> m_material_in_out {this, MATERIAL_INOUT};
 };
 
 } // namespace sight::module::viz::qt3d::adaptor

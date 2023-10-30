@@ -32,22 +32,22 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string CompositeConverter::s_IGTL_TYPE          = "TDATA";
-const std::string CompositeConverter::s_FWDATA_OBJECT_TYPE = data::composite::classname();
+const std::string composite_converter::IGTL_TYPE          = "TDATA";
+const std::string composite_converter::FWDATA_OBJECT_TYPE = data::composite::classname();
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::CompositeConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::composite_converter);
 
-CompositeConverter::CompositeConverter()
+composite_converter::composite_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-CompositeConverter::~CompositeConverter()
+composite_converter::~composite_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer CompositeConverter::fromFwDataObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer composite_converter::from_fw_data_object(data::object::csptr _src) const
 {
     ::igtl::TrackingDataMessage::Pointer tracking_msg = ::igtl::TrackingDataMessage::New();
 
@@ -82,13 +82,13 @@ CompositeConverter::~CompositeConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr composite_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     ::igtl::TrackingDataMessage::Pointer tracking_msg;
     tracking_msg = ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(_src.GetPointer()));
     const int nb_tracking_element = tracking_msg->GetNumberOfTrackingDataElements();
 
-    SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::Conversion("TrackingDataElements"), nb_tracking_element < 0);
+    SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::conversion("TrackingDataElements"), nb_tracking_element < 0);
 
     data::composite::sptr composite = std::make_shared<data::composite>();
     for(int i = 0 ; i < nb_tracking_element ; ++i)
@@ -116,23 +116,23 @@ data::object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
 
 //-----------------------------------------------------------------------------
 
-base::sptr CompositeConverter::New()
+base::sptr composite_converter::New()
 {
-    return std::make_shared<CompositeConverter>();
+    return std::make_shared<composite_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& CompositeConverter::get_igtl_type() const
+std::string const& composite_converter::get_igtl_type() const
 {
-    return CompositeConverter::s_IGTL_TYPE;
+    return composite_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& CompositeConverter::getFwDataObjectType() const
+std::string const& composite_converter::get_fw_data_object_type() const
 {
-    return CompositeConverter::s_FWDATA_OBJECT_TYPE;
+    return composite_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

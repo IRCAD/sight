@@ -32,10 +32,10 @@ namespace sight::data::ut
 class model_series_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(model_series_test);
-CPPUNIT_TEST(modelTest);
-CPPUNIT_TEST(deep_copyTest);
-CPPUNIT_TEST(shallow_copyTest);
-CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST(model_test);
+CPPUNIT_TEST(deep_copy_test);
+CPPUNIT_TEST(shallow_copy_test);
+CPPUNIT_TEST(equality_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,10 +44,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void modelTest();
-    void deep_copyTest();
-    void shallow_copyTest();
-    static void equalityTest();
+    void model_test();
+    void deep_copy_test();
+    void shallow_copy_test();
+    static void equality_test();
 
 private:
 

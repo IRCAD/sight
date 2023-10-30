@@ -56,43 +56,43 @@ public:
     MODULE_VIZ_SCENE3D_QT_API ~offscreen_window_interactor() final;
 
     /// Renders immediately the frame in the render window.
-    MODULE_VIZ_SCENE3D_QT_API void renderNow() override;
+    MODULE_VIZ_SCENE3D_QT_API void render_now() override;
 
     /// Renders immediately the frame in the render window.
-    MODULE_VIZ_SCENE3D_QT_API void requestRender() override;
+    MODULE_VIZ_SCENE3D_QT_API void request_render() override;
 
     /// Creates the render window in the global OpenGL context, @see module::viz::scene3d_qt::OpenGLContext.
-    MODULE_VIZ_SCENE3D_QT_API void createContainer(ui::container::widget::sptr /*_parent*/,
-                                                   bool /*fullscreen*/,
-                                                   const std::string& /*id*/) override;
+    MODULE_VIZ_SCENE3D_QT_API void create_container(ui::container::widget::sptr /*_parent*/,
+                                                    bool /*fullscreen*/,
+                                                    const std::string& /*id*/) override;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_QT_API void connectToContainer() override;
+    MODULE_VIZ_SCENE3D_QT_API void connect_to_container() override;
 
     /// Deletes the render window and the render texture.
-    MODULE_VIZ_SCENE3D_QT_API void disconnectInteractor() override;
+    MODULE_VIZ_SCENE3D_QT_API void disconnect_interactor() override;
 
     /// Returns the unique identifier of the widget.
-    MODULE_VIZ_SCENE3D_QT_API int getWidgetId() const override;
+    MODULE_VIZ_SCENE3D_QT_API int get_widget_id() const override;
 
     /// Returns current frame number of the render window.
-    MODULE_VIZ_SCENE3D_QT_API int getFrameId() const override;
+    MODULE_VIZ_SCENE3D_QT_API int get_frame_id() const override;
 
     /// Makes the OpenGL context as current one on this thread against this window.
-    MODULE_VIZ_SCENE3D_QT_API void makeCurrent() override;
+    MODULE_VIZ_SCENE3D_QT_API void make_current() override;
 
     /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3D_QT_API Ogre::RenderTarget* getRenderTarget();
+    MODULE_VIZ_SCENE3D_QT_API Ogre::RenderTarget* get_render_target();
 
     /// Gets the Ogre render texture attached to the render target.
-    MODULE_VIZ_SCENE3D_QT_API Ogre::TexturePtr getRenderTexture() override;
+    MODULE_VIZ_SCENE3D_QT_API Ogre::TexturePtr get_render_texture() override;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
-    MODULE_VIZ_SCENE3D_QT_API sight::viz::scene3d::graphics_worker* createGraphicsWorker() override;
+    MODULE_VIZ_SCENE3D_QT_API sight::viz::scene3d::graphics_worker* create_graphics_worker() override;
 
     /// Returns a DPI of 220 to permit offscreen font rendering.
     /// @warning Doesn't make much sense when not rendering on a screen.
-    MODULE_VIZ_SCENE3D_QT_API float getLogicalDotsPerInch() const override
+    MODULE_VIZ_SCENE3D_QT_API float get_logical_dots_per_inch() const override
     {
         // Return this value which is kind of common for HiDPI monitors.
         return 220;
@@ -104,23 +104,23 @@ private:
     void render();
 
     /// Defines a counter to get the widget ID.
-    static int m_counter;
+    static int s_counter;
 
     /// Defines the unique identifier of the widget, used to instantiate the managers related to this instance with a
     // proper name.
     int m_id;
 
     /// Defines the number of render frame.
-    int m_frameId {0};
+    int m_frame_id {0};
 
     /// Contains the Ogre root.
-    Ogre::Root* m_ogreRoot {nullptr};
+    Ogre::Root* m_ogre_root {nullptr};
 
     /// Contains the Ogre render target.
-    Ogre::RenderTarget* m_ogreRenderTarget {nullptr};
+    Ogre::RenderTarget* m_ogre_render_target {nullptr};
 
     /// Contains the Ogre render texture attached to the render target
-    Ogre::TexturePtr m_ogreTexture;
+    Ogre::TexturePtr m_ogre_texture;
 
     /// Defines the window width.
     unsigned int m_width {0};
@@ -129,35 +129,35 @@ private:
     unsigned int m_height {0};
 
     /// Contains the offscreen surface, needed to enable the OpenGL context on the current thread.
-    std::unique_ptr<QOffscreenSurface> m_offscreenSurface;
+    std::unique_ptr<QOffscreenSurface> m_offscreen_surface;
 };
 
 //-----------------------------------------------------------------------------
 
-inline int offscreen_window_interactor::getWidgetId() const
+inline int offscreen_window_interactor::get_widget_id() const
 {
     return m_id;
 }
 
 //-----------------------------------------------------------------------------
 
-inline int offscreen_window_interactor::getFrameId() const
+inline int offscreen_window_interactor::get_frame_id() const
 {
-    return m_frameId;
+    return m_frame_id;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Ogre::RenderTarget* offscreen_window_interactor::getRenderTarget()
+inline Ogre::RenderTarget* offscreen_window_interactor::get_render_target()
 {
-    return m_ogreRenderTarget;
+    return m_ogre_render_target;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Ogre::TexturePtr offscreen_window_interactor::getRenderTexture()
+inline Ogre::TexturePtr offscreen_window_interactor::get_render_texture()
 {
-    return m_ogreTexture;
+    return m_ogre_texture;
 }
 
 } // namespace sight::module::viz::scene3d_qt.

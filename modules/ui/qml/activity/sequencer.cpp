@@ -45,11 +45,11 @@ const core::com::slots::key_t PREVIOUS_SLOT   = "previous";
 //------------------------------------------------------------------------------
 
 sequencer::sequencer() :
-    m_sigActivityCreated(new_signal<activity_created_signal_t>(ACTIVITY_CREATED_SIG)),
-    m_sigDataRequired(new_signal<data_required_signal_t>(DATA_REQUIRED_SIG))
+    m_sig_activity_created(new_signal<activity_created_signal_t>(ACTIVITY_CREATED_SIG)),
+    m_sig_data_required(new_signal<data_required_signal_t>(DATA_REQUIRED_SIG))
 {
-    new_slot(GO_TO_SLOT, &sequencer::goTo, this);
-    new_slot(CHECK_NEXT_SLOT, &sequencer::checkNext, this);
+    new_slot(GO_TO_SLOT, &sequencer::go_to, this);
+    new_slot(CHECK_NEXT_SLOT, &sequencer::check_next, this);
     new_slot(NEXT_SLOT, &sequencer::next, this);
     new_slot(PREVIOUS_SLOT, &sequencer::previous, this);
 }
@@ -69,9 +69,9 @@ void sequencer::configuring()
 
 void sequencer::starting()
 {
-    for(const auto& m_q_activity_id : m_qActivityIds)
+    for(const auto& activity_id : m_activity_list)
     {
-        m_activityIds.push_back(m_q_activity_id.toStdString());
+        m_activity_ids.push_back(activity_id.toStdString());
     }
 }
 
@@ -87,93 +87,93 @@ void sequencer::updating()
 {
     {
         auto activity_set = m_activity_set.lock();
-        SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+        SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
-        m_currentActivity = this->parseActivities(*activity_set);
+        m_current_activity = this->parse_activities(*activity_set);
     }
 
-    if(m_currentActivity >= 0)
+    if(m_current_activity >= 0)
     {
-        for(int i = 0 ; i <= m_currentActivity ; ++i)
+        for(int i = 0 ; i <= m_current_activity ; ++i)
         {
             Q_EMIT enable(i);
         }
 
-        this->goTo(m_currentActivity);
+        this->go_to(m_current_activity);
     }
     else
     {
         // launch the first activity
         Q_EMIT enable(0);
-        this->goTo(0);
+        this->go_to(0);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::goTo(int _index)
+void sequencer::go_to(int _index)
 {
-    if(_index < 0 || _index >= static_cast<int>(m_activityIds.size()))
+    if(_index < 0 || _index >= static_cast<int>(m_activity_ids.size()))
     {
         SIGHT_ERROR("no activity to launch at index " << _index)
         return;
     }
 
     auto activity_set = m_activity_set.lock();
-    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+    SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
-    if(m_currentActivity >= 0)
+    if(m_current_activity >= 0)
     {
-        storeActivityData(*activity_set, std::size_t(m_currentActivity));
+        store_activity_data(*activity_set, std::size_t(m_current_activity));
     }
 
-    auto activity = getActivity(*activity_set, std::size_t(_index), slot(service::slots::UPDATE));
+    auto activity = get_activity(*activity_set, std::size_t(_index), slot(service::slots::UPDATE));
 
     bool ok = true;
     std::string error_msg;
 
-    std::tie(ok, error_msg) = sight::module::ui::qml::activity::sequencer::validateActivity(activity);
+    std::tie(ok, error_msg) = sight::module::ui::qml::activity::sequencer::validate_activity(activity);
     if(ok)
     {
-        m_sigActivityCreated->async_emit(activity);
+        m_sig_activity_created->async_emit(activity);
 
-        m_currentActivity = _index;
+        m_current_activity = _index;
         Q_EMIT select(_index);
     }
     else
     {
         sight::ui::dialog::message::show("Activity not valid", error_msg);
-        m_sigDataRequired->async_emit(activity);
+        m_sig_data_required->async_emit(activity);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::checkNext()
+void sequencer::check_next()
 {
     auto activity_set = m_activity_set.lock();
-    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+    SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.
-    if(m_currentActivity >= 0)
+    if(m_current_activity >= 0)
     {
-        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
+        this->store_activity_data(*activity_set, std::size_t(m_current_activity));
     }
 
-    const auto next_idx = static_cast<std::size_t>(m_currentActivity) + 1;
-    if(next_idx < m_activityIds.size())
+    const auto next_idx = static_cast<std::size_t>(m_current_activity) + 1;
+    if(next_idx < m_activity_ids.size())
     {
-        data::activity::sptr next_activity = this->getActivity(*activity_set, next_idx, slot(service::slots::UPDATE));
+        data::activity::sptr next_activity = this->get_activity(*activity_set, next_idx, slot(service::slots::UPDATE));
 
         bool ok = true;
         std::string error_msg;
 
-        std::tie(ok, error_msg) = sight::module::ui::qml::activity::sequencer::validateActivity(next_activity);
+        std::tie(ok, error_msg) = sight::module::ui::qml::activity::sequencer::validate_activity(next_activity);
 
         if(ok)
         {
-            Q_EMIT enable(m_currentActivity + 1);
+            Q_EMIT enable(m_current_activity + 1);
         }
     }
 }
@@ -182,14 +182,14 @@ void sequencer::checkNext()
 
 void sequencer::next()
 {
-    this->goTo(m_currentActivity + 1);
+    this->go_to(m_current_activity + 1);
 }
 
 //------------------------------------------------------------------------------
 
 void sequencer::previous()
 {
-    this->goTo(m_currentActivity - 1);
+    this->go_to(m_current_activity - 1);
 }
 
 //------------------------------------------------------------------------------
@@ -197,8 +197,8 @@ void sequencer::previous()
 service::connections_t sequencer::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_ACTIVITY_SET_INOUT, data::activity_set::ADDED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(s_ACTIVITY_SET_INOUT, data::activity_set::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(ACTIVITY_SET_INOUT, data::activity_set::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(ACTIVITY_SET_INOUT, data::activity_set::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

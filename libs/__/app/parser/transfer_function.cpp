@@ -37,7 +37,7 @@ void transfer_function::updating()
 
 // ------------------------------------------------------------------------------
 
-void transfer_function::createConfig(core::tools::object::sptr _obj)
+void transfer_function::create_config(core::tools::object::sptr _obj)
 {
     data::transfer_function::sptr tf = std::dynamic_pointer_cast<data::transfer_function>(_obj);
     SIGHT_ASSERT("transfer_function not instanced", tf);
@@ -47,7 +47,7 @@ void transfer_function::createConfig(core::tools::object::sptr _obj)
         const bool is_default = color_cfg->get("<xmlattr>.default", false);
         if(is_default)
         {
-            data::transfer_function::sptr default_tf = data::transfer_function::createDefaultTF();
+            data::transfer_function::sptr default_tf = data::transfer_function::create_default_tf();
             tf->deep_copy(default_tf);
         }
         else
@@ -58,7 +58,7 @@ void transfer_function::createConfig(core::tools::object::sptr _obj)
             const std::string name = m_cfg.get<std::string>("name", "");
             if(!name.empty())
             {
-                tf->setName(name);
+                tf->set_name(name);
             }
 
             for(auto it_step_cfg = steps_config.first ; it_step_cfg != steps_config.second ; ++it_step_cfg)
@@ -67,24 +67,24 @@ void transfer_function::createConfig(core::tools::object::sptr _obj)
                 const auto str_color = it_step_cfg->second.get<std::string>("<xmlattr>.color");
 
                 data::color::sptr new_color = std::make_shared<data::color>();
-                new_color->setRGBA(str_color);
+                new_color->set_rgba(str_color);
 
                 const data::transfer_function::color_t color(new_color->red(), new_color->green(),
                                                              new_color->blue(), new_color->alpha());
                 (*tf_data)[value] = color;
             }
 
-            tf_data->setWindowMinMax(tf_data->minMax());
+            tf_data->set_window_min_max(tf_data->min_max());
 
             const bool is_clamped = color_cfg->get<bool>("<xmlattr>.isClamped", true);
-            tf_data->setClamped(is_clamped);
+            tf_data->set_clamped(is_clamped);
 
-            tf->fitWindow();
+            tf->fit_window();
         }
     }
     else
     {
-        data::transfer_function::sptr default_tf = data::transfer_function::createDefaultTF();
+        data::transfer_function::sptr default_tf = data::transfer_function::create_default_tf();
         tf->deep_copy(default_tf);
     }
 }

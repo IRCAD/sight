@@ -55,14 +55,14 @@ public:
     UI_QT_API ~menubar() noexcept override = default;
 
     UI_QT_API void clean() override;
-    UI_QT_API void destroyContainer() override;
+    UI_QT_API void destroy_container() override;
 
-    UI_QT_API virtual void setQtMenuBar(QMenuBar* _menu_bar);
-    UI_QT_API virtual QMenuBar* getQtMenuBar();
+    UI_QT_API virtual void set_qt_menu_bar(QMenuBar* _menu_bar);
+    UI_QT_API virtual QMenuBar* get_qt_menu_bar();
 
 private:
 
-    QPointer<QMenuBar> m_menuBar;
+    QPointer<QMenuBar> m_menu_bar;
 };
 
 } // namespace sight::ui::qt::container

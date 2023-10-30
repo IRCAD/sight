@@ -58,33 +58,33 @@ void pdf_writer::configuring()
     for(const auto& container : boost::make_iterator_range(config.equal_range("container")))
     {
         const auto uid = container.second.get<std::string>("<xmlattr>.uid");
-        m_containersIDs.push_back(uid);
+        m_containers_i_ds.push_back(uid);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void pdf_writer::openLocationDialog()
+void pdf_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose an external data file" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("pdf", "*.pdf");
+    dialog_file.set_title(m_window_title.empty() ? "Choose an external data file" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("pdf", "*.pdf");
 
-    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.set_option(ui::dialog::location::write);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         this->set_file(result->get_file());
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -92,14 +92,14 @@ void pdf_writer::openLocationDialog()
 
 void pdf_writer::updating()
 {
-    if(!this->hasLocationDefined())
+    if(!this->has_location_defined())
     {
-        openLocationDialog();
+        open_location_dialog();
     }
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
-        QPdfWriter pdf_writer(this->getLocations().front().string().c_str());
+        QPdfWriter pdf_writer(this->get_locations().front().string().c_str());
         QPainter painter(&pdf_writer);
         pdf_writer.setPageSize(QPageSize(QPageSize::A4));
 
@@ -118,7 +118,7 @@ void pdf_writer::updating()
             {
                 std::shared_future<QImage> future;
                 auto locked_image = image_ptr.second->lock();
-                auto fn           = [&]{return pdf_writer::convertFwImageToQImage(*locked_image);};
+                auto fn           = [&]{return pdf_writer::convert_fw_image_to_q_image(*locked_image);};
                 locked_images.push_back(std::move(locked_image));
                 futures_q_image.emplace_back(std::async(std::launch::async, fn));
             }
@@ -132,7 +132,7 @@ void pdf_writer::updating()
         }
 
         // Adding QImage from Qt containers to the list of images to scale
-        for(QWidget*& qt_container : m_containersToExport)
+        for(QWidget*& qt_container : m_containers_to_export)
         {
             QImage image_to_draw = qt_container->grab().toImage();
             images_to_scale.push_back(image_to_draw);
@@ -170,7 +170,7 @@ void pdf_writer::updating()
 
 void pdf_writer::starting()
 {
-    for(const auto& id : m_containersIDs)
+    for(const auto& id : m_containers_i_ds)
     {
         ui::qt::container::widget::sptr container_elt;
         sight::ui::container::widget::sptr fw_container_from_config;
@@ -186,7 +186,7 @@ void pdf_writer::starting()
         if(fw_container_from_config)
         {
             container_elt = std::dynamic_pointer_cast<ui::qt::container::widget>(fw_container_from_config);
-            m_containersToExport.push_back(container_elt->getQtContainer());
+            m_containers_to_export.push_back(container_elt->get_qt_container());
         }
     }
 }
@@ -195,33 +195,33 @@ void pdf_writer::starting()
 
 void pdf_writer::stopping()
 {
-    for(QWidget*& qt_container : m_containersToExport)
+    for(QWidget*& qt_container : m_containers_to_export)
     {
         qt_container = nullptr;
     }
 
-    m_containersToExport.clear();
+    m_containers_to_export.clear();
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType pdf_writer::getIOPathType() const
+sight::io::service::path_type_t pdf_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
 
-QImage pdf_writer::convertFwImageToQImage(const data::image& _fw_image)
+QImage pdf_writer::convert_fw_image_to_q_image(const data::image& _fw_image)
 {
-    if(_fw_image.numComponents() == 3
-       && _fw_image.getType().name() == "uint8"
+    if(_fw_image.num_components() == 3
+       && _fw_image.type().name() == "uint8"
        && _fw_image.size()[2] == 1)
     {
         // Initialize QImage parameters
-        const data::image::Size dimension = _fw_image.size();
-        const int width                   = static_cast<int>(dimension[0]);
-        const int height                  = static_cast<int>(dimension[1]);
+        const data::image::size_t dimension = _fw_image.size();
+        const int width                     = static_cast<int>(dimension[0]);
+        const int height                    = static_cast<int>(dimension[1]);
 
         QImage q_image(width, height, QImage::Format_ARGB32);
         std::uint8_t* q_image_buffer = q_image.bits();

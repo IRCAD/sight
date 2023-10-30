@@ -26,8 +26,8 @@
 
 #include <data/helper/medical_image.hpp>
 
-#include <viz/scene2d/data/InitQtPen.hpp>
-#include <viz/scene2d/Scene2DGraphicsView.hpp>
+#include <viz/scene2d/data/init_qt_pen.hpp>
+#include <viz/scene2d/graphics_view.hpp>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
@@ -43,7 +43,7 @@ const core::com::slots::key_t IMAGE_CHANGE_SLOT = "imageChange";
 
 histogram::histogram() noexcept
 {
-    new_slot(IMAGE_CHANGE_SLOT, &histogram::onImageChange, this);
+    new_slot(IMAGE_CHANGE_SLOT, &histogram::on_image_change, this);
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -55,36 +55,36 @@ histogram::~histogram() noexcept =
 
 void histogram::configuring()
 {
-    this->configureParams(); // Looks for 'xAxis', 'yAxis' and 'zValue'
+    this->configure_params(); // Looks for 'xAxis', 'yAxis' and 'zValue'
 
     const config_t srv_config = this->get_config();
     const config_t config     = srv_config.get_child("config.<xmlattr>");
 
-    m_scale = m_yAxis->getScale();
+    m_scale = m_y_axis->get_scale();
 
     if(config.count("color") != 0U)
     {
-        sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
+        sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_color, config.get<std::string>("color"));
     }
 
     const auto cursor_config = srv_config.get_child_optional("config.cursor");
     if(cursor_config.has_value())
     {
         std::string color;
-        m_cursorEnabled = true;
+        m_cursor_enabled = true;
 
         color = cursor_config->get<std::string>("<xmlattr>.color", "");
-        sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorColor, color);
+        sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_cursor_color, color);
 
         color = cursor_config->get<std::string>("<xmlattr>.borderColor", "");
-        sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorBorderColor, color);
+        sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_cursor_border_color, color);
 
-        m_cursorSize = cursor_config->get<double>("<xmlattr>.size", m_cursorSize);
+        m_cursor_size = cursor_config->get<double>("<xmlattr>.size", m_cursor_size);
 
         color = cursor_config->get<std::string>("<xmlattr>.textColor", "#FFFFFF");
-        sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorLabelColor, color);
+        sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_cursor_label_color, color);
 
-        m_fontSize = cursor_config->get<int>("<xmlattr>.fontSize", m_fontSize);
+        m_font_size = cursor_config->get<int>("<xmlattr>.fontSize", m_font_size);
     }
 }
 
@@ -92,20 +92,20 @@ void histogram::configuring()
 
 void histogram::starting()
 {
-    if(m_cursorEnabled)
+    if(m_cursor_enabled)
     {
-        m_cursorLayer = new QGraphicsItemGroup();
+        m_cursor_layer = new QGraphicsItemGroup();
         // Adjust the layer's position and zValue depending on the associated axis
-        m_cursorLayer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-        m_cursorLayer->setZValue(m_zValue);
-        this->getScene2DRender()->getScene()->addItem(m_cursorLayer);
+        m_cursor_layer->setPos(m_x_axis->origin(), m_y_axis->origin());
+        m_cursor_layer->setZValue(m_z_value);
+        this->get_scene_2d_render()->get_scene()->addItem(m_cursor_layer);
 
-        m_cursorItem = new QGraphicsEllipseItem();
-        m_cursorItem->setBrush(m_cursorColor.color());
-        m_cursorItem->setPen(m_cursorBorderColor);
-        m_cursorItem->setZValue(m_zValue);
+        m_cursor_item = new QGraphicsEllipseItem();
+        m_cursor_item->setBrush(m_cursor_color.color());
+        m_cursor_item->setPen(m_cursor_border_color);
+        m_cursor_item->setZValue(m_z_value);
         m_color.setCosmetic(true);
-        m_cursorLayer->addToGroup(m_cursorItem);
+        m_cursor_layer->addToGroup(m_cursor_item);
 
         // We set the point size to 1.f but we will scale the text later according to m_fontSize
         QFont font;
@@ -113,17 +113,17 @@ void histogram::starting()
         font.setKerning(true);
         font.setFixedPitch(true);
 
-        m_cursorLabel = new QGraphicsSimpleTextItem();
-        m_cursorLabel->setBrush(QBrush(m_cursorLabelColor.color()));
-        m_cursorLabel->setFont(font);
-        m_cursorLabel->setVisible(false);
-        m_cursorLayer->addToGroup(m_cursorLabel);
+        m_cursor_label = new QGraphicsSimpleTextItem();
+        m_cursor_label->setBrush(QBrush(m_cursor_label_color.color()));
+        m_cursor_label->setFont(font);
+        m_cursor_label->setVisible(false);
+        m_cursor_layer->addToGroup(m_cursor_label);
     }
 
     const auto image = m_image.lock();
     m_histogram = std::make_unique<data::helper::histogram>(image.get_shared());
 
-    onImageChange();
+    on_image_change();
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ void histogram::updating()
 {
     if(m_layer != nullptr)
     {
-        this->getScene2DRender()->getScene()->removeItem(m_layer);
+        this->get_scene_2d_render()->get_scene()->removeItem(m_layer);
         delete m_layer;
     }
 
@@ -142,7 +142,7 @@ void histogram::updating()
 
     if(data::helper::medical_image::check_image_validity(image.get_shared()))
     {
-        const auto values = m_histogram->sample(m_histogramBinsWidth);
+        const auto values = m_histogram->sample(m_histogram_bins_width);
 
         if(!values.empty())
         {
@@ -152,15 +152,15 @@ void histogram::updating()
             m_color.setColor(color);
 
             const double min      = m_histogram->min();
-            const auto bins_width = static_cast<double>(m_histogramBinsWidth);
+            const auto bins_width = static_cast<double>(m_histogram_bins_width);
 
             QBrush brush = QBrush(m_color.color());
 
             // Build the graphic items:
             for(std::size_t i = 0 ; i < values.size() ; ++i)
             {
-                vec2d_t pt1 = this->mapAdaptorToScene({min + static_cast<double>(i) * bins_width, values[i]});
-                vec2d_t pt2 = this->mapAdaptorToScene({min + static_cast<double>(i + 1) * bins_width, values[i]});
+                vec2d_t pt1 = this->map_adaptor_to_scene({min + static_cast<double>(i) * bins_width, values[i]});
+                vec2d_t pt2 = this->map_adaptor_to_scene({min + static_cast<double>(i + 1) * bins_width, values[i]});
 
                 QPainterPath painter(QPointF(pt1.x, 0));
                 painter.lineTo(pt1.x, pt1.y);
@@ -176,11 +176,11 @@ void histogram::updating()
             }
 
             // Adjust the layer's position and zValue depending on the associated axis
-            m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-            m_layer->setZValue(m_zValue);
+            m_layer->setPos(m_x_axis->origin(), m_y_axis->origin());
+            m_layer->setZValue(m_z_value);
 
             // Add to the scene the unique item which gather the whole set of rectangle graphic items:
-            this->getScene2DRender()->getScene()->addItem(m_layer);
+            this->get_scene_2d_render()->get_scene()->addItem(m_layer);
         }
     }
 }
@@ -193,24 +193,24 @@ void histogram::stopping()
 
     if(m_layer != nullptr)
     {
-        this->getScene2DRender()->getScene()->removeItem(m_layer);
+        this->get_scene_2d_render()->get_scene()->removeItem(m_layer);
         delete m_layer;
         m_layer = nullptr;
     }
 
-    if(m_cursorLayer != nullptr)
+    if(m_cursor_layer != nullptr)
     {
-        this->getScene2DRender()->getScene()->removeItem(m_cursorLayer);
-        delete m_cursorLayer;
-        m_cursorLayer = nullptr;
+        this->get_scene_2d_render()->get_scene()->removeItem(m_cursor_layer);
+        delete m_cursor_layer;
+        m_cursor_layer = nullptr;
     }
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
+void histogram::process_interaction(sight::viz::scene2d::data::event& _event)
 {
-    if(this->status() != sight::service::base::STARTED)
+    if(!this->started())
     {
         return;
     }
@@ -218,20 +218,20 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
     bool update_pointed_pos = false;
 
     // Vertical scaling
-    if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp)
+    if(_event.type() == sight::viz::scene2d::data::event::mouse_wheel_up)
     {
-        if(_event.getModifier() == sight::viz::scene2d::data::Event::ControlModifier)
+        if(_event.get_modifier() == sight::viz::scene2d::data::event::control_modifier)
         {
-            m_histogramBinsWidth = std::min(
+            m_histogram_bins_width = std::min(
                 static_cast<std::size_t>(m_histogram->max() - m_histogram->min()),
-                m_histogramBinsWidth * 2
+                m_histogram_bins_width * 2
             );
             this->updating();
         }
         else
         {
             double scale = SCALE;
-            if(_event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
+            if(_event.get_modifier() == sight::viz::scene2d::data::event::shift_modifier)
             {
                 scale = FAST_SCALE;
             }
@@ -240,8 +240,8 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 
             m_layer->setTransform(QTransform::fromScale(1., scale), true);
 
-            _event.setAccepted(true);
-            m_yAxis->setScale(m_scale);
+            _event.set_accepted(true);
+            m_y_axis->set_scale(m_scale);
 
             auto viewport = m_viewport.lock();
             auto sig      = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -250,17 +250,17 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 
         update_pointed_pos = true;
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown)
+    else if(_event.type() == sight::viz::scene2d::data::event::mouse_wheel_down)
     {
-        if(_event.getModifier() == sight::viz::scene2d::data::Event::ControlModifier)
+        if(_event.get_modifier() == sight::viz::scene2d::data::event::control_modifier)
         {
-            m_histogramBinsWidth = std::max(std::size_t(1), m_histogramBinsWidth / 2);
+            m_histogram_bins_width = std::max(std::size_t(1), m_histogram_bins_width / 2);
             this->updating();
         }
         else
         {
             double scale = SCALE;
-            if(_event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
+            if(_event.get_modifier() == sight::viz::scene2d::data::event::shift_modifier)
             {
                 scale = FAST_SCALE;
             }
@@ -269,8 +269,8 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 
             m_layer->setTransform(QTransform::fromScale(1., 1. / scale), true);
 
-            _event.setAccepted(true);
-            m_yAxis->setScale(m_scale);
+            _event.set_accepted(true);
+            m_y_axis->set_scale(m_scale);
 
             auto viewport = m_viewport.lock();
             auto sig      = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -279,26 +279,26 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 
         update_pointed_pos = true;
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
+    else if(_event.type() == sight::viz::scene2d::data::event::mouse_move)
     {
         update_pointed_pos = true;
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    else if(_event.type() == sight::viz::scene2d::data::event::mouse_button_press)
     {
-        m_isInteracting    = true;
+        m_is_interacting   = true;
         update_pointed_pos = true;
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+    else if(_event.type() == sight::viz::scene2d::data::event::mouse_button_release)
     {
-        m_isInteracting    = false;
+        m_is_interacting   = false;
         update_pointed_pos = true;
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::EnterEvent)
+    else if(_event.type() == sight::viz::scene2d::data::event::enter_event)
     {
         m_entered          = true;
         update_pointed_pos = true;
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::LeaveEvent)
+    else if(_event.type() == sight::viz::scene2d::data::event::leave_event)
     {
         m_entered          = false;
         update_pointed_pos = true;
@@ -306,7 +306,7 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 
     if(update_pointed_pos)
     {
-        this->updateCurrentPoint(_event);
+        this->update_current_point(_event);
     }
 }
 
@@ -315,29 +315,29 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 service::connections_t histogram::auto_connections() const
 {
     return {
-        {s_IMAGE_INPUT, data::image::MODIFIED_SIG, IMAGE_CHANGE_SLOT},
-        {s_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, IMAGE_CHANGE_SLOT}
+        {IMAGE_INPUT, data::image::MODIFIED_SIG, IMAGE_CHANGE_SLOT},
+        {IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, IMAGE_CHANGE_SLOT}
     };
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void histogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
+void histogram::update_current_point(sight::viz::scene2d::data::event& _event)
 {
-    if(m_cursorEnabled)
+    if(m_cursor_enabled)
     {
-        const auto values                = m_histogram->sample(m_histogramBinsWidth);
+        const auto values                = m_histogram->sample(m_histogram_bins_width);
         const double histogram_min_value = m_histogram->min();
-        const auto histogram_bins_width  = static_cast<double>(m_histogramBinsWidth);
+        const auto histogram_bins_width  = static_cast<double>(m_histogram_bins_width);
 
         // Event coordinates in scene
-        sight::viz::scene2d::vec2d_t scene_coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+        sight::viz::scene2d::vec2d_t scene_coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
         const double hist_index                  = scene_coord.x;
         const double index                       = hist_index - histogram_min_value;
-        const std::size_t nb_values              = values.size() * m_histogramBinsWidth;
+        const std::size_t nb_values              = values.size() * m_histogram_bins_width;
 
         const auto viewport         = m_viewport.lock();
-        const auto view_to_viewport = this->viewToViewport(*viewport);
+        const auto view_to_viewport = this->view_to_viewport(*viewport);
 
         if(index >= 0.F && index < static_cast<double>(nb_values) && m_entered)
         {
@@ -346,48 +346,48 @@ void histogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
             coord.y = static_cast<double>(values.at(static_cast<std::size_t>(index / histogram_bins_width))) * m_scale;
 
             // Draw the cursor
-            const vec2d_t diameter = vec2d_t(m_cursorSize, m_cursorSize) * view_to_viewport;
+            const vec2d_t diameter = vec2d_t(m_cursor_size, m_cursor_size) * view_to_viewport;
 
             const double x = coord.x - diameter.x / 2;
             const double y = coord.y - diameter.y / 2;
 
-            m_cursorItem->setRect(x, y, diameter.x, diameter.y);
-            m_cursorItem->setVisible(true);
+            m_cursor_item->setRect(x, y, diameter.x, diameter.y);
+            m_cursor_item->setVisible(true);
 
-            if(m_isInteracting)
+            if(m_is_interacting)
             {
                 // Draw the cursor text
-                const vec2d_t scale = vec2d_t(m_fontSize, m_fontSize) * view_to_viewport;
+                const vec2d_t scale = vec2d_t(m_font_size, m_font_size) * view_to_viewport;
 
                 // Event coordinates in scene
-                m_cursorLabel->setText(QString::number(static_cast<int>((coord.x))));
+                m_cursor_label->setText(QString::number(static_cast<int>((coord.x))));
 
                 QTransform transform;
                 transform.scale(scale.x, scale.y);
 
-                m_cursorLabel->setTransform(transform);
-                m_cursorLabel->setPos(coord.x + scale.x * 0.5, coord.y - scale.y * 0.5);
-                m_cursorLabel->setVisible(true);
+                m_cursor_label->setTransform(transform);
+                m_cursor_label->setPos(coord.x + scale.x * 0.5, coord.y - scale.y * 0.5);
+                m_cursor_label->setVisible(true);
             }
             else
             {
-                m_cursorLabel->setVisible(false);
+                m_cursor_label->setVisible(false);
             }
         }
         else
         {
-            m_cursorItem->setVisible(false);
-            m_cursorLabel->setVisible(false);
+            m_cursor_item->setVisible(false);
+            m_cursor_label->setVisible(false);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void histogram::onImageChange()
+void histogram::on_image_change()
 {
     m_histogram->compute();
-    m_histogramBinsWidth = static_cast<std::size_t>(m_histogram->max() - m_histogram->min()) / 50;
+    m_histogram_bins_width = static_cast<std::size_t>(m_histogram->max() - m_histogram->min()) / 50;
     this->updating();
 }
 

@@ -74,7 +74,7 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    static ACTIVITY_API return_t checkRequirements(const CSPTR(data::activity)& _activity);
+    static ACTIVITY_API return_t check_requirements(const CSPTR(data::activity)& _activity);
 
     /**
      * @brief Calls the object validator if it is defined.
@@ -83,7 +83,7 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see activity::validator::object
      */
-    static ACTIVITY_API return_t checkObject(
+    static ACTIVITY_API return_t check_object(
         const CSPTR(data::object)& _object,
         const std::string& _validator_impl
     );

@@ -31,9 +31,9 @@
 #include <core/spy_log.hpp>
 #include <core/tools/system.hpp>
 
-#include <io/zip/ArchiveReader.hpp>
-#include <io/zip/ArchiveWriter.hpp>
-#include <io/zip/exception/Read.hpp>
+#include <io/zip/archive_reader.hpp>
+#include <io/zip/archive_writer.hpp>
+#include <io/zip/exception/read.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/log/core.hpp>
@@ -119,11 +119,11 @@ inline static T get_option_value(
     const std::string& _option
 )
 {
-    static const bool use_base64 = _variables_map.count(SIGHT_BASE64) > 0;
+    static const bool s_USE_BASE64 = _variables_map.count(SIGHT_BASE64) > 0;
 
     if(_variables_map.count(_option))
     {
-        if(use_base64)
+        if(s_USE_BASE64)
         {
             if constexpr(std::is_base_of_v<std::filesystem::path, T>)
             {
@@ -270,10 +270,10 @@ inline static int log(
     else
     {
         // Create the archive writer
-        auto archive_writer = sight::io::zip::ArchiveWriter::get(output_path);
+        auto archive_writer = sight::io::zip::archive_writer::get(output_path);
 
         // Write a new log file in the archive
-        auto archive_stream = archive_writer->openFile(
+        auto archive_stream = archive_writer->open_file(
             sight::core::log::LOG_FILE,
             password
         );
@@ -314,7 +314,7 @@ inline static int extract(
     const std::filesystem::path& input_path = get_option_value<std::string>(_variables_map, SIGHT_INPUT);
 
     // Create the archive reader
-    auto archive_reader = sight::io::zip::ArchiveReader::get(input_path);
+    auto archive_reader = sight::io::zip::archive_reader::get(input_path);
 
     const auto& password = get_password(_argc, _argv, _variables_map);
 
@@ -323,16 +323,16 @@ inline static int extract(
 
     try
     {
-        archive_istream = archive_reader->openFile(
+        archive_istream = archive_reader->open_file(
             sight::core::log::LOG_FILE,
             password
         );
     }
-    catch(const sight::io::zip::exception::BadPassword&)
+    catch(const sight::io::zip::exception::bad_password&)
     {
         if constexpr(sight::core::crypto::password_keeper::has_default_password())
         {
-            archive_istream = archive_reader->openFile(
+            archive_istream = archive_reader->open_file(
                 sight::core::log::LOG_FILE,
                 sight::core::crypto::password_keeper::get_global_password()
             );
@@ -396,10 +396,10 @@ inline static int merge(
         [&](const std::filesystem::path& _input_path, const sight::core::crypto::secure_string& _secret)
         {
             // Create the archive reader
-            auto archive_reader = sight::io::zip::ArchiveReader::get(_input_path);
+            auto archive_reader = sight::io::zip::archive_reader::get(_input_path);
 
             // Open log file from the archive
-            auto archive_istream = archive_reader->openFile(
+            auto archive_istream = archive_reader->open_file(
                 sight::core::log::LOG_FILE,
                 _secret
             );
@@ -429,13 +429,13 @@ inline static int merge(
             {
                 return decrypt(_input_path, _password);
             }
-            catch(const sight::io::zip::exception::BadPassword&)
+            catch(const sight::io::zip::exception::bad_password&)
             {
                 try
                 {
                     return decrypt(_input_path, _old_password);
                 }
-                catch(const sight::io::zip::exception::BadPassword&)
+                catch(const sight::io::zip::exception::bad_password&)
                 {
                     if constexpr(sight::core::crypto::password_keeper::has_default_password())
                     {
@@ -492,10 +492,10 @@ inline static int convert(
     }
 
     // Create the archive reader
-    auto archive_writer = sight::io::zip::ArchiveWriter::get(output_path);
+    auto archive_writer = sight::io::zip::archive_writer::get(output_path);
 
     // Write a new log file in the archive
-    auto archive_ostream = archive_writer->openFile(
+    auto archive_ostream = archive_writer->open_file(
         sight::core::log::LOG_FILE,
         password
     );
@@ -519,7 +519,7 @@ int main(int argc, char* argv[])
 
     // Setup own boost::log logger to print stuff on stderr by default
     boost::log::core::get()->remove_all_sinks();
-    sight::core::log::spy_logger::add_console_log(std::clog, sight::core::log::spy_logger::SL_WARN);
+    sight::core::log::spy_logger::add_console_log(std::clog, sight::core::log::spy_logger::sl_warn);
 
     // Register program options
     // Common options

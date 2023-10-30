@@ -39,27 +39,27 @@ class CORE_CLASS_API log : public core::base_object
 {
 public:
 
-    typedef enum
+    enum level_t
     {
-        INFORMATION = 0,
-        WARNING     = 5,
-        CRITICAL    = 10
-    } level_type;
+        information = 0,
+        warning     = 5,
+        critical    = 10
+    };
 
     /// Constructor
-    CORE_API log(level_type _level, std::string _message);
+    CORE_API log(level_t _level, std::string _message);
 
     /// Destructor
     CORE_API ~log() override;
 
     /// Set Log level
-    void set_level(level_type _level)
+    void set_level(level_t _level)
     {
         m_level = _level;
     }
 
     /// Get Log level
-    level_type get_level() const
+    level_t get_level() const
     {
         return m_level;
     }
@@ -79,7 +79,7 @@ public:
 protected:
 
     /// Log level
-    level_type m_level;
+    level_t m_level;
 
     /// Log message
     std::string m_message;

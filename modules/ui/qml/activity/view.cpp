@@ -45,9 +45,9 @@ static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT = "launchActivity";
 //------------------------------------------------------------------------------
 
 view::view() :
-    m_sigActivityLaunched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG))
+    m_sig_activity_launched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG))
 {
-    new_slot(LAUNCH_ACTIVITY_SLOT, &view::launchActivity, this);
+    new_slot(LAUNCH_ACTIVITY_SLOT, &view::launch_activity, this);
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void view::configuring()
                 inout_map.push_back(obj->get_id());
             }
         });
-    this->parseConfiguration(config, inout_map);
+    this->parse_configuration(config, inout_map);
 }
 
 //------------------------------------------------------------------------------
@@ -91,32 +91,32 @@ void view::updating()
 
 //------------------------------------------------------------------------------
 
-void view::notifyActivityCreation()
+void view::notify_activity_creation()
 {
-    m_sigActivityLaunched->async_emit();
+    m_sig_activity_launched->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void view::launchActivity(data::activity::sptr _activity)
+void view::launch_activity(data::activity::sptr _activity)
 {
     bool is_valid = false;
     std::string message;
 
     // check if the activity can be launched
-    std::tie(is_valid, message) = sight::module::ui::qml::activity::view::validateActivity(_activity);
+    std::tie(is_valid, message) = sight::module::ui::qml::activity::view::validate_activity(_activity);
 
     if(is_valid)
     {
-        auto [info, replacementMap] = sight::activity::extension::activity::getDefault()->getInfoAndReplacementMap(
+        auto [info, replacementMap] = sight::activity::extension::activity::get_default()->get_info_and_replacement_map(
             *_activity,
             m_parameters
         );
 
-        core::runtime::start_module(info.bundleId);
+        core::runtime::start_module(info.bundle_id);
 
         // get Activity path, it allows to retrieve the associated Qml file
-        const auto path = core::runtime::get_module_resource_file_path(info.bundleId, info.appConfig.id + ".qml");
+        const auto path = core::runtime::get_module_resource_file_path(info.bundle_id, info.app_config.id + ".qml");
 
         // convert the replaceMap to Qt Map to send it to Qml(only QVariantMap type is implemented in Qml)
         QVariantMap variant_map;
@@ -129,11 +129,11 @@ void view::launchActivity(data::activity::sptr _activity)
             );
         }
 
-        Q_EMIT launchRequested(QUrl::fromLocalFile(QString::fromStdString(path.string())), variant_map);
+        Q_EMIT launch_requested(QUrl::fromLocalFile(QString::fromStdString(path.string())), variant_map);
     }
     else
     {
-        sight::ui::dialog::message::show("Activity launch", message, sight::ui::dialog::message::CRITICAL);
+        sight::ui::dialog::message::show("Activity launch", message, sight::ui::dialog::message::critical);
     }
 }
 

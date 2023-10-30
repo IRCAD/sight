@@ -4,7 +4,7 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::axis</service>
-         <object key="viewport">sight::viz::scene2d::data::Viewport</object>
+         <object key="viewport">sight::viz::scene2d::data::viewport</object>
          <desc>Render an axis on the scene2d.</desc>
     </extension>
 
@@ -17,7 +17,7 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::histogram</service>
-         <object key="viewport">sight::viz::scene2d::data::Viewport</object>
+         <object key="viewport">sight::viz::scene2d::data::viewport</object>
          <object key="image">sight::data::image</object>
          <desc>Displays the histogram of an image.</desc>
     </extension>
@@ -30,7 +30,7 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::transfer_function</service>
-         <object key="viewport">sight::viz::scene2d::data::Viewport</object>
+         <object key="viewport">sight::viz::scene2d::data::viewport</object>
          <object key="tf">sight::data::transfer_function</object>
          <desc>Defines an adaptor to display a composite of TF and interact with them.</desc>
     </extension>

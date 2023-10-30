@@ -134,7 +134,7 @@ void field_copy()
 
 //------------------------------------------------------------------------------
 
-void copy_test::fieldCopyTest()
+void copy_test::field_copy_test()
 {
     field_deep_copy<data::array>();
     field_copy<data::boolean>();
@@ -163,7 +163,7 @@ void copy_test::fieldCopyTest()
 
 //-----------------------------------------------------------------------------
 
-void copy_test::severalReferencesCopyTest()
+void copy_test::several_references_copy_test()
 {
     const std::int64_t value        = 42;
     data::integer::sptr integer     = std::make_shared<data::integer>(value);
@@ -177,7 +177,7 @@ void copy_test::severalReferencesCopyTest()
     data::composite::sptr composite_copy = data::object::copy(composite);
 
     CPPUNIT_ASSERT(integer != std::dynamic_pointer_cast<data::integer>((*composite_copy)["A"]));
-    CPPUNIT_ASSERT_EQUAL(value, std::dynamic_pointer_cast<data::integer>((*composite_copy)["A"])->getValue());
+    CPPUNIT_ASSERT_EQUAL(value, std::dynamic_pointer_cast<data::integer>((*composite_copy)["A"])->get_value());
     CPPUNIT_ASSERT_EQUAL((*composite_copy)["A"], composite_copy->get_field("F1"));
     CPPUNIT_ASSERT_EQUAL((*composite_copy)["A"], composite_copy->get_field("F2"));
     CPPUNIT_ASSERT_EQUAL((*composite_copy)["A"], (*composite_copy)["B"]);

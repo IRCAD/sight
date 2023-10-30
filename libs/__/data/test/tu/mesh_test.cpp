@@ -62,30 +62,30 @@ void mesh_test::insertion()
     {
         data::mesh::sptr mesh = std::make_shared<data::mesh>();
         const auto lock       = mesh->dump_lock();
-        mesh->pushPoint(10, 20, 30);
-        mesh->pushPoint(10, 10, 10);
-        mesh->pushPoint(20, 21, 10);
-        mesh->pushPoint(30, 30, 10);
-        mesh->pushPoint(15, 20, 35);
-        mesh->pushPoint(20, 20, 10);
-        mesh->pushPoint(20, 63, 17);
-        mesh->pushPoint(27, 83, 52);
+        mesh->push_point(10, 20, 30);
+        mesh->push_point(10, 10, 10);
+        mesh->push_point(20, 21, 10);
+        mesh->push_point(30, 30, 10);
+        mesh->push_point(15, 20, 35);
+        mesh->push_point(20, 20, 10);
+        mesh->push_point(20, 63, 17);
+        mesh->push_point(27, 83, 52);
 
-        mesh->pushCell(1, 2, 3);
-        mesh->pushCell(1, 3, 4);
-        mesh->pushCell(1, 2, 5);
+        mesh->push_cell(1, 2, 3);
+        mesh->push_cell(1, 3, 4);
+        mesh->push_cell(1, 2, 5);
 
         std::array<data::mesh::point_t, 3> p = {3, 6, 5};
-        mesh->pushCell(std::vector(p.begin(), p.end()));
+        mesh->push_cell(std::vector(p.begin(), p.end()));
 
         std::array<data::mesh::point_t, 3> p2 = {1, 3, 5};
-        mesh->pushCell(std::vector(p2.begin(), p2.end()));
+        mesh->push_cell(std::vector(p2.begin(), p2.end()));
 
         std::array<data::mesh::point_t, 3> p3 = {7, 2, 5};
-        mesh->pushCell(std::vector(p3.begin(), p3.end()));
+        mesh->push_cell(std::vector(p3.begin(), p3.end()));
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(8), mesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(6), mesh->numCells());
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(8), mesh->num_points());
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(6), mesh->num_cells());
 
         auto it = mesh->cbegin<data::iterator::point::xyz>();
         CPPUNIT_ASSERT_EQUAL(10.F, it->x);
@@ -147,7 +147,7 @@ void mesh_test::insertion()
         CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::point_t>(3), cell_it->pt[1]);
         CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::point_t>(4), cell_it->pt[2]);
 
-        mesh->setPoint(4, 45, 59, 48);
+        mesh->set_point(4, 45, 59, 48);
         auto it_pt = mesh->begin<data::iterator::point::xyz>();
         it_pt += 4;
         CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), it_pt->x);
@@ -156,16 +156,16 @@ void mesh_test::insertion()
     }
 
     {
-        const data::mesh::size_t nb_points       = 60;
-        const data::mesh::size_t nb_cells        = 59;
-        const data::mesh::cell_type_t cell_type  = data::mesh::cell_type_t::TRIANGLE;
-        const data::mesh::Attributes extra_array =
-            data::mesh::Attributes::POINT_NORMALS
-            | data::mesh::Attributes::POINT_COLORS
-            | data::mesh::Attributes::POINT_TEX_COORDS
-            | data::mesh::Attributes::CELL_NORMALS
-            | data::mesh::Attributes::CELL_COLORS
-            | data::mesh::Attributes::CELL_TEX_COORDS;
+        const data::mesh::size_t nb_points      = 60;
+        const data::mesh::size_t nb_cells       = 59;
+        const data::mesh::cell_type_t cell_type = data::mesh::cell_type_t::triangle;
+        const data::mesh::attribute extra_array =
+            data::mesh::attribute::point_normals
+            | data::mesh::attribute::point_colors
+            | data::mesh::attribute::point_tex_coords
+            | data::mesh::attribute::cell_normals
+            | data::mesh::attribute::cell_colors
+            | data::mesh::attribute::cell_tex_coords;
 
         data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
@@ -180,45 +180,45 @@ void mesh_test::insertion()
             const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
             const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
             const std::size_t value                                = 3 * i;
-            const auto id                                          = mesh->pushPoint(
+            const auto id                                          = mesh->push_point(
                 static_cast<float>(value),
                 static_cast<float>(value + 1),
                 static_cast<float>(value + 2)
             );
-            mesh->setPointColor(id, color);
-            mesh->setPointNormal(id, normal);
-            mesh->setPointTexCoord(id, tex_coords);
+            mesh->set_point_color(id, color);
+            mesh->set_point_normal(id, normal);
+            mesh->set_point_tex_coord(id, tex_coords);
         }
 
         for(data::mesh::size_t i = 0 ; i < nb_cells ; ++i)
         {
-            const auto id = mesh->pushCell(i, i + 1, i + 2);
+            const auto id = mesh->push_cell(i, i + 1, i + 2);
 
             const auto val                                         = static_cast<data::mesh::color_t>(i);
             const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
             const auto float_val                                   = static_cast<float>(i);
             const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
             const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
-            mesh->setCellColor(id, color);
-            mesh->setCellNormal(id, normal);
-            mesh->setCellTexCoord(id, tex_coords);
+            mesh->set_cell_color(id, color);
+            mesh->set_cell_normal(id, normal);
+            mesh->set_cell_tex_coord(id, tex_coords);
         }
 
-        CPPUNIT_ASSERT_EQUAL(nb_points, mesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(nb_cells, mesh->numCells());
-        CPPUNIT_ASSERT_EQUAL(mesh->getAllocatedSizeInBytes(), mesh->getDataSizeInBytes());
-        const bool resize_memory = mesh->shrinkToFit();
+        CPPUNIT_ASSERT_EQUAL(nb_points, mesh->num_points());
+        CPPUNIT_ASSERT_EQUAL(nb_cells, mesh->num_cells());
+        CPPUNIT_ASSERT_EQUAL(mesh->allocated_size_in_bytes(), mesh->size_in_bytes());
+        const bool resize_memory = mesh->shrink_to_fit();
         CPPUNIT_ASSERT_EQUAL(false, resize_memory);
     }
     {
         const data::mesh::size_t nb_points = 1;
         const data::mesh::size_t nb_cells  = 1;
 
-        const data::mesh::cell_type_t cell_type  = data::mesh::cell_type_t::POINT;
-        const data::mesh::Attributes extra_array =
-            data::mesh::Attributes::POINT_NORMALS
-            | data::mesh::Attributes::POINT_COLORS
-            | data::mesh::Attributes::POINT_TEX_COORDS;
+        const data::mesh::cell_type_t cell_type = data::mesh::cell_type_t::point;
+        const data::mesh::attribute extra_array =
+            data::mesh::attribute::point_normals
+            | data::mesh::attribute::point_colors
+            | data::mesh::attribute::point_tex_coords;
 
         data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
@@ -238,7 +238,7 @@ void mesh_test::insertion()
 
         CPPUNIT_ASSERT_EQUAL(
             point_size,
-            mesh->getAllocatedSizeInBytes()
+            mesh->allocated_size_in_bytes()
         );
         for(std::size_t i = 0 ; i < 1001 ; ++i)
         {
@@ -248,14 +248,14 @@ void mesh_test::insertion()
             const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
             const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
             const std::size_t value                                = 3 * i;
-            const auto id                                          = mesh->pushPoint(
+            const auto id                                          = mesh->push_point(
                 static_cast<float>(value),
                 static_cast<float>(value + 1),
                 static_cast<float>(value + 2)
             );
-            mesh->setPointColor(id, color);
-            mesh->setPointNormal(id, normal);
-            mesh->setPointTexCoord(id, tex_coords);
+            mesh->set_point_color(id, color);
+            mesh->set_point_normal(id, normal);
+            mesh->set_point_tex_coord(id, tex_coords);
         }
 
         namespace point = iterator::point;
@@ -285,33 +285,33 @@ void mesh_test::insertion()
                 ++count;
             }
 
-            CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+            CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
         }
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36040), mesh->getAllocatedSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36036), mesh->getDataSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->numCells());
-        const auto idx = mesh->pushPoint(0.0, 0.0, 0.0);
-        mesh->setPointColor(idx, 255, 0, 0, 255);
-        mesh->setPointNormal(idx, 2.0, 1.0, 3.0);
-        mesh->setPointTexCoord(idx, 3.0, 1.0);
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(72040), mesh->getAllocatedSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36072), mesh->getDataSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(1002), mesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(extra_array, mesh->getAttributes());
-        CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::POINT_COLORS>());
-        CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::POINT_NORMALS>());
-        CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::POINT_TEX_COORDS>());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36040), mesh->allocated_size_in_bytes());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36036), mesh->size_in_bytes());
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->num_cells());
+        const auto idx = mesh->push_point(0.0, 0.0, 0.0);
+        mesh->set_point_color(idx, 255, 0, 0, 255);
+        mesh->set_point_normal(idx, 2.0, 1.0, 3.0);
+        mesh->set_point_tex_coord(idx, 3.0, 1.0);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(72040), mesh->allocated_size_in_bytes());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36072), mesh->size_in_bytes());
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(1002), mesh->num_points());
+        CPPUNIT_ASSERT_EQUAL(extra_array, mesh->attributes());
+        CPPUNIT_ASSERT(mesh->has<data::mesh::attribute::point_colors>());
+        CPPUNIT_ASSERT(mesh->has<data::mesh::attribute::point_normals>());
+        CPPUNIT_ASSERT(mesh->has<data::mesh::attribute::point_tex_coords>());
     }
 
     {
-        const data::mesh::size_t nb_points            = 1;
-        const data::mesh::size_t nb_cells             = 1;
-        const data::mesh::cell_type_t cell_typ_e1     = data::mesh::cell_type_t::TRIANGLE;
-        const data::mesh::Attributes attributes_array =
-            data::mesh::Attributes::CELL_NORMALS
-            | data::mesh::Attributes::CELL_COLORS
-            | data::mesh::Attributes::CELL_TEX_COORDS;
+        const data::mesh::size_t nb_points           = 1;
+        const data::mesh::size_t nb_cells            = 1;
+        const data::mesh::cell_type_t cell_typ_e1    = data::mesh::cell_type_t::triangle;
+        const data::mesh::attribute attributes_array =
+            data::mesh::attribute::cell_normals
+            | data::mesh::attribute::cell_colors
+            | data::mesh::attribute::cell_tex_coords;
         data::mesh::sptr mesh = std::make_shared<data::mesh>();
         mesh->reserve(nb_points, nb_cells, cell_typ_e1, attributes_array);
         const auto lock                                   = mesh->dump_lock();
@@ -320,7 +320,7 @@ void mesh_test::insertion()
         const std::size_t point_tex_coords_allocated_size = nb_points * 2LL * sizeof(data::mesh::texcoord_t);
         const std::size_t point_position_allocated_size   = nb_points * 3LL * sizeof(data::mesh::position_t);
 
-        // data::mesh::cell_type_t::TRIANGLE;
+        // data::mesh::cell_type_t::triangle;
         const std::size_t cell_data_allocated_size = nb_cells * 3LL * sizeof(data::mesh::cell_t);
 
         const std::size_t point_size = point_position_allocated_size + cell_data_allocated_size
@@ -329,21 +329,21 @@ void mesh_test::insertion()
 
         CPPUNIT_ASSERT_EQUAL(
             point_size,
-            mesh->getAllocatedSizeInBytes()
+            mesh->allocated_size_in_bytes()
         );
 
         for(data::mesh::size_t i = 0 ; i < 1001 ; ++i)
         {
-            const auto id = mesh->pushCell(i, i + 1, i + 2);
+            const auto id = mesh->push_cell(i, i + 1, i + 2);
 
             const auto val                                         = static_cast<data::mesh::color_t>(i);
             const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
             const auto float_val                                   = static_cast<float>(i);
             const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
             const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
-            mesh->setCellColor(id, color);
-            mesh->setCellNormal(id, normal);
-            mesh->setCellTexCoord(id, tex_coords);
+            mesh->set_cell_color(id, color);
+            mesh->set_cell_normal(id, normal);
+            mesh->set_cell_tex_coord(id, tex_coords);
         }
 
         namespace cell = iterator::cell;
@@ -374,23 +374,23 @@ void mesh_test::insertion()
                 ++count;
             }
 
-            CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
+            CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), count);
         }
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36048), mesh->getAllocatedSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36036), mesh->getDataSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36048), mesh->allocated_size_in_bytes());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36036), mesh->size_in_bytes());
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->num_points());
 
         CPPUNIT_ASSERT_EQUAL(
-            data::mesh::Attributes::CELL_NORMALS
-            | data::mesh::Attributes::CELL_COLORS
-            | data::mesh::Attributes::CELL_TEX_COORDS,
-            mesh->getAttributes()
+            data::mesh::attribute::cell_normals
+            | data::mesh::attribute::cell_colors
+            | data::mesh::attribute::cell_tex_coords,
+            mesh->attributes()
         );
-        CPPUNIT_ASSERT_EQUAL(attributes_array, mesh->getAttributes());
-        CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::CELL_COLORS>());
-        CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::CELL_NORMALS>());
-        CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
+        CPPUNIT_ASSERT_EQUAL(attributes_array, mesh->attributes());
+        CPPUNIT_ASSERT(mesh->has<data::mesh::attribute::cell_colors>());
+        CPPUNIT_ASSERT(mesh->has<data::mesh::attribute::cell_normals>());
+        CPPUNIT_ASSERT(mesh->has<data::mesh::attribute::cell_tex_coords>());
     }
 }
 
@@ -404,38 +404,38 @@ void mesh_test::copy()
 
     const auto dump_lock = mesh->dump_lock();
 
-    mesh->pushPoint(10, 20, 30);
-    mesh->pushPoint(10, 10, 10);
-    mesh->pushPoint(20, 20, 10);
-    mesh->pushPoint(30, 30, 10);
-    mesh->pushPoint(15, 20, 35);
-    mesh->pushPoint(20, 20, 10);
-    mesh->pushPoint(20, 63, 17);
-    mesh->pushPoint(27, 83, 52);
+    mesh->push_point(10, 20, 30);
+    mesh->push_point(10, 10, 10);
+    mesh->push_point(20, 20, 10);
+    mesh->push_point(30, 30, 10);
+    mesh->push_point(15, 20, 35);
+    mesh->push_point(20, 20, 10);
+    mesh->push_point(20, 63, 17);
+    mesh->push_point(27, 83, 52);
 
-    mesh->pushCell(1, 2, 0, 2);
-    mesh->pushCell(1, 3, 4, 5);
-    mesh->pushCell(1, 2, 5, 4);
+    mesh->push_cell(1, 2, 0, 2);
+    mesh->push_cell(1, 3, 4, 5);
+    mesh->push_cell(1, 2, 5, 4);
 
     std::array<data::mesh::cell_t, 4> pt1 = {3, 6, 5, 1};
-    mesh->pushCell(std::vector(pt1.begin(), pt1.end()));
+    mesh->push_cell(std::vector(pt1.begin(), pt1.end()));
 
     std::array<data::mesh::cell_t, 4> pt2 = {1, 3, 5, 7};
-    mesh->pushCell(std::vector(pt2.begin(), pt2.end()));
+    mesh->push_cell(std::vector(pt2.begin(), pt2.end()));
 
     std::array<data::mesh::cell_t, 4> pt3 = {7, 2, 5, 4};
-    mesh->pushCell(std::vector(pt3.begin(), pt3.end()));
+    mesh->push_cell(std::vector(pt3.begin(), pt3.end()));
 
     mesh->resize(
-        mesh->numPoints(),
-        mesh->numCells(),
-        data::mesh::cell_type_t::QUAD,
-        data::mesh::Attributes::POINT_COLORS | data::mesh::Attributes::POINT_TEX_COORDS
+        mesh->num_points(),
+        mesh->num_cells(),
+        data::mesh::cell_type_t::quad,
+        data::mesh::attribute::point_colors | data::mesh::attribute::point_tex_coords
     );
 
-    for(data::mesh::size_t i = 0 ; i < mesh->numPoints() ; ++i)
+    for(data::mesh::size_t i = 0 ; i < mesh->num_points() ; ++i)
     {
-        mesh->setPointColor(
+        mesh->set_point_color(
             data::mesh::point_t(i),
             data::mesh::color_t(i + 1),
             data::mesh::color_t(i + 2),
@@ -443,7 +443,7 @@ void mesh_test::copy()
             data::mesh::color_t(i + 4)
         );
 
-        mesh->setPointTexCoord(
+        mesh->set_point_tex_coord(
             data::mesh::point_t(i),
             1.0F / (data::mesh::texcoord_t(i) + 1.0F),
             1.0F / (data::mesh::texcoord_t(i) + 2.0F)
@@ -460,9 +460,9 @@ void mesh_test::copy()
 
         CPPUNIT_ASSERT(*mesh == *deep_copy_mesh);
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), deep_copy_mesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), deep_copy_mesh->numCells());
-        CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), deep_copy_mesh->getDataSizeInBytes());
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), deep_copy_mesh->num_points());
+        CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), deep_copy_mesh->num_cells());
+        CPPUNIT_ASSERT_EQUAL(mesh->size_in_bytes(), deep_copy_mesh->size_in_bytes());
 
         auto point_itr           = mesh->cbegin<point::xyz>();
         const auto point_end     = mesh->cend<point::xyz>();
@@ -493,9 +493,9 @@ void mesh_test::copy()
     {
         shallow_copy_mesh->shallow_copy(mesh);
         CPPUNIT_ASSERT(*mesh == *shallow_copy_mesh);
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), shallow_copy_mesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), shallow_copy_mesh->numCells());
-        CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), shallow_copy_mesh->getDataSizeInBytes());
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), shallow_copy_mesh->num_points());
+        CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), shallow_copy_mesh->num_cells());
+        CPPUNIT_ASSERT_EQUAL(mesh->size_in_bytes(), shallow_copy_mesh->size_in_bytes());
 
         {
             auto point_itr      = mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>().begin();
@@ -525,54 +525,54 @@ void mesh_test::copy()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::allocationTest()
+void mesh_test::allocation_test()
 {
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
     const auto lock = mesh->dump_lock();
 
-    mesh->pushPoint(10, 20, 30);
-    mesh->pushPoint(10, 10, 10);
-    mesh->pushPoint(20, 20, 10);
+    mesh->push_point(10, 20, 30);
+    mesh->push_point(10, 10, 10);
+    mesh->push_point(20, 20, 10);
 
-    mesh->pushCell(0, 1, 2);
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(3), mesh->numPoints());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(1), mesh->numCells());
+    mesh->push_cell(0, 1, 2);
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(3), mesh->num_points());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(1), mesh->num_cells());
 
     CPPUNIT_ASSERT_EQUAL(
         std::size_t(3LL * 3 * sizeof(data::mesh::position_t) + 3 * sizeof(data::mesh::cell_t)),
-        mesh->getDataSizeInBytes()
+        mesh->size_in_bytes()
     );
 
     data::mesh::size_t point_size = 3000;
     data::mesh::size_t cell_size  = 2000;
-    mesh->reserve(point_size, cell_size, data::mesh::cell_type_t::TRIANGLE);
+    mesh->reserve(point_size, cell_size, data::mesh::cell_type_t::triangle);
 
     const std::size_t point_position_allocated_size = point_size * 3LL * sizeof(data::mesh::position_t);
     const std::size_t cell_data_allocated_size      = cell_size * 3LL * sizeof(data::mesh::cell_t);
 
     CPPUNIT_ASSERT_EQUAL(
         point_position_allocated_size + cell_data_allocated_size,
-        mesh->getAllocatedSizeInBytes()
+        mesh->allocated_size_in_bytes()
     );
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(3), mesh->numPoints());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(1), mesh->numCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(3), mesh->num_points());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(1), mesh->num_cells());
 
-    CPPUNIT_ASSERT_EQUAL(data::mesh::Attributes::NONE, mesh->getAttributes());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::POINT_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::POINT_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::POINT_TEX_COORDS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
+    CPPUNIT_ASSERT_EQUAL(data::mesh::attribute::none, mesh->attributes());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::point_colors>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_colors>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::point_normals>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_normals>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::point_tex_coords>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_tex_coords>());
 
     mesh->reserve(
         point_size,
         cell_size,
-        data::mesh::cell_type_t::TRIANGLE,
-        data::mesh::Attributes::POINT_NORMALS
-        | data::mesh::Attributes::POINT_COLORS | data::mesh::Attributes::POINT_TEX_COORDS
+        data::mesh::cell_type_t::triangle,
+        data::mesh::attribute::point_normals
+        | data::mesh::attribute::point_colors | data::mesh::attribute::point_tex_coords
     );
 
     const std::size_t point_normals_allocated_size    = point_size * 3LL * sizeof(data::mesh::normal_t);
@@ -581,85 +581,85 @@ void mesh_test::allocationTest()
     CPPUNIT_ASSERT_EQUAL(
         point_position_allocated_size + cell_data_allocated_size
         + point_normals_allocated_size + point_colors_allocated_size + point_tex_coords_allocated_size,
-        mesh->getAllocatedSizeInBytes()
+        mesh->allocated_size_in_bytes()
     );
 
     CPPUNIT_ASSERT_EQUAL(
-        data::mesh::Attributes::POINT_NORMALS
-        | data::mesh::Attributes::POINT_COLORS | data::mesh::Attributes::POINT_TEX_COORDS,
-        mesh->getAttributes()
+        data::mesh::attribute::point_normals
+        | data::mesh::attribute::point_colors | data::mesh::attribute::point_tex_coords,
+        mesh->attributes()
     );
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::POINT_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::POINT_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::POINT_TEX_COORDS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::point_colors>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_colors>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::point_normals>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_normals>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::point_tex_coords>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_tex_coords>());
 
     mesh->reserve(
         point_size,
         cell_size,
-        data::mesh::cell_type_t::TRIANGLE,
-        data::mesh::Attributes::POINT_NORMALS
-        | data::mesh::Attributes::POINT_COLORS
-        | data::mesh::Attributes::POINT_TEX_COORDS
-        | data::mesh::Attributes::CELL_NORMALS
-        | data::mesh::Attributes::CELL_COLORS
-        | data::mesh::Attributes::CELL_TEX_COORDS
+        data::mesh::cell_type_t::triangle,
+        data::mesh::attribute::point_normals
+        | data::mesh::attribute::point_colors
+        | data::mesh::attribute::point_tex_coords
+        | data::mesh::attribute::cell_normals
+        | data::mesh::attribute::cell_colors
+        | data::mesh::attribute::cell_tex_coords
     );
 
-    std::size_t oldsize  = mesh->getAllocatedSizeInBytes();
-    bool adjusted        = mesh->shrinkToFit();
-    std::size_t new_size = mesh->getAllocatedSizeInBytes();
+    std::size_t oldsize  = mesh->allocated_size_in_bytes();
+    bool adjusted        = mesh->shrink_to_fit();
+    std::size_t new_size = mesh->allocated_size_in_bytes();
 
     CPPUNIT_ASSERT_EQUAL(true, adjusted);
     CPPUNIT_ASSERT(oldsize > new_size);
 
     CPPUNIT_ASSERT_EQUAL(
-        data::mesh::Attributes::POINT_NORMALS
-        | data::mesh::Attributes::POINT_COLORS
-        | data::mesh::Attributes::POINT_TEX_COORDS
-        | data::mesh::Attributes::CELL_NORMALS
-        | data::mesh::Attributes::CELL_COLORS
-        | data::mesh::Attributes::CELL_TEX_COORDS,
-        mesh->getAttributes()
+        data::mesh::attribute::point_normals
+        | data::mesh::attribute::point_colors
+        | data::mesh::attribute::point_tex_coords
+        | data::mesh::attribute::cell_normals
+        | data::mesh::attribute::cell_colors
+        | data::mesh::attribute::cell_tex_coords,
+        mesh->attributes()
     );
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::POINT_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::CELL_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::POINT_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::CELL_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::POINT_TEX_COORDS>());
-    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::point_colors>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::cell_colors>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::point_normals>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::cell_normals>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::point_tex_coords>());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::mesh::attribute::cell_tex_coords>());
 
     mesh->clear();
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->numPoints());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->numCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), mesh->getDataSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->num_points());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(0), mesh->num_cells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), mesh->size_in_bytes());
 
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::POINT_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_COLORS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::POINT_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_NORMALS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::POINT_TEX_COORDS>());
-    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::point_colors>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_colors>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::point_normals>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_normals>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::point_tex_coords>());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::attribute::cell_tex_coords>());
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_test::iteratorTest()
+void mesh_test::iterator_test()
 {
     auto msg = [](auto& _count){return "iteration: " + std::to_string(_count);};
 
-    const data::mesh::size_t nb_points       = 60;
-    const data::mesh::size_t nb_cells        = 59;
-    const data::mesh::cell_type_t cell_type  = data::mesh::cell_type_t::TRIANGLE;
-    const data::mesh::Attributes extra_array =
-        data::mesh::Attributes::POINT_NORMALS
-        | data::mesh::Attributes::POINT_COLORS
-        | data::mesh::Attributes::POINT_TEX_COORDS
-        | data::mesh::Attributes::CELL_NORMALS
-        | data::mesh::Attributes::CELL_COLORS
-        | data::mesh::Attributes::CELL_TEX_COORDS;
+    const data::mesh::size_t nb_points      = 60;
+    const data::mesh::size_t nb_cells       = 59;
+    const data::mesh::cell_type_t cell_type = data::mesh::cell_type_t::triangle;
+    const data::mesh::attribute extra_array =
+        data::mesh::attribute::point_normals
+        | data::mesh::attribute::point_colors
+        | data::mesh::attribute::point_tex_coords
+        | data::mesh::attribute::cell_normals
+        | data::mesh::attribute::cell_colors
+        | data::mesh::attribute::cell_tex_coords;
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
@@ -674,24 +674,24 @@ void mesh_test::iteratorTest()
         const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
         const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
         const std::size_t value                                = std::size_t(3) * i;
-        mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value + 1), static_cast<float>(value + 2));
-        mesh->setPointColor(i, color);
-        mesh->setPointNormal(i, normal);
-        mesh->setPointTexCoord(i, tex_coords);
+        mesh->set_point(i, static_cast<float>(value), static_cast<float>(value + 1), static_cast<float>(value + 2));
+        mesh->set_point_color(i, color);
+        mesh->set_point_normal(i, normal);
+        mesh->set_point_tex_coord(i, tex_coords);
     }
 
     for(data::mesh::size_t i = 0 ; i < nb_cells ; ++i)
     {
-        mesh->setCell(i, i, i + 1, i + 2);
+        mesh->set_cell(i, i, i + 1, i + 2);
 
         const auto val                                         = static_cast<data::mesh::color_t>(i);
         const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
         const auto float_val                                   = static_cast<float>(i);
         const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
         const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
-        mesh->setCellColor(i, color);
-        mesh->setCellNormal(i, normal);
-        mesh->setCellTexCoord(i, tex_coords);
+        mesh->set_cell_color(i, color);
+        mesh->set_cell_normal(i, normal);
+        mesh->set_cell_tex_coord(i, tex_coords);
     }
 
     namespace point = iterator::point;
@@ -724,7 +724,7 @@ void mesh_test::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
     }
 
     {
@@ -791,7 +791,7 @@ void mesh_test::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), count);
     }
 
     {
@@ -839,7 +839,7 @@ void mesh_test::iteratorTest()
                 ++count;
             });
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), count);
     }
 
     data::mesh::csptr mesh2 = data::mesh::copy(mesh);
@@ -899,12 +899,12 @@ void mesh_test::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), count);
     }
 
     data::mesh::sptr mesh3 = std::make_shared<data::mesh>();
     const auto lock3       = mesh3->dump_lock();
-    mesh3->resize(nb_points, nb_cells, data::mesh::cell_type_t::QUAD, extra_array);
+    mesh3->resize(nb_points, nb_cells, data::mesh::cell_type_t::quad, extra_array);
 
     {
         auto range = mesh3->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>();
@@ -930,7 +930,7 @@ void mesh_test::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
     }
 
     {
@@ -958,7 +958,7 @@ void mesh_test::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), count);
     }
 
     {
@@ -990,7 +990,7 @@ void mesh_test::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
     }
 
     {
@@ -1020,13 +1020,13 @@ void mesh_test::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_cells(), count);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_test::iteratorCopyTest()
+void mesh_test::iterator_copy_test()
 {
     auto msg = [](auto& _count){return "iteration: " + std::to_string(_count);};
 
@@ -1034,13 +1034,13 @@ void mesh_test::iteratorCopyTest()
     mesh->resize(
         10,
         10,
-        data::mesh::cell_type_t::POINT,
-        data::mesh::Attributes::POINT_NORMALS
-        | data::mesh::Attributes::POINT_COLORS
-        | data::mesh::Attributes::POINT_TEX_COORDS
-        | data::mesh::Attributes::CELL_NORMALS
-        | data::mesh::Attributes::CELL_COLORS
-        | data::mesh::Attributes::CELL_TEX_COORDS
+        data::mesh::cell_type_t::point,
+        data::mesh::attribute::point_normals
+        | data::mesh::attribute::point_colors
+        | data::mesh::attribute::point_tex_coords
+        | data::mesh::attribute::cell_normals
+        | data::mesh::attribute::cell_colors
+        | data::mesh::attribute::cell_tex_coords
     );
 
     const auto lock = mesh->dump_lock();
@@ -1090,7 +1090,7 @@ void mesh_test::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
     }
 
     {
@@ -1136,7 +1136,7 @@ void mesh_test::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
     }
 
     data::mesh::sptr copied_mesh = std::make_shared<data::mesh>();
@@ -1145,13 +1145,13 @@ void mesh_test::iteratorCopyTest()
     copied_mesh->resize(
         10,
         10,
-        data::mesh::cell_type_t::POINT,
-        data::mesh::Attributes::POINT_NORMALS
-        | data::mesh::Attributes::POINT_COLORS
-        | data::mesh::Attributes::POINT_TEX_COORDS
-        | data::mesh::Attributes::CELL_NORMALS
-        | data::mesh::Attributes::CELL_COLORS
-        | data::mesh::Attributes::CELL_TEX_COORDS
+        data::mesh::cell_type_t::point,
+        data::mesh::attribute::point_normals
+        | data::mesh::attribute::point_colors
+        | data::mesh::attribute::point_tex_coords
+        | data::mesh::attribute::cell_normals
+        | data::mesh::attribute::cell_colors
+        | data::mesh::attribute::cell_tex_coords
     );
     const auto lock2 = copied_mesh->dump_lock();
     {
@@ -1214,7 +1214,7 @@ void mesh_test::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
     }
 
     {
@@ -1275,7 +1275,7 @@ void mesh_test::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
 
         auto range_copy = copied_mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv,
                                                   cell::point, cell::nxyz, cell::rgba, cell::uv>();
@@ -1311,24 +1311,24 @@ void mesh_test::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->num_points(), count);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_test::benchmarkIterator()
+void mesh_test::benchmark_iterator()
 {
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
     const auto lock       = mesh->dump_lock();
 
-    static const std::size_t N = 1;
+    static const std::size_t s_N = 1;
 
     mesh->resize(
         655360,
         10000,
-        data::mesh::cell_type_t::TRIANGLE,
-        data::mesh::Attributes::POINT_NORMALS
+        data::mesh::cell_type_t::triangle,
+        data::mesh::attribute::point_normals
     );
 
     auto pos  = mesh->begin<iterator::point::xyz>();
@@ -1364,7 +1364,7 @@ void mesh_test::benchmarkIterator()
 
     {
         FW_PROFILE("std::for_each - array_iterator (nouveau en MR)");
-        for(std::size_t i = 0 ; i < N ; ++i)
+        for(std::size_t i = 0 ; i < s_N ; ++i)
         {
             std::for_each(pos, pos2, fn3);
             std::for_each(norm, norm2, fn4);
@@ -1374,7 +1374,7 @@ void mesh_test::benchmarkIterator()
     auto range = mesh->zip_range<iterator::point::xyz, iterator::point::nxyz>();
     {
         FW_PROFILE("std::for_each - zip array_iterator");
-        for(std::size_t i = 0 ; i < N ; ++i)
+        for(std::size_t i = 0 ; i < s_N ; ++i)
         {
             std::for_each(range.begin(), range.end(), fn2);
         }
@@ -1386,7 +1386,7 @@ void mesh_test::benchmarkIterator()
         auto z = boost::combine(pos_v, norm_v);
         {
             FW_PROFILE("std::for - std boost combine");
-            for(std::size_t i = 0 ; i < N ; ++i)
+            for(std::size_t i = 0 ; i < s_N ; ++i)
             {
                 for(auto&& [p, n] : z)
                 {
@@ -1404,7 +1404,7 @@ void mesh_test::benchmarkIterator()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::equalityTest()
+void mesh_test::equality_test()
 {
     auto mesh1 = std::make_shared<data::mesh>();
     auto mesh2 = std::make_shared<data::mesh>();
@@ -1424,24 +1424,24 @@ void mesh_test::equalityTest()
         *mesh1 == *mesh2 && !(*mesh1 != *mesh2) \
     );
 
-    mesh1->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::NONE);
+    mesh1->resize(1, 1, data::mesh::cell_type_t::quad, data::mesh::attribute::none);
     CPPUNIT_ASSERT(*mesh1 != *mesh2 && !(*mesh1 == *mesh2));
-    mesh2->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::NONE);
+    mesh2->resize(1, 1, data::mesh::cell_type_t::quad, data::mesh::attribute::none);
     auto lock1 = mesh1->dump_lock();
     auto lock2 = mesh2->dump_lock();
-    mesh1->setPoint(0, {1, 2, 3});
-    mesh2->setPoint(0, {1, 2, 3});
-    mesh1->setCell(0, {1, 2, 3, 4});
-    mesh2->setCell(0, {1, 2, 3, 4});
+    mesh1->set_point(0, {1, 2, 3});
+    mesh2->set_point(0, {1, 2, 3});
+    mesh1->set_cell(0, {1, 2, 3, 4});
+    mesh2->set_cell(0, {1, 2, 3, 4});
     CPPUNIT_ASSERT(*mesh1 == *mesh2 && !(*mesh1 != *mesh2));
 
-    mesh1->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::POINT_COLORS);
+    mesh1->resize(1, 1, data::mesh::cell_type_t::quad, data::mesh::attribute::point_colors);
     CPPUNIT_ASSERT(*mesh1 != *mesh2 && !(*mesh1 == *mesh2));
-    mesh2->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::POINT_COLORS);
-    TEST(setPointColor(0, {1, 2, 3}));
+    mesh2->resize(1, 1, data::mesh::cell_type_t::quad, data::mesh::attribute::point_colors);
+    TEST(set_point_color(0, {1, 2, 3}));
 
-    TEST(resize(1, 1, data::mesh::cell_type_t::TETRA, data::mesh::Attributes::POINT_COLORS));
-    TEST(resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::NONE));
+    TEST(resize(1, 1, data::mesh::cell_type_t::tetra, data::mesh::attribute::point_colors));
+    TEST(resize(1, 1, data::mesh::cell_type_t::quad, data::mesh::attribute::none));
 
     #undef TEST
 }

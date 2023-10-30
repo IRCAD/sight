@@ -67,17 +67,17 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_pusher, service::controller);
 
-    typedef std::vector<CSPTR(data::series)> dicom_series_container_t;
+    using dicom_series_container_t = std::vector<std::shared_ptr<const data::series> >;
 
     MODULE_IO_DIMSE_API static const core::com::slots::key_t DISPLAY_SLOT;
-    typedef core::com::slot<void (const std::string&, bool)> display_message_slot_t;
+    using display_message_slot_t = core::com::slot<void (const std::string&, bool)>;
 
     /// Signal to start the progress (bar id)
-    typedef core::com::signal<void (std::string)> started_progress_signal_t;
+    using started_progress_signal_t = core::com::signal<void (std::string)>;
     /// Signal to update the progress (bar id, percentage, message)
-    typedef core::com::signal<void (std::string, float, std::string)> progressed_signal_t;
+    using progressed_signal_t = core::com::signal<void (std::string, float, std::string)>;
     /// Signal to stop the progress (bar id)
-    typedef core::com::signal<void (std::string)> stopped_progress_signal_t;
+    using stopped_progress_signal_t = core::com::signal<void (std::string)>;
 
     /// Key in m_signals map of signal m_sigProgressed
     static const core::com::signals::key_t PROGRESSED_SIG;
@@ -117,17 +117,17 @@ protected:
      * @brief Check whether some series are already on the PACS
      * @return True if the series must be pushed
      */
-    MODULE_IO_DIMSE_API bool checkSeriesOnPACS();
+    MODULE_IO_DIMSE_API bool check_series_on_pacs();
 
     /// Pull Series
-    MODULE_IO_DIMSE_API void pushSeries();
+    MODULE_IO_DIMSE_API void push_series();
 
     /**
      * @brief Display a message
      * @param[in] message Message to display
      * @param[in] error True if the message is an error messsage
      */
-    static MODULE_IO_DIMSE_API void displayMessage(const std::string& _message, bool _error);
+    static MODULE_IO_DIMSE_API void display_message(const std::string& _message, bool _error);
 
     /**
      * @brief Progress callback
@@ -142,37 +142,37 @@ protected:
     );
 
     /// Slot to call displayMessage method;
-    display_message_slot_t::sptr m_slotDisplayMessage;
+    display_message_slot_t::sptr m_slot_display_message;
 
     /// Slot to call progress_callback method
-    sight::io::dimse::SeriesEnquirer::progress_callback_slot_t::sptr m_slotProgressCallback;
+    sight::io::dimse::series_enquirer::progress_callback_slot_t::sptr m_slot_progress_callback;
 
     /// Signal emitted when the bar is progressing
-    progressed_signal_t::sptr m_sigProgressed;
+    progressed_signal_t::sptr m_sig_progressed;
 
     /// Signal emitted when the bar is starting
-    started_progress_signal_t::sptr m_sigStartedProgress;
+    started_progress_signal_t::sptr m_sig_started_progress;
 
     /// Signal emitted when the bar is stopping
-    stopped_progress_signal_t::sptr m_sigStoppedProgress;
+    stopped_progress_signal_t::sptr m_sig_stopped_progress;
 
     /// Progress Bar ID
-    std::string m_progressbarId;
+    std::string m_progressbar_id;
 
     /// Series enquirer
-    sight::io::dimse::SeriesEnquirer::sptr m_seriesEnquirer;
+    sight::io::dimse::series_enquirer::sptr m_series_enquirer;
 
     /// Push Worker
-    core::thread::worker::sptr m_pushSeriesWorker;
+    core::thread::worker::sptr m_push_series_worker;
 
     /// Is pushing is set to true when we are pushing series
-    bool m_isPushing {false};
+    bool m_is_pushing {false};
 
     /// Total number of instances that must be uploaded
-    std::uint64_t m_instanceCount {};
+    std::uint64_t m_instance_count {};
 
-    sight::data::ptr<sight::data::vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
-    sight::data::ptr<sight::io::dimse::data::PacsConfiguration, sight::data::Access::in> m_config {this, "pacsConfig"};
+    sight::data::ptr<sight::data::vector, sight::data::access::in> m_selected_series {this, "selectedSeries"};
+    sight::data::ptr<sight::io::dimse::data::pacs_configuration, sight::data::access::in> m_config {this, "pacsConfig"};
 };
 
 } // namespace sight::module::io::dimse

@@ -44,7 +44,7 @@ static const core::com::slots::key_t SHOW_DISTANCE_SLOT = "showDistance";
 
 show_distance::show_distance() noexcept
 {
-    new_slot(SHOW_DISTANCE_SLOT, &show_distance::showDistance, this);
+    new_slot(SHOW_DISTANCE_SLOT, &show_distance::show, this);
 }
 
 //------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void show_distance::configuring()
 
 void show_distance::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void show_distance::updating()
 
     if(!data::helper::medical_image::check_image_validity(image.get_shared()))
     {
-        this->sight::ui::action::setChecked(false);
+        this->sight::ui::action::set_checked(false);
     }
     else
     {
@@ -84,7 +84,7 @@ void show_distance::updating()
         data::helper::medical_image::set_distance_visibility(*image, to_show);
 
         // Manage hide/show from the field information.
-        this->sight::ui::action::setChecked(!to_show);
+        this->sight::ui::action::set_checked(!to_show);
 
         const auto sig = image->signal<data::image::distance_displayed_signal_t>(
             data::image::DISTANCE_DISPLAYED_SIG
@@ -100,7 +100,7 @@ void show_distance::updating()
 
 void show_distance::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -108,19 +108,19 @@ void show_distance::stopping()
 service::connections_t show_distance::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_IMAGE, data::image::DISTANCE_DISPLAYED_SIG, SHOW_DISTANCE_SLOT);
+    connections.push(IMAGE, data::image::DISTANCE_DISPLAYED_SIG, SHOW_DISTANCE_SLOT);
 
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-void show_distance::showDistance(bool /*unused*/)
+void show_distance::show(bool /*unused*/)
 {
     const auto image          = m_image.lock();
     const auto show_distances = data::helper::medical_image::get_distance_visibility(*image);
 
-    this->sight::ui::action::setChecked(!(show_distances));
+    this->sight::ui::action::set_checked(!(show_distances));
 }
 
 //------------------------------------------------------------------------------

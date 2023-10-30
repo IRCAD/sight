@@ -81,7 +81,7 @@ protected:
     MODULE_VIZ_SCENE2D_API void updating() override;
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -98,10 +98,10 @@ protected:
 private:
 
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint(sight::viz::scene2d::data::Event& _event);
+    void update_current_point(sight::viz::scene2d::data::event& _event);
 
     /// Update image related properties when it changes
-    void onImageChange();
+    void on_image_change();
 
     /// Color used for graphic item's inner and border color
     QPen m_color {Qt::green};
@@ -113,37 +113,37 @@ private:
     double m_scale {1.};
 
     /// Width of histogram bins
-    std::size_t m_histogramBinsWidth {5};
+    std::size_t m_histogram_bins_width {5};
 
     // layer for the histogram, may be rescaled on mouse wheel event
     QGraphicsItemGroup* m_layer {nullptr};
 
     // layer for the cursor, never rescaled
-    QGraphicsItemGroup* m_cursorLayer {nullptr};
+    QGraphicsItemGroup* m_cursor_layer {nullptr};
 
     /// Enables the display of a cursor
-    bool m_cursorEnabled {false};
+    bool m_cursor_enabled {false};
 
     /// Color used for the inner color of the cursor shown on mouse hover
-    QPen m_cursorColor;
+    QPen m_cursor_color;
 
     /// Color used for the border color of the cursor shown on mouse hover
-    QPen m_cursorBorderColor;
+    QPen m_cursor_border_color;
 
     /// Point size of the cursor shown on mouse hover
-    double m_cursorSize {6.F};
+    double m_cursor_size {6.F};
 
     /// Defines the color used for graphic item's inner color.
-    QPen m_cursorLabelColor;
+    QPen m_cursor_label_color;
 
     /// Stores the item which display the current values of the associated histogram pointed by this cursor.
-    QGraphicsSimpleTextItem* m_cursorLabel {nullptr};
+    QGraphicsSimpleTextItem* m_cursor_label {nullptr};
 
     /// Defines the size of the font used for rendering the current value of this tracker.
-    int m_fontSize {8};
+    int m_font_size {8};
 
     /// Sets the display status.
-    bool m_isInteracting {false};
+    bool m_is_interacting {false};
 
     /// True when the mouse is hover the widget.
     bool m_entered {false};
@@ -151,16 +151,16 @@ private:
     // A graphics item that is located onto histogram's upper border and moves along this border
     // according to the position of mouse's cursor. The goal of this graphical index is to show
     // the associated value within the histogram pointed buy this index.
-    QGraphicsEllipseItem* m_cursorItem {nullptr};
+    QGraphicsEllipseItem* m_cursor_item {nullptr};
 
     /// Helper to compute the image histogram
     std::unique_ptr<data::helper::histogram> m_histogram;
 
-    static constexpr std::string_view s_IMAGE_INPUT    = "image";
-    static constexpr std::string_view s_VIEWPORT_INOUT = "viewport";
+    static constexpr std::string_view IMAGE_INPUT    = "image";
+    static constexpr std::string_view VIEWPORT_INOUT = "viewport";
 
-    data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
-    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT};
+    data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
+    data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::inout> m_viewport {this, VIEWPORT_INOUT};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

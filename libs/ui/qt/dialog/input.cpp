@@ -33,23 +33,23 @@ namespace sight::ui::qt::dialog
 
 //------------------------------------------------------------------------------
 
-void input::setTitle(const std::string& _title)
+void input::set_title(const std::string& _title)
 {
     m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-void input::setMessage(const std::string& _msg)
+void input::set_message(const std::string& _msg)
 {
     m_message = _msg;
 }
 
 //------------------------------------------------------------------------------
 
-void input::setEchoMode(input::EchoMode _echo_mode)
+void input::set_echo_mode(input::echo_mode _echo_mode)
 {
-    m_echoMode = _echo_mode;
+    m_echo_mode = _echo_mode;
 }
 
 //------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void input::set_input(const std::string& _text)
 //------------------------------------------------------------------------------
 
 /// Get the input text in the input field
-std::pair<std::string, bool> input::getInput()
+std::pair<std::string, bool> input::get_input()
 {
     QString title = QObject::tr(m_title.c_str());
     QString text  = QObject::tr(m_message.c_str());
@@ -71,15 +71,15 @@ std::pair<std::string, bool> input::getInput()
     const QLineEdit::EchoMode echo_mode =
         [&]
         {
-            switch(m_echoMode)
+            switch(m_echo_mode)
             {
-                case input::EchoMode::NOECHO:
+                case input::echo_mode::noecho:
                     return QLineEdit::EchoMode::NoEcho;
 
-                case input::EchoMode::PASSWORD:
+                case input::echo_mode::password:
                     return QLineEdit::EchoMode::Password;
 
-                case input::EchoMode::ECHO_ON_EDIT:
+                case input::echo_mode::echo_on_edit:
                     return QLineEdit::EchoMode::PasswordEchoOnEdit;
 
                 default:

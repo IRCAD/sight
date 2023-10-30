@@ -27,16 +27,16 @@
 
 #include <gdcmPixelFormat.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::DicomDataToolsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::dicom_data_tools_test);
 
 namespace sight::io::dicom::helper::ut
 {
 
-using helper = helper::DicomDataTools;
+using helper = helper::dicom_data_tools;
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::getPixelTypeTest()
+void dicom_data_tools_test::get_pixel_type_test()
 {
     CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UINT8), helper::get_pixel_type(core::type::UINT8));
     CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::INT8), helper::get_pixel_type(core::type::INT8));
@@ -51,88 +51,88 @@ void DicomDataToolsTest::getPixelTypeTest()
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::getPhotometricInterpretationTest()
+void dicom_data_tools_test::get_photometric_interpretation_test()
 {
-    using gdcmPI = gdcm::PhotometricInterpretation;
+    using gdcm_pi = gdcm::PhotometricInterpretation;
 
     auto image = std::make_shared<data::image>();
 
-    image->resize({1}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
-    CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::MONOCHROME2), helper::getPhotometricInterpretation(image));
+    image->resize({1}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::MONOCHROME2), helper::get_photometric_interpretation(image));
 
-    image->resize({1}, core::type::UINT8, data::image::PixelFormat::RG);
-    CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::UNKNOWN), helper::getPhotometricInterpretation(image));
+    image->resize({1}, core::type::UINT8, data::image::pixel_format::rg);
+    CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::UNKNOWN), helper::get_photometric_interpretation(image));
 
-    image->resize({1}, core::type::UINT8, data::image::PixelFormat::RGB);
-    CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::RGB), helper::getPhotometricInterpretation(image));
+    image->resize({1}, core::type::UINT8, data::image::pixel_format::rgb);
+    CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::RGB), helper::get_photometric_interpretation(image));
 
-    image->resize({1}, core::type::UINT8, data::image::PixelFormat::RGBA);
-    CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::ARGB), helper::getPhotometricInterpretation(image));
+    image->resize({1}, core::type::UINT8, data::image::pixel_format::rgba);
+    CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::ARGB), helper::get_photometric_interpretation(image));
 }
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::convertToPresentationTypeTest()
+void dicom_data_tools_test::convert_to_presentation_type_test()
 {
-    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::SURFACE, helper::convertToPresentationType(data::material::SURFACE));
-    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::POINTS, helper::convertToPresentationType(data::material::POINT));
-    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::WIREFRAME, helper::convertToPresentationType(data::material::WIREFRAME));
-    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::SURFACE, helper::convertToPresentationType(data::material::EDGE));
+    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::SURFACE, helper::convert_to_presentation_type(data::material::surface));
+    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::POINTS, helper::convert_to_presentation_type(data::material::point));
+    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::WIREFRAME, helper::convert_to_presentation_type(data::material::wireframe));
+    CPPUNIT_ASSERT_EQUAL(gdcm::Surface::SURFACE, helper::convert_to_presentation_type(data::material::edge));
 }
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::convertToRepresentationModeTest()
+void dicom_data_tools_test::convert_to_representation_mode_test()
 {
-    CPPUNIT_ASSERT_EQUAL(data::material::SURFACE, helper::convertToRepresentationMode(gdcm::Surface::SURFACE));
-    CPPUNIT_ASSERT_EQUAL(data::material::WIREFRAME, helper::convertToRepresentationMode(gdcm::Surface::WIREFRAME));
-    CPPUNIT_ASSERT_EQUAL(data::material::POINT, helper::convertToRepresentationMode(gdcm::Surface::POINTS));
+    CPPUNIT_ASSERT_EQUAL(data::material::surface, helper::convert_to_representation_mode(gdcm::Surface::SURFACE));
+    CPPUNIT_ASSERT_EQUAL(data::material::wireframe, helper::convert_to_representation_mode(gdcm::Surface::WIREFRAME));
+    CPPUNIT_ASSERT_EQUAL(data::material::point, helper::convert_to_representation_mode(gdcm::Surface::POINTS));
 }
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::convertPointToFrameNumberNominalTest()
+void dicom_data_tools_test::convert_point_to_frame_number_nominal_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
-    image->setSpacing({1, 1, 1});
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->set_spacing({1, 1, 1});
     CPPUNIT_ASSERT_EQUAL(
         std::size_t(3),
-        helper::convertPointToFrameNumber(image, std::make_shared<data::point>(0., 1., 2.))
+        helper::convert_point_to_frame_number(image, std::make_shared<data::point>(0., 1., 2.))
     );
 }
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::convertPointToFrameNumberFailureTest()
+void dicom_data_tools_test::convert_point_to_frame_number_failure_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
-    image->setSpacing({1, 1, 1});
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->set_spacing({1, 1, 1});
     CPPUNIT_ASSERT_THROW(
-        helper::convertPointToFrameNumber(image, std::make_shared<data::point>(1., 2., 3.)),
-        io::dicom::exception::Failed
+        helper::convert_point_to_frame_number(image, std::make_shared<data::point>(1., 2., 3.)),
+        io::dicom::exception::failed
     );
 }
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::convertFrameNumberToZCoordinateNominalTest()
+void dicom_data_tools_test::convert_frame_number_to_z_coordinate_nominal_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
-    image->setSpacing({1, 1, 1});
-    CPPUNIT_ASSERT_EQUAL(2., helper::convertFrameNumberToZCoordinate(image, 3));
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->set_spacing({1, 1, 1});
+    CPPUNIT_ASSERT_EQUAL(2., helper::convert_frame_number_to_z_coordinate(image, 3));
 }
 
 //------------------------------------------------------------------------------
 
-void DicomDataToolsTest::convertFrameNumberToZCoordinateFailureTest()
+void dicom_data_tools_test::convert_frame_number_to_z_coordinate_failure_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
-    image->setSpacing({1, 1, 1});
-    CPPUNIT_ASSERT_THROW(helper::convertFrameNumberToZCoordinate(image, 0), io::dicom::exception::Failed);
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->set_spacing({1, 1, 1});
+    CPPUNIT_ASSERT_THROW(helper::convert_frame_number_to_z_coordinate(image, 0), io::dicom::exception::failed);
 }
 
 } // namespace sight::io::dicom::helper::ut

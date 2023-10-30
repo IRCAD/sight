@@ -34,8 +34,8 @@
 namespace sight::core::tools
 {
 
-id::categorized_counter id::m_categorized_counter;
-id::dictionary id::m_dictionary;
+id::categorized_counter id::s_categorized_counter;
+id::dictionary id::s_dictionary;
 core::mt::read_write_mutex id::s_dictionary_mutex;
 core::mt::mutex id::s_mutex_counter;
 
@@ -58,7 +58,7 @@ bool id::exist(type _id)
 
 bool id::is_id_found(type _id)
 {
-    return m_dictionary.contains(_id);
+    return s_dictionary.contains(_id);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ void id::add_id_in_dictionary(type _new_id) const
     // note we use a static cast for a down cast because we do not use the classical polymorphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->get_sptr();
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-    m_dictionary[_new_id] = ((object*) (this))->get_sptr();
+    s_dictionary[_new_id] = ((object*) (this))->get_sptr();
     m_id                  = _new_id;
 }
 
@@ -100,17 +100,17 @@ id::type id::get_id(policy _policy) const
     core::mt::read_to_write_lock lock(m_id_mutex);
     if(m_id.empty()) // no id set
     {
-        if(_policy == GENERATE)
+        if(_policy == policy::generate)
         {
             type new_id = generate();
             core::mt::upgrade_to_write_lock write_lock(lock);
             this->add_id_in_dictionary(new_id);
         }
-        else if(_policy == EMPTY)
+        else if(_policy == policy::empty)
         {
             /* nothing to do*/
         }
-        else if(_policy == MUST_EXIST)
+        else if(_policy == policy::must_exist)
         {
             throw core::tools::failed("fwID::get_id() no id set");
         }
@@ -128,7 +128,7 @@ id::type id::generate() const
     do
     {
         core::mt::scoped_lock lock(s_mutex_counter);
-        new_id = prefix + "-" + std::to_string(m_categorized_counter[prefix]++);
+        new_id = prefix + "-" + std::to_string(s_categorized_counter[prefix]++);
     }
     while(exist(new_id));
 
@@ -140,8 +140,8 @@ id::type id::generate() const
 core::tools::object::sptr id::get_object(id::type _request_id)
 {
     core::mt::read_lock lock(s_dictionary_mutex);
-    auto it = m_dictionary.find(_request_id);
-    if(it != m_dictionary.end())
+    auto it = s_dictionary.find(_request_id);
+    if(it != s_dictionary.end())
     {
         SIGHT_ASSERT("expired object in fwID::Dictionary for id=" + _request_id, !it->second.expired());
         return it->second.lock();
@@ -166,7 +166,7 @@ void id::remove_id_from_dictionary(type _id)
 {
     if(!_id.empty())
     {
-        m_dictionary.erase(_id);
+        s_dictionary.erase(_id);
     }
 }
 

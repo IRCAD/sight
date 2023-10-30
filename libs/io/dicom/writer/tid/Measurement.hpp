@@ -41,7 +41,7 @@ namespace sight::io::dicom::writer::tid
  * @brief Measurement TID
  * @see TID 300
  */
-class IO_DICOM_CLASS_API Measurement : public io::dicom::writer::tid::TemplateID<data::image>
+class IO_DICOM_CLASS_API measurement : public io::dicom::writer::tid::template_id<data::image>
 {
 public:
 
@@ -51,23 +51,23 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      */
-    IO_DICOM_API Measurement(
+    IO_DICOM_API measurement(
         const SPTR(gdcm::Writer)& _writer,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::csptr& _image
     );
 
     /// Destructor
-    IO_DICOM_API ~Measurement() override;
+    IO_DICOM_API ~measurement() override;
 
     /**
      * @brief Create nodes according to the template
      * @param[in] parent Parent node
      * @param[in] useSCoord3D True if we must write SCOORD3D, false if we must write SCOORD
      */
-    IO_DICOM_API virtual void createNodes(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& _parent,
-        bool _use_s_coord3_d = true
+    IO_DICOM_API virtual void create_nodes(
+        const SPTR(io::dicom::container::sr::dicom_sr_node)& _parent,
+        bool _use_s_coord_3d = true
     );
 
 protected:
@@ -79,11 +79,11 @@ protected:
      * @param[in] id ID of the fiducial
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
-    void createMeasurement(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& _parent,
+    void create_measurement(
+        const SPTR(io::dicom::container::sr::dicom_sr_node)& _parent,
         const CSPTR(data::point_list)& _point_list,
         unsigned int _id,
-        bool _use_s_coord3_d
+        bool _use_s_coord_3d
     );
 };
 

@@ -52,10 +52,10 @@ propagator::propagator() :
     has_parameters(m_slots)
 {
     new_slot(DRAW_SLOT, &propagator::draw, this);
-    new_slot(SET_ORIENTATION_SLOT, &propagator::setOrientation, this);
-    new_slot(RESET_DRAWING, &propagator::resetDrawing, this);
+    new_slot(SET_ORIENTATION_SLOT, &propagator::set_orientation, this);
+    new_slot(RESET_DRAWING, &propagator::reset_drawing, this);
 
-    m_sigDrawn = new_signal<drawn_signal_t>(DRAWN_SIG);
+    m_sig_drawn = new_signal<drawn_signal_t>(DRAWN_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -77,15 +77,15 @@ void propagator::configuring()
 
     if(mode == "min")
     {
-        m_mode = sight::filter::image::min_max_propagation::MIN;
+        m_mode = sight::filter::image::min_max_propagation::min;
     }
     else if(mode == "max")
     {
-        m_mode = sight::filter::image::min_max_propagation::MAX;
+        m_mode = sight::filter::image::min_max_propagation::max;
     }
     else if(mode == "minmax")
     {
-        m_mode = sight::filter::image::min_max_propagation::MINMAX;
+        m_mode = sight::filter::image::min_max_propagation::minmax;
     }
     else
     {
@@ -96,15 +96,15 @@ void propagator::configuring()
 
     if(orientation == "sagital")
     {
-        m_orientation = data::helper::medical_image::X_AXIS;
+        m_orientation = data::helper::medical_image::x_axis;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = data::helper::medical_image::Y_AXIS;
+        m_orientation = data::helper::medical_image::y_axis;
     }
     else if(orientation == "axial")
     {
-        m_orientation = data::helper::medical_image::Z_AXIS;
+        m_orientation = data::helper::medical_image::z_axis;
     }
     else
     {
@@ -116,10 +116,10 @@ void propagator::configuring()
 
 void propagator::starting()
 {
-    const auto img_in_lock = m_imageIn.lock();
-    SIGHT_ASSERT("No " << s_IMAGE_IN << " found.", img_in_lock);
-    const auto img_out_lock = m_imageOut.lock();
-    SIGHT_ASSERT("No " << s_IMAGE_INOUT << " found.", img_out_lock);
+    const auto img_in_lock = m_image_in.lock();
+    SIGHT_ASSERT("No " << IMAGE_IN << " found.", img_in_lock);
+    const auto img_out_lock = m_image_out.lock();
+    SIGHT_ASSERT("No " << IMAGE_INOUT << " found.", img_out_lock);
 
     bool is_valid = data::helper::medical_image::check_image_validity(img_in_lock.get_shared())
                     && data::helper::medical_image::check_image_validity(img_out_lock.get_shared());
@@ -127,7 +127,7 @@ void propagator::starting()
     SIGHT_FATAL_IF("Input and output image must have the same size.", img_in_lock->size() != img_out_lock->size());
     SIGHT_WARN_IF(
         "Input and output image must have the same spacing.",
-        img_in_lock->getSpacing() != img_out_lock->getSpacing()
+        img_in_lock->spacing() != img_out_lock->spacing()
     );
 
     if(is_valid)
@@ -137,7 +137,7 @@ void propagator::starting()
             img_out_lock.get_shared(),
             nullptr
         );
-        m_lineDrawer = std::make_unique<sight::filter::image::line_drawer>(img_out_lock.get_shared(), nullptr);
+        m_line_drawer = std::make_unique<sight::filter::image::line_drawer>(img_out_lock.get_shared(), nullptr);
     }
 }
 
@@ -159,7 +159,7 @@ void propagator::stopping()
 
 //-----------------------------------------------------------------------------
 
-void propagator::setOrientation(int _from, int _to)
+void propagator::set_orientation(int _from, int _to)
 {
     if(_to == static_cast<int>(m_orientation))
     {
@@ -173,7 +173,7 @@ void propagator::setOrientation(int _from, int _to)
 
 //-----------------------------------------------------------------------------
 
-void propagator::setBoolParameter(bool _val, std::string _key)
+void propagator::set_bool_parameter(bool _val, std::string _key)
 {
     SIGHT_WARN_IF("Key must be 'overwrite' for this slot to have an effect.", _key != "overwrite");
     if(_key == "overwrite")
@@ -184,7 +184,7 @@ void propagator::setBoolParameter(bool _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void propagator::setIntParameter(int _val, std::string _key)
+void propagator::set_int_parameter(int _val, std::string _key)
 {
     SIGHT_WARN_IF("Key must be 'value' for this slot to have an effect.", _key != "value");
     if(_key == "value")
@@ -195,7 +195,7 @@ void propagator::setIntParameter(int _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void propagator::setDoubleParameter(double _val, std::string _key)
+void propagator::set_double_parameter(double _val, std::string _key)
 {
     SIGHT_WARN_IF("Key must be 'radius' for this slot to have an effect.", _key != "radius");
     if(_key == "radius")
@@ -206,22 +206,22 @@ void propagator::setDoubleParameter(double _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void propagator::setEnumParameter(std::string _val, std::string _key)
+void propagator::set_enum_parameter(std::string _val, std::string _key)
 {
     SIGHT_WARN_IF("Key must be 'mode' for this slot to have an effect.", _key != "mode");
     if(_key == "mode")
     {
         if(_val == "min")
         {
-            m_mode = sight::filter::image::min_max_propagation::MIN;
+            m_mode = sight::filter::image::min_max_propagation::min;
         }
         else if(_val == "max")
         {
-            m_mode = sight::filter::image::min_max_propagation::MAX;
+            m_mode = sight::filter::image::min_max_propagation::max;
         }
         else if(_val == "minmax")
         {
-            m_mode = sight::filter::image::min_max_propagation::MINMAX;
+            m_mode = sight::filter::image::min_max_propagation::minmax;
         }
         else
         {
@@ -232,7 +232,7 @@ void propagator::setEnumParameter(std::string _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void propagator::resetDrawing()
+void propagator::reset_drawing()
 {
     m_drawing = false;
     m_diff.clear();
@@ -242,82 +242,82 @@ void propagator::resetDrawing()
 
 void propagator::draw(data::tools::picking_info _picking_info)
 {
-    SIGHT_ASSERT("Drawer not instantiated, have you started the service ?", m_lineDrawer);
+    SIGHT_ASSERT("Drawer not instantiated, have you started the service ?", m_line_drawer);
 
-    const auto img_out_lock = m_imageOut.lock();
-    SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", img_out_lock);
+    const auto img_out_lock = m_image_out.lock();
+    SIGHT_ASSERT(IMAGE_INOUT << " does not exist", img_out_lock);
 
     SPTR(data::image::buffer_t) val =
         data::helper::medical_image::get_pixel_in_image_space(img_out_lock.get_shared(), m_value);
 
-    const data::image::Spacing img_spacing = img_out_lock->getSpacing();
+    const data::image::spacing_t img_spacing = img_out_lock->spacing();
     // Draw lines as thick as a single voxel.
     const double thickness = *std::min_element(img_spacing.begin(), img_spacing.end());
 
-    coordinates_t new_point = {{static_cast<coordinates_t::value_type>(_picking_info.m_worldPos[0]),
-        static_cast<coordinates_t::value_type>(_picking_info.m_worldPos[1]),
-        static_cast<coordinates_t::value_type>(_picking_info.m_worldPos[2])
+    coordinates_t new_point = {{static_cast<coordinates_t::value_type>(_picking_info.m_world_pos[0]),
+        static_cast<coordinates_t::value_type>(_picking_info.m_world_pos[1]),
+        static_cast<coordinates_t::value_type>(_picking_info.m_world_pos[2])
     }
     };
 
     bool img_buffer_modified = false;
-    if(_picking_info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_DOWN)
+    if(_picking_info.m_event_id == data::tools::picking_info::event::mouse_left_down)
     {
-        m_drawing  = true;
-        m_oldPoint = new_point;
+        m_drawing   = true;
+        m_old_point = new_point;
 
-        m_diff = m_lineDrawer->draw(m_orientation, m_oldPoint, m_oldPoint, val.get(), thickness, m_overwrite);
+        m_diff = m_line_drawer->draw(m_orientation, m_old_point, m_old_point, val.get(), thickness, m_overwrite);
 
-        img_buffer_modified = m_diff.numElements() > 0;
+        img_buffer_modified = m_diff.num_elements() > 0;
     }
-    else if(m_drawing && _picking_info.m_eventId == data::tools::picking_info::Event::MOUSE_MOVE)
+    else if(m_drawing && _picking_info.m_event_id == data::tools::picking_info::event::mouse_move)
     {
-        const auto diff = m_lineDrawer->draw(
+        const auto diff = m_line_drawer->draw(
             m_orientation,
-            m_oldPoint,
+            m_old_point,
             new_point,
             val.get(),
             thickness,
             m_overwrite
         );
-        m_oldPoint = new_point;
+        m_old_point = new_point;
 
-        img_buffer_modified = this->appendDiff(diff);
+        img_buffer_modified = this->append_diff(diff);
     }
-    else if(m_drawing && _picking_info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_UP)
+    else if(m_drawing && _picking_info.m_event_id == data::tools::picking_info::event::mouse_left_up)
     {
-        const auto diff = m_lineDrawer->draw(
+        const auto diff = m_line_drawer->draw(
             m_orientation,
-            m_oldPoint,
+            m_old_point,
             new_point,
             val.get(),
             thickness,
             m_overwrite
         );
 
-        img_buffer_modified = this->appendDiff(diff);
+        img_buffer_modified = this->append_diff(diff);
 
-        auto seeds = this->convertDiffToSeeds();
+        auto seeds = this->convert_diff_to_seeds();
 
         sight::filter::image::image_diff propag_diff;
 
         propag_diff = m_propagator->propagate(seeds, val.get(), m_radius, m_overwrite, m_mode);
 
-        img_buffer_modified |= this->appendDiff(propag_diff);
+        img_buffer_modified |= this->append_diff(propag_diff);
 
-        if(m_diff.numElements() > 0)
+        if(m_diff.num_elements() > 0)
         {
-            ui::history::ImageDiffCommand::sptr diff_command(new ui::history::ImageDiffCommand(
-                                                                 img_out_lock.get_shared(),
-                                                                 m_diff
+            ui::history::image_diff_command::sptr diff_command(new ui::history::image_diff_command(
+                                                                   img_out_lock.get_shared(),
+                                                                   m_diff
             ));
-            m_sigDrawn->async_emit(diff_command);
+            m_sig_drawn->async_emit(diff_command);
             m_diff.clear();
         }
 
         m_drawing = false;
 
-        m_sigComputed->async_emit();
+        m_sig_computed->async_emit();
     }
 
     if(img_buffer_modified)
@@ -330,13 +330,13 @@ void propagator::draw(data::tools::picking_info _picking_info)
 
 //-----------------------------------------------------------------------------
 
-bool propagator::appendDiff(const sight::filter::image::image_diff& _diff)
+bool propagator::append_diff(const sight::filter::image::image_diff& _diff)
 {
-    const bool append = (_diff.numElements() > 0);
+    const bool append = (_diff.num_elements() > 0);
 
     if(append)
     {
-        m_diff.addDiff(_diff);
+        m_diff.add_diff(_diff);
     }
 
     return append;
@@ -344,19 +344,19 @@ bool propagator::appendDiff(const sight::filter::image::image_diff& _diff)
 
 //-----------------------------------------------------------------------------
 
-sight::filter::image::min_max_propagation::seeds_t propagator::convertDiffToSeeds() const
+sight::filter::image::min_max_propagation::seeds_t propagator::convert_diff_to_seeds() const
 {
-    const auto img_out = m_imageOut.lock();
-    SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", img_out);
+    const auto img_out = m_image_out.lock();
+    SIGHT_ASSERT(IMAGE_INOUT << " does not exist", img_out);
 
-    const data::image::Size& img_size = img_out->size();
+    const data::image::size_t& img_size = img_out->size();
 
     sight::filter::image::min_max_propagation::seeds_t seeds;
 
-    const std::size_t nb_elts = m_diff.numElements();
+    const std::size_t nb_elts = m_diff.num_elements();
     for(std::size_t i = 0 ; i < nb_elts ; ++i)
     {
-        data::image::index_t index = m_diff.getElementDiffIndex(i);
+        data::image::index_t index = m_diff.get_element_diff_index(i);
         sight::filter::image::min_max_propagation::coordinates_t coords;
         coords[0] = index % img_size[0];
         coords[1] = (index / img_size[0]) % img_size[1];
@@ -373,9 +373,9 @@ sight::filter::image::min_max_propagation::seeds_t propagator::convertDiffToSeed
 service::connections_t propagator::auto_connections() const
 {
     return {
-        {s_IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {s_IMAGE_IN, data::image::SLICE_TYPE_MODIFIED_SIG, SET_ORIENTATION_SLOT},
-        {s_IMAGE_IN, data::image::SLICE_INDEX_MODIFIED_SIG, RESET_DRAWING}
+        {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
+        {IMAGE_IN, data::image::SLICE_TYPE_MODIFIED_SIG, SET_ORIENTATION_SLOT},
+        {IMAGE_IN, data::image::SLICE_INDEX_MODIFIED_SIG, RESET_DRAWING}
     };
 }
 

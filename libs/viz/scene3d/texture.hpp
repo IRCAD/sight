@@ -56,7 +56,7 @@ public:
     /// update.
     VIZ_SCENE3D_API void update() override;
 
-    VIZ_SCENE3D_API void setDirty();
+    VIZ_SCENE3D_API void set_dirty();
 
     /// Binds the texture in the given texture unit state
     VIZ_SCENE3D_API void bind(

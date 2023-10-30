@@ -35,9 +35,9 @@ namespace sight::service::ut
 class lock_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(lock_test);
-CPPUNIT_TEST(testScopedLock);
-CPPUNIT_TEST(testThreadedLock);
-CPPUNIT_TEST(testDumpLock);
+CPPUNIT_TEST(test_scoped_lock);
+CPPUNIT_TEST(test_threaded_lock);
+CPPUNIT_TEST(test_dump_lock);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,9 +47,9 @@ public:
     void tearDown() override;
 
     // Tests
-    static void testScopedLock();
-    static void testDumpLock();
-    static void testThreadedLock();
+    static void test_scoped_lock();
+    static void test_dump_lock();
+    static void test_threaded_lock();
 };
 
 } // namespace sight::service::ut

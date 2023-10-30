@@ -48,13 +48,13 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setTitle(std::string /*_title*/) override
+    void set_title(std::string /*_title*/) override
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void setMessage(const std::string& /*msg*/) override
+    void set_message(const std::string& /*msg*/) override
     {
     }
 
@@ -66,21 +66,21 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void addCustomButton(const std::string& /*label*/, std::function<void()> /*clickedFn*/) override
+    void add_custom_button(const std::string& /*label*/, std::function<void()> /*clickedFn*/) override
     {
     }
 
-    static std::string choice;
+    static std::string s_choice;
 
     //------------------------------------------------------------------------------
 
     selector_dummy::selections_t show() override
     {
-        return {choice};
+        return {s_choice};
     }
 };
 
-std::string selector_dummy::choice;
+std::string selector_dummy::s_choice;
 
 SIGHT_REGISTER_GUI(selector_dummy, sight::ui::dialog::selector_base::REGISTRY_KEY);
 
@@ -88,10 +88,10 @@ SIGHT_REGISTER_GUI(selector_dummy, sight::ui::dialog::selector_base::REGISTRY_KE
 
 void remove_distance_test::setUp()
 {
-    m_removeDistance = service::add("sight::module::ui::metrics::remove_distance");
+    m_remove_distance = service::add("sight::module::ui::metrics::remove_distance");
     CPPUNIT_ASSERT_MESSAGE(
         "Failed to create service 'sight::module::ui::metrics::remove_distance'",
-        m_removeDistance
+        m_remove_distance
     );
 }
 
@@ -99,12 +99,12 @@ void remove_distance_test::setUp()
 
 void remove_distance_test::tearDown()
 {
-    if(!m_removeDistance->stopped())
+    if(!m_remove_distance->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_removeDistance->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_remove_distance->stop().get());
     }
 
-    service::remove(m_removeDistance);
+    service::remove(m_remove_distance);
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void remove_distance_test::tearDown()
 static data::point_list::sptr create_pl(const std::vector<data::point::sptr>& _v)
 {
     auto res = std::make_shared<data::point_list>();
-    res->setPoints(_v);
+    res->set_points(_v);
     return res;
 }
 
@@ -121,12 +121,12 @@ static data::point_list::sptr create_pl(const std::vector<data::point::sptr>& _v
 static data::image::sptr create_image()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::RGB);
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::rgb);
 
     auto create_pl = [](const std::vector<data::point::sptr>& _v)
                      {
                          auto res = std::make_shared<data::point_list>();
-                         res->setPoints(_v);
+                         res->set_points(_v);
                          return res;
                      };
 
@@ -144,16 +144,16 @@ static data::image::sptr create_image()
 
 //------------------------------------------------------------------------------
 
-void remove_distance_test::removeAllTest()
+void remove_distance_test::remove_all_test()
 {
     auto image = create_image();
 
-    m_removeDistance->set_inout(image, "image");
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->start().get());
+    m_remove_distance->set_inout(image, "image");
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->start().get());
 
-    selector_dummy::choice = "ALL";
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->update().get());
+    selector_dummy::s_choice = "ALL";
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->update().get());
 
     auto distances = data::helper::medical_image::get_distances(*image);
     CPPUNIT_ASSERT(distances == nullptr || distances->empty());
@@ -161,16 +161,16 @@ void remove_distance_test::removeAllTest()
 
 //------------------------------------------------------------------------------
 
-void remove_distance_test::removeOneTest()
+void remove_distance_test::remove_one_test()
 {
     auto image = create_image();
 
-    m_removeDistance->set_inout(image, "image");
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->start().get());
+    m_remove_distance->set_inout(image, "image");
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->start().get());
 
-    selector_dummy::choice = "2 mm";
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->update().get());
+    selector_dummy::s_choice = "2 mm";
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->update().get());
 
     auto distances = data::helper::medical_image::get_distances(*image);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), distances->size());
@@ -186,15 +186,15 @@ void remove_distance_test::removeOneTest()
 
 //------------------------------------------------------------------------------
 
-void remove_distance_test::removeLastTest()
+void remove_distance_test::remove_last_test()
 {
     auto image = create_image();
 
-    m_removeDistance->set_inout(image, "image");
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_removeDistance->start().get());
+    m_remove_distance->set_inout(image, "image");
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_remove_distance->start().get());
 
-    m_removeDistance->slot("removeLastDistance")->run();
+    m_remove_distance->slot("removeLastDistance")->run();
 
     auto distances = data::helper::medical_image::get_distances(*image);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), distances->size());

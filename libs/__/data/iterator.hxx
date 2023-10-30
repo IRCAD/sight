@@ -30,12 +30,12 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE array_iterator<FORMAT>::array_iterator(pointer _begin) :
+constexpr FINLINE array_iterator<FORMAT>::array_iterator(pointer_t _begin) :
     m_current(_begin)
 {
 #ifdef SIGHT_DEBUG_ITERATOR
     m_begin = m_current;
-    m_end   = m_current + static_cast<difference_type>(image->getSizeInBytes());
+    m_end   = m_current + static_cast<difference_type>(image->size_in_bytes());
 #endif
 }
 
@@ -84,7 +84,7 @@ inline FINLINE typename array_iterator<FORMAT>::reference array_iterator<FORMAT>
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE typename array_iterator<FORMAT>::pointer array_iterator<FORMAT>::operator->() const noexcept
+constexpr FINLINE typename array_iterator<FORMAT>::pointer_t array_iterator<FORMAT>::operator->() const noexcept
 {
     return m_current;
 }

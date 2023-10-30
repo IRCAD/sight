@@ -32,11 +32,11 @@ class raw_buffer_tl_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(raw_buffer_tl_test);
-    CPPUNIT_TEST(pushTest);
-    CPPUNIT_TEST(getObjectTest);
-    CPPUNIT_TEST(setObjectTest);
-    CPPUNIT_TEST(modifyTimeTest);
-    CPPUNIT_TEST(copyTest);
+    CPPUNIT_TEST(push_test);
+    CPPUNIT_TEST(get_object_test);
+    CPPUNIT_TEST(set_object_test);
+    CPPUNIT_TEST(modify_time_test);
+    CPPUNIT_TEST(copy_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,11 +45,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void pushTest();
-    static void getObjectTest();
-    static void setObjectTest();
-    static void modifyTimeTest();
-    static void copyTest();
+    static void push_test();
+    static void get_object_test();
+    static void set_object_test();
+    static void modify_time_test();
+    static void copy_test();
 };
 
 } // namespace sight::data::ut

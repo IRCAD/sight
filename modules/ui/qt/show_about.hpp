@@ -90,17 +90,17 @@ protected Q_SLOTS:
      *
      * @param url clicked URL
      */
-    static void onUrlClicked(const QUrl& _url);
+    static void on_url_clicked(const QUrl& _url);
 
 private:
 
     /// Set to 'true' if the about file path is known.
-    bool m_bServiceIsConfigured {false};
+    bool m_b_service_is_configured {false};
 
     /**
      * @brief about file path.
      */
-    std::filesystem::path m_fsAboutPath;
+    std::filesystem::path m_fs_about_path;
 
     /// Frame title (default value set to "About").
     std::string m_title;

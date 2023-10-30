@@ -28,11 +28,11 @@ namespace sight::ui::test_core::helper
 
 //------------------------------------------------------------------------------
 
-void field::fill(Tester& _tester, const Select& _field, const std::string& _text)
+void field::fill(tester& _tester, const selector& _field, const std::string& _text)
 {
-    auto bt = _tester.addInBacktrace("fill " + _field.getDescription(_tester) + " field with \"" + _text + '"');
+    auto bt = _tester.add_in_backtrace("fill " + _field.get_description(_tester) + " field with \"" + _text + '"');
     _field.select(_tester);
-    _tester.doSomething<QLineEdit*>([&_text](QLineEdit* _obj){_obj->setText(QString::fromStdString(_text));});
+    _tester.do_something<QLineEdit*>([&_text](QLineEdit* _obj){_obj->setText(QString::fromStdString(_text));});
 }
 
 } // namespace sight::ui::test_core::helper

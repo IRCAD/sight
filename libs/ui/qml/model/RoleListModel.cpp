@@ -29,14 +29,14 @@
 namespace sight::ui::qml::model
 {
 
-RoleListModel::RoleListModel(QObject* _parent) :
+role_list_model::role_list_model(QObject* _parent) :
     QAbstractListModel(_parent)
 {
 }
 
 //------------------------------------------------------------------------------
 
-int RoleListModel::rowCount(const QModelIndex& _parent) const
+int role_list_model::rowCount(const QModelIndex& _parent) const
 {
     Q_UNUSED(_parent)
     return m_data.size();
@@ -44,7 +44,7 @@ int RoleListModel::rowCount(const QModelIndex& _parent) const
 
 //------------------------------------------------------------------------------
 
-QVariant RoleListModel::data(const QModelIndex& _index, int _role) const
+QVariant role_list_model::data(const QModelIndex& _index, int _role) const
 {
     // check if the role exist
     if(!m_roles.contains(_role))
@@ -66,14 +66,14 @@ QVariant RoleListModel::data(const QModelIndex& _index, int _role) const
 
 //------------------------------------------------------------------------------
 
-QHash<int, QByteArray> RoleListModel::roleNames() const
+QHash<int, QByteArray> role_list_model::roleNames() const
 {
     return m_roles;
 }
 
 //------------------------------------------------------------------------------
 
-void RoleListModel::addData(const QHash<QByteArray, QVariant>& _data)
+void role_list_model::add_data(const QHash<QByteArray, QVariant>& _data)
 {
     SIGHT_ASSERT("RoleListModel must have role to add Data", !m_roles.empty());
     m_data.push_back(_data);
@@ -83,7 +83,7 @@ void RoleListModel::addData(const QHash<QByteArray, QVariant>& _data)
 
 //------------------------------------------------------------------------------
 
-void RoleListModel::addRole(const int& _enum_nb, const QByteArray& _role)
+void role_list_model::add_role(const int& _enum_nb, const QByteArray& _role)
 {
     // each time the user add a role we clear data to be sure everything is alright
     m_roles.insert(_enum_nb, _role);
@@ -92,7 +92,7 @@ void RoleListModel::addRole(const int& _enum_nb, const QByteArray& _role)
 
 //------------------------------------------------------------------------------
 
-bool RoleListModel::isEmpty() noexcept
+bool role_list_model::is_empty() noexcept
 {
     return m_data.isEmpty();
 }

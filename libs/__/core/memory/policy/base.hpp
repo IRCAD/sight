@@ -39,8 +39,8 @@ class CORE_CLASS_API base : public core::base_object
 {
 public:
 
-    typedef SPTR(base) sptr;
-    typedef std::vector<std::string> param_names_type;
+    using sptr             = std::shared_ptr<base>;
+    using param_names_type = std::vector<std::string>;
 
     virtual void allocation_request(
         buffer_info& _info,

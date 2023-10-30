@@ -35,12 +35,12 @@ namespace sight::geometry::data::ut
 class mesh_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(mesh_test);
-CPPUNIT_TEST(colorizePointsTest);
-CPPUNIT_TEST(colorizeCellsTest);
-CPPUNIT_TEST(transformTest);
-CPPUNIT_TEST(isClosedTest);
-CPPUNIT_TEST(cellNormalTest);
-CPPUNIT_TEST(pointNormalTest);
+CPPUNIT_TEST(colorize_points_test);
+CPPUNIT_TEST(colorize_cells_test);
+CPPUNIT_TEST(transform_test);
+CPPUNIT_TEST(is_closed_test);
+CPPUNIT_TEST(cell_normal_test);
+CPPUNIT_TEST(point_normal_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,12 +49,12 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void colorizePointsTest();
-    static void colorizeCellsTest();
-    static void transformTest();
-    static void isClosedTest();
-    static void cellNormalTest();
-    static void pointNormalTest();
+    static void colorize_points_test();
+    static void colorize_cells_test();
+    static void transform_test();
+    static void is_closed_test();
+    static void cell_normal_test();
+    static void point_normal_test();
 };
 
 } // namespace sight::geometry::data::ut

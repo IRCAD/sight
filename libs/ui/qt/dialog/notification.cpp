@@ -36,7 +36,7 @@
 namespace sight::ui::qt::dialog
 {
 
-static constexpr auto s_SHOW_MORE = "...";
+static constexpr auto SHOW_MORE = "...";
 
 //------------------------------------------------------------------------------
 
@@ -60,17 +60,17 @@ void notification::build()
     /// Retrieve the parent widget
     SIGHT_ASSERT("The dialog UI has been already built", m_parent.isNull());
 
-    if(const auto& parent_container = std::dynamic_pointer_cast<const ui::qt::container::widget>(m_parentContainer);
+    if(const auto& parent_container = std::dynamic_pointer_cast<const ui::qt::container::widget>(m_parent_container);
        parent_container)
     {
-        m_parent = parent_container->getQtContainer();
+        m_parent = parent_container->get_qt_container();
     }
     else
     {
         // Checks if we have a Parent widget.
         m_parent = qApp->activeWindow();
 
-        if(const auto* slide_bar = qobject_cast<widget::slide_bar*>(m_parent); slide_bar != nullptr)
+        if(const auto* slide_bar = qobject_cast<ui::qt::widget::slide_bar*>(m_parent); slide_bar != nullptr)
         {
             m_parent = slide_bar->nativeParentWidget();
         }
@@ -92,18 +92,18 @@ void notification::build()
     a->start(QPropertyAnimation::DeleteWhenStopped);
 
     // Creates the main translucent auto-movable container.
-    m_container = new Container(this->computePosition(), m_parent);
-    m_container->setGraphicsEffect(effect);
-    m_container->setContentsMargins(0, 0, 0, 0);
-    m_container->setMinimumSize(m_notification.size[0], m_notification.size[1]);
-    m_container->setMaximumSize(m_notification.size[0], m_notification.size[1]);
-    m_container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    m_widget = new widget(this->compute_position(), m_parent);
+    m_widget->setGraphicsEffect(effect);
+    m_widget->setContentsMargins(0, 0, 0, 0);
+    m_widget->setMinimumSize(m_notification.size[0], m_notification.size[1]);
+    m_widget->setMaximumSize(m_notification.size[0], m_notification.size[1]);
+    m_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     // Creates container layout.
-    auto* const container_layout = new QBoxLayout(QBoxLayout::LeftToRight, m_container);
+    auto* const container_layout = new QBoxLayout(QBoxLayout::LeftToRight, m_widget);
     container_layout->setSpacing(0);
     container_layout->setContentsMargins(0, 0, 0, 0);
-    m_container->setLayout(container_layout);
+    m_widget->setLayout(container_layout);
 
     // Moves the container when the main window is moved or is resized.
     // Find the real "root" mainwindow
@@ -114,34 +114,34 @@ void notification::build()
     }
 
     // Instal event filters
-    root_widget->installEventFilter(m_container);
-    m_parent->installEventFilter(m_container);
+    root_widget->installEventFilter(m_widget);
+    m_parent->installEventFilter(m_widget);
 
     // Creates an intermediate layer so we can add optional "show more" button
-    m_subContainer = new QWidget(m_container);
-    container_layout->addWidget(m_subContainer);
-    m_subContainer->setAutoFillBackground(true);
-    m_subContainer->setAttribute(Qt::WA_StyledBackground, true);
+    m_sub_widget = new QWidget(m_widget);
+    container_layout->addWidget(m_sub_widget);
+    m_sub_widget->setAutoFillBackground(true);
+    m_sub_widget->setAttribute(Qt::WA_StyledBackground, true);
 
-    auto* const subcontainer_layout = new QBoxLayout(QBoxLayout::LeftToRight, m_subContainer);
+    auto* const subcontainer_layout = new QBoxLayout(QBoxLayout::LeftToRight, m_sub_widget);
     subcontainer_layout->setSpacing(0);
     subcontainer_layout->setContentsMargins(0, 0, 0, 0);
-    m_subContainer->setLayout(subcontainer_layout);
+    m_sub_widget->setLayout(subcontainer_layout);
 
     // Creates the clickable label.
-    m_msgBox = new ClickableQLabel(m_container, m_subContainer);
-    m_msgBox->setWordWrap(true);
-    m_msgBox->setScaledContents(true);
-    m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    subcontainer_layout->addWidget(m_msgBox);
+    m_msg_box = new clickable_q_label(m_widget, m_sub_widget);
+    m_msg_box->setWordWrap(true);
+    m_msg_box->setScaledContents(true);
+    m_msg_box->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    subcontainer_layout->addWidget(m_msg_box);
 
     // Execute the callback on close
     // Make an explicit copy so It will still be callable in the lambda when this has been destroyed.
-    auto callable = m_closedCallBack;
+    auto callable = m_closed_call_back;
 
     QObject::connect(
-        m_msgBox,
-        &ClickableQLabel::faded,
+        m_msg_box,
+        &clickable_q_label::faded,
         [callable]
         {
             if(callable)
@@ -151,16 +151,16 @@ void notification::build()
         });
 
     // Build the show more button
-    m_showMoreButton = new QToolButton(m_msgBox);
-    m_showMoreButton->setContentsMargins(0, 0, 0, 0);
-    m_showMoreButton->setMinimumSize(32, 24);
-    m_showMoreButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-    m_showMoreButton->setText(s_SHOW_MORE);
-    m_showMoreButton->setStyleSheet("border-radius: 10px;border: 2px solid white;");
-    subcontainer_layout->addWidget(m_showMoreButton);
+    m_show_more_button = new QToolButton(m_msg_box);
+    m_show_more_button->setContentsMargins(0, 0, 0, 0);
+    m_show_more_button->setMinimumSize(32, 24);
+    m_show_more_button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    m_show_more_button->setText(SHOW_MORE);
+    m_show_more_button->setStyleSheet("border-radius: 10px;border: 2px solid white;");
+    subcontainer_layout->addWidget(m_show_more_button);
 
     // Build the show more dialog (icon, text, title will be set in update())
-    m_showMoreBox = new QMessageBox(
+    m_show_more_box = new QMessageBox(
         QMessageBox::Information,
         QString(),
         QString(),
@@ -169,13 +169,13 @@ void notification::build()
     );
 
     // Show the show more dialog on button click
-    QObject::connect(m_showMoreButton, &QToolButton::clicked, m_showMoreBox, &QMessageBox::exec);
+    QObject::connect(m_show_more_button, &QToolButton::clicked, m_show_more_box, &QMessageBox::exec);
 
     // Set text, icon, etc..
     update();
 
     // Displays it.
-    m_container->show();
+    m_widget->show();
 }
 
 //------------------------------------------------------------------------------
@@ -204,75 +204,75 @@ void notification::update()
     SIGHT_ASSERT("The dialog UI has not been built", !m_parent.isNull());
 
     // If we must reapply the style sheet or not
-    const auto& old_object_name = m_subContainer->objectName();
+    const auto& old_object_name = m_sub_widget->objectName();
 
-    static constexpr auto success_name {"NotificationDialog_Success"};
-    static constexpr auto failure_name {"NotificationDialog_Failure"};
-    static constexpr auto info_name {"NotificationDialog_Info"};
+    static constexpr auto s_SUCCESS_NAME {"NotificationDialog_Success"};
+    static constexpr auto s_FAILURE_NAME {"NotificationDialog_Failure"};
+    static constexpr auto s_INFO_NAME {"NotificationDialog_Info"};
 
     // Set object names
     switch(m_notification.type)
     {
-        case notification_base::Type::SUCCESS:
-            m_subContainer->setObjectName(success_name);
-            m_msgBox->setObjectName(success_name);
+        case notification_base::type::success:
+            m_sub_widget->setObjectName(s_SUCCESS_NAME);
+            m_msg_box->setObjectName(s_SUCCESS_NAME);
             break;
 
-        case notification_base::Type::FAILURE:
-            m_subContainer->setObjectName(failure_name);
-            m_msgBox->setObjectName(failure_name);
+        case notification_base::type::failure:
+            m_sub_widget->setObjectName(s_FAILURE_NAME);
+            m_msg_box->setObjectName(s_FAILURE_NAME);
             break;
 
         default:
-            m_subContainer->setObjectName(info_name);
-            m_msgBox->setObjectName(info_name);
+            m_sub_widget->setObjectName(s_INFO_NAME);
+            m_msg_box->setObjectName(s_INFO_NAME);
             break;
     }
 
     // If different, then we must (re)apply the style sheet
-    if(old_object_name != m_subContainer->objectName())
+    if(old_object_name != m_sub_widget->objectName())
     {
         if(const auto& global_stylesheet = qApp->styleSheet(); !global_stylesheet.isEmpty())
         {
-            m_subContainer->setStyleSheet(global_stylesheet);
-            m_msgBox->setStyleSheet(global_stylesheet);
+            m_sub_widget->setStyleSheet(global_stylesheet);
+            m_msg_box->setStyleSheet(global_stylesheet);
         }
         else
         {
-            static constexpr auto success_style {
+            static constexpr auto s_SUCCESS_STYLE {
                 "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
-            static constexpr auto failure_style {
+            static constexpr auto s_FAILURE_STYLE {
                 "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
-            static constexpr auto info_style {
+            static constexpr auto s_INFO_STYLE {
                 "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
             switch(m_notification.type)
             {
-                case notification_base::Type::SUCCESS:
-                    m_subContainer->setStyleSheet(success_style);
-                    m_msgBox->setStyleSheet(success_style);
+                case notification_base::type::success:
+                    m_sub_widget->setStyleSheet(s_SUCCESS_STYLE);
+                    m_msg_box->setStyleSheet(s_SUCCESS_STYLE);
                     break;
 
-                case notification_base::Type::FAILURE:
-                    m_subContainer->setStyleSheet(failure_style);
-                    m_msgBox->setStyleSheet(failure_style);
+                case notification_base::type::failure:
+                    m_sub_widget->setStyleSheet(s_FAILURE_STYLE);
+                    m_msg_box->setStyleSheet(s_FAILURE_STYLE);
                     break;
 
                 default:
-                    m_subContainer->setStyleSheet(info_style);
-                    m_msgBox->setStyleSheet(info_style);
+                    m_sub_widget->setStyleSheet(s_INFO_STYLE);
+                    m_msg_box->setStyleSheet(s_INFO_STYLE);
                     break;
             }
         }
 
         // Force to reapply style
-        m_subContainer->adjustSize();
-        m_subContainer->update();
+        m_sub_widget->adjustSize();
+        m_sub_widget->update();
     }
 
     const auto& [is_truncated, message] =
@@ -288,7 +288,7 @@ void notification::update()
                 int(m_notification.size[1] - 0.1 * m_notification.size[1])
             );
 
-            const QFontMetrics metrics(m_msgBox->font());
+            const QFontMetrics metrics(m_msg_box->font());
 
             // Initial message
             auto truncated    = QString::fromStdString(m_notification.message);
@@ -296,7 +296,7 @@ void notification::update()
 
             if(is_truncated)
             {
-                const auto& button_size = !m_showMoreButton.isNull() ? m_showMoreButton->sizeHint() : QSize(0, 0);
+                const auto& button_size = !m_show_more_button.isNull() ? m_show_more_button->sizeHint() : QSize(0, 0);
                 const QRect new_available(
                     0,
                     0,
@@ -334,82 +334,82 @@ void notification::update()
 
     if(is_truncated)
     {
-        const auto& truncated_message = message + s_SHOW_MORE;
-        m_msgBox->setText(truncated_message);
+        const auto& truncated_message = message + SHOW_MORE;
+        m_msg_box->setText(truncated_message);
 
         // Create a real message box with the full text
         auto icon = QMessageBox::NoIcon;
-        if(m_notification.type == notification_base::Type::FAILURE)
+        if(m_notification.type == notification_base::type::failure)
         {
             icon = QMessageBox::Critical;
         }
-        else if(m_notification.type == notification_base::Type::INFO)
+        else if(m_notification.type == notification_base::type::info)
         {
             icon = QMessageBox::Information;
         }
 
-        m_showMoreBox->setIcon(icon);
-        m_showMoreBox->setWindowTitle(truncated_message);
-        m_showMoreBox->setText(QString::fromStdString(m_notification.message));
+        m_show_more_box->setIcon(icon);
+        m_show_more_box->setWindowTitle(truncated_message);
+        m_show_more_box->setText(QString::fromStdString(m_notification.message));
     }
     else
     {
-        m_msgBox->setText(message);
+        m_msg_box->setText(message);
     }
 
     // Only show the button for truncated text.
-    m_showMoreButton->setVisible(is_truncated);
+    m_show_more_button->setVisible(is_truncated);
 
     // Reapply the position
-    auto position_fct = this->computePosition();
-    m_container->setPosition(position_fct, m_parent);
-    m_container->setPositionFct(position_fct);
+    auto position_fct = this->compute_position();
+    m_widget->set_position(position_fct, m_parent);
+    m_widget->set_position_fct(position_fct);
 
     // (re)Start / stop the fadeout timer
-    m_msgBox->timedFadeout(m_notification.duration);
+    m_msg_box->timed_fadeout(m_notification.duration);
 
     // If the notification has a closable attribute, use it, otherwise, make it closable if not permanent
     if((m_notification.closable && *m_notification.closable)
        || (!m_notification.closable && (m_notification.duration && m_notification.duration->count() != 0)))
     {
         // Fadeout when clicked.
-        QObject::connect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::fadeout);
+        QObject::connect(m_msg_box, &clickable_q_label::clicked, m_msg_box, &clickable_q_label::fadeout);
     }
     else
     {
         // Not closable
-        QObject::disconnect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::fadeout);
+        QObject::disconnect(m_msg_box, &clickable_q_label::clicked, m_msg_box, &clickable_q_label::fadeout);
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool notification::isVisible() const
+bool notification::is_visible() const
 {
-    if(m_msgBox == nullptr)
+    if(m_msg_box == nullptr)
     {
         return false;
     }
 
-    return m_msgBox->isVisible();
+    return m_msg_box->isVisible();
 }
 
 //------------------------------------------------------------------------------
 
 void notification::close() const
 {
-    if(m_msgBox != nullptr)
+    if(m_msg_box != nullptr)
     {
         // Closing after a fade out effect.
-        m_msgBox->fadeout();
+        m_msg_box->fadeout();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void notification::moveDown()
+void notification::move_down()
 {
-    if(!m_container.isNull() && m_index > 0)
+    if(!m_widget.isNull() && m_index > 0)
     {
         --m_index;
 
@@ -419,9 +419,9 @@ void notification::moveDown()
             0,
             [&]
             {
-                if(!m_container.isNull())
+                if(!m_widget.isNull())
                 {
-                    m_container->setPosition(computePosition(), m_parent);
+                    m_widget->set_position(compute_position(), m_parent);
                 }
             });
     }
@@ -429,27 +429,27 @@ void notification::moveDown()
 
 //------------------------------------------------------------------------------
 
-void notification::setSize(std::array<int, 2> _size)
+void notification::set_size(std::array<int, 2> _size)
 {
-    notification_base::setSize(_size);
+    notification_base::set_size(_size);
 
     // Apply the size change
-    if(!m_container.isNull())
+    if(!m_widget.isNull())
     {
-        m_container->setMinimumSize(m_notification.size[0], m_notification.size[1]);
-        m_container->setMaximumSize(m_notification.size[0], m_notification.size[1]);
+        m_widget->setMinimumSize(m_notification.size[0], m_notification.size[1]);
+        m_widget->setMaximumSize(m_notification.size[0], m_notification.size[1]);
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::function<QPoint(QWidget*)> notification::computePosition()
+std::function<QPoint(QWidget*)> notification::compute_position()
 {
     constexpr int margin = 5;
 
     switch(m_notification.position)
     {
-        case Position::CENTERED:
+        case position::centered:
             return [this](QWidget* _parent) -> QPoint
                    {
                        const auto parent_pos_center = _parent->rect().center();
@@ -460,7 +460,7 @@ std::function<QPoint(QWidget*)> notification::computePosition()
                        };
                    };
 
-        case Position::CENTERED_TOP:
+        case position::centered_top:
             return [this](QWidget* _parent) -> QPoint
                    {
                        const int parent_x = _parent->rect().center().x();
@@ -473,7 +473,7 @@ std::function<QPoint(QWidget*)> notification::computePosition()
                        };
                    };
 
-        case Position::CENTERED_BOTTOM:
+        case position::centered_bottom:
             return [this](QWidget* _parent) -> QPoint
                    {
                        const int parent_x = _parent->rect().center().x();
@@ -486,7 +486,7 @@ std::function<QPoint(QWidget*)> notification::computePosition()
                        };
                    };
 
-        case Position::TOP_LEFT:
+        case position::top_left:
             return [this](QWidget* _parent) -> QPoint
                    {
                        const auto parrent_top_left = _parent->rect().topLeft();
@@ -500,7 +500,7 @@ std::function<QPoint(QWidget*)> notification::computePosition()
                        };
                    };
 
-        case Position::TOP_RIGHT:
+        case position::top_right:
             return [this](QWidget* _parent) -> QPoint
                    {
                        const auto parrent_top_right = _parent->rect().topRight();
@@ -514,7 +514,7 @@ std::function<QPoint(QWidget*)> notification::computePosition()
                        };
                    };
 
-        case Position::BOTTOM_LEFT:
+        case position::bottom_left:
             return [this](QWidget* _parent) -> QPoint
                    {
                        const auto parrent_bottom_left = _parent->rect().bottomLeft();
@@ -528,7 +528,7 @@ std::function<QPoint(QWidget*)> notification::computePosition()
                        };
                    };
 
-        case Position::BOTTOM_RIGHT:
+        case position::bottom_right:
             return [this](QWidget* _parent) -> QPoint
                    {
                        const auto parrent_bottom_right = _parent->rect().bottomRight();
@@ -543,7 +543,7 @@ std::function<QPoint(QWidget*)> notification::computePosition()
                    };
 
         default:
-            SIGHT_ASSERT("Position '" + std::to_string(int(m_notification.position)) + "' is unknown.", false);
+            SIGHT_ASSERT("position '" + std::to_string(int(m_notification.position)) + "' is unknown.", false);
 
             return [](QWidget* _parent) -> QPoint
                    {

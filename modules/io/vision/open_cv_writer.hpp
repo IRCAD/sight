@@ -91,13 +91,13 @@ public:
 protected:
 
     /// configure the service using GUI.
-    MODULE_IO_VISION_API void openLocationDialog() override;
+    MODULE_IO_VISION_API void open_location_dialog() override;
 
     /**
      * @brief Prompt a dialog to define file location.
      * @return boolean if a location has been choosen
      */
-    MODULE_IO_VISION_API virtual bool defineLocationGUI();
+    MODULE_IO_VISION_API virtual bool define_location_gui();
 
     /**
      * @brief Configures the service.
@@ -114,7 +114,7 @@ protected:
     MODULE_IO_VISION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_VISION_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::service::path_type_t get_path_type() const override;
 };
 
 } //namespace sight::module::io::vision

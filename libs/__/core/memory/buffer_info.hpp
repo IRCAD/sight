@@ -38,8 +38,8 @@ namespace sight::core::memory
 
 struct CORE_CLASS_API buffer_info
 {
-    typedef std::size_t size_t;
-    typedef WPTR(void) counter_type;
+    using size_t       = std::size_t;
+    using counter_type = std::weak_ptr<void>;
 
     CORE_API buffer_info();
 
@@ -57,7 +57,7 @@ struct CORE_CLASS_API buffer_info
     bool user_stream_factory {false};
 
     file_holder fs_file;
-    file_format_type file_format {core::memory::OTHER};
+    file_format_type file_format {core::memory::other};
 
     counter_type lock_counter;
 

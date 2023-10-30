@@ -70,16 +70,16 @@ public:
     UI_QT_API_QT void operator()(float _percent, std::string _msg) override;
 
     /// override
-    UI_QT_API_QT void setTitle(const std::string& _title) override;
+    UI_QT_API_QT void set_title(const std::string& _title) override;
 
     /// override
-    UI_QT_API_QT void setMessage(const std::string& _message) override;
+    UI_QT_API_QT void set_message(const std::string& _message) override;
 
-    UI_QT_API_QT void hideCancelButton() override;
+    UI_QT_API_QT void hide_cancel_button() override;
 
 protected Q_SLOTS:
 
-    void cancelPressed() override;
+    void cancel_pressed() override;
 
 protected:
 
@@ -87,8 +87,8 @@ protected:
 
     QPointer<QProgressDialog> m_dialog;
     QPointer<QProgressBar> m_progressbar;
-    QPointer<QPushButton> m_cancelButton;
-    QPointer<QMainWindow> m_mainWindow;
+    QPointer<QPushButton> m_cancel_button;
+    QPointer<QMainWindow> m_main_window;
 };
 
 } // namespace sight::ui::qt::dialog

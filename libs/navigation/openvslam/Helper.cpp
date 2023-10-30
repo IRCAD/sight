@@ -33,31 +33,31 @@ namespace sight::navigation::openvslam
 
 //-----------------------------------------------------------------------------
 
-::openvslam::camera::perspective Helper::fromSight(const data::camera& _sightCam)
+::openvslam::camera::perspective helper::from_sight(const data::camera& _sight_cam)
 {
-    const auto name = _sightCam.getCameraID();
-    const auto dist = _sightCam.getDistortionCoefficient();
+    const auto name = _sight_cam.get_camera_id();
+    const auto dist = _sight_cam.get_distortion_coefficient();
 
     // Handle only Monocular-RGB camera for now.
-    const ::openvslam::camera::setup_type_t cameraType = ::openvslam::camera::setup_type_t::Monocular;
-    const ::openvslam::camera::color_order_t colorType = ::openvslam::camera::color_order_t::RGB;
+    const ::openvslam::camera::setup_type_t camera_type = ::openvslam::camera::setup_type_t::Monocular;
+    const ::openvslam::camera::color_order_t color_type = ::openvslam::camera::color_order_t::RGB;
 
-    const auto cols = static_cast<unsigned int>(_sightCam.getWidth());
-    const auto rows = static_cast<unsigned int>(_sightCam.getHeight());
-    const auto fps  = static_cast<double>(_sightCam.getMaximumFrameRate());
+    const auto cols = static_cast<unsigned int>(_sight_cam.get_width());
+    const auto rows = static_cast<unsigned int>(_sight_cam.get_height());
+    const auto fps  = static_cast<double>(_sight_cam.get_maximum_frame_rate());
     // Create a perspective camera (equirectangular and fisheye needs additional information).
-    const ::openvslam::camera::perspective oVSlamCamera =
+    const ::openvslam::camera::perspective o_v_slam_camera =
         ::openvslam::camera::perspective(
             name,
-            cameraType,
-            colorType,
+            camera_type,
+            color_type,
             cols,
             rows,
             fps,
-            _sightCam.getFx(),
-            _sightCam.getFy(),
-            _sightCam.getCx(),
-            _sightCam.getCy(),
+            _sight_cam.get_fx(),
+            _sight_cam.get_fy(),
+            _sight_cam.get_cx(),
+            _sight_cam.get_cy(),
             dist[0],
             dist[1],
             dist[2],
@@ -65,86 +65,86 @@ namespace sight::navigation::openvslam
             dist[4]
         );
 
-    return oVSlamCamera;
+    return o_v_slam_camera;
 }
 
 //-----------------------------------------------------------------------------
 
-data::camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSlamCam)
+data::camera::sptr helper::to_sight(const ::openvslam::camera::perspective _o_v_slam_cam)
 {
     data::camera::sptr cam = std::make_shared<data::camera>();
 
-    cam->setCameraID(_oVSlamCam.name_);
-    cam->setWidth(_oVSlamCam.cols_);
-    cam->setHeight(_oVSlamCam.rows_);
+    cam->set_camera_id(_o_v_slam_cam.name_);
+    cam->set_width(_o_v_slam_cam.cols_);
+    cam->set_height(_o_v_slam_cam.rows_);
 
-    cam->setFx(_oVSlamCam.fx_);
-    cam->setFy(_oVSlamCam.fy_);
-    cam->setCx(_oVSlamCam.cx_);
-    cam->setCy(_oVSlamCam.cy_);
+    cam->set_fx(_o_v_slam_cam.fx_);
+    cam->set_fy(_o_v_slam_cam.fy_);
+    cam->set_cx(_o_v_slam_cam.cx_);
+    cam->set_cy(_o_v_slam_cam.cy_);
 
     std::array<double, 5> dist {};
 
-    dist[0] = _oVSlamCam.k1_; //k1
-    dist[1] = _oVSlamCam.k2_; //k2
-    dist[2] = _oVSlamCam.p1_; //p1
-    dist[3] = _oVSlamCam.p2_; //p2
-    dist[4] = _oVSlamCam.k3_; //k3
+    dist[0] = _o_v_slam_cam.k1_; //k1
+    dist[1] = _o_v_slam_cam.k2_; //k2
+    dist[2] = _o_v_slam_cam.p1_; //p1
+    dist[3] = _o_v_slam_cam.p2_; //p2
+    dist[4] = _o_v_slam_cam.k3_; //k3
 
-    cam->setDistortionCoefficient(dist);
+    cam->set_distortion_coefficient(dist);
 
-    cam->setMaximumFrameRate(static_cast<float>(_oVSlamCam.fps_));
+    cam->set_maximum_frame_rate(static_cast<float>(_o_v_slam_cam.fps_));
 
     return cam;
 }
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(
-    const data::camera& _sightCam,
-    const OrbParams& _orbParams,
-    const InitParams& _initParams
+std::shared_ptr<::openvslam::config> helper::create_monocular_config(
+    const data::camera& _sight_cam,
+    const orb_params& _orb_params,
+    const init_params& _init_params
 )
 {
     //Create a YAML node for other parameters.
     ::YAML::Node node;
-    node["Camera.name"] = _sightCam.getCameraID();
+    node["Camera.name"] = _sight_cam.get_camera_id();
     // Only Monocular
     node["Camera.setup"] = "monocular";
     // In sight only handles perspective modeles.
     node["Camera.model"] = "perspective";
-    node["Camera.fx"]    = _sightCam.getFx();
-    node["Camera.fy"]    = _sightCam.getFy();
-    node["Camera.cx"]    = _sightCam.getCx();
-    node["Camera.cy"]    = _sightCam.getCy();
+    node["Camera.fx"]    = _sight_cam.get_fx();
+    node["Camera.fy"]    = _sight_cam.get_fy();
+    node["Camera.cx"]    = _sight_cam.get_cx();
+    node["Camera.cy"]    = _sight_cam.get_cy();
 
-    node["Camera.k1"] = _sightCam.getDistortionCoefficient()[0];
-    node["Camera.k2"] = _sightCam.getDistortionCoefficient()[1];
-    node["Camera.p1"] = _sightCam.getDistortionCoefficient()[2];
-    node["Camera.p2"] = _sightCam.getDistortionCoefficient()[3];
-    node["Camera.k3"] = _sightCam.getDistortionCoefficient()[4];
+    node["Camera.k1"] = _sight_cam.get_distortion_coefficient()[0];
+    node["Camera.k2"] = _sight_cam.get_distortion_coefficient()[1];
+    node["Camera.p1"] = _sight_cam.get_distortion_coefficient()[2];
+    node["Camera.p2"] = _sight_cam.get_distortion_coefficient()[3];
+    node["Camera.k3"] = _sight_cam.get_distortion_coefficient()[4];
 
-    node["Camera.fps"]  = _sightCam.getMaximumFrameRate();
-    node["Camera.cols"] = _sightCam.getWidth();
-    node["Camera.rows"] = _sightCam.getHeight();
+    node["Camera.fps"]  = _sight_cam.get_maximum_frame_rate();
+    node["Camera.cols"] = _sight_cam.get_width();
+    node["Camera.rows"] = _sight_cam.get_height();
     // Values can be RGB, BGR or GRAY.
     //TODO: maybe use _sightCam.getPixelFormatName() and translate result to RGB-BGR or GRAY.
     node["Camera.color_order"] = "RGB";
 
     // Features (ORB):
-    node["Feature.max_num_keypoints"]  = _orbParams.maxNumKeyPts;
-    node["Feature.scale_factor"]       = _orbParams.scaleFactor;
-    node["Feature.num_levels"]         = _orbParams.numLevels;
-    node["Feature.ini_fast_threshold"] = _orbParams.iniFastThr;
-    node["Feature.min_fast_threshold"] = _orbParams.minFastThr;
+    node["Feature.max_num_keypoints"]  = _orb_params.max_num_key_pts;
+    node["Feature.scale_factor"]       = _orb_params.scale_factor;
+    node["Feature.num_levels"]         = _orb_params.num_levels;
+    node["Feature.ini_fast_threshold"] = _orb_params.ini_fast_thr;
+    node["Feature.min_fast_threshold"] = _orb_params.min_fast_thr;
 
     // Initializer parameters:
-    node["Initializer.num_ransac_iterations"]        = _initParams.numRansacIterations;
-    node["Initializer.num_min_triangulated_pts"]     = _initParams.minNumTriangulatedPts;
-    node["Initializer.parallax_deg_threshold"]       = _initParams.parallaxDegThr;
-    node["Initializer.reprojection_error_threshold"] = _initParams.reprojectionErrThr;
-    node["Initializer.num_ba_iterations"]            = _initParams.numBAIterations;
-    node["Initializer.scaling_factor"]               = _initParams.scalingFactor;
+    node["Initializer.num_ransac_iterations"]        = _init_params.num_ransac_iterations;
+    node["Initializer.num_min_triangulated_pts"]     = _init_params.min_num_triangulated_pts;
+    node["Initializer.parallax_deg_threshold"]       = _init_params.parallax_deg_thr;
+    node["Initializer.reprojection_error_threshold"] = _init_params.reprojection_err_thr;
+    node["Initializer.num_ba_iterations"]            = _init_params.num_ba_iterations;
+    node["Initializer.scaling_factor"]               = _init_params.scaling_factor;
 
     // Create the config with YAML node (constructor was added on our version of openvslam).
     std::shared_ptr< ::openvslam::config> conf = std::make_shared< ::openvslam::config>(node);
@@ -153,14 +153,14 @@ std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(
 
 //-----------------------------------------------------------------------------
 
-void Helper::writeOpenvslamConfig(const std::shared_ptr< ::openvslam::config> config, const std::string& _filepath)
+void helper::write_openvslam_config(const std::shared_ptr< ::openvslam::config> _config, const std::string& _filepath)
 {
-    writeOpenvslamConfig(config->yaml_node_, _filepath);
+    write_openvslam_config(_config->yaml_node_, _filepath);
 }
 
 //-----------------------------------------------------------------------------
 
-void Helper::writeOpenvslamConfig(const YAML::Node& _node, const std::string& _filepath)
+void helper::write_openvslam_config(const YAML::Node& _node, const std::string& _filepath)
 {
     std::ofstream f_out(_filepath);
     f_out << _node;
@@ -168,7 +168,7 @@ void Helper::writeOpenvslamConfig(const YAML::Node& _node, const std::string& _f
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr< ::openvslam::config> Helper::readOpenvslamConfig(const std::string& _filepath)
+std::shared_ptr< ::openvslam::config> helper::read_openvslam_config(const std::string& _filepath)
 {
     std::shared_ptr< ::openvslam::config> conf;
     try

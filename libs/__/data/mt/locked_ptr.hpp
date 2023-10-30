@@ -43,7 +43,7 @@ class weak_ptr;
 template<class DATATYPE>
 class locked_ptr final
 {
-using Lock = std::conditional_t<std::is_const_v<DATATYPE>, core::mt::read_lock, core::mt::write_lock>;
+using lock = std::conditional_t<std::is_const_v<DATATYPE>, core::mt::read_lock, core::mt::write_lock>;
 
 public:
 
@@ -53,7 +53,7 @@ public:
     {
         if(m_data)
         {
-            m_locker = Lock(m_data->get_mutex());
+            m_locker = lock(m_data->get_mutex());
 
             if constexpr(std::is_base_of_v<core::memory::buffered, DATATYPE>)
             {
@@ -66,7 +66,7 @@ public:
 
             if constexpr(!std::is_const<DATATYPE>::value)
             {
-                m_data->setModified();
+                m_data->set_modified();
             }
         }
     }
@@ -211,7 +211,7 @@ private:
     std::shared_ptr<DATATYPE> m_data;
 
     /// Read lock if the data is const, write lock otherwise
-    Lock m_locker;
+    lock m_locker;
 
     std::vector<core::memory::buffer_object::lock_t> m_dump_locks;
 };

@@ -109,21 +109,21 @@ protected:
 private:
 
     /// SLOT: selects a matrix.
-    void selectMatrix(int /*index*/);
+    void select_matrix(int /*index*/);
 
     ///SLOT: removes a matrix.
-    void removeMatrix(int /*_index*/);
+    void remove_matrix(int /*_index*/);
 
-    typedef core::com::signal<void (int, std::string)> matrix_added_signal_t;
-    typedef core::com::signal<void (int)> matrix_removed_signal_t;
+    using matrix_added_signal_t   = core::com::signal<void (int, std::string)>;
+    using matrix_removed_signal_t = core::com::signal<void (int)>;
 
-    static constexpr std::string_view s_MATRICES_INOUT = "matrices";
-    static constexpr std::string_view s_SELECTED_INOUT = "selectedMatrix";
-    static constexpr std::string_view s_VECTOR_INOUT   = "vector";
+    static constexpr std::string_view MATRICES_INOUT = "matrices";
+    static constexpr std::string_view SELECTED_INOUT = "selectedMatrix";
+    static constexpr std::string_view VECTOR_INOUT   = "vector";
 
-    data::ptr_vector<data::matrix4, data::Access::inout> m_inputVector {this, s_MATRICES_INOUT};
-    data::ptr_vector<data::matrix4, data::Access::inout> m_selectedVector {this, s_SELECTED_INOUT};
-    data::ptr_vector<data::vector, data::Access::out> m_outputVector {this, s_VECTOR_INOUT};
+    data::ptr_vector<data::matrix4, data::access::inout> m_input_vector {this, MATRICES_INOUT};
+    data::ptr_vector<data::matrix4, data::access::inout> m_selected_vector {this, SELECTED_INOUT};
+    data::ptr_vector<data::vector, data::access::out> m_output_vector {this, VECTOR_INOUT};
 };
 
 } // namespace sight::module::geometry.

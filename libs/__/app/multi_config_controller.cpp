@@ -29,16 +29,16 @@ namespace sight::app
 //------------------------------------------------------------------------------
 
 multi_config_controller::multi_config_controller() noexcept :
-    m_configLauncher(std::make_unique<app::helper::config_launcher>())
+    m_config_launcher(std::make_unique<app::helper::config_launcher>())
 {
-    new_slot(slots::SET_CONFIG, &multi_config_controller::setConfig, this);
+    new_slot(slots::SET_CONFIG, &multi_config_controller::set_config, this);
 }
 
 //------------------------------------------------------------------------------
 
 void multi_config_controller::configuring(const config_t& _config)
 {
-    m_configLauncher->parseConfig(_config, this->get_sptr());
+    m_config_launcher->parse_config(_config, this->get_sptr());
 
     const auto& app_config = _config.get_child("appConfig");
     m_key = app_config.get<std::string>("<xmlattr>.key", m_key);
@@ -54,27 +54,27 @@ void multi_config_controller::starting()
 
 void multi_config_controller::stopping()
 {
-    m_configLauncher->stopConfig();
+    m_config_launcher->stop_config();
 }
 
 //------------------------------------------------------------------------------
 
 void multi_config_controller::updating()
 {
-    if(m_configLauncher->configIsRunning())
+    if(m_config_launcher->config_is_running())
     {
-        m_configLauncher->stopConfig();
+        m_config_launcher->stop_config();
     }
 
-    m_configLauncher->startConfig(this->get_sptr());
+    m_config_launcher->start_config(this->get_sptr());
 }
 
 //------------------------------------------------------------------------------
-void multi_config_controller::setConfig(sight::ui::parameter_t _val, std::string _key)
+void multi_config_controller::set_config(sight::ui::parameter_t _val, std::string _key)
 {
     if(_key == m_key && std::holds_alternative<std::string>(_val))
     {
-        m_configLauncher->setConfig(std::get<std::string>(_val));
+        m_config_launcher->set_config(std::get<std::string>(_val));
         this->update();
     }
 }

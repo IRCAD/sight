@@ -30,7 +30,7 @@
 #include <QColor>
 #include <QPointer>
 
-namespace Qt3DExtras
+namespace Qt3DExtras // NOLINT(readability-identifier-naming)
 {
 
 class Qt3DWindow;
@@ -43,7 +43,7 @@ namespace sight::viz::qt3d
 namespace core
 {
 
-class GenericScene;
+class generic_scene;
 
 } // namespace core
 
@@ -80,7 +80,7 @@ public:
     VIZ_QT3D_API ~render() override;
 
     /// @returns the scene instantiated by this service.
-    VIZ_QT3D_API sight::viz::qt3d::core::GenericScene* getScene();
+    VIZ_QT3D_API sight::viz::qt3d::core::generic_scene* get_scene();
 
 protected:
 
@@ -99,13 +99,13 @@ protected:
 private:
 
     /// Contains the 3D view.
-    QPointer<Qt3DExtras::Qt3DWindow> m_3dView;
+    QPointer<Qt3DExtras::Qt3DWindow> m_3d_view;
 
     /// Contains the generic scene associated to this service.
-    QPointer<sight::viz::qt3d::core::GenericScene> m_scene;
+    QPointer<sight::viz::qt3d::core::generic_scene> m_scene;
 
     /// Specifies the background color.
-    QColor m_backgroundColor;
+    QColor m_background_color;
 };
 
 } // namespace sight::viz::qt3d.

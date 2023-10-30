@@ -48,10 +48,10 @@
 namespace sight::module::io::dimse
 {
 
-static const std::string s_ADVANCED_CONFIG    = "advanced";
-static const std::string s_ICON_PATH_CONFIG   = "icon";
-static const std::string s_ICON_WIDTH_CONFIG  = "width";
-static const std::string s_ICON_HEIGHT_CONFIG = "height";
+static const std::string ADVANCED_CONFIG    = "advanced";
+static const std::string ICON_PATH_CONFIG   = "icon";
+static const std::string ICON_WIDTH_CONFIG  = "width";
+static const std::string ICON_HEIGHT_CONFIG = "height";
 
 //------------------------------------------------------------------------------
 
@@ -70,15 +70,15 @@ void query_editor::configuring()
     const auto config      = config_tree.get_child_optional("config.<xmlattr>");
     if(config)
     {
-        const auto icon_path = config->get_optional<std::string>(s_ICON_PATH_CONFIG);
+        const auto icon_path = config->get_optional<std::string>(ICON_PATH_CONFIG);
         if(icon_path)
         {
-            m_iconPath = core::runtime::get_module_resource_file_path(icon_path.value());
+            m_icon_path = core::runtime::get_module_resource_file_path(icon_path.value());
         }
 
-        m_advanced   = config->get<bool>(s_ADVANCED_CONFIG, m_advanced);
-        m_iconWidth  = config->get<unsigned int>(s_ICON_WIDTH_CONFIG, m_iconWidth);
-        m_iconHeight = config->get<unsigned int>(s_ICON_HEIGHT_CONFIG, m_iconHeight);
+        m_advanced    = config->get<bool>(ADVANCED_CONFIG, m_advanced);
+        m_icon_width  = config->get<unsigned int>(ICON_WIDTH_CONFIG, m_icon_width);
+        m_icon_height = config->get<unsigned int>(ICON_HEIGHT_CONFIG, m_icon_height);
     }
 }
 
@@ -87,37 +87,37 @@ void query_editor::configuring()
 void query_editor::starting()
 {
     // Create the worker.
-    m_requestWorker = core::thread::worker::make();
+    m_request_worker = core::thread::worker::make();
 
     // Create the GUI.
     sight::ui::service::create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     auto* const main_layout = new QVBoxLayout();
 
-    m_searchEdit = new QLineEdit();
-    m_searchEdit->setPlaceholderText("Find by name, birth date, ID, date, description or modality");
-    m_searchButton = new QPushButton("Search");
+    m_search_edit = new QLineEdit();
+    m_search_edit->setPlaceholderText("Find by name, birth date, ID, date, description or modality");
+    m_search_button = new QPushButton("Search");
 
-    if(!m_iconPath.empty())
+    if(!m_icon_path.empty())
     {
-        m_searchButton->setText("");
-        m_searchButton->setIcon(QIcon(QString::fromStdString(m_iconPath.string())));
-        if(m_iconWidth > 0 && m_iconHeight > 0)
+        m_search_button->setText("");
+        m_search_button->setIcon(QIcon(QString::fromStdString(m_icon_path.string())));
+        if(m_icon_width > 0 && m_icon_height > 0)
         {
-            m_searchButton->setIconSize(QSize(int(m_iconWidth), int(m_iconHeight)));
+            m_search_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
         }
     }
 
     auto* const search_layout = new QHBoxLayout();
     search_layout->setObjectName("query_editor_search");
 
-    search_layout->addWidget(m_searchEdit);
-    search_layout->addWidget(m_searchButton);
+    search_layout->addWidget(m_search_edit);
+    search_layout->addWidget(m_search_button);
     main_layout->addLayout(search_layout);
 
-    QObject::connect(m_searchEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-    QObject::connect(m_searchButton, &QPushButton::clicked, this, &query_editor::executeQueryAsync);
+    QObject::connect(m_search_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+    QObject::connect(m_search_button, &QPushButton::clicked, this, &query_editor::execute_query_async);
 
     if(m_advanced)
     {
@@ -165,14 +165,14 @@ void query_editor::starting()
 
         auto* const date_edit_layout = new QVBoxLayout();
 
-        m_beginStudyDateEdit = new QDateEdit();
-        m_beginStudyDateEdit->setDate(QDate());
-        m_beginStudyDateEdit->setDisplayFormat("MM.dd.yyyy");
-        m_endStudyDateEdit = new QDateEdit();
-        m_endStudyDateEdit->setDate(QDate::currentDate());
-        m_endStudyDateEdit->setDisplayFormat("MM.dd.yyyy");
-        date_edit_layout->addWidget(m_beginStudyDateEdit);
-        date_edit_layout->addWidget(m_endStudyDateEdit);
+        m_begin_study_date_edit = new QDateEdit();
+        m_begin_study_date_edit->setDate(QDate());
+        m_begin_study_date_edit->setDisplayFormat("MM.dd.yyyy");
+        m_end_study_date_edit = new QDateEdit();
+        m_end_study_date_edit->setDate(QDate::currentDate());
+        m_end_study_date_edit->setDisplayFormat("MM.dd.yyyy");
+        date_edit_layout->addWidget(m_begin_study_date_edit);
+        date_edit_layout->addWidget(m_end_study_date_edit);
 
         date_layout->addLayout(date_label_layout, 0);
         date_layout->addLayout(date_edit_layout, 1);
@@ -180,32 +180,32 @@ void query_editor::starting()
         auto* const edit_layout = new QVBoxLayout();
         edit_layout->setObjectName("query_editor_editors");
 
-        m_patientNameEdit = new QLineEdit();
+        m_patient_name_edit = new QLineEdit();
 
         auto* const birth_date_edit_layout = new QHBoxLayout();
 
-        m_birthDateEdit = new QDateEdit();
-        m_birthDateEdit->setDate(QDate());
-        m_birthDateEdit->setDisplayFormat("MM.dd.yyyy");
-        m_birthDateEdit->setEnabled(false);
+        m_birth_date_edit = new QDateEdit();
+        m_birth_date_edit->setDate(QDate());
+        m_birth_date_edit->setDisplayFormat("MM.dd.yyyy");
+        m_birth_date_edit->setEnabled(false);
 
         auto* const birth_date_enabler = new QCheckBox();
 
         birth_date_edit_layout->addWidget(birth_date_enabler, 0);
-        birth_date_edit_layout->addWidget(m_birthDateEdit, 1);
+        birth_date_edit_layout->addWidget(m_birth_date_edit, 1);
 
-        m_patientUIDEdit        = new QLineEdit();
-        m_seriesUIDEdit         = new QLineEdit();
-        m_seriesDescriptionEdit = new QLineEdit();
-        m_seriesModalityEdit    = new QLineEdit();
+        m_patient_uid_edit        = new QLineEdit();
+        m_series_uid_edit         = new QLineEdit();
+        m_series_description_edit = new QLineEdit();
+        m_series_modality_edit    = new QLineEdit();
 
         edit_layout->addLayout(date_layout);
-        edit_layout->addWidget(m_patientNameEdit);
+        edit_layout->addWidget(m_patient_name_edit);
         edit_layout->addLayout(birth_date_edit_layout);
-        edit_layout->addWidget(m_patientUIDEdit);
-        edit_layout->addWidget(m_seriesUIDEdit);
-        edit_layout->addWidget(m_seriesDescriptionEdit);
-        edit_layout->addWidget(m_seriesModalityEdit);
+        edit_layout->addWidget(m_patient_uid_edit);
+        edit_layout->addWidget(m_series_uid_edit);
+        edit_layout->addWidget(m_series_description_edit);
+        edit_layout->addWidget(m_series_modality_edit);
 
         advanced_layout->addLayout(label_layout);
         advanced_layout->addLayout(edit_layout);
@@ -213,50 +213,55 @@ void query_editor::starting()
         main_layout->addLayout(advanced_layout);
 
         // Connect signals.
-        QObject::connect(m_patientNameEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-        QObject::connect(birth_date_enabler, &QCheckBox::stateChanged, this, &query_editor::enableBirthDateEdit);
-        QObject::connect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-        QObject::connect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-        QObject::connect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-        QObject::connect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
+        QObject::connect(m_patient_name_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+        QObject::connect(birth_date_enabler, &QCheckBox::stateChanged, this, &query_editor::enable_birth_date_edit);
+        QObject::connect(m_patient_uid_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+        QObject::connect(m_series_uid_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+        QObject::connect(
+            m_series_description_edit,
+            &QLineEdit::returnPressed,
+            this,
+            &query_editor::execute_query_async
+        );
+        QObject::connect(m_series_modality_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
     }
 
-    qt_container->setLayout(main_layout);
+    qt_container->set_layout(main_layout);
 }
 
 //------------------------------------------------------------------------------
 
 void query_editor::updating()
 {
-    this->executeQueryAsync();
+    this->execute_query_async();
 }
 
 //------------------------------------------------------------------------------
 
 void query_editor::stopping()
 {
-    QObject::disconnect(m_searchEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-    QObject::disconnect(m_searchButton, &QPushButton::clicked, this, &query_editor::executeQueryAsync);
-    QObject::disconnect(m_patientNameEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-    QObject::disconnect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-    QObject::disconnect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-    QObject::disconnect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-    QObject::disconnect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
+    QObject::disconnect(m_search_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+    QObject::disconnect(m_search_button, &QPushButton::clicked, this, &query_editor::execute_query_async);
+    QObject::disconnect(m_patient_name_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+    QObject::disconnect(m_patient_uid_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+    QObject::disconnect(m_series_uid_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+    QObject::disconnect(m_series_description_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
+    QObject::disconnect(m_series_modality_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
 
     // Stop worker.
-    m_requestWorker->stop();
-    m_requestWorker.reset();
+    m_request_worker->stop();
+    m_request_worker.reset();
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void query_editor::executeQueryAsync()
+void query_editor::execute_query_async()
 {
-    if(!m_isQuerying)
+    if(!m_is_querying)
     {
-        m_requestWorker->post([this](auto&& ...){executeQuery();});
+        m_request_worker->post([this](auto&& ...){execute_query();});
     }
     else
     {
@@ -267,11 +272,11 @@ void query_editor::executeQueryAsync()
 
 //------------------------------------------------------------------------------
 
-void query_editor::executeQuery()
+void query_editor::execute_query()
 {
-    m_isQuerying = true;
+    m_is_querying = true;
 
-    auto series_enquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
+    auto series_enquirer = std::make_shared<sight::io::dimse::series_enquirer>();
 
     // Initialize connection.
     try
@@ -279,18 +284,18 @@ void query_editor::executeQuery()
         const auto pacs_configuration = m_config.lock();
 
         series_enquirer->initialize(
-            pacs_configuration->getLocalApplicationTitle(),
-            pacs_configuration->getPacsHostName(),
-            pacs_configuration->getPacsApplicationPort(),
-            pacs_configuration->getPacsApplicationTitle()
+            pacs_configuration->get_local_application_title(),
+            pacs_configuration->get_pacs_host_name(),
+            pacs_configuration->get_pacs_application_port(),
+            pacs_configuration->get_pacs_application_title()
         );
         series_enquirer->connect();
     }
-    catch(const sight::io::dimse::exceptions::Base& e)
+    catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(e.what()));
         this->notifier::failure("Can't connect to the PACS");
-        m_isQuerying = false;
+        m_is_querying = false;
         return;
     }
 
@@ -312,7 +317,7 @@ void query_editor::executeQuery()
     try
     {
         // Execute find requests.
-        const std::string search_value = standardise(m_searchEdit->text().toStdString());
+        const std::string search_value = standardise(m_search_edit->text().toStdString());
         std::string begin_data_search_value;
         std::string end_date_search_value;
         std::string name_search_value;
@@ -324,18 +329,18 @@ void query_editor::executeQuery()
 
         if(m_advanced)
         {
-            begin_data_search_value = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-            end_date_search_value   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-            name_search_value       = standardise(m_patientNameEdit->text().toStdString());
-            if(m_birthDateEdit->isEnabled())
+            begin_data_search_value = m_begin_study_date_edit->date().toString("yyyyMMdd").toStdString();
+            end_date_search_value   = m_end_study_date_edit->date().toString("yyyyMMdd").toStdString();
+            name_search_value       = standardise(m_patient_name_edit->text().toStdString());
+            if(m_birth_date_edit->isEnabled())
             {
-                birth_date_search_value = m_birthDateEdit->date().toString("yyyyMMdd").toStdString();
+                birth_date_search_value = m_birth_date_edit->date().toString("yyyyMMdd").toStdString();
             }
 
-            patient_uid_search_value = standardise(m_patientUIDEdit->text().toStdString());
-            series_uid_search_value  = standardise(m_seriesUIDEdit->text().toStdString());
-            description_search_value = standardise(m_seriesDescriptionEdit->text().toStdString());
-            modality_search_value    = standardise(m_seriesModalityEdit->text().toStdString());
+            patient_uid_search_value = standardise(m_patient_uid_edit->text().toStdString());
+            series_uid_search_value  = standardise(m_series_uid_edit->text().toStdString());
+            description_search_value = standardise(m_series_description_edit->text().toStdString());
+            modality_search_value    = standardise(m_series_modality_edit->text().toStdString());
         }
 
         OFList<QRResponse*> responses;
@@ -343,40 +348,40 @@ void query_editor::executeQuery()
         // If one of the advanced editor is filled, with find series with it's field to improve the research.
         if(!name_search_value.empty())
         {
-            responses = series_enquirer->findSeriesByPatientName(name_search_value);
+            responses = series_enquirer->find_series_by_patient_name(name_search_value);
         }
         else if(!birth_date_search_value.empty())
         {
-            responses = series_enquirer->findSeriesByPatientBirthDate(birth_date_search_value);
+            responses = series_enquirer->find_series_by_patient_birth_date(birth_date_search_value);
         }
         else if(!patient_uid_search_value.empty())
         {
-            responses = series_enquirer->findSeriesByPatientUID(patient_uid_search_value);
+            responses = series_enquirer->find_series_by_patient_uid(patient_uid_search_value);
         }
         else if(!series_uid_search_value.empty())
         {
-            responses = series_enquirer->findSeriesByUID(series_uid_search_value);
+            responses = series_enquirer->find_series_by_uid(series_uid_search_value);
         }
         else if(!description_search_value.empty())
         {
-            responses = series_enquirer->findSeriesByDescription(description_search_value);
+            responses = series_enquirer->find_series_by_description(description_search_value);
         }
         else if(!modality_search_value.empty())
         {
-            responses = series_enquirer->findSeriesByModality(modality_search_value);
+            responses = series_enquirer->find_series_by_modality(modality_search_value);
         }
         // By default, check by date if the advanced mode is enable.
         else if(m_advanced)
         {
-            responses = series_enquirer->findSeriesByDate(begin_data_search_value, end_date_search_value);
+            responses = series_enquirer->find_series_by_date(begin_data_search_value, end_date_search_value);
         }
         // Else, retrieve all patient.
         else
         {
-            responses = series_enquirer->findSeriesByPatientName("");
+            responses = series_enquirer->find_series_by_patient_name("");
         }
 
-        // Filter all results.
+        // filter all results.
         std::vector<QRResponse*> series_response;
         for(QRResponse* response : responses)
         {
@@ -406,7 +411,7 @@ void query_editor::executeQuery()
                     // Check date if the advanced mode is enabled.
                     if(m_advanced)
                     {
-                        if(study_date <= m_beginStudyDateEdit->date() || study_date >= m_endStudyDateEdit->date())
+                        if(study_date <= m_begin_study_date_edit->date() || study_date >= m_end_study_date_edit->date())
                         {
                             continue;
                         }
@@ -494,10 +499,10 @@ void query_editor::executeQuery()
             of_series_response.push_back(res);
         }
 
-        data::series_set::container_type series = sight::io::dimse::helper::series::toFwMedData(of_series_response);
+        data::series_set::container_t series = sight::io::dimse::helper::series::to_fw_med_data(of_series_response);
 
         // Clean memory.
-        sight::io::dimse::helper::series::releaseResponses(responses);
+        sight::io::dimse::helper::series::release_responses(responses);
 
         // Check whether the instance number start at 1 or 0.
         for(const data::series::sptr& s : series)
@@ -505,29 +510,29 @@ void query_editor::executeQuery()
             data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(s);
             SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicom_series);
             const std::string instance_uid =
-                series_enquirer->findSOPInstanceUID(dicom_series->getSeriesInstanceUID(), 0);
-            dicom_series->setFirstInstanceNumber((instance_uid.empty() ? 1 : 0));
+                series_enquirer->find_sop_instance_uid(dicom_series->get_series_instance_uid(), 0);
+            dicom_series->set_first_instance_number((instance_uid.empty() ? 1 : 0));
         }
 
-        this->updateSeriesSet(series);
+        this->update_series_set(series);
     }
-    catch(const sight::io::dimse::exceptions::Base& e)
+    catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Can't execute query to the PACS: " + std::string(e.what()));
         this->notifier::failure("Can't execute query");
     }
 
-    if(series_enquirer->isConnectedToPacs())
+    if(series_enquirer->is_connected_to_pacs())
     {
         series_enquirer->disconnect();
     }
 
-    m_isQuerying = false;
+    m_is_querying = false;
 }
 
 //------------------------------------------------------------------------------
 
-void query_editor::updateSeriesSet(const data::series_set::container_type& _series)
+void query_editor::update_series_set(const data::series_set::container_t& _series)
 {
     const auto series_set     = m_series_set.lock();
     const auto scoped_emitter = series_set->scoped_emit();
@@ -544,9 +549,9 @@ void query_editor::updateSeriesSet(const data::series_set::container_type& _seri
 
 //------------------------------------------------------------------------------
 
-void query_editor::enableBirthDateEdit(int _enable)
+void query_editor::enable_birth_date_edit(int _enable)
 {
-    m_birthDateEdit->setEnabled(_enable != 0);
+    m_birth_date_edit->setEnabled(_enable != 0);
 }
 
 } // namespace sight::module::io::dimse

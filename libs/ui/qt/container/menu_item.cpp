@@ -31,28 +31,28 @@ namespace sight::ui::qt::container
 
 void menu_item::clean()
 {
-    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
+    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menu_item);
 }
 
 //-----------------------------------------------------------------------------
 
-void menu_item::destroyContainer()
+void menu_item::destroy_container()
 {
-    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
+    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menu_item);
 }
 
 //-----------------------------------------------------------------------------
 
-void menu_item::setQtMenuItem(QAction* _menu_item)
+void menu_item::set_qt_menu_item(QAction* _menu_item)
 {
-    this->m_menuItem = _menu_item;
+    this->m_menu_item = _menu_item;
 }
 
 //-----------------------------------------------------------------------------
 
-QAction* menu_item::getQtMenuItem()
+QAction* menu_item::get_qt_menu_item()
 {
-    return this->m_menuItem;
+    return this->m_menu_item;
 }
 
 //-----------------------------------------------------------------------------

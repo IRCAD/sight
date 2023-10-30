@@ -30,12 +30,12 @@
 namespace sight::io::session::detail::string
 {
 
-constexpr static auto s_Value {"Value"};
+constexpr static auto VALUE {"Value"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -47,13 +47,13 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::string>(_tree, 1);
 
-    helper::write_string(_tree, s_Value, string->getValue());
+    helper::write_string(_tree, VALUE, string->get_value());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::string::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -67,7 +67,7 @@ inline static data::string::sptr read(
     helper::read_version<data::string>(_tree, 0, 1);
 
     // Assign the value
-    string->setValue(helper::read_string(_tree, s_Value));
+    string->set_value(helper::read_string(_tree, VALUE));
 
     return string;
 }

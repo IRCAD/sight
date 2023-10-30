@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,17 +26,17 @@
 namespace sight::io::dicom::container::sr::ut
 {
 
-class DicomSRSCoord3DNodeTest : public CPPUNIT_NS::TestFixture
+class dicom_srs_coord3_d_node_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DicomSRSCoord3DNodeTest);
-CPPUNIT_TEST(pointTest);
-CPPUNIT_TEST(polylineTest);
+CPPUNIT_TEST_SUITE(dicom_srs_coord3_d_node_test);
+CPPUNIT_TEST(point_test);
+CPPUNIT_TEST(polyline_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void pointTest();
-    static void polylineTest();
+    static void point_test();
+    static void polyline_test();
 };
 
 } // namespace sight::io::dicom::container::sr::ut

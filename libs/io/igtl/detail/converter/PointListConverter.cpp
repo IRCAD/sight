@@ -35,33 +35,33 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string PointListConverter::s_IGTL_TYPE          = "POINT";
-const std::string PointListConverter::s_FWDATA_OBJECT_TYPE = data::point_list::classname();
+const std::string point_list_converter::IGTL_TYPE          = "POINT";
+const std::string point_list_converter::FWDATA_OBJECT_TYPE = data::point_list::classname();
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::PointListConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::point_list_converter);
 
-PointListConverter::PointListConverter()
+point_list_converter::point_list_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-PointListConverter::~PointListConverter()
+point_list_converter::~point_list_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer PointListConverter::fromFwDataObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer point_list_converter::from_fw_data_object(data::object::csptr _src) const
 {
     std::array<float, 3> pos {};
     ::igtl::PointElement::Pointer elem;
     data::point_list::csptr src_points = std::dynamic_pointer_cast<const data::point_list>(_src);
 
     ::igtl::PointMessage::Pointer dest = ::igtl::PointMessage::New();
-    for(data::point::sptr const& src_point : src_points->getPoints())
+    for(data::point::sptr const& src_point : src_points->get_points())
     {
         std::transform(
-            src_point->getCoord().begin(),
-            src_point->getCoord().end(),
+            src_point->get_coord().begin(),
+            src_point->get_coord().end(),
             pos.begin(),
             boost::numeric_cast<double, float>
         );
@@ -75,7 +75,7 @@ PointListConverter::~PointListConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr point_list_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     std::array<float, 3> igtl_pos {};
     ::igtl::PointElement::Pointer elem;
@@ -93,36 +93,36 @@ data::object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase
         std::transform(
             igtl_pos.begin(),
             igtl_pos.end(),
-            fw_point->getCoord().begin(),
+            fw_point->get_coord().begin(),
             boost::numeric_cast<float, double>
         );
         fw_points.push_back(fw_point);
     }
 
-    dest->setPoints(fw_points);
+    dest->set_points(fw_points);
 
     return dest;
 }
 
 //-----------------------------------------------------------------------------
 
-base::sptr PointListConverter::New()
+base::sptr point_list_converter::New()
 {
-    return std::make_shared<PointListConverter>();
+    return std::make_shared<point_list_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& PointListConverter::get_igtl_type() const
+std::string const& point_list_converter::get_igtl_type() const
 {
-    return PointListConverter::s_IGTL_TYPE;
+    return point_list_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& PointListConverter::getFwDataObjectType() const
+std::string const& point_list_converter::get_fw_data_object_type() const
 {
-    return PointListConverter::s_FWDATA_OBJECT_TYPE;
+    return point_list_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

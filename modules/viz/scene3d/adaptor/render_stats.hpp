@@ -87,13 +87,13 @@ private:
     std::unique_ptr<PostWindowRenderListener> m_listener;
 
     /// Contains the displays stats in the overlay.
-    sight::viz::scene3d::text::sptr m_statsText;
+    sight::viz::scene3d::text::sptr m_stats_text;
 
     /// Defines the text's color.
-    Ogre::ColourValue m_textColor;
+    Ogre::ColourValue m_text_color;
 
     /// Defines the text's font height in points.
-    std::size_t m_fontSize {12};
+    std::size_t m_font_size {12};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

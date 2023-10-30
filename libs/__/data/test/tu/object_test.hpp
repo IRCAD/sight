@@ -32,9 +32,9 @@ class object_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(object_test);
-    CPPUNIT_TEST(fieldTest);
-    CPPUNIT_TEST(lastModifyTest);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(field_test);
+    CPPUNIT_TEST(last_modify_test);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,9 +43,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void fieldTest();
-    static void lastModifyTest();
-    static void equalityTest();
+    static void field_test();
+    static void last_modify_test();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

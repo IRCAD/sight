@@ -29,12 +29,12 @@
 namespace sight::data::ut
 {
 
-class image_seriesTest : public CPPUNIT_NS::TestFixture
+class image_series_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(image_seriesTest);
-CPPUNIT_TEST(imageTest);
-CPPUNIT_TEST(equalityTest);
-CPPUNIT_TEST(resizeTest);
+CPPUNIT_TEST_SUITE(image_series_test);
+CPPUNIT_TEST(image_test);
+CPPUNIT_TEST(equality_test);
+CPPUNIT_TEST(resize_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,9 +43,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void imageTest();
-    static void equalityTest();
-    static void resizeTest();
+    void image_test();
+    static void equality_test();
+    static void resize_test();
 
 private:
 

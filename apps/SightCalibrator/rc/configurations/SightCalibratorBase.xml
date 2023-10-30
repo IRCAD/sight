@@ -22,15 +22,15 @@
                     <icon>${ICON_PATH}</icon>
                     <minSize width="1600" height="900" />
                 </frame>
-                <menuBar />
+                <menubar />
             </gui>
             <registry>
-                <menuBar sid="menuBarView" start="true" />
+                <menubar sid="menuBarView" start="true" />
                 <view sid="mainview" start="true" />
             </registry>
         </service>
 
-        <service uid="menuBarView" type="sight::module::ui::menu_bar" >
+        <service uid="menuBarView" type="sight::module::ui::menubar" >
             <gui>
                 <layout>
                     <menu name="File" />

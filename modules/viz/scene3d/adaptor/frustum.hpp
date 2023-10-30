@@ -40,7 +40,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor displays the frustum of a data::camera.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): sets whether the frustum is shown or not.
+ * - \b update_visibility(bool): sets whether the frustum is shown or not.
  * - \b toggleVisibility(): toggles whether the frustum is shown or not.
  * - \b show(): shows the frustum.
  * - \b hide(): hides the frustum.
@@ -106,18 +106,18 @@ protected:
      * @brief Sets the frustum visibility.
      * @param _visible the visibility status of the frustum.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
 private:
 
     /// Sets Ogre::Camera from data::camera parameters.
-    void setOgreCamFromData();
+    void set_ogre_cam_from_data();
 
     /// Contains the manual object of the line.
     Ogre::ManualObject* m_frustum {nullptr};
 
     /// Contains the Ogre's camera (frustum) representing data::camera position and parameters.
-    Ogre::Camera* m_ogreCamera {nullptr};
+    Ogre::Camera* m_ogre_camera {nullptr};
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
@@ -131,8 +131,8 @@ private:
     /// Defines the color of frustum.
     std::string m_color {"#FF0000"};
 
-    static constexpr std::string_view s_CAMERA_INPUT = "camera";
-    sight::data::ptr<sight::data::camera, sight::data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    static constexpr std::string_view CAMERA_INPUT = "camera";
+    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

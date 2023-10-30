@@ -34,12 +34,12 @@
 namespace sight::ui::registry
 {
 
-typedef std::map<std::string, ui::container::widget::sptr> container_map_t;
-typedef std::map<std::string, ui::container::menubar::sptr> menu_bar_map_t;
-typedef std::map<std::string, ui::container::toolbar::sptr> tool_bar_map_t;
-typedef std::map<std::string, ui::container::menu::sptr> menu_map_t;
-typedef std::vector<std::string> parent_sids_t;
-typedef std::map<std::string, parent_sids_t> ActionToParentMapType;
+using container_map_t           = std::map<std::string, ui::container::widget::sptr>;
+using menu_bar_map_t            = std::map<std::string, ui::container::menubar::sptr>;
+using tool_bar_map_t            = std::map<std::string, ui::container::toolbar::sptr>;
+using menu_map_t                = std::map<std::string, ui::container::menu::sptr>;
+using parent_sids_t             = std::vector<std::string>;
+using action_to_parent_map_type = std::map<std::string, parent_sids_t>;
 
 //-----------------------------------------------------------------------------
 

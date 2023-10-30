@@ -42,15 +42,15 @@ class VIZ_SCENE3D_CLASS_API mesh
 {
 public:
 
-    typedef std::shared_ptr<mesh> sptr;
-    typedef std::weak_ptr<mesh> wptr;
+    using sptr = std::shared_ptr<mesh>;
+    using wptr = std::weak_ptr<mesh>;
 
-    enum BufferBinding
+    enum buffer_binding
     {
-        POSITION_NORMAL = 0,
-        COLOUR          = 1,
-        TEXCOORD        = 2,
-        NUM_BINDINGS
+        position_normal = 0,
+        colour          = 1,
+        texcoord        = 2,
+        num_bindings
     };
 
     /// Constructor
@@ -69,103 +69,103 @@ public:
      * @param _semantic semantic of the buffer.
      * @param _type data type in the buffer.
      */
-    void bindLayer(
+    void bind_layer(
         const data::mesh::csptr& _mesh,
-        BufferBinding _binding,
+        buffer_binding _binding,
         Ogre::VertexElementSemantic _semantic,
         Ogre::VertexElementType _type
     );
 
     /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
-    VIZ_SCENE3D_API void setDynamicVertices(bool _is_dynamic);
+    VIZ_SCENE3D_API void set_dynamic_vertices(bool _is_dynamic);
     /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
-    VIZ_SCENE3D_API void setDynamic(bool _is_dynamic);
+    VIZ_SCENE3D_API void set_dynamic(bool _is_dynamic);
 
-    VIZ_SCENE3D_API void setVisible(bool _visible);
-    VIZ_SCENE3D_API void updateMesh(const data::mesh::csptr& _mesh, bool _points_only = false);
-    VIZ_SCENE3D_API void updateMesh(const data::point_list::csptr& _point_list);
-    VIZ_SCENE3D_API std::pair<bool, std::vector<r2vb_renderable*> > updateR2VB(
+    VIZ_SCENE3D_API void set_visible(bool _visible);
+    VIZ_SCENE3D_API void update_mesh(const data::mesh::csptr& _mesh, bool _points_only = false);
+    VIZ_SCENE3D_API void update_mesh(const data::point_list::csptr& _point_list);
+    VIZ_SCENE3D_API std::pair<bool, std::vector<r2vb_renderable*> > update_r2_vb(
         const data::mesh::csptr& _mesh,
         Ogre::SceneManager& _scene_mgr,
         const std::string& _material_name
     );
 
     /// Updates the vertices position
-    VIZ_SCENE3D_API void updateVertices(const data::mesh::csptr& _mesh);
+    VIZ_SCENE3D_API void update_vertices(const data::mesh::csptr& _mesh);
     /// Updates the vertices position
-    VIZ_SCENE3D_API void updateVertices(const data::point_list::csptr& _mesh);
+    VIZ_SCENE3D_API void update_vertices(const data::point_list::csptr& _mesh);
     /// Updates the vertices colors.
-    VIZ_SCENE3D_API void updateColors(const data::mesh::csptr& _mesh);
+    VIZ_SCENE3D_API void update_colors(const data::mesh::csptr& _mesh);
     /// Updates the vertices texture coordinates.
-    VIZ_SCENE3D_API void updateTexCoords(const data::mesh::csptr& _mesh);
+    VIZ_SCENE3D_API void update_tex_coords(const data::mesh::csptr& _mesh);
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
-    VIZ_SCENE3D_API void clearMesh(Ogre::SceneManager& _scene_mgr);
+    VIZ_SCENE3D_API void clear_mesh(Ogre::SceneManager& _scene_mgr);
 
-    VIZ_SCENE3D_API void updateMaterial(viz::scene3d::material* _material, bool _is_r2_vb) const;
+    VIZ_SCENE3D_API void update_material(viz::scene3d::material* _material, bool _is_r2_vb) const;
 
-    [[nodiscard]] VIZ_SCENE3D_API bool hasColorLayerChanged(const data::mesh::csptr& _mesh) const;
+    [[nodiscard]] VIZ_SCENE3D_API bool has_color_layer_changed(const data::mesh::csptr& _mesh) const;
 
-    VIZ_SCENE3D_API Ogre::Entity* createEntity(Ogre::SceneManager& _scene_mgr);
+    VIZ_SCENE3D_API Ogre::Entity* create_entity(Ogre::SceneManager& _scene_mgr);
 
-    VIZ_SCENE3D_API void invalidateR2VB();
+    VIZ_SCENE3D_API void invalidate_r2_vb();
 
 private:
 
     /// Returns true if the bounding box of a ogre mesh is valid (not NaN or infinite values)
-    static bool areBoundsValid(const Ogre::MeshPtr& _ogre_mesh);
+    static bool are_bounds_valid(const Ogre::MeshPtr& _ogre_mesh);
 
     /// Maximum size of a texture (TODO: get this from hardware instead)
-    static const unsigned int s_maxTextureSize = 2048;
+    static const unsigned int MAX_TEXTURE_SIZE = 2048;
 
     /// Actual mesh data
-    Ogre::MeshPtr m_ogreMesh;
+    Ogre::MeshPtr m_ogre_mesh;
 
     /// Binding for each layer
-    std::array<std::uint16_t, NUM_BINDINGS> m_binding {};
+    std::array<std::uint16_t, num_bindings> m_binding {};
 
-    data::mesh::cell_type_t m_cellType {data::mesh::cell_type_t::_SIZE};
+    data::mesh::cell_type_t m_cell_type {data::mesh::cell_type_t::size};
     /// Pointers on submeshes need for reallocation check.
     /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
-    Ogre::SubMesh* m_subMesh {nullptr};
+    Ogre::SubMesh* m_sub_mesh {nullptr};
 
     /// texture used to store per-primitive color
-    Ogre::TexturePtr m_perPrimitiveColorTexture;
+    Ogre::TexturePtr m_per_primitive_color_texture;
     /// Name of the texture used to store per-primitive color
-    std::string m_perPrimitiveColorTextureName;
+    std::string m_per_primitive_color_texture_name;
 
     /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
-    Ogre::Entity* m_r2vbEntity {nullptr};
+    Ogre::Entity* m_r2vb_entity {nullptr};
     /// mesh data for r2vb input - contains only line lists with adjacency information primitives
-    Ogre::MeshPtr m_r2vbMesh;
+    Ogre::MeshPtr m_r2vb_mesh;
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
-    std::map<data::mesh::cell_type_t, viz::scene3d::r2vb_renderable*> m_r2vbObject;
+    std::map<data::mesh::cell_type_t, viz::scene3d::r2vb_renderable*> m_r2vb_object;
 
     /// Defines if there is a normal layer
-    bool m_hasNormal {false};
+    bool m_has_normal {false};
     /// Defines if there is a vertex color layer
-    bool m_hasVertexColor {false};
+    bool m_has_vertex_color {false};
     /// Defines if there is a primitive color layer
-    bool m_hasPrimitiveColor {false};
+    bool m_has_primitive_color {false};
     /// defines if the mesh has UV coordinates, defined in m_configuration
-    bool m_hasUV {false};
+    bool m_has_uv {false};
     /// defines if the mesh changes dynamically, defined in m_configuration
-    bool m_isDynamic {false};
+    bool m_is_dynamic {false};
     /// defines if the vertices change dynamically, defined in m_configuration
-    bool m_isDynamicVertices {false};
+    bool m_is_dynamic_vertices {false};
 };
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setDynamic(bool _is_dynamic)
+inline void mesh::set_dynamic(bool _is_dynamic)
 {
-    m_isDynamic = _is_dynamic;
+    m_is_dynamic = _is_dynamic;
 }
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setDynamicVertices(bool _is_dynamic)
+inline void mesh::set_dynamic_vertices(bool _is_dynamic)
 {
-    m_isDynamicVertices = _is_dynamic;
+    m_is_dynamic_vertices = _is_dynamic;
 }
 
 //------------------------------------------------------------------------------

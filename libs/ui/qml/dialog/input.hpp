@@ -51,11 +51,11 @@ class UI_QML_CLASS_API input : public QObject,
                                public ui::dialog::input_base
 {
 Q_OBJECT
-Q_ENUM(EchoMode)
-Q_PROPERTY(QString input MEMBER m_input NOTIFY inputChanged)
-Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
-Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(EchoMode echoMode MEMBER m_echoMode NOTIFY echoModeChanged)
+Q_ENUM(echo_mode)
+Q_PROPERTY(QString input MEMBER m_input NOTIFY input_changed)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY message_changed)
+Q_PROPERTY(QString title MEMBER m_title NOTIFY title_changed)
+Q_PROPERTY(echo_mode echo_mode MEMBER m_echo_mode NOTIFY echo_mode_changed)
 
 public:
 
@@ -64,32 +64,32 @@ public:
     UI_QML_API ~input() override = default;
 
     /// Set the title of the message box
-    UI_QML_API void setTitle(const std::string& _title) override;
+    UI_QML_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_QML_API void setMessage(const std::string& _msg) override;
+    UI_QML_API void set_message(const std::string& _msg) override;
 
     /// Sets the echo mode used to display input field content
-    UI_QML_API void setEchoMode(input::EchoMode _echo_mode) override;
+    UI_QML_API void set_echo_mode(input::echo_mode _echo_mode) override;
 
     /// Set the input text in the input field
     UI_QML_API void set_input(const std::string& _text) override;
 
     /// Get the input text in the input field
-    UI_QML_API std::pair<std::string, bool> getInput() override;
+    UI_QML_API std::pair<std::string, bool> get_input() override;
 
 Q_SIGNALS:
 
     /// notify the qml of property change
-    void inputChanged();
-    void messageChanged();
-    void titleChanged();
-    void echoModeChanged();
+    void input_changed();
+    void message_changed();
+    void title_changed();
+    void echo_mode_changed();
 
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(const QVariant& _msg, bool _is_ok);
+    void result_dialog(const QVariant& _msg, bool _is_ok);
 
 private:
 
@@ -103,7 +103,7 @@ private:
     QString m_input;
 
     /// Echo mode for the TextField
-    EchoMode m_echoMode {EchoMode::DEFAULT};
+    echo_mode m_echo_mode {echo_mode::DEFAULT};
 };
 
 } // namespace sight::ui::qml::dialog

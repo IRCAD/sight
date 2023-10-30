@@ -26,15 +26,15 @@
 namespace sight::io::dicom::ut
 {
 
-class FiducialsReaderWriterTest : public CPPUNIT_NS::TestFixture
+class fiducials_reader_writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(FiducialsReaderWriterTest);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST_SUITE(fiducials_reader_writer_test);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void basicTest();
+    static void basic_test();
 };
 
 } // namespace sight::io::dicom::ut

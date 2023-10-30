@@ -89,38 +89,38 @@ protected:
     MODULE_UI_VIZ_API void updating() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API void refreshRenderers();
+    MODULE_UI_VIZ_API void refresh_renderers();
 
     std::vector<sight::viz::scene3d::layer::wptr> m_layers;
-    sight::viz::scene3d::layer::wptr m_currentLayer;
+    sight::viz::scene3d::layer::wptr m_current_layer;
 
 protected Q_SLOTS:
 
-    void onSelectedLayerItem(int _index);
-    void onEditTransparencyDepth(int _depth);
-    void onEditTransparency(int _index);
+    void on_selected_layer_item(int _index);
+    void on_edit_transparency_depth(int _depth);
+    void on_edit_transparency(int _index);
 
 private:
 
-    QPointer<QButtonGroup> m_transparencyButtonGroup;
-    QPointer<QButtonGroup> m_transparencyButtonGroupShading;
-    QPointer<QButtonGroup> m_normalsRadioBox;
-    QPointer<QComboBox> m_layersBox;
-    QPointer<QSlider> m_transparencyDepthSlider;
-    QPointer<QComboBox> m_comboBox;
-    QRadioButton* m_buttonDefault {};
-    QRadioButton* m_buttonDepthPeeling {};
-    QRadioButton* m_buttonDualDepthPeeling {};
-    QRadioButton* m_buttonWeightedBlendedOIT {};
-    QRadioButton* m_buttonHybridTransparency {};
-    QRadioButton* m_buttonCelShadingDepthPeeling {};
-    QLabel* m_labelDefault {};
-    QLabel* m_labelDepthPeeling {};
-    QLabel* m_labelDualDepthPeeling {};
-    QLabel* m_labelWeightedBlendedOIT {};
-    QLabel* m_labelHybridTransparency {};
-    QLabel* m_labelCelShadingDepthPeeling {};
-    bool m_isLayerSelected {};
+    QPointer<QButtonGroup> m_transparency_button_group;
+    QPointer<QButtonGroup> m_transparency_button_group_shading;
+    QPointer<QButtonGroup> m_normals_radio_box;
+    QPointer<QComboBox> m_layers_box;
+    QPointer<QSlider> m_transparency_depth_slider;
+    QPointer<QComboBox> m_combo_box;
+    QRadioButton* m_button_default {};
+    QRadioButton* m_button_depth_peeling {};
+    QRadioButton* m_button_dual_depth_peeling {};
+    QRadioButton* m_button_weighted_blended_oit {};
+    QRadioButton* m_button_hybrid_transparency {};
+    QRadioButton* m_button_cel_shading_depth_peeling {};
+    QLabel* m_label_default {};
+    QLabel* m_label_depth_peeling {};
+    QLabel* m_label_dual_depth_peeling {};
+    QLabel* m_label_weighted_blended_oit {};
+    QLabel* m_label_hybrid_transparency {};
+    QLabel* m_label_cel_shading_depth_peeling {};
+    bool m_is_layer_selected {};
 };
 
 } // namespace sight::module::ui::viz

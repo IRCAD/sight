@@ -84,52 +84,52 @@ protected:
 private:
 
     /// Holds the path to remove at destruction
-    const std::filesystem::path M_PATH;
+    const std::filesystem::path m_path;
 };
 
 inline temp_path::operator std::filesystem::path() const noexcept
 {
-    return M_PATH;
+    return m_path;
 }
 
 inline temp_path::operator std::string() const noexcept
 {
-    return M_PATH.string();
+    return m_path.string();
 }
 
 //------------------------------------------------------------------------------
 
 inline std::filesystem::path temp_path::operator/(const std::filesystem::path& _other) const noexcept
 {
-    return M_PATH / _other;
+    return m_path / _other;
 }
 
 //------------------------------------------------------------------------------
 
 inline std::string temp_path::operator+(const std::string& _other) const noexcept
 {
-    return M_PATH.string() + _other;
+    return m_path.string() + _other;
 }
 
 //------------------------------------------------------------------------------
 
 inline bool temp_path::operator==(const temp_path& _other) const noexcept
 {
-    return M_PATH == _other.M_PATH;
+    return m_path == _other.m_path;
 }
 
 //------------------------------------------------------------------------------
 
 inline std::string temp_path::string() const noexcept
 {
-    return M_PATH.string();
+    return m_path.string();
 }
 
 //------------------------------------------------------------------------------
 
 inline const std::filesystem::path& temp_path::path() const noexcept
 {
-    return M_PATH;
+    return m_path;
 }
 
 /**

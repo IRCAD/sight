@@ -67,7 +67,7 @@ class MODULE_IO_DICOM_CLASS_API dicom_series_anonymizer : public service::contro
 {
 public:
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     SIGHT_DECLARE_SERVICE(dicom_series_anonymizer, service::controller);
 
@@ -98,13 +98,13 @@ protected:
     MODULE_IO_DICOM_API void anonymize(sight::data::vector& _vector);
 
     /// Signal emitted when a job is created
-    SPTR(JobCreatedSignal) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 
     /// Cancel information for jobs
     bool m_cancelled {false};
 
-    sight::data::ptr<sight::data::series_set, sight::data::Access::inout> m_series_set {this, "seriesSet"};
-    sight::data::ptr<sight::data::vector, sight::data::Access::inout> m_selectedSeries {this, "selectedSeries"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "seriesSet"};
+    sight::data::ptr<sight::data::vector, sight::data::access::inout> m_selected_series {this, "selectedSeries"};
 };
 
 } // namespace sight::module::io::dicom

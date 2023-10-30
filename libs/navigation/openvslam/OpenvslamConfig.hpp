@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,48 +30,48 @@ namespace sight::navigation::openvslam
 /**
  * @brief Handles Openvslam orb parameters.
  */
-struct NAVIGATION_OPENVSLAM_CLASS_API OrbParams
+struct NAVIGATION_OPENVSLAM_CLASS_API orb_params
 {
     /// Maximum number of key points.
-    unsigned int maxNumKeyPts = 2000;
+    unsigned int max_num_key_pts = 2000;
     ///
-    float scaleFactor = 1.2F;
+    float scale_factor = 1.2F;
     /// Number of levels
-    unsigned int numLevels = 8;
+    unsigned int num_levels = 8;
     ///
-    unsigned int iniFastThr = 20;
+    unsigned int ini_fast_thr = 20;
     ///
-    unsigned int minFastThr = 7;
+    unsigned int min_fast_thr = 7;
 };
 
 /**
  * @brief Handles Openvslam Initializer parameters (only used for monocular).
  */
-struct NAVIGATION_OPENVSLAM_CLASS_API InitParams
+struct NAVIGATION_OPENVSLAM_CLASS_API init_params
 {
     /// Number of Ransac Iterations.
-    unsigned int numRansacIterations = 100;
+    unsigned int num_ransac_iterations = 100;
     /// Minimum number of triangulated points.
-    unsigned int minNumTriangulatedPts = 50;
+    unsigned int min_num_triangulated_pts = 50;
     /// Parallax threshold  (in degree).
-    float parallaxDegThr = 1.0;
+    float parallax_deg_thr = 1.0;
     /// Reprojection Error threshold.
-    float reprojectionErrThr = 4.0;
+    float reprojection_err_thr = 4.0;
     /// Number of Iterations for bundle-adjustment.
-    unsigned int numBAIterations = 20;
+    unsigned int num_ba_iterations = 20;
     /// Initial scale factor.
-    float scalingFactor = 1000.0;
+    float scaling_factor = 1000.0;
 };
 
 /**
  * @brief Handles Openvslam tracking parameters.
  */
-struct NAVIGATION_OPENVSLAM_CLASS_API TrackingParams
+struct NAVIGATION_OPENVSLAM_CLASS_API tracking_params
 {
     /// Depth threshold
-    double trueDepthThr = 40.0;
+    double true_depth_thr = 40.0;
     /// Depthmap factor (pixel_value / depthmap_factor = true_depth)
-    double depthmapFactor = 1.0;
+    double depthmap_factor = 1.0;
 };
 
 } //namespace sight::navigation::openvslam

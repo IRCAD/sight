@@ -39,9 +39,9 @@ static const core::com::slots::key_t STOP_PROGRESS_SLOT   = "stopProgress";
 
 progress_bar_controller::progress_bar_controller() noexcept
 {
-    new_slot(START_PROGRESS_SLOT, &progress_bar_controller::startProgress, this);
-    new_slot(UPDATE_PROGRESS_SLOT, &progress_bar_controller::updateProgress, this);
-    new_slot(STOP_PROGRESS_SLOT, &progress_bar_controller::stopProgress, this);
+    new_slot(START_PROGRESS_SLOT, &progress_bar_controller::start_progress, this);
+    new_slot(UPDATE_PROGRESS_SLOT, &progress_bar_controller::update_progress, this);
+    new_slot(STOP_PROGRESS_SLOT, &progress_bar_controller::stop_progress, this);
 }
 
 //------------------------------------------------------------------------------
@@ -75,21 +75,21 @@ void progress_bar_controller::stopping()
 
 //------------------------------------------------------------------------------
 
-void progress_bar_controller::startProgress(std::string _id)
+void progress_bar_controller::start_progress(std::string _id)
 {
     core::mt::scoped_lock lock(m_mutex);
-    m_progressDialogs[_id] = std::make_shared<sight::ui::dialog::progress>();
+    m_progress_dialogs[_id] = std::make_shared<sight::ui::dialog::progress>();
 }
 
 //------------------------------------------------------------------------------
 
-void progress_bar_controller::updateProgress(std::string _id, float _percentage, std::string _message)
+void progress_bar_controller::update_progress(std::string _id, float _percentage, std::string _message)
 {
     core::mt::scoped_lock lock(m_mutex);
-    if(m_progressDialogs.find(_id) != m_progressDialogs.end())
+    if(m_progress_dialogs.find(_id) != m_progress_dialogs.end())
     {
-        (*m_progressDialogs[_id])(_percentage, _message);
-        m_progressDialogs[_id]->setMessage(_message);
+        (*m_progress_dialogs[_id])(_percentage, _message);
+        m_progress_dialogs[_id]->set_message(_message);
     }
     else
     {
@@ -99,10 +99,10 @@ void progress_bar_controller::updateProgress(std::string _id, float _percentage,
 
 //------------------------------------------------------------------------------
 
-void progress_bar_controller::stopProgress(std::string _id)
+void progress_bar_controller::stop_progress(std::string _id)
 {
     core::mt::scoped_lock lock(m_mutex);
-    m_progressDialogs.erase(_id);
+    m_progress_dialogs.erase(_id);
 }
 
 //------------------------------------------------------------------------------

@@ -51,9 +51,9 @@ signal_base::sptr signals::operator[](const signal_key_type& _key) const
 
 //-----------------------------------------------------------------------------
 
-signals::signal_key_container_type signals::get_signal_keys() const
+signals::signal_key_container_t signals::get_signal_keys() const
 {
-    signals::signal_key_container_type signal_keys;
+    signals::signal_key_container_t signal_keys;
     for(const auto& elem : m_signals)
     {
         signal_keys.push_back(elem.first);

@@ -53,7 +53,7 @@ void texture::update()
 
 //-----------------------------------------------------------------------------
 
-void texture::setDirty()
+void texture::set_dirty()
 {
     if(m_resource)
     {

@@ -37,7 +37,7 @@ base::~base()
 
 filter::filter_t base::get_filter_type() const
 {
-    return base::SPLITTER;
+    return base::splitter;
 }
 
 } // namespace sight::filter::dicom::splitter

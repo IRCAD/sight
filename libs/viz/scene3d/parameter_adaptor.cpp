@@ -46,27 +46,27 @@ namespace sight::viz::scene3d
 
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t parameter_adaptor::SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
-const core::com::slots::key_t parameter_adaptor::SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
-const core::com::slots::key_t parameter_adaptor::SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
-const core::com::slots::key_t parameter_adaptor::SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
-const core::com::slots::key_t parameter_adaptor::SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
-const core::com::slots::key_t parameter_adaptor::SET_INT_PARAMETER_SLOT     = "setIntParameter";
-const core::com::slots::key_t parameter_adaptor::SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
-const core::com::slots::key_t parameter_adaptor::SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
+const core::com::slots::key_t parameter_adaptor::SET_BOOL_PARAMETER_SLOT    = "set_bool_parameter";
+const core::com::slots::key_t parameter_adaptor::SET_COLOR_PARAMETER_SLOT   = "set_color_parameter";
+const core::com::slots::key_t parameter_adaptor::SET_DOUBLE_PARAMETER_SLOT  = "set_double_parameter";
+const core::com::slots::key_t parameter_adaptor::SET_DOUBLE2_PARAMETER_SLOT = "set_double2_parameter";
+const core::com::slots::key_t parameter_adaptor::SET_DOUBLE3_PARAMETER_SLOT = "set_double3_parameter";
+const core::com::slots::key_t parameter_adaptor::SET_INT_PARAMETER_SLOT     = "set_int_parameter";
+const core::com::slots::key_t parameter_adaptor::SET_INT2_PARAMETER_SLOT    = "set_int2_parameter";
+const core::com::slots::key_t parameter_adaptor::SET_INT3_PARAMETER_SLOT    = "set_int3_parameter";
 
 //------------------------------------------------------------------------------
 
 parameter_adaptor::parameter_adaptor() noexcept
 {
-    new_slot(SET_BOOL_PARAMETER_SLOT, &parameter_adaptor::setBoolParameter, this);
-    new_slot(SET_COLOR_PARAMETER_SLOT, &parameter_adaptor::setColorParameter, this);
-    new_slot(SET_DOUBLE_PARAMETER_SLOT, &parameter_adaptor::setDoubleParameter, this);
-    new_slot(SET_DOUBLE2_PARAMETER_SLOT, &parameter_adaptor::setDouble2Parameter, this);
-    new_slot(SET_DOUBLE3_PARAMETER_SLOT, &parameter_adaptor::setDouble3Parameter, this);
-    new_slot(SET_INT_PARAMETER_SLOT, &parameter_adaptor::setIntParameter, this);
-    new_slot(SET_INT2_PARAMETER_SLOT, &parameter_adaptor::setInt2Parameter, this);
-    new_slot(SET_INT3_PARAMETER_SLOT, &parameter_adaptor::setInt3Parameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &parameter_adaptor::set_bool_parameter, this);
+    new_slot(SET_COLOR_PARAMETER_SLOT, &parameter_adaptor::set_color_parameter, this);
+    new_slot(SET_DOUBLE_PARAMETER_SLOT, &parameter_adaptor::set_double_parameter, this);
+    new_slot(SET_DOUBLE2_PARAMETER_SLOT, &parameter_adaptor::set_double2_parameter, this);
+    new_slot(SET_DOUBLE3_PARAMETER_SLOT, &parameter_adaptor::set_double3_parameter, this);
+    new_slot(SET_INT_PARAMETER_SLOT, &parameter_adaptor::set_int_parameter, this);
+    new_slot(SET_INT2_PARAMETER_SLOT, &parameter_adaptor::set_int2_parameter, this);
+    new_slot(SET_INT3_PARAMETER_SLOT, &parameter_adaptor::set_int3_parameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -78,57 +78,57 @@ parameter_adaptor::~parameter_adaptor() noexcept =
 
 void parameter_adaptor::set_shader_type(Ogre::GpuProgramType _shader_type)
 {
-    m_shaderType = _shader_type;
+    m_shader_type = _shader_type;
 }
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setParamName(const std::string& _param_name)
+void parameter_adaptor::set_param_name(const std::string& _param_name)
 {
-    m_paramName = _param_name;
+    m_param_name = _param_name;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string& parameter_adaptor::getParamName() const
+const std::string& parameter_adaptor::get_param_name() const
 {
-    return m_paramName;
+    return m_param_name;
 }
 
 //------------------------------------------------------------------------------
 
 service::connections_t parameter_adaptor::auto_connections() const
 {
-    return {{s_PARAMETER_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{PARAMETER_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------
 
 void parameter_adaptor::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    m_paramName = config.get<std::string>(s_CONFIG + "parameter", "");
-    SIGHT_ERROR_IF("parameter attribute not set", m_paramName.empty());
+    m_param_name = config.get<std::string>(CONFIG + "parameter", "");
+    SIGHT_ERROR_IF("parameter attribute not set", m_param_name.empty());
 
-    m_techniqueName = config.get<std::string>(s_CONFIG + "technique", "");
+    m_technique_name = config.get<std::string>(CONFIG + "technique", "");
 
     if(config.count("shaderType") != 0U)
     {
-        const auto shader_type = config.get<std::string>(s_CONFIG + "shaderType");
+        const auto shader_type = config.get<std::string>(CONFIG + "shaderType");
         if(shader_type == "vertex")
         {
-            m_shaderType = Ogre::GPT_VERTEX_PROGRAM;
+            m_shader_type = Ogre::GPT_VERTEX_PROGRAM;
         }
         else if(shader_type == "fragment")
         {
-            m_shaderType = Ogre::GPT_FRAGMENT_PROGRAM;
+            m_shader_type = Ogre::GPT_FRAGMENT_PROGRAM;
         }
         else if(shader_type == "geometry")
         {
-            m_shaderType = Ogre::GPT_GEOMETRY_PROGRAM;
+            m_shader_type = Ogre::GPT_GEOMETRY_PROGRAM;
         }
         else
         {
@@ -146,8 +146,8 @@ void parameter_adaptor::updating()
         return;
     }
 
-    this->getRenderService()->makeCurrent();
-    if(m_techniqueName.empty())
+    this->render_service()->make_current();
+    if(m_technique_name.empty())
     {
         bool b_set                                   = false;
         const Ogre::Material::Techniques& techniques = m_material->getTechniques();
@@ -156,36 +156,36 @@ void parameter_adaptor::updating()
         {
             SIGHT_ASSERT("technique is not set", tech);
 
-            b_set |= this->setParameter(*tech);
+            b_set |= this->set_parameter(*tech);
         }
 
         if(!b_set)
         {
             SIGHT_DEBUG(
-                "Couldn't set parameter '" + m_paramName + "' in any technique of material '"
+                "Couldn't set parameter '" + m_param_name + "' in any technique of material '"
                 + m_material->getName() + "'"
             );
         }
         else
         {
-            this->requestRender();
+            this->request_render();
         }
     }
     else
     {
-        Ogre::Technique* tech = m_material->getTechnique(m_techniqueName);
-        SIGHT_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
+        Ogre::Technique* tech = m_material->getTechnique(m_technique_name);
+        SIGHT_FATAL_IF("Can't find technique " << m_technique_name, !tech);
 
-        if(this->setParameter(*tech))
+        if(this->set_parameter(*tech))
         {
             SIGHT_DEBUG(
-                "Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName
+                "Couldn't set parameter '" + m_param_name + "' in technique '" + m_technique_name
                 + "' from material '" + m_material->getName() + "'"
             );
         }
         else
         {
-            this->requestRender();
+            this->request_render();
         }
     }
 
@@ -196,29 +196,29 @@ void parameter_adaptor::updating()
 
 void parameter_adaptor::stopping()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
     m_material.reset();
     m_texture.reset();
 }
 
 //------------------------------------------------------------------------------
 
-bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
+bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
 {
     /// Contains the different parameters for the shader
     Ogre::GpuProgramParametersSharedPtr params;
 
     // Get the parameters
     auto* pass = _technique.getPass(0);
-    if(m_shaderType == Ogre::GPT_VERTEX_PROGRAM)
+    if(m_shader_type == Ogre::GPT_VERTEX_PROGRAM)
     {
         params = pass->getVertexProgramParameters();
     }
-    else if(m_shaderType == Ogre::GPT_FRAGMENT_PROGRAM && pass->hasFragmentProgram())
+    else if(m_shader_type == Ogre::GPT_FRAGMENT_PROGRAM && pass->hasFragmentProgram())
     {
         params = pass->getFragmentProgramParameters();
     }
-    else if(m_shaderType == Ogre::GPT_GEOMETRY_PROGRAM)
+    else if(m_shader_type == Ogre::GPT_GEOMETRY_PROGRAM)
     {
         params = pass->getGeometryProgramParameters();
     }
@@ -227,7 +227,7 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
         return false;
     }
 
-    if(params->_findNamedConstantDefinition(m_paramName) == nullptr)
+    if(params->_findNamedConstantDefinition(m_param_name) == nullptr)
     {
         return false;
     }
@@ -243,21 +243,21 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
             const auto int_value = std::dynamic_pointer_cast<const data::integer>(obj.get_shared());
             SIGHT_ASSERT("The given integer object is null", int_value);
 
-            params->setNamedConstant(m_paramName, static_cast<int>(int_value->value()));
+            params->setNamedConstant(m_param_name, static_cast<int>(int_value->value()));
         }
         else if(obj_class == "sight::data::real")
         {
             const auto float_value = std::dynamic_pointer_cast<const data::real>(obj.get_shared());
             SIGHT_ASSERT("The given float object is null", float_value);
 
-            params->setNamedConstant(m_paramName, static_cast<float>(float_value->value()));
+            params->setNamedConstant(m_param_name, static_cast<float>(float_value->value()));
         }
         else if(obj_class == "sight::data::boolean")
         {
             const auto boolean_value = std::dynamic_pointer_cast<const data::boolean>(obj.get_shared());
             SIGHT_ASSERT("The given boolean object is null", boolean_value);
 
-            params->setNamedConstant(m_paramName, static_cast<int>(boolean_value->value()));
+            params->setNamedConstant(m_param_name, static_cast<int>(boolean_value->value()));
         }
         else if(obj_class == "sight::data::color")
         {
@@ -273,31 +273,31 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
 
             Ogre::ColourValue color(param_values[0], param_values[1], param_values[2], param_values[3]);
 
-            params->setNamedConstant(m_paramName, color);
+            params->setNamedConstant(m_param_name, color);
         }
         else if(obj_class == "sight::data::point_list")
         {
             const auto point_list_value = std::dynamic_pointer_cast<const data::point_list>(obj.get_shared());
             SIGHT_ASSERT("The given pointList object is null", point_list_value);
 
-            std::vector<data::point::sptr> points = point_list_value->getPoints();
+            std::vector<data::point::sptr> points = point_list_value->get_points();
             int nb_points                         = static_cast<int>(points.size());
 
             auto* param_values = new float [static_cast<std::uint64_t>(nb_points * 3)];
 
             for(int i = 0 ; i < nb_points * 3 ; )
             {
-                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[0]);
+                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->get_coord()[0]);
                 i++;
 
-                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[1]);
+                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->get_coord()[1]);
                 i++;
 
-                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[2]);
+                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->get_coord()[2]);
                 i++;
             }
 
-            params->setNamedConstant(m_paramName, param_values, points.size(), static_cast<std::size_t>(3));
+            params->setNamedConstant(m_param_name, param_values, points.size(), static_cast<std::size_t>(3));
 
             delete[] param_values;
         }
@@ -314,7 +314,7 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
             }
 
             params->setNamedConstant(
-                m_paramName,
+                m_param_name,
                 param_values.data(),
                 static_cast<std::size_t>(16),
                 static_cast<std::size_t>(1)
@@ -330,24 +330,24 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
             {
                 const auto dump_lock = array_object->dump_lock();
 
-                if(array_object->getType() == core::type::FLOAT)
+                if(array_object->type() == core::type::FLOAT)
                 {
                     const auto* float_value = static_cast<const float*>(array_object->buffer());
-                    params->setNamedConstant(m_paramName, float_value, 1, num_components);
+                    params->setNamedConstant(m_param_name, float_value, 1, num_components);
                 }
-                else if(array_object->getType() == core::type::DOUBLE)
+                else if(array_object->type() == core::type::DOUBLE)
                 {
                     const auto* double_value = static_cast<const double*>(array_object->buffer());
-                    params->setNamedConstant(m_paramName, double_value, 1, num_components);
+                    params->setNamedConstant(m_param_name, double_value, 1, num_components);
                 }
-                else if(array_object->getType() == core::type::INT32)
+                else if(array_object->type() == core::type::INT32)
                 {
                     const int* int_value = static_cast<const int*>(array_object->buffer());
-                    params->setNamedConstant(m_paramName, int_value, 1, num_components);
+                    params->setNamedConstant(m_param_name, int_value, 1, num_components);
                 }
                 else
                 {
-                    SIGHT_ERROR("Array type not handled: " << array_object->getType().name());
+                    SIGHT_ERROR("Array type not handled: " << array_object->type().name());
                 }
             }
             else
@@ -368,7 +368,7 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
             // We can reach this code for an another reason than an image modification, for instance when the compositor
             // is resized. However I don't know how to discriminate the two cases so for now we always copy the image.
             // :/
-            if(image->getSizeInBytes() != 0U)
+            if(image->size_in_bytes() != 0U)
             {
                 // Defer the update of the texture outside the scope of the data lock
                 update_texture = true;
@@ -385,10 +385,10 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
     {
         m_texture->update();
 
-        Ogre::TextureUnitState* tex_state = pass->getTextureUnitState(m_paramName);
+        Ogre::TextureUnitState* tex_state = pass->getTextureUnitState(m_param_name);
         tex_state->setTexture(m_texture->get());
         auto tex_unit_index = pass->getTextureUnitStateIndex(tex_state);
-        params->setNamedConstant(m_paramName, tex_unit_index);
+        params->setNamedConstant(m_param_name, tex_unit_index);
     }
 
     return true;
@@ -396,27 +396,27 @@ bool parameter_adaptor::setParameter(Ogre::Technique& _technique)
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setMaterial(const Ogre::MaterialPtr& _material)
+void parameter_adaptor::set_material(const Ogre::MaterialPtr& _material)
 {
     if(m_material != _material)
     {
-        this->setDirty();
+        this->set_dirty();
         m_material = _material;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setBoolParameter(bool _value, std::string _name)
+void parameter_adaptor::set_bool_parameter(bool _value, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
         {
             auto param_object = m_parameter.lock();
             auto bool_object  = std::dynamic_pointer_cast<data::boolean>(param_object.get_shared());
             SIGHT_ASSERT("Shader parameter '" + _name + "' is not of type sight::data::boolean", bool_object);
-            bool_object->setValue(_value);
+            bool_object->set_value(_value);
         }
         this->updating();
     }
@@ -424,9 +424,9 @@ void parameter_adaptor::setBoolParameter(bool _value, std::string _name)
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setColorParameter(std::array<uint8_t, 4> _color, std::string _name)
+void parameter_adaptor::set_color_parameter(std::array<uint8_t, 4> _color, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
 
@@ -434,7 +434,7 @@ void parameter_adaptor::setColorParameter(std::array<uint8_t, 4> _color, std::st
             auto param_object = m_parameter.lock();
             auto color_object = std::dynamic_pointer_cast<data::color>(param_object.get_shared());
             SIGHT_ASSERT("Shader parameter '" + _name + "' is not of type sight::data::color", color_object);
-            color_object->setRGBA(
+            color_object->set_rgba(
                 float(_color[0]) / 255.F,
                 float(_color[1]) / 255.F,
                 float(_color[2]) / 255.F,
@@ -447,9 +447,9 @@ void parameter_adaptor::setColorParameter(std::array<uint8_t, 4> _color, std::st
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setIntParameter(int _value, std::string _name)
+void parameter_adaptor::set_int_parameter(int _value, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
 
@@ -457,7 +457,7 @@ void parameter_adaptor::setIntParameter(int _value, std::string _name)
             auto param_object = m_parameter.lock();
             auto int_object   = std::dynamic_pointer_cast<data::integer>(param_object.get_shared());
             SIGHT_ASSERT("Shader parameter '" + _name + "' is not of type sight::data::integer", int_object);
-            int_object->setValue(_value);
+            int_object->set_value(_value);
         }
         this->updating();
     }
@@ -465,9 +465,9 @@ void parameter_adaptor::setIntParameter(int _value, std::string _name)
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setInt2Parameter(int _value1, int _value2, std::string _name)
+void parameter_adaptor::set_int2_parameter(int _value1, int _value2, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
 
@@ -491,9 +491,9 @@ void parameter_adaptor::setInt2Parameter(int _value1, int _value2, std::string _
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setInt3Parameter(int _value1, int _value2, int _value3, std::string _name)
+void parameter_adaptor::set_int3_parameter(int _value1, int _value2, int _value3, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
 
@@ -519,9 +519,9 @@ void parameter_adaptor::setInt3Parameter(int _value1, int _value2, int _value3, 
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setDoubleParameter(double _value, std::string _name)
+void parameter_adaptor::set_double_parameter(double _value, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
 
@@ -529,7 +529,7 @@ void parameter_adaptor::setDoubleParameter(double _value, std::string _name)
             auto param_object = m_parameter.lock();
             auto float_object = std::dynamic_pointer_cast<data::real>(param_object.get_shared());
             SIGHT_ASSERT("Shader parameter '" + _name + "' is not of type sight::data::real", float_object);
-            float_object->setValue(static_cast<float>(_value));
+            float_object->set_value(static_cast<float>(_value));
         }
 
         this->updating();
@@ -538,9 +538,9 @@ void parameter_adaptor::setDoubleParameter(double _value, std::string _name)
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setDouble2Parameter(double _value1, double _value2, std::string _name)
+void parameter_adaptor::set_double2_parameter(double _value1, double _value2, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
 
@@ -555,12 +555,12 @@ void parameter_adaptor::setDouble2Parameter(double _value1, double _value2, std:
 
             const auto dump_lock = array_object->dump_lock();
 
-            if(array_object->getType() == core::type::FLOAT)
+            if(array_object->type() == core::type::FLOAT)
             {
                 array_object->at<float>(0) = static_cast<float>(_value1);
                 array_object->at<float>(1) = static_cast<float>(_value2);
             }
-            else if(array_object->getType() == core::type::DOUBLE)
+            else if(array_object->type() == core::type::DOUBLE)
             {
                 array_object->at<double>(0) = _value1;
                 array_object->at<double>(1) = _value2;
@@ -573,9 +573,9 @@ void parameter_adaptor::setDouble2Parameter(double _value1, double _value2, std:
 
 //------------------------------------------------------------------------------
 
-void parameter_adaptor::setDouble3Parameter(double _value1, double _value2, double _value3, std::string _name)
+void parameter_adaptor::set_double3_parameter(double _value1, double _value2, double _value3, std::string _name)
 {
-    if(_name == m_paramName)
+    if(_name == m_param_name)
     {
         m_dirty = true;
 
@@ -591,13 +591,13 @@ void parameter_adaptor::setDouble3Parameter(double _value1, double _value2, doub
 
             const auto dump_lock = array_object->dump_lock();
 
-            if(array_object->getType() == core::type::FLOAT)
+            if(array_object->type() == core::type::FLOAT)
             {
                 array_object->at<float>(0) = static_cast<float>(_value1);
                 array_object->at<float>(1) = static_cast<float>(_value2);
                 array_object->at<float>(2) = static_cast<float>(_value3);
             }
-            else if(array_object->getType() == core::type::DOUBLE)
+            else if(array_object->type() == core::type::DOUBLE)
             {
                 array_object->at<double>(0) = _value1;
                 array_object->at<double>(1) = _value2;

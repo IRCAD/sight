@@ -47,7 +47,7 @@ void matrix4_writer::write()
     }
 
     int i = 0;
-    for(auto val : *(this->getConcreteObject()))
+    for(auto val : *(this->get_concrete_object()))
     {
         file << val;
         i++;

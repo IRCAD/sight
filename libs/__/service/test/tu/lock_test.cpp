@@ -49,22 +49,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::lock_test);
 namespace sight::service::ut
 {
 
-class LockedService : public service::base
+class locked_service : public service::base
 {
 public:
 
-    static const service::base::key_t s_INPUT;
-    static const service::base::key_t s_INOUT;
-    static const service::base::key_t s_OUTPUT;
+    static const service::base::key_t INPUT;
+    static const service::base::key_t INOUT;
+    static const service::base::key_t OUTPUT;
 
-    SIGHT_DECLARE_SERVICE(LockedService, service::base);
+    SIGHT_DECLARE_SERVICE(locked_service, service::base);
 
-    LockedService() noexcept =
+    locked_service() noexcept =
         default;
 
     std::atomic_bool m_started {false};
     std::atomic_bool m_stopped {false};
-    std::atomic_int64_t m_inputValue {-1};
+    std::atomic_int64_t m_input_value {-1};
 
     //------------------------------------------------------------------------------
 
@@ -76,8 +76,8 @@ public:
         // Simulate working....
         std::this_thread::sleep_for(std::chrono::seconds(2));
 
-        m_inputValue = std::dynamic_pointer_cast<const sight::data::integer>(input.get_shared())->getValue();
-        m_started    = true;
+        m_input_value = std::dynamic_pointer_cast<const sight::data::integer>(input.get_shared())->get_value();
+        m_started     = true;
     }
 
     //------------------------------------------------------------------------------
@@ -87,12 +87,12 @@ public:
         // Reading should not be blocked by other reader
         auto shared_output = m_output.lock();
 
-        shared_output->setValue(-1);
+        shared_output->set_value(-1);
 
         // Simulate working....
         std::this_thread::sleep_for(std::chrono::seconds(2));
 
-        shared_output->setValue(1);
+        shared_output->set_value(1);
         m_stopped = true;
     }
 
@@ -108,16 +108,16 @@ public:
     {
     }
 
-    data::ptr<data::object, data::Access::in> m_input {this, s_INPUT, false, false};
-    data::ptr<data::integer, data::Access::inout> m_inout {this, s_INOUT, false, false};
-    data::ptr<data::integer, data::Access::out> m_output {this, s_OUTPUT, false, true};
+    data::ptr<data::object, data::access::in> m_input {this, INPUT, false, false};
+    data::ptr<data::integer, data::access::inout> m_inout {this, INOUT, false, false};
+    data::ptr<data::integer, data::access::out> m_output {this, OUTPUT, false, true};
 };
 
-const service::base::key_t LockedService::s_INPUT  = "input";
-const service::base::key_t LockedService::s_INOUT  = "inout";
-const service::base::key_t LockedService::s_OUTPUT = "output";
+const service::base::key_t locked_service::INPUT  = "input";
+const service::base::key_t locked_service::INOUT  = "inout";
+const service::base::key_t locked_service::OUTPUT = "output";
 
-SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::LockedService);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::locked_service);
 
 //------------------------------------------------------------------------------
 
@@ -147,10 +147,10 @@ void lock_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void lock_test::testScopedLock()
+void lock_test::test_scoped_lock()
 {
     // Add the service
-    service::base::sptr locked_service = service::add("sight::service::ut::LockedService");
+    service::base::sptr locked_service = service::add("sight::service::ut::locked_service");
     CPPUNIT_ASSERT(locked_service);
 
     // Create the data
@@ -158,13 +158,13 @@ void lock_test::testScopedLock()
     data::integer::sptr inout  = std::make_shared<data::integer>(0);
     data::integer::sptr output = std::make_shared<data::integer>(0);
 
-    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), inout->lastModified());
-    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), output->lastModified());
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), inout->last_modified());
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), output->last_modified());
 
     // Register the data
-    locked_service->set_input(input, service::ut::LockedService::s_INPUT);
-    locked_service->set_inout(inout, service::ut::LockedService::s_INOUT);
-    locked_service->set_output(service::ut::LockedService::s_OUTPUT, output);
+    locked_service->set_input(input, service::ut::locked_service::INPUT);
+    locked_service->set_inout(inout, service::ut::locked_service::INOUT);
+    locked_service->set_output(service::ut::locked_service::OUTPUT, output);
 
     // Test basic scoped lock
     data::mt::weak_ptr<const data::integer> weak_input(input);
@@ -177,51 +177,51 @@ void lock_test::testScopedLock()
     {
         auto shared_in_out = weak_in_out.lock();
         CPPUNIT_ASSERT_EQUAL(inout, shared_in_out.get_shared());
-        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), shared_in_out->lastModified());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), shared_in_out->last_modified());
     }
 
     data::mt::weak_ptr<data::integer> weak_output(output);
     {
         auto shared_output = weak_output.lock();
         CPPUNIT_ASSERT_EQUAL(output, shared_output.get_shared());
-        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), shared_output->lastModified());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), shared_output->last_modified());
     }
 
     // Test basic scoped lock from service getters
-    weak_input = locked_service->input<data::integer>(service::ut::LockedService::s_INPUT);
+    weak_input = locked_service->input<data::integer>(service::ut::locked_service::INPUT);
     {
         auto shared_input = weak_input.lock();
         CPPUNIT_ASSERT_EQUAL(input, shared_input.get_shared());
     }
 
-    weak_in_out = locked_service->inout<data::integer>(service::ut::LockedService::s_INOUT);
+    weak_in_out = locked_service->inout<data::integer>(service::ut::locked_service::INOUT);
     {
         auto shared_in_out = weak_in_out.lock();
         CPPUNIT_ASSERT_EQUAL(inout, shared_in_out.get_shared());
-        CPPUNIT_ASSERT_EQUAL(std::uint64_t(2), shared_in_out->lastModified());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(2), shared_in_out->last_modified());
     }
 
-    weak_output = locked_service->output<data::integer>(service::ut::LockedService::s_OUTPUT);
+    weak_output = locked_service->output<data::integer>(service::ut::locked_service::OUTPUT);
     {
         auto shared_output = weak_output.lock();
         CPPUNIT_ASSERT_EQUAL(output, shared_output.get_shared());
-        CPPUNIT_ASSERT_EQUAL(std::uint64_t(2), shared_output->lastModified());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(2), shared_output->last_modified());
     }
 
     // Test basic scoped lock from service direct locker
     {
-        auto shared_input = locked_service->input<data::integer>(service::ut::LockedService::s_INPUT);
+        auto shared_input = locked_service->input<data::integer>(service::ut::locked_service::INPUT);
         CPPUNIT_ASSERT(shared_input.lock() == input);
     }
 
     {
-        auto shared_in_out = locked_service->inout<data::integer>(service::ut::LockedService::s_INOUT);
+        auto shared_in_out = locked_service->inout<data::integer>(service::ut::locked_service::INOUT);
         CPPUNIT_ASSERT(shared_in_out.lock() == inout);
     }
 
     {
         auto shared_output = locked_service->output<data::integer>(
-            service::ut::LockedService::s_OUTPUT
+            service::ut::locked_service::OUTPUT
         );
         CPPUNIT_ASSERT(shared_output.lock() == output);
     }
@@ -232,20 +232,20 @@ void lock_test::testScopedLock()
 
 //------------------------------------------------------------------------------
 
-void lock_test::testDumpLock()
+void lock_test::test_dump_lock()
 {
     data::image::sptr image = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateRandomImage(image, core::type::UINT8);
+    utest_data::generator::image::generate_random_image(image, core::type::UINT8);
 
     // Add the service
-    service::base::sptr locked_service = service::add("sight::service::ut::LockedService");
+    service::base::sptr locked_service = service::add("sight::service::ut::locked_service");
     CPPUNIT_ASSERT(locked_service);
 
-    locked_service->set_input(image, service::ut::LockedService::s_INPUT);
+    locked_service->set_input(image, service::ut::locked_service::INPUT);
 
     {
-        auto shared_input = locked_service->input<data::image>(service::ut::LockedService::s_INPUT).lock();
+        auto shared_input = locked_service->input<data::image>(service::ut::locked_service::INPUT).lock();
         CPPUNIT_ASSERT(shared_input == image);
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(image->buffer());
@@ -274,12 +274,12 @@ void lock_test::testDumpLock()
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
-    locked_service->set_input(mesh, service::ut::LockedService::s_INPUT);
+    locked_service->set_input(mesh, service::ut::locked_service::INPUT);
 
     {
-        auto shared_input = locked_service->input<data::mesh>(service::ut::LockedService::s_INPUT).lock();
+        auto shared_input = locked_service->input<data::mesh>(service::ut::locked_service::INPUT).lock();
 
-        mesh->reserve(3, 1, data::mesh::cell_type_t::TRIANGLE, data::mesh::Attributes::POINT_COLORS);
+        mesh->reserve(3, 1, data::mesh::cell_type_t::triangle, data::mesh::attribute::point_colors);
 
         const std::array<data::mesh::position_t, 3> a = {0., 0., 0.};
         const std::array<data::mesh::position_t, 3> b = {1., 0., 0.};
@@ -287,24 +287,24 @@ void lock_test::testDumpLock()
 
         std::array<data::mesh::point_t, 3> ids {};
 
-        ids[0] = mesh->pushPoint(a);
-        ids[1] = mesh->pushPoint(b);
-        ids[2] = mesh->pushPoint(c);
+        ids[0] = mesh->push_point(a);
+        ids[1] = mesh->push_point(b);
+        ids[2] = mesh->push_point(c);
 
         CPPUNIT_ASSERT(shared_input == mesh);
         // check if the image is properly locked for dump
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(a));
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(b));
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(c));
+        CPPUNIT_ASSERT_NO_THROW(mesh->push_point(a));
+        CPPUNIT_ASSERT_NO_THROW(mesh->push_point(b));
+        CPPUNIT_ASSERT_NO_THROW(mesh->push_point(c));
 
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(std::vector(ids.begin(), ids.end())));
+        CPPUNIT_ASSERT_NO_THROW(mesh->push_cell(std::vector(ids.begin(), ids.end())));
 
         const std::array<data::mesh::color_t, 4> color = {255, 0, 0, 255};
 
         // This are not locked since they didn't exists when creating the mesh the first time.
-        CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[0], color));
-        CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[1], color));
-        CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[2], color));
+        CPPUNIT_ASSERT_NO_THROW(mesh->set_point_color(ids[0], color));
+        CPPUNIT_ASSERT_NO_THROW(mesh->set_point_color(ids[1], color));
+        CPPUNIT_ASSERT_NO_THROW(mesh->set_point_color(ids[2], color));
     }
 
     exception_received = false;
@@ -313,7 +313,7 @@ void lock_test::testDumpLock()
     {
         try
         {
-            mesh->pushPoint(0.F, 0.F, 0.F);
+            mesh->push_point(0.F, 0.F, 0.F);
         }
         catch(data::exception&)
         {
@@ -331,10 +331,10 @@ void lock_test::testDumpLock()
 
 //------------------------------------------------------------------------------
 
-void lock_test::testThreadedLock()
+void lock_test::test_threaded_lock()
 {
     // Add the service
-    auto locked_service = service::add<service::ut::LockedService>("sight::service::ut::LockedService");
+    auto locked_service = service::add<service::ut::locked_service>("sight::service::ut::locked_service");
     CPPUNIT_ASSERT(locked_service);
 
     // Create the data
@@ -343,36 +343,36 @@ void lock_test::testThreadedLock()
     data::integer::sptr output = std::make_shared<data::integer>(0);
 
     // Register the data
-    locked_service->set_input(input, service::ut::LockedService::s_INPUT);
-    locked_service->set_inout(inout, service::ut::LockedService::s_INOUT);
-    locked_service->set_output(service::ut::LockedService::s_OUTPUT, output);
+    locked_service->set_input(input, service::ut::locked_service::INPUT);
+    locked_service->set_inout(inout, service::ut::locked_service::INOUT);
+    locked_service->set_output(service::ut::locked_service::OUTPUT, output);
 
     // Test that inputLock doesn't block other reader
     {
         auto weak_input = locked_service->input<const data::integer>(
-            service::ut::LockedService::s_INPUT
+            service::ut::locked_service::INPUT
         );
         auto shared_input = weak_input.lock();
         CPPUNIT_ASSERT_EQUAL(input, shared_input.get_shared());
 
-        std::thread t1(&sight::service::ut::LockedService::starting, locked_service);
+        std::thread t1(&sight::service::ut::locked_service::starting, locked_service);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // t1 should be in the sleep_for, so m_started and m_input should still be the initial value
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), locked_service->m_inputValue.load());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), locked_service->m_input_value.load());
         CPPUNIT_ASSERT_EQUAL(false, locked_service->m_started.load());
 
         // Wait for t1 execution (1s)
         t1.join();
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(0), locked_service->m_inputValue.load());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(0), locked_service->m_input_value.load());
         CPPUNIT_ASSERT_EQUAL(true, locked_service->m_started.load());
     }
 
     // Test that outputLock is blocking
     {
         // Start thread immediately
-        std::thread t2(&sight::service::ut::LockedService::stopping, locked_service);
+        std::thread t2(&sight::service::ut::locked_service::stopping, locked_service);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // t2 should be in the sleep_for, so m_stopped should still be the initial value
@@ -381,18 +381,18 @@ void lock_test::testThreadedLock()
         {
             // We should be blocked here, as long as t2 is alive
             auto weak_output = locked_service->output<data::integer>(
-                service::ut::LockedService::s_OUTPUT
+                service::ut::locked_service::OUTPUT
             );
             auto shared_output = weak_output.lock();
 
             // Once t2 have finished, we should be able to overwrite output
-            shared_output->setValue(666);
+            shared_output->set_value(666);
         }
 
         t2.join();
 
         CPPUNIT_ASSERT_EQUAL(true, locked_service->m_stopped.load());
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(666), output->getValue());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(666), output->get_value());
     }
 
     // cleanup

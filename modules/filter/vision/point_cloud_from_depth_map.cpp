@@ -45,7 +45,7 @@ const core::com::slots::key_t point_cloud_from_depth_map::SET_DEPTH_RANGE = "set
 
 point_cloud_from_depth_map::point_cloud_from_depth_map() noexcept
 {
-    new_slot(SET_DEPTH_RANGE, &point_cloud_from_depth_map::setDepthRange, this);
+    new_slot(SET_DEPTH_RANGE, &point_cloud_from_depth_map::set_depth_range, this);
 }
 
 //------------------------------------------------------------------------------
@@ -76,8 +76,8 @@ void point_cloud_from_depth_map::configuring()
 void point_cloud_from_depth_map::updating()
 {
     const auto calibration = m_calibration.lock();
-    const auto depth_map   = m_depthMap.lock();
-    const auto point_cloud = m_pointCloud.lock();
+    const auto depth_map   = m_depth_map.lock();
+    const auto point_cloud = m_point_cloud.lock();
 
     SIGHT_ASSERT("Missing 'pointCloud' inout", point_cloud);
     SIGHT_ASSERT("Missing 'calibration' input", calibration);
@@ -85,7 +85,7 @@ void point_cloud_from_depth_map::updating()
 
     const auto depth_calibration = calibration->get_camera(0);
 
-    const auto rgb_map = m_rgbMap.lock();
+    const auto rgb_map = m_rgb_map.lock();
 
     data::camera::csptr color_calibration;
     data::matrix4::csptr extrinsic_matrix;
@@ -98,7 +98,7 @@ void point_cloud_from_depth_map::updating()
     }
 
     // Initialize mesh points memory one time in order to increase performances
-    if(point_cloud->numPoints() == 0)
+    if(point_cloud->num_points() == 0)
     {
         const auto size             = depth_map->size();
         const std::size_t width     = size[0];
@@ -106,16 +106,16 @@ void point_cloud_from_depth_map::updating()
         const std::size_t nb_points = width * height;
 
         // allocate mesh
-        data::mesh::Attributes attribute = data::mesh::Attributes::NONE;
+        data::mesh::attribute attribute = data::mesh::attribute::none;
         if(rgb_map)
         {
-            attribute = data::mesh::Attributes::POINT_COLORS;
+            attribute = data::mesh::attribute::point_colors;
         }
 
         point_cloud->resize(
             data::mesh::size_t(nb_points),
             data::mesh::size_t(nb_points),
-            data::mesh::cell_type_t::POINT,
+            data::mesh::cell_type_t::point,
             attribute
         );
 
@@ -135,7 +135,7 @@ void point_cloud_from_depth_map::updating()
 
     if(rgb_map)
     {
-        this->depthMapToPointCloudRGB(
+        this->depth_map_to_point_cloud_rgb(
             depth_calibration,
             color_calibration,
             depth_map.get_shared(),
@@ -153,24 +153,24 @@ void point_cloud_from_depth_map::updating()
     }
     else
     {
-        this->depthMapToPointCloud(depth_calibration, depth_map.get_shared(), point_cloud.get_shared());
+        this->depth_map_to_point_cloud(depth_calibration, depth_map.get_shared(), point_cloud.get_shared());
         auto sig =
             point_cloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
         sig->async_emit();
     }
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void point_cloud_from_depth_map::setDepthRange(int _val, std::string _key)
+void point_cloud_from_depth_map::set_depth_range(int _val, std::string _key)
 {
     if(_key == "minDepth")
     {
         if(_val >= 0 && _val <= UINT16_MAX)
         {
-            m_minDepth = static_cast<std::uint16_t>(_val);
+            m_min_depth = static_cast<std::uint16_t>(_val);
         }
         else
         {
@@ -181,7 +181,7 @@ void point_cloud_from_depth_map::setDepthRange(int _val, std::string _key)
     {
         if(_val >= 0 && _val <= UINT16_MAX)
         {
-            m_maxDepth = static_cast<std::uint16_t>(_val);
+            m_max_depth = static_cast<std::uint16_t>(_val);
         }
         else
         {
@@ -198,7 +198,7 @@ void point_cloud_from_depth_map::setDepthRange(int _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void point_cloud_from_depth_map::depthMapToPointCloud(
+void point_cloud_from_depth_map::depth_map_to_point_cloud(
     const data::camera::csptr& _depth_camera,
     const data::image::csptr& _depth_map,
     const data::mesh::sptr& _point_cloud
@@ -206,7 +206,7 @@ void point_cloud_from_depth_map::depthMapToPointCloud(
 {
     SIGHT_INFO("Input RGB map was empty, skipping colors");
 
-    const auto type = _depth_map->getType();
+    const auto type = _depth_map->type();
     if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
@@ -221,10 +221,10 @@ void point_cloud_from_depth_map::depthMapToPointCloud(
 
     auto depth_itr = _depth_map->begin<std::uint16_t>();
 
-    const double cx = _depth_camera->getCx();
-    const double cy = _depth_camera->getCy();
-    const double fx = _depth_camera->getFx();
-    const double fy = _depth_camera->getFy();
+    const double cx = _depth_camera->get_cx();
+    const double cy = _depth_camera->get_cy();
+    const double fx = _depth_camera->get_fx();
+    const double fy = _depth_camera->get_fy();
 
     const auto mesh_dump_lock = _point_cloud->dump_lock();
 
@@ -235,12 +235,12 @@ void point_cloud_from_depth_map::depthMapToPointCloud(
         for(std::size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depth_itr;
-            if(depth >= m_minDepth && depth <= m_maxDepth)
+            if(depth >= m_min_depth && depth <= m_max_depth)
             {
                 double px = NAN;
                 double py = NAN;
                 double pz = NAN;
-                sight::filter::vision::projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
+                sight::filter::vision::project_pixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
                 points_itr->x = static_cast<float>(px);
                 points_itr->y = static_cast<float>(py);
                 points_itr->z = static_cast<float>(pz);
@@ -254,7 +254,7 @@ void point_cloud_from_depth_map::depthMapToPointCloud(
 
 //------------------------------------------------------------------------------
 
-void point_cloud_from_depth_map::depthMapToPointCloudRGB(
+void point_cloud_from_depth_map::depth_map_to_point_cloud_rgb(
     const data::camera::csptr& _depth_camera,
     const data::camera::csptr& _color_camera,
     const data::image::csptr& _depth_map,
@@ -265,7 +265,7 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
 {
     SIGHT_INFO("Input RGB map was supplied, including colors");
 
-    const auto type = _depth_map->getType();
+    const auto type = _depth_map->type();
     if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
@@ -277,16 +277,16 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
     const std::size_t width  = size[0];
     const std::size_t height = size[1];
 
-    const auto rgb_type = _color_map->getType();
+    const auto rgb_type = _color_map->type();
     if(rgb_type != core::type::UINT8)
     {
         SIGHT_ERROR("Wrong input rgb format: " << rgb_type << ", uint8 is expected.");
         return;
     }
 
-    if(4 != _color_map->numComponents())
+    if(4 != _color_map->num_components())
     {
-        SIGHT_ERROR("Wrong number of components in rgb : " << _color_map->numComponents() << ", 4 is expected.");
+        SIGHT_ERROR("Wrong number of components in rgb : " << _color_map->num_components() << ", 4 is expected.");
         return;
     }
 
@@ -306,15 +306,15 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
     const auto rgb_dump_lock = _color_map->dump_lock();
     const auto rgb_begin     = _color_map->begin<data::iterator::rgba>();
 
-    const double cx = _depth_camera->getCx();
-    const double cy = _depth_camera->getCy();
-    const double fx = _depth_camera->getFx();
-    const double fy = _depth_camera->getFy();
+    const double cx = _depth_camera->get_cx();
+    const double cy = _depth_camera->get_cy();
+    const double fx = _depth_camera->get_fx();
+    const double fy = _depth_camera->get_fy();
 
-    const double rgb_cx = _color_camera->getCx();
-    const double rgb_cy = _color_camera->getCy();
-    const double rgb_fx = _color_camera->getFx();
-    const double rgb_fy = _color_camera->getFy();
+    const double rgb_cx = _color_camera->get_cx();
+    const double rgb_cy = _color_camera->get_cy();
+    const double rgb_fx = _color_camera->get_fx();
+    const double rgb_fy = _color_camera->get_fy();
 
     const auto mesh_dump_lock = _point_cloud->dump_lock();
 
@@ -331,7 +331,7 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
         for(std::size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depth_itr;
-            if(depth >= m_minDepth && depth <= m_maxDepth)
+            if(depth >= m_min_depth && depth <= m_max_depth)
             {
                 auto&& [p, c] = *points_itr;
 
@@ -339,7 +339,7 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
                 double px = NAN;
                 double py = NAN;
                 double pz = NAN;
-                sight::filter::vision::projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
+                sight::filter::vision::project_pixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
                 p.x = static_cast<float>(px);
                 p.y = static_cast<float>(py);
                 p.z = static_cast<float>(pz);
@@ -351,7 +351,7 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
                 // project point to the rgb image
                 std::size_t rgb_px      = 0;
                 std::size_t rgb_py      = 0;
-                const bool is_projected = sight::filter::vision::projection::projectPoint(
+                const bool is_projected = sight::filter::vision::project_point(
                     rgb_point.x,
                     rgb_point.y,
                     rgb_point.z,

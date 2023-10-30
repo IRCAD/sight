@@ -59,7 +59,7 @@ void get_camera_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extractsCameraFromCameraSet()
+void get_camera_test::extracts_camera_from_camera_set()
 {
     // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
@@ -106,7 +106,7 @@ void get_camera_test::extractsCameraFromCameraSet()
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extractsInvalidCameraSet()
+void get_camera_test::extracts_invalid_camera_set()
 {
     // create service
     sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
@@ -134,7 +134,7 @@ void get_camera_test::extractsInvalidCameraSet()
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extractsValidExtrinsic()
+void get_camera_test::extracts_valid_extrinsic()
 {
     // // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
@@ -171,7 +171,7 @@ void get_camera_test::extractsValidExtrinsic()
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extractsValidExtrinsic1()
+void get_camera_test::extracts_valid_extrinsic1()
 {
     // // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
@@ -211,7 +211,7 @@ void get_camera_test::extractsValidExtrinsic1()
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extractsCameraOutOfBoundIndex()
+void get_camera_test::extracts_camera_out_of_bound_index()
 {
     // Create a camera series.
     auto camera_set = std::make_shared<sight::data::camera_set>();
@@ -250,7 +250,7 @@ void get_camera_test::extractsCameraOutOfBoundIndex()
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extractsExtrinsicOutOfBoundIndex()
+void get_camera_test::extracts_extrinsic_out_of_bound_index()
 {
     // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
@@ -289,7 +289,7 @@ void get_camera_test::extractsExtrinsicOutOfBoundIndex()
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extractsInvalidExtrinsic()
+void get_camera_test::extracts_invalid_extrinsic()
 {
     // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();

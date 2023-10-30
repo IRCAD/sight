@@ -88,10 +88,10 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_ID_SELECTED_SIG;
-    typedef core::com::signal<void (std::string)> ActivityIDSelectedSignalType;
+    using activity_id_selected_signal_t = core::com::signal<void (std::string)>;
 
     MODULE_UI_QT_API static const core::com::signals::key_t LOAD_REQUESTED_SIG;
-    typedef core::com::signal<void ()> load_requested_signal_t;
+    using load_requested_signal_t = core::com::signal<void ()>;
 
     /// @}
 
@@ -109,11 +109,11 @@ protected:
     /// Show activity selector.
     void updating() override;
 
-    typedef std::vector<std::string> keys_t;
+    using keys_t = std::vector<std::string>;
 
 private Q_SLOTS:
 
-    void onClicked(int _id);
+    void on_clicked(int _id);
 
 private:
 
@@ -121,27 +121,27 @@ private:
      * @brief Slots to launch the given activity.
      * @param activity the activity to be launched.
      */
-    void launchActivity(data::activity::sptr _activity);
+    void launch_activity(data::activity::sptr _activity);
 
-    typedef sight::activity::extension::activity::infos_t activity_infos_t;
+    using activity_infos_t = sight::activity::extension::activity::infos_t;
 
     /// Returns enabled activity infos according to activity filter.
-    activity_infos_t getEnabledActivities(const activity_infos_t& _infos);
+    activity_infos_t get_enabled_activities(const activity_infos_t& _infos);
 
     /**
-     * @brief Filter mode : include or exclude activity configurations.
+     * @brief filter mode : include or exclude activity configurations.
      * @note Allowed values : 'include' or 'exclude'
      */
-    std::string m_filterMode;
+    std::string m_filter_mode;
 
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
     keys_t m_keys;
 
     /// Informations used to launch activities
-    activity_infos_t m_activitiesInfo;
+    activity_infos_t m_activities_info;
 
     /// Pointer on the buttons group
-    QPointer<QButtonGroup> m_buttonGroup;
+    QPointer<QButtonGroup> m_button_group;
 };
 
 } // namespace sight::module::ui::qt::activity

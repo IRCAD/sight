@@ -46,7 +46,7 @@ void selector::set_choices_preset(choices_preset_t _choices)
 
 //------------------------------------------------------------------------------
 
-void selector::setTitle(std::string _title)
+void selector::set_title(std::string _title)
 {
     this->m_title = _title;
 }
@@ -101,7 +101,7 @@ selector::selections_t selector::show()
     h_layout->addWidget(ok_button);
     h_layout->addWidget(cancel_button);
 
-    for(auto* custom_button : m_customButtons)
+    for(auto* custom_button : m_custom_buttons)
     {
         h_layout->addWidget(custom_button);
         QObject::connect(custom_button, SIGNAL(clicked()), dialog, SLOT(reject()));
@@ -148,17 +148,17 @@ selector::selections_t selector::show()
 
 //------------------------------------------------------------------------------
 
-void selector::setMessage(const std::string& _msg)
+void selector::set_message(const std::string& _msg)
 {
     m_message = _msg;
 }
 
 //------------------------------------------------------------------------------
 
-void selector::addCustomButton(const std::string& _label, std::function<void()> _clicked_fn)
+void selector::add_custom_button(const std::string& _label, std::function<void()> _clicked_fn)
 {
     auto* button = new QPushButton(QString::fromStdString(_label));
-    m_customButtons.push_back(button);
+    m_custom_buttons.push_back(button);
     QObject::connect(button, &QPushButton::clicked, _clicked_fn);
 }
 

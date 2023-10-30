@@ -48,24 +48,24 @@ namespace sight::io::vtk
  *
  * Read a MetaImage using the VTK lib
  */
-class IO_VTK_CLASS_API MetaImageReader : public reader::generic_object_reader<data::image>,
-                                         public core::location::single_file
+class IO_VTK_CLASS_API meta_image_reader : public reader::generic_object_reader<data::image>,
+                                           public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        MetaImageReader,
+        meta_image_reader,
         io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<MetaImageReader>
+        io::reader::factory::make<meta_image_reader>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
-    IO_VTK_API MetaImageReader();
+    IO_VTK_API meta_image_reader();
 
     //! @brief Destructor.
-    IO_VTK_API ~MetaImageReader() override;
+    IO_VTK_API ~meta_image_reader() override;
 
     //! @brief Reading operator.
     IO_VTK_API void read() override;
@@ -74,7 +74,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

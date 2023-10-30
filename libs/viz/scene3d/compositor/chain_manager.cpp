@@ -60,15 +60,15 @@ chain_manager::chain_manager(const viz::scene3d::layer::sptr& _layer) :
 
 chain_manager::~chain_manager()
 {
-    this->unregisterServices();
+    this->unregister_services();
 }
 
 //-----------------------------------------------------------------------------
 
-void chain_manager::addAvailableCompositor(compositor_id_t _compositor_name)
+void chain_manager::add_available_compositor(compositor_id_t _compositor_name)
 {
     const auto layer                            = m_layer.lock();
-    Ogre::Viewport* viewport                    = layer->getViewport();
+    Ogre::Viewport* viewport                    = layer->get_viewport();
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
 
     // Remove the final chain compositor if present
@@ -86,7 +86,7 @@ void chain_manager::addAvailableCompositor(compositor_id_t _compositor_name)
     }
 
     // Add the new compositor
-    m_compositorChain.emplace_back(_compositor_name, false);
+    m_compositor_chain.emplace_back(_compositor_name, false);
     Ogre::CompositorInstance* compositor = compositor_manager.addCompositor(viewport, _compositor_name);
 
     // TODO: Handle this with a proper registration of the listener so that future extensions do not need to modify
@@ -96,54 +96,54 @@ void chain_manager::addAvailableCompositor(compositor_id_t _compositor_name)
         compositor->addListener(new sao_listener(viewport));
     }
 
-    this->addFinalCompositor();
+    this->add_final_compositor();
 }
 
 //-----------------------------------------------------------------------------
 
-void chain_manager::clearCompositorChain()
+void chain_manager::clear_compositor_chain()
 {
     const auto layer                            = m_layer.lock();
-    Ogre::Viewport* viewport                    = layer->getViewport();
+    Ogre::Viewport* viewport                    = layer->get_viewport();
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
-    for(auto& chain : m_compositorChain)
+    for(auto& chain : m_compositor_chain)
     {
         compositor_manager.setCompositorEnabled(viewport, chain.first, false);
         compositor_manager.removeCompositor(viewport, chain.first);
     }
 
-    m_compositorChain.clear();
+    m_compositor_chain.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void chain_manager::updateCompositorState(compositor_id_t _compositor_name, bool _is_enabled)
+void chain_manager::update_compositor_state(compositor_id_t _compositor_name, bool _is_enabled)
 {
     const auto layer                            = m_layer.lock();
-    Ogre::Viewport* viewport                    = layer->getViewport();
+    Ogre::Viewport* viewport                    = layer->get_viewport();
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
 
     // If there isn't any compositor available, the update operation can't be done
-    if(!m_compositorChain.empty())
+    if(!m_compositor_chain.empty())
     {
         auto compositor_to_update = std::find_if(
-            m_compositorChain.begin(),
-            m_compositorChain.end(),
+            m_compositor_chain.begin(),
+            m_compositor_chain.end(),
             [_compositor_name](const compositor_t& _compositor)
             {
                 return _compositor.first == _compositor_name;
             });
 
-        if(compositor_to_update != m_compositorChain.end())
+        if(compositor_to_update != m_compositor_chain.end())
         {
             compositor_to_update->second = _is_enabled;
             compositor_manager.setCompositorEnabled(viewport, _compositor_name, _is_enabled);
 
-            this->updateCompositorAdaptors(_compositor_name, _is_enabled);
+            this->update_compositor_adaptors(_compositor_name, _is_enabled);
 
             // Send a signal, i.e. to update editors in user interfaces
-            auto render_service = layer->getRenderService();
-            auto sig            = render_service->signal<render::signals::compositorUpdated_signal_t>(
+            auto render_service = layer->render_service();
+            auto sig            = render_service->signal<render::signals::compositor_updated_signal_t>(
                 render::signals::COMPOSITOR_UPDATED
             );
             sig->async_emit(_compositor_name, _is_enabled, layer);
@@ -153,12 +153,12 @@ void chain_manager::updateCompositorState(compositor_id_t _compositor_name, bool
 
 //-----------------------------------------------------------------------------
 
-void chain_manager::setCompositorChain(const std::vector<compositor_id_t>& _compositors)
+void chain_manager::set_compositor_chain(const std::vector<compositor_id_t>& _compositors)
 {
-    this->clearCompositorChain();
+    this->clear_compositor_chain();
 
     const auto layer                            = m_layer.lock();
-    Ogre::Viewport* viewport                    = layer->getViewport();
+    Ogre::Viewport* viewport                    = layer->get_viewport();
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
 
     // Remove the final chain compositor if present
@@ -173,15 +173,15 @@ void chain_manager::setCompositorChain(const std::vector<compositor_id_t>& _comp
     {
         if(compositor_manager.resourceExists(compositor_name, RESOURCE_GROUP))
         {
-            m_compositorChain.emplace_back(compositor_name, true);
+            m_compositor_chain.emplace_back(compositor_name, true);
             compositor_manager.addCompositor(viewport, compositor_name);
             compositor_manager.setCompositorEnabled(viewport, compositor_name, true);
 
-            this->updateCompositorAdaptors(compositor_name, true);
+            this->update_compositor_adaptors(compositor_name, true);
 
             // Send a signal, i.e. to update editors in user interfaces
-            auto render_service = layer->getRenderService();
-            auto sig            = render_service->signal<render::signals::compositorUpdated_signal_t>(
+            auto render_service = layer->render_service();
+            auto sig            = render_service->signal<render::signals::compositor_updated_signal_t>(
                 render::signals::COMPOSITOR_UPDATED
             );
             sig->async_emit(compositor_name, true, layer);
@@ -192,15 +192,15 @@ void chain_manager::setCompositorChain(const std::vector<compositor_id_t>& _comp
         }
     }
 
-    this->addFinalCompositor();
+    this->add_final_compositor();
 }
 
 //-----------------------------------------------------------------------------
 
-void chain_manager::addFinalCompositor()
+void chain_manager::add_final_compositor()
 {
     const auto layer                            = m_layer.lock();
-    Ogre::Viewport* viewport                    = layer->getViewport();
+    Ogre::Viewport* viewport                    = layer->get_viewport();
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
     compositor_manager.addCompositor(viewport, FINAL_CHAIN_COMPOSITOR);
     compositor_manager.setCompositorEnabled(viewport, FINAL_CHAIN_COMPOSITOR, true);
@@ -208,10 +208,10 @@ void chain_manager::addFinalCompositor()
 
 //-----------------------------------------------------------------------------
 
-void chain_manager::updateCompositorAdaptors(compositor_id_t _compositor_name, bool _is_enabled)
+void chain_manager::update_compositor_adaptors(compositor_id_t _compositor_name, bool _is_enabled)
 {
     const auto layer                            = m_layer.lock();
-    Ogre::Viewport* viewport                    = layer->getViewport();
+    Ogre::Viewport* viewport                    = layer->get_viewport();
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
     Ogre::CompositorChain* comp_chain           = compositor_manager.getCompositorChain(viewport);
     Ogre::CompositorInstance* compositor        = comp_chain->getCompositor(_compositor_name);
@@ -234,7 +234,7 @@ void chain_manager::updateCompositorAdaptors(compositor_id_t _compositor_name, b
 
             if(material)
             {
-                const auto constants = viz::scene3d::helper::shading::findMaterialConstants(*material);
+                const auto constants = viz::scene3d::helper::shading::find_material_constants(*material);
                 for(const auto& constant : constants)
                 {
                     const std::string& constant_name = std::get<0>(constant);
@@ -255,17 +255,17 @@ void chain_manager::updateCompositorAdaptors(compositor_id_t _compositor_name, b
                                                         "geometry";
 
                     // Naming convention for shader parameters
-                    auto render_service = layer->getRenderService();
-                    const auto id       = render_service->get_id() + layer->getLayerID() + "_"
+                    auto render_service = layer->render_service();
+                    const auto id       = render_service->get_id() + layer->layer_id() + "_"
                                           + shader_type_str
                                           + "-" + constant_name;
 
-                    if(_is_enabled && this->getRegisteredService(id) == nullptr)
+                    if(_is_enabled && this->get_registered_service(id) == nullptr)
                     {
                         const auto& constant_type  = std::get<1>(constant);
                         const auto& constant_value = std::get<3>(constant);
 
-                        auto obj = viz::scene3d::helper::shading::createObjectFromShaderParameter(
+                        auto obj = viz::scene3d::helper::shading::create_object_from_shader_parameter(
                             constant_type,
                             constant_value
                         );
@@ -273,32 +273,32 @@ void chain_manager::updateCompositorAdaptors(compositor_id_t _compositor_name, b
                         if(obj != nullptr)
                         {
                             // Creates an Ogre adaptor and associates it with the Sight object
-                            auto srv = this->registerService(
+                            auto srv = this->register_service(
                                 "sight::module::viz::scene3d::adaptor::compositor_parameter",
                                 id
                             );
                             srv->set_inout(obj, "parameter", true);
 
                             auto shader_param_service = std::dynamic_pointer_cast<viz::scene3d::adaptor>(srv);
-                            shader_param_service->setRenderService(render_service);
+                            shader_param_service->set_render_service(render_service);
 
                             service::config_t config;
                             config.add("config.<xmlattr>.compositorName", _compositor_name);
                             config.add("config.<xmlattr>.parameter", constant_name);
                             config.add("config.<xmlattr>.shaderType", shader_type_str);
 
-                            shader_param_service->setLayerID(layer->getLayerID());
+                            shader_param_service->set_layer_id(layer->layer_id());
                             shader_param_service->set_config(config);
                             shader_param_service->configure();
                             shader_param_service->start();
 
-                            m_adaptorsObjectsOwner.insert_or_assign(constant_name, obj);
+                            m_adaptors_objects_owner.insert_or_assign(constant_name, obj);
                         }
                     }
                     else
                     {
-                        this->unregisterService(id);
-                        m_adaptorsObjectsOwner.erase(constant_name);
+                        this->unregister_service(id);
+                        m_adaptors_objects_owner.erase(constant_name);
                     }
                 }
             }

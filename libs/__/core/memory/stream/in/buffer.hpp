@@ -36,8 +36,8 @@ class CORE_CLASS_API buffer : public factory
 {
 public:
 
-    typedef SPTR(void) lock_type;
-    typedef std::function<lock_type()> counter_factory_type;
+    using lock_type            = std::shared_ptr<void>;
+    using counter_factory_type = std::function<lock_type()>;
 
     buffer(void* _buf, std::size_t _size);
     buffer(void* _buf, std::size_t _size, counter_factory_type _counter_factory);

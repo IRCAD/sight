@@ -31,17 +31,17 @@
 namespace sight::utest_data
 {
 
-const std::string Data::s_TEST_DATA_DIR_ENV_VAR("FWTEST_DATA_DIR");
+static const std::string TEST_DATA_DIR_ENV_VAR("FWTEST_DATA_DIR");
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path Data::dir()
+std::filesystem::path dir()
 {
-    char* val = std::getenv(s_TEST_DATA_DIR_ENV_VAR.c_str());
+    char* val = std::getenv(TEST_DATA_DIR_ENV_VAR.c_str());
     if(val == nullptr)
     {
         std::stringstream msg;
-        msg << "The '" << s_TEST_DATA_DIR_ENV_VAR
+        msg << "The '" << TEST_DATA_DIR_ENV_VAR
         << "' environment variable is not set.";
         throw utest::exception(msg.str());
     }

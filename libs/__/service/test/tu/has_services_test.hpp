@@ -30,12 +30,12 @@ namespace sight::service::ut
 /**
  * @brief Test has_services interface
  */
-class has_servicesTest : public CPPUNIT_NS::TestFixture
+class has_services_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(has_servicesTest);
-CPPUNIT_TEST(testRegistration);
-CPPUNIT_TEST(testConnection);
-CPPUNIT_TEST(testOptionalInputs);
+CPPUNIT_TEST_SUITE(has_services_test);
+CPPUNIT_TEST(test_registration);
+CPPUNIT_TEST(test_connection);
+CPPUNIT_TEST(test_optional_inputs);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,11 +45,11 @@ public:
     void tearDown() override;
 
     /// Test register/unregister methods
-    static void testRegistration();
+    static void test_registration();
     /// Test connection with data
-    static void testConnection();
+    static void test_connection();
     /// Test registering optional inputs
-    static void testOptionalInputs();
+    static void test_optional_inputs();
 };
 
 } // namespace sight::service::ut

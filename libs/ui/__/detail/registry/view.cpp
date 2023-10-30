@@ -50,15 +50,15 @@ view::~view()
 
 //-----------------------------------------------------------------------------
 
-ui::container::widget::sptr view::getParent()
+ui::container::widget::sptr view::get_parent()
 {
     ui::container::widget::sptr parent_container;
-    if(!m_parentWid.empty())
+    if(!m_parent_wid.empty())
     {
-        parent_container = ui::registry::get_wid_container(m_parentWid);
+        parent_container = ui::registry::get_wid_container(m_parent_wid);
         SIGHT_ASSERT(
-            "The parent view of the wid container '" + m_parentWid + "' is not found. Check that the view is "
-                                                                     "properly declared and the service is started.",
+            "The parent view of the wid container '" + m_parent_wid + "' is not found. Check that the view is "
+                                                                      "properly declared and the service is started.",
             parent_container
         );
     }
@@ -77,20 +77,20 @@ ui::container::widget::sptr view::getParent()
 
 //-----------------------------------------------------------------------------
 
-void view::setParent(std::string _wid)
+void view::set_parent(std::string _wid)
 {
     SIGHT_ASSERT(
         "The method 'setParent()' is available only if this service declares its parent container with a 'wid'.",
-        !m_parentWid.empty()
+        !m_parent_wid.empty()
     );
-    m_parentWid = std::move(_wid);
+    m_parent_wid = std::move(_wid);
 }
 
 //-----------------------------------------------------------------------------
 
 void view::initialize(const ui::config_t& _configuration)
 {
-    m_parentWid = _configuration.get<std::string>("parent.<xmlattr>.wid", "");
+    m_parent_wid = _configuration.get<std::string>("parent.<xmlattr>.wid", "");
 
     // index represents associated container with position in subviews vector
     unsigned int index = 0;
@@ -119,7 +119,7 @@ void view::initialize(const ui::config_t& _configuration)
         if(!sid.empty())
         {
             const bool start = core::runtime::get_ptree_value(view, "<xmlattr>.start", false);
-            m_sids[sid] = SIDContainerMapType::mapped_type(index, start);
+            m_sids[sid] = sid_container_map_type::mapped_type(index, start);
         }
         else if(!wid.empty())
         {
@@ -133,23 +133,23 @@ void view::initialize(const ui::config_t& _configuration)
         index++;
     }
 
-    // find menuBar
+    // find menubar
     {
-        const std::string sid = _configuration.get<std::string>("menuBar.<xmlattr>.sid", "");
+        const std::string sid = _configuration.get<std::string>("menubar.<xmlattr>.sid", "");
         if(!sid.empty())
         {
-            const bool start = core::runtime::get_ptree_value(_configuration, "menuBar.<xmlattr>.start", false);
-            m_menuBarSid = std::make_pair(sid, start);
+            const bool start = core::runtime::get_ptree_value(_configuration, "menubar.<xmlattr>.start", false);
+            m_menu_bar_sid = std::make_pair(sid, start);
         }
     }
 
-    // find toolBar
+    // find toolbar
     {
-        const std::string sid = _configuration.get<std::string>("toolBar.<xmlattr>.sid", "");
+        const std::string sid = _configuration.get<std::string>("toolbar.<xmlattr>.sid", "");
         if(!sid.empty())
         {
-            const bool start = core::runtime::get_ptree_value(_configuration, "toolBar.<xmlattr>.start", false);
-            m_toolBarSid = std::make_pair(sid, start);
+            const bool start = core::runtime::get_ptree_value(_configuration, "toolbar.<xmlattr>.start", false);
+            m_tool_bar_sid = std::make_pair(sid, start);
         }
     }
 }
@@ -159,7 +159,7 @@ void view::initialize(const ui::config_t& _configuration)
 void view::manage(std::vector<ui::container::widget::sptr> _sub_views)
 {
     ui::container::widget::sptr container;
-    for(const SIDContainerMapType::value_type& sid : m_sids)
+    for(const auto& sid : m_sids)
     {
         SIGHT_ASSERT(
             "The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
@@ -188,7 +188,7 @@ void view::manage(std::vector<ui::container::widget::sptr> _sub_views)
         }
     }
 
-    for(const WIDContainerMapType::value_type& wid : m_wids)
+    for(const auto& wid : m_wids)
     {
         SIGHT_ASSERT(
             "The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
@@ -202,32 +202,32 @@ void view::manage(std::vector<ui::container::widget::sptr> _sub_views)
 
 //-----------------------------------------------------------------------------
 
-void view::manageMenuBar(ui::container::menubar::sptr _menu_bar)
+void view::manage_menu_bar(ui::container::menubar::sptr _menu_bar)
 {
-    ui::registry::register_sid_menu_bar(m_menuBarSid.first, std::move(_menu_bar));
-    if(m_menuBarSid.second) //service is auto started?
+    ui::registry::register_sid_menu_bar(m_menu_bar_sid.first, std::move(_menu_bar));
+    if(m_menu_bar_sid.second) //service is auto started?
     {
         SIGHT_ASSERT(
-            "The menuBar service '" + m_menuBarSid.first + "' declared by '" + m_sid + "' does not exist.",
-            core::tools::id::exist(m_menuBarSid.first)
+            "The menubar service '" + m_menu_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
+            core::tools::id::exist(m_menu_bar_sid.first)
         );
-        service::base::sptr service = service::get(m_menuBarSid.first);
+        service::base::sptr service = service::get(m_menu_bar_sid.first);
         service->start();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void view::manageToolBar(ui::container::toolbar::sptr _tool_bar)
+void view::manage_tool_bar(ui::container::toolbar::sptr _tool_bar)
 {
-    ui::registry::register_sid_tool_bar(m_toolBarSid.first, std::move(_tool_bar));
-    if(m_toolBarSid.second) //service is auto started?
+    ui::registry::register_sid_tool_bar(m_tool_bar_sid.first, std::move(_tool_bar));
+    if(m_tool_bar_sid.second) //service is auto started?
     {
         SIGHT_ASSERT(
-            "The toolBar service '" + m_toolBarSid.first + "' declared by '" + m_sid + "' does not exist.",
-            core::tools::id::exist(m_toolBarSid.first)
+            "The toolbar service '" + m_tool_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
+            core::tools::id::exist(m_tool_bar_sid.first)
         );
-        service::base::sptr service = service::get(m_toolBarSid.first);
+        service::base::sptr service = service::get(m_tool_bar_sid.first);
         service->start();
     }
 }
@@ -236,7 +236,7 @@ void view::manageToolBar(ui::container::toolbar::sptr _tool_bar)
 
 void view::unmanage()
 {
-    for(const SIDContainerMapType::value_type& sid : m_sids)
+    for(const auto& sid : m_sids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -252,7 +252,7 @@ void view::unmanage()
         ui::registry::unregister_sid_container(sid.first);
     }
 
-    for(const WIDContainerMapType::value_type& wid : m_wids)
+    for(const auto& wid : m_wids)
     {
         ui::registry::unregister_wid_container(wid.first);
     }
@@ -260,41 +260,41 @@ void view::unmanage()
 
 //-----------------------------------------------------------------------------
 
-void view::unmanageToolBar()
+void view::unmanage_tool_bar()
 {
-    if(!m_toolBarSid.first.empty())
+    if(!m_tool_bar_sid.first.empty())
     {
-        if(m_toolBarSid.second) //service is auto started?
+        if(m_tool_bar_sid.second) //service is auto started?
         {
             SIGHT_ASSERT(
-                "The toolBar service '" + m_toolBarSid.first + "' declared by '" + m_sid + "' does not exist.",
-                core::tools::id::exist(m_toolBarSid.first)
+                "The toolbar service '" + m_tool_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
+                core::tools::id::exist(m_tool_bar_sid.first)
             );
-            service::base::sptr service = service::get(m_toolBarSid.first);
+            service::base::sptr service = service::get(m_tool_bar_sid.first);
             service->stop().wait();
         }
 
-        ui::registry::unregister_sid_tool_bar(m_toolBarSid.first);
+        ui::registry::unregister_sid_tool_bar(m_tool_bar_sid.first);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void view::unmanageMenuBar()
+void view::unmanage_menu_bar()
 {
-    if(!m_menuBarSid.first.empty())
+    if(!m_menu_bar_sid.first.empty())
     {
-        if(m_menuBarSid.second) //service is auto started?
+        if(m_menu_bar_sid.second) //service is auto started?
         {
             SIGHT_ASSERT(
-                "The menuBar service '" + m_menuBarSid.first + "' declared by '" + m_sid + "' does not exist.",
-                core::tools::id::exist(m_menuBarSid.first)
+                "The menubar service '" + m_menu_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
+                core::tools::id::exist(m_menu_bar_sid.first)
             );
-            service::base::sptr service = service::get(m_menuBarSid.first);
+            service::base::sptr service = service::get(m_menu_bar_sid.first);
             service->stop().wait();
         }
 
-        ui::registry::unregister_sid_menu_bar(m_menuBarSid.first);
+        ui::registry::unregister_sid_menu_bar(m_menu_bar_sid.first);
     }
 }
 

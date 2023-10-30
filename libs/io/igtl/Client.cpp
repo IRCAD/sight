@@ -39,14 +39,14 @@ static std::mutex s_connect_lock;
 
 //------------------------------------------------------------------------------
 
-Client::Client()
+client::client()
 {
     m_socket = ::igtl::ClientSocket::New();
 }
 
 //------------------------------------------------------------------------------
 
-Client::Client(::igtl::ClientSocket::Pointer _socket)
+client::client(::igtl::ClientSocket::Pointer _socket)
 {
     m_socket = _socket;
     SIGHT_ASSERT("socket is null", _socket.IsNotNull());
@@ -55,7 +55,7 @@ Client::Client(::igtl::ClientSocket::Pointer _socket)
 
 //------------------------------------------------------------------------------
 
-Client::~Client()
+client::~client()
 {
     if(m_socket->GetConnected() != 0)
     {
@@ -65,25 +65,25 @@ Client::~Client()
 
 //------------------------------------------------------------------------------
 
-bool Client::isConnected() const
+bool client::is_connected() const
 {
     return m_socket->GetConnected() == 1;
 }
 
 //------------------------------------------------------------------------------
 
-void Client::throwExceptionIfFailed(const std::string& _msg, bool _result)
+void client::throw_exception_if_failed(const std::string& _msg, bool _result)
 {
     if(_result)
     {
         this->disconnect();
-        throw Exception(_msg);
+        throw exception(_msg);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Client::connect(const std::string& _addr, std::uint16_t _port)
+void client::connect(const std::string& _addr, std::uint16_t _port)
 {
     int result          = -1;
     const auto port_str = std::to_string(_port);
@@ -94,7 +94,7 @@ void Client::connect(const std::string& _addr, std::uint16_t _port)
         result = client_socket->ConnectToServer(_addr.c_str(), _port);
     }
 
-    this->throwExceptionIfFailed(
+    this->throw_exception_if_failed(
         std::string("Cannot connect to the server at ") + _addr + " : " + port_str,
         result == -1
     );
@@ -102,11 +102,11 @@ void Client::connect(const std::string& _addr, std::uint16_t _port)
 
 //------------------------------------------------------------------------------
 
-void Client::disconnect()
+void client::disconnect()
 {
     std::lock_guard lock(s_connect_lock);
     // HACK: Use the patched version of closeSocket
-    sight::io::igtl::network::closeSocket(m_socket->m_SocketDescriptor);
+    sight::io::igtl::network::close_socket(m_socket->m_SocketDescriptor);
     m_socket->m_SocketDescriptor = -1;
     // Uncomment this when patch isn't needed anymore.
     //m_socket->CloseSocket();

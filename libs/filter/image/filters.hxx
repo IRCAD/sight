@@ -200,7 +200,7 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole2_d(
+typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     unsigned int _direction,
     IMAGE_TYPE _foreground
@@ -226,29 +226,29 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole2_d(
         extractor->SetDirectionCollapseToIdentity();
         extractor->Update();
 
-        typename Image2D::Pointer image2_d = extractor->GetOutput();
+        typename Image2D::Pointer image_2d = extractor->GetOutput();
 
         typedef typename itk::BinaryFillholeImageFilter<Image2D> FillHoleFilter;
         typename FillHoleFilter::Pointer fill_hole = FillHoleFilter::New();
 
-        fill_hole->set_input(image2_d);
+        fill_hole->set_input(image_2d);
         fill_hole->SetForegroundValue(_foreground);
         fill_hole->SetFullyConnected(true);
         fill_hole->Update();
 
-        itk::ImageRegionConstIterator<Image2D> img2_d_it(fill_hole->GetOutput(),
+        itk::ImageRegionConstIterator<Image2D> img_2d_it(fill_hole->GetOutput(),
                                                          fill_hole->GetOutput()->GetBufferedRegion());
 
         // creates a non "empty" region
         region_to_extract.SetSize(_direction, 1);
-        itk::ImageRegionIterator<Image3D> img3_d_it(_image, region_to_extract);
-        img3_d_it.GoToBegin();
-        img2_d_it.GoToBegin();
-        while(img3_d_it.IsAtEnd() == false)
+        itk::ImageRegionIterator<Image3D> img_3d_it(_image, region_to_extract);
+        img_3d_it.GoToBegin();
+        img_2d_it.GoToBegin();
+        while(img_3d_it.IsAtEnd() == false)
         {
-            img3_d_it.Set(img2_d_it.Get());
-            ++img3_d_it;
-            ++img2_d_it;
+            img_3d_it.Set(img_2d_it.Get());
+            ++img_3d_it;
+            ++img_2d_it;
         }
     }
 

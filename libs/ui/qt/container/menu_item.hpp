@@ -54,14 +54,14 @@ public:
     UI_QT_API ~menu_item() noexcept override = default;
 
     UI_QT_API void clean() override;
-    UI_QT_API void destroyContainer() override;
+    UI_QT_API void destroy_container() override;
 
-    UI_QT_API virtual void setQtMenuItem(QAction* _menu_item);
-    UI_QT_API virtual QAction* getQtMenuItem();
+    UI_QT_API virtual void set_qt_menu_item(QAction* _menu_item);
+    UI_QT_API virtual QAction* get_qt_menu_item();
 
 private:
 
-    QPointer<QAction> m_menuItem;
+    QPointer<QAction> m_menu_item;
 };
 
 } // namespace sight::ui::qt::container

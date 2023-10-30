@@ -37,7 +37,7 @@ const toolbar::registry_key_t toolbar::REGISTRY_KEY = "::ui::toolbar";
 //-----------------------------------------------------------------------------
 
 toolbar::toolbar() :
-    m_toolBitmapSize(std::make_pair(-1, -1))
+    m_tool_bitmap_size(std::make_pair(-1, -1))
 {
 }
 
@@ -50,19 +50,19 @@ void toolbar::initialize(const ui::config_t& _configuration)
     {
         if(alignment.value() == "top")
         {
-            m_alignment = TOP;
+            m_alignment = top;
         }
         else if(alignment.value() == "bottom")
         {
-            m_alignment = BOTTOM;
+            m_alignment = bottom;
         }
         else if(alignment.value() == "right")
         {
-            m_alignment = RIGHT;
+            m_alignment = right;
         }
         else if(alignment.value() == "left")
         {
-            m_alignment = LEFT;
+            m_alignment = left;
         }
         else
         {
@@ -78,20 +78,20 @@ void toolbar::initialize(const ui::config_t& _configuration)
             hexa_color[0] == '#'
             && (hexa_color.length() == 7 || hexa_color.length() == 9)
         );
-        m_backgroundColor = hexa_color;
+        m_background_color = hexa_color;
     }
 
-    m_toolBitmapSize.first  = _configuration.get<int>("toolBitmapSize.<xmlattr>.width", m_toolBitmapSize.first);
-    m_toolBitmapSize.second = _configuration.get<int>("toolBitmapSize.<xmlattr>.height", m_toolBitmapSize.second);
+    m_tool_bitmap_size.first  = _configuration.get<int>("toolBitmapSize.<xmlattr>.width", m_tool_bitmap_size.first);
+    m_tool_bitmap_size.second = _configuration.get<int>("toolBitmapSize.<xmlattr>.height", m_tool_bitmap_size.second);
 
     m_spacing = _configuration.get<int>("<xmlattr>.spacing", m_spacing);
 }
 
 //-----------------------------------------------------------------------------
 
-ui::container::toolbar::sptr toolbar::getToolBar()
+ui::container::toolbar::sptr toolbar::get_tool_bar()
 {
-    return this->m_toolBar;
+    return this->m_tool_bar;
 }
 
 //-----------------------------------------------------------------------------

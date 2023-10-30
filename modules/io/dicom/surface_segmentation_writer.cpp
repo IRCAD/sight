@@ -59,26 +59,26 @@ surface_segmentation_writer::~surface_segmentation_writer() noexcept =
 
 //------------------------------------------------------------------------------
 
-void surface_segmentation_writer::openLocationDialog()
+void surface_segmentation_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::WRITE);
-    dialog_file.setType(ui::dialog::location::FOLDER);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a directory for DICOM images" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::write);
+    dialog_file.set_type(ui::dialog::location::folder);
 
     auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
         default_directory->set_folder(result->get_folder());
         this->set_folder(result->get_folder());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -105,43 +105,43 @@ void surface_segmentation_writer::configuring()
 
 void surface_segmentation_writer::updating()
 {
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         const std::filesystem::path& folder = this->get_folder();
         if(!std::filesystem::is_empty(folder))
         {
             sight::ui::dialog::message dialog;
-            dialog.setMessage(
+            dialog.set_message(
                 "Folder '" + folder.string() + "' isn't empty, files can be overwritten."
                                                "\nDo you want to continue ?"
             );
-            dialog.setTitle("Folder not empty.");
-            dialog.setIcon(ui::dialog::message::QUESTION);
-            dialog.addButton(sight::ui::dialog::message::YES_NO);
-            sight::ui::dialog::message::Buttons button = dialog.show();
+            dialog.set_title("Folder not empty.");
+            dialog.set_icon(ui::dialog::message::question);
+            dialog.add_button(sight::ui::dialog::message::yes_no);
+            sight::ui::dialog::message::buttons button = dialog.show();
 
-            if(button == sight::ui::dialog::message::NO)
+            if(button == sight::ui::dialog::message::no)
             {
-                m_writeFailed = true;
+                m_write_failed = true;
                 return;
             }
         }
         else
         {
-            m_writeFailed = true;
+            m_write_failed = true;
         }
 
         // Retrieve dataStruct associated with this service
         const auto data  = m_data.lock();
         const auto model = std::dynamic_pointer_cast<const data::model_series>(data.get_shared());
 
-        if(!model->getDicomReference())
+        if(!model->get_dicom_reference())
         {
-            m_writeFailed = true;
+            m_write_failed = true;
             sight::ui::dialog::message::show(
                 "Warning",
                 "DICOM image reference is missing, DICOM Surface Segmentation cannot be generated",
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
             return;
         }
@@ -151,24 +151,24 @@ void surface_segmentation_writer::updating()
 
         /* Write the data */
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
-        saveSurfaceSegmentation(output_path, model);
-        cursor.setDefaultCursor();
+        cursor.set_cursor(ui::cursor_base::busy);
+        save_surface_segmentation(output_path, model);
+        cursor.set_default_cursor();
     }
     else
     {
-        m_writeFailed = true;
+        m_write_failed = true;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void surface_segmentation_writer::saveSurfaceSegmentation(
+void surface_segmentation_writer::save_surface_segmentation(
     const std::filesystem::path _filename,
     const data::model_series::csptr& _model
 )
 {
-    auto writer = std::make_shared<sight::io::dicom::writer::SurfaceSegmentation>();
+    auto writer = std::make_shared<sight::io::dicom::writer::surface_segmentation>();
 
     writer->set_object(_model);
     writer->set_file(_filename);
@@ -179,31 +179,31 @@ void surface_segmentation_writer::saveSurfaceSegmentation(
     }
     catch(const std::exception& e)
     {
-        m_writeFailed = true;
+        m_write_failed = true;
         std::stringstream ss;
         ss << "Warning during saving: " << e.what();
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
     }
     catch(...)
     {
-        m_writeFailed = true;
+        m_write_failed = true;
         sight::ui::dialog::message::show(
             "Warning",
             "Warning during saving",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
     }
 }
 
 //-----------------------------------------------------------------------------
 
-sight::io::service::IOPathType surface_segmentation_writer::getIOPathType() const
+sight::io::service::path_type_t surface_segmentation_writer::get_path_type() const
 {
-    return sight::io::service::FOLDER;
+    return sight::io::service::folder;
 }
 
 } // namespace sight::module::io::dicom

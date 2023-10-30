@@ -31,8 +31,8 @@
 #include <core/location/single_folder.hpp>
 #include <core/tools/system.hpp>
 
-#include <io/session/SessionReader.hpp>
-#include <io/zip/exception/Read.hpp>
+#include <io/session/session_reader.hpp>
+#include <io/zip/exception/read.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/input.hpp>
@@ -44,7 +44,7 @@ namespace sight::module::io::zip
 
 using core::crypto::password_keeper;
 using core::crypto::secure_string;
-using sight::io::zip::Archive;
+using sight::io::zip::archive;
 
 /// Private implementation
 class extract::ExtractImpl
@@ -59,8 +59,8 @@ public:
 
     /// Constructor
     inline explicit ExtractImpl(extract* const _reader) noexcept :
-        M_READER(_reader),
-        m_job_created_signal(_reader->new_signal<JobCreatedSignal>("jobCreated"))
+        m_reader(_reader),
+        m_job_created_signal(_reader->new_signal<job_created_signal_t>("jobCreated"))
     {
     }
 
@@ -68,16 +68,16 @@ public:
     inline ~ExtractImpl() noexcept = default;
 
     /// Pointer to the public interface
-    extract* const M_READER;
+    extract* const m_reader;
 
     /// Signal emitted when job created.
-    JobCreatedSignal::sptr m_job_created_signal;
+    job_created_signal_t::sptr m_job_created_signal;
 
     /// Used in case of bad password
     int m_password_retry {0};
 
     /// The path where to extract the files
-    std::filesystem::path m_outputPath;
+    std::filesystem::path m_output_path;
 };
 
 extract::extract() noexcept :
@@ -99,7 +99,7 @@ void extract::starting()
 void extract::stopping()
 {
     m_pimpl->m_password_retry = 0;
-    clearLocations();
+    clear_locations();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,40 +114,40 @@ void extract::configuring()
 void extract::updating()
 {
     // Set to failed until successful
-    m_readFailed = true;
+    m_read_failed = true;
 
     // Show the save dialog if the path is empty
-    if(!hasLocationDefined())
+    if(!has_location_defined())
     {
-        openLocationDialog();
+        open_location_dialog();
     }
 
     // If the user did not choose a file, we stop here
-    if(!hasLocationDefined())
+    if(!has_location_defined())
     {
         return;
     }
 
-    if(m_pimpl->m_outputPath.empty())
+    if(m_pimpl->m_output_path.empty())
     {
         static auto default_location = std::make_shared<core::location::single_folder>();
         default_location->set_folder("/");
 
         sight::ui::dialog::location location_dialog;
-        location_dialog.setTitle("Enter the folder where the files must be extracted");
+        location_dialog.set_title("Enter the folder where the files must be extracted");
 
-        if(!m_windowTitle.empty())
+        if(!m_window_title.empty())
         {
-            location_dialog.setTitle(m_windowTitle);
+            location_dialog.set_title(m_window_title);
         }
         else
         {
-            location_dialog.setTitle("Enter the output path");
+            location_dialog.set_title("Enter the output path");
         }
 
-        location_dialog.setDefaultLocation(default_location);
-        location_dialog.setOption(ui::dialog::location::WRITE);
-        location_dialog.setType(ui::dialog::location::FOLDER);
+        location_dialog.set_default_location(default_location);
+        location_dialog.set_option(ui::dialog::location::write);
+        location_dialog.set_type(ui::dialog::location::folder);
 
         const auto result = std::dynamic_pointer_cast<core::location::single_folder>(location_dialog.show());
 
@@ -157,23 +157,23 @@ void extract::updating()
             {
                 sight::ui::dialog::message message("Output path not empty",
                                                    "The output path isn't empty. Continue anyway?",
-                                                   sight::ui::dialog::message::WARNING);
-                message.addButton(sight::ui::dialog::message::YES);
-                message.addButton(sight::ui::dialog::message::CANCEL);
-                message.addButton(sight::ui::dialog::message::RETRY);
+                                                   sight::ui::dialog::message::warning);
+                message.add_button(sight::ui::dialog::message::yes);
+                message.add_button(sight::ui::dialog::message::cancel);
+                message.add_button(sight::ui::dialog::message::retry);
                 auto action = message.show();
                 switch(action)
                 {
-                    case sight::ui::dialog::message::YES:
+                    case sight::ui::dialog::message::yes:
                         // Continue as normal
                         break;
 
-                    case sight::ui::dialog::message::CANCEL:
+                    case sight::ui::dialog::message::cancel:
                         // Totally abort the operation
-                        clearLocations();
+                        clear_locations();
                         return;
 
-                    case sight::ui::dialog::message::RETRY:
+                    case sight::ui::dialog::message::retry:
                         // Let the user choose another output path
                         updating();
                         return;
@@ -183,9 +183,9 @@ void extract::updating()
                 }
             }
 
-            m_pimpl->m_outputPath = result->get_folder();
+            m_pimpl->m_output_path = result->get_folder();
             default_location->set_folder(result->get_folder().parent_path());
-            location_dialog.saveDefaultLocation(default_location);
+            location_dialog.save_default_location(default_location);
         }
         else
         {
@@ -205,11 +205,11 @@ void extract::updating()
             if(m_pimpl->m_password_retry > 0)
             {
                 const auto& [newPassword, ok] =
-                    sight::ui::dialog::input::showInputDialog(
+                    sight::ui::dialog::input::show_input_dialog(
                         "Enter Password",
                         "Password:",
                         global_password.c_str(), // NOLINT(readability-redundant-string-cstr)
-                        sight::ui::dialog::input::EchoMode::PASSWORD
+                        sight::ui::dialog::input::echo_mode::password
                     );
 
                 return secure_string(newPassword);
@@ -230,12 +230,12 @@ void extract::updating()
         "Reading " + filepath.string() + " file",
         [&](core::jobs::job& _running_job)
         {
-            const sight::ui::BusyCursor busy_cursor;
+            const sight::ui::busy_cursor busy_cursor;
             _running_job.done_work(10);
-            sight::io::zip::ArchiveReader::get(
+            sight::io::zip::archive_reader::get(
                 filepath,
-                Archive::ArchiveFormat::DEFAULT
-            )->extractAllTo(m_pimpl->m_outputPath, password);
+                archive::archive_format::DEFAULT
+            )->extract_all_to(m_pimpl->m_output_path, password);
             _running_job.done();
         },
         this->worker()
@@ -250,13 +250,13 @@ void extract::updating()
     try
     {
         jobs->run().get();
-        m_pimpl->m_outputPath.clear();
-        m_readFailed              = false;
+        m_pimpl->m_output_path.clear();
+        m_read_failed             = false;
         m_pimpl->m_password_retry = 0;
-        clearLocations();
+        clear_locations();
         sight::ui::dialog::message::show("Success", "The archive was successfully extracted.");
     }
-    catch(sight::io::zip::exception::BadPassword&)
+    catch(sight::io::zip::exception::bad_password&)
     {
         if(m_pimpl->m_password_retry == 0)
         {
@@ -268,15 +268,15 @@ void extract::updating()
         {
             // Ask if the user want to retry.
             sight::ui::dialog::message message_box;
-            message_box.setTitle("Wrong password");
-            message_box.setMessage(
+            message_box.set_title("Wrong password");
+            message_box.set_message(
                 "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
             );
-            message_box.setIcon(ui::dialog::message::QUESTION);
-            message_box.addButton(ui::dialog::message::RETRY);
-            message_box.addButton(ui::dialog::message::CANCEL);
+            message_box.set_icon(ui::dialog::message::question);
+            message_box.add_button(ui::dialog::message::retry);
+            message_box.add_button(ui::dialog::message::cancel);
 
-            if(message_box.show() == sight::ui::dialog::message::RETRY)
+            if(message_box.show() == sight::ui::dialog::message::retry)
             {
                 m_pimpl->m_password_retry++;
                 updating();
@@ -289,49 +289,49 @@ void extract::updating()
     }
     catch(const std::exception& e)
     {
-        m_pimpl->m_outputPath.clear();
-        clearLocations();
+        m_pimpl->m_output_path.clear();
+        clear_locations();
         SIGHT_ERROR(e.what());
         sight::ui::dialog::message::show(
             "Session reader failed",
             e.what(),
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
     }
     catch(...)
     {
-        m_pimpl->m_outputPath.clear();
-        clearLocations();
+        m_pimpl->m_output_path.clear();
+        clear_locations();
         sight::ui::dialog::message::show(
             "Session reader aborted",
             "Reading process aborted",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void extract::openLocationDialog()
+void extract::open_location_dialog()
 {
     static auto default_location = std::make_shared<core::location::single_folder>();
     default_location->set_folder("/");
 
     sight::ui::dialog::location location_dialog;
 
-    if(!m_windowTitle.empty())
+    if(!m_window_title.empty())
     {
-        location_dialog.setTitle(m_windowTitle);
+        location_dialog.set_title(m_window_title);
     }
     else
     {
-        location_dialog.setTitle("Enter archive file");
+        location_dialog.set_title("Enter archive file");
     }
 
-    location_dialog.setDefaultLocation(default_location);
-    location_dialog.setOption(ui::dialog::location::READ);
-    location_dialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
-    location_dialog.setType(ui::dialog::location::SINGLE_FILE);
+    location_dialog.set_default_location(default_location);
+    location_dialog.set_option(ui::dialog::location::read);
+    location_dialog.set_option(ui::dialog::location::file_must_exist);
+    location_dialog.set_type(ui::dialog::location::single_file);
 
     const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
 
@@ -342,11 +342,11 @@ void extract::openLocationDialog()
 
         // Save default location for later use
         default_location->set_folder(filepath.parent_path());
-        location_dialog.saveDefaultLocation(default_location);
+        location_dialog.save_default_location(default_location);
     }
     else
     {
-        clearLocations();
+        clear_locations();
     }
 }
 

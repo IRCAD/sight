@@ -59,7 +59,7 @@ void default_activity_test::setUp()
     core::runtime::add_modules(core::runtime::get_resource_file_path("tu_exec_activity"));
     core::runtime::load_module("tu_validator");
 
-    activity::extension::activity::getDefault()->parse_plugin_infos();
+    activity::extension::activity::get_default()->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
@@ -67,12 +67,12 @@ void default_activity_test::setUp()
 void default_activity_test::tearDown()
 {
     // Clean up after the test run.
-    activity::extension::activity::getDefault()->clear_registry();
+    activity::extension::activity::get_default()->clear_registry();
 }
 
 //------------------------------------------------------------------------------
 
-void default_activity_test::requirementsTest()
+void default_activity_test::requirements_test()
 {
     activity::validator::base::sptr validator =
         activity::validator::factory::make("sight::activity::validator::default_activity");
@@ -83,7 +83,7 @@ void default_activity_test::requirementsTest()
     CPPUNIT_ASSERT(activity_validator);
 
     data::activity::sptr activity = std::make_shared<data::activity>();
-    activity->setActivityConfigId("TestValidator0");
+    activity->set_activity_config_id("TestValidator0");
 
     activity::validator::return_t validation;
 
@@ -96,21 +96,21 @@ void default_activity_test::requirementsTest()
 
     {
         // Empty data should NOT be valid
-        validation = activity_validator->checkRequirements(activity);
+        validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty data should NOT be valid", false, validation.first);
     }
     {
         // data with only an image should NOT be valid
         (*activity)["imageSeries"] = image_series;
 
-        validation = activity_validator->checkRequirements(activity);
+        validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("data with only an image should NOT be valid", false, validation.first);
     }
     {
         // data with an image and an empty model composite should be valid
         (*activity)["modelSeries"] = model_compo;
 
-        validation = activity_validator->checkRequirements(activity);
+        validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with an image and an empty model composite should be valid",
             true,
@@ -121,7 +121,7 @@ void default_activity_test::requirementsTest()
         // data with an image and a model in the composite should be valid
         (*model_compo)["key1"] = model_series;
 
-        validation = activity_validator->checkRequirements(activity);
+        validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with an image and a model in the composite should be valid",
             true,
@@ -132,7 +132,7 @@ void default_activity_test::requirementsTest()
         // data with an image and two models in the composite should be valid
         (*model_compo)["key2"] = model_series2;
 
-        validation = activity_validator->checkRequirements(activity);
+        validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with an image and two models in the composite should be valid",
             true,
@@ -143,7 +143,7 @@ void default_activity_test::requirementsTest()
         // data with an image and 3 models in the composite should NOT be valid
         (*model_compo)["key3"] = model_series2;
 
-        validation = activity_validator->checkRequirements(activity);
+        validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with an image and 3 models in the composite should NOT be valid",
             false,
@@ -154,7 +154,7 @@ void default_activity_test::requirementsTest()
         // data with an image and an image in the model composite should NOT be valid
         model_compo->erase("key3");
         (*model_compo)["key2"] = image_series;
-        validation             = activity_validator->checkRequirements(activity);
+        validation             = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with an image and an image in the model composite should NOT be valid",
             false,
@@ -165,7 +165,7 @@ void default_activity_test::requirementsTest()
         // data with a null image and a model in the composite should NOT be valid
         model_compo->erase("key2");
         (*activity)["imageSeries"] = nullptr;
-        validation                 = activity_validator->checkRequirements(activity);
+        validation                 = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with a null image and a model in the composite should NOT be valid",
             false,
@@ -176,7 +176,7 @@ void default_activity_test::requirementsTest()
         // data with a null image and a wrong key in the model composite should NOT be valid
         (*model_compo)["myKey"]    = model_series2;
         (*activity)["imageSeries"] = image_series;
-        validation                 = activity_validator->checkRequirements(activity);
+        validation                 = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with a null image and a wrong key in the model composite should NOT be valid",
             false,
@@ -187,7 +187,7 @@ void default_activity_test::requirementsTest()
 
 //------------------------------------------------------------------------------
 
-void default_activity_test::objectTest()
+void default_activity_test::object_test()
 {
     activity::validator::base::sptr validator =
         activity::validator::factory::make("sight::activity::validator::default_activity");
@@ -202,16 +202,16 @@ void default_activity_test::objectTest()
     data::image::sptr img1 = std::make_shared<data::image>();
     data::image::sptr img2 = std::make_shared<data::image>();
     data::image::sptr img3 = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(img1, core::type::UINT8);
-    utest_data::generator::image::generateImage(
+    utest_data::generator::image::generate_random_image(img1, core::type::UINT8);
+    utest_data::generator::image::generate_image(
         img2,
         img1->size(),
-        img1->getSpacing(),
-        img1->getOrigin(),
-        img1->getType(),
-        data::image::PixelFormat::GRAY_SCALE
+        img1->spacing(),
+        img1->origin(),
+        img1->type(),
+        data::image::pixel_format::gray_scale
     );
-    utest_data::generator::image::generateRandomImage(img3, core::type::UINT8);
+    utest_data::generator::image::generate_random_image(img3, core::type::UINT8);
 
     data::vector::sptr vector = std::make_shared<data::vector>();
     vector->push_back(img1);
@@ -223,12 +223,12 @@ void default_activity_test::objectTest()
 
     {
         // An empty validator implementation should be valid
-        validation = activity_validator->checkObject(img1, "");
+        validation = activity_validator->check_object(img1, "");
         CPPUNIT_ASSERT_EQUAL_MESSAGE("An empty validator implementation should be valid", true, validation.first);
     }
     {
         // A non-existent validator implementation should NOT be valid
-        validation = activity_validator->checkObject(img1, "::non-existent::validator");
+        validation = activity_validator->check_object(img1, "::non-existent::validator");
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "A non-existent validator implementation should NOT be valid",
             false,
@@ -237,7 +237,7 @@ void default_activity_test::objectTest()
     }
     {
         // An existing validator implementation with valid data should be valid
-        validation = activity_validator->checkObject(vector, "sight::activity::validator::image_properties");
+        validation = activity_validator->check_object(vector, "sight::activity::validator::image_properties");
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "An existing validator implementation with valid data should be valid",
             true,
@@ -246,7 +246,7 @@ void default_activity_test::objectTest()
     }
     {
         // An existing validator implementation with invalid data should NOT be valid
-        validation = activity_validator->checkObject(vector2, "sight::activity::validator::image_properties");
+        validation = activity_validator->check_object(vector2, "sight::activity::validator::image_properties");
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "An existing validator implementation with invalid data should NOT be valid",
             false,
@@ -257,7 +257,7 @@ void default_activity_test::objectTest()
 
 //------------------------------------------------------------------------------
 
-void default_activity_test::validatorTest()
+void default_activity_test::validator_test()
 {
     activity::validator::base::sptr validator =
         activity::validator::factory::make("sight::activity::validator::default_activity");
@@ -268,7 +268,7 @@ void default_activity_test::validatorTest()
     CPPUNIT_ASSERT(activity_validator);
 
     data::activity::sptr activity = std::make_shared<data::activity>();
-    activity->setActivityConfigId("TestValidator0");
+    activity->set_activity_config_id("TestValidator0");
 
     activity::validator::return_t validation;
 
@@ -279,7 +279,7 @@ void default_activity_test::validatorTest()
     data::model_series::sptr model_series3 = std::make_shared<data::model_series>();
     data::composite::sptr model_compo      = std::make_shared<data::composite>();
 
-    utest_data::generator::image::generateRandomImage(image_series, core::type::UINT8);
+    utest_data::generator::image::generate_random_image(image_series, core::type::UINT8);
 
     {
         // Empty data should NOT be valid
@@ -374,7 +374,7 @@ void default_activity_test::validatorTest()
 
 //------------------------------------------------------------------------------
 
-void default_activity_test::bigActivityTest()
+void default_activity_test::big_activity_test()
 {
     activity::validator::base::sptr validator =
         activity::validator::factory::make("sight::activity::validator::default_activity");
@@ -385,7 +385,7 @@ void default_activity_test::bigActivityTest()
     CPPUNIT_ASSERT(activity_validator);
 
     data::activity::sptr activity = std::make_shared<data::activity>();
-    activity->setActivityConfigId("TestValidator1");
+    activity->set_activity_config_id("TestValidator1");
 
     activity::validator::return_t validation;
 
@@ -411,15 +411,15 @@ void default_activity_test::bigActivityTest()
     data::vector::sptr model_vector = std::make_shared<data::vector>();
     data::vector::sptr image_vector = std::make_shared<data::vector>();
 
-    utest_data::generator::image::generateRandomImage(image_series1, core::type::UINT8);
-    utest_data::generator::image::generateRandomImage(image_series2, core::type::UINT8);
-    utest_data::generator::image::generateImage(
+    utest_data::generator::image::generate_random_image(image_series1, core::type::UINT8);
+    utest_data::generator::image::generate_random_image(image_series2, core::type::UINT8);
+    utest_data::generator::image::generate_image(
         image_series3,
         image_series2->size(),
-        image_series2->getSpacing(),
-        image_series2->getOrigin(),
-        image_series2->getType(),
-        data::image::PixelFormat::GRAY_SCALE
+        image_series2->spacing(),
+        image_series2->origin(),
+        image_series2->type(),
+        data::image::pixel_format::gray_scale
     );
 
     model_vector->push_back(model_series2);
@@ -466,15 +466,15 @@ void default_activity_test::bigActivityTest()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Activity with correct data should be valid", true, validation.first);
     }
     {
-        const data::image::Spacing spacing = {45., 45., 45.};
-        image_series3->setSpacing(spacing);
+        const data::image::spacing_t spacing = {45., 45., 45.};
+        image_series3->set_spacing(spacing);
         validation = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Activity with different image properties data should NOT be valid",
             false,
             validation.first
         );
-        image_series3->setSpacing(image_series2->getSpacing());
+        image_series3->set_spacing(image_series2->spacing());
     }
 }
 

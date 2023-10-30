@@ -39,22 +39,22 @@ namespace sight::io::igtl::detail
 /**
  * @brief MessageFactory contains static function to create and registrate igtl messages in the factory (s_creators).
  */
-class IO_IGTL_CLASS_API MessageFactory
+class IO_IGTL_CLASS_API message_factory
 {
 public:
 
-    typedef boost::function< ::igtl::MessageBase::Pointer()> creator_t;
-    typedef std::map<std::string, creator_t> CreatorContainer;
+    using creator_t           = boost::function< ::igtl::MessageBase::Pointer()>;
+    using creator_container_t = std::map<std::string, creator_t>;
 
-    MessageFactory()  = delete;
-    ~MessageFactory() = delete;
+    message_factory()  = delete;
+    ~message_factory() = delete;
 
     /**
      * @brief initFactory initialize the factory
      * @return the map of equivalence between a string device type igtl and a
      * method to create the appropiate message
      */
-    static IO_IGTL_API CreatorContainer initFactory();
+    static IO_IGTL_API creator_container_t init_factory();
     /**
      * @brief create create a message with the type specified in parameter
      * @param[in] type
@@ -63,7 +63,7 @@ public:
     static IO_IGTL_API ::igtl::MessageBase::Pointer create(std::string const& _type);
 
     /// Map of equivalence between a device type and igtl message creator method
-    static IO_IGTL_API CreatorContainer s_creators;
+    static IO_IGTL_API creator_container_t s_creators;
 
     /**
      * @struct MessageMaker
@@ -84,7 +84,7 @@ public:
          * @brief create message from type specified in template
          * @return a ::igtl::MessageBase smart pointer contain the message
          */
-        static ::igtl::MessageBase::Pointer createMessage()
+        static ::igtl::MessageBase::Pointer create_message()
         {
             typename T::Pointer msg;
 
@@ -101,7 +101,7 @@ public:
          * @brief create message from type specified in template
          * @return a ::igtl::MessageBase smart pointer contain the message
          */
-        static ::igtl::MessageBase::Pointer createMessage(std::string const& _body_type)
+        static ::igtl::MessageBase::Pointer create_message(std::string const& _body_type)
         {
             typename T::Pointer msg;
 

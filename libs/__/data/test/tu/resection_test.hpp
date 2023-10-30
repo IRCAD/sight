@@ -29,12 +29,12 @@ namespace sight::data::ut
 class resection_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(resection_test);
-CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST(equality_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void equalityTest();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

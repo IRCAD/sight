@@ -33,19 +33,19 @@ namespace sight::activity::validator
 
 //------------------------------------------------------------------------------
 
-validator::return_t activity::checkRequirements(const data::activity::csptr& _activity)
+validator::return_t activity::check_requirements(const data::activity::csptr& _activity)
 {
     validator::return_t validation;
     validation.first  = true;
     validation.second = "";
 
     extension::activity_info info;
-    info = extension::activity::getDefault()->getInfo(_activity->getActivityConfigId());
+    info = extension::activity::get_default()->get_info(_activity->get_activity_config_id());
 
     for(const extension::activity_requirement& req : info.requirements)
     {
-        if((req.minOccurs == 1 && req.maxOccurs == 1)
-           || (req.minOccurs == 0 && req.maxOccurs == 0)
+        if((req.min_occurs == 1 && req.max_occurs == 1)
+           || (req.min_occurs == 0 && req.max_occurs == 0)
            || req.create) // One object is required
         {
             data::object::csptr obj = _activity->get(req.name);
@@ -61,7 +61,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& _ac
             }
             else
             {
-                validator::return_t val = sight::activity::validator::activity::checkObject(obj, req.validator);
+                validator::return_t val = sight::activity::validator::activity::check_object(obj, req.validator);
                 if(!val.first)
                 {
                     validation.first   = false;
@@ -80,17 +80,17 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& _ac
             else
             {
                 auto nb_obj = static_cast<unsigned int>(vector->size());
-                if(nb_obj < req.minOccurs)
+                if(nb_obj < req.min_occurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at least "
-                                         + std::to_string(req.minOccurs) + " objects.";
+                                         + std::to_string(req.min_occurs) + " objects.";
                 }
-                else if(nb_obj > req.maxOccurs)
+                else if(nb_obj > req.max_occurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at most "
-                                         + std::to_string(req.maxOccurs) + " objects.";
+                                         + std::to_string(req.max_occurs) + " objects.";
                 }
                 else
                 {
@@ -116,7 +116,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& _ac
 
                     if(is_valid)
                     {
-                        validator::return_t val = sight::activity::validator::activity::checkObject(
+                        validator::return_t val = sight::activity::validator::activity::check_object(
                             vector,
                             req.validator
                         );
@@ -141,17 +141,17 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& _ac
             else
             {
                 auto nb_obj = static_cast<unsigned int>(current_composite->size());
-                if(nb_obj < req.minOccurs)
+                if(nb_obj < req.min_occurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at least "
-                                         + std::to_string(req.minOccurs) + " objects.";
+                                         + std::to_string(req.min_occurs) + " objects.";
                 }
-                else if(nb_obj > req.maxOccurs)
+                else if(nb_obj > req.max_occurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at most "
-                                         + std::to_string(req.minOccurs) + " objects.";
+                                         + std::to_string(req.min_occurs) + " objects.";
                 }
                 else
                 {
@@ -197,7 +197,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& _ac
 
                     if(is_valid)
                     {
-                        validator::return_t val = sight::activity::validator::activity::checkObject(
+                        validator::return_t val = sight::activity::validator::activity::check_object(
                             current_composite,
                             req.validator
                         );
@@ -217,7 +217,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& _ac
 
 //------------------------------------------------------------------------------
 
-validator::return_t activity::checkObject(
+validator::return_t activity::check_object(
     const data::object::csptr& _object,
     const std::string& _validator_impl
 )

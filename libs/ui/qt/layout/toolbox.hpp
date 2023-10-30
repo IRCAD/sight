@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/qt/config.hpp"
-#include "ui/qt/widget/qfw_toolbox.hpp"
+#include "ui/qt/widget/toolbox.hpp"
 
 #include <core/base.hpp>
 
@@ -52,13 +52,13 @@ public:
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::widget::sptr _parent, const std::string& _id) override;
+    UI_QT_API void create_layout(ui::container::widget::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroyLayout() override;
+    UI_QT_API void destroy_layout() override;
 };
 
 } // namespace sight::ui::qt::layout

@@ -58,9 +58,9 @@ void plugin::start()
     const auto& ogre_log        = core::tools::os::get_user_cache_dir(profile_name) / "Ogre.log";
 
     // Start Ogre Log
-    m_logManager = new Ogre::LogManager();
-    m_log        = m_logManager->createLog(ogre_log.string(), true, false, true);
-    m_listener   = new SightOgreListener();
+    m_log_manager = new Ogre::LogManager();
+    m_log         = m_log_manager->createLog(ogre_log.string(), true, false, true);
+    m_listener    = new sight_ogre_listener();
     m_log->addListener(m_listener);
     m_log->setLogDetail(Ogre::LL_BOREME);
 
@@ -82,7 +82,7 @@ void plugin::start()
             plugins.assign(t.begin(), t.end());
         }
 
-        sight::viz::scene3d::utils::addPlugins(plugins);
+        sight::viz::scene3d::utils::add_plugins(plugins);
     }
 }
 
@@ -92,12 +92,12 @@ void plugin::stop() noexcept
 {
     m_log->removeListener(m_listener);
     delete m_listener;
-    delete m_logManager;
+    delete m_log_manager;
 }
 
 //------------------------------------------------------------------------------
 
-void SightOgreListener::messageLogged(
+void sight_ogre_listener::messageLogged(
     const Ogre::String& _message,
     Ogre::LogMessageLevel _lml,
     bool /*maskDebug*/,

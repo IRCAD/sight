@@ -50,12 +50,12 @@ void object_test::setUp()
 
 void object_test::tearDown()
 {
-    CPPUNIT_ASSERT_NO_THROW(objectParser.destroyConfig());
+    CPPUNIT_ASSERT_NO_THROW(m_object_parser.destroy_config());
 }
 
 //------------------------------------------------------------------------------
 
-void object_test::basicTest()
+void object_test::basic_test()
 {
     using namespace std::literals::string_literals;
 
@@ -65,12 +65,12 @@ void object_test::basicTest()
     ptree.put("item.object.<xmlattr>.type", "sight::data::string");
     ptree.put("item.object.value", "Hello world");
     auto object = std::make_shared<data::string>();
-    objectParser.setObjectConfig(ptree);
-    objectParser.createConfig(object);
+    m_object_parser.set_object_config(ptree);
+    m_object_parser.create_config(object);
     CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::string>(object->get_field("data")) != nullptr);
     CPPUNIT_ASSERT_EQUAL(
         "Hello world"s,
-        std::dynamic_pointer_cast<data::string>(object->get_field("data"))->getValue()
+        std::dynamic_pointer_cast<data::string>(object->get_field("data"))->get_value()
     );
 }
 

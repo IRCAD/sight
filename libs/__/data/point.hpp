@@ -38,8 +38,8 @@ class DATA_CLASS_API point final : public object
 {
 public:
 
-    typedef double point_coord_t;
-    typedef std::array<double, 3> point_coord_array_t;
+    using point_coord_t       = double;
+    using point_coord_array_t = std::array<double, 3>;
 
     SIGHT_DECLARE_CLASS(point, object);
 
@@ -56,14 +56,14 @@ public:
 
     /// @brief get/set point coordinates
     /// @{
-    point_coord_array_t& getCoord();
-    const point_coord_array_t& getCoord() const;
-    void setCoord(const point_coord_array_t& _v_coord);
+    point_coord_array_t& get_coord();
+    const point_coord_array_t& get_coord() const;
+    void set_coord(const point_coord_array_t& _v_coord);
     /// @}
 
-    DATA_API std::string getLabel() const;
+    DATA_API std::string get_label() const;
 
-    DATA_API void setLabel(const std::string& _label);
+    DATA_API void set_label(const std::string& _label);
 
     /// Equality comparison operators
     /// @{
@@ -88,28 +88,28 @@ public:
 protected:
 
     /// point coordinates
-    point_coord_array_t m_vCoord {};
+    point_coord_array_t m_v_coord {};
 }; // end class point
 
 //-----------------------------------------------------------------------------
 
-inline point::point_coord_array_t& point::getCoord()
+inline point::point_coord_array_t& point::get_coord()
 {
-    return this->m_vCoord;
+    return this->m_v_coord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const point::point_coord_array_t& point::getCoord() const
+inline const point::point_coord_array_t& point::get_coord() const
 {
-    return this->m_vCoord;
+    return this->m_v_coord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void point::setCoord(const point_coord_array_t& _v_coord)
+inline void point::set_coord(const point_coord_array_t& _v_coord)
 {
-    this->m_vCoord = _v_coord;
+    this->m_v_coord = _v_coord;
 }
 
 DATA_API std::ostream& operator<<(std::ostream& _out, const point& _p);

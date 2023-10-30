@@ -36,7 +36,7 @@ void get_vector::configuring()
     {
         const service::config_t& attr = it_cfg->second.get_child("<xmlattr>.index");
         const auto index              = attr.get_value<size_t>();
-        m_indexNumbers.push_back(index);
+        m_index_numbers.push_back(index);
     }
 }
 
@@ -57,7 +57,7 @@ void get_vector::updating()
     }
 
     size_t i = 0;
-    for(const auto& index : m_indexNumbers)
+    for(const auto& index : m_index_numbers)
     {
         if(index < vector->size())
         {

@@ -83,23 +83,23 @@ void color_test::methode2()
 
     auto color = std::make_shared<data::color>();
 
-    data::color::ColorArray array;
+    data::color::color_array_t array;
     array[0] = r;
     array[1] = g;
     array[2] = b;
     array[3] = a;
 
-    color->setRGBA(array);
+    color->set_rgba(array);
 
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], r);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], g);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], b);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], a);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[0], r);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[1], g);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[2], b);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[3], a);
 
     auto color2 = std::make_shared<data::color>();
     CPPUNIT_ASSERT(*color != *color2);
 
-    color2->setRGBA(array);
+    color2->set_rgba(array);
     CPPUNIT_ASSERT(*color == *color2);
 }
 
@@ -117,23 +117,23 @@ void color_test::methode3()
 
     data::color::sptr color = std::make_shared<data::color>();
 
-    color->setRGBA(fuchsia);
+    color->set_rgba(fuchsia);
 
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], r);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], g);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], b);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], a);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[0], r);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[1], g);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[2], b);
+    CPPUNIT_ASSERT_EQUAL(color->rgba()[3], a);
 
     auto color2 = std::make_shared<data::color>();
     CPPUNIT_ASSERT(*color != *color2);
 
-    color2->setRGBA(fuchsia);
+    color2->set_rgba(fuchsia);
     CPPUNIT_ASSERT(*color == *color2);
 }
 
 //------------------------------------------------------------------------------
 
-void color_test::equalityTest()
+void color_test::equality_test()
 {
     auto color1 = std::make_shared<data::color>();
     auto color2 = std::make_shared<data::color>();
@@ -142,12 +142,12 @@ void color_test::equalityTest()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(...) \
-    color1->setRGBA(__VA_ARGS__); \
+    color1->set_rgba(__VA_ARGS__); \
     CPPUNIT_ASSERT_MESSAGE( \
         "The colors should be different when the first is set with " #__VA_ARGS__, \
         *color1 != *color2 && !(*color1 == *color2) \
     ); \
-    color2->setRGBA(color1->getRGBA()); \
+    color2->set_rgba(color1->rgba()); \
     CPPUNIT_ASSERT_MESSAGE( \
         "The colors should be equal when both are set with " #__VA_ARGS__, \
         *color1 == *color2 && !(*color1 != *color2) \

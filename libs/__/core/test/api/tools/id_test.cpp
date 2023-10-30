@@ -69,10 +69,10 @@ void id_test::object_id_test()
     core::tools::object::sptr obj2 = std::make_shared<core::tools::object>();
 
     CPPUNIT_ASSERT(obj2->has_id() == false);
-    CPPUNIT_ASSERT_THROW(obj2->get_id(core::tools::id::MUST_EXIST), core::tools::failed);
+    CPPUNIT_ASSERT_THROW(obj2->get_id(core::tools::id::policy::must_exist), core::tools::failed);
 
-    std::string fwid = obj2->get_id(core::tools::id::GENERATE);
-    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::tools::id::MUST_EXIST));
+    std::string fwid = obj2->get_id(core::tools::id::policy::generate);
+    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::tools::id::policy::must_exist));
 
     CPPUNIT_ASSERT(obj2->has_id() == true);
     CPPUNIT_ASSERT(core::tools::id::exist(fwid));
@@ -106,7 +106,7 @@ void id_test::concurrent_access_on_id_map_test()
 
 void id_test::run_id_creation()
 {
-    const std::string id = core::tools::UUID::generate();
+    const std::string id = core::tools::uuid::generate();
 
     core::tools::object::sptr obj = std::make_shared<core::tools::object>();
 
@@ -123,10 +123,10 @@ void id_test::run_id_creation()
     core::tools::object::sptr obj2 = std::make_shared<core::tools::object>();
 
     CPPUNIT_ASSERT(obj2->has_id() == false);
-    CPPUNIT_ASSERT_THROW(obj2->get_id(core::tools::id::MUST_EXIST), core::tools::failed);
+    CPPUNIT_ASSERT_THROW(obj2->get_id(core::tools::id::policy::must_exist), core::tools::failed);
 
-    const std::string id2 = obj2->get_id(core::tools::id::GENERATE);
-    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::tools::id::MUST_EXIST));
+    const std::string id2 = obj2->get_id(core::tools::id::policy::generate);
+    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::tools::id::policy::must_exist));
 
     CPPUNIT_ASSERT(obj2->has_id() == true);
     CPPUNIT_ASSERT(core::tools::id::exist(id2));

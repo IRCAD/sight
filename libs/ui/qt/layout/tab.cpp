@@ -41,21 +41,21 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void tab::createLayout(ui::container::widget::sptr _parent, const std::string& _id)
+void tab::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
 {
-    m_parentContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
-    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parentContainer);
-    m_parentContainer->getQtContainer()->setObjectName(QString::fromStdString(_id));
+    m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
+    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
+    m_parent_container->get_qt_container()->setObjectName(QString::fromStdString(_id));
 
     auto* layout = new QBoxLayout(QBoxLayout::TopToBottom);
-    m_parentContainer->setLayout(layout);
+    m_parent_container->set_layout(layout);
 
-    m_tabWidget = new QTabWidget();
-    layout->addWidget(m_tabWidget);
+    m_tab_widget = new QTabWidget();
+    layout->addWidget(m_tab_widget);
 
-    const std::list<ViewInfo>& views = this->getViewsInfo();
+    const std::list<view_info>& views = this->get_views_info();
 
-    for(const ViewInfo& view_info : views)
+    for(const view_info& view_info : views)
     {
         int left_border   = 0;
         int top_border    = 0;
@@ -67,22 +67,22 @@ void tab::createLayout(ui::container::widget::sptr _parent, const std::string& _
         }
         else
         {
-            left_border   = view_info.m_leftBorder;
-            top_border    = view_info.m_topBorder;
-            right_border  = view_info.m_rightBorder;
-            bottom_border = view_info.m_bottomBorder;
+            left_border   = view_info.m_left_border;
+            top_border    = view_info.m_top_border;
+            right_border  = view_info.m_right_border;
+            bottom_border = view_info.m_bottom_border;
         }
 
-        auto* const widget        = new QWidget(m_tabWidget);
-        const int min_width_size  = std::max(view_info.m_minSize.first, 0);
-        const int min_height_size = std::max(view_info.m_minSize.second, 0);
+        auto* const widget        = new QWidget(m_tab_widget);
+        const int min_width_size  = std::max(view_info.m_min_size.first, 0);
+        const int min_height_size = std::max(view_info.m_min_size.second, 0);
         widget->setMinimumSize(min_width_size, min_height_size);
         widget->setContentsMargins(left_border, top_border, right_border, bottom_border);
 
-        if(!view_info.m_backgroundColor.empty())
+        if(!view_info.m_background_color.empty())
         {
             std::array<std::uint8_t, 4> rgba {};
-            data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
+            data::tools::color::hexa_string_to_rgba(view_info.m_background_color, rgba);
             std::stringstream ss;
             ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
             << static_cast<std::int16_t>(rgba[1]) << ','
@@ -93,19 +93,19 @@ void tab::createLayout(ui::container::widget::sptr _parent, const std::string& _
         }
 
         ui::qt::container::widget::sptr sub_container = ui::qt::container::widget::make();
-        sub_container->setQtContainer(widget);
-        m_subViews.push_back(sub_container);
+        sub_container->set_qt_container(widget);
+        m_sub_views.push_back(sub_container);
 
         int idx = 0;
-        if(view_info.m_useScrollBar)
+        if(view_info.m_use_scroll_bar)
         {
-            auto* const scroll_area = new QScrollArea(m_tabWidget);
+            auto* const scroll_area = new QScrollArea(m_tab_widget);
             scroll_area->setWidget(widget);
             scroll_area->setWidgetResizable(true);
-            if(!view_info.m_backgroundColor.empty())
+            if(!view_info.m_background_color.empty())
             {
                 std::array<std::uint8_t, 4> rgba {};
-                data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
+                data::tools::color::hexa_string_to_rgba(view_info.m_background_color, rgba);
                 std::stringstream ss;
                 ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                 << static_cast<std::int16_t>(rgba[1]) << ','
@@ -115,27 +115,27 @@ void tab::createLayout(ui::container::widget::sptr _parent, const std::string& _
                 scroll_area->setStyleSheet(style + qApp->styleSheet());
             }
 
-            idx = m_tabWidget->addTab(scroll_area, QString::fromStdString(view_info.m_caption));
+            idx = m_tab_widget->addTab(scroll_area, QString::fromStdString(view_info.m_caption));
         }
         else
         {
-            idx = m_tabWidget->addTab(widget, QString::fromStdString(view_info.m_caption));
+            idx = m_tab_widget->addTab(widget, QString::fromStdString(view_info.m_caption));
         }
 
-        if(view_info.m_isSelect)
+        if(view_info.m_is_select)
         {
-            m_tabWidget->setCurrentIndex(idx);
+            m_tab_widget->setCurrentIndex(idx);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void tab::destroyLayout()
+void tab::destroy_layout()
 {
-    this->destroySubViews();
-    m_tabWidget->clear();
-    m_parentContainer->clean();
+    this->destroy_sub_views();
+    m_tab_widget->clear();
+    m_parent_container->clean();
 }
 
 //-----------------------------------------------------------------------------

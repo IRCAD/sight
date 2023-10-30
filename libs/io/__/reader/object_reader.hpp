@@ -52,8 +52,8 @@ public:
 
     SIGHT_DECLARE_CLASS(object_reader, core::base_object);
 
-    typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
-    typedef std::function<void ()> CancelCallback;
+    using progress_callback = std::function<void (std::uint64_t)>;
+    using cancel_callback   = std::function<void ()>;
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -62,11 +62,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry()
+        registry()
         {
             sight::io::reader::registry::get()->add_factory(T::classname(), &sight::io::reader::factory::make<T>);
         }
@@ -83,7 +83,7 @@ public:
      * @brief m_object setter.
      * @param[out] _pObject replaces weakptr m_object of the instance reader
      * @note m_object is saved in class with a weakptr
-     * @note This object can be get with the method getObject()
+     * @note This object can be get with the method get_object()
      */
     IO_API virtual void set_object(core::tools::object::sptr _p_object);
 
@@ -93,7 +93,7 @@ public:
      * @return m_object
      * @note m_object is saved in reader with a weakptr
      */
-    IO_API virtual core::tools::object::sptr getObject() const;
+    IO_API virtual core::tools::object::sptr get_object() const;
 
     IO_API virtual std::string extension() const = 0;
 
@@ -103,7 +103,7 @@ public:
     IO_API void cancel() const;
 
     /// Returns the internal job
-    IO_API virtual SPTR(core::jobs::base) getJob() const
+    IO_API virtual SPTR(core::jobs::base) get_job() const
     {
         return nullptr;
     }

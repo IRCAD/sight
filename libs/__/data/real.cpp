@@ -45,7 +45,7 @@ void real::shallow_copy(const object::csptr& _source)
 
     m_value = other->m_value;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void real::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_co
 
     m_value = other->m_value;
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 } // namespace sight::data

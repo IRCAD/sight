@@ -38,8 +38,8 @@
      </extension>
 
      <extension implements="sight::service::extension::factory">
-          <type>sight::ui::menu_bar</type>
-          <service>sight::module::ui::menu_bar</service>
+          <type>sight::ui::menubar</type>
+          <service>sight::module::ui::menubar</service>
           <desc>Defines the default menubar for standard application</desc>
      </extension>
 
@@ -57,7 +57,7 @@
 
      <extension implements="sight::service::extension::factory">
           <type>sight::ui::toolbar</type>
-          <service>sight::module::ui::tool_bar</service>
+          <service>sight::module::ui::toolbar</service>
           <desc>Defines the default toolbar for standard application</desc>
      </extension>
 

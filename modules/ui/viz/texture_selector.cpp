@@ -64,29 +64,29 @@ void texture_selector::starting()
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
-    qt_container->getQtContainer()->setObjectName(service_id);
+    qt_container->get_qt_container()->setObjectName(service_id);
 
-    m_loadButton = new QPushButton(QString("Load texture"));
-    m_loadButton->setObjectName(service_id + "/" + m_loadButton->text());
-    m_loadButton->setToolTip(QString("Selected organ's texture"));
-    m_loadButton->setMinimumSize(m_loadButton->sizeHint());
+    m_load_button = new QPushButton(QString("Load texture"));
+    m_load_button->setObjectName(service_id + "/" + m_load_button->text());
+    m_load_button->setToolTip(QString("Selected organ's texture"));
+    m_load_button->setMinimumSize(m_load_button->sizeHint());
 
-    m_deleteButton = new QPushButton(QString("Remove texture"));
-    m_deleteButton->setObjectName(service_id + "/" + m_deleteButton->text());
-    m_deleteButton->setToolTip(QString("Remove organ's texture"));
-    m_deleteButton->setMinimumSize(m_deleteButton->sizeHint());
+    m_delete_button = new QPushButton(QString("Remove texture"));
+    m_delete_button->setObjectName(service_id + "/" + m_delete_button->text());
+    m_delete_button->setToolTip(QString("Remove organ's texture"));
+    m_delete_button->setMinimumSize(m_delete_button->sizeHint());
 
     auto* layout = new QVBoxLayout();
-    layout->addWidget(m_loadButton, 0);
-    layout->addWidget(m_deleteButton, 0);
+    layout->addWidget(m_load_button, 0);
+    layout->addWidget(m_delete_button, 0);
 
-    qt_container->setLayout(layout);
-    qt_container->setEnabled(true);
+    qt_container->set_layout(layout);
+    qt_container->set_enabled(true);
 
-    QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadButton()));
-    QObject::connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(onDeleteButton()));
+    QObject::connect(m_load_button, &QPushButton::clicked, this, &self_t::on_load_button);
+    QObject::connect(m_delete_button, &QPushButton::clicked, this, &self_t::on_delete_button);
 
     this->updating();
 }
@@ -95,6 +95,9 @@ void texture_selector::starting()
 
 void texture_selector::stopping()
 {
+    QObject::disconnect(m_load_button, &QPushButton::clicked, this, &self_t::on_load_button);
+    QObject::disconnect(m_delete_button, &QPushButton::clicked, this, &self_t::on_delete_button);
+
     this->destroy();
 }
 
@@ -113,13 +116,13 @@ void texture_selector::updating()
 
 //------------------------------------------------------------------------------
 
-void texture_selector::onLoadButton()
+void texture_selector::on_load_button()
 {
     const auto reconstruction = m_reconstruction.lock();
     SIGHT_ASSERT("No associated Reconstruction", reconstruction);
 
-    data::material::sptr material = reconstruction->getMaterial();
-    data::image::sptr image       = material->getDiffuseTexture();
+    data::material::sptr material = reconstruction->get_material();
+    data::image::sptr image       = material->get_diffuse_texture();
 
     bool existing_texture = (image != nullptr);
 
@@ -127,11 +130,11 @@ void texture_selector::onLoadButton()
     if(!existing_texture)
     {
         image = std::make_shared<data::image>();
-        material->setDiffuseTexture(image);
+        material->set_diffuse_texture(image);
     }
 
     auto srv = sight::service::add<sight::ui::dialog_editor>("sight::module::ui::io::selector");
-    srv->set_inout(image, io::service::s_DATA_KEY);
+    srv->set_inout(image, io::service::DATA_KEY);
 
     srv->configure();
     srv->start();
@@ -156,17 +159,17 @@ void texture_selector::onLoadButton()
 
 //------------------------------------------------------------------------------
 
-void texture_selector::onDeleteButton()
+void texture_selector::on_delete_button()
 {
     const auto reconstruction = m_reconstruction.lock();
     SIGHT_ASSERT("No associated Reconstruction", reconstruction);
 
-    data::material::sptr material = reconstruction->getMaterial();
-    data::image::sptr image       = material->getDiffuseTexture();
+    data::material::sptr material = reconstruction->get_material();
+    data::image::sptr image       = material->get_diffuse_texture();
 
     if(image)
     {
-        material->setDiffuseTexture(nullptr);
+        material->set_diffuse_texture(nullptr);
         auto sig = material->signal<data::material::removed_texture_signal_t>(
             data::material::REMOVED_TEXTURE_SIG
         );

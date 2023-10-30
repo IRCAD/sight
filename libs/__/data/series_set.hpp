@@ -32,15 +32,15 @@ class DATA_CLASS_API series_set final : public data::container<sequenced_set<std
 {
 public:
 
-    SIGHT_DECLARE_CLASS(series_set, container<series_set::container_type>);
+    SIGHT_DECLARE_CLASS(series_set, container<series_set::container_t>);
 
     /// Destructor / Assignment operators
     /// @{
     DATA_API ~series_set() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
-    using container<series_set::container_type>::container;
-    using container<series_set::container_type>::operator=;
+    using container<series_set::container_t>::container;
+    using container<series_set::container_t>::operator=;
     /// @}
 
     /// Equality comparison operators

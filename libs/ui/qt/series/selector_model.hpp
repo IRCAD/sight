@@ -45,22 +45,22 @@ Q_OBJECT
 public:
 
     /// Defines the role of the items data (ITEM_TYPE or UID)
-    enum Role
+    enum role
     {
-        ITEM_TYPE = Qt::UserRole, ///< Role for the item type (STUDY or SERIES)
-        UID,                      ///< Role for the fwID of the object
-        ICON                      ///< Role to determine whether it holds the icon
+        item_type = Qt::UserRole, ///< Role for the item type (STUDY or SERIES)
+        uid,                      ///< Role for the fwID of the object
+        icon                      ///< Role to determine whether it holds the icon
     };
 
     /// Defines item type (STUDY or SERIES), it is used in items data (ITEM_TYPE role).
     enum item_t
     {
-        STUDY = 1, ///< Type to represent Study/Patient
-        SERIES     ///< Type to represent Series
+        study = 1, ///< Type to represent Study/Patient
+        series     ///< Type to represent Series
     };
 
     /// Defines the map associating icons to series (map\<series classname, icon path\>)
-    typedef std::map<std::string, std::string> series_icon_t;
+    using series_icon_t = std::map<std::string, std::string>;
 
     using QStandardItemModel::removeRows;
 
@@ -78,13 +78,13 @@ public:
      * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
      * this study.
      */
-    UI_QT_API_QT void addSeries(data::series::sptr _series);
+    UI_QT_API_QT void add_series(data::series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UI_QT_API_QT void removeSeries(data::series::sptr _series);
+    UI_QT_API_QT void remove_series(data::series::sptr _series);
 
     /// Clears all items in the model.
     UI_QT_API_QT void clear();
@@ -103,34 +103,34 @@ public:
      * @param _index index used to get the associated row.
      * @param _column the column of the index to return.
      */
-    UI_QT_API_QT QModelIndex getIndex(const QModelIndex& _index, int _column);
+    UI_QT_API_QT QModelIndex get_index(const QModelIndex& _index, int _column);
 
     /// Removes the rows given by the indexes.
     UI_QT_API_QT void removeRows(const QModelIndexList _indexes);
 
     /// Returns the series item representing the series.
-    UI_QT_API_QT QStandardItem* findSeriesItem(data::series::sptr _series);
+    UI_QT_API_QT QStandardItem* find_series_item(data::series::sptr _series);
 
     /// Returns the item representing the study.
-    UI_QT_API_QT QStandardItem* findStudyItem(data::series::sptr _series);
+    UI_QT_API_QT QStandardItem* find_study_item(data::series::sptr _series);
 
     /**
      * @brief Sets the specific icons for series in selector.
      * @param _seriesIcons map\<series classname, icon path\>
      */
-    UI_QT_API_QT void setSeriesIcons(const series_icon_t& _series_icons);
+    UI_QT_API_QT void set_series_icons(const series_icon_t& _series_icons);
 
     /// Sets if the selector must be in insert mode.
-    void setInsertMode(bool _insert);
+    void set_insert_mode(bool _insert);
 
     /// Allows removing items or not.
-    void allowRemove(bool _allowed);
+    void allow_remove(bool _allowed);
 
     /// Sets the remove study button icon.
-    void setRemoveStudyIcon(const std::filesystem::path& _path);
+    void set_remove_study_icon(const std::filesystem::path& _path);
 
     /// Sets the remove series button icon.
-    void setRemoveSeriesIcon(const std::filesystem::path& _path);
+    void set_remove_series_icon(const std::filesystem::path& _path);
 
 Q_SIGNALS:
 
@@ -138,69 +138,69 @@ Q_SIGNALS:
      * @brief SIGNAL: sent when the button to remove a study is clicked.
      * @param _uid the instance UID of the study to remove.
      */
-    void removeStudyInstanceUID(const std::string& _uid);
+    void remove_study_instance_uid(const std::string& _uid);
 
     /**
      * @brief SIGNAL: sent when the button to remove a series is clicked.
      * @param _id the ID of the series to remove.
      */
-    void removeSeriesID(const std::string& _id);
+    void remove_series_id(const std::string& _id);
 
 private:
 
-    typedef std::map<data::dicom_value_t, QStandardItem*> StudyUidItemMapType;
+    using study_uid_item_map_type = std::map<data::dicom_value_t, QStandardItem*>;
 
     /**
      * @brief Returns the informations contained in the data container as a string, all items are separated by the
      * separator.
      */
     template<typename T>
-    QStandardItem* getInfo(T _data, QString _separator);
+    QStandardItem* get_info(T _data, QString _separator);
 
     /// Removes the study item and all the series associated.
-    bool removeStudyItem(QStandardItem* _item);
+    bool remove_study_item(QStandardItem* _item);
 
     /// Removes the series item and the parent study if it is the last series in the study.
-    bool removeSeriesItem(QStandardItem* _item);
+    bool remove_series_item(QStandardItem* _item);
 
     /// Adds the icon corresponding to the type of series.
-    void addSeriesIcon(data::series::sptr _series, QStandardItem* _item);
+    void add_series_icon(data::series::sptr _series, QStandardItem* _item);
 
     /// Initializes model. Sets headers of the selector.
     void init();
 
     /// Defines the number of studies rows in the tree.
-    int m_studyRowCount {0};
+    int m_study_row_count {0};
 
     /**
      * @brief Stores a map to register the association of study Instance UID  and study root item.
      * It is used to associate the series to its study in the tree.
      */
-    StudyUidItemMapType m_items;
+    study_uid_item_map_type m_items;
 
     /// Defines if the selector is in insert mode (adding new series, forbid selection of existing series).
     bool m_insert {false};
 
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
-    series_icon_t m_seriesIcons;
+    series_icon_t m_series_icons;
 
     /// Allows to remove items.
-    bool m_removeAllowed;
+    bool m_remove_allowed;
 
     /// Defines the path of the remove study button icon.
-    std::filesystem::path m_removeStudyIcon;
+    std::filesystem::path m_remove_study_icon;
 
     /// Defines the path of the remove series button icon.
-    std::filesystem::path m_removeSeriesIcon;
+    std::filesystem::path m_remove_series_icon;
 
     /// A list of columns to be displayed
-    std::vector<std::string> m_displayColumns;
+    std::vector<std::string> m_display_columns;
 };
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-QStandardItem* selector_model::getInfo(T _data, QString _separator)
+QStandardItem* selector_model::get_info(T _data, QString _separator)
 {
     QString data_str;
     if(!_data.empty())
@@ -224,30 +224,30 @@ QStandardItem* selector_model::getInfo(T _data, QString _separator)
 
 //-----------------------------------------------------------------------------
 
-inline void selector_model::setInsertMode(bool _insert)
+inline void selector_model::set_insert_mode(bool _insert)
 {
     m_insert = _insert;
 }
 
 //------------------------------------------------------------------------------
 
-inline void selector_model::allowRemove(bool _allowed)
+inline void selector_model::allow_remove(bool _allowed)
 {
-    m_removeAllowed = _allowed;
+    m_remove_allowed = _allowed;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void selector_model::setRemoveStudyIcon(const std::filesystem::path& _path)
+inline void selector_model::set_remove_study_icon(const std::filesystem::path& _path)
 {
-    m_removeStudyIcon = _path;
+    m_remove_study_icon = _path;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void selector_model::setRemoveSeriesIcon(const std::filesystem::path& _path)
+inline void selector_model::set_remove_series_icon(const std::filesystem::path& _path)
 {
-    m_removeSeriesIcon = _path;
+    m_remove_series_icon = _path;
 }
 
 } // namespace sight::ui::qt::series.

@@ -72,7 +72,7 @@ public:
     MODULE_VIZ_SCENE3D_API ~fragments_info() noexcept override = default;
 
     /// Resizes the global render target
-    MODULE_VIZ_SCENE3D_API void resizeViewport();
+    MODULE_VIZ_SCENE3D_API void resize_viewport();
 
     /// Calls updating(). This is called right after the layer render target has been rendered.
     MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt*/) override;
@@ -98,26 +98,26 @@ private:
      * @param _width width of the global render target (color and depth).
      * @param _height height of the global render target (color and depth).
      */
-    void createCompositor(int _width, int _height);
+    void create_compositor(int _width, int _height);
 
     /// Destroys compositor.
-    void destroyCompositor();
+    void destroy_compositor();
 
     /// Contains the created compositor.
     Ogre::CompositorPtr m_compositor {nullptr};
 
     /// Defines the compositor name.
-    std::string m_compositorName;
+    std::string m_compositor_name;
 
     /// Defines the global render target name used to get back color and depth.
-    std::string m_targetName;
+    std::string m_target_name;
 
     /// Defines the global render target name used to get back the primitive ID.
-    std::string m_targetPrimitiveIDName;
+    std::string m_target_primitive_id_name;
 
     /// Enables the fixed size, if width & height parameters are found in config xml, use fixed size.
     /// If not use the layer's viewport size and listen the resize event.
-    bool m_fixedSize {false};
+    bool m_fixed_size {false};
 
     /// Defines the width and the height of the compositor's render target.
     /// Only used if width & height are found in <config /> of xml configuration
@@ -127,19 +127,19 @@ private:
     int m_height {-1};
 
     /// Flips Ogre texture when converting to sight, can be useful when using VTK to save images.
-    bool m_flipImage {false};
+    bool m_flip_image {false};
 
     /// Handles connection with the layer.
-    core::com::helper::sig_slot_connection m_resizeConnection;
+    core::com::helper::sig_slot_connection m_resize_connection;
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    data::ptr<data::image, data::Access::inout> m_image {this, s_IMAGE_INOUT};
+    static constexpr std::string_view IMAGE_INOUT = "image";
+    data::ptr<data::image, data::access::inout> m_image {this, IMAGE_INOUT};
 
-    static constexpr std::string_view s_DEPTH_INOUT = "depth";
-    data::ptr<data::image, data::Access::inout> m_depth {this, s_DEPTH_INOUT};
+    static constexpr std::string_view DEPTH_INOUT = "depth";
+    data::ptr<data::image, data::access::inout> m_depth {this, DEPTH_INOUT};
 
-    static constexpr std::string_view s_PRIMITIVE_ID_INOUT = "primitiveID";
-    data::ptr<data::image, data::Access::inout> m_primitive {this, s_PRIMITIVE_ID_INOUT};
+    static constexpr std::string_view PRIMITIVE_ID_INOUT = "primitiveID";
+    data::ptr<data::image, data::access::inout> m_primitive {this, PRIMITIVE_ID_INOUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

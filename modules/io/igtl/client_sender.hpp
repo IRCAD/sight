@@ -87,19 +87,19 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const data::object::csptr& _obj, std::size_t _index) override;
+    void send_object(const data::object::csptr& _obj, std::size_t _index) override;
 
     /// client socket
-    sight::io::igtl::Client m_client;
+    sight::io::igtl::client m_client;
 
     /// hostname config key
-    std::string m_hostnameConfig;
+    std::string m_hostname_config;
 
     /// port config key
-    std::string m_portConfig;
+    std::string m_port_config;
 
     /// Vector of device name used
-    std::vector<std::string> m_deviceNames;
+    std::vector<std::string> m_device_names;
 };
 
 } // namespace sight::module::io::igtl

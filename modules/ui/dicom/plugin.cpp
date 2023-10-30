@@ -34,7 +34,7 @@ SIGHT_REGISTER_PLUGIN("sight::module::ui::dicom::plugin");
 plugin::plugin()
 {
     // Hack to force link with Qt filters
-    auto t = std::make_shared<sight::ui::dicom::sorter::TagValueConfigurableSorter>();
+    auto t = std::make_shared<sight::ui::dicom::sorter::tag_value_configurable_sorter>();
 }
 
 //------------------------------------------------------------------------------

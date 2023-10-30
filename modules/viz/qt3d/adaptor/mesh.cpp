@@ -32,7 +32,7 @@
 
 #include <service/registry.hpp>
 
-#include <viz/qt3d/core/GenericScene.hpp>
+#include <viz/qt3d/core/generic_scene.hpp>
 #include <viz/qt3d/data/material.hpp>
 
 #include <QQmlEngine>
@@ -44,8 +44,8 @@ namespace sight::module::viz::qt3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
-static const std::string s_MATERIAL_NAME_CONFIG    = "materialName";
+static const std::string AUTORESET_CAMERA_CONFIG = "autoresetcamera";
+static const std::string MATERIAL_NAME_CONFIG    = "materialName";
 
 //-----------------------------------------------------------------------------
 
@@ -65,15 +65,15 @@ mesh::~mesh() noexcept =
 
 void mesh::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config_tree = this->get_config();
     const auto config          = config_tree.get_child_optional("config.<xmlattr>");
 
     if(config)
     {
-        m_autoResetCamera = config->get<bool>(s_AUTORESET_CAMERA_CONFIG, m_autoResetCamera);
-        m_materialName    = config->get<std::string>(s_MATERIAL_NAME_CONFIG, m_materialName);
+        m_auto_reset_camera = config->get<bool>(AUTORESET_CAMERA_CONFIG, m_auto_reset_camera);
+        m_material_name     = config->get<std::string>(MATERIAL_NAME_CONFIG, m_material_name);
     }
 }
 
@@ -84,15 +84,15 @@ void mesh::starting()
     this->initialize();
 
     // Read the mesh from the input as sight data.
-    auto mesh = m_meshData.lock();
-    SIGHT_ASSERT("input '" << s_MESH_INOUT << "' does not exist.", mesh);
+    auto mesh = m_mesh_data.lock();
+    SIGHT_ASSERT("input '" << MESH_INOUT << "' does not exist.", mesh);
 
     // Create a Qt3D mesh from sight data.
-    m_mesh = new sight::viz::qt3d::data::mesh(this->getRenderService()->getScene());
+    m_mesh = new sight::viz::qt3d::data::mesh(this->render_service()->get_scene());
 
     this->update();
 
-    this->updateVisibility(m_isVisible);
+    this->update_visibility(m_visible);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ void mesh::starting()
 service::connections_t mesh::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_MESH_INOUT, data::mesh::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MESH_INOUT, data::mesh::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -109,20 +109,20 @@ service::connections_t mesh::auto_connections() const
 void mesh::updating()
 {
     // Read the mesh from the input as sight data.
-    auto mesh = m_meshData.lock();
-    SIGHT_ASSERT("input '" << s_MESH_INOUT << "' does not exist.", mesh);
+    auto mesh = m_mesh_data.lock();
+    SIGHT_ASSERT("input '" << MESH_INOUT << "' does not exist.", mesh);
 
     // Update the mesh and center camera if necessary.
-    m_mesh->setMesh(mesh.get_shared());
-    if(m_autoResetCamera)
+    m_mesh->set_mesh(mesh.get_shared());
+    if(m_auto_reset_camera)
     {
-        m_mesh->centerCameraOnMesh();
+        m_mesh->center_camera_on_mesh();
     }
 
     // Update mesh visibility.
-    m_mesh->setEnabled(m_isVisible);
+    m_mesh->setEnabled(m_visible);
 
-    if(!m_materialName.empty())
+    if(!m_material_name.empty())
     {
         // A material adaptor has been configured in the XML scene
         auto mtl_adaptors = sight::service::get_services<module::viz::qt3d::adaptor::material>();
@@ -133,16 +133,16 @@ void mesh::updating()
                 mtl_adaptors.end(),
                 [this](const module::viz::qt3d::adaptor::material::sptr& _srv)
             {
-                return _srv->getMaterialName() == m_materialName;
+                return _srv->get_material_name() == m_material_name;
             });
 
         const auto& material_adaptor = *result;
 
         SIGHT_ASSERT(
-            "material adaptor managing material'" + m_materialName + "' is not found",
+            "material adaptor managing material'" + m_material_name + "' is not found",
             result != mtl_adaptors.end()
         );
-        m_mesh->setMaterial(material_adaptor->getMaterial());
+        m_mesh->set_material(material_adaptor->get_material());
     }
 }
 
@@ -154,7 +154,7 @@ void mesh::stopping()
 
 //-----------------------------------------------------------------------------
 
-void mesh::setVisible(bool _visible)
+void mesh::set_visible(bool _visible)
 {
     m_mesh->setEnabled(_visible);
 }

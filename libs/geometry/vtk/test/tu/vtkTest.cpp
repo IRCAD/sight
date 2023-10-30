@@ -28,51 +28,51 @@
 #include <geometry/vtk/mesh.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vtk::ut::vtkTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vtk::ut::vtk_test);
 
 namespace sight::geometry::vtk::ut
 {
 
 //------------------------------------------------------------------------------
 
-void vtkTest::setUp()
+void vtk_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void vtkTest::tearDown()
+void vtk_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void vtkTest::computeCenterOfMass()
+void vtk_test::compute_center_of_mass()
 {
     sight::data::mesh::sptr mesh               = std::make_shared<sight::data::mesh>();
     const auto dump_lock                       = mesh->dump_lock();
     const std::array<double, 3> center_of_mass = {0.5, 1.5, 2.5};
 
-    mesh->pushPoint(0.F, 0.F, 0.F);
-    mesh->pushPoint(1.F, 0.F, 0.F);
-    mesh->pushPoint(1.F, 3.F, 0.F);
-    mesh->pushPoint(0.F, 3.F, 0.F);
-    mesh->pushPoint(0.F, 0.F, 5.F);
-    mesh->pushPoint(1.F, 0.F, 5.F);
-    mesh->pushPoint(1.F, 3.F, 5.F);
-    mesh->pushPoint(0.F, 3.F, 5.F);
+    mesh->push_point(0.F, 0.F, 0.F);
+    mesh->push_point(1.F, 0.F, 0.F);
+    mesh->push_point(1.F, 3.F, 0.F);
+    mesh->push_point(0.F, 3.F, 0.F);
+    mesh->push_point(0.F, 0.F, 5.F);
+    mesh->push_point(1.F, 0.F, 5.F);
+    mesh->push_point(1.F, 3.F, 5.F);
+    mesh->push_point(0.F, 3.F, 5.F);
 
-    mesh->pushCell(0, 1, 2, 3);
-    mesh->pushCell(0, 4, 5, 1);
-    mesh->pushCell(1, 5, 6, 2);
-    mesh->pushCell(4, 5, 6, 7);
-    mesh->pushCell(0, 4, 7, 3);
-    mesh->pushCell(3, 7, 6, 2);
+    mesh->push_cell(0, 1, 2, 3);
+    mesh->push_cell(0, 4, 5, 1);
+    mesh->push_cell(1, 5, 6, 2);
+    mesh->push_cell(4, 5, 6, 7);
+    mesh->push_cell(0, 4, 7, 3);
+    mesh->push_cell(3, 7, 6, 2);
     sight::data::point::sptr computed_center_of_mass = geometry::vtk::compute_center_of_mass(mesh);
 
-    CPPUNIT_ASSERT_EQUAL(center_of_mass[0], computed_center_of_mass->getCoord()[0]);
-    CPPUNIT_ASSERT_EQUAL(center_of_mass[1], computed_center_of_mass->getCoord()[1]);
-    CPPUNIT_ASSERT_EQUAL(center_of_mass[2], computed_center_of_mass->getCoord()[2]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[0], computed_center_of_mass->get_coord()[0]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[1], computed_center_of_mass->get_coord()[1]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[2], computed_center_of_mass->get_coord()[2]);
 }
 
 //------------------------------------------------------------------------------

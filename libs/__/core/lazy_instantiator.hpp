@@ -42,9 +42,9 @@ class lazy_instantiator : boost::noncopyable
 {
 public:
 
-    typedef INSTANCE_TYPE instance_type;
-    typedef TAG tag_type;
-    typedef std::shared_ptr<instance_type> instance_sptr_type;
+    using instance_type      = INSTANCE_TYPE;
+    using tag_type           = TAG;
+    using instance_sptr_type = std::shared_ptr<instance_type>;
 
     /// Returns the singleton instance. This method is thread safe.
     static instance_sptr_type get_instance()

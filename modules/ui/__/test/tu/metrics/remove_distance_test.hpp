@@ -31,9 +31,9 @@ namespace sight::module::ui::metrics::ut
 class remove_distance_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(remove_distance_test);
-CPPUNIT_TEST(removeAllTest);
-CPPUNIT_TEST(removeOneTest);
-CPPUNIT_TEST(removeLastTest);
+CPPUNIT_TEST(remove_all_test);
+CPPUNIT_TEST(remove_one_test);
+CPPUNIT_TEST(remove_last_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,13 +41,13 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void removeAllTest();
-    void removeOneTest();
-    void removeLastTest();
+    void remove_all_test();
+    void remove_one_test();
+    void remove_last_test();
 
 private:
 
-    service::base::sptr m_removeDistance;
+    service::base::sptr m_remove_distance;
 };
 
 } // namespace sight::module::ui::metrics::ut

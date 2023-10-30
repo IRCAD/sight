@@ -30,9 +30,9 @@ namespace sight::data::ut
 class marker_map_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(marker_map_test);
-CPPUNIT_TEST(getterSetter);
-CPPUNIT_TEST(shallow_copyTest);
-CPPUNIT_TEST(deep_copyTest);
+CPPUNIT_TEST(getter_setter);
+CPPUNIT_TEST(shallow_copy_test);
+CPPUNIT_TEST(deep_copy_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,9 +41,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void getterSetter();
-    static void shallow_copyTest();
-    static void deep_copyTest();
+    static void getter_setter();
+    static void shallow_copy_test();
+    static void deep_copy_test();
 };
 
 } // namespace sight::data::ut

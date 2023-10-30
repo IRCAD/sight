@@ -46,7 +46,7 @@ struct auto_bind;
 template<typename F>
 struct auto_bind<F, 0>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -56,7 +56,7 @@ struct auto_bind<F, 0>
 template<typename F>
 struct auto_bind<F, 1>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -66,7 +66,7 @@ struct auto_bind<F, 1>
 template<typename F>
 struct auto_bind<F, 2>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -76,7 +76,7 @@ struct auto_bind<F, 2>
 template<typename F>
 struct auto_bind<F, 3>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -86,7 +86,7 @@ struct auto_bind<F, 3>
 template<typename F>
 struct auto_bind<F, 4>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -96,7 +96,7 @@ struct auto_bind<F, 4>
 template<typename F>
 struct auto_bind<F, 5>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -106,7 +106,7 @@ struct auto_bind<F, 5>
 template<typename F>
 struct auto_bind<F, 6>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -116,7 +116,7 @@ struct auto_bind<F, 6>
 template<typename F>
 struct auto_bind<F, 7>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -126,7 +126,7 @@ struct auto_bind<F, 7>
 template<typename F>
 struct auto_bind<F, 8>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);
@@ -136,7 +136,7 @@ struct auto_bind<F, 8>
 template<typename F>
 struct auto_bind<F, 9>
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = typename convert_function_type<F>::type;
 
     template<typename W, typename ... A>
     static std::function<function_type> wrap(W _f, A ... _a);

@@ -32,8 +32,8 @@ class copy_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(copy_test);
-    CPPUNIT_TEST(fieldCopyTest);
-    CPPUNIT_TEST(severalReferencesCopyTest);
+    CPPUNIT_TEST(field_copy_test);
+    CPPUNIT_TEST(several_references_copy_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,8 +42,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void fieldCopyTest();
-    static void severalReferencesCopyTest();
+    static void field_copy_test();
+    static void several_references_copy_test();
 };
 
 } // namespace sight::data::ut

@@ -93,79 +93,79 @@ private Q_SLOTS:
 
     /// SLOT: called when a layer is selected.
     /// Sets the current layer and initializes the light adaptors list.
-    void onSelectedLayerItem(int _index);
+    void on_selected_layer_item(int _index);
 
     /// SLOT: called when a light is selected.
     /// Loads the selected light parameters in the light editor.
-    void onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous);
+    void on_selected_light_item(QListWidgetItem* _item, QListWidgetItem* _previous);
 
     /// SLOT: called when a light is checked.
     /// Switched on or off the light according to its current state.
-    void onCheckedLightItem(QListWidgetItem* _item);
+    void on_checked_light_item(QListWidgetItem* _item);
 
     /// SLOT: called when the add light button is clicked.
     /// Adds a new light to the current scene.
-    void onAddLight(bool /*unused*/);
+    void on_add_light(bool /*unused*/);
 
     /// SLOT: called when the remove light button is clicked.
     /// Removes the selected light.
-    void onRemoveLight(bool /*unused*/);
+    void on_remove_light(bool /*unused*/);
 
     /// SLOT: called when the scene ambient color button is clicked.
     /// Opens a color picker and lets the user choose a new ambient color.
-    void onEditAmbientColor(bool /*unused*/);
+    void on_edit_ambient_color(bool /*unused*/);
 
     /// SLOT: called when the "check all" button is clicked.
     /// Call onCheckAllBoxes(true).
-    void onCheckAllCheckBox();
+    void on_check_all_check_box();
 
     /// SLOT: called when the "uncheck all" button is clicked.
     /// Call onCheckAllBoxes(false).
-    void onUnCheckAllCheckBox();
+    void on_un_check_all_check_box();
 
 private:
 
-    typedef core::com::signal<void (sight::viz::scene3d::light_adaptor::sptr)> light_selected_signal_t;
+    using light_selected_signal_t = core::com::signal<void (sight::viz::scene3d::light_adaptor::sptr)>;
 
     /// Checks or unchecks all item in m_lightsList.
-    void onCheckAllBoxes(bool _visible);
+    void on_check_all_boxes(bool _visible);
 
-    void initLightList(sight::viz::scene3d::layer::sptr _layer);
+    void init_light_list(sight::viz::scene3d::layer::sptr _layer);
 
     /// Retrieves all the layers from the application thanks to the render services.
-    void refreshLayers();
+    void refresh_layers();
 
     /// Retrieves light adaptors used in the current layer and stores them in the list widget.
-    void updateLightsList();
+    void update_lights_list();
 
     /// Creates a new light adaptor.
-    void createLightAdaptor(const std::string& _name);
+    void create_light_adaptor(const std::string& _name);
 
     /// Finds the light adaptor with the specified name.
-    sight::viz::scene3d::light_adaptor::sptr retrieveLightAdaptor(const std::string& _name) const;
+    sight::viz::scene3d::light_adaptor::sptr retrieve_light_adaptor(const std::string& _name) const;
 
-    QPointer<QComboBox> m_layersBox;
+    QPointer<QComboBox> m_layers_box;
 
-    QPointer<QListWidget> m_lightsList;
+    QPointer<QListWidget> m_lights_list;
 
-    QPointer<QPushButton> m_checkAllButton;
+    QPointer<QPushButton> m_check_all_button;
 
-    QPointer<QPushButton> m_unCheckAllButton;
+    QPointer<QPushButton> m_un_check_all_button;
 
-    QPointer<QPushButton> m_addLightBtn;
+    QPointer<QPushButton> m_add_light_btn;
 
-    QPointer<QPushButton> m_removeLightBtn;
+    QPointer<QPushButton> m_remove_light_btn;
 
-    QPointer<QPushButton> m_ambientColorBtn;
+    QPointer<QPushButton> m_ambient_color_btn;
 
     std::vector<sight::viz::scene3d::layer::wptr> m_layers;
-    sight::viz::scene3d::layer::wptr m_currentLayer;
+    sight::viz::scene3d::layer::wptr m_current_layer;
 
     /// Stores all light adaptors (existing in the configuration and those created by this editor).
-    std::vector<sight::viz::scene3d::light_adaptor::sptr> m_lightAdaptors;
+    std::vector<sight::viz::scene3d::light_adaptor::sptr> m_light_adaptors;
 
     /// Stores a light adaptor and it's data to keep a reference on them.
-    struct Light
+    struct light
     {
         sight::viz::scene3d::light_adaptor::sptr m_light;
         data::color::sptr m_diffuse;
@@ -173,10 +173,10 @@ private:
     };
 
     /// Stores adaptors managed by this editor.
-    std::vector<Light> m_managedLightAdaptors;
+    std::vector<light> m_managed_light_adaptors;
 
     /// Defines the current selected light.
-    sight::viz::scene3d::light_adaptor::sptr m_currentLight;
+    sight::viz::scene3d::light_adaptor::sptr m_current_light;
 
     /// Handles connections with the layer.
     core::com::helper::sig_slot_connection m_connections;
@@ -184,27 +184,27 @@ private:
 
 //------------------------------------------------------------------------------
 
-class NewLightDialog final : public QDialog
+class new_light_dialog final : public QDialog
 {
 Q_OBJECT
 
 public:
 
-    NewLightDialog(QWidget* _parent = nullptr);
+    new_light_dialog(QWidget* _parent = nullptr);
 
-    ~NewLightDialog() override;
+    ~new_light_dialog() override;
 
 private Q_SLOTS:
 
-    void onOkBtn(bool _checked);
+    void on_ok_btn(bool _checked);
 
 private:
 
-    QPointer<QLabel> m_lightNameLbl;
+    QPointer<QLabel> m_light_name_lbl;
 
-    QPointer<QLineEdit> m_lightNameEdit;
+    QPointer<QLineEdit> m_light_name_edit;
 
-    QPointer<QPushButton> m_okBtn;
+    QPointer<QPushButton> m_ok_btn;
 };
 
 } // namespace sight::module::ui::viz.

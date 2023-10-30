@@ -126,7 +126,7 @@ std::size_t always_dump::dump()
     {
         const core::memory::buffer_manager::buffer_info_map_t buffer_infos = manager->get_buffer_infos().get();
 
-        for(const core::memory::buffer_manager::buffer_info_map_t::value_type& elt : buffer_infos)
+        for(const auto& elt : buffer_infos)
         {
             const core::memory::buffer_info& info = elt.second;
             if(!(info.size == 0 || info.lock_count() > 0 || !info.loaded))

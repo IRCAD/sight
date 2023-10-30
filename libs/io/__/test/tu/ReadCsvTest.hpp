@@ -32,13 +32,13 @@ namespace sight::io::ut
 /**
  * @brief Test many methods to read csv directory.
  */
-class ReadCsvTest : public CPPUNIT_NS::TestFixture
+class read_csv_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ReadCsvTest);
-CPPUNIT_TEST(test_validCRLFCsv);
-CPPUNIT_TEST(test_validLFCsv);
-CPPUNIT_TEST(test_invalidCsv);
-CPPUNIT_TEST(test_inexistenceCsv);
+CPPUNIT_TEST_SUITE(read_csv_test);
+CPPUNIT_TEST(test_valid_crlf_csv);
+CPPUNIT_TEST(test_valid_lf_csv);
+CPPUNIT_TEST(test_invalid_csv);
+CPPUNIT_TEST(test_inexistence_csv);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -49,23 +49,23 @@ public:
     void tearDown() override;
 
     // test for inexistence of csv file
-    void test_inexistenceCsv();
+    void test_inexistence_csv();
 
     // test for valid CRLF csv file
-    void test_validCRLFCsv();
+    void test_valid_crlf_csv();
 
     // test for valid LF csv file
-    void test_validLFCsv();
+    void test_valid_lf_csv();
 
     // test for invalid csv file
-    void test_invalidCsv();
+    void test_invalid_csv();
 
 protected:
 
-    std::filesystem::path m_validCRLFCsvDirectoryPath;
-    std::filesystem::path m_validLFCsvDirectoryPath;
-    std::filesystem::path m_invalidCsvDirectoryPath;
-    std::filesystem::path m_wrongFilepathDirectory;
+    std::filesystem::path m_valid_crlf_csv_directory_path;
+    std::filesystem::path m_valid_lf_csv_directory_path;
+    std::filesystem::path m_invalid_csv_directory_path;
+    std::filesystem::path m_wrong_filepath_directory;
 };
 
 } // namespace sight::io::ut

@@ -32,18 +32,18 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::com::ut::timestamp_slot_calle
 namespace sight::module::ui::com::ut
 {
 
-class TestObject : public sight::data::object,
-                   public sight::core::com::has_slots
+class test_object : public sight::data::object,
+                    public sight::core::com::has_slots
 {
 public:
 
-    TestObject();
+    test_object();
 
-    ~TestObject() override;
+    ~test_object() override;
 
     void slot(double _timestamp);
 
-    const std::vector<double>& getTimestamps() const;
+    const std::vector<double>& get_timestamps() const;
 
 private:
 
@@ -52,27 +52,27 @@ private:
     core::thread::worker::sptr m_worker = core::thread::worker::make();
 };
 
-TestObject::TestObject()
+test_object::test_object()
 {
-    auto slot = new_slot("slot", &TestObject::slot, this);
+    auto slot = new_slot("slot", &test_object::slot, this);
     slot->set_worker(m_worker);
 }
 
-TestObject::~TestObject()
+test_object::~test_object()
 {
     m_worker->stop();
 }
 
 //------------------------------------------------------------------------------
 
-void TestObject::slot(double _timestamp)
+void test_object::slot(double _timestamp)
 {
     m_timestamps.push_back(_timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-const std::vector<double>& TestObject::getTimestamps() const
+const std::vector<double>& test_object::get_timestamps() const
 {
     return m_timestamps;
 }
@@ -81,10 +81,10 @@ const std::vector<double>& TestObject::getTimestamps() const
 
 void timestamp_slot_caller_test::setUp()
 {
-    m_timestampSlotCaller = service::add("sight::module::ui::com::timestamp_slot_caller");
+    m_timestamp_slot_caller = service::add("sight::module::ui::com::timestamp_slot_caller");
     CPPUNIT_ASSERT_MESSAGE(
         "Failed to create service 'sight::module::ui::com::timestamp_slot_caller'",
-        m_timestampSlotCaller
+        m_timestamp_slot_caller
     );
 }
 
@@ -92,40 +92,40 @@ void timestamp_slot_caller_test::setUp()
 
 void timestamp_slot_caller_test::tearDown()
 {
-    if(!m_timestampSlotCaller->stopped())
+    if(!m_timestamp_slot_caller->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_timestampSlotCaller->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->stop().get());
     }
 
-    service::remove(m_timestampSlotCaller);
+    service::remove(m_timestamp_slot_caller);
 }
 
 //------------------------------------------------------------------------------
 
-void timestamp_slot_caller_test::basicTest()
+void timestamp_slot_caller_test::basic_test()
 {
     using namespace std::literals::chrono_literals;
 
-    auto obj = std::make_shared<TestObject>();
+    auto obj = std::make_shared<test_object>();
     obj->set_id("targetObject");
 
     boost::property_tree::ptree ptree;
     ptree.put("slots.slot", "targetObject/slot");
-    m_timestampSlotCaller->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSlotCaller->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSlotCaller->start().get());
+    m_timestamp_slot_caller->set_config(ptree);
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->start().get());
 
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSlotCaller->update().get());
-    SIGHT_TEST_WAIT(1 == obj->getTimestamps().size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getTimestamps().size());
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->update().get());
+    SIGHT_TEST_WAIT(1 == obj->get_timestamps().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->get_timestamps().size());
 
     std::this_thread::sleep_for(1000ms);
 
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSlotCaller->update().get());
-    SIGHT_TEST_WAIT(2 == obj->getTimestamps().size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getTimestamps().size());
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->update().get());
+    SIGHT_TEST_WAIT(2 == obj->get_timestamps().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_timestamps().size());
 
-    CPPUNIT_ASSERT(obj->getTimestamps()[1] - obj->getTimestamps()[0] >= 1);
+    CPPUNIT_ASSERT(obj->get_timestamps()[1] - obj->get_timestamps()[0] >= 1);
 }
 
 //------------------------------------------------------------------------------

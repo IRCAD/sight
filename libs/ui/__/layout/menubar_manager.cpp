@@ -43,17 +43,17 @@ void menubar_manager::initialize(const ui::config_t& _configuration)
     for(const auto& menu : boost::make_iterator_range(_configuration.equal_range("menu")))
     {
         const auto name = menu.second.get<std::string>("<xmlattr>.name");
-        m_menuNames.push_back(name);
+        m_menu_names.push_back(name);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void menubar_manager::destroyMenus()
+void menubar_manager::destroy_menus()
 {
     for(const ui::container::menu::sptr& menu : m_menus)
     {
-        menu->destroyContainer();
+        menu->destroy_container();
     }
 
     m_menus.clear();
@@ -61,7 +61,7 @@ void menubar_manager::destroyMenus()
 
 //-----------------------------------------------------------------------------
 
-std::vector<ui::container::menu::sptr> menubar_manager::getMenus()
+std::vector<ui::container::menu::sptr> menubar_manager::get_menus()
 {
     return this->m_menus;
 }

@@ -44,10 +44,10 @@ void move_from_itk(
     SIGHT_ASSERT("_dataImage not instanced", _data_image);
 
     // Add by arnaud
-    std::uint8_t dim               = ITKIMAGE::ImageDimension;
-    data::image::Spacing v_spacing = {0., 0., 0.};
-    data::image::Origin v_origin   = {0., 0., 0.};
-    data::image::Size v_size       = {0, 0, 0};
+    std::uint8_t dim                 = ITKIMAGE::ImageDimension;
+    data::image::spacing_t v_spacing = {0., 0., 0.};
+    data::image::origin_t v_origin   = {0., 0., 0.};
+    data::image::size_t v_size       = {0, 0, 0};
 
     for(std::uint8_t d = 0 ; d < dim ; ++d)
     {
@@ -56,8 +56,8 @@ void move_from_itk(
         v_spacing[d] = _itk_image->GetSpacing()[d];
     }
 
-    _data_image->setOrigin(v_origin);
-    _data_image->setSpacing(v_spacing);
+    _data_image->set_origin(v_origin);
+    _data_image->set_spacing(v_spacing);
 
     const auto pixel_type = core::type::get<typename ITKIMAGE::PixelType>();
     const auto dump_lock  = _data_image->dump_lock();
@@ -67,12 +67,12 @@ void move_from_itk(
             "Sorry, this method requires that itkImage manages its buffer.",
             _itk_image->GetPixelContainer()->GetContainerManageMemory()
         );
-        _data_image->setBuffer(
+        _data_image->set_buffer(
             static_cast<void*>(_itk_image->GetBufferPointer()),
             true,
             pixel_type,
             v_size,
-            data::image::GRAY_SCALE,
+            data::image::gray_scale,
             std::make_shared<core::memory::buffer_new_policy>()
         );
         /// itk image release its management buffer. dataImage must now deal memory
@@ -80,12 +80,12 @@ void move_from_itk(
     }
     else
     {
-        _data_image->setBuffer(
+        _data_image->set_buffer(
             static_cast<void*>(_itk_image->GetBufferPointer()),
             false,
             pixel_type,
             v_size,
-            data::image::GRAY_SCALE
+            data::image::gray_scale
         );
     }
 
@@ -95,7 +95,7 @@ void move_from_itk(
     }
 
     // Post Condition correct pixel_t
-    SIGHT_ASSERT("Sorry, pixel type is not correct", _data_image->getType() != core::type::NONE);
+    SIGHT_ASSERT("Sorry, pixel type is not correct", _data_image->type() != core::type::NONE);
 }
 
 //------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
     // Pre Condition
     SIGHT_ASSERT(
         "Sorry, itk image dimension not correspond to fwData image",
-        _image_data->numDimensions() == ITKIMAGE::ImageDimension
+        _image_data->num_dimensions() == ITKIMAGE::ImageDimension
     );
 
     const auto dump_lock = _image_data->dump_lock();
@@ -135,13 +135,13 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
     typename ITKIMAGE::SpacingType spacing = itk_image->GetSpacing();
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
-        spacing[d] = _image_data->getSpacing()[d];
+        spacing[d] = _image_data->spacing()[d];
     }
 
     itk_image->SetSpacing(spacing);
 
     // update origin information
-    itk_image->SetOrigin(_image_data->getOrigin().data());
+    itk_image->SetOrigin(_image_data->origin().data());
 
     ::itk::ImageRegion<ITKIMAGE::ImageDimension> itk_region;
 

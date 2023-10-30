@@ -40,7 +40,7 @@ void gz_array_writer::write()
 {
     SIGHT_ASSERT("File path is empty.", get_file().empty() == false);
 
-    data::array::csptr array = this->getConcreteObject();
+    data::array::csptr array = this->get_concrete_object();
 
     /// test if can open archive
     gzFile raw_file = gzopen(this->get_file().string().c_str(), "wb1");
@@ -55,7 +55,7 @@ void gz_array_writer::write()
     const auto dump_lock = array->dump_lock();
 
     // file is OK : process now
-    const std::size_t array_size_in_bytes = array->getSizeInBytes();
+    const std::size_t array_size_in_bytes = array->size_in_bytes();
 
     const int uncompressed_bytes_written =
         gzwrite(raw_file, array->buffer(), static_cast<unsigned int>(array_size_in_bytes));

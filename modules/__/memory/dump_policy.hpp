@@ -75,7 +75,7 @@ protected:
     using parameters_t = std::vector<std::pair<core::memory::policy::base::param_names_type::value_type, std::string> >;
 
     std::string m_policy;
-    parameters_t m_policyParams;
+    parameters_t m_policy_params;
 };
 
 } // namespace sight::module::memory

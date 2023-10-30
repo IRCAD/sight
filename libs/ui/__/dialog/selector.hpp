@@ -58,7 +58,7 @@ public:
     );
 
     /// Sets the selector title.
-    UI_API void setTitle(std::string _title) override;
+    UI_API void set_title(std::string _title) override;
 
     ///  The string list that can be chosen by the selector, which can be optionally preselected.
     UI_API void set_choices_preset(choices_preset_t _choices) override;
@@ -70,10 +70,10 @@ public:
     UI_API selections_t show() override;
 
     /// Set the message
-    UI_API void setMessage(const std::string& _msg) override;
+    UI_API void set_message(const std::string& _msg) override;
 
     /// Add a custom button to this dialog
-    UI_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
+    UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 protected:
 

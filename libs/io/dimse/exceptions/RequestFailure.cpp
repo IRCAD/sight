@@ -25,14 +25,14 @@
 namespace sight::io::dimse::exceptions
 {
 
-RequestFailure::RequestFailure(const std::string& _message) :
-    io::dimse::exceptions::Base(_message)
+request_failure::request_failure(const std::string& _message) :
+    io::dimse::exceptions::base(_message)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-RequestFailure::~RequestFailure() noexcept =
+request_failure::~request_failure() noexcept =
     default;
 
 } // namespace sight::io::dimse::exceptions

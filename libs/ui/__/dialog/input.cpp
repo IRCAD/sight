@@ -29,15 +29,15 @@ namespace sight::ui::dialog
 
 //-----------------------------------------------------------------------------
 
-std::pair<std::string, bool> input::showInputDialog(
+std::pair<std::string, bool> input::show_input_dialog(
     const std::string& _title,
     const std::string& _message,
     const std::string& _text,
-    EchoMode _echo_mode
+    echo_mode _echo_mode
 )
 {
     ui::dialog::input input_box(_title, _message, _text, _echo_mode);
-    return input_box.getInput();
+    return input_box.get_input();
 }
 
 //-----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ input::input(
     const std::string& _title,
     const std::string& _message,
     const std::string& _text,
-    EchoMode _echo_mode
+    echo_mode _echo_mode
 )
 {
     core::thread::get_default_worker()->post_task<void>(
@@ -69,10 +69,10 @@ input::input(
         {
             ui::object::sptr gui_obj = ui::factory::make(input_base::REGISTRY_KEY);
             m_implementation         = std::dynamic_pointer_cast<ui::dialog::input_base>(gui_obj);
-            m_implementation->setTitle(_title);
-            m_implementation->setMessage(_message);
+            m_implementation->set_title(_title);
+            m_implementation->set_message(_message);
             m_implementation->set_input(_text);
-            m_implementation->setEchoMode(_echo_mode);
+            m_implementation->set_echo_mode(_echo_mode);
         })
     );
 }
@@ -84,26 +84,26 @@ input::~input()
 
 //-----------------------------------------------------------------------------
 
-void input::setTitle(const std::string& _title)
+void input::set_title(const std::string& _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setTitle(_title);
+            m_implementation->set_title(_title);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void input::setMessage(const std::string& _msg)
+void input::set_message(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setMessage(_msg);
+            m_implementation->set_message(_msg);
         })
     ).wait();
 }
@@ -123,22 +123,22 @@ void input::set_input(const std::string& _text)
 
 //------------------------------------------------------------------------------
 
-void input::setEchoMode(EchoMode _echo_mode)
+void input::set_echo_mode(echo_mode _echo_mode)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setEchoMode(_echo_mode);
+            m_implementation->set_echo_mode(_echo_mode);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-std::pair<std::string, bool> input::getInput()
+std::pair<std::string, bool> input::get_input()
 {
-    std::function<std::pair<std::string, bool>()> func  = [this](auto&& ...){return m_implementation->getInput();};
+    std::function<std::pair<std::string, bool>()> func  = [this](auto&& ...){return m_implementation->get_input();};
     std::shared_future<std::pair<std::string, bool> > f =
         core::thread::get_default_worker()->post_task<std::pair<std::string, bool> >(func);
     f.wait();

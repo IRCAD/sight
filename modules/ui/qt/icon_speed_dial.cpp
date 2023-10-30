@@ -36,7 +36,7 @@
 #include <QBoxLayout>
 #include <QResizeEvent>
 
-class ResizeActionsFilter : public QObject
+class resize_actions_filter : public QObject
 {
 private:
 
@@ -44,7 +44,7 @@ private:
 
 public:
 
-    explicit ResizeActionsFilter(std::vector<QWidget*> _actions) :
+    explicit resize_actions_filter(std::vector<QWidget*> _actions) :
         m_actions(std::move(_actions))
     {
     }
@@ -63,7 +63,7 @@ public:
     }
 };
 
-class ResizeIconFilter : public QObject
+class resize_icon_filter : public QObject
 {
 public:
 
@@ -86,9 +86,9 @@ namespace sight::module::ui::qt
 
 icon_speed_dial::icon_speed_dial()
 {
-    new_slot(icon_speed_dial::slots::FOLD, [this]{m_speedDial->fold();});
-    new_slot(icon_speed_dial::slots::UNFOLD, [this]{m_speedDial->unfold();});
-    new_slot(icon_speed_dial::slots::UPDATE_ACTIONS, &icon_speed_dial::updateActions, this);
+    new_slot(icon_speed_dial::slots::FOLD, [this]{m_speed_dial->fold();});
+    new_slot(icon_speed_dial::slots::UNFOLD, [this]{m_speed_dial->unfold();});
+    new_slot(icon_speed_dial::slots::UPDATE_ACTIONS, &icon_speed_dial::update_actions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -102,29 +102,29 @@ void icon_speed_dial::configuring()
     auto direction = config.get<std::string>("config.<xmlattr>.direction");
     if(direction == "up")
     {
-        m_direction = sight::ui::qt::widget::speed_dial::Direction::UP;
+        m_direction = sight::ui::qt::widget::speed_dial::direction::up;
     }
     else if(direction == "right")
     {
-        m_direction = sight::ui::qt::widget::speed_dial::Direction::RIGHT;
+        m_direction = sight::ui::qt::widget::speed_dial::direction::right;
     }
     else if(direction == "down")
     {
-        m_direction = sight::ui::qt::widget::speed_dial::Direction::DOWN;
+        m_direction = sight::ui::qt::widget::speed_dial::direction::down;
     }
     else if(direction == "left")
     {
-        m_direction = sight::ui::qt::widget::speed_dial::Direction::LEFT;
+        m_direction = sight::ui::qt::widget::speed_dial::direction::left;
     }
     else
     {
         SIGHT_ASSERT("Invalid direction " << direction << " for speed_dial " << get_id(), false);
     }
 
-    m_spacing           = config.get("config.<xmlattr>.spacing", -1);
-    m_icon              = config.get<std::string>("config.<xmlattr>.icon");
-    m_unfoldedIcon      = config.get("config.<xmlattr>.unfoldedIcon", "");
-    m_animationDuration = config.get("config.<xmlattr>.animationDuration", -1);
+    m_spacing            = config.get("config.<xmlattr>.spacing", -1);
+    m_icon               = config.get<std::string>("config.<xmlattr>.icon");
+    m_unfolded_icon      = config.get("config.<xmlattr>.unfoldedIcon", "");
+    m_animation_duration = config.get("config.<xmlattr>.animationDuration", -1);
     std::ranges::transform(
         boost::make_iterator_range(config.get_child("actions").equal_range("action")),
         std::back_inserter(m_actions),
@@ -147,43 +147,43 @@ void icon_speed_dial::starting()
 
     const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     auto* layout      = new QBoxLayout(QBoxLayout::TopToBottom);
-    m_speedDial = new sight::ui::qt::widget::speed_dial(m_direction);
-    m_speedDial->setObjectName(QString::fromStdString(service_id));
+    m_speed_dial = new sight::ui::qt::widget::speed_dial(m_direction);
+    m_speed_dial->setObjectName(QString::fromStdString(service_id));
     if(m_spacing >= 0)
     {
-        m_speedDial->setSpacing(m_spacing);
+        m_speed_dial->set_spacing(m_spacing);
     }
 
     if(!m_icon.empty())
     {
-        QIcon icon = m_speedDial->icon();
+        QIcon icon = m_speed_dial->icon();
         icon.addFile(QString::fromStdString(core::runtime::get_module_resource_file_path(m_icon).string()));
-        m_speedDial->setIcon(icon);
+        m_speed_dial->setIcon(icon);
     }
 
-    if(!m_unfoldedIcon.empty())
+    if(!m_unfolded_icon.empty())
     {
-        QIcon icon = m_speedDial->icon();
+        QIcon icon = m_speed_dial->icon();
         icon.addFile(
-            QString::fromStdString(core::runtime::get_module_resource_file_path(m_unfoldedIcon).string()),
+            QString::fromStdString(core::runtime::get_module_resource_file_path(m_unfolded_icon).string()),
             {},
             QIcon::Normal,
             QIcon::On
         );
-        m_speedDial->setIcon(icon);
+        m_speed_dial->setIcon(icon);
     }
 
-    if(m_animationDuration >= 0)
+    if(m_animation_duration >= 0)
     {
-        m_speedDial->setAnimationDuration(m_animationDuration);
+        m_speed_dial->set_animation_duration(m_animation_duration);
     }
 
     for(const action& action : m_actions)
     {
         auto* q_action = new QPushButton;
-        q_action->setFixedSize(m_speedDial->size());
+        q_action->setFixedSize(m_speed_dial->size());
         q_action->setObjectName(QString::fromStdString(action.name.empty() ? action.sid : action.name));
         std::string sid = action.sid;
         auto service    = std::dynamic_pointer_cast<sight::ui::action>(sight::service::get(sid));
@@ -220,20 +220,20 @@ void icon_speed_dial::starting()
         );
         if(!action.shortcut.empty())
         {
-            auto* shortcut = new QShortcut(QString::fromStdString(action.shortcut), m_speedDial->window());
+            auto* shortcut = new QShortcut(QString::fromStdString(action.shortcut), m_speed_dial->window());
             QObject::connect(shortcut, &QShortcut::activated, update_if_enabled);
             m_shortcuts.push_back(shortcut);
         }
 
-        q_action->installEventFilter(new ResizeIconFilter);
+        q_action->installEventFilter(new resize_icon_filter);
         m_widgets.push_back(q_action);
     }
 
-    m_speedDial->installEventFilter(new ResizeActionsFilter(m_widgets));
-    updateActions();
-    layout->addWidget(m_speedDial);
-    qt_container->setLayout(layout);
-    m_speedDial->show();
+    m_speed_dial->installEventFilter(new resize_actions_filter(m_widgets));
+    update_actions();
+    layout->addWidget(m_speed_dial);
+    qt_container->set_layout(layout);
+    m_speed_dial->show();
 }
 
 //------------------------------------------------------------------------------
@@ -246,8 +246,8 @@ void icon_speed_dial::updating()
 
 void icon_speed_dial::stopping()
 {
-    getContainer()->destroyContainer();
-    m_speedDial = nullptr;
+    get_container()->destroy_container();
+    m_speed_dial = nullptr;
     std::ranges::for_each(m_shortcuts, [](QShortcut* _shortcut){_shortcut->setEnabled(false);});
     std::ranges::for_each(
         m_actions,
@@ -262,7 +262,7 @@ void icon_speed_dial::stopping()
 
 //------------------------------------------------------------------------------
 
-void icon_speed_dial::updateActions()
+void icon_speed_dial::update_actions()
 {
     std::vector<QWidget*> actions;
     for(std::size_t i = 0 ; i < m_actions.size() ; i++)
@@ -275,7 +275,7 @@ void icon_speed_dial::updateActions()
         }
     }
 
-    m_speedDial->updateActions(std::move(actions));
+    m_speed_dial->update_actions(std::move(actions));
 }
 
 } // namespace sight::module::ui::qt

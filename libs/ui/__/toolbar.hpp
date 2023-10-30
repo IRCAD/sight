@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/__/config.hpp"
-#include "ui/__/detail/registry/tool_bar.hpp"
+#include "ui/__/detail/registry/toolbar.hpp"
 #include "ui/__/layout/toolbar_manager.hpp"
 
 #include <service/base.hpp>
@@ -36,12 +36,12 @@ namespace sight::ui
 namespace detail::registry
 {
 
-class tool_bar;
+class toolbar;
 
 }
 
 /**
- * @brief   Defines the service interface managing the toolBar.
+ * @brief   Defines the service interface managing the toolbar.
  */
 class UI_CLASS_API toolbar : public service::base
 {
@@ -50,19 +50,19 @@ public:
     SIGHT_DECLARE_SERVICE(toolbar, service::base);
 
     /// Method called when an action service is stopping
-    UI_API void actionServiceStopping(std::string _action_srv_sid);
+    UI_API void action_service_stopping(std::string _action_srv_sid);
 
     /// Method called when an action service is starting
-    UI_API void actionServiceStarting(std::string _action_srv_sid);
+    UI_API void action_service_starting(std::string _action_srv_sid);
 
     /// Method called when the action service is activated
-    UI_API void actionServiceSetChecked(std::string _action_srv_sid, bool _is_checked);
+    UI_API void action_service_set_checked(std::string _action_srv_sid, bool _is_checked);
 
     /// Method called when the action service is executable
-    UI_API void actionServiceSetEnabled(std::string _action_srv_sid, bool _is_enabled);
+    UI_API void action_service_set_enabled(std::string _action_srv_sid, bool _is_enabled);
 
     /// Method called when the action service is visible
-    UI_API void actionServiceSetVisible(std::string _action_srv_sid, bool _is_visible);
+    UI_API void action_service_set_visible(std::string _action_srv_sid, bool _is_visible);
 
 protected:
 
@@ -74,7 +74,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="ui::toolbar" impl="sight::module::ui::tool_bar"
+       <service uid="toolbar2" type="ui::toolbar" impl="sight::module::ui::toolbar"
      * auto_connect="false"
      *>
            <gui>
@@ -111,18 +111,18 @@ protected:
      *   - \<editor\> represents container service (editor, view, ...)
      *
      *  * @section Slots Slots
-     * - \b setVisible(bool isVisible) : this slot shows the toolBar (if isVisible = true) or hides it.
-     * - \b setVisibleByParam(ui::parameter_t isVisible) : this slot shows the toolBar (if isEnabled holds boolean
+     * - \b setVisible(bool isVisible) : this slot shows the toolbar (if isVisible = true) or hides it.
+     * - \b setVisibleByParam(ui::parameter_t isVisible) : this slot shows the toolbar (if isEnabled holds boolean
      * alternative) or hides it.
-     * - \b show() : this slot shows the toolBar.
-     * - \b hide() : this slot hides the toolBar.
+     * - \b show() : this slot shows the toolbar.
+     * - \b hide() : this slot hides the toolbar.
      *
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.
      *   - The order of the item in each section (gui and registry) must be the same.\n
      *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
-     *  @see ui::registry::tool_bar::initialize(),
+     *  @see ui::registry::toolbar::initialize(),
      *::ui::layout::toolbar_manager::initialize()
      */
     UI_API void initialize();
@@ -144,10 +144,10 @@ protected:
     };
 
     /// SLOT: show/hide the container
-    UI_API void setVisible(bool _is_visible);
+    UI_API void set_visible(bool _is_visible);
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    UI_API void setVisibleByParameter(ui::parameter_t);
+    UI_API void set_visible_by_parameter(ui::parameter_t);
 
     /// SLOT: show the container
     UI_API void show();
@@ -157,13 +157,13 @@ protected:
 
 private:
 
-    void initializeLayoutManager(const ui::config_t& _layout_config);
+    void initialize_layout_manager(const ui::config_t& _layout_config);
 
-    ui::layout::toolbar_manager::sptr m_layoutManager;
-    SPTR(ui::detail::registry::tool_bar) m_registry;
+    ui::layout::toolbar_manager::sptr m_layout_manager;
+    SPTR(ui::detail::registry::toolbar) m_registry;
 
     /// Flag to hide or disable the actions if the service is stopped
-    bool m_hideActions {false};
+    bool m_hide_actions {false};
 };
 
 } // namespace sight::ui

@@ -40,9 +40,9 @@ namespace sight::geometry::data
  * @brief
  */
 GEOMETRY_DATA_API bool is_inclosed_volume(
-    const fwVertexPosition& _vertex,
-    const fwVertexIndex& _vertex_index,
-    const fwVec3d& _p
+    const fw_vertex_position& _vertex,
+    const fw_vertex_index& _vertex_index,
+    const fw_vec3d& _p
 );
 
 //cspell: disable
@@ -58,21 +58,21 @@ GEOMETRY_DATA_API bool is_inclosed_volume(
  */
 //cspell: enable
 GEOMETRY_DATA_API bool intersect_triangle(
-    fwVec3d _orig,
-    fwVec3d _dir,
-    fwVec3d _vert0,
-    fwVec3d _vert1,
-    fwVec3d _vert2,
+    fw_vec3d _orig,
+    fw_vec3d _dir,
+    fw_vec3d _vert0,
+    fw_vec3d _vert1,
+    fw_vec3d _vert2,
     double& _t,
     double& _u,
     double& _v
 );
 
 /// test whatever a vertex is duplicated or not
-GEOMETRY_DATA_API bool is_borderless_surface(const fwVertexIndex& _vertex_index);
+GEOMETRY_DATA_API bool is_borderless_surface(const fw_vertex_index& _vertex_index);
 
 GEOMETRY_DATA_API void find_border_edges(
-    const fwVertexIndex& _vertex_index,
+    const fw_vertex_index& _vertex_index,
     std::vector<std::vector<std::pair<int,
                                       int> > >& _contours
 );
@@ -81,12 +81,12 @@ GEOMETRY_DATA_API void find_border_edges(
  * @brief Closes the surface if necessary
  * @return True if container mesh is changed
  */
-GEOMETRY_DATA_API bool close_surface(fwVertexPosition& _vertex, fwVertexIndex& _vertex_index);
+GEOMETRY_DATA_API bool close_surface(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index);
 
 /**
  * remove orphan vertices (i.e not used in _vertexIndex), _vertexIndex is reordered according to vertex suppressions
  */
-GEOMETRY_DATA_API bool remove_orphan_vertices(fwVertexPosition& _vertex, fwVertexIndex& _vertex_index);
+GEOMETRY_DATA_API bool remove_orphan_vertices(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index);
 
 //-----------------------------------------------------------------------------
 
@@ -146,7 +146,7 @@ bool is_borderless_surface(
         }
     }
 
-    for(const typename EdgeHistogram::value_type& h : edges_histogram)
+    for(const auto& h : edges_histogram)
     {
         if(h.second != 2)
         {

@@ -29,7 +29,7 @@
 
 #include <numeric>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::DicomSRSCoord3DNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::dicom_srs_coord3_d_node_test);
 
 #define TYPE 0x0040, 0xa040
 #define RELATIONSHIP 0x0040, 0xa010
@@ -49,11 +49,11 @@ static void generic_test(const std::string& _graphic_type, std::size_t _graphic_
     gdcm::DataSet dataset;
     std::vector<float> graphic_buffer(_graphic_size);
     std::iota(graphic_buffer.begin(), graphic_buffer.end(), 0.F);
-    DicomSRSCoord3DNode({}, "friend", _graphic_type, graphic_buffer, "reference").write(dataset);
-    CPPUNIT_ASSERT_EQUAL("SCOORD3D"s, (io::dicom::helper::DicomDataReader::getTagValue<TYPE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::DicomDataReader::getTagValue<RELATIONSHIP>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("reference"s, (io::dicom::helper::DicomDataReader::getTagValue<REFERENCE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL(_graphic_type, (io::dicom::helper::DicomDataReader::getTagValue<GRAPHIC_TYPE>(dataset)));
+    dicom_srs_coord3_d_node({}, "friend", _graphic_type, graphic_buffer, "reference").write(dataset);
+    CPPUNIT_ASSERT_EQUAL("SCOORD3D"s, (io::dicom::helper::dicom_data_reader::get_tag_value<TYPE>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::dicom_data_reader::get_tag_value<RELATIONSHIP>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("reference"s, (io::dicom::helper::dicom_data_reader::get_tag_value<REFERENCE>(dataset)));
+    CPPUNIT_ASSERT_EQUAL(_graphic_type, (io::dicom::helper::dicom_data_reader::get_tag_value<GRAPHIC_TYPE>(dataset)));
     gdcm::Attribute<GRAPHIC_DATA> graphic_data;
     graphic_data.SetFromDataSet(dataset);
     for(std::size_t i = 0 ; i < _graphic_size ; i++)
@@ -64,14 +64,14 @@ static void generic_test(const std::string& _graphic_type, std::size_t _graphic_
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoord3DNodeTest::pointTest()
+void dicom_srs_coord3_d_node_test::point_test()
 {
     generic_test("POINT", 3);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoord3DNodeTest::polylineTest()
+void dicom_srs_coord3_d_node_test::polyline_test()
 {
     generic_test("POLYLINE", 6);
 }

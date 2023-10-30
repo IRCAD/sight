@@ -36,23 +36,23 @@
 namespace sight::io::dimse
 {
 
-const core::com::slots::key_t SeriesRetriever::PROGRESS_CALLBACK_SLOT = "CMoveProgressCallback";
+const core::com::slots::key_t series_retriever::PROGRESS_CALLBACK_SLOT = "CMoveProgressCallback";
 
 // ----------------------------------------------------------------------------
 
-SeriesRetriever::SeriesRetriever() :
+series_retriever::series_retriever() :
     m_path("")
 {
 }
 
 // ----------------------------------------------------------------------------
 
-SeriesRetriever::~SeriesRetriever()
+series_retriever::~series_retriever()
 = default;
 
 // ----------------------------------------------------------------------------
 
-void SeriesRetriever::initialize(
+void series_retriever::initialize(
     const std::string& _application_title,
     std::uint16_t _applicationport,
     int _timeout,
@@ -60,7 +60,7 @@ void SeriesRetriever::initialize(
 )
 {
     //Callback
-    m_progressCallback = _progress_callback;
+    m_progress_callback = _progress_callback;
 
     //Creating folder
     m_path = core::os::temp_dir::shared_directory() / "dicom/";
@@ -86,10 +86,10 @@ void SeriesRetriever::initialize(
 
 // ----------------------------------------------------------------------------
 
-bool SeriesRetriever::start()
+bool series_retriever::start()
 {
     // Reset instance count
-    m_instanceIndex = 0;
+    m_instance_index = 0;
 
     // Start listening
     return this->listen().good();
@@ -97,7 +97,7 @@ bool SeriesRetriever::start()
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesRetriever::handleIncomingCommand(
+OFCondition series_retriever::handleIncomingCommand(
     T_DIMSE_Message* _incoming_msg,
     const DcmPresentationContextInfo& _pres_context_info
 )
@@ -120,7 +120,7 @@ OFCondition SeriesRetriever::handleIncomingCommand(
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesRetriever::handleSTORERequest(
+OFCondition series_retriever::handleSTORERequest(
     T_DIMSE_Message* _incoming_msg,
     T_ASC_PresentationContextID _pres_id
 )
@@ -169,13 +169,13 @@ OFCondition SeriesRetriever::handleSTORERequest(
             if(cond.bad())
             {
                 const std::string msg = "Cannot send C-STORE Response to the server.";
-                throw io::dimse::exceptions::RequestFailure(msg);
+                throw io::dimse::exceptions::request_failure(msg);
             }
 
             // Notify callback
-            if(m_progressCallback)
+            if(m_progress_callback)
             {
-                m_progressCallback->async_run(series_id.c_str(), ++m_instanceIndex, file_path);
+                m_progress_callback->async_run(series_id.c_str(), ++m_instance_index, file_path);
             }
         }
     }

@@ -31,10 +31,10 @@ namespace sight::io::dicom::container
 
 //------------------------------------------------------------------------------
 
-struct CellDataOffsetGenerator
+struct cell_data_offset_generator
 {
     data::mesh::cell_t current {0};
-    CellDataOffsetGenerator()
+    cell_data_offset_generator()
     = default;
 
     //------------------------------------------------------------------------------
@@ -48,10 +48,10 @@ struct CellDataOffsetGenerator
 };
 
 //------------------------------------------------------------------------------
-DicomSurface::DicomSurface(const data::reconstruction::csptr& _reconstruction)
+dicom_surface::dicom_surface(const data::reconstruction::csptr& _reconstruction)
 {
     // Get mesh
-    data::mesh::csptr mesh = _reconstruction->getMesh();
+    data::mesh::csptr mesh = _reconstruction->get_mesh();
 
     // Coordinates
     {
@@ -59,40 +59,40 @@ DicomSurface::DicomSurface(const data::reconstruction::csptr& _reconstruction)
         const auto end   = mesh->cend<data::iterator::point::xyz>();
 
         // Retrieve & copy data
-        m_pointBuffer.reserve(mesh->numPoints() * std::size_t(3));
-        m_pointBuffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
+        m_point_buffer.reserve(mesh->num_points() * std::size_t(3));
+        m_point_buffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
     }
 
     // Cells
     {
         // Retrieve & copy data
-        m_cellBuffer.resize(mesh->numCells() * std::size_t(3));
+        m_cell_buffer.resize(mesh->num_cells() * std::size_t(3));
 
         std::size_t index = 0;
         for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
         {
             // Index shall start at 1 in DICOM
-            m_cellBuffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[0]) + 1;
-            m_cellBuffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[1]) + 1;
-            m_cellBuffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[2]) + 1;
+            m_cell_buffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[0]) + 1;
+            m_cell_buffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[1]) + 1;
+            m_cell_buffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[2]) + 1;
         }
     }
 
     // Normals
-    if(mesh->has<data::mesh::Attributes::POINT_NORMALS>())
+    if(mesh->has<data::mesh::attribute::point_normals>())
     {
         const auto begin = mesh->cbegin<data::iterator::point::nxyz>();
         const auto end   = mesh->cend<data::iterator::point::nxyz>();
 
         // Retrieve & copy data
-        m_normalBuffer.reserve(mesh->numPoints() * std::size_t(3));
-        m_normalBuffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
+        m_normal_buffer.reserve(mesh->num_points() * std::size_t(3));
+        m_normal_buffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
     }
 }
 
 //------------------------------------------------------------------------------
 
-DicomSurface::DicomSurface(
+dicom_surface::dicom_surface(
     const data::mesh::position_t* _point_buffer,
     const data::mesh::size_t _point_buffer_size,
     const dicom_cell_value_t* _cell_buffer,
@@ -101,51 +101,51 @@ DicomSurface::DicomSurface(
 )
 {
     // Coordinates
-    m_pointBuffer.reserve(_point_buffer_size);
-    m_pointBuffer.assign(_point_buffer, _point_buffer + _point_buffer_size);
+    m_point_buffer.reserve(_point_buffer_size);
+    m_point_buffer.assign(_point_buffer, _point_buffer + _point_buffer_size);
 
     // Cells
-    m_cellBuffer.reserve(_cell_buffer_size);
-    m_cellBuffer.assign(_cell_buffer, _cell_buffer + _cell_buffer_size);
+    m_cell_buffer.reserve(_cell_buffer_size);
+    m_cell_buffer.assign(_cell_buffer, _cell_buffer + _cell_buffer_size);
 
     // Normals
     if(_normal_buffer != nullptr)
     {
-        m_normalBuffer.reserve(_point_buffer_size);
-        m_normalBuffer.assign(_normal_buffer, _normal_buffer + _point_buffer_size);
+        m_normal_buffer.reserve(_point_buffer_size);
+        m_normal_buffer.assign(_normal_buffer, _normal_buffer + _point_buffer_size);
     }
 }
 
 //------------------------------------------------------------------------------
 
-DicomSurface::~DicomSurface()
+dicom_surface::~dicom_surface()
 = default;
 
 //------------------------------------------------------------------------------
 
-data::mesh::sptr DicomSurface::convertToData()
+data::mesh::sptr dicom_surface::convert_to_data()
 {
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
     const auto lock       = mesh->dump_lock();
 
     // Initialize number of points
-    data::mesh::Attributes attribute = data::mesh::Attributes::NONE;
-    if(!m_normalBuffer.empty())
+    data::mesh::attribute attribute = data::mesh::attribute::none;
+    if(!m_normal_buffer.empty())
     {
-        attribute = data::mesh::Attributes::POINT_NORMALS;
+        attribute = data::mesh::attribute::point_normals;
     }
 
     mesh->resize(
-        data::mesh::size_t(m_pointBuffer.size() / 3),
-        data::mesh::size_t(m_cellBuffer.size() / 3),
-        data::mesh::cell_type_t::TRIANGLE,
+        data::mesh::size_t(m_point_buffer.size() / 3),
+        data::mesh::size_t(m_cell_buffer.size() / 3),
+        data::mesh::cell_type_t::triangle,
         attribute
     );
 
     // Coordinates
     {
         auto itr = mesh->begin<data::iterator::point::xyz>();
-        std::copy(m_pointBuffer.begin(), m_pointBuffer.end(), reinterpret_cast<float*>(&*itr));
+        std::copy(m_point_buffer.begin(), m_point_buffer.end(), reinterpret_cast<float*>(&*itr));
     }
 
     // Cells
@@ -157,17 +157,17 @@ data::mesh::sptr DicomSurface::convertToData()
             for(std::size_t i = 0 ; i < 3 ; ++i)
             {
                 // Index shall start at 0 in Sight
-                cell.pt[i] = static_cast<data::mesh::point_t>(m_cellBuffer[index]) - 1;
+                cell.pt[i] = static_cast<data::mesh::point_t>(m_cell_buffer[index]) - 1;
                 ++index;
             }
         }
     }
 
     // Normals
-    if(!m_normalBuffer.empty())
+    if(!m_normal_buffer.empty())
     {
         const auto itr = mesh->begin<data::iterator::point::nxyz>();
-        std::copy(m_normalBuffer.begin(), m_normalBuffer.end(), reinterpret_cast<float*>(&*itr));
+        std::copy(m_normal_buffer.begin(), m_normal_buffer.end(), reinterpret_cast<float*>(&*itr));
     }
 
     return mesh;
@@ -175,44 +175,44 @@ data::mesh::sptr DicomSurface::convertToData()
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::dicom_point_buffer_t& DicomSurface::getPointBuffer() const
+const dicom_surface::dicom_point_buffer_t& dicom_surface::get_point_buffer() const
 {
-    return m_pointBuffer;
+    return m_point_buffer;
 }
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::dicom_cell_buffer_t& DicomSurface::getCellBuffer() const
+const dicom_surface::dicom_cell_buffer_t& dicom_surface::get_cell_buffer() const
 {
-    return m_cellBuffer;
+    return m_cell_buffer;
 }
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::dicom_normal_buffer_t& DicomSurface::getNormalBuffer() const
+const dicom_surface::dicom_normal_buffer_t& dicom_surface::get_normal_buffer() const
 {
-    return m_normalBuffer;
+    return m_normal_buffer;
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t DicomSurface::getPointBufferSize() const
+std::size_t dicom_surface::get_point_buffer_size() const
 {
-    return m_pointBuffer.size();
+    return m_point_buffer.size();
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t DicomSurface::getCellBufferSize() const
+std::size_t dicom_surface::get_cell_buffer_size() const
 {
-    return m_cellBuffer.size();
+    return m_cell_buffer.size();
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t DicomSurface::getNormalBufferSize() const
+std::size_t dicom_surface::get_normal_buffer_size() const
 {
-    return m_normalBuffer.size();
+    return m_normal_buffer.size();
 }
 
 //------------------------------------------------------------------------------

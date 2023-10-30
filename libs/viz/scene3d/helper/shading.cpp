@@ -44,25 +44,25 @@
 namespace sight::viz::scene3d::helper
 {
 
-static const std::regex s_PEEL_REGEX(".*/peel.*");
-static const std::regex s_WEIGHT_BLEND_REGEX(".*/weightBlend.*");
-static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*/transmittanceBlend.*");
-static const std::regex s_DEPTH_MAP_REGEX("(.*depth.*)|(.*backDepth.*)");
-static const std::regex s_LIGHT_PARAM_REGEX("u_f[2-4]?(NumLights|Light(Ambient|Dir|Diffuse|Specular).*)");
+static const std::regex PEEL_REGEX(".*/peel.*");
+static const std::regex WEIGHT_BLEND_REGEX(".*/weightBlend.*");
+static const std::regex TRANSMITTANCE_BLEND_REGEX(".*/transmittanceBlend.*");
+static const std::regex DEPTH_MAP_REGEX("(.*depth.*)|(.*backDepth.*)");
+static const std::regex LIGHT_PARAM_REGEX("u_f[2-4]?(NumLights|Light(Ambient|Dir|Diffuse|Specular).*)");
 
-static const std::string s_AMBIENT       = "Ambient";
-static const std::string s_FLAT          = "Flat";
-static const std::string s_PIXELLIGHTING = "PixelLit";
+static const std::string AMBIENT       = "Ambient";
+static const std::string FLAT          = "Flat";
+static const std::string PIXELLIGHTING = "PixelLit";
 
 //-----------------------------------------------------------------------------
 
-bool shading::isColorTechnique(const Ogre::Technique& _tech)
+bool shading::is_color_technique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
     const std::regex regex_dual_peel_init("Dual.*/peelInit.*");
 
-    const bool peel_tech        = std::regex_match(name, s_PEEL_REGEX);
-    const bool weight_pass      = std::regex_match(name, s_WEIGHT_BLEND_REGEX);
+    const bool peel_tech        = std::regex_match(name, PEEL_REGEX);
+    const bool weight_pass      = std::regex_match(name, WEIGHT_BLEND_REGEX);
     const bool peel_init_pass   = std::regex_match(name, regex_dual_peel_init);
     const bool ray_entry_points = name == "FrontFacesMin";
 
@@ -71,54 +71,54 @@ bool shading::isColorTechnique(const Ogre::Technique& _tech)
 
 //-----------------------------------------------------------------------------
 
-bool shading::isPeelTechnique(const Ogre::Technique& _tech)
+bool shading::is_peel_technique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
-    const bool peel_tech    = std::regex_match(name, s_PEEL_REGEX);
+    const bool peel_tech    = std::regex_match(name, PEEL_REGEX);
 
     return peel_tech;
 }
 
 //-----------------------------------------------------------------------------
 
-bool shading::isGeometricTechnique(const Ogre::Technique& _tech)
+bool shading::is_geometric_technique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
 
-    const bool peel_pass           = std::regex_match(name, s_PEEL_REGEX);
-    const bool weight_blend        = std::regex_match(name, s_WEIGHT_BLEND_REGEX);
-    const bool transmittance_blend = std::regex_match(name, s_TRANSMITTANCE_BLEND_REGEX);
+    const bool peel_pass           = std::regex_match(name, PEEL_REGEX);
+    const bool weight_blend        = std::regex_match(name, WEIGHT_BLEND_REGEX);
+    const bool transmittance_blend = std::regex_match(name, TRANSMITTANCE_BLEND_REGEX);
 
     return name.empty() || peel_pass || weight_blend || transmittance_blend;
 }
 
 //-----------------------------------------------------------------------------
 
-bool shading::isDepthOnlyTechnique(const Ogre::Technique& _tech)
+bool shading::is_depth_only_technique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
-    const bool depth        = std::regex_match(name, s_DEPTH_MAP_REGEX);
+    const bool depth        = std::regex_match(name, DEPTH_MAP_REGEX);
 
     return depth;
 }
 
 //-----------------------------------------------------------------------------
-std::string shading::getPermutation(data::material::shading_t _mode, bool _diffuse_texture, bool _vertex_color)
+std::string shading::get_permutation(data::material::shading_t _mode, bool _diffuse_texture, bool _vertex_color)
 {
     std::string suffix;
 
     switch(_mode)
     {
-        case data::material::AMBIENT:
-            suffix = s_AMBIENT;
+        case data::material::shading_t::ambient:
+            suffix = AMBIENT;
             break;
 
-        case data::material::FLAT:
-            suffix = s_FLAT;
+        case data::material::shading_t::flat:
+            suffix = FLAT;
             break;
 
-        case data::material::PHONG:
-            suffix = s_PIXELLIGHTING;
+        case data::material::shading_t::phong:
+            suffix = PIXELLIGHTING;
             break;
     }
 
@@ -137,7 +137,7 @@ std::string shading::getPermutation(data::material::shading_t _mode, bool _diffu
 
 //-----------------------------------------------------------------------------
 
-std::string shading::getR2VBGeometryProgramName(
+std::string shading::get_r2_vb_geometry_program_name(
     data::mesh::cell_type_t _primitive_type,
     bool _diffuse_texture,
     bool _vertex_color,
@@ -146,11 +146,11 @@ std::string shading::getR2VBGeometryProgramName(
 {
     std::string suffix;
 
-    if(_primitive_type == data::mesh::cell_type_t::QUAD)
+    if(_primitive_type == data::mesh::cell_type_t::quad)
     {
         suffix = "Quad";
     }
-    else if(_primitive_type == data::mesh::cell_type_t::TETRA)
+    else if(_primitive_type == data::mesh::cell_type_t::tetra)
     {
         suffix = "Tetra";
     }
@@ -181,37 +181,37 @@ std::string shading::getR2VBGeometryProgramName(
 
 //-----------------------------------------------------------------------------
 
-std::string shading::setPermutationInProgramName(const std::string& _name, const std::string& _permutation)
+std::string shading::set_permutation_in_program_name(const std::string& _name, const std::string& _permutation)
 {
     std::string prg_name;
 
     // Clear the suffix in shader names (+VT+...)
-    static const std::regex regexConcat("\\+.*(_[FV]P)");
-    prg_name = std::regex_replace(_name, regexConcat, "$1");
+    static const std::regex s_REGEX_CONCAT("\\+.*(_[FV]P)");
+    prg_name = std::regex_replace(_name, s_REGEX_CONCAT, "$1");
 
     // Replace the shading technique
-    static const std::regex regexshading("(" + s_AMBIENT + ")|(" + s_FLAT + ")|(" + s_PIXELLIGHTING + ")");
-    prg_name = std::regex_replace(prg_name, regexshading, _permutation);
+    static const std::regex s_REGEXSHADING("(" + AMBIENT + ")|(" + FLAT + ")|(" + PIXELLIGHTING + ")");
+    prg_name = std::regex_replace(prg_name, s_REGEXSHADING, _permutation);
 
     return prg_name;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string shading::setTechniqueInProgramName(const std::string& _name, const std::string& _tech)
+std::string shading::set_technique_in_program_name(const std::string& _name, const std::string& _tech)
 {
     std::string prg_name;
 
     // Replace the technique and the pass names
-    static const std::regex regex(".*/");
-    prg_name = std::regex_replace(_name, regex, _tech + "/");
+    static const std::regex s_REGEX(".*/");
+    prg_name = std::regex_replace(_name, s_REGEX, _tech + "/");
 
     return prg_name;
 }
 
 //------------------------------------------------------------------------------
 
-shading::shader_constants_t shading::findMaterialConstants(Ogre::Material& _material)
+shading::shader_constants_t shading::find_material_constants(Ogre::Material& _material)
 {
     shader_constants_t constants;
 
@@ -228,21 +228,21 @@ shading::shader_constants_t shading::findMaterialConstants(Ogre::Material& _mate
         if(pass->hasVertexProgram())
         {
             params = pass->getVertexProgramParameters();
-            auto vp_constants = findShaderConstants(params, Ogre::GPT_VERTEX_PROGRAM);
+            auto vp_constants = find_shader_constants(params, Ogre::GPT_VERTEX_PROGRAM);
             std::move(vp_constants.begin(), vp_constants.end(), std::inserter(constants, constants.begin()));
         }
 
         if(pass->hasFragmentProgram())
         {
             params = pass->getFragmentProgramParameters();
-            auto fp_constants = findShaderConstants(params, Ogre::GPT_FRAGMENT_PROGRAM);
+            auto fp_constants = find_shader_constants(params, Ogre::GPT_FRAGMENT_PROGRAM);
             std::move(fp_constants.begin(), fp_constants.end(), std::inserter(constants, constants.begin()));
         }
 
         if(pass->hasGeometryProgram())
         {
             params = pass->getGeometryProgramParameters();
-            auto gp_constants = findShaderConstants(params, Ogre::GPT_GEOMETRY_PROGRAM);
+            auto gp_constants = find_shader_constants(params, Ogre::GPT_GEOMETRY_PROGRAM);
             std::move(gp_constants.begin(), gp_constants.end(), std::inserter(constants, constants.begin()));
         }
 
@@ -262,7 +262,7 @@ shading::shader_constants_t shading::findMaterialConstants(Ogre::Material& _mate
 
 //------------------------------------------------------------------------------
 
-shading::shader_constants_t shading::findShaderConstants(
+shading::shader_constants_t shading::find_shader_constants(
     Ogre::GpuProgramParametersSharedPtr _params,
     Ogre::GpuProgramType _shader_type,
     bool _enable_light_constants
@@ -277,7 +277,7 @@ shading::shader_constants_t shading::findShaderConstants(
     {
         if(!_enable_light_constants)
         {
-            bool is_light_constant = std::regex_match(static_cast<std::string>(cst_def.first), s_LIGHT_PARAM_REGEX);
+            bool is_light_constant = std::regex_match(static_cast<std::string>(cst_def.first), LIGHT_PARAM_REGEX);
 
             if(is_light_constant)
             {
@@ -338,7 +338,7 @@ shading::shader_constants_t shading::findShaderConstants(
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantType _type, constant_value_t _value)
+data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstantType _type, constant_value_t _value)
 {
     data::object::sptr object;
 
@@ -347,7 +347,7 @@ data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         case Ogre::GpuConstantType::GCT_FLOAT1:
         {
             auto new_obj = std::make_shared<data::real>();
-            new_obj->setValue(_value.f[0]);
+            new_obj->set_value(_value.f[0]);
             object = new_obj;
             break;
         }
@@ -386,7 +386,7 @@ data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         case Ogre::GpuConstantType::GCT_FLOAT4:
         {
             auto new_obj = std::make_shared<data::color>();
-            new_obj->setRGBA(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
+            new_obj->set_rgba(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
             object = new_obj;
             break;
         }
@@ -398,7 +398,7 @@ data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         case Ogre::GpuConstantType::GCT_INT1:
         {
             auto new_obj = std::make_shared<data::integer>();
-            new_obj->setValue(_value.i[0]);
+            new_obj->set_value(_value.i[0]);
             object = new_obj;
             break;
         }
@@ -454,7 +454,7 @@ data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         case Ogre::GpuConstantType::GCT_DOUBLE1:
         {
             auto new_obj = std::make_shared<data::real>();
-            new_obj->setValue(static_cast<float>(_value.d[0]));
+            new_obj->set_value(static_cast<float>(_value.d[0]));
             object = new_obj;
             break;
         }
@@ -512,7 +512,7 @@ data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
             break;
 
         default:
-            [[maybe_unused]] static const std::array GpuConstantTypeNames
+            [[maybe_unused]] static const std::array s_GPU_CONSTANT_TYPE_NAMES
             {
                 "GCT_FLOAT1",
                 "GCT_FLOAT2",
@@ -555,7 +555,7 @@ data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
                 "GCT_MATRIX_DOUBLE_4X4",
                 "GCT_UNKNOWN"
             };
-            SIGHT_WARN("Object type " + std::string(GpuConstantTypeNames[_type - 1]) + " not supported yet");
+            SIGHT_WARN("Object type " + std::string(s_GPU_CONSTANT_TYPE_NAMES[_type - 1]) + " not supported yet");
     }
 
     return object;
@@ -563,7 +563,7 @@ data::object::sptr shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
 // ----------------------------------------------------------------------------
 
-Ogre::GpuProgramPtr shading::createProgramFrom(
+Ogre::GpuProgramPtr shading::create_program_from(
     const std::string& _name,
     const std::string& _source_file_name,
     const gpu_program_parameters_t& _parameters,

@@ -102,29 +102,29 @@ private:
     /// Slot: Sets background depth image on which the difference will be performed to compute what pixels of a new
     /// depth.
     /// image are in front of this learned background image.
-    void setBackground();
+    void set_background();
 
     /// Slot: Sets the threshold tolerance value when performing the depth images difference.
-    void setThreshold(int _threshold);
+    void set_threshold(int _threshold);
 
     /// Mask image to perform computation only inside this mask.
-    cv::Mat m_cvMaskImage;
+    cv::Mat m_cv_mask_image;
 
     /// Depth image inside the mask to compute the depth difference with the current image.
-    cv::Mat m_cvDepthMaskImage;
+    cv::Mat m_cv_depth_mask_image;
 
     /// Threshold value to manage a tolerance when performing the depth difference because of noise in such images.
     int m_threshold {10};
 
-    static constexpr std::string_view s_MASK_IMAGE_KEY       = "maskImage";
-    static constexpr std::string_view s_VIDEO_IMAGE_KEY      = "videoImage";
-    static constexpr std::string_view s_DEPTH_IMAGE_KEY      = "depthImage";
-    static constexpr std::string_view s_FOREGROUND_IMAGE_KEY = "foregroundImage";
+    static constexpr std::string_view MASK_IMAGE_KEY       = "maskImage";
+    static constexpr std::string_view VIDEO_IMAGE_KEY      = "videoImage";
+    static constexpr std::string_view DEPTH_IMAGE_KEY      = "depthImage";
+    static constexpr std::string_view FOREGROUND_IMAGE_KEY = "foregroundImage";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_maskImage {this, s_MASK_IMAGE_KEY};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_videoImage {this, s_VIDEO_IMAGE_KEY};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_depthImage {this, s_DEPTH_IMAGE_KEY};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_foregroundImage {this, s_FOREGROUND_IMAGE_KEY};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask_image {this, MASK_IMAGE_KEY};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_video_image {this, VIDEO_IMAGE_KEY};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_depth_image {this, DEPTH_IMAGE_KEY};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_foreground_image {this, FOREGROUND_IMAGE_KEY};
 };
 
 } // namespace sight::module::filter::vision

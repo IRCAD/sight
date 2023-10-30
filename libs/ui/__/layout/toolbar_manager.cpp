@@ -35,15 +35,15 @@ const toolbar_manager::registry_key_t toolbar_manager::REGISTRY_KEY = "sight::ui
 
 //-----------------------------------------------------------------------------
 
-std::vector<toolbar_manager::ActionInfo> configure(
+std::vector<toolbar_manager::action_info> configure(
     const std::pair<std::string,
                     boost::property_tree::ptree>& _tool_bar_item
 )
 {
-    std::vector<toolbar_manager::ActionInfo> infos;
+    std::vector<toolbar_manager::action_info> infos;
     if(_tool_bar_item.first == "menuItem")
     {
-        toolbar_manager::ActionInfo info;
+        toolbar_manager::action_info info;
 
         info.m_name     = _tool_bar_item.second.get<std::string>("<xmlattr>.name");
         info.m_shortcut = _tool_bar_item.second.get<std::string>("<xmlattr>.shortcut", info.m_shortcut);
@@ -63,30 +63,30 @@ std::vector<toolbar_manager::ActionInfo> configure(
 
         if(const auto style = _tool_bar_item.second.get_optional<std::string>("<xmlattr>.style"); style.has_value())
         {
-            info.m_isCheckable = (*style == "check");
-            info.m_isRadio     = (*style == "radio");
+            info.m_is_checkable = (*style == "check");
+            info.m_is_radio     = (*style == "radio");
         }
 
         infos.push_back(info);
     }
     else if(_tool_bar_item.first == "separator")
     {
-        toolbar_manager::ActionInfo info;
-        info.m_isSeparator = true;
-        info.m_size        = _tool_bar_item.second.get<int>("<xmlattr>.size", info.m_size);
+        toolbar_manager::action_info info;
+        info.m_is_separator = true;
+        info.m_size         = _tool_bar_item.second.get<int>("<xmlattr>.size", info.m_size);
         infos.push_back(info);
     }
     else if(_tool_bar_item.first == "spacer")
     {
-        toolbar_manager::ActionInfo info;
-        info.m_isSpacer = true;
+        toolbar_manager::action_info info;
+        info.m_is_spacer = true;
         infos.push_back(info);
     }
     else if(_tool_bar_item.first == "menu")
     {
-        toolbar_manager::ActionInfo info;
-        info.m_isMenu = true;
-        info.m_name   = _tool_bar_item.second.get<std::string>("<xmlattr>.name", "");
+        toolbar_manager::action_info info;
+        info.m_is_menu = true;
+        info.m_name    = _tool_bar_item.second.get<std::string>("<xmlattr>.name", "");
 
         const auto icon = _tool_bar_item.second.get<std::string>("<xmlattr>.icon", "");
         if(!icon.empty())
@@ -98,8 +98,8 @@ std::vector<toolbar_manager::ActionInfo> configure(
     }
     else if(_tool_bar_item.first == "editor")
     {
-        toolbar_manager::ActionInfo info;
-        info.m_isEditor = true;
+        toolbar_manager::action_info info;
+        info.m_is_editor = true;
         infos.push_back(info);
     }
     else if(_tool_bar_item.first == "accordion")
@@ -108,16 +108,16 @@ std::vector<toolbar_manager::ActionInfo> configure(
         {
             SIGHT_ASSERT("accordions of accordions aren't supported", tag != "accordion");
             SIGHT_ASSERT("separators in accordions aren't supported", tag != "separator");
-            toolbar_manager::ActionInfo info = configure({tag, subtree})[0];
+            toolbar_manager::action_info info = configure({tag, subtree})[0];
             if(first)
             {
                 SIGHT_ASSERT(
                     "the first element in an accordion list must be a menuItem with style=\"check\"",
-                    info.m_isCheckable
+                    info.m_is_checkable
                 );
             }
 
-            info.m_accordion = first ? toolbar_manager::Accordion::FIRST : toolbar_manager::Accordion::YES;
+            info.m_accordion = first ? toolbar_manager::accordion::first : toolbar_manager::accordion::yes;
             infos.push_back(info);
             first = false;
         }
@@ -147,34 +147,34 @@ void toolbar_manager::initialize(const ui::config_t& _configuration)
         }
     }
 
-    m_unifyButtonSize = _configuration.get<bool>("<xmlattr>.uniformSize", m_unifyButtonSize);
+    m_unify_button_size = _configuration.get<bool>("<xmlattr>.uniformSize", m_unify_button_size);
 
     for(const auto& tool_bar_item : _configuration)
     {
-        std::vector<ActionInfo> new_action_infos = configure(tool_bar_item);
-        std::ranges::move(new_action_infos, std::back_inserter(m_actionInfo));
+        std::vector<action_info> new_action_infos = configure(tool_bar_item);
+        std::ranges::move(new_action_infos, std::back_inserter(m_action_info));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar_manager::destroyActions()
+void toolbar_manager::destroy_actions()
 {
-    for(const ui::container::menu_item::sptr& menu_item : m_menuItems)
+    for(const ui::container::menu_item::sptr& menu_item : m_menu_items)
     {
-        menu_item->destroyContainer();
+        menu_item->destroy_container();
     }
 
-    m_menuItems.clear();
+    m_menu_items.clear();
     for(const ui::container::menu::sptr& menu : m_menus)
     {
-        menu->destroyContainer();
+        menu->destroy_container();
     }
 
     m_menus.clear();
     for(const ui::container::widget::sptr& container : m_containers)
     {
-        container->destroyContainer();
+        container->destroy_container();
     }
 
     m_containers.clear();
@@ -182,21 +182,21 @@ void toolbar_manager::destroyActions()
 
 //-----------------------------------------------------------------------------
 
-std::vector<ui::container::menu_item::sptr> toolbar_manager::getMenuItems()
+std::vector<ui::container::menu_item::sptr> toolbar_manager::get_menu_items()
 {
-    return this->m_menuItems;
+    return this->m_menu_items;
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<ui::container::menu::sptr> toolbar_manager::getMenus()
+std::vector<ui::container::menu::sptr> toolbar_manager::get_menus()
 {
     return this->m_menus;
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<ui::container::widget::sptr> toolbar_manager::getContainers()
+std::vector<ui::container::widget::sptr> toolbar_manager::get_containers()
 {
     return this->m_containers;
 }

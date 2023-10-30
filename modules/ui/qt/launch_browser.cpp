@@ -89,14 +89,14 @@ void launch_browser::updating()
 
 void launch_browser::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 }
 
 //------------------------------------------------------------------------------
 
 void launch_browser::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------

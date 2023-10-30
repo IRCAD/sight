@@ -37,11 +37,10 @@ class object;
 namespace registry
 {
 
-typedef std::string key_t;
+using key_t = std::string;
+using type  = sight::core::factory_registry<std::shared_ptr<sight::ui::object>(), key_t>;
 
-typedef sight::core::factory_registry<SPTR(sight::ui::object)(), key_t> Type;
-
-UI_API SPTR(Type) get();
+UI_API SPTR(type) get();
 
 } // namespace detail
 

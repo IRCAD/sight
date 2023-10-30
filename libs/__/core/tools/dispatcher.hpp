@@ -69,8 +69,8 @@ struct end_type_list_action
     }
 
     /// Throw an exception to inform end-user that key_t value have no correspondence in type list
-    template<class base_class, class key_type>
-    static base_class* instantiate(const key_type& _key_t)
+    template<class base_class_t, class key_type>
+    static base_class_t* instantiate(const key_type& _key_t)
     {
         std::string msg = _key_t.name()
                           + " : key_t value incorrect : no corresponding Type in typelist";
@@ -90,8 +90,8 @@ struct dispatcher
 {
     private:
 
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::pop_front<TSEQ>::type tail;
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::front<TSEQ>::type head;
+        using tail = typename boost::mpl::pop_front<TSEQ>::type;
+        using head = typename boost::mpl::front<TSEQ>::type;
 
     public:
 
@@ -184,21 +184,11 @@ struct dispatcher
         }
 };
 
-typedef boost::mpl::vector<
-        std::int8_t,
-        std::uint8_t,
-        std::int16_t,
-        std::uint16_t,
-        std::int32_t,
-        std::uint32_t
-#ifndef DEBUG
-        , std::int64_t,
-        std::uint64_t
-#endif
->::type integer_types;
+using integer_types = boost::mpl::vector<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+                                         std::uint32_t>::type;
 
 #ifdef DEBUG
-typedef boost::mpl::push_back<integer_types, float>::type intrinsic_types;
+using intrinsic_types = boost::mpl::push_back<integer_types, float>::type;
 #else
 typedef boost::mpl::push_back<boost::mpl::push_back<integer_types, float>::type, double>::type intrinsic_types;
 #endif

@@ -60,7 +60,7 @@ public:
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
-        adaptor->updateValue(_mat);
+        adaptor->update_value(_mat);
     }
 
     //------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ public:
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
-        adaptor->setDirty();
+        adaptor->set_dirty();
     }
 
     //------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ static const core::com::slots::key_t ADD_LISTENER_SLOT = "addListener";
 
 compositor_parameter::compositor_parameter() noexcept
 {
-    new_slot(ADD_LISTENER_SLOT, &compositor_parameter::addListener, this);
+    new_slot(ADD_LISTENER_SLOT, &compositor_parameter::add_listener, this);
 }
 
 //------------------------------------------------------------------------------
@@ -101,9 +101,9 @@ void compositor_parameter::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_COMPOSITOR_NAME_CONFIG = s_CONFIG + "compositorName";
-    m_compositorName = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
-    SIGHT_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
+    static const std::string s_COMPOSITOR_NAME_CONFIG = CONFIG + "compositorName";
+    m_compositor_name = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
+    SIGHT_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositor_name.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -112,16 +112,16 @@ void compositor_parameter::starting()
 {
     this->initialize();
 
-    sight::viz::scene3d::layer::sptr layer = this->getLayer();
+    sight::viz::scene3d::layer::sptr layer = this->layer();
 
-    if(!m_isVisible)
+    if(!m_visible)
     {
-        this->slot(UPDATE_VISIBILITY_SLOT)->async_run(m_isVisible);
+        this->slot(UPDATE_VISIBILITY_SLOT)->async_run(m_visible);
     }
 
-    this->addListener();
+    this->add_listener();
 
-    m_resizeConnection.connect(
+    m_resize_connection.connect(
         layer,
         sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
         this->get_sptr(),
@@ -135,7 +135,7 @@ void compositor_parameter::updating()
 {
     // This is typically called when the data has changed through autoconnect
     // So set the parameter as dirty and perform the update
-    this->setDirty();
+    this->set_dirty();
     this->parameter_adaptor::updating();
 }
 
@@ -143,18 +143,18 @@ void compositor_parameter::updating()
 
 void compositor_parameter::stopping()
 {
-    m_resizeConnection.disconnect();
+    m_resize_connection.disconnect();
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
     this->parameter_adaptor::stopping();
 
-    sight::viz::scene3d::layer::sptr layer = this->getLayer();
+    sight::viz::scene3d::layer::sptr layer = this->layer();
 
     Ogre::CompositorChain* comp_chain =
-        Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
+        Ogre::CompositorManager::getSingleton().getCompositorChain(layer->get_viewport());
 
-    auto* compositor = comp_chain->getCompositor(m_compositorName);
+    auto* compositor = comp_chain->getCompositor(m_compositor_name);
 
     // Association of a listener attached to this adaptor to the configured compositor
     compositor->removeListener(m_listener);
@@ -164,16 +164,16 @@ void compositor_parameter::stopping()
 
 //-----------------------------------------------------------------------------
 
-void compositor_parameter::setVisible(bool _enable)
+void compositor_parameter::set_visible(bool _enable)
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    const auto layer                  = this->getLayer();
+    const auto layer                  = this->layer();
     Ogre::CompositorChain* comp_chain =
-        Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
+        Ogre::CompositorManager::getSingleton().getCompositorChain(layer->get_viewport());
 
-    auto* compositor = comp_chain->getCompositor(m_compositorName);
-    SIGHT_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", compositor);
+    auto* compositor = comp_chain->getCompositor(m_compositor_name);
+    SIGHT_ASSERT("The given compositor '" + m_compositor_name + "' doesn't exist in the compositor chain", compositor);
 
     if(!_enable && m_listener != nullptr)
     {
@@ -182,14 +182,14 @@ void compositor_parameter::setVisible(bool _enable)
         m_listener = nullptr;
     }
 
-    layer->updateCompositorState(m_compositorName, _enable);
+    layer->update_compositor_state(m_compositor_name, _enable);
 
     if(_enable)
     {
         // Association of a listener attached to this adaptor to the configured compositor
         m_listener =
             new CompositorListener(
-                layer->getViewport(),
+                layer->get_viewport(),
                 std::dynamic_pointer_cast<compositor_parameter>(this->get_sptr())
             );
         compositor->addListener(m_listener);
@@ -198,25 +198,25 @@ void compositor_parameter::setVisible(bool _enable)
 
 //------------------------------------------------------------------------------
 
-void compositor_parameter::updateValue(Ogre::MaterialPtr& _mat)
+void compositor_parameter::update_value(Ogre::MaterialPtr& _mat)
 {
-    this->setMaterial(_mat);
+    this->set_material(_mat);
     this->parameter_adaptor::updating();
 }
 
 //------------------------------------------------------------------------------
 
-void compositor_parameter::addListener()
+void compositor_parameter::add_listener()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    sight::viz::scene3d::layer::sptr layer = this->getLayer();
+    sight::viz::scene3d::layer::sptr layer = this->layer();
 
     Ogre::CompositorChain* comp_chain =
-        Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
+        Ogre::CompositorManager::getSingleton().getCompositorChain(layer->get_viewport());
 
-    auto* compositor = comp_chain->getCompositor(m_compositorName);
-    SIGHT_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", compositor);
+    auto* compositor = comp_chain->getCompositor(m_compositor_name);
+    SIGHT_ASSERT("The given compositor '" + m_compositor_name + "' doesn't exist in the compositor chain", compositor);
 
     if(m_listener != nullptr)
     {
@@ -227,7 +227,10 @@ void compositor_parameter::addListener()
 
     // Association of a listener attached to this adaptor to the configured compositor
     m_listener =
-        new CompositorListener(layer->getViewport(), std::dynamic_pointer_cast<compositor_parameter>(this->get_sptr()));
+        new CompositorListener(
+            layer->get_viewport(),
+            std::dynamic_pointer_cast<compositor_parameter>(this->get_sptr())
+        );
     compositor->addListener(m_listener);
 }
 

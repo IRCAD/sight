@@ -26,10 +26,10 @@
 #include <data/image_series.hpp>
 
 #include <io/bitmap/backend.hpp>
-#include <io/dicom/Reader.hpp>
-#include <io/dicom/Writer.hpp>
+#include <io/dicom/reader/file.hpp>
+#include <io/dicom/writer/file.hpp>
 
-#include <utest/Filter.hpp>
+#include <utest/filter.hpp>
 #include <utest/profiling.hpp>
 
 #include <utest_data/Data.hpp>
@@ -38,7 +38,7 @@
 #include <chrono>
 #include <ctime>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::WriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::writer_test);
 
 namespace sight::io::dicom::ut
 {
@@ -72,13 +72,13 @@ inline static std::string format_date_time(const std::chrono::time_point<std::ch
 //------------------------------------------------------------------------------
 
 inline static data::image_series::sptr get_us_volume_image(
-    std::uint32_t _seed              = 0,
-    std::size_t _num_frames          = 1,
-    core::type _type                 = core::type::UINT8,
-    data::image::PixelFormat _format = data::image::RGB
+    std::uint32_t _seed                    = 0,
+    std::size_t _num_frames                = 1,
+    core::type _type                       = core::type::UINT8,
+    enum data::image::pixel_format _format = data::image::rgb
 )
 {
-    using key_t = std::tuple<std::size_t, core::type, data::image::PixelFormat, std::uint32_t>;
+    using key_t = std::tuple<std::size_t, core::type, enum data::image::pixel_format, std::uint32_t>;
     static std::map<key_t, data::image_series::sptr> generated;
 
     const key_t key {_num_frames, _type, _format, _seed};
@@ -89,7 +89,7 @@ inline static data::image_series::sptr get_us_volume_image(
     {
         auto image = std::make_shared<data::image_series>();
 
-        utest_data::generator::image::generateImage(
+        utest_data::generator::image::generate_image(
             image,
             {64, 64, _num_frames},
             {1.0, 1.0, 1.0},
@@ -106,7 +106,7 @@ inline static data::image_series::sptr get_us_volume_image(
 
             const auto& sizes     = image->size();
             std::size_t index     = 0;
-            std::size_t max_index = (sizes[0] * sizes[1] * sizes[2] * image->numComponents() / 10);
+            std::size_t max_index = (sizes[0] * sizes[1] * sizes[2] * image->num_components() / 10);
             auto image_it         = image->begin<std::uint8_t>();
             const auto& end       = image->end<std::uint8_t>();
 
@@ -129,13 +129,13 @@ inline static data::image_series::sptr get_us_volume_image(
         }
 
         // We want an Enhanced US Volume
-        image->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+        image->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
 
         // Set Image Position Patient / Image Orientation Patient
         for(std::size_t frame_index = 0 ; frame_index < _num_frames ; ++frame_index)
         {
             // ..Image Position / Orientation Patient is what we want
-            image->setImagePositionPatient(
+            image->set_image_position_patient(
                 {
                     double(_seed + 1) * 0.1,
                     double(_seed + 1) * 0.2,
@@ -144,7 +144,7 @@ inline static data::image_series::sptr get_us_volume_image(
                 frame_index
             );
 
-            image->setImageOrientationPatient(
+            image->set_image_orientation_patient(
                 {
                     double(_seed + 1) * 0.4,
                     double(_seed + 1) * 0.5,
@@ -161,10 +161,10 @@ inline static data::image_series::sptr get_us_volume_image(
             now += std::chrono::milliseconds(frame_index);
 
             //YYYYMMDDHHMMSS.FFFFFF
-            image->setFrameAcquisitionDateTime(format_date_time(now), frame_index);
+            image->set_frame_acquisition_date_time(format_date_time(now), frame_index);
 
             // Add a private custom attribute
-            image->setMultiFramePrivateValue(
+            image->set_multi_frame_private_value(
                 format_date_time(now),
                 0x42,
                 frame_index
@@ -190,7 +190,7 @@ inline static void compare_enhanced_us_volume(
     CPPUNIT_ASSERT(_actual);
 
     // SOP Class UID
-    CPPUNIT_ASSERT_EQUAL(_expected->getSOPKeyword(), _actual->getSOPKeyword());
+    CPPUNIT_ASSERT_EQUAL(_expected->get_sop_keyword(), _actual->get_sop_keyword());
 
     // Sizes
     const auto& expected_sizes = _expected->size();
@@ -203,14 +203,14 @@ inline static void compare_enhanced_us_volume(
     }
 
     // Type
-    CPPUNIT_ASSERT_EQUAL(_expected->getType(), _actual->getType());
+    CPPUNIT_ASSERT_EQUAL(_expected->type(), _actual->type());
 
     // Pixel format
-    CPPUNIT_ASSERT_EQUAL(_expected->getPixelFormat(), _actual->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(_expected->pixel_format(), _actual->pixel_format());
 
     // Spacings
-    const auto& expected_spacing = _expected->getSpacing();
-    const auto& actual_spacing   = _actual->getSpacing();
+    const auto& expected_spacing = _expected->spacing();
+    const auto& actual_spacing   = _actual->spacing();
     CPPUNIT_ASSERT_EQUAL(expected_spacing.size(), actual_spacing.size());
 
     for(std::size_t i = 0 ; i < expected_spacing.size() ; ++i)
@@ -219,8 +219,8 @@ inline static void compare_enhanced_us_volume(
     }
 
     // Origins
-    const auto& expected_origin = _expected->getOrigin();
-    const auto& actual_origin   = _actual->getOrigin();
+    const auto& expected_origin = _expected->origin();
+    const auto& actual_origin   = _actual->origin();
     CPPUNIT_ASSERT_EQUAL(expected_origin.size(), actual_origin.size());
 
     for(std::size_t i = 0 ; i < expected_origin.size() ; ++i)
@@ -232,8 +232,8 @@ inline static void compare_enhanced_us_volume(
     for(std::size_t frame_index = 0 ; frame_index < actual_sizes[2] ; ++frame_index)
     {
         // Image Position Patient
-        const auto& expected_position = _expected->getImagePositionPatient(frame_index);
-        const auto& actual_position   = _actual->getImagePositionPatient(frame_index);
+        const auto& expected_position = _expected->get_image_position_patient(frame_index);
+        const auto& actual_position   = _actual->get_image_position_patient(frame_index);
         CPPUNIT_ASSERT_EQUAL(expected_position.size(), actual_position.size());
 
         for(std::size_t i = 0 ; i < expected_position.size() ; ++i)
@@ -242,8 +242,8 @@ inline static void compare_enhanced_us_volume(
         }
 
         // Image Orientation Patient
-        const auto& expected_orientation = _expected->getImageOrientationPatient(frame_index);
-        const auto& actual_orientation   = _actual->getImageOrientationPatient(frame_index);
+        const auto& expected_orientation = _expected->get_image_orientation_patient(frame_index);
+        const auto& actual_orientation   = _actual->get_image_orientation_patient(frame_index);
         CPPUNIT_ASSERT_EQUAL(expected_orientation.size(), actual_orientation.size());
 
         for(std::size_t i = 0 ; i < expected_orientation.size() ; ++i)
@@ -253,47 +253,47 @@ inline static void compare_enhanced_us_volume(
 
         // FrameAcquisitionDateTime
         CPPUNIT_ASSERT_EQUAL(
-            *_expected->getFrameAcquisitionDateTime(frame_index),
-            *_actual->getFrameAcquisitionDateTime(frame_index)
+            *_expected->get_frame_acquisition_date_time(frame_index),
+            *_actual->get_frame_acquisition_date_time(frame_index)
         );
 
         // Private custom attribute
         CPPUNIT_ASSERT_EQUAL(
-            *_expected->getMultiFramePrivateValue(0x42, frame_index),
-            *_actual->getMultiFramePrivateValue(0x42, frame_index)
+            *_expected->get_multi_frame_private_value(0x42, frame_index),
+            *_actual->get_multi_frame_private_value(0x42, frame_index)
         );
     }
 
     // Ensure that getting value outside the frame range returns std::nullopts
     CPPUNIT_ASSERT(
-        !_expected->getFrameAcquisitionDateTime(actual_sizes[2])
-        && !_actual->getFrameAcquisitionDateTime(actual_sizes[2])
+        !_expected->get_frame_acquisition_date_time(actual_sizes[2])
+        && !_actual->get_frame_acquisition_date_time(actual_sizes[2])
     );
 
     // Compare buffer
     const auto expected_locked = _expected->dump_lock();
     const auto actual_locked   = _actual->dump_lock();
-    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(_expected->buffer(), _actual->buffer(), _expected->getSizeInBytes()));
+    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(_expected->buffer(), _actual->buffer(), _expected->size_in_bytes()));
 }
 
 //------------------------------------------------------------------------------
 
-void WriterTest::setUp()
+void writer_test::setUp()
 {
     // Set up context before running a test.
-    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::direct);
 }
 
 //------------------------------------------------------------------------------
 
-void WriterTest::tearDown()
+void writer_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void WriterTest::writeEnhancedUSVolumeTest()
+void writer_test::write_enhanced_us_volume_test()
 {
     {
         core::os::temp_dir tmp_dir;
@@ -304,7 +304,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto series_set = std::make_shared<data::series_set>();
             series_set->push_back(expected);
 
-            auto writer = std::make_shared<io::dicom::Writer>();
+            auto writer = std::make_shared<io::dicom::writer::file>();
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
 
@@ -314,7 +314,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
         // Read the previously written single frame image
         {
             auto series_set = std::make_shared<data::series_set>();
-            auto reader     = std::make_shared<io::dicom::Reader>();
+            auto reader     = std::make_shared<io::dicom::reader::file>();
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
@@ -334,7 +334,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto series_set = std::make_shared<data::series_set>();
             series_set->push_back(expected);
 
-            auto writer = std::make_shared<io::dicom::Writer>();
+            auto writer = std::make_shared<io::dicom::writer::file>();
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
 
@@ -344,7 +344,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
         // Read the previously written 4 frames image
         {
             auto series_set = std::make_shared<data::series_set>();
-            auto reader     = std::make_shared<io::dicom::Reader>();
+            auto reader     = std::make_shared<io::dicom::reader::file>();
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
@@ -357,14 +357,14 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
     {
         core::os::temp_dir tmp_dir;
-        const auto& expected = get_us_volume_image(2, 4, core::type::UINT16, data::image::PixelFormat::GRAY_SCALE);
+        const auto& expected = get_us_volume_image(2, 4, core::type::UINT16, data::image::pixel_format::gray_scale);
 
         // Write a 4 frames monochrome uint16 image
         {
             auto series_set = std::make_shared<data::series_set>();
             series_set->push_back(expected);
 
-            auto writer = std::make_shared<io::dicom::Writer>();
+            auto writer = std::make_shared<io::dicom::writer::file>();
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
 
@@ -374,7 +374,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
         // Read the previously written 4 frames image
         {
             auto series_set = std::make_shared<data::series_set>();
-            auto reader     = std::make_shared<io::dicom::Reader>();
+            auto reader     = std::make_shared<io::dicom::reader::file>();
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
@@ -394,7 +394,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto series_set = std::make_shared<data::series_set>();
             series_set->push_back(expected);
 
-            auto writer = std::make_shared<io::dicom::Writer>();
+            auto writer = std::make_shared<io::dicom::writer::file>();
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
             writer->set_file("custom_filename.dcm");
@@ -406,7 +406,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
         // Read the previously written 4 frames image
         {
             auto series_set = std::make_shared<data::series_set>();
-            auto reader     = std::make_shared<io::dicom::Reader>();
+            auto reader     = std::make_shared<io::dicom::reader::file>();
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
@@ -430,7 +430,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             series_set->push_back(expected1);
             series_set->push_back(expected2);
 
-            auto writer = std::make_shared<io::dicom::Writer>();
+            auto writer = std::make_shared<io::dicom::writer::file>();
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
             writer->set_file("custom_filename.dcm");
@@ -457,14 +457,17 @@ void WriterTest::writeEnhancedUSVolumeTest()
             // Resize and set a value at the end...
             auto new_size = expected->size();
             new_size[2] += 1;
-            resized->resize(new_size, expected->getType(), expected->getPixelFormat());
-            resized->setFrameAcquisitionDateTime(format_date_time(std::chrono::system_clock::now()), new_size[2] - 1);
+            resized->resize(new_size, expected->type(), expected->pixel_format());
+            resized->set_frame_acquisition_date_time(
+                format_date_time(std::chrono::system_clock::now()),
+                new_size[2] - 1
+            );
 
             // Resize back to original size
-            resized->resize(expected->size(), expected->getType(), expected->getPixelFormat());
+            resized->resize(expected->size(), expected->type(), expected->pixel_format());
             series_set->push_back(resized);
 
-            auto writer = std::make_shared<io::dicom::Writer>();
+            auto writer = std::make_shared<io::dicom::writer::file>();
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
             writer->set_file("custom_filename.dcm");
@@ -476,7 +479,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
         // Read the previously written 4 frames image
         {
             auto series_set = std::make_shared<data::series_set>();
-            auto reader     = std::make_shared<io::dicom::Reader>();
+            auto reader     = std::make_shared<io::dicom::reader::file>();
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
@@ -490,7 +493,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
 //------------------------------------------------------------------------------
 
-void WriterTest::forceCPUTest()
+void writer_test::force_cpu_test()
 {
     core::os::temp_dir tmp_dir;
     const auto& expected = get_us_volume_image(0);
@@ -500,11 +503,11 @@ void WriterTest::forceCPUTest()
         auto series_set = std::make_shared<data::series_set>();
         series_set->push_back(expected);
 
-        auto writer = std::make_shared<io::dicom::Writer>();
+        auto writer = std::make_shared<io::dicom::writer::file>();
         writer->set_object(series_set);
         writer->set_folder(tmp_dir);
 
-        writer->forceCPU(false);
+        writer->force_cpu(false);
 
         if(io::bitmap::nv_jpeg_2k())
         {
@@ -518,7 +521,7 @@ void WriterTest::forceCPUTest()
         }
 #endif
 
-        writer->forceCPU(true);
+        writer->force_cpu(true);
 
         CPPUNIT_ASSERT_NO_THROW(writer->write());
     }
@@ -526,10 +529,10 @@ void WriterTest::forceCPUTest()
 
 //------------------------------------------------------------------------------
 
-void WriterTest::transferSyntaxTest()
+void writer_test::transfer_syntax_test()
 {
     const auto& test =
-        [](io::dicom::Writer::TransferSyntax _transfer_syntax)
+        [](io::dicom::writer::file::transfer_syntax _transfer_syntax)
         {
             core::os::temp_dir tmp_dir;
             const auto& expected = get_us_volume_image(0xFFFF, 6);
@@ -539,10 +542,10 @@ void WriterTest::transferSyntaxTest()
                 auto series_set = std::make_shared<data::series_set>();
                 series_set->push_back(expected);
 
-                auto writer = std::make_shared<io::dicom::Writer>();
+                auto writer = std::make_shared<io::dicom::writer::file>();
                 writer->set_object(series_set);
                 writer->set_folder(tmp_dir);
-                writer->setTransferSyntax(_transfer_syntax);
+                writer->set_transfer_syntax(_transfer_syntax);
 
                 SIGHT_PROFILE_FUNC(
                     [&](std::size_t)
@@ -550,7 +553,11 @@ void WriterTest::transferSyntaxTest()
                     CPPUNIT_ASSERT_NO_THROW(writer->write());
                 },
                     3,
-                    "Write (" + std::string(io::dicom::Writer::transferSyntaxToString(_transfer_syntax)) + "): ",
+                    "Write (" + std::string(
+                        io::dicom::writer::file::transfer_syntax_to_string(
+                            _transfer_syntax
+                        )
+                    ) + "): ",
                     0.1
                 );
             }
@@ -558,7 +565,7 @@ void WriterTest::transferSyntaxTest()
             // Read the previously written 4 frames image
             {
                 auto series_set = std::make_shared<data::series_set>();
-                auto reader     = std::make_shared<io::dicom::Reader>();
+                auto reader     = std::make_shared<io::dicom::reader::file>();
                 reader->set_object(series_set);
                 reader->set_folder(tmp_dir);
 
@@ -568,7 +575,11 @@ void WriterTest::transferSyntaxTest()
                     CPPUNIT_ASSERT_NO_THROW(reader->read());
                 },
                     3,
-                    "Read (" + std::string(io::dicom::Writer::transferSyntaxToString(_transfer_syntax)) + "): ",
+                    "Read (" + std::string(
+                        io::dicom::writer::file::transfer_syntax_to_string(
+                            _transfer_syntax
+                        )
+                    ) + "): ",
                     0.1
                 );
 
@@ -587,7 +598,9 @@ void WriterTest::transferSyntaxTest()
                     const auto size = entry.file_size();
 
                     SIGHT_INFO(
-                        "File size (" << io::dicom::Writer::transferSyntaxToString(_transfer_syntax) << "): " << size
+                        "File size (" << io::dicom::writer::file::transfer_syntax_to_string(
+                            _transfer_syntax
+                        ) << "): " << size
                     );
 
                     return size;
@@ -598,20 +611,20 @@ void WriterTest::transferSyntaxTest()
         };
 
     // First the biggest file size
-    const auto raw_size = test(io::dicom::Writer::TransferSyntax::RAW);
+    const auto raw_size = test(io::dicom::writer::file::transfer_syntax::raw);
 
     for(const auto& transfer_syntax : {
-            io::dicom::Writer::TransferSyntax::RLE,
-            io::dicom::Writer::TransferSyntax::JPEG_LOSSLESS,
-            io::dicom::Writer::TransferSyntax::JPEG_LS_LOSSLESS,
-            io::dicom::Writer::TransferSyntax::JPEG2000_LOSSLESS
+            io::dicom::writer::file::transfer_syntax::rle,
+            io::dicom::writer::file::transfer_syntax::jpeg_lossless,
+            io::dicom::writer::file::transfer_syntax::jpeg_ls_lossless,
+            io::dicom::writer::file::transfer_syntax::jpe_g2000_lossless
         })
     {
         // Then others (which should be smaller)
         const auto size = test(transfer_syntax);
         CPPUNIT_ASSERT_MESSAGE(
             "RAW (" + std::to_string(raw_size) + ") < "
-            + std::string(io::dicom::Writer::transferSyntaxToString(transfer_syntax))
+            + std::string(io::dicom::writer::file::transfer_syntax_to_string(transfer_syntax))
             + " (" + std::to_string(size) + ")",
             raw_size >= size
         );

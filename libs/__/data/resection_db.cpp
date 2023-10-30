@@ -40,11 +40,11 @@ const core::com::signals::key_t resection_db::SAFE_PART_ADDED_SIG = "safePartAdd
 //------------------------------------------------------------------------------
 
 resection_db::resection_db() :
-    m_sigSafePartAdded(std::make_shared<SafePartAddedSignalType>()),
-    m_sigResectionAdded(std::make_shared<resection_added_signal_t>())
+    m_sig_safe_part_added(std::make_shared<safe_part_added_signal_t>()),
+    m_sig_resection_added(std::make_shared<resection_added_signal_t>())
 {
-    m_signals(RESECTION_ADDED_SIG, m_sigResectionAdded)
-        (SAFE_PART_ADDED_SIG, m_sigSafePartAdded);
+    m_signals(RESECTION_ADDED_SIG, m_sig_resection_added)
+        (SAFE_PART_ADDED_SIG, m_sig_safe_part_added);
 }
 
 //------------------------------------------------------------------------------
@@ -61,10 +61,10 @@ void resection_db::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_safeResection = other->m_safeResection;
-    m_resections    = other->m_resections;
+    m_safe_resection = other->m_safe_resection;
+    m_resections     = other->m_resections;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void resection_db::deep_copy(const object::csptr& _source, const std::unique_ptr
         !bool(other)
     );
 
-    m_safeResection = data::object::copy(other->m_safeResection, _cache);
+    m_safe_resection = data::object::copy(other->m_safe_resection, _cache);
 
     m_resections.clear();
     for(const auto& resection : other->m_resections)
@@ -89,19 +89,19 @@ void resection_db::deep_copy(const object::csptr& _source, const std::unique_ptr
         m_resections.push_back(data::object::copy(resection, _cache));
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-resection_db::resection_container_t::size_type resection_db::numResections() const
+resection_db::resection_container_t::size_type resection_db::num_resections() const
 {
     return m_resections.size();
 }
 
 //------------------------------------------------------------------------------
 
-void resection_db::addResection(const data::resection::sptr& _resection)
+void resection_db::add_resection(const data::resection::sptr& _resection)
 {
     m_resections.push_back(_resection);
 }
@@ -110,14 +110,14 @@ void resection_db::addResection(const data::resection::sptr& _resection)
 
 bool resection_db::operator==(const resection_db& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_safeResection, _other.m_safeResection)
+    if(!core::tools::is_equal(m_safe_resection, _other.m_safe_resection)
        || !core::tools::is_equal(m_resections, _other.m_resections))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

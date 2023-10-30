@@ -43,19 +43,19 @@ public:
     DATA_API ~generic_object_base() override;
 
     /// Return the number of elements present in the object
-    [[nodiscard]] DATA_API unsigned int getPresentElementNum() const;
+    [[nodiscard]] DATA_API unsigned int get_present_element_num() const;
 
     /// Tell if an element is present at the given index
-    [[nodiscard]] DATA_API bool isPresent(unsigned int _index) const;
+    [[nodiscard]] DATA_API bool is_present(unsigned int _index) const;
 
     /// Return the raw presence mask
-    [[nodiscard]] DATA_API uint64_t getMask() const;
+    [[nodiscard]] DATA_API uint64_t get_mask() const;
 
     /// Return the maximum number of elements in the buffer
-    [[nodiscard]] DATA_API unsigned int getMaxElementNum() const;
+    [[nodiscard]] DATA_API unsigned int get_max_element_num() const;
 
     /// Return the size of element in the buffer
-    [[nodiscard]] DATA_API std::size_t getElementSize() const;
+    [[nodiscard]] DATA_API std::size_t get_element_size() const;
 
     /// Make a copy of this buffer
     DATA_API void deep_copy(const data::timeline::object& _other) override;
@@ -72,11 +72,11 @@ protected:
     );
 
     /// Number of elements that are actually set
-    unsigned int m_numPresent {0};
+    unsigned int m_num_present {0};
     /// Binary mask that indicates which element are set
-    uint64_t m_presenceMask {0};
+    uint64_t m_presence_mask {0};
     /// Maximum number of elements in an object
-    unsigned int m_maxElementNum;
+    unsigned int m_max_element_num;
 };
 
 /**
@@ -90,7 +90,7 @@ class generic_object : public generic_object_base
 public:
 
     /// Type of the elements inside the buffer
-    typedef TYPE element_t;
+    using element_t = TYPE;
 
     class iterator
     {
@@ -100,9 +100,9 @@ public:
         void operator++();
 
         /// True if the current element is valid.
-        [[nodiscard]] bool isValid() const
+        [[nodiscard]] bool is_valid() const
         {
-            return m_currentIndex < m_maxElement;
+            return m_current_index < m_max_element;
         }
 
         /// Get the current element
@@ -117,10 +117,10 @@ public:
         const generic_object_base* m_object;
 
         /// Current element
-        unsigned int m_currentIndex {0};
+        unsigned int m_current_index {0};
 
         /// Maximum number of elements in the buffer
-        unsigned int m_maxElement;
+        unsigned int m_max_element;
 
         friend class generic_object<element_t>;
     };
@@ -140,17 +140,17 @@ public:
     ~generic_object() override;
 
     /// Return the nth element in the buffer
-    [[nodiscard]] const TYPE& getElement(unsigned int _index) const;
+    [[nodiscard]] const TYPE& get_element(unsigned int _index) const;
 
     /// Set the nth element in the buffer. Element in parameter will be copied at the given index. The method is
     /// disabled if TYPE isn't TriviallyCopyable because setElement internally uses memcpy.
-    void setElement(const element_t& _element, unsigned int _index);
+    void set_element(const element_t& _element, unsigned int _index);
 
     /// Add an element and return a pointer on the newly added element
-    TYPE* addElement(unsigned int _index);
+    TYPE* add_element(unsigned int _index);
 
     /// Return an iterator on the elements present in the object
-    [[nodiscard]] iterator getPresenceIterator() const;
+    [[nodiscard]] iterator get_presence_iterator() const;
 };
 
 } // namespace sight::data::timeline

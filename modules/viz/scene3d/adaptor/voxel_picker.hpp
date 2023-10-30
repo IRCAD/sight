@@ -84,10 +84,10 @@ public:
     MODULE_VIZ_SCENE3D_API ~voxel_picker() noexcept final = default;
 
     /// Runs a picking query when a mouse button is pressed.
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
     /// Runs a picking query when a mouse button is released.
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
 protected:
 
@@ -114,17 +114,17 @@ protected:
 private:
 
     /// Runs a picking query.
-    void pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed);
+    void pick(mouse_button _button, modifier _mod, int _x, int _y, bool _pressed);
 
     /// Defines the orientation of the image.
-    typedef data::helper::medical_image::orientation_t OrientationMode;
+    using orientation_mode = data::helper::medical_image::orientation_t;
 
     /**
      * @brief SLOT: updates the image slice type.
      * @param _from origin of the orientation.
      * @param _to destination of the orientation.
      */
-    void changeSliceType(int _from, int _to);
+    void change_slice_type(int _from, int _to);
 
     /**
      * @brief Computes the intersection between the given ray, and the given image.
@@ -137,7 +137,7 @@ private:
      * @param _origin image origin.
      * @param _spacing image spacing.
      */
-    std::pair<bool, Ogre::Vector3> computeRayImageIntersection(
+    std::pair<bool, Ogre::Vector3> compute_ray_image_intersection(
         const Ogre::Ray& _ray,
         const data::image::csptr _image,
         const Ogre::Vector3& _origin,
@@ -145,25 +145,25 @@ private:
     );
 
     /// Defines the orientation of the image used to pick on the current slice.
-    OrientationMode m_orientation {OrientationMode::X_AXIS};
+    orientation_mode m_orientation {orientation_mode::x_axis};
 
     /// Defines the picker mode.
-    bool m_mode2D {true};
+    bool m_mode_2d {true};
 
     /// Determines the execution order of the picking interactor.
     int m_priority {2};
 
     /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant {true};
+    bool m_layer_order_dependant {true};
 
     /// Defines if the image slices indexes will be updated with the picked position.
-    bool m_moveOnPick {false};
+    bool m_move_on_pick {false};
 
     /// Defines the signal sent on picking events.
-    core::com::signal<void(data::tools::picking_info)>::sptr m_pickedSig;
+    core::com::signal<void(data::tools::picking_info)>::sptr m_picked_sig;
 
-    static constexpr std::string_view s_IMAGE_INPUT = "image";
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    static constexpr std::string_view IMAGE_INPUT = "image";
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

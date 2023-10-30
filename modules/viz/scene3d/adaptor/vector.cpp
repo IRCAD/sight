@@ -45,25 +45,25 @@ static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateLength";
 
 vector::vector() noexcept
 {
-    new_slot(UPDATE_LENGTH_SLOT, &vector::updateLength, this);
+    new_slot(UPDATE_LENGTH_SLOT, &vector::update_length, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void vector::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
     const std::string transform_id = config.get<std::string>(
-        module::viz::scene3d::adaptor::transform::s_TRANSFORM_CONFIG,
+        module::viz::scene3d::adaptor::transform::TRANSFORM_CONFIG,
         this->get_id() + "_transform"
     );
 
-    this->setTransformId(transform_id);
-    m_length = config.get<float>(s_CONFIG + "length", m_length);
-    m_color  = config.get<std::string>(s_CONFIG + "color", m_color);
+    this->set_transform_id(transform_id);
+    m_length = config.get<float>(CONFIG + "length", m_length);
+    m_color  = config.get<std::string>(CONFIG + "color", m_color);
     SIGHT_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << m_color,
@@ -78,72 +78,72 @@ void vector::starting()
 {
     this->initialize();
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transform_node  = this->getOrCreateTransformNode(root_scene_node);
-    m_sceneNode = transform_node->createChildSceneNode(this->get_id() + "_mainNode");
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* transform_node  = this->get_or_create_transform_node(root_scene_node);
+    m_scene_node = transform_node->createChildSceneNode(this->get_id() + "_mainNode");
 
     // set the material
     m_material = std::make_shared<data::material>();
 
-    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::material>(
+    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
     );
-    m_materialAdaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->configure(
-        this->get_id() + m_materialAdaptor->get_id(),
-        this->get_id() + m_materialAdaptor->get_id(),
-        this->getRenderService(),
-        m_layerID
+    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
+    m_material_adaptor->configure(
+        this->get_id() + m_material_adaptor->get_id(),
+        this->get_id() + m_material_adaptor->get_id(),
+        this->render_service(),
+        m_layer_id
     );
-    m_materialAdaptor->start();
+    m_material_adaptor->start();
 
-    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
-    m_materialAdaptor->update();
+    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
+    m_material_adaptor->update();
 
-    this->createVector();
+    this->create_vector();
 
-    this->updateVisibility(m_isVisible);
+    this->update_visibility(m_visible);
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
 void vector::updating()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    this->deleteVector();
-    this->createVector();
+    this->delete_vector();
+    this->create_vector();
 
-    this->setVisible(m_isVisible);
+    this->set_visible(m_visible);
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
 void vector::stopping()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    this->deleteVector();
+    this->delete_vector();
 
-    Ogre::SceneNode* transform_node = this->getTransformNode();
+    Ogre::SceneNode* transform_node = this->get_transform_node();
     if(transform_node != nullptr)
     {
         transform_node->removeAndDestroyChild(this->get_id() + "_mainNode");
     }
 
-    this->unregisterServices();
+    this->unregister_services();
     m_material.reset();
 }
 
 //-----------------------------------------------------------------------------
 
-void vector::createVector()
+void vector::create_vector()
 {
     // Size, these value allow to display a vector with good enough ratio.
     const float cylinder_length = m_length - m_length / 10;
@@ -154,38 +154,38 @@ void vector::createVector()
 
     // Color
     std::array<std::uint8_t, 4> color {};
-    data::tools::color::hexaStringToRGBA(m_color, color);
+    data::tools::color::hexa_string_to_rgba(m_color, color);
     Ogre::ColourValue ogre_color(float(color[0]) / 255.F, float(color[1]) / 255.F, float(color[2]) / 255.F);
 
     // Draw
-    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
     m_line = scene_mgr->createManualObject(this->get_id() + "_line");
     m_cone = scene_mgr->createManualObject(this->get_id() + "_cone");
 
     // Line
-    sight::viz::scene3d::helper::manual_object::createCylinder(
+    sight::viz::scene3d::helper::manual_object::create_cylinder(
         m_line,
-        m_materialAdaptor->getMaterialName(),
+        m_material_adaptor->get_material_name(),
         ogre_color,
         cylinder_radius,
         cylinder_length,
         sample
     );
-    Ogre::SceneNode* line_node = m_sceneNode->createChildSceneNode(this->get_id() + "_lineNode");
+    Ogre::SceneNode* line_node = m_scene_node->createChildSceneNode(this->get_id() + "_lineNode");
     line_node->attachObject(m_line);
     // Rotate around y axis to create the cylinder on z Axis (consistent with line adaptor)
     line_node->yaw(Ogre::Degree(-90));
 
     // Cone
-    sight::viz::scene3d::helper::manual_object::createCone(
+    sight::viz::scene3d::helper::manual_object::create_cone(
         m_cone,
-        m_materialAdaptor->getMaterialName(),
+        m_material_adaptor->get_material_name(),
         ogre_color,
         cone_radius,
         cone_length,
         sample
     );
-    Ogre::SceneNode* cone_node = m_sceneNode->createChildSceneNode(this->get_id() + "_coneNode");
+    Ogre::SceneNode* cone_node = m_scene_node->createChildSceneNode(this->get_id() + "_coneNode");
 
     cone_node->attachObject(m_cone);
     cone_node->translate(0.F, 0.F, cylinder_length);
@@ -194,15 +194,15 @@ void vector::createVector()
 
 //-----------------------------------------------------------------------------
 
-void vector::deleteVector()
+void vector::delete_vector()
 {
-    if(m_sceneNode != nullptr)
+    if(m_scene_node != nullptr)
     {
-        m_sceneNode->removeAndDestroyChild(this->get_id() + "_lineNode");
-        m_sceneNode->removeAndDestroyChild(this->get_id() + "_coneNode");
+        m_scene_node->removeAndDestroyChild(this->get_id() + "_lineNode");
+        m_scene_node->removeAndDestroyChild(this->get_id() + "_coneNode");
     }
 
-    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
 
     scene_mgr->destroyManualObject(m_line);
     scene_mgr->destroyManualObject(m_cone);
@@ -210,19 +210,19 @@ void vector::deleteVector()
 
 //-----------------------------------------------------------------------------
 
-void vector::setVisible(bool _visible)
+void vector::set_visible(bool _visible)
 {
-    if(m_sceneNode != nullptr)
+    if(m_scene_node != nullptr)
     {
-        m_sceneNode->setVisible(_visible);
+        m_scene_node->setVisible(_visible);
     }
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
-void vector::updateLength(float _length)
+void vector::update_length(float _length)
 {
     m_length = _length;
 

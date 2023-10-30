@@ -55,22 +55,22 @@ calibration_images_writer::~calibration_images_writer() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType calibration_images_writer::getIOPathType() const
+sight::io::service::path_type_t calibration_images_writer::get_path_type() const
 {
-    return sight::io::service::FOLDER;
+    return sight::io::service::folder;
 }
 
 //------------------------------------------------------------------------------
 
-void calibration_images_writer::openLocationDialog()
+void calibration_images_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::WRITE);
-    dialog_file.setType(ui::dialog::location::FOLDER);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a folder to save the images" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::write);
+    dialog_file.set_type(ui::dialog::location::folder);
 
     auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
 
@@ -78,11 +78,11 @@ void calibration_images_writer::openLocationDialog()
     {
         this->set_folder(result->get_folder());
         default_directory->set_folder(result->get_folder().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -93,7 +93,7 @@ void calibration_images_writer::configuring()
     sight::io::service::writer::configuring();
 
     const auto config_tree = this->get_config();
-    m_fileExtension = config_tree.get("format", ".tiff");
+    m_file_extension = config_tree.get("format", ".tiff");
 }
 
 //------------------------------------------------------------------------------
@@ -106,25 +106,25 @@ void calibration_images_writer::starting()
 
 void calibration_images_writer::updating()
 {
-    if(!m_fileExtension.empty() && this->hasLocationDefined())
+    if(!m_file_extension.empty() && this->has_location_defined())
     {
         const auto data       = m_data.lock();
         const auto calib_info = std::dynamic_pointer_cast<const data::calibration_info>(data.get_shared());
         SIGHT_ASSERT("Missing calibration info input.", calib_info);
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
         std::size_t count(0);
-        for(const auto& calib_img : calib_info->getImageContainer())
+        for(const auto& calib_img : calib_info->get_image_container())
         {
             std::ostringstream image_number;
             image_number << std::setw(4) << std::setfill('0') << count++;
 
-            const std::string filename       = "img_" + image_number.str() + m_fileExtension;
+            const std::string filename       = "img_" + image_number.str() + m_file_extension;
             const std::filesystem::path path = this->get_folder() / filename;
 
-            cv::Mat cv_img = sight::io::opencv::image::copyToCv(calib_img);
+            cv::Mat cv_img = sight::io::opencv::image::copy_to_cv(calib_img);
 
             if(cv_img.dims == 3)
             {
@@ -145,20 +145,20 @@ void calibration_images_writer::updating()
             }
             catch(const cv::Exception& e)
             {
-                m_writeFailed = true;
+                m_write_failed = true;
                 sight::ui::dialog::message::show(
                     "Error writing calibration images.",
                     e.what(),
-                    sight::ui::dialog::message::CRITICAL
+                    sight::ui::dialog::message::critical
                 );
             }
         }
 
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
     else
     {
-        m_writeFailed = true;
+        m_write_failed = true;
     }
 }
 

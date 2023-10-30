@@ -75,13 +75,13 @@ void mip_matching_registration::updating()
     SIGHT_ASSERT("Missing required input 'moving'", moving);
     SIGHT_ASSERT("Missing required inout 'transform'", transform);
 
-    sight::filter::image::RegistrationDispatch::Parameters params;
+    sight::filter::image::registration_dispatch::parameters params;
     params.fixed     = fixed.get_shared();
     params.moving    = moving.get_shared();
     params.transform = transform.get_shared();
 
-    core::type type = moving->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, sight::filter::image::RegistrationDispatch>
+    core::type type = moving->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, sight::filter::image::registration_dispatch>
     ::invoke(type, params);
 
     transform->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
@@ -89,7 +89,7 @@ void mip_matching_registration::updating()
 
 //------------------------------------------------------------------------------
 
-void mip_matching_registration::computeRegistration(core::hires_clock::type /*timestamp*/)
+void mip_matching_registration::compute_registration(core::hires_clock::type /*timestamp*/)
 {
     this->updating();
 }

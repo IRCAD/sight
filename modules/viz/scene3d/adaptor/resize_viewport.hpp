@@ -82,19 +82,16 @@ protected:
 private:
 
     /// Switches to the initial/new viewport depending on the input.
-    void resizeViewport(bool _resize);
-
-    /// Defines the configured viewports dimensions on the layer.
-    void resize();
+    void resize(bool _resize);
 
     /// Defines the original viewports dimensions on the layer.
     void revert();
 
     /// Defines the initial viewport dimensions.
-    sight::viz::scene3d::layer::viewport_config_t m_previousViewportDimensions {0.F, 0.F, 1.F, 1.F};
+    sight::viz::scene3d::layer::viewport_config_t m_previous_viewport_dimensions {0.F, 0.F, 1.F, 1.F};
 
     /// Defines the configured viewport dimensions.
-    sight::viz::scene3d::layer::viewport_config_t m_newViewportDimensions {0.F, 0.F, 1.F, 1.F};
+    sight::viz::scene3d::layer::viewport_config_t m_new_viewport_dimensions {0.F, 0.F, 1.F, 1.F};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

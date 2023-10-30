@@ -53,7 +53,7 @@ public:
         data::object::sptr _obj,
         std::string_view _key,
         std::optional<std::size_t> _index,
-        data::Access _access,
+        data::access _access,
         const bool _auto_connect,
         const bool _optional
     );

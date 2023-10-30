@@ -58,11 +58,11 @@ public:
      * @tparam T factory product type.
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry(std::string _functor_key)
+        registry(std::string _functor_key)
         {
             viz::scene3d::registry::get_light_registry()->add_factory(
                 _functor_key,
@@ -77,16 +77,16 @@ public:
     SIGHT_DECLARE_CLASS(light_adaptor, viz::scene3d::adaptor);
 
     /// Defines point type light.
-    VIZ_SCENE3D_API static const std::string s_POINT_LIGHT;
+    VIZ_SCENE3D_API static const std::string POINT_LIGHT;
 
     /// Defines directional type light.
-    VIZ_SCENE3D_API static const std::string s_DIRECTIONAL_LIGHT;
+    VIZ_SCENE3D_API static const std::string DIRECTIONAL_LIGHT;
 
     /// Defines spot type light.
-    VIZ_SCENE3D_API static const std::string s_SPOT_LIGHT;
+    VIZ_SCENE3D_API static const std::string SPOT_LIGHT;
 
     /// Defines the range of the phi and theta value of directional lights.
-    VIZ_SCENE3D_API static const int s_OFFSET_RANGE;
+    VIZ_SCENE3D_API static const int OFFSET_RANGE;
 
     /**
      * @brief Creates a light adaptor.
@@ -94,7 +94,7 @@ public:
      * @param _specular specular color of the light.
      * @return A new light adaptor with registered inputs.
      */
-    VIZ_SCENE3D_API static light_adaptor::sptr createLightAdaptor(
+    VIZ_SCENE3D_API static light_adaptor::sptr create_light_adaptor(
         data::color::sptr _diffuse,
         data::color::sptr _specular
     );
@@ -103,7 +103,7 @@ public:
      * @brief Destroys a light adaptor.
      * @param _lightManager the light adaptor to unregister.
      */
-    VIZ_SCENE3D_API static void destroyLightAdaptor(light_adaptor::sptr _light_manager);
+    VIZ_SCENE3D_API static void destroy_light_adaptor(light_adaptor::sptr _light_manager);
 
     /// Does nothing.
     VIZ_SCENE3D_API light_adaptor();
@@ -115,104 +115,104 @@ public:
      * @brief Gets the name of the light.
      * @return The name of the light.
      */
-    VIZ_SCENE3D_API virtual const std::string& getName() const = 0;
+    VIZ_SCENE3D_API virtual const std::string& get_name() const = 0;
 
     /**
      * @brief Sets the name of the light.
      * @param _name the name of the light.
      */
-    VIZ_SCENE3D_API virtual void setName(const std::string& _name) = 0;
+    VIZ_SCENE3D_API virtual void set_name(const std::string& _name) = 0;
 
     /**
      * @brief Gets the Ogre light type .
      * @return The type of the light.
      */
-    VIZ_SCENE3D_API virtual Ogre::Light::LightTypes getType() const = 0;
+    VIZ_SCENE3D_API virtual Ogre::Light::LightTypes type() const = 0;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the type of light.
      */
-    VIZ_SCENE3D_API virtual void setType(Ogre::Light::LightTypes _type) = 0;
+    VIZ_SCENE3D_API virtual void set_type(Ogre::Light::LightTypes _type) = 0;
 
     /**
      * @brief Gets the Ogre diffuse color of the light.
      * @return The diffuse color of the light.
      */
-    VIZ_SCENE3D_API virtual Ogre::ColourValue getDiffuseColor() const = 0;
+    VIZ_SCENE3D_API virtual Ogre::ColourValue get_diffuse_color() const = 0;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the Ogre diffuse color of the light.
      */
-    VIZ_SCENE3D_API virtual void setDiffuseColor(Ogre::ColourValue _diffuse_color) = 0;
+    VIZ_SCENE3D_API virtual void set_diffuse_color(Ogre::ColourValue _diffuse_color) = 0;
 
     /**
      * @brief Gets the Ogre specular color of the light.
      * @return The specular color of the light.
      */
-    VIZ_SCENE3D_API virtual Ogre::ColourValue getSpecularColor() const = 0;
+    VIZ_SCENE3D_API virtual Ogre::ColourValue get_specular_color() const = 0;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _diffuseColor the Ogre specular color of the light.
      */
-    VIZ_SCENE3D_API virtual void setSpecularColor(Ogre::ColourValue _specular_color) = 0;
+    VIZ_SCENE3D_API virtual void set_specular_color(Ogre::ColourValue _specular_color) = 0;
 
     /**
      * @brief Indicates if the light is activated.
      * @return True if the light is activated.
      */
-    VIZ_SCENE3D_API virtual bool isSwitchedOn() const = 0;
+    VIZ_SCENE3D_API virtual bool is_switched_on() const = 0;
 
     /**
      * @brief Sets the light activation status.
      * @param _on set to true to enable the light.
      */
-    VIZ_SCENE3D_API virtual void switchOn(bool _on) = 0;
+    VIZ_SCENE3D_API virtual void switch_on(bool _on) = 0;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around x axis.
      * @return The theta offset of the light.
      */
-    VIZ_SCENE3D_API virtual float getThetaOffset() const = 0;
+    VIZ_SCENE3D_API virtual float get_theta_offset() const = 0;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
      * @param _thetaOffset the value of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    VIZ_SCENE3D_API virtual void setThetaOffset(float _theta_offset) = 0;
+    VIZ_SCENE3D_API virtual void set_theta_offset(float _theta_offset) = 0;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around y axis.
      * @return The phi of the light.
      */
-    VIZ_SCENE3D_API virtual float getPhiOffset() const = 0;
+    VIZ_SCENE3D_API virtual float get_phi_offset() const = 0;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
      * @param _phiOffset the phi of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    VIZ_SCENE3D_API virtual void setPhiOffset(float _phi_offset) = 0;
+    VIZ_SCENE3D_API virtual void set_phi_offset(float _phi_offset) = 0;
 
     /**
      * @brief Enables the light visual feedback.
      * @param _enable the visual feedback visibility state.
      */
-    VIZ_SCENE3D_API virtual void enableVisualFeedback(bool _enable) = 0;
+    VIZ_SCENE3D_API virtual void enable_visual_feedback(bool _enable) = 0;
 
     /**
      * @brief Indicates if the visual feedback is enabled.
      * @return True if the visual feedback is activated.
      */
-    VIZ_SCENE3D_API virtual bool isVisualFeedbackOn() const = 0;
+    VIZ_SCENE3D_API virtual bool is_visual_feedback_on() const = 0;
 
 protected:
 
-    data::ptr<data::color, data::Access::inout> m_diffuse {this, "diffuseColor", true};
-    data::ptr<data::color, data::Access::inout> m_specular {this, "specularColor", true};
+    data::ptr<data::color, data::access::inout> m_diffuse {this, "diffuseColor", true};
+    data::ptr<data::color, data::access::inout> m_specular {this, "specularColor", true};
 };
 
 } // namespace sight::viz::scene3d

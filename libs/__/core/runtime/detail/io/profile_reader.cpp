@@ -41,16 +41,16 @@ namespace sight::core::runtime
 namespace detail::io
 {
 
-std::string profile_reader::ID("id");
-std::string profile_reader::NAME("name");
-std::string profile_reader::VALUE("value");
-std::string profile_reader::VERSION("version");
-std::string profile_reader::CHECK_SINGLE_INSTANCE("check-single-instance");
-std::string profile_reader::ACTIVATE("activate");
-std::string profile_reader::START("start");
-std::string profile_reader::PARAM("param");
-std::string profile_reader::DIS_EXT_PT("disable-extension-point");
-std::string profile_reader::DIS_EXT("disable-extension");
+std::string profile_reader::s_id("id");
+std::string profile_reader::s_name("name");
+std::string profile_reader::s_value("value");
+std::string profile_reader::s_version("version");
+std::string profile_reader::s_check_single_instance("check-single-instance");
+std::string profile_reader::s_activate("activate");
+std::string profile_reader::s_start("start");
+std::string profile_reader::s_param("param");
+std::string profile_reader::s_dis_ext_pt("disable-extension-point");
+std::string profile_reader::s_dis_ext("disable-extension");
 
 //------------------------------------------------------------------------------
 
@@ -92,20 +92,20 @@ std::shared_ptr<profile::profile> profile_reader::create_profile(const std::file
         xmlNodePtr root_node = xmlDocGetRootElement(document);
 
         char* p_name =
-            reinterpret_cast<char*>(xmlGetProp(root_node, reinterpret_cast<const xmlChar*>(NAME.c_str())));
+            reinterpret_cast<char*>(xmlGetProp(root_node, reinterpret_cast<const xmlChar*>(s_name.c_str())));
         char* p_version =
-            reinterpret_cast<char*>(xmlGetProp(root_node, reinterpret_cast<const xmlChar*>(VERSION.c_str())));
+            reinterpret_cast<char*>(xmlGetProp(root_node, reinterpret_cast<const xmlChar*>(s_version.c_str())));
         char* p_chk_inst =
             reinterpret_cast<char*>(xmlGetProp(
                                         root_node,
-                                        reinterpret_cast<const xmlChar*>(CHECK_SINGLE_INSTANCE.c_str())
+                                        reinterpret_cast<const xmlChar*>(s_check_single_instance.c_str())
             ));
 
         SIGHT_ASSERT("application profile MUST have a name attribute", p_name);
         SIGHT_ASSERT("application profile MUST have a version attribute", p_version);
 
-        std::string s_name(p_name);
-        std::string s_version(p_version);
+        std::string name(p_name);
+        std::string version(p_version);
         bool check_single_instance = (p_chk_inst != nullptr) && std::string(p_chk_inst) == "true";
 
         xmlFree(p_name);
@@ -116,8 +116,8 @@ std::shared_ptr<profile::profile> profile_reader::create_profile(const std::file
         std::shared_ptr<profile::profile> profile = process_profile(root_node);
 
         profile->set_file_path(normalized_path);
-        profile->set_name(s_name);
-        profile->set_version(s_version);
+        profile->set_name(name);
+        profile->set_version(version);
         profile->set_check_single_instance(check_single_instance);
 
         detail::profile::set_current_profile(profile);
@@ -142,13 +142,13 @@ std::shared_ptr<profile::profile> profile_reader::process_profile(xmlNodePtr _no
     // Process child nodes.
     for(xmlNodePtr cur_child = _node->children ; cur_child != nullptr ; cur_child = cur_child->next)
     {
-        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(ACTIVATE.c_str())) == 0)
+        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(s_activate.c_str())) == 0)
         {
             profile->add(profile_reader::process_activater(cur_child));
             continue;
         }
 
-        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(START.c_str())) == 0)
+        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(s_start.c_str())) == 0)
         {
             profile->add_starter(process_starter(cur_child));
             continue;
@@ -168,13 +168,13 @@ std::string profile_reader::process_starter(xmlNodePtr _node)
     std::string version;
     for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_id.c_str())) == 0)
         {
             identifier = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;
         }
 
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(VERSION.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_version.c_str())) == 0)
         {
             version = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;
@@ -194,13 +194,13 @@ std::shared_ptr<detail::profile::activater> profile_reader::process_activater(xm
     std::string version;
     for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_id.c_str())) == 0)
         {
             identifier = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;
         }
 
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(VERSION.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_version.c_str())) == 0)
         {
             version = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;
@@ -213,19 +213,19 @@ std::shared_ptr<detail::profile::activater> profile_reader::process_activater(xm
     // Processes child node that are the parameters
     for(xmlNodePtr cur_child = _node->children ; cur_child != nullptr ; cur_child = cur_child->next)
     {
-        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(PARAM.c_str())) == 0)
+        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(s_param.c_str())) == 0)
         {
             process_activater_param(cur_child, activater);
             continue;
         }
 
-        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(DIS_EXT_PT.c_str())) == 0)
+        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(s_dis_ext_pt.c_str())) == 0)
         {
             process_activater_disable_extension_point(cur_child, activater);
             continue;
         }
 
-        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(DIS_EXT.c_str())) == 0)
+        if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(s_dis_ext.c_str())) == 0)
         {
             process_activater_disable_extension(cur_child, activater);
             continue;
@@ -246,13 +246,13 @@ void profile_reader::process_activater_param(xmlNodePtr _node, std::shared_ptr<d
     std::string value;
     for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_id.c_str())) == 0)
         {
             identifier = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;
         }
 
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(VALUE.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_value.c_str())) == 0)
         {
             value = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;
@@ -275,7 +275,7 @@ void profile_reader::process_activater_disable_extension_point(
     std::string identifier;
     for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_id.c_str())) == 0)
         {
             identifier = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;
@@ -298,7 +298,7 @@ void profile_reader::process_activater_disable_extension(
     std::string identifier;
     for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
-        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
+        if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(s_id.c_str())) == 0)
         {
             identifier = reinterpret_cast<const char*>(cur_attr->children->content);
             continue;

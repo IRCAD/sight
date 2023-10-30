@@ -51,10 +51,10 @@ void viewer::starting()
 
 void viewer::stopping()
 {
-    if(m_configTemplateManager)
+    if(m_config_template_manager)
     {
-        m_configTemplateManager->stopAndDestroy();
-        m_configTemplateManager.reset();
+        m_config_template_manager->stop_and_destroy();
+        m_config_template_manager.reset();
     }
 }
 
@@ -62,33 +62,33 @@ void viewer::stopping()
 
 void viewer::updating()
 {
-    if(m_configTemplateManager)
+    if(m_config_template_manager)
     {
-        m_configTemplateManager->stopAndDestroy();
-        m_configTemplateManager.reset();
+        m_config_template_manager->stop_and_destroy();
+        m_config_template_manager.reset();
     }
 
     const auto vector = m_series.lock();
-    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not defined.", vector);
+    SIGHT_ASSERT("The input key '" << SERIES << "' is not defined.", vector);
     if(vector->size() == 1)
     {
         data::object::sptr obj = vector->front();
         std::string classname  = obj->get_classname();
-        auto itr               = m_seriesConfigs.find(classname);
+        auto itr               = m_series_configs.find(classname);
 
-        if(itr != m_seriesConfigs.end())
+        if(itr != m_series_configs.end())
         {
-            SeriesConfigInfo info = itr->second;
-            std::string config_id = info.configId;
+            series_config_info info = itr->second;
+            std::string config_id   = info.config_id;
 
             std::map<std::string, std::string> replace_map;
             // Generate generic UID
-            std::string generic_uid_adaptor = app::extension::config::getUniqueIdentifier(this->get_id());
+            std::string generic_uid_adaptor = app::extension::config::get_unique_identifier(this->get_id());
             replace_map["GENERIC_UID"] = generic_uid_adaptor;
-            replace_map["WID_PARENT"]  = m_parentView;
+            replace_map["WID_PARENT"]  = m_parent_view;
             replace_map["objectID"]    = obj->get_id();
 
-            for(const replace_values_map_t::value_type& elt : info.parameters)
+            for(const auto& elt : info.parameters)
             {
                 SIGHT_ASSERT(
                     "Value '" << elt.first << "' already used in extracted values.",
@@ -98,11 +98,11 @@ void viewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = app::config_manager::make();
-            m_configTemplateManager->setConfig(config_id, replace_map);
+            m_config_template_manager = app::config_manager::make();
+            m_config_template_manager->set_config(config_id, replace_map);
 
             // Launch config
-            m_configTemplateManager->launch();
+            m_config_template_manager->launch();
         }
     }
 }
@@ -112,20 +112,20 @@ void viewer::updating()
 void viewer::configuring()
 {
     const auto& config = this->get_config();
-    m_parentView = config.get<std::string>("parentView.<xmlattr>.wid");
+    m_parent_view = config.get<std::string>("parentView.<xmlattr>.wid");
 
     const auto& configs = config.get_child("configs");
     for(const auto& elt : boost::make_iterator_range(configs.equal_range("config")))
     {
-        SeriesConfigInfo info;
-        info.configId = elt.second.get<std::string>("<xmlattr>.id", "");
-        SIGHT_ASSERT("'id' attribute must not be empty", !info.configId.empty());
+        series_config_info info;
+        info.config_id = elt.second.get<std::string>("<xmlattr>.id", "");
+        SIGHT_ASSERT("'id' attribute must not be empty", !info.config_id.empty());
 
         const std::string series_type = elt.second.get<std::string>("<xmlattr>.type", "");
         SIGHT_ASSERT("'type' attribute must not be empty", !series_type.empty());
         SIGHT_ASSERT(
             "Type " << series_type << " is already defined.",
-            m_seriesConfigs.find(series_type) == m_seriesConfigs.end()
+            m_series_configs.find(series_type) == m_series_configs.end()
         );
 
         for(const auto& param : boost::make_iterator_range(elt.second.equal_range("parameter")))
@@ -142,7 +142,7 @@ void viewer::configuring()
             info.parameters[replace] = by;
         }
 
-        m_seriesConfigs[series_type] = info;
+        m_series_configs[series_type] = info;
     }
 }
 
@@ -152,8 +152,8 @@ service::connections_t viewer::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(s_SERIES, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(s_SERIES, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(SERIES, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(SERIES, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
 
     return connections;
 }

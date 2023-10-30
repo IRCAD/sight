@@ -38,7 +38,7 @@ public:
 
     SIGHT_DECLARE_CLASS(widget, ui::object);
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
     UI_API const static registry_key_t REGISTRY_KEY;
 
@@ -51,7 +51,7 @@ public:
     /**
      * @brief Returns the builded menu bar.
      */
-    UI_API virtual ui::container::widget::sptr getContainer();
+    UI_API virtual ui::container::widget::sptr get_container();
 
     /**
      * @brief Configure the layout before creation. Does nothing.
@@ -63,16 +63,16 @@ public:
      * @pre layout must be initialized before.
      * @pre parent container must be instanced.
      */
-    UI_API virtual void createContainer(ui::container::widget::sptr _parent) = 0;
+    UI_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_API virtual void destroyContainer() = 0;
+    UI_API virtual void destroy_container() = 0;
 
     /// Replace parent container
-    UI_API virtual void setParent(ui::container::widget::sptr _parent) = 0;
+    UI_API virtual void set_parent(ui::container::widget::sptr _parent) = 0;
 
 protected:
 

@@ -44,7 +44,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void emitSignal()
+    void emit_signal()
     {
         signal<core::com::signal<void()> >("signal")->emit();
     }
@@ -54,7 +54,7 @@ public:
 
 void signal_gate_test::setUp()
 {
-    m_signalGate = service::add("sight::module::sync::signal_gate");
+    m_signal_gate = service::add("sight::module::sync::signal_gate");
 }
 
 //------------------------------------------------------------------------------
@@ -62,17 +62,17 @@ void signal_gate_test::setUp()
 void signal_gate_test::tearDown()
 {
     m_worker->stop();
-    if(!m_signalGate->stopped())
+    if(!m_signal_gate->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_signalGate->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_signal_gate->stop().get());
     }
 
-    service::remove(m_signalGate);
+    service::remove(m_signal_gate);
 }
 
 //------------------------------------------------------------------------------
 
-void signal_gate_test::basicTest()
+void signal_gate_test::basic_test()
 {
     auto object1 = std::make_shared<object>();
     object1->set_id("object1");
@@ -84,18 +84,18 @@ void signal_gate_test::basicTest()
     auto all_received_slot = core::com::new_slot([&all_received]{all_received = true;});
     m_worker = core::thread::worker::make();
     all_received_slot->set_worker(m_worker);
-    m_signalGate->signal("allReceived")->connect(all_received_slot);
+    m_signal_gate->signal("allReceived")->connect(all_received_slot);
     boost::property_tree::ptree ptree;
     ptree.add("signal", "object1/signal");
     ptree.add("signal", "object2/signal");
     ptree.add("signal", "object3/signal");
-    m_signalGate->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_signalGate->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_signalGate->start().get());
+    m_signal_gate->set_config(ptree);
+    CPPUNIT_ASSERT_NO_THROW(m_signal_gate->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_signal_gate->start().get());
 
-    object1->emitSignal();
-    object2->emitSignal();
-    object3->emitSignal();
+    object1->emit_signal();
+    object2->emit_signal();
+    object3->emit_signal();
     SIGHT_TEST_WAIT(all_received);
     CPPUNIT_ASSERT(all_received);
 }

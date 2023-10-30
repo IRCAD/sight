@@ -58,25 +58,25 @@ public:
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::widget::sptr _parent, const std::string& _id) final;
+    UI_QT_API void create_layout(ui::container::widget::sptr _parent, const std::string& _id) final;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroyLayout() final;
+    UI_QT_API void destroy_layout() final;
 
     /// Modify a layout element, depending of the key.
     /// @param parameter The parameter of the action.
     /// @param key The action to perform.
-    UI_QT_API void modifyLayout(const ui::parameter_t& _parameter, const std::string& _key) final;
+    UI_QT_API void modify_layout(const ui::parameter_t& _parameter, const std::string& _key) final;
 
 private:
 
-    ui::qt::container::widget::sptr m_parentContainer;
+    ui::qt::container::widget::sptr m_parent_container;
 
     /// Layout manager of this view
-    QPointer<QMainWindow> m_qtWindow;
+    QPointer<QMainWindow> m_qt_window;
 };
 
 } // namespace sight::ui::qt::layout

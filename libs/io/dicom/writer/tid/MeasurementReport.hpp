@@ -34,7 +34,7 @@ namespace sight::io::dicom::writer::tid
  * @brief Measurement Report TID - This a root template
  * @see TID t1tt1 FIXME: Set the final TID
  */
-class IO_DICOM_CLASS_API MeasurementReport : public io::dicom::writer::tid::TemplateID<data::image>
+class IO_DICOM_CLASS_API measurement_report : public io::dicom::writer::tid::template_id<data::image>
 {
 public:
 
@@ -44,20 +44,20 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      */
-    IO_DICOM_API MeasurementReport(
+    IO_DICOM_API measurement_report(
         const SPTR(gdcm::Writer)& _writer,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::csptr& _image
     );
 
     /// Destructor
-    IO_DICOM_API ~MeasurementReport() override;
+    IO_DICOM_API ~measurement_report() override;
 
     /**
      * @brief Create Measurement Report template root node
      * @param[in] useSCoord3D True if we must write SCOORD3D, false if we must write SCOORD
      */
-    IO_DICOM_API virtual SPTR(io::dicom::container::sr::DicomSRNode) createRootNode(bool _use_s_coord3_d = true);
+    IO_DICOM_API virtual SPTR(io::dicom::container::sr::dicom_sr_node) create_root_node(bool _use_s_coord_3d = true);
 };
 
 } // namespace sight::io::dicom::writer::tid

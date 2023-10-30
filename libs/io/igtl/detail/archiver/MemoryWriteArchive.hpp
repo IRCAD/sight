@@ -31,7 +31,7 @@ typedef SSIZE_T ssize_t;
 #include "io/igtl/config.hpp"
 
 #include <io/zip/write_archive.hpp>
-#include <io/zip/exception/Write.hpp>
+#include <io/zip/exception/write.hpp>
 #include <core/macros.hpp>
 
 #ifdef _MSC_VER
@@ -55,12 +55,12 @@ namespace sight::io::igtl::detail::archiver
  *
  * @brief class provide utility to write a file to a archive. This class is used locally
  */
-class MemoryArchiveSink
+class memory_archive_sink
 {
 public:
 
-    typedef char char_type;
-    typedef boost::iostreams::sink_tag category;
+    using char_type = char;
+    using category  = boost::iostreams::sink_tag;
 
     /**
      * @brief constructor
@@ -68,10 +68,10 @@ public:
      * @param[in] archive archive instance
      * @param[in] path virtual path in archive if file exist it get the stat of file otherwise create fake stat
      */
-    MemoryArchiveSink(struct archive* _archive, std::filesystem::path _path);
+    memory_archive_sink(struct archive* _archive, std::filesystem::path _path);
 
     /// Destructor
-    ~MemoryArchiveSink();
+    ~memory_archive_sink();
 
     /**
      * @brief write buffer in archive buffer
@@ -95,24 +95,24 @@ protected:
     std::filesystem::path m_path;
 
     /// buffer write size is large because it is in memory
-    static const std::size_t s_WRITE_BUFFER_SIZE = 20000;
+    static const std::size_t WRITE_BUFFER_SIZE = 20000;
 };
 
 /**
  *
  * @brief MemoryWriteArchive is a memory archive writer
  */
-class IO_IGTL_CLASS_API MemoryWriteArchive : public io::zip::write_archive
+class IO_IGTL_CLASS_API memory_write_archive : public io::zip::write_archive
 {
 public:
 
-    typedef SPTR(MemoryWriteArchive) sptr;
+    using sptr = std::shared_ptr<memory_write_archive>;
 
     /// Constructor
-    IO_IGTL_API MemoryWriteArchive(std::vector<char>& _buffer);
+    IO_IGTL_API memory_write_archive(std::vector<char>& _buffer);
 
     /// Destructor
-    IO_IGTL_API ~MemoryWriteArchive() override;
+    IO_IGTL_API ~memory_write_archive() override;
 
     /**
      * @brief create new entry in archive and return output stream for this memory file
@@ -120,7 +120,7 @@ public:
      * @param[in] path file in archive
      * @return output stream of memory entry archive
      */
-    IO_IGTL_API SPTR(std::ostream) createFile(const std::filesystem::path& _path) override;
+    IO_IGTL_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Write source file in memory archive
@@ -129,7 +129,7 @@ public:
      * @param[in] path file in archive
      * @throw io::zip::exception::Write when file cannot be opened
      */
-    IO_IGTL_API void putFile(
+    IO_IGTL_API void put_file(
         const std::filesystem::path& _source_file,
         const std::filesystem::path& _path
     ) override;
@@ -139,17 +139,17 @@ public:
      *
      * @param[in] path folder to create in memory archive in reality it create nothing
      */
-    IO_IGTL_API bool createDir(const std::filesystem::path& _path) override;
+    IO_IGTL_API bool create_dir(const std::filesystem::path& _path) override;
 
     /**
      * @return archive path
      */
-    [[nodiscard]] IO_IGTL_API std::filesystem::path getArchivePath() const override;
+    [[nodiscard]] IO_IGTL_API std::filesystem::path get_archive_path() const override;
 
     /**
      * @brief write all data stored in archive
      */
-    IO_IGTL_API void writeArchive();
+    IO_IGTL_API void write_archive();
 
 public:
 
@@ -183,10 +183,10 @@ public:
 
 protected:
 
-    typedef SPTR(boost::iostreams::stream<MemoryArchiveSink>) StreamSPtr;
+    using stream_sptr = std::shared_ptr<boost::iostreams::stream<memory_archive_sink> >;
 
     /// archive path
-    std::filesystem::path m_archivePath;
+    std::filesystem::path m_archive_path;
 
     /// archive structure
     struct archive* m_archive;
@@ -195,7 +195,7 @@ protected:
     std::vector<char>& m_buffer;
 
     /// vector of stream memory archive files
-    std::vector<StreamSPtr> m_sinks;
+    std::vector<stream_sptr> m_sinks;
 };
 
 } // namespace sight::io::igtl::detail::archiver

@@ -52,23 +52,23 @@ namespace sight::io::vtk
  * @brief Writes a Mesh in .obj format using VTK library.
  */
 
-class IO_VTK_CLASS_API ObjMeshWriter : public writer::generic_object_writer<data::mesh>,
-                                       public core::location::single_file
+class IO_VTK_CLASS_API obj_mesh_writer : public writer::generic_object_writer<data::mesh>,
+                                         public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        ObjMeshWriter,
+        obj_mesh_writer,
         io::writer::generic_object_writer<data::mesh>,
-        io::writer::factory::make<ObjMeshWriter>
+        io::writer::factory::make<obj_mesh_writer>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API ObjMeshWriter();
+    IO_VTK_API obj_mesh_writer();
 
     /// @brief Destructor.
-    IO_VTK_API ~ObjMeshWriter() override;
+    IO_VTK_API ~obj_mesh_writer() override;
 
     /// @brief Reading operator.
     IO_VTK_API void write() override;
@@ -77,7 +77,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

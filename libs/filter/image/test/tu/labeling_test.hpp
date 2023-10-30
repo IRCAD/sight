@@ -30,7 +30,7 @@ namespace sight::filter::image::ut
 class labeling_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(labeling_test);
-CPPUNIT_TEST(computeCentroids);
+CPPUNIT_TEST(compute_centroids);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,7 +39,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void computeCentroids();
+    static void compute_centroids();
 };
 
 } // namespace sight::filter::image::ut

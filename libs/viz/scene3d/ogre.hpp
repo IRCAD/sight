@@ -36,13 +36,13 @@ namespace rq
 {
 
 /// Render queue group for surface rendering.
-static constexpr std::uint8_t s_SURFACE_ID = Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
+static constexpr std::uint8_t SURFACE_ID = Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
 
 /// Render queue group for volume rendering. Leave an extra render queue between
 /// surfaces and volumes for some effects.
-static constexpr std::uint8_t s_VOLUME_ID = s_SURFACE_ID + 2;
+static constexpr std::uint8_t VOLUME_ID = SURFACE_ID + 2;
 
-static constexpr std::uint8_t s_NEGATO_WIDGET_ID = s_SURFACE_ID - 1;
+static constexpr std::uint8_t NEGATO_WIDGET_ID = SURFACE_ID - 1;
 
 }
 

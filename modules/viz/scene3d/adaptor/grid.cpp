@@ -36,44 +36,44 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t s_UPDATE_LENGTH_SLOT = "updateSize";
+static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateSize";
 
 //-----------------------------------------------------------------------------
 
 grid::grid() noexcept
 {
-    new_slot(s_UPDATE_LENGTH_SLOT, &grid::updateSize, this);
+    new_slot(UPDATE_LENGTH_SLOT, &grid::update_size, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void grid::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
     // parsing transform or create an "empty" one
-    this->setTransformId(
+    this->set_transform_id(
         config.get<std::string>(
-            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
             this->get_id() + "_transform"
         )
     );
 
-    m_size = config.get<float>(s_CONFIG + "size", m_size);
+    m_size = config.get<float>(CONFIG + "size", m_size);
 
-    const std::string color = config.get(s_CONFIG + "color", "#FFFFFF");
+    const std::string color = config.get(CONFIG + "color", "#FFFFFF");
     std::array<std::uint8_t, 4> rgba {};
-    data::tools::color::hexaStringToRGBA(color, rgba);
+    data::tools::color::hexa_string_to_rgba(color, rgba);
     m_color.r = static_cast<float>(rgba[0]) / 255.F;
     m_color.g = static_cast<float>(rgba[1]) / 255.F;
     m_color.b = static_cast<float>(rgba[2]) / 255.F;
     m_color.a = static_cast<float>(rgba[3]) / 255.F;
 
-    m_dashLength = config.get(s_CONFIG + "dashLength", m_dashLength);
-    m_step       = config.get(s_CONFIG + "step", m_step);
-    m_elevation  = config.get(s_CONFIG + "elevation", m_elevation);
+    m_dash_length = config.get(CONFIG + "dashLength", m_dash_length);
+    m_step        = config.get(CONFIG + "step", m_step);
+    m_elevation   = config.get(CONFIG + "elevation", m_elevation);
 }
 
 //-----------------------------------------------------------------------------
@@ -81,9 +81,9 @@ void grid::configuring()
 void grid::starting()
 {
     this->initialize();
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
 
     m_line = scene_mgr->createManualObject(this->get_id() + "_grid");
     // Set the line as dynamic, so we can update it later on, when the length changes
@@ -92,79 +92,79 @@ void grid::starting()
     // Set the material
     m_material = std::make_shared<data::material>();
 
-    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::material>(
+    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
     );
-    m_materialAdaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->configure(
-        this->get_id() + m_materialAdaptor->get_id(),
-        this->get_id() + m_materialAdaptor->get_id(),
-        this->getRenderService(),
-        m_layerID,
+    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
+    m_material_adaptor->configure(
+        this->get_id() + m_material_adaptor->get_id(),
+        this->get_id() + m_material_adaptor->get_id(),
+        this->render_service(),
+        m_layer_id,
         "ambient"
     );
-    m_materialAdaptor->start();
+    m_material_adaptor->start();
 
-    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
-    m_materialAdaptor->update();
+    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
+    m_material_adaptor->update();
 
     // Draw the line
-    this->drawGrid(false);
+    this->draw_grid(false);
 
-    this->attachNode(m_line);
+    this->attach_node(m_line);
 
-    this->setVisible(m_isVisible);
+    this->set_visible(m_visible);
 }
 
 //-----------------------------------------------------------------------------
 
 void grid::updating()
 {
-    if(m_isVisible)
+    if(m_visible)
     {
-        this->getRenderService()->makeCurrent();
+        this->render_service()->make_current();
         // Draw
-        this->drawGrid(true);
+        this->draw_grid(true);
     }
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
 void grid::stopping()
 {
-    this->getRenderService()->makeCurrent();
-    this->unregisterServices();
+    this->render_service()->make_current();
+    this->unregister_services();
     m_material = nullptr;
     if(m_line != nullptr)
     {
         m_line->detachFromParent();
-        this->getSceneManager()->destroyManualObject(m_line);
+        this->get_scene_manager()->destroyManualObject(m_line);
         m_line = nullptr;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void grid::attachNode(Ogre::MovableObject* _object)
+void grid::attach_node(Ogre::MovableObject* _object)
 {
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
-    trans_node->setVisible(m_isVisible);
+    trans_node->setVisible(m_visible);
     trans_node->attachObject(_object);
 }
 
 //-----------------------------------------------------------------------------
 
-void grid::drawGrid(bool _existing_line)
+void grid::draw_grid(bool _existing_line)
 {
     if(!_existing_line)
     {
         m_line->begin(
-            m_materialAdaptor->getMaterialName(),
+            m_material_adaptor->get_material_name(),
             Ogre::RenderOperation::OT_LINE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );
@@ -180,12 +180,12 @@ void grid::drawGrid(bool _existing_line)
     float x = -half_size;
     for(std::size_t i = 0 ; i <= m_step ; ++i)
     {
-        sight::viz::scene3d::helper::manual_object::drawDashedLine(
+        sight::viz::scene3d::helper::manual_object::draw_dashed_line(
             m_line,
             Ogre::Vector3(x, m_elevation, -half_size),
             Ogre::Vector3(x, m_elevation, half_size),
-            m_dashLength,
-            m_dashLength,
+            m_dash_length,
+            m_dash_length,
             m_color
         );
         x += step_size;
@@ -194,12 +194,12 @@ void grid::drawGrid(bool _existing_line)
     float y = -half_size;
     for(std::size_t i = 0 ; i <= m_step ; ++i)
     {
-        sight::viz::scene3d::helper::manual_object::drawDashedLine(
+        sight::viz::scene3d::helper::manual_object::draw_dashed_line(
             m_line,
             Ogre::Vector3(-half_size, m_elevation, y),
             Ogre::Vector3(half_size, m_elevation, y),
-            m_dashLength,
-            m_dashLength,
+            m_dash_length,
+            m_dash_length,
             m_color
         );
         y += step_size;
@@ -216,17 +216,17 @@ void grid::drawGrid(bool _existing_line)
 
 //-----------------------------------------------------------------------------
 
-void grid::setVisible(bool /*_visible*/)
+void grid::set_visible(bool /*_visible*/)
 {
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
-    trans_node->setVisible(m_isVisible);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
+    trans_node->setVisible(m_visible);
     this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void grid::updateSize(float _size)
+void grid::update_size(float _size)
 {
     m_size = _size;
     this->updating();

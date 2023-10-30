@@ -62,34 +62,34 @@ image_writer::~image_writer() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType image_writer::getIOPathType() const
+sight::io::service::path_type_t image_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
 
-void image_writer::openLocationDialog()
+void image_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a file to save an image" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.set_option(ui::dialog::location::write);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -121,7 +121,7 @@ void image_writer::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-bool image_writer::saveImage(const std::filesystem::path& _img_save_path, const data::image::csptr& _image)
+bool image_writer::save_image(const std::filesystem::path& _img_save_path, const data::image::csptr& _image)
 {
     sight::io::writer::object_writer::sptr my_writer;
     std::string ext = _img_save_path.extension().string();
@@ -129,7 +129,7 @@ bool image_writer::saveImage(const std::filesystem::path& _img_save_path, const 
 
     if(boost::algorithm::ends_with(_img_save_path.string(), ".inr.gz"))
     {
-        auto inr_writer = std::make_shared<sight::io::itk::InrImageWriter>();
+        auto inr_writer = std::make_shared<sight::io::itk::inr_image_writer>();
         sight::ui::dialog::progress progress_meter_gui("Saving images... ");
         inr_writer->add_handler(progress_meter_gui);
         inr_writer->set_file(_img_save_path);
@@ -137,13 +137,13 @@ bool image_writer::saveImage(const std::filesystem::path& _img_save_path, const 
     }
     else if(ext == ".nii" || boost::algorithm::ends_with(_img_save_path.string(), ".nii.gz"))
     {
-        auto nifti_writer = std::make_shared<sight::io::itk::NiftiImageWriter>();
+        auto nifti_writer = std::make_shared<sight::io::itk::nifti_image_writer>();
         nifti_writer->set_file(_img_save_path);
         my_writer = nifti_writer;
     }
     else if(std::filesystem::is_directory(_img_save_path))
     {
-        auto jpg_writer = std::make_shared<sight::io::itk::JpgImageWriter>();
+        auto jpg_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
         sight::ui::dialog::progress progress_meter_gui("Saving images... ");
         jpg_writer->add_handler(progress_meter_gui);
         jpg_writer->set_folder(_img_save_path);
@@ -172,7 +172,7 @@ bool image_writer::saveImage(const std::filesystem::path& _img_save_path, const 
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         return false;
     }
@@ -181,7 +181,7 @@ bool image_writer::saveImage(const std::filesystem::path& _img_save_path, const 
         sight::ui::dialog::message::show(
             "Warning",
             "Warning during saving",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         return false;
     }
@@ -192,25 +192,25 @@ bool image_writer::saveImage(const std::filesystem::path& _img_save_path, const 
 
 void image_writer::updating()
 {
-    m_writeFailed = true;
-    if(this->hasLocationDefined())
+    m_write_failed = true;
+    if(this->has_location_defined())
     {
         const auto data  = m_data.lock();
         const auto image = std::dynamic_pointer_cast<const data::image>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.", image);
+        SIGHT_ASSERT("The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.", image);
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
         try
         {
-            saveImage(this->get_file(), image);
-            m_writeFailed = false;
+            save_image(this->get_file(), image);
+            m_write_failed = false;
         }
         catch(core::tools::failed& e)
         {
             SIGHT_THROW_EXCEPTION(e);
         }
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
 }
 

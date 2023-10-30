@@ -29,10 +29,10 @@
 namespace sight::io::http::ut
 {
 
-class SeriesTest : public CPPUNIT_NS::TestFixture
+class series_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(SeriesTest);
-CPPUNIT_TEST(testSeries);
+CPPUNIT_TEST_SUITE(series_test);
+CPPUNIT_TEST(test_series);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,7 +45,7 @@ public:
 
     // Test functions
     // Tests the Series helper API
-    void testSeries();
+    void test_series();
 
 private:
 

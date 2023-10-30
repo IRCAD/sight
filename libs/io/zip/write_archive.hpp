@@ -47,25 +47,25 @@ public:
      * @param path file in archive.
      * @return output stream of file entry in archive.
      */
-    virtual SPTR(std::ostream) createFile(const std::filesystem::path& _path) = 0;
+    virtual SPTR(std::ostream) create_file(const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Writes source file in archive.
      * @param sourceFile source file.
      * @param path file in archive.
      */
-    virtual void putFile(const std::filesystem::path& _source_file, const std::filesystem::path& _path) = 0;
+    virtual void put_file(const std::filesystem::path& _source_file, const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Creates a folder in archive.
      * @param path folder to create in archive.
      */
-    virtual bool createDir(const std::filesystem::path& _path) = 0;
+    virtual bool create_dir(const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Returns archive path.
      */
-    [[nodiscard]] virtual std::filesystem::path getArchivePath() const = 0;
+    [[nodiscard]] virtual std::filesystem::path get_archive_path() const = 0;
 };
 
 } // namespace sight::io::zip

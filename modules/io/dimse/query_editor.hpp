@@ -93,7 +93,7 @@ protected:
     /// Configures the editor.
     MODULE_IO_DIMSE_API void configuring() override;
 
-    /// Creates the GUI and connects widget to updateSeriesSet(const data::series_set::container_type&).
+    /// Creates the GUI and connects widget to updateSeriesSet(const data::series_set::container_t&).
     MODULE_IO_DIMSE_API void starting() override;
 
     /// Executes a query with last settings.
@@ -105,77 +105,77 @@ protected:
 private:
 
     /// Executes a query and fills the result in the series set.
-    void executeQuery();
+    void execute_query();
 
     /**
      * @brief Adds series in the series set.
      * @param _series series to add.
      */
-    void updateSeriesSet(const data::series_set::container_type& _series);
+    void update_series_set(const data::series_set::container_t& _series);
 
     /// Contains the worker of the series enquire thread.
-    core::thread::worker::sptr m_requestWorker {nullptr};
+    core::thread::worker::sptr m_request_worker {nullptr};
 
     /// Defines if the service is executing query.
-    std::atomic<bool> m_isQuerying {false};
+    std::atomic<bool> m_is_querying {false};
 
     /// Defines if advanced fields are displayed.
     bool m_advanced {true};
 
     /// Defines the path of the button's icon.
-    std::filesystem::path m_iconPath {};
+    std::filesystem::path m_icon_path {};
 
     /// Defines the with of the button's icon.
-    unsigned int m_iconWidth {20};
+    unsigned int m_icon_width {20};
 
     /// Defines the height of the button's icon.
-    unsigned int m_iconHeight {20};
+    unsigned int m_icon_height {20};
 
     /// Contains the search line editor.
-    QPointer<QLineEdit> m_searchEdit;
+    QPointer<QLineEdit> m_search_edit;
 
     /// Contains the search button.
-    QPointer<QPushButton> m_searchButton;
+    QPointer<QPushButton> m_search_button;
 
     /// Contains the begin date line editor.
-    QPointer<QDateEdit> m_beginStudyDateEdit;
+    QPointer<QDateEdit> m_begin_study_date_edit;
 
     /// Contains the end date line editor.
-    QPointer<QDateEdit> m_endStudyDateEdit;
+    QPointer<QDateEdit> m_end_study_date_edit;
 
     /// Contains the name line editor.
-    QPointer<QLineEdit> m_patientNameEdit;
+    QPointer<QLineEdit> m_patient_name_edit;
 
     /// Contains the birth date line editor.
-    QPointer<QDateEdit> m_birthDateEdit;
+    QPointer<QDateEdit> m_birth_date_edit;
 
     /// Contains the patient id line editor.
-    QPointer<QLineEdit> m_patientUIDEdit;
+    QPointer<QLineEdit> m_patient_uid_edit;
 
     /// Contains the uid line editor.
-    QPointer<QLineEdit> m_seriesUIDEdit;
+    QPointer<QLineEdit> m_series_uid_edit;
 
     /// Contains the description line editor.
-    QPointer<QLineEdit> m_seriesDescriptionEdit;
+    QPointer<QLineEdit> m_series_description_edit;
 
     /// Contains the modality line editor.
-    QPointer<QLineEdit> m_seriesModalityEdit;
+    QPointer<QLineEdit> m_series_modality_edit;
 
 private Q_SLOTS:
 
     /// Executes a query and fills the result in the series set.
-    void executeQueryAsync();
+    void execute_query_async();
 
     /**
      * @brief Enables the birth date editor.
      * @param _enable value used as a boolean.
      */
-    void enableBirthDateEdit(int _enable);
+    void enable_birth_date_edit(int _enable);
 
 private:
 
-    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
-    data::ptr<sight::data::series_set, data::Access::inout> m_series_set {this, "seriesSet"};
+    data::ptr<sight::io::dimse::data::pacs_configuration, data::access::in> m_config {this, "pacsConfig"};
+    data::ptr<sight::data::series_set, data::access::inout> m_series_set {this, "seriesSet"};
 };
 
 } // namespace sight::module::io::dimse.

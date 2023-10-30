@@ -118,7 +118,7 @@ protected:
     /**
      * @brief Slot: emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
      */
-    MODULE_UI_QT_API void getSelection();
+    MODULE_UI_QT_API void get_selection();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -131,29 +131,29 @@ private Q_SLOTS:
     /**
      * @brief Slot called when an element is double-clicked in the list widget.
      */
-    void onItemDoubleClicked(QListWidgetItem* /*unused*/);
+    void on_item_double_clicked(QListWidgetItem* /*unused*/);
 
 private:
 
     /**
      * @brief Index of the last acquisition.
      */
-    int m_captureIdx {};
+    int m_capture_idx {};
 
     /**
      * @brief Label displaying the number of point acquisitions.
      */
-    QPointer<QLabel> m_nbCapturesLabel;
+    QPointer<QLabel> m_nb_captures_label;
 
     /**
      * @brief Calibration point list.
      */
-    QPointer<QListWidget> m_capturesListWidget;
+    QPointer<QListWidget> m_captures_list_widget;
 
-    static constexpr std::string_view s_CALIBRATION_INFO_1 = "calInfo1";
-    static constexpr std::string_view s_CALIBRATION_INFO_2 = "calInfo2";
-    data::ptr<data::calibration_info, data::Access::inout> m_calibrationInfo1 {this, s_CALIBRATION_INFO_1, true};
-    data::ptr<data::calibration_info, data::Access::inout> m_calibrationInfo2 {this, s_CALIBRATION_INFO_2, true, true};
+    static constexpr std::string_view CALIBRATION_INFO_1 = "calInfo1";
+    static constexpr std::string_view CALIBRATION_INFO_2 = "calInfo2";
+    data::ptr<data::calibration_info, data::access::inout> m_calibration_info1 {this, CALIBRATION_INFO_1, true};
+    data::ptr<data::calibration_info, data::access::inout> m_calibration_info2 {this, CALIBRATION_INFO_2, true, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

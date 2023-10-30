@@ -156,56 +156,56 @@ protected:
      * @{
      */
     /// Initialize and start camera (restart camera if is already started).
-    MODULE_IO_VIDEO_API void startCamera() final;
+    MODULE_IO_VIDEO_API void start_camera() final;
 
     /// Initialize and start camera (restart camera if is already started).
-    MODULE_IO_VIDEO_API void startTargetCamera(std::string _impl);
+    MODULE_IO_VIDEO_API void start_target_camera(std::string _impl);
 
     /// Stop camera.
-    MODULE_IO_VIDEO_API void stopCamera() final;
+    MODULE_IO_VIDEO_API void stop_camera() final;
 
     /// Pause camera.
-    MODULE_IO_VIDEO_API void pauseCamera() final;
+    MODULE_IO_VIDEO_API void pause_camera() final;
 
     /// Enable/disable loop in video.
-    MODULE_IO_VIDEO_API void toggleLoopMode() final;
+    MODULE_IO_VIDEO_API void toggle_loop_mode() final;
 
     /// Set the new position in the video.
-    MODULE_IO_VIDEO_API void setPosition(std::int64_t _position) final;
+    MODULE_IO_VIDEO_API void set_position(std::int64_t _position) final;
 
     /// Get the previous image in frame by frame mode.
-    MODULE_IO_VIDEO_API void previousImage() override;
+    MODULE_IO_VIDEO_API void previous_image() override;
 
     /// Get the next image in frame by frame mode.
-    MODULE_IO_VIDEO_API void nextImage() override;
+    MODULE_IO_VIDEO_API void next_image() override;
 
     /// Set step used on readPrevious/readNext slots.
-    MODULE_IO_VIDEO_API void setStep(int _step, std::string _key) override;
+    MODULE_IO_VIDEO_API void set_step(int _step, std::string _key) override;
 
     /// Sets internal parameters values.
-    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t _value, std::string _key) final;
+    MODULE_IO_VIDEO_API void set_parameter(ui::parameter_t _value, std::string _key) final;
 
     /// SLOT: Requests the grabber internal settings.
-    MODULE_IO_VIDEO_API void requestSettings() final;
+    MODULE_IO_VIDEO_API void request_settings() final;
 
     /// SLOT: Calls optimization functions defined in the grabber (e.g. hardware related).
     MODULE_IO_VIDEO_API void optimize() final;
 
     /// SLOT: Adds a region of interest center.
-    MODULE_IO_VIDEO_API void addROICenter(sight::data::point::sptr _p) final;
+    MODULE_IO_VIDEO_API void add_roi_center(sight::data::point::sptr _p) final;
 
     /// SLOT: Removes a region of interest center.
-    MODULE_IO_VIDEO_API void removeROICenter(sight::data::point::sptr _p) final;
+    MODULE_IO_VIDEO_API void remove_roi_center(sight::data::point::sptr _p) final;
 /** @} */
 
 private:
 
-    typedef std::pair<std::string, service::config_t> ServiceConfigPair;
+    using service_config_pair = std::pair<std::string, service::config_t>;
 
     enum class camera_t : std::uint8_t
     {
-        RGB,
-        RGBD
+        rgb,
+        rgbd
     };
 
     /**
@@ -217,44 +217,44 @@ private:
     void reconfigure();
 
     /// Position in the video has changed.
-    void modifyPosition(int64_t _position);
+    void modify_position(int64_t _position);
 
     /// Duration of the video has changed.
-    void modifyDuration(int64_t _duration);
+    void modify_duration(int64_t _duration);
 
     /// The playback has started in the sub-service.
-    void fwdStartCamera();
+    void fwd_start_camera();
 
     /// The playback has stopped in the sub-service.
-    void fwdStopCamera();
+    void fwd_stop_camera();
 
     /// A frame is presented in the sub-service.
-    void fwdPresentFrame();
+    void fwd_present_frame();
 
     /// A named parameter has been emitted in the sub-service.
-    void fwdSetParameter(ui::parameter_t _value, std::string _key);
+    void fwd_set_parameter(ui::parameter_t _value, std::string _key);
 
     /// A job has been created in the proxied service.
-    void fwdCreateJob(sight::core::jobs::base::sptr _job);
+    void fwd_create_job(sight::core::jobs::base::sptr _job);
 
     // Forwards notifications
-    void fwdNotify(service::Notification _notification);
+    void fwd_notify(service::notification _notification);
     /** @} */
 
     /// Forward FPS data
-    void forwardFPSChanged(double _fps) final;
+    void forward_fps_changed(double _fps) final;
 
     /// Camera type (RGB, RGBD,...)
-    camera_t m_type {camera_t::RGB};
+    camera_t m_type {camera_t::rgb};
 
     /// Grabber implementation chosen by the user.
-    std::string m_grabberImpl;
+    std::string m_grabber_impl;
 
     /// config to use with the current grabber.
-    std::string m_grabberConfig;
+    std::string m_grabber_config;
 
     /// Title of the GUI selector window
-    std::string m_guiTitle {"Please select a video grabber implementation"};
+    std::string m_gui_title {"Please select a video grabber implementation"};
 
     /// Actual grabber service.
     std::vector<sight::io::service::grabber::sptr> m_services;
@@ -263,16 +263,16 @@ private:
     core::com::helper::sig_slot_connection m_connections;
 
     /// List of services to be included or excluded.
-    std::set<std::string> m_selectedServices;
+    std::set<std::string> m_selected_services;
 
     /// Map that specifies all configuration extensions for a service.
-    std::map<std::string, std::vector<std::string> > m_serviceToConfig;
+    std::map<std::string, std::vector<std::string> > m_service_to_config;
 
     /// Configure if selected services are excluded (true) or included (false).
     bool m_exclude {true};
 
     /// Camera can be either a data::camera or a data::camera_set depending on the implementation
-    data::ptr<data::object, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr<data::object, data::access::in> m_camera {this, CAMERA_INPUT};
 };
 
 } // namespace sight::module::io::video

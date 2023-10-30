@@ -37,7 +37,7 @@ namespace sight::io::http
 /**
  * @brief This structure represent an HTTP response.
  */
-struct HTTPResponse
+struct http_response
 {
     unsigned int status_code;
     std::string message;
@@ -46,7 +46,7 @@ struct HTTPResponse
 /**
  * @brief HTTP client using Qt Network.
  */
-class IO_HTTP_CLASS_API ClientQt : public QObject
+class IO_HTTP_CLASS_API client_qt : public QObject
 {
 Q_OBJECT
 
@@ -56,45 +56,45 @@ public:
      * Constructor/Destructor
      * @{
      */
-    IO_HTTP_API ClientQt();
-    IO_HTTP_API ~ClientQt() override;
+    IO_HTTP_API client_qt();
+    IO_HTTP_API ~client_qt() override;
     /**  @} */
 
     /**
      * @brief Retrieves data over network
      * @param request the request
      */
-    IO_HTTP_API QByteArray get(Request::sptr _request);
+    IO_HTTP_API QByteArray get(request::sptr _request);
 
     /**
      * @brief Retrieves data over network
      * @param request the request
      */
-    IO_HTTP_API std::string get_file(Request::sptr _request);
+    IO_HTTP_API std::string get_file(request::sptr _request);
 
     /**
      * @brief Performs head request
      * @param request the request
      * @return headers resulting of the request
      */
-    IO_HTTP_API Request::headers_t head(Request::sptr _request);
+    IO_HTTP_API request::headers_t head(request::sptr _request);
 
     /**
      * @brief Performs POST request
      * @param request the request
      * @return body The body content
      */
-    IO_HTTP_API QByteArray post(Request::sptr _request, const QByteArray& _body);
+    IO_HTTP_API QByteArray post(request::sptr _request, const QByteArray& _body);
 
 public Q_SLOTS:
 
     /// Slot triggered when an error occurs.
-    static void processError(QNetworkReply::NetworkError _error_code);
+    static void process_error(QNetworkReply::NetworkError _error_code);
 
 private:
 
     /// Set request headers with given values.
-    static void computeHeaders(QNetworkRequest& _request, const Request::headers_t& _headers);
+    static void compute_headers(QNetworkRequest& _request, const request::headers_t& _headers);
 };
 
 } // namespace sight::io::http

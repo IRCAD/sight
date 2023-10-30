@@ -62,10 +62,10 @@ class CORE_CLASS_API buffer_object : public sight::core::base_object
 {
 public:
 
-    typedef std::shared_ptr<void> counter_type;
-    typedef std::weak_ptr<void> weak_counter_type;
+    using counter_type      = std::shared_ptr<void>;
+    using weak_counter_type = std::weak_ptr<void>;
 
-    typedef std::size_t size_t;
+    using size_t = std::size_t;
 
     SIGHT_DECLARE_CLASS(buffer_object, core::base_object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
@@ -98,7 +98,7 @@ public:
     {
     public:
 
-        typedef typename std::conditional_t<std::is_const_v<T>, const void*, void*> buffer_t;
+        using buffer_t = typename std::conditional_t<std::is_const_v<T>, const void*, void*>;
 
         lock_base() = default;
         inline ~lock_base()
@@ -315,7 +315,7 @@ public:
         const SPTR(core::memory::stream::in::factory)& _factory,
         size_t _size,
         const std::filesystem::path& _source_file                   = "",
-        core::memory::file_format_type _format                      = core::memory::OTHER,
+        core::memory::file_format_type _format                      = core::memory::other,
         const core::memory::buffer_allocation_policy::sptr& _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 

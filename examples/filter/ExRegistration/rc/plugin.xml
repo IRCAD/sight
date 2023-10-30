@@ -4,7 +4,7 @@
 
 Point list 1 Tab selected
 =======================================================================
-|                           toolBar                                    |
+|                           toolbar                                    |
 |======================================================================|
 || Point list 1 Tab ||    Point list 2 Tab| Registration Tab|          |
 |======================================================================|
@@ -17,7 +17,7 @@ Point list 1 Tab selected
 Point list 2 Tab selected
 
 =======================================================================
-|                           toolBar                                    |
+|                           toolbar                                    |
 |======================================================================|
 | Point list 1 Tab ||    Point list 2 Tab || Registration Tab|         |
 |======================================================================|
@@ -29,7 +29,7 @@ Point list 2 Tab selected
 Registration Tab selected
 
 =======================================================================
-|                           toolBar                                    |
+|                           toolbar                                    |
 |======================================================================|
 | Point list 1 Tab |    Point list 2 Tab || Registration Tab||         |
 |======================================================================|
@@ -101,16 +101,16 @@ Detail of the ToolBar
                     <layout type="sight::ui::layout::cardinal">
                         <view align="center" />
                     </layout>
-                    <toolBar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="true" />
+                    <toolbar sid="toolBarView" start="true" />
                     <view sid="multiView" start="true" />
                 </registry>
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="sight::module::ui::tool_bar">
+            <service uid="toolBarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <menuItem name="Load image" icon="ExRegistration/icons/icon-load1.png" />

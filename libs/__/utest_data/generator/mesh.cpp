@@ -34,7 +34,7 @@ namespace sight::utest_data::generator
 
 using core::tools::random::safe_rand;
 
-struct RandFloat
+struct rand_float
 {
     //------------------------------------------------------------------------------
 
@@ -46,23 +46,23 @@ struct RandFloat
 
 //------------------------------------------------------------------------------
 
-void mesh::generateMesh(const data::mesh::sptr& _mesh)
+void mesh::generate_mesh(const data::mesh::sptr& _mesh)
 {
-    const data::mesh::Attributes attributes = data::mesh::Attributes::POINT_COLORS
-                                              | data::mesh::Attributes::POINT_NORMALS
-                                              | data::mesh::Attributes::CELL_COLORS
-                                              | data::mesh::Attributes::CELL_NORMALS;
+    const data::mesh::attribute attributes = data::mesh::attribute::point_colors
+                                             | data::mesh::attribute::point_normals
+                                             | data::mesh::attribute::cell_colors
+                                             | data::mesh::attribute::cell_normals;
 
-    utest_data::generator::mesh::generateTriangleMesh(_mesh, attributes);
-    utest_data::generator::mesh::shakePoints(_mesh);
-    _mesh->shrinkToFit();
+    utest_data::generator::mesh::generate_triangle_mesh(_mesh, attributes);
+    utest_data::generator::mesh::shake_points(_mesh);
+    _mesh->shrink_to_fit();
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::generateTriangleQuadMesh(
+void mesh::generate_triangle_quad_mesh(
     const data::mesh::sptr& _mesh,
-    data::mesh::Attributes _attributes
+    data::mesh::attribute _attributes
 )
 {
     data::mesh::size_t nb_points_by_edge = 10;
@@ -73,15 +73,15 @@ void mesh::generateTriangleQuadMesh(
     const data::mesh::size_t nb_triangle_cells = nb_points_by_edge * nb_points_by_edge * 2 * 2;
 
     _mesh->clear();
-    _mesh->reserve(nb_points, nb_triangle_cells, data::mesh::cell_type_t::TRIANGLE, _attributes);
-    mesh::addTriangleMesh(_mesh, points, nb_points_by_edge, edge_dim);
+    _mesh->reserve(nb_points, nb_triangle_cells, data::mesh::cell_type_t::triangle, _attributes);
+    mesh::add_triangle_mesh(_mesh, points, nb_points_by_edge, edge_dim);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::generateTriangleMesh(
+void mesh::generate_triangle_mesh(
     const data::mesh::sptr& _mesh,
-    data::mesh::Attributes _attributes
+    data::mesh::attribute _attributes
 )
 {
     data::mesh::size_t nb_points_by_edge = 10;
@@ -91,16 +91,16 @@ void mesh::generateTriangleMesh(
     const data::mesh::size_t nb_cells  = nb_points_by_edge * nb_points_by_edge * 2 * 2;
 
     _mesh->clear();
-    _mesh->reserve(nb_points, nb_cells, data::mesh::cell_type_t::TRIANGLE, _attributes);
-    mesh::addTriangleMesh(_mesh, points, nb_points_by_edge, edge_dim);
-    _mesh->shrinkToFit();
+    _mesh->reserve(nb_points, nb_cells, data::mesh::cell_type_t::triangle, _attributes);
+    mesh::add_triangle_mesh(_mesh, points, nb_points_by_edge, edge_dim);
+    _mesh->shrink_to_fit();
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::generateQuadMesh(
+void mesh::generate_quad_mesh(
     const data::mesh::sptr& _mesh,
-    data::mesh::Attributes _attributes
+    data::mesh::attribute _attributes
 )
 {
     data::mesh::size_t nb_points_by_edge = 10;
@@ -110,14 +110,14 @@ void mesh::generateQuadMesh(
     const data::mesh::size_t nb_cells  = nb_points_by_edge * nb_points_by_edge * 2;
 
     _mesh->clear();
-    _mesh->reserve(nb_points, nb_cells, data::mesh::cell_type_t::QUAD, _attributes);
-    mesh::addQuadMesh(_mesh, points, nb_points_by_edge, edge_dim);
-    _mesh->shrinkToFit();
+    _mesh->reserve(nb_points, nb_cells, data::mesh::cell_type_t::quad, _attributes);
+    mesh::add_quad_mesh(_mesh, points, nb_points_by_edge, edge_dim);
+    _mesh->shrink_to_fit();
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::addQuadMesh(
+void mesh::add_quad_mesh(
     const data::mesh::sptr& _mesh,
     points_map_t& _points,
     std::size_t _nb_points_by_edge,
@@ -156,29 +156,29 @@ void mesh::addQuadMesh(
             pt4[1] = _edge_dim;
             pt4[2] = static_cast<float>(z + 1) * step;
 
-            idx1 = mesh::addPoint(pt1.data(), _mesh, _points);
-            idx2 = mesh::addPoint(pt2.data(), _mesh, _points);
-            idx3 = mesh::addPoint(pt3.data(), _mesh, _points);
-            idx4 = mesh::addPoint(pt4.data(), _mesh, _points);
+            idx1 = mesh::add_point(pt1.data(), _mesh, _points);
+            idx2 = mesh::add_point(pt2.data(), _mesh, _points);
+            idx3 = mesh::add_point(pt3.data(), _mesh, _points);
+            idx4 = mesh::add_point(pt4.data(), _mesh, _points);
 
-            const auto cell_id = _mesh->pushCell(idx1, idx3, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
+            const auto cell_id = _mesh->push_cell(idx1, idx3, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
 
-            if(_mesh->has<data::mesh::Attributes::CELL_COLORS>())
+            if(_mesh->has<data::mesh::attribute::cell_colors>())
             {
                 const auto r = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto g = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto b = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto a = static_cast<std::uint8_t>(safe_rand() % 255);
-                _mesh->setCellColor(cell_id, r, g, b, a);
+                _mesh->set_cell_color(cell_id, r, g, b, a);
             }
 
-            if(_mesh->has<data::mesh::Attributes::CELL_NORMALS>())
+            if(_mesh->has<data::mesh::attribute::cell_normals>())
             {
                 const float nx = 0;
                 const float ny = 1;
                 const float nz = 0;
 
-                _mesh->setCellNormal(cell_id, nx, ny, nz);
+                _mesh->set_cell_normal(cell_id, nx, ny, nz);
             }
         }
     }
@@ -204,28 +204,28 @@ void mesh::addQuadMesh(
             pt4[1] = static_cast<float>(y + 1) * step;
             pt4[2] = static_cast<float>(z + 1) * step;
 
-            idx1 = mesh::addPoint(pt1.data(), _mesh, _points);
-            idx2 = mesh::addPoint(pt2.data(), _mesh, _points);
-            idx3 = mesh::addPoint(pt3.data(), _mesh, _points);
-            idx4 = mesh::addPoint(pt4.data(), _mesh, _points);
+            idx1 = mesh::add_point(pt1.data(), _mesh, _points);
+            idx2 = mesh::add_point(pt2.data(), _mesh, _points);
+            idx3 = mesh::add_point(pt3.data(), _mesh, _points);
+            idx4 = mesh::add_point(pt4.data(), _mesh, _points);
 
-            const auto cell_id = _mesh->pushCell(idx1, idx3, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
-            if(_mesh->has<data::mesh::Attributes::CELL_COLORS>())
+            const auto cell_id = _mesh->push_cell(idx1, idx3, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
+            if(_mesh->has<data::mesh::attribute::cell_colors>())
             {
                 const auto r = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto g = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto b = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto a = static_cast<std::uint8_t>(safe_rand() % 255);
-                _mesh->setCellColor(cell_id, r, g, b, a);
+                _mesh->set_cell_color(cell_id, r, g, b, a);
             }
 
-            if(_mesh->has<data::mesh::Attributes::CELL_NORMALS>())
+            if(_mesh->has<data::mesh::attribute::cell_normals>())
             {
                 const float nx = 1;
                 const float ny = 0;
                 const float nz = 0;
 
-                _mesh->setCellNormal(cell_id, nx, ny, nz);
+                _mesh->set_cell_normal(cell_id, nx, ny, nz);
             }
         }
     }
@@ -233,7 +233,7 @@ void mesh::addQuadMesh(
 
 //------------------------------------------------------------------------------
 
-void mesh::addTriangleMesh(
+void mesh::add_triangle_mesh(
     const data::mesh::sptr& _mesh,
     points_map_t& _points,
     std::size_t _nb_points_by_edge,
@@ -273,32 +273,32 @@ void mesh::addTriangleMesh(
             pt4[1] = static_cast<float>(y + 1) * step;
             pt4[2] = 0;
 
-            idx1 = mesh::addPoint(pt1.data(), _mesh, _points);
-            idx2 = mesh::addPoint(pt2.data(), _mesh, _points);
-            idx3 = mesh::addPoint(pt3.data(), _mesh, _points);
-            idx4 = mesh::addPoint(pt4.data(), _mesh, _points);
+            idx1 = mesh::add_point(pt1.data(), _mesh, _points);
+            idx2 = mesh::add_point(pt2.data(), _mesh, _points);
+            idx3 = mesh::add_point(pt3.data(), _mesh, _points);
+            idx4 = mesh::add_point(pt4.data(), _mesh, _points);
 
-            const auto cell_id1 = _mesh->pushCell(idx1, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
-            const auto cell_id2 = _mesh->pushCell(idx1, idx3, idx4); // NOLINT(readability-suspicious-call-argument)
+            const auto cell_id1 = _mesh->push_cell(idx1, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
+            const auto cell_id2 = _mesh->push_cell(idx1, idx3, idx4); // NOLINT(readability-suspicious-call-argument)
 
-            if(_mesh->has<data::mesh::Attributes::CELL_COLORS>())
+            if(_mesh->has<data::mesh::attribute::cell_colors>())
             {
                 const auto r = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto g = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto b = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto a = static_cast<std::uint8_t>(safe_rand() % 255);
-                _mesh->setCellColor(cell_id1, r, g, b, a);
-                _mesh->setCellColor(cell_id2, a, g, r, b);
+                _mesh->set_cell_color(cell_id1, r, g, b, a);
+                _mesh->set_cell_color(cell_id2, a, g, r, b);
             }
 
-            if(_mesh->has<data::mesh::Attributes::CELL_NORMALS>())
+            if(_mesh->has<data::mesh::attribute::cell_normals>())
             {
                 const float nx = 0;
                 const float ny = 1;
                 const float nz = 0;
 
-                _mesh->setCellNormal(cell_id1, nx, ny, nz);
-                _mesh->setCellNormal(cell_id2, nx, ny, nz);
+                _mesh->set_cell_normal(cell_id1, nx, ny, nz);
+                _mesh->set_cell_normal(cell_id2, nx, ny, nz);
             }
         }
     }
@@ -324,32 +324,32 @@ void mesh::addTriangleMesh(
             pt4[1] = static_cast<float>(y + 1) * step;
             pt4[2] = static_cast<float>(z + 1) * step;
 
-            idx1 = mesh::addPoint(pt1.data(), _mesh, _points);
-            idx2 = mesh::addPoint(pt2.data(), _mesh, _points);
-            idx3 = mesh::addPoint(pt3.data(), _mesh, _points);
-            idx4 = mesh::addPoint(pt4.data(), _mesh, _points);
+            idx1 = mesh::add_point(pt1.data(), _mesh, _points);
+            idx2 = mesh::add_point(pt2.data(), _mesh, _points);
+            idx3 = mesh::add_point(pt3.data(), _mesh, _points);
+            idx4 = mesh::add_point(pt4.data(), _mesh, _points);
 
-            const auto cell_id1 = _mesh->pushCell(idx2, idx4, idx3); // NOLINT(readability-suspicious-call-argument)
-            const auto cell_id2 = _mesh->pushCell(idx1, idx2, idx3);
+            const auto cell_id1 = _mesh->push_cell(idx2, idx4, idx3); // NOLINT(readability-suspicious-call-argument)
+            const auto cell_id2 = _mesh->push_cell(idx1, idx2, idx3);
 
-            if(_mesh->has<data::mesh::Attributes::CELL_COLORS>())
+            if(_mesh->has<data::mesh::attribute::cell_colors>())
             {
                 const auto r = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto g = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto b = static_cast<std::uint8_t>(safe_rand() % 255);
                 const auto a = static_cast<std::uint8_t>(safe_rand() % 255);
-                _mesh->setCellColor(cell_id1, r, g, b, a);
-                _mesh->setCellColor(cell_id2, a, g, r, b);
+                _mesh->set_cell_color(cell_id1, r, g, b, a);
+                _mesh->set_cell_color(cell_id2, a, g, r, b);
             }
 
-            if(_mesh->has<data::mesh::Attributes::CELL_NORMALS>())
+            if(_mesh->has<data::mesh::attribute::cell_normals>())
             {
                 const float nx = 1;
                 const float ny = 0;
                 const float nz = 0;
 
-                _mesh->setCellNormal(cell_id1, nx, ny, nz);
-                _mesh->setCellNormal(cell_id2, nx, ny, nz);
+                _mesh->set_cell_normal(cell_id1, nx, ny, nz);
+                _mesh->set_cell_normal(cell_id2, nx, ny, nz);
             }
         }
     }
@@ -357,13 +357,13 @@ void mesh::addTriangleMesh(
 
 //------------------------------------------------------------------------------
 
-data::mesh::size_t mesh::addPoint(
+data::mesh::size_t mesh::add_point(
     const data::mesh::position_t* _pt,
     const data::mesh::sptr& _mesh,
     points_map_t& _points
 )
 {
-    RandFloat rand_float;
+    rand_float rand_float;
     std::array<float, 3> my_point = {_pt[0], _pt[1], _pt[2]};
 
     auto it = _points.find(my_point);
@@ -372,24 +372,24 @@ data::mesh::size_t mesh::addPoint(
         return it->second;
     }
 
-    const data::mesh::point_t idx = _mesh->pushPoint(_pt[0], _pt[1], _pt[2]);
-    if(_mesh->has<data::mesh::Attributes::POINT_COLORS>())
+    const data::mesh::point_t idx = _mesh->push_point(_pt[0], _pt[1], _pt[2]);
+    if(_mesh->has<data::mesh::attribute::point_colors>())
     {
         const auto r = static_cast<std::uint8_t>(safe_rand() % 255);
         const auto g = static_cast<std::uint8_t>(safe_rand() % 255);
         const auto b = static_cast<std::uint8_t>(safe_rand() % 255);
         const auto a = static_cast<std::uint8_t>(safe_rand() % 255);
-        _mesh->setPointColor(idx, r, g, b, a);
+        _mesh->set_point_color(idx, r, g, b, a);
     }
 
-    if(_mesh->has<data::mesh::Attributes::POINT_NORMALS>())
+    if(_mesh->has<data::mesh::attribute::point_normals>())
     {
         const float nx = rand_float();
         const float ny = rand_float();
         const float nz = rand_float();
 
         const float length = std::sqrt(nx * nx + ny * ny + nz * nz);
-        _mesh->setPointNormal(idx, nx / length, ny / length, nz / length);
+        _mesh->set_point_normal(idx, nx / length, ny / length, nz / length);
     }
 
     _points[my_point] = idx;
@@ -398,9 +398,9 @@ data::mesh::size_t mesh::addPoint(
 
 //------------------------------------------------------------------------------
 
-void mesh::shakePoints(const data::mesh::sptr& _mesh)
+void mesh::shake_points(const data::mesh::sptr& _mesh)
 {
-    RandFloat rand_float;
+    rand_float rand_float;
     const auto dump_lock = _mesh->dump_lock();
 
     auto itr           = _mesh->begin<data::iterator::point::xyz>();

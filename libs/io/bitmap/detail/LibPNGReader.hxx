@@ -30,39 +30,39 @@
 namespace sight::io::bitmap::detail
 {
 
-class LibPNGReader final
+class lib_png_reader final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibPNGReader(const LibPNGReader&)            = delete;
-    LibPNGReader& operator=(const LibPNGReader&) = delete;
+    lib_png_reader(const lib_png_reader&)            = delete;
+    lib_png_reader& operator=(const lib_png_reader&) = delete;
 
     /// Constructor
-    inline LibPNGReader() noexcept = default;
+    inline lib_png_reader() noexcept = default;
 
     /// Destructor
-    inline ~LibPNGReader() noexcept = default;
+    inline ~lib_png_reader() noexcept = default;
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, Flag /*flag*/)
+    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
     {
         // Create an RAII to be sure everything is cleaned at exit
-        struct Keeper final
+        struct keeper final
         {
-            Keeper()
+            keeper()
             {
                 m_png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
                 SIGHT_THROW_IF("png_create_read_struct() failed.", m_png == nullptr);
 
                 // Set error/warning callback because C style setjmp/longjmp error management is dangerous in C++
-                png_set_error_fn(m_png, nullptr, errorCallback, warningCallback);
+                png_set_error_fn(m_png, nullptr, error_callback, warning_callback);
 
                 m_png_info = png_create_info_struct(m_png);
                 SIGHT_THROW_IF("png_create_info_struct() failed.", m_png_info == nullptr);
             }
 
-            ~Keeper()
+            ~keeper()
             {
                 png_destroy_read_struct(&m_png, &m_png_info, nullptr);
                 m_png      = nullptr;
@@ -74,7 +74,7 @@ public:
         } keeper;
 
         // Set read callback
-        png_set_read_fn(keeper.m_png, &_istream, readCallback);
+        png_set_read_fn(keeper.m_png, &_istream, read_callback);
 
         // Read header
         png_read_info(keeper.m_png, keeper.m_png_info);
@@ -149,16 +149,16 @@ public:
                 switch(channels)
                 {
                     case 1:
-                        return data::image::PixelFormat::GRAY_SCALE;
+                        return data::image::pixel_format::gray_scale;
 
                     case 2:
-                        return data::image::PixelFormat::RG;
+                        return data::image::pixel_format::rg;
 
                     case 3:
-                        return data::image::PixelFormat::RGB;
+                        return data::image::pixel_format::rgb;
 
                     case 4:
-                        return data::image::PixelFormat::RGBA;
+                        return data::image::pixel_format::rgba;
 
                     default:
                         SIGHT_THROW("Unsupported number of channels: " << channels);
@@ -174,7 +174,7 @@ public:
 
         for(size_t row = 0 ; row < height ; ++row)
         {
-            row_pointers.emplace_back(reinterpret_cast<png_bytep>(_image.getPixel(row * width)));
+            row_pointers.emplace_back(reinterpret_cast<png_bytep>(_image.get_pixel(row * width)));
         }
 
         // Read pixel data
@@ -186,7 +186,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void readCallback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
+    inline static void read_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
         auto* istream = reinterpret_cast<std::istream*>(png_get_io_ptr(_png_ptr));
         istream->read(reinterpret_cast<char*>(_data), std::streamsize(_length));
@@ -194,14 +194,14 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(png_structp, png_const_charp _msg)
+    inline static void warning_callback(png_structp, png_const_charp _msg)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(png_structp, png_const_charp _msg)
+    inline static void error_callback(png_structp, png_const_charp _msg)
     {
         SIGHT_THROW(_msg);
     }

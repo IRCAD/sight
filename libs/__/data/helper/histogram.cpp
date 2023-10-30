@@ -34,13 +34,13 @@ namespace sight::data::helper
 /**
  * @brief Functor use to compute the histogram of the image.
  */
-struct ComputehistogramFunctor
+struct computehistogram_functor
 {
     /// Parameters of the functor.
-    struct Parameter
+    struct parameter
     {
         data::image::csptr image;
-        double binsWidth {};
+        double bins_width {};
         std::vector<double> o_histogram;
         double o_min {std::numeric_limits<double>::max()};
         double o_max {std::numeric_limits<double>::lowest()};
@@ -51,7 +51,7 @@ struct ComputehistogramFunctor
     //------------------------------------------------------------------------------
 
     template<class T>
-    static void countPixels(
+    static void count_pixels(
         const data::image::const_iterator<T>& _img_begin,
         vector_t& _values,
         T _min,
@@ -73,7 +73,7 @@ struct ComputehistogramFunctor
     //------------------------------------------------------------------------------
 
     template<class IMAGETYPE>
-    void operator()(Parameter& _param)
+    void operator()(parameter& _param)
     {
         data::image::csptr image = _param.image;
 
@@ -84,15 +84,15 @@ struct ComputehistogramFunctor
         {
             data::helper::medical_image::get_min_max(image, min, max);
 
-            const double inv_bins_width = 1 / _param.binsWidth;
+            const double inv_bins_width = 1 / _param.bins_width;
 
             if(max > min)
             {
                 vector_t values;
                 std::size_t size = static_cast<std::size_t>(static_cast<double>(max - min) * inv_bins_width) + 1;
 
-                sight::data::thread::RegionThreader rt;
-                values.resize(rt.numberOfThread());
+                sight::data::thread::region_threader rt;
+                values.resize(rt.number_of_thread());
                 for(auto& v : values)
                 {
                     v.resize(size, 0);
@@ -103,7 +103,7 @@ struct ComputehistogramFunctor
                                                                                           std::ptrdiff_t _p_h2,
                                                                                           std::size_t _p_h3, auto&& ...)
                     {
-                        return ComputehistogramFunctor::countPixels<IMAGETYPE>(
+                        return computehistogram_functor::count_pixels<IMAGETYPE>(
                             capture0,
                             values,
                             min,
@@ -146,12 +146,12 @@ struct ComputehistogramFunctor
 
 void histogram::compute()
 {
-    ComputehistogramFunctor::Parameter param;
-    param.image     = m_image;
-    param.binsWidth = 1.;
+    computehistogram_functor::parameter param;
+    param.image      = m_image;
+    param.bins_width = 1.;
 
-    core::type type = m_image->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, ComputehistogramFunctor>::invoke(type, param);
+    core::type type = m_image->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, computehistogram_functor>::invoke(type, param);
 
     m_values = std::move(param.o_histogram);
     m_max    = param.o_max;

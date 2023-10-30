@@ -48,18 +48,19 @@ class base;
 namespace registry
 {
 
-typedef std::string key_t;
+using key_t = std::string;
 
-typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(), key_t> Type;
-typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(std::pair<unsigned int, unsigned int>),
-                               key_t> offscreen_mgr_t;
-typedef core::factory_registry<SPTR(viz::scene3d::interactor::base)(), key_t> interactor_factory_t;
-typedef core::factory_registry<SPTR(viz::scene3d::ICamera)(), key_t> camera_factory_t;
-typedef core::factory_registry<SPTR(viz::scene3d::light_adaptor)(), key_t> light_factory_t;
-typedef core::factory_registry<SPTR(viz::scene3d::text)(const SPTR(sight::viz::scene3d::layer)& _layer),
-                               key_t> text_factory_t;
+using type            = core::factory_registry<std::shared_ptr<viz::scene3d::window_interactor>(), key_t>;
+using offscreen_mgr_t = core::factory_registry<std::shared_ptr<viz::scene3d::window_interactor>(std::pair<unsigned int,
+                                                                                                          unsigned int>),
+                                               key_t>;
+using interactor_factory_t = core::factory_registry<std::shared_ptr<viz::scene3d::interactor::base>(), key_t>;
+using camera_factory_t     = core::factory_registry<std::shared_ptr<viz::scene3d::ICamera>(), key_t>;
+using light_factory_t      = core::factory_registry<std::shared_ptr<viz::scene3d::light_adaptor>(), key_t>;
+using text_factory_t       = core::factory_registry<std::shared_ptr<viz::scene3d::text>(const std::shared_ptr<sight::viz::scene3d::layer>&),
+                                                    key_t>;
 
-VIZ_SCENE3D_API SPTR(Type) get();
+VIZ_SCENE3D_API SPTR(type) get();
 VIZ_SCENE3D_API SPTR(offscreen_mgr_t) get_offscreen_mgr();
 VIZ_SCENE3D_API SPTR(interactor_factory_t) get_interactor_registry();
 VIZ_SCENE3D_API SPTR(camera_factory_t) get_camera_registry();

@@ -35,7 +35,7 @@ namespace sight::io::session::detail::calibration_info
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -49,14 +49,14 @@ inline static void write(
 
     // Images
     std::size_t index = 0;
-    for(const auto& image : calibration_info->getImageContainer())
+    for(const auto& image : calibration_info->get_image_container())
     {
         _children[image->get_classname() + std::to_string(index++)] = image;
     }
 
     // PointLists
     index = 0;
-    for(const auto& point_list : calibration_info->getPointListContainer())
+    for(const auto& point_list : calibration_info->get_point_list_container())
     {
         _children[point_list->get_classname() + std::to_string(index++)] = point_list;
     }
@@ -65,7 +65,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::calibration_info::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -80,7 +80,7 @@ inline static data::calibration_info::sptr read(
 
     // Deserialize children
     // Clearing is required in case the object is reused
-    calibration_info->resetRecords();
+    calibration_info->reset_records();
 
     for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
@@ -98,7 +98,7 @@ inline static data::calibration_info::sptr read(
         auto image      = std::dynamic_pointer_cast<data::image>(image_it->second);
         auto point_list = std::dynamic_pointer_cast<data::point_list>(point_list_it->second);
 
-        calibration_info->addRecord(image, point_list);
+        calibration_info->add_record(image, point_list);
     }
 
     return calibration_info;

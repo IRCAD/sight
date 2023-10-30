@@ -36,7 +36,7 @@ namespace sight::data
 
 color::color()
 {
-    m_vRGBA.fill(1.0);
+    m_v_rgba.fill(1.0);
 }
 
 //------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ color::color(
     color::color_t _alpha
 )
 {
-    m_vRGBA = {_red, _green, _blue, _alpha};
+    m_v_rgba = {_red, _green, _blue, _alpha};
 }
 
 //------------------------------------------------------------------------------
@@ -65,9 +65,9 @@ void color::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_vRGBA = other->m_vRGBA;
+    m_v_rgba = other->m_v_rgba;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -84,21 +84,21 @@ void color::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
         !bool(other)
     );
 
-    m_vRGBA = other->m_vRGBA;
+    m_v_rgba = other->m_v_rgba;
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void color::setRGBA(const color_t _red, const color_t _green, const color_t _blue, const color_t _alpha)
+void color::set_rgba(const color_t _red, const color_t _green, const color_t _blue, const color_t _alpha)
 {
-    m_vRGBA = {_red, _green, _blue, _alpha};
+    m_v_rgba = {_red, _green, _blue, _alpha};
 }
 
 //------------------------------------------------------------------------------
 
-void color::setRGBA(const std::string& _hexa_color)
+void color::set_rgba(const std::string& _hexa_color)
 {
     SIGHT_ASSERT(
         "color string should start with '#' and followed by 6 or 8 "
@@ -133,7 +133,7 @@ void color::setRGBA(const std::string& _hexa_color)
         iss >> std::hex >> a;
     }
 
-    this->setRGBA(
+    this->set_rgba(
         static_cast<float>(r) / 255.0F,
         static_cast<float>(g) / 255.0F,
         static_cast<float>(b) / 255.0F,
@@ -145,56 +145,56 @@ void color::setRGBA(const std::string& _hexa_color)
 
 color::color_t& color::red()
 {
-    return m_vRGBA[0];
+    return m_v_rgba[0];
 }
 
 //------------------------------------------------------------------------------
 
 color::color_t& color::green()
 {
-    return m_vRGBA[1];
+    return m_v_rgba[1];
 }
 
 //------------------------------------------------------------------------------
 
 color::color_t& color::blue()
 {
-    return m_vRGBA[2];
+    return m_v_rgba[2];
 }
 
 //------------------------------------------------------------------------------
 
 color::color_t& color::alpha()
 {
-    return m_vRGBA[3];
+    return m_v_rgba[3];
 }
 
 //------------------------------------------------------------------------------
 
 const color::color_t& color::red() const
 {
-    return m_vRGBA[0];
+    return m_v_rgba[0];
 }
 
 //------------------------------------------------------------------------------
 
 const color::color_t& color::green() const
 {
-    return m_vRGBA[1];
+    return m_v_rgba[1];
 }
 
 //------------------------------------------------------------------------------
 
 const color::color_t& color::blue() const
 {
-    return m_vRGBA[2];
+    return m_v_rgba[2];
 }
 
 //------------------------------------------------------------------------------
 
 const color::color_t& color::alpha() const
 {
-    return m_vRGBA[3];
+    return m_v_rgba[3];
 }
 
 //------------------------------------------------------------------------------
@@ -202,13 +202,13 @@ const color::color_t& color::alpha() const
 bool color::operator==(const color& _other) const noexcept
 {
     // If the attributes are different, then it is not equal
-    if(!core::tools::is_equal(m_vRGBA, _other.m_vRGBA))
+    if(!core::tools::is_equal(m_v_rgba, _other.m_v_rgba))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

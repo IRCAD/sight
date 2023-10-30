@@ -38,7 +38,7 @@ public:
 
     SIGHT_DECLARE_CLASS(activity, data::composite);
 
-    typedef std::string config_id_t;
+    using config_id_t = std::string;
 
     /// Constructor / Destructor
     /// @{
@@ -47,10 +47,10 @@ public:
     /// @}
 
     /// Gets the activity configuration ID.
-    const config_id_t& getActivityConfigId() const;
+    const config_id_t& get_activity_config_id() const;
 
     /// Sets the activity configuration ID.
-    void setActivityConfigId(const config_id_t& _val);
+    void set_activity_config_id(const config_id_t& _val);
 
     /// Equality comparison operators
     /// @{
@@ -75,21 +75,21 @@ public:
 protected:
 
     /// Defines the activity configuration ID.
-    config_id_t m_activityConfigId;
+    config_id_t m_activity_config_id;
 };
 
 //-----------------------------------------------------------------------------
 
-inline const activity::config_id_t& activity::getActivityConfigId() const
+inline const activity::config_id_t& activity::get_activity_config_id() const
 {
-    return m_activityConfigId;
+    return m_activity_config_id;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void activity::setActivityConfigId(const activity::config_id_t& _val)
+inline void activity::set_activity_config_id(const activity::config_id_t& _val)
 {
-    m_activityConfigId = _val;
+    m_activity_config_id = _val;
 }
 
 //-----------------------------------------------------------------------------

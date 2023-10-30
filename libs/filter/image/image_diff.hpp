@@ -39,8 +39,8 @@ public:
     struct element_t
     {
         data::image::index_t m_index;
-        const data::image::buffer_t* m_oldValue;
-        const data::image::buffer_t* m_newValue;
+        const data::image::buffer_t* m_old_value;
+        const data::image::buffer_t* m_new_value;
     };
 
     /// Constructor.
@@ -62,26 +62,26 @@ public:
     FILTER_IMAGE_API image_diff& operator=(image_diff&& _other) noexcept = default;
 
     /// Concatenate two diffs.
-    FILTER_IMAGE_API void addDiff(const image_diff& _diff);
+    FILTER_IMAGE_API void add_diff(const image_diff& _diff);
 
     /// Append a new pixel diff.
-    FILTER_IMAGE_API void addDiff(
+    FILTER_IMAGE_API void add_diff(
         data::image::index_t _index,
         const data::image::buffer_t* _old_value,
         const data::image::buffer_t* _new_value
     );
 
     /// Write the new values in the image.
-    FILTER_IMAGE_API void applyDiff(const data::image::sptr& _img) const;
+    FILTER_IMAGE_API void apply_diff(const data::image::sptr& _img) const;
 
     /// Write the old value back in the image.
-    FILTER_IMAGE_API void revertDiff(const data::image::sptr& _img) const;
+    FILTER_IMAGE_API void revert_diff(const data::image::sptr& _img) const;
 
     /// Return the amount of memory actually used by the elements.
     [[nodiscard]] FILTER_IMAGE_API std::size_t size() const;
 
     /// Returns the number of stored pixel diffs.
-    [[nodiscard]] FILTER_IMAGE_API std::size_t numElements() const;
+    [[nodiscard]] FILTER_IMAGE_API std::size_t num_elements() const;
 
     /// Set the number of elements to 0.
     FILTER_IMAGE_API void clear();
@@ -90,24 +90,24 @@ public:
     FILTER_IMAGE_API void shrink();
 
     /// Returns the element at the given index
-    [[nodiscard]] FILTER_IMAGE_API element_t getElement(std::size_t _index) const;
+    [[nodiscard]] FILTER_IMAGE_API element_t get_element(std::size_t _index) const;
 
     /// Returns the image index from the element at the given index
-    [[nodiscard]] inline data::image::index_t getElementDiffIndex(std::size_t _elt_index) const;
+    [[nodiscard]] inline data::image::index_t get_element_diff_index(std::size_t _elt_index) const;
 
 private:
 
     /// Write the new value in the image from one element.
-    void applyDiffElt(const data::image::sptr& _img, std::size_t _elt_index) const;
+    void apply_diff_elt(const data::image::sptr& _img, std::size_t _elt_index) const;
 
     /// Write the old value back in the image from one element.
-    void revertDiffElt(const data::image::sptr& _img, std::size_t _elt_index) const;
+    void revert_diff_elt(const data::image::sptr& _img, std::size_t _elt_index) const;
 
     /// The size of a single pixel diff.
-    std::size_t m_imgEltSize;
+    std::size_t m_img_elt_size;
 
     /// Size of an element (image index + old value + new value)
-    std::size_t m_eltSize;
+    std::size_t m_elt_size;
 
     /// The buffer holding the diff.
     std::vector<std::uint8_t> m_buffer;
@@ -115,9 +115,9 @@ private:
 
 //------------------------------------------------------------------------------
 
-data::image::index_t image_diff::getElementDiffIndex(std::size_t _elt_index) const
+data::image::index_t image_diff::get_element_diff_index(std::size_t _elt_index) const
 {
-    return *reinterpret_cast<const data::image::index_t*>(&m_buffer[_elt_index * m_eltSize]);
+    return *reinterpret_cast<const data::image::index_t*>(&m_buffer[_elt_index * m_elt_size]);
 }
 
 } // namespace sight::filter::image

@@ -51,41 +51,41 @@ public:
     UI_QT_API ~toolbar() override = default;
 
     /**
-     * @brief Instantiate actions with parent toolBar.
+     * @brief Instantiate actions with parent toolbar.
      * @pre layout must be initialized before.
-     * @pre parent toolBar must be instanced.
+     * @pre parent toolbar must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::toolbar::sptr _parent, const std::string& _id) override;
+    UI_QT_API void create_layout(ui::container::toolbar::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local toolBars.
      * @pre services using this actions must be stopped before.
      */
-    UI_QT_API void destroyLayout() override;
+    UI_QT_API void destroy_layout() override;
 
     /**
      * @brief Set the action visibility.
      */
-    UI_QT_API void menuItemSetVisible(ui::container::menu_item::sptr _menu_item, bool _is_visible) override;
+    UI_QT_API void menu_item_set_visible(ui::container::menu_item::sptr _menu_item, bool _is_visible) override;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_QT_API void menuItemSetEnabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled) override;
+    UI_QT_API void menu_item_set_enabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled) override;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_QT_API void menuItemSetChecked(ui::container::menu_item::sptr /*menu_item*/, bool _is_checked) override;
+    UI_QT_API void menu_item_set_checked(ui::container::menu_item::sptr /*menu_item*/, bool _is_checked) override;
 
-    UI_QT_API void setVisible(bool _is_visible) override;
+    UI_QT_API void set_visible(bool _is_visible) override;
 
 protected:
 
     ui::qt::container::toolbar::sptr m_parent;
 
     // Hidden QAction which allows to change the toolbar visibility.
-    QAction* m_toggleToolbarVisibilityAction {nullptr};
+    QAction* m_toggle_toolbar_visibility_action {nullptr};
 };
 
 } // namespace sight::ui::qt::layout

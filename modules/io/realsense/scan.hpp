@@ -59,14 +59,14 @@ namespace sight::module::io::realsense
  * - \b stopCamera()  : This slot is called to stop camera streams.
  * - \b pauseCamera() : This slot is called to pause/unpause the camera streams.
  * - \b record(): This slot is called to record current device in a .bag file.
- * - \b setBoolParameter(bool value, std::string key) : Slot called when a boolean parameter changes:
+ * - \b set_bool_parameter(bool value, std::string key) : Slot called when a boolean parameter changes:
  *   - key 'switchToIR': switch the color stream by infrared stream if true.
  *   - key 'IREmitter': enable/disable the IR Emitter.
  *   - key 'enableSpacial': enable/disable spacial filter. For the documentation of the filters, please refer to
  *       https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md
  *   - key 'enableTemporal': enable/disable temporal filter
  *   - key 'enableHolesFilling': enable/disable holes filling filter
- * - \b setIntParameter(int value, std::string key): Slot called when a integer parameter changes:
+ * - \b set_int_parameter(int value, std::string key): Slot called when a integer parameter changes:
  *   - key 'minRange' : min value of depth range (default 0)
  *   - key 'maxRange' : max value of depth range (default 65535)
  *   - key 'spacialMagnitude': set the number of iteration of the spacial filter [1-5]
@@ -91,12 +91,12 @@ namespace sight::module::io::realsense
  *      - fill_from_left: Use the value from the left neighbor pixel to fill the hole
  *      - farest_from_around: Use the value from the neighboring pixel which is furthest away from the sensor
  *      - nearest_from_around: Use the value from the neighboring pixel closest to the sensor
- * - \b setEnumParameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
+ * - \b set_enum_parameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
  *   - key 'preset' : preset name to load. (see 'preset' in subsection \ref Configuration below).
  *  -  key 'alignTo': used to change the frames alignment, all frames can be aligned on (None (default), Color, Depth
  * or Infrared Streams).
  *    (see also 'alignTo is subsection \ref Configuration below).'
- * - \b setDoubleParameter(double value, std::string key): Slot called when a double parameter changes:
+ * - \b set_double_parameter(double value, std::string key): Slot called when a double parameter changes:
  *   - key 'spacialSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
  *     infinite filter [0.25-1]
  *   - key 'temporalSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
@@ -197,7 +197,7 @@ public:
     /// Destructor. Calls stopCamera()
     MODULE_IO_REALSENSE_API ~scan() noexcept override;
     ///SLOT: When "parameter_t" parameter changes
-    MODULE_IO_REALSENSE_API void setParameter(ui::parameter_t value, std::string key) override;
+    MODULE_IO_REALSENSE_API void set_parameter(ui::parameter_t value, std::string key) override;
 
 protected:
 
@@ -459,13 +459,13 @@ private:
     /// Mutex used for the Condition Variable
     std::mutex m_pauseMutex;
 
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, false, true};
+    data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT, false, true};
 
     static constexpr std::string_view s_CAMERA_SET_INOUT = "cameraSet";
-    data::ptr<data::camera_set, data::Access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, false, true};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, false, true};
 
     static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";
-    data::ptr<data::mesh, data::Access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, false, true};
+    data::ptr<data::mesh, data::access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, false, true};
     data::mesh::sptr m_pointCloud;
 };
 

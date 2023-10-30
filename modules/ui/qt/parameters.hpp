@@ -64,17 +64,17 @@ namespace sight::module::ui::qt
  * selected item.
  *
  * @section Slots Slots
- * - \b setParameter(ui::parameter_t, std::string): set a parameter.
- * - \b setBoolParameter(bool, std::string): set a boolean parameter.
- * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set a color parameter.
- * - \b setDoubleParameter(double, std::string): set a double parameter.
- * - \b setDouble2Parameter(double, double, std::string): set two double parameters.
- * - \b setDouble3Parameter(double, double, double, std::string): set three double parameters.
- * - \b setIntParameter(int, std::string): set an integer parameter.
- * - \b setInt2Parameter(int, int, std::string): set two int parameters.
- * - \b setInt3Parameter(int, int, int, std::string): set three int parameters.
- * - \b setEnumParameter(std::string, std::string): set an enum parameter.
- * - \b setEnumIndexParameter(int, std::string): set an enum parameter using the index of the enum.
+ * - \b set_parameter(ui::parameter_t, std::string): set a parameter.
+ * - \b set_bool_parameter(bool, std::string): set a boolean parameter.
+ * - \b set_color_parameter(std::array<std::uint8_t, 4>, std::string): set a color parameter.
+ * - \b set_double_parameter(double, std::string): set a double parameter.
+ * - \b set_double2_parameter(double, double, std::string): set two double parameters.
+ * - \b set_double3_parameter(double, double, double, std::string): set three double parameters.
+ * - \b set_int_parameter(int, std::string): set an integer parameter.
+ * - \b set_int2_parameter(int, int, std::string): set two int parameters.
+ * - \b set_int3_parameter(int, int, int, std::string): set three int parameters.
+ * - \b set_enum_parameter(std::string, std::string): set an enum parameter.
+ * - \b set_enum_index_parameter(int, std::string): set an enum parameter using the index of the enum.
  * - \b updateEnumRange(std::string, std::string): update range of an existing enum (value can contains a tokenized list
  * such as value1;value2;value3=test;...)
  * - \b updateIntMinParameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
@@ -151,27 +151,27 @@ public:
     {
         using signal_t = core::com::signals::key_t;
         /// Generic changed signal type
-        typedef core::com::signal<void (sight::ui::parameter_t, std::string)> changed_signal_t;
+        using changed_signal_t = core::com::signal<void (sight::ui::parameter_t, std::string)>;
 
         /// Boolean changed signal type
-        typedef core::com::signal<void (bool, std::string)> boolean_changed_signal_t;
+        using boolean_changed_signal_t = core::com::signal<void (bool, std::string)>;
 
         /// Color changed signal type
-        typedef core::com::signal<void (std::array<std::uint8_t, 4>, std::string)> color_changed_signal_t;
+        using color_changed_signal_t = core::com::signal<void (std::array<std::uint8_t, 4>, std::string)>;
 
         /// Double changed signal type
-        typedef core::com::signal<void (double, std::string)> double_changed_signal_t;
-        typedef core::com::signal<void (double, double, std::string)> Double2ChangedSignalType;
-        typedef core::com::signal<void (double, double, double, std::string)> Double3ChangedSignalType;
+        using double_changed_signal_t  = core::com::signal<void (double, std::string)>;
+        using double2_changed_signal_t = core::com::signal<void (double, double, std::string)>;
+        using double3_changed_signal_t = core::com::signal<void (double, double, double, std::string)>;
 
         /// Integer changed signal type
-        typedef core::com::signal<void (int, std::string)> integer_changed_signal_t;
-        typedef core::com::signal<void (int, int, std::string)> Integer2ChangedSignalType;
-        typedef core::com::signal<void (int, int, int, std::string)> Integer3ChangedSignalType;
+        using integer_changed_signal_t  = core::com::signal<void (int, std::string)>;
+        using integer2_changed_signal_t = core::com::signal<void (int, int, std::string)>;
+        using integer3_changed_signal_t = core::com::signal<void (int, int, int, std::string)>;
 
         /// Enum changed signal type
-        typedef core::com::signal<void (std::string, std::string)> enum_changed_signal_t;
-        typedef core::com::signal<void (int, std::string)> EnumChangedIndexSignalType;
+        using enum_changed_signal_t       = core::com::signal<void (std::string, std::string)>;
+        using enum_changed_index_signal_t = core::com::signal<void (int, std::string)>;
 
         inline static const signal_t PARAMETER_CHANGED_SIG  = "parameterChanged";
         inline static const signal_t BOOLEAN_CHANGED_SIG    = "boolChanged";
@@ -191,17 +191,17 @@ public:
     {
         using slots_t = core::com::slots::key_t;
 
-        inline static const slots_t SET_PARAMETER_SLOT               = "setParameter";
-        inline static const slots_t SET_BOOL_PARAMETER_SLOT          = "setBoolParameter";
-        inline static const slots_t SET_COLOR_PARAMETER_SLOT         = "setColorParameter";
-        inline static const slots_t SET_DOUBLE_PARAMETER_SLOT        = "setDoubleParameter";
-        inline static const slots_t SET_DOUBLE2_PARAMETER_SLOT       = "setDouble2Parameter";
-        inline static const slots_t SET_DOUBLE3_PARAMETER_SLOT       = "setDouble3Parameter";
-        inline static const slots_t SET_INT_PARAMETER_SLOT           = "setIntParameter";
-        inline static const slots_t SET_INT2_PARAMETER_SLOT          = "setInt2Parameter";
-        inline static const slots_t SET_INT3_PARAMETER_SLOT          = "setInt3Parameter";
-        inline static const slots_t SET_ENUM_PARAMETER_SLOT          = "setEnumParameter";
-        inline static const slots_t SET_ENUM_INDEX_PARAMETER_SLOT    = "setEnumIndexParameter";
+        inline static const slots_t SET_PARAMETER_SLOT               = "set_parameter";
+        inline static const slots_t SET_BOOL_PARAMETER_SLOT          = "set_bool_parameter";
+        inline static const slots_t SET_COLOR_PARAMETER_SLOT         = "set_color_parameter";
+        inline static const slots_t SET_DOUBLE_PARAMETER_SLOT        = "set_double_parameter";
+        inline static const slots_t SET_DOUBLE2_PARAMETER_SLOT       = "set_double2_parameter";
+        inline static const slots_t SET_DOUBLE3_PARAMETER_SLOT       = "set_double3_parameter";
+        inline static const slots_t SET_INT_PARAMETER_SLOT           = "set_int_parameter";
+        inline static const slots_t SET_INT2_PARAMETER_SLOT          = "set_int2_parameter";
+        inline static const slots_t SET_INT3_PARAMETER_SLOT          = "set_int3_parameter";
+        inline static const slots_t SET_ENUM_PARAMETER_SLOT          = "set_enum_parameter";
+        inline static const slots_t SET_ENUM_INDEX_PARAMETER_SLOT    = "set_enum_index_parameter";
         inline static const slots_t UPDATE_ENUM_RANGE_SLOT           = "updateEnumRange";
         inline static const slots_t UPDATE_INT_MIN_PARAMETER_SLOT    = "updateIntMinParameter";
         inline static const slots_t UPDATE_INT_MAX_PARAMETER_SLOT    = "updateIntMaxParameter";
@@ -209,11 +209,11 @@ public:
         inline static const slots_t UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "updateDoubleMaxParameter";
     };
 
-    struct enumButtonParam
+    struct enum_button_param
     {
         std::string value {""};
         std::string label {""};
-        std::string iconPath {""};
+        std::string icon_path {""};
     };
 
     MODULE_UI_QT_API parameters() noexcept;
@@ -242,7 +242,7 @@ private Q_SLOTS:
      * @param _widget Child widget.
      * @param _reverse Reverse the state check.
      */
-    static void onDependsChanged(QCheckBox* _check_box, QWidget* _widget, bool _reverse);
+    static void on_depends_changed(QCheckBox* _check_box, QWidget* _widget, bool _reverse);
 
     /**
      * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
@@ -252,49 +252,49 @@ private Q_SLOTS:
      * @param _value Value of the combo box.
      * @param _reverse Reverse the state check.
      */
-    static void onDependsChanged(QComboBox* _combo_box, QWidget* _widget, const std::string& _value, bool _reverse);
+    static void on_depends_changed(QComboBox* _combo_box, QWidget* _widget, const std::string& _value, bool _reverse);
 
     /// This method is called when a boolean value changes
-    void onChangeBoolean(int _value);
+    void on_change_boolean(int _value);
 
     /// This method is called when a color button is clicked
-    void onColorButton();
+    void on_color_button();
 
     /// This method is called when an integer value changes
-    void onChangeInteger(int _value);
+    void on_change_integer(int _value);
 
     /// This method is called when a double value changes
-    void onChangeDouble(double _value);
+    void on_change_double(double _value);
 
     /// This method is called when a double slider value changes
-    void onChangeDoubleSlider(int _value);
+    void on_change_double_slider(int _value);
 
     /// This method is called when selection changes (QComboBox)
-    void onChangeEnum(int _value);
+    void on_change_enum(int _value);
 
     /// This method is called to connect sliders to their labels
-    static void onSliderMapped(QLabel* _label, QSlider* _slider);
+    static void on_slider_mapped(QLabel* _label, QSlider* _slider);
 
     /// This method is called to connect double sliders to their labels
-    static void onDoubleSliderMapped(QLabel* _label, QSlider* _slider);
+    static void on_double_slider_mapped(QLabel* _label, QSlider* _slider);
 
     /// This method is called to connect reset buttons and checkboxes
-    void onResetBooleanMapped(QWidget* _widget);
+    void on_reset_boolean_mapped(QWidget* _widget);
 
     /// This method is called to connect reset buttons and color widgets
-    void onResetColorMapped(QWidget* _widget);
+    void on_reset_color_mapped(QWidget* _widget);
 
     /// This method is called to connect reset buttons and sliders
-    void onResetIntegerMapped(QWidget* _widget);
+    void on_reset_integer_mapped(QWidget* _widget);
 
     /// This method is called to connect reset buttons and sliders
-    void onResetDoubleMapped(QWidget* _widget);
+    void on_reset_double_mapped(QWidget* _widget);
 
     /// This method is called when the integer slider range is modified, it updates the min and max labels
-    static void onSliderRangeMapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider);
+    static void on_slider_range_mapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider);
 
     /// This method is called when the double slider range is modified, it updates the min and max labels
-    static void onDoubleSliderRangeMapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider);
+    static void on_double_slider_range_mapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider);
 
 private:
 
@@ -307,10 +307,10 @@ private:
     bool eventFilter(QObject* _watched, QEvent* _event) override;
 
     /// Snippet to create the reset button
-    QPushButton* createResetButton(const std::string& _key);
+    QPushButton* create_reset_button(const std::string& _key);
 
     /// Create a widget associated with a boolean type
-    void createBoolWidget(
+    void create_bool_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -319,7 +319,7 @@ private:
     );
 
     /// Create a widget associated with a color type
-    void createColorWidget(
+    void create_color_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -328,7 +328,7 @@ private:
     );
 
     /// Create a widget associated with a double type
-    void createDoubleWidget(
+    void create_double_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -340,7 +340,7 @@ private:
     );
 
     /// Create a slider widget associated with a double type.
-    void createDoubleSliderWidget(
+    void create_double_slider_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -355,7 +355,7 @@ private:
     );
 
     /// Create a slider widget associated with an integer type
-    void createIntegerSliderWidget(
+    void create_integer_slider_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -369,7 +369,7 @@ private:
     );
 
     /// Create a spin widget associated with an integer type
-    void createIntegerSpinWidget(
+    void create_integer_spin_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -381,7 +381,7 @@ private:
     );
 
     /// Parses the string for an enum
-    static void parseEnumString(
+    static void parse_enum_string(
         const std::string& _options,
         std::vector<std::string>& _labels,
         std::vector<std::string>& _keys,
@@ -389,7 +389,7 @@ private:
     );
 
     /// Create a multi choice widget
-    void createEnumWidget(
+    void create_enum_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -399,7 +399,7 @@ private:
     );
 
     /// Create a multi choice widget with integer values
-    void createSliderEnumWidget(
+    void create_slider_enum_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
@@ -410,12 +410,12 @@ private:
         bool _hide_min_max
     );
 
-    void createButtonBarEnumWidget(
+    void create_button_bar_enum_widget(
         QGridLayout& _layout,
         int _row,
         const std::string& _key,
         const std::string& _default_value,
-        const std::vector<enumButtonParam>& _button_list,
+        const std::vector<enum_button_param>& _button_list,
         const int _width,
         const int _height,
         const int _h_offset,
@@ -423,13 +423,13 @@ private:
     );
 
     /// Emit the signal(s) for the integer widget
-    void emitIntegerSignal(QObject* _widget);
+    void emit_integer_signal(QObject* _widget);
 
     /// Emit the signal(s) for the double widget
-    void emitDoubleSignal(QObject* _widget);
+    void emit_double_signal(QObject* _widget);
 
     /// Emit the signal for the color widget
-    void emitColorSignal(const QColor _color, const std::string& _key);
+    void emit_color_signal(const QColor _color, const std::string& _key);
 
     /**
      * @name Slots
@@ -437,87 +437,87 @@ private:
      */
 
     /// Slot: This method is used to set any parameter.
-    void setParameter(sight::ui::parameter_t _val, std::string _key);
+    void set_parameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Slot: This method is used to set a boolean parameter.
-    void setBoolParameter(bool _val, std::string _key);
+    void set_bool_parameter(bool _val, std::string _key);
 
     /// Slot: This method is used to set a color parameter.
-    void setColorParameter(std::array<std::uint8_t, 4> _color, std::string _key);
+    void set_color_parameter(std::array<std::uint8_t, 4> _color, std::string _key);
 
     /// Slot: This method is used to set a double parameter.
-    void setDoubleParameter(double _val, std::string _key);
+    void set_double_parameter(double _val, std::string _key);
 
     /// Slot: This method is used to set two double parameters.
-    void setDouble2Parameter(double _val0, double _val1, std::string _key);
+    void set_double2_parameter(double _val0, double _val1, std::string _key);
 
     /// Slot: This method is used to set three double parameters.
-    void setDouble3Parameter(double _val0, double _val1, double _val2, std::string _key);
+    void set_double3_parameter(double _val0, double _val1, double _val2, std::string _key);
 
     /// Slot: This method is used to set an integer parameter.
-    void setIntParameter(int _val, std::string _key);
+    void set_int_parameter(int _val, std::string _key);
 
     /// Slot: This method is used to set two int parameters.
-    void setInt2Parameter(int _val0, int _val1, std::string _key);
+    void set_int2_parameter(int _val0, int _val1, std::string _key);
 
     /// Slot: This method is used to set three int parameters.
-    void setInt3Parameter(int _val0, int _val1, int _val2, std::string _key);
+    void set_int3_parameter(int _val0, int _val1, int _val2, std::string _key);
 
     /// Slot: This method is used to set an enum parameter.
-    void setEnumParameter(std::string _val, std::string _key);
+    void set_enum_parameter(std::string _val, std::string _key);
 
     /// SLOT: This method sets an enum parameter using the index of the enum
-    void setEnumIndexParameter(int /*val*/, std::string _key);
+    void set_enum_index_parameter(int /*val*/, std::string _key);
 
     /// SLOT: This method updates the all enum values using a tokenized string ("value1;value2")
-    void updateEnumRange(std::string _options, std::string _key);
+    void update_enum_range(std::string _options, std::string _key);
 
     /// Slot: Updates the minimum value of an integer parameter (int, int2, int3)
-    void updateIntMinParameter(int _min, std::string _key);
+    void update_int_min_parameter(int _min, std::string _key);
 
     /// Slot: Updates the maximum value of an integer parameter (int, int2, int3)
-    void updateIntMaxParameter(int _max, std::string _key);
+    void update_int_max_parameter(int _max, std::string _key);
 
     /// Slot: Updates the minimum value of a double parameter (double, double2, double3)
-    void updateDoubleMinParameter(double _min, std::string _key);
+    void update_double_min_parameter(double _min, std::string _key);
 
     /// Slot: Updates the maximum value of a double parameter (double, double2, double3)
-    void updateDoubleMaxParameter(double _max, std::string _key);
+    void update_double_max_parameter(double _max, std::string _key);
 
     /// @}
 
     /// Internal function that updates enum widget value using a list of string (each element can contains value & data
     /// ex:"Value=data")
-    void updateEnumList(const std::vector<std::string>& _list, const std::string _key);
+    void update_enum_list(const std::vector<std::string>& _list, const std::string _key);
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
-    QObject* getParamWidget(const std::string& _key);
+    QObject* get_param_widget(const std::string& _key);
 
     /// Compute the double slider value from a slider position.
-    static double getDoubleSliderValue(const QSlider* _slider);
+    static double get_double_slider_value(const QSlider* _slider);
 
     /// Compute the double slider range according to the min and max property, update the internal slider value
     /// according to the new range
-    static void setDoubleSliderRange(QSlider* _slider, double _current_value);
+    static void set_double_slider_range(QSlider* _slider, double _current_value);
 
     /// Adjust the minimum size of a label according to the range values
     template<typename T>
-    static void setLabelMinimumSize(QLabel* _label, T _min, T _max, std::uint8_t _decimals = 0);
+    static void set_label_minimum_size(QLabel* _label, T _min, T _max, std::uint8_t _decimals = 0);
 
     template<typename T>
-    static QString valueToStringLabel(T _value, std::uint8_t _decimals);
+    static QString value_to_string_label(T _value, std::uint8_t _decimals);
 
     /// Block (or not) signal emission for this service
     void blockSignals(bool _block);
 
     /// if true, the signals are not emitted
-    bool m_blockSignals {false};
+    bool m_block_signals {false};
 };
 
 //------------------------------------------------------------------------------
 
 template<>
-inline QString parameters::valueToStringLabel<int>(int _value, std::uint8_t /*unused*/)
+inline QString parameters::value_to_string_label<int>(int _value, std::uint8_t /*unused*/)
 {
     return QString("%1").arg(_value);
 }
@@ -525,7 +525,7 @@ inline QString parameters::valueToStringLabel<int>(int _value, std::uint8_t /*un
 //------------------------------------------------------------------------------
 
 template<>
-inline QString parameters::valueToStringLabel<double>(double _value, std::uint8_t _decimals)
+inline QString parameters::value_to_string_label<double>(double _value, std::uint8_t _decimals)
 {
     return QString::number(_value, 'f', _decimals);
 }
@@ -533,10 +533,10 @@ inline QString parameters::valueToStringLabel<double>(double _value, std::uint8_
 //------------------------------------------------------------------------------
 
 template<typename T>
-void parameters::setLabelMinimumSize(QLabel* _label, T _min, T _max, std::uint8_t _decimals)
+void parameters::set_label_minimum_size(QLabel* _label, T _min, T _max, std::uint8_t _decimals)
 {
-    const auto min_string = valueToStringLabel(_min, _decimals);
-    const auto max_string = valueToStringLabel(_max, _decimals);
+    const auto min_string = value_to_string_label(_min, _decimals);
+    const auto max_string = value_to_string_label(_max, _decimals);
 
     // Create a dummy label with same properties
     QLabel dummy_label;

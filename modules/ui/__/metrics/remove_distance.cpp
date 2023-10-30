@@ -44,7 +44,7 @@ static const core::com::slots::key_t REMOVE_LAST_DISTANCE_SLOT = "removeLastDist
 
 remove_distance::remove_distance() noexcept
 {
-    new_slot(REMOVE_LAST_DISTANCE_SLOT, &remove_distance::removeLastDistance, this);
+    new_slot(REMOVE_LAST_DISTANCE_SLOT, &remove_distance::remove_last_distance, this);
 }
 
 //------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ void remove_distance::configuring()
 
 void remove_distance::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void remove_distance::updating()
        && vect_dist)
     {
         bool request_all                      = false;
-        data::point_list::sptr dist_to_remove = getDistanceToRemove(image.get_shared(), request_all);
+        data::point_list::sptr dist_to_remove = get_distance_to_remove(image.get_shared(), request_all);
 
         if(dist_to_remove)
         {
@@ -85,7 +85,7 @@ void remove_distance::updating()
             );
             vect_dist->erase(new_end, vect_dist->end());
 
-            sight::module::ui::metrics::remove_distance::notifyDeleteDistance(image.get_shared(), dist_to_remove);
+            sight::module::ui::metrics::remove_distance::notify_delete_distance(image.get_shared(), dist_to_remove);
         }
 
         if(request_all)
@@ -105,12 +105,12 @@ void remove_distance::updating()
 
 void remove_distance::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------
 
-std::string remove_distance::distanceToStr(double _dist)
+std::string remove_distance::distance_to_str(double _dist)
 {
     std::stringstream ss;
     ss.precision(3);
@@ -120,7 +120,7 @@ std::string remove_distance::distanceToStr(double _dist)
 
 //------------------------------------------------------------------------------
 
-data::point_list::sptr remove_distance::getDistanceToRemove(const data::image::csptr _image, bool& _remove_all)
+data::point_list::sptr remove_distance::get_distance_to_remove(const data::image::csptr _image, bool& _remove_all)
 {
     data::point_list::sptr dist_to_remove;
     _remove_all = false;
@@ -136,28 +136,28 @@ data::point_list::sptr remove_distance::getDistanceToRemove(const data::image::c
         {
             const data::point_list::sptr pl = std::dynamic_pointer_cast<data::point_list>(obj);
             SIGHT_ASSERT("The distance should be a point list", pl);
-            SIGHT_ASSERT("The distance must contains two points", pl->getPoints().size() == 2);
+            SIGHT_ASSERT("The distance must contains two points", pl->get_points().size() == 2);
 
-            const data::point::sptr pt1 = pl->getPoints().front();
-            const data::point::sptr pt2 = pl->getPoints().back();
+            const data::point::sptr pt1 = pl->get_points().front();
+            const data::point::sptr pt2 = pl->get_points().back();
 
             double dist  = 0;
-            double delta = pt1->getCoord()[0] - pt2->getCoord()[0];
+            double delta = pt1->get_coord()[0] - pt2->get_coord()[0];
             dist += delta * delta;
-            delta = pt1->getCoord()[1] - pt2->getCoord()[1];
+            delta = pt1->get_coord()[1] - pt2->get_coord()[1];
             dist += delta * delta;
-            delta = pt1->getCoord()[2] - pt2->getCoord()[2];
+            delta = pt1->get_coord()[2] - pt2->get_coord()[2];
             dist += delta * delta;
             dist  = sqrt(dist);
 
-            selections.push_back(distanceToStr(dist));
+            selections.push_back(distance_to_str(dist));
             correspondence[selections.back()] = pl;
         }
 
         if(!selections.empty())
         {
             sight::ui::dialog::selector selector;
-            selector.setTitle("Select a distance to remove");
+            selector.set_title("Select a distance to remove");
             selector.set_choices(selections);
             if(const auto& choices = selector.show(); !choices.empty())
             {
@@ -180,7 +180,7 @@ data::point_list::sptr remove_distance::getDistanceToRemove(const data::image::c
 
 //------------------------------------------------------------------------------
 
-void remove_distance::notifyDeleteDistance(
+void remove_distance::notify_delete_distance(
     const data::image::csptr& _image,
     const data::point_list::csptr& _distance
 )
@@ -192,7 +192,7 @@ void remove_distance::notifyDeleteDistance(
 
 //------------------------------------------------------------------------------
 
-void remove_distance::removeLastDistance()
+void remove_distance::remove_last_distance()
 {
     const auto image = m_image.lock();
 
@@ -208,7 +208,7 @@ void remove_distance::removeLastDistance()
         {
             auto new_end = std::remove(vect_dist->begin(), vect_dist->end(), dist_to_remove);
             vect_dist->erase(new_end, vect_dist->end());
-            this->notifyDeleteDistance(image.get_shared(), dist_to_remove);
+            this->notify_delete_distance(image.get_shared(), dist_to_remove);
         }
     }
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2022 IRCAD France
+ * Copyright (C) 2004-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,11 +27,11 @@
 namespace sight::io::dicom::ut
 {
 
-class FunctionsTest : public CPPUNIT_NS::TestFixture
+class functions_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(FunctionsTest);
-CPPUNIT_TEST(generatePatientIdTest);
-CPPUNIT_TEST(generateStudyInstanceUidTest);
+CPPUNIT_TEST_SUITE(functions_test);
+CPPUNIT_TEST(generate_patient_id_test);
+CPPUNIT_TEST(generate_study_instance_uid_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,8 +46,8 @@ public:
     /**
      * @name Tests UID generation methods by checking length and content.
      * @{ */
-    static void generatePatientIdTest();
-    static void generateStudyInstanceUidTest();
+    static void generate_patient_id_test();
+    static void generate_study_instance_uid_test();
     /**  @} */
 };
 

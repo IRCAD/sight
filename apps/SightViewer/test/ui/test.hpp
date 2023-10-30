@@ -30,15 +30,15 @@ class test : public sight::ui::test_core::test
 {
 public:
 
-    std::filesystem::path getProfilePath() override;
+    std::filesystem::path get_profile_path() override;
 
-    static void openFile(
-        sight::ui::test_core::Tester& _tester,
+    static void open_file(
+        sight::ui::test_core::tester& _tester,
         const std::string& _format,
         const std::filesystem::path& _path
     );
-    static void saveSnapshot(sight::ui::test_core::Tester& _tester, const std::filesystem::path& _path);
-    static void resetNegatos(sight::ui::test_core::Tester& _tester);
+    static void save_snapshot(sight::ui::test_core::tester& _tester, const std::filesystem::path& _path);
+    static void reset_negatos(sight::ui::test_core::tester& _tester);
 };
 
 } // namespace sight::sightviewer::test::ui

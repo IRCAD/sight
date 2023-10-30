@@ -53,10 +53,10 @@ static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessb
 
 chessboard_reprojection::chessboard_reprojection()
 {
-    new_slot(TOGGLE_DISTORTION_SLOT, &chessboard_reprojection::toggleDistortion, this);
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chessboard_reprojection::updateChessboardSize, this);
+    new_slot(TOGGLE_DISTORTION_SLOT, &chessboard_reprojection::toggle_distortion, this);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chessboard_reprojection::update_chessboard_size, this);
 
-    m_errorComputedSig = new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
+    m_error_computed_sig = new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,39 +72,39 @@ void chessboard_reprojection::configuring()
     const config_t board_config = config_tree.get_child("board");
     const config_t config       = config_tree.get_child("config.<xmlattr>");
 
-    m_widthKey = board_config.get<std::string>("<xmlattr>.width");
-    SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
-    m_heightKey = board_config.get<std::string>("<xmlattr>.height");
-    SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
-    m_squareSizeKey = board_config.get<std::string>("<xmlattr>.squareSize");
-    SIGHT_ASSERT("Missing board square size preference key.", !m_squareSizeKey.empty());
+    m_width_key = board_config.get<std::string>("<xmlattr>.width");
+    SIGHT_ASSERT("Missing board width preference key.", !m_width_key.empty());
+    m_height_key = board_config.get<std::string>("<xmlattr>.height");
+    SIGHT_ASSERT("Missing board height preference key.", !m_height_key.empty());
+    m_square_size_key = board_config.get<std::string>("<xmlattr>.squareSize");
+    SIGHT_ASSERT("Missing board square size preference key.", !m_square_size_key.empty());
 
     const std::string output_key = config_tree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
-    if(output_key == s_CHESSBOARD_MODEL_OUTPUT)
+    if(output_key == CHESSBOARD_MODEL_OUTPUT)
     {
-        m_hasOutputChessboard = true;
+        m_has_output_chessboard = true;
     }
 
-    m_distortReprojection = config.get<bool>("distortReprojection", true);
-    m_drawReprojection    = config.get<bool>("drawReprojection", true);
-    m_drawDetected        = config.get<bool>("drawDetected", true);
+    m_distort_reprojection = config.get<bool>("distortReprojection", true);
+    m_draw_reprojection    = config.get<bool>("drawReprojection", true);
+    m_draw_detected        = config.get<bool>("drawDetected", true);
 }
 
 //-----------------------------------------------------------------------------
 
 void chessboard_reprojection::starting()
 {
-    this->updateChessboardSize();
+    this->update_chessboard_size();
 }
 
 //-----------------------------------------------------------------------------
 
 void chessboard_reprojection::updating()
 {
-    const auto detected_chessboard = m_detectedChessboard.lock();
+    const auto detected_chessboard = m_detected_chessboard.lock();
     SIGHT_ASSERT("Missing 'detectedChessboard'.", detected_chessboard);
 
-    if(detected_chessboard->getPoints().empty())
+    if(detected_chessboard->get_points().empty())
     {
         return;
     }
@@ -115,13 +115,13 @@ void chessboard_reprojection::updating()
     cv::Size img_size;
     cv::Mat camera_mx;
     cv::Mat distortion_coefficients;
-    std::tie(camera_mx, img_size, distortion_coefficients) = io::opencv::camera::copyToCv(camera.get_shared());
+    std::tie(camera_mx, img_size, distortion_coefficients) = io::opencv::camera::copy_to_cv(camera.get_shared());
 
     cv::Mat rvec;
     cv::Mat tvec;
 
     std::vector<cv::Point2d> detected_pts;
-    io::opencv::point_list::copyToCv(detected_chessboard.get_shared(), detected_pts);
+    io::opencv::point_list::copy_to_cv(detected_chessboard.get_shared(), detected_pts);
 
     // Cast Point2d to Point2f ...
     std::vector<cv::Point2f> detected_points_f;
@@ -130,15 +130,15 @@ void chessboard_reprojection::updating()
     double rmse = -1.;
     std::vector<cv::Point2f> reprojected_pts;
 
-    if(camera->getIsCalibrated() && !detected_points_f.empty())
+    if(camera->get_is_calibrated() && !detected_points_f.empty())
     {
         const auto transform = m_transform.lock();
         SIGHT_ASSERT("Missing 'transform'.", transform);
 
-        io::opencv::matrix::copyToCv(transform.get_shared(), rvec, tvec);
+        io::opencv::matrix::copy_to_cv(transform.get_shared(), rvec, tvec);
 
         std::tie(rmse, reprojected_pts) = sight::geometry::vision::helper::compute_reprojection_error(
-            m_chessboardModel,
+            m_chessboard_model,
             detected_points_f,
             rvec,
             tvec,
@@ -146,13 +146,13 @@ void chessboard_reprojection::updating()
             distortion_coefficients
         );
 
-        m_errorComputedSig->async_emit(rmse);
+        m_error_computed_sig->async_emit(rmse);
     }
 
-    const auto video_image = m_videoImage.lock();
+    const auto video_image = m_video_image.lock();
     SIGHT_ERROR_IF(
         "Drawing is enabled in the configuration but there is no 'videoImage' to draw onto.",
-        !video_image && (m_drawDetected || m_drawReprojection || m_drawReprojectionError)
+        !video_image && (m_draw_detected || m_draw_reprojection || m_draw_reprojection_error)
     );
 
     if(video_image)
@@ -168,16 +168,16 @@ void chessboard_reprojection::updating()
 
         cv::Mat img = io::opencv::image::move_to_cv(video_image.get_shared());
 
-        const bool drawing_enabled = m_drawDetected || m_drawReprojection || m_drawReprojectionError;
+        const bool drawing_enabled = m_draw_detected || m_draw_reprojection || m_draw_reprojection_error;
         SIGHT_WARN_IF(
             "An inout 'videoImage' was given to the service but no drawing operation was enabled.",
             !drawing_enabled
         );
 
-        if(m_drawReprojection)
+        if(m_draw_reprojection)
         {
             std::vector<cv::Point2f> drawn_detected_points;
-            if(!m_distortReprojection && camera->getIsCalibrated())
+            if(!m_distort_reprojection && camera->get_is_calibrated())
             {
                 cv::undistortPoints(
                     cv::Mat(detected_points_f),
@@ -205,10 +205,10 @@ void chessboard_reprojection::updating()
 
         if(rmse >= 0.)
         {
-            if(m_drawReprojection)
+            if(m_draw_reprojection)
             {
                 std::vector<cv::Point2f> drawn_reprojected_pts;
-                if(m_distortReprojection)
+                if(m_distort_reprojection)
                 {
                     drawn_reprojected_pts = reprojected_pts;
                 }
@@ -216,7 +216,7 @@ void chessboard_reprojection::updating()
                 {
                     // Project the model but assume the image isn't distorted.
                     cv::projectPoints(
-                        cv::Mat(m_chessboardModel),
+                        cv::Mat(m_chessboard_model),
                         rvec,
                         tvec,
                         camera_mx,
@@ -231,7 +231,7 @@ void chessboard_reprojection::updating()
                 }
             }
 
-            if(m_drawReprojectionError)
+            if(m_draw_reprojection_error)
             {
                 const auto font_face                     = cv::FONT_HERSHEY_SIMPLEX;
                 const std::string reprojection_error_str = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
@@ -264,19 +264,19 @@ void chessboard_reprojection::updating()
 
 void chessboard_reprojection::stopping()
 {
-    m_chessboardModelOut.reset();
+    m_chessboard_model_out.reset();
 }
 
 //-----------------------------------------------------------------------------
 
-void chessboard_reprojection::toggleDistortion()
+void chessboard_reprojection::toggle_distortion()
 {
-    m_distortReprojection = !m_distortReprojection;
+    m_distort_reprojection = !m_distort_reprojection;
 }
 
 //------------------------------------------------------------------------------
 
-void chessboard_reprojection::updateChessboardSize()
+void chessboard_reprojection::update_chessboard_size()
 {
     std::uint64_t width(1);
     std::uint64_t height(1);
@@ -285,16 +285,16 @@ void chessboard_reprojection::updateChessboardSize()
     try
     {
         ui::preferences preferences;
-        width       = preferences.get(m_widthKey, width);
-        height      = preferences.get(m_heightKey, height);
-        square_size = preferences.get(m_squareSizeKey, square_size);
+        width       = preferences.get(m_width_key, width);
+        height      = preferences.get(m_height_key, height);
+        square_size = preferences.get(m_square_size_key, square_size);
     }
     catch(const ui::preferences_disabled&)
     {
         // Nothing to do..
     }
 
-    m_chessboardModel.clear();
+    m_chessboard_model.clear();
 
     data::point_list::sptr chessboard_model_pl = std::make_shared<data::point_list>();
 
@@ -305,14 +305,14 @@ void chessboard_reprojection::updateChessboardSize()
         for(std::uint64_t j = 0 ; j < width - 1 ; ++j)
         {
             const double y = double(j) * square_size;
-            m_chessboardModel.push_back(cv::Point3d(x, y, 0.));
-            chessboard_model_pl->pushBack(std::make_shared<data::point>(x, y, 0.));
+            m_chessboard_model.push_back(cv::Point3d(x, y, 0.));
+            chessboard_model_pl->push_back(std::make_shared<data::point>(x, y, 0.));
         }
     }
 
-    if(m_hasOutputChessboard)
+    if(m_has_output_chessboard)
     {
-        m_chessboardModelOut = chessboard_model_pl;
+        m_chessboard_model_out = chessboard_model_pl;
     }
 }
 
@@ -321,10 +321,10 @@ void chessboard_reprojection::updateChessboardSize()
 service::connections_t chessboard_reprojection::auto_connections() const
 {
     return {
-        {s_TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
-        {s_DETECTED_CHESSBOARD_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE},
-        {s_CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE},
-        {s_CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE}
+        {TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
+        {DETECTED_CHESSBOARD_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE},
+        {CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE},
+        {CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

@@ -32,11 +32,11 @@
 namespace sight::io::dicom::ut
 {
 
-class DicomAnonymizerTest : public CPPUNIT_NS::TestFixture
+class dicom_anonymizer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DicomAnonymizerTest);
-CPPUNIT_TEST(anonymizeImageSeriesTest);
-CPPUNIT_TEST(anonymizeDICOMTest);
+CPPUNIT_TEST_SUITE(dicom_anonymizer_test);
+CPPUNIT_TEST(anonymize_image_series_test);
+CPPUNIT_TEST(anonymize_dicom_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,17 +46,17 @@ public:
     void tearDown() override;
 
     /// Test anonymization of ImageSeries
-    static void anonymizeImageSeriesTest();
+    static void anonymize_image_series_test();
 
     /// Test anonymisation of DICOM folder
-    void anonymizeDICOMTest();
+    void anonymize_dicom_test();
 
 private:
 
-    void testDICOMFolder(const std::filesystem::path& _src_path);
-    void testAnonymizedFile(const std::filesystem::path& _filename);
+    void test_dicom_folder(const std::filesystem::path& _src_path);
+    void test_anonymized_file(const std::filesystem::path& _filename);
 
-    std::set<std::string> m_uidContainer;
+    std::set<std::string> m_uid_container;
 };
 
 } // namespace sight::io::dicom::ut

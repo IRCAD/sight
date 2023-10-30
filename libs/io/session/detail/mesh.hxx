@@ -37,13 +37,13 @@
 namespace sight::io::session::detail::mesh
 {
 
-constexpr static auto s_uuid {"uuid"};
-constexpr static auto s_mesh {"/mesh.vtp"};
+constexpr static auto UUID {"uuid"};
+constexpr static auto MESH {"/mesh.vtp"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& _archive,
+    zip::archive_writer& _archive,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -57,7 +57,7 @@ inline static void write(
 
     // Convert the mesh to VTK
     const auto& vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(mesh, vtk_mesh);
+    io::vtk::helper::mesh::to_vtk_mesh(mesh, vtk_mesh);
 
     // Create the vtk writer
     const auto& vtk_writer = vtkSmartPointer<vtkXMLPolyDataWriter>::New();
@@ -70,8 +70,8 @@ inline static void write(
     vtk_writer->Update();
 
     // Create the output file inside the archive
-    const auto& ostream = _archive.openFile(
-        std::filesystem::path(mesh->get_uuid() + s_mesh),
+    const auto& ostream = _archive.open_file(
+        std::filesystem::path(mesh->get_uuid() + MESH),
         _password
     );
 
@@ -82,7 +82,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::mesh::sptr read(
-    zip::ArchiveReader& _archive,
+    zip::archive_reader& _archive,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -96,9 +96,9 @@ inline static data::mesh::sptr read(
     helper::read_version<data::mesh>(_tree, 0, 1);
 
     // Create the istream from the input file inside the archive
-    const auto& uuid    = _tree.get<std::string>(s_uuid);
-    const auto& istream = _archive.openFile(
-        std::filesystem::path(uuid + s_mesh),
+    const auto& uuid    = _tree.get<std::string>(UUID);
+    const auto& istream = _archive.open_file(
+        std::filesystem::path(uuid + MESH),
         _password
     );
 
@@ -112,7 +112,7 @@ inline static data::mesh::sptr read(
     vtk_reader->Update();
 
     // Convert from VTK
-    io::vtk::helper::mesh::fromVTKMesh(vtk_reader->GetOutput(), mesh);
+    io::vtk::helper::mesh::from_vtk_mesh(vtk_reader->GetOutput(), mesh);
 
     return mesh;
 }

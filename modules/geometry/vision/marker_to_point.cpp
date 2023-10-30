@@ -40,7 +40,7 @@ const core::com::slots::key_t marker_to_point::CLEAR_SLOT     = "clear";
 
 marker_to_point::marker_to_point() noexcept
 {
-    new_slot(ADD_POINT_SLOT, &marker_to_point::addPoint, this);
+    new_slot(ADD_POINT_SLOT, &marker_to_point::add_point, this);
     new_slot(CLEAR_SLOT, &marker_to_point::clear, this);
 }
 
@@ -75,41 +75,41 @@ void marker_to_point::stopping()
 
 // ----------------------------------------------------------------------------
 
-void marker_to_point::addPoint()
+void marker_to_point::add_point()
 {
-    const auto matrix_tl = m_matrixTL.lock();
+    const auto matrix_tl = m_matrix_tl.lock();
 
-    data::matrix4::sptr matrix3_d = std::make_shared<data::matrix4>();
+    data::matrix4::sptr matrix_3d = std::make_shared<data::matrix4>();
 
     core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
-    CSPTR(data::matrix_tl::buffer_t) buffer = matrix_tl->getClosestBuffer(current_timestamp);
+    CSPTR(data::matrix_tl::buffer_t) buffer = matrix_tl->get_closest_buffer(current_timestamp);
     SIGHT_ASSERT("Buffer not found with timestamp " << current_timestamp, buffer);
 
-    const std::array<float, 16> values = buffer->getElement(0);
+    const std::array<float, 16> values = buffer->get_element(0);
 
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            (*matrix3_d)(i, j) = values[i * std::size_t(4) + j];
+            (*matrix_3d)(i, j) = values[i * std::size_t(4) + j];
         }
     }
 
     SIGHT_DEBUG(
-        "Marker Center Position : " << (*matrix3_d)(0, 3) << " , "
-        << (*matrix3_d)(1, 3) << " , "
-        << (*matrix3_d)(2, 3)
+        "Marker Center Position : " << (*matrix_3d)(0, 3) << " , "
+        << (*matrix_3d)(1, 3) << " , "
+        << (*matrix_3d)(2, 3)
     );
 
     //Save the position and drop the orientation
     data::point::sptr p = std::make_shared<data::point>(
-        (*matrix3_d)(0, 3),
-        (*matrix3_d)(1, 3),
-        (*matrix3_d)(2, 3)
+        (*matrix_3d)(0, 3),
+        (*matrix_3d)(1, 3),
+        (*matrix_3d)(2, 3)
     );
 
-    const auto pl = m_pointList.lock();
-    pl->pushBack(p);
+    const auto pl = m_point_list.lock();
+    pl->push_back(p);
     auto sig = pl->signal<data::point_list::point_added_signal_t>(data::point_list::POINT_ADDED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -121,9 +121,9 @@ void marker_to_point::addPoint()
 
 void marker_to_point::clear()
 {
-    const auto pl = m_pointList.lock();
+    const auto pl = m_point_list.lock();
 
-    if(pl && !pl->getPoints().empty())
+    if(pl && !pl->get_points().empty())
     {
         pl->clear();
 

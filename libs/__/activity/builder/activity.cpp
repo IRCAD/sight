@@ -31,19 +31,19 @@
 namespace sight::activity::builder
 {
 
-SIGHT_REGISTER_ACTIVITY_BUILDER(sight::activity::builder::Activity, "sight::activity::builder::Activity");
+SIGHT_REGISTER_ACTIVITY_BUILDER(sight::activity::builder::activity, "sight::activity::builder::Activity");
 
 //-----------------------------------------------------------------------------
 
 data::composite::sptr vector_to_composite(
     const data::vector::csptr& _vector,
-    const activity::extension::activity_requirement& _req
+    const sight::activity::extension::activity_requirement& _req
 )
 {
-    namespace ActReg = activity::extension;
+    namespace ActReg = sight::activity::extension;
     data::composite::sptr composite = std::make_shared<data::composite>();
 
-    SIGHT_ASSERT("Each possible items in requirement need to have a matching key", _req.keys.size() >= _req.maxOccurs);
+    SIGHT_ASSERT("Each possible items in requirement need to have a matching key", _req.keys.size() >= _req.max_occurs);
 
     auto iter = _req.keys.begin();
 
@@ -58,31 +58,31 @@ data::composite::sptr vector_to_composite(
 
 //-----------------------------------------------------------------------------
 
-data::activity::sptr Activity::buildData(
-    const activity::extension::activity_info& _activity_info,
+data::activity::sptr activity::build_data(
+    const sight::activity::extension::activity_info& _activity_info,
     const data::vector::csptr& _current_selection
 ) const
 {
     auto activity = std::make_shared<data::activity>();
 
-    activity->setActivityConfigId(_activity_info.id);
-    activity->setDescription(_activity_info.description);
+    activity->set_activity_config_id(_activity_info.id);
+    activity->set_description(_activity_info.description);
 
-    namespace ActReg = activity::extension;
+    namespace ActReg = sight::activity::extension;
 
     ActReg::activity_info::requirements_t req_vect = _activity_info.requirements;
     for(const ActReg::activity_requirement& req : req_vect)
     {
-        data::vector::sptr vector_type = this->getType(_current_selection, req.type);
+        data::vector::sptr vector_type = this->type(_current_selection, req.type);
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
-        if(req.maxOccurs == 1 && req.minOccurs == 1)
+        if(req.max_occurs == 1 && req.min_occurs == 1)
         {
             SIGHT_ASSERT("No param name " << req.name << " with type " << req.type, !vector_type->empty());
             (*activity)[req.name] = (*vector_type)[0];
         }
-        else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
+        else if(req.create || (req.min_occurs == 0 && req.max_occurs == 0))
         {
-            (*activity)[req.name] = sight::activity::detail::data::create(req.type, req.objectConfig);
+            (*activity)[req.name] = sight::activity::detail::data::create(req.type, req.object_config);
         }
         else
         {

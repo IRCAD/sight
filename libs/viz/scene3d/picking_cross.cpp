@@ -35,7 +35,7 @@ namespace sight::viz::scene3d
 //------------------------------------------------------------------------------
 
 picking_cross::picking_cross(const std::string& _name, Ogre::SceneManager& _scene_manager, Ogre::SceneNode& _parent) :
-    m_sceneManager(_scene_manager)
+    m_scene_manager(_scene_manager)
 {
     m_cross = _scene_manager.createManualObject(_name +  +"_picking_cross");
     const auto basic_ambient_mat = Ogre::MaterialManager::getSingleton().getByName(
@@ -57,7 +57,7 @@ picking_cross::picking_cross(const std::string& _name, Ogre::SceneManager& _scen
     m_cross->end();
     m_cross->setVisible(false);
     // Always render the widget after the plane it is displayed on.
-    m_cross->setRenderQueueGroupAndPriority(rq::s_NEGATO_WIDGET_ID, 1);
+    m_cross->setRenderQueueGroupAndPriority(rq::NEGATO_WIDGET_ID, 1);
 
     _parent.attachObject(m_cross);
 }
@@ -69,7 +69,7 @@ picking_cross::~picking_cross()
     auto cross_mtl = m_cross->getSections()[0]->getMaterial();
     Ogre::MaterialManager::getSingleton().remove(cross_mtl);
 
-    m_sceneManager.destroyManualObject(m_cross);
+    m_scene_manager.destroyManualObject(m_cross);
 }
 
 //------------------------------------------------------------------------------
@@ -85,14 +85,14 @@ void picking_cross::update(
     const auto dash_length  = std::max(_a.distance(_b), _c.distance(_d)) / 400.F;
     const auto dash_spacing = std::max(_a.distance(_b), _c.distance(_d)) / 200.F;
     m_cross->beginUpdate(0);
-    manual_object::drawDashedLine(
+    manual_object::draw_dashed_line(
         m_cross,
         _a,
         _b,
         dash_length,
         dash_spacing
     );
-    manual_object::drawDashedLine(
+    manual_object::draw_dashed_line(
         m_cross,
         _c,
         _d,

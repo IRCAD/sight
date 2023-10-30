@@ -54,7 +54,7 @@ namespace sight::module::io::itk
  * @subsection In-Out In-Out
  * - \b data [sight::data::image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the image to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
 class MODULE_IO_ITK_CLASS_API image_reader : public sight::io::service::reader
@@ -67,7 +67,7 @@ public:
 
     MODULE_IO_ITK_API ~image_reader() noexcept override;
 
-    MODULE_IO_ITK_API static bool loadImage(const std::filesystem::path& _img_file, const SPTR(data::image)& _img);
+    MODULE_IO_ITK_API static bool load_image(const std::filesystem::path& _img_file, const SPTR(data::image)& _img);
 
 protected:
 
@@ -91,10 +91,10 @@ protected:
     MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
 
     /// Configure using GUI.
-    MODULE_IO_ITK_API void openLocationDialog() override;
+    MODULE_IO_ITK_API void open_location_dialog() override;
 
     /// Return managed file type, here FILE
-    MODULE_IO_ITK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::service::path_type_t get_path_type() const override;
 
 private:
 };

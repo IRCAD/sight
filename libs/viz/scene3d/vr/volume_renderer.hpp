@@ -53,41 +53,41 @@ class VIZ_SCENE3D_CLASS_API volume_renderer
 public:
 
     /// Image cube faces.
-    enum CubeFace
+    enum cube_face
     {
-        X_NEGATIVE = 0,
-        X_POSITIVE = 1,
-        Y_NEGATIVE = 2,
-        Y_POSITIVE = 3,
-        Z_NEGATIVE = 4,
-        Z_POSITIVE = 5
+        x_negative = 0,
+        x_positive = 1,
+        y_negative = 2,
+        y_positive = 3,
+        z_negative = 4,
+        z_positive = 5
     };
 
     /// Array of 4 vertex indices.
-    typedef std::array<unsigned, 4> CubeFacePositionList;
+    using cube_face_position_list_t = std::array<unsigned int, 4>;
 
     /// Maps a face name to an array of 4 vertex indices.
-    typedef std::map<CubeFace, CubeFacePositionList> CubeFacePositionsMap;
+    using cube_face_positions_map_t = std::map<cube_face, cube_face_position_list_t>;
 
     /// Lists vertex indices pairs that form edges.
-    typedef std::array<std::pair<unsigned, unsigned>, 12> CubeEdgeList;
+    using cube_edge_list_t = std::array<std::pair<unsigned int, unsigned int>, 12>;
 
     /// Maps each cube faces to 4 vertex indices.
-    VIZ_SCENE3D_API static inline const CubeFacePositionsMap s_cubeFaces =
+    VIZ_SCENE3D_API static inline const cube_face_positions_map_t CUBE_FACES =
     {
-        {volume_renderer::Z_POSITIVE, {{3, 4, 1, 0}}},
-        {volume_renderer::Z_NEGATIVE, {{2, 5, 7, 6}}},
-        {volume_renderer::Y_POSITIVE, {{2, 6, 3, 0}}},
-        {volume_renderer::Y_NEGATIVE, {{1, 4, 7, 5}}},
-        {volume_renderer::X_POSITIVE, {{0, 1, 5, 2}}},
-        {volume_renderer::X_NEGATIVE, {{6, 7, 4, 3}}}
+        {volume_renderer::z_positive, {{3, 4, 1, 0}}},
+        {volume_renderer::z_negative, {{2, 5, 7, 6}}},
+        {volume_renderer::y_positive, {{2, 6, 3, 0}}},
+        {volume_renderer::y_negative, {{1, 4, 7, 5}}},
+        {volume_renderer::x_positive, {{0, 1, 5, 2}}},
+        {volume_renderer::x_negative, {{6, 7, 4, 3}}}
     };
 
     /// Image local and texture coordinates /!\ The order matters to our intersection algorithm.
-    VIZ_SCENE3D_API static const std::array<Ogre::Vector3, 8> s_imagePositions;
+    VIZ_SCENE3D_API static const std::array<Ogre::Vector3, 8> IMAGE_POSITIONS;
 
     /// List of vertex indices pairs that make an edge.
-    VIZ_SCENE3D_API static constexpr CubeEdgeList s_cubeEdges =
+    VIZ_SCENE3D_API static constexpr cube_edge_list_t CUBE_EDGES =
     {
         {
             {0, 1}, {1, 4}, {4, 3}, {3, 0},
@@ -145,104 +145,104 @@ public:
     VIZ_SCENE3D_API virtual void update(const data::transfer_function::csptr& _tf) = 0;
 
     /// Called when the image being rendered is modified.
-    VIZ_SCENE3D_API virtual void updateImage(data::image::csptr _image, data::transfer_function::csptr _tf) = 0;
+    VIZ_SCENE3D_API virtual void update_image(data::image::csptr _image, data::transfer_function::csptr _tf) = 0;
 
     /// @brief Loads the 3D texture onto the GPU.
-    VIZ_SCENE3D_API virtual void loadImage();
+    VIZ_SCENE3D_API virtual void load_image();
 
     /// @brief Loads the mask onto the GPU.
-    VIZ_SCENE3D_API virtual void loadMask();
+    VIZ_SCENE3D_API virtual void load_mask();
 
     /// Called when the transfer function is updated.
-    VIZ_SCENE3D_API virtual void updateVolumeTF(const data::transfer_function::csptr&) = 0;
+    VIZ_SCENE3D_API virtual void update_volume_tf(const data::transfer_function::csptr&) = 0;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API virtual void setSampling(uint16_t _nb_samples, const data::transfer_function::csptr& _tf) = 0;
+    VIZ_SCENE3D_API virtual void set_sampling(uint16_t _nb_samples, const data::transfer_function::csptr& _tf) = 0;
 
     /// Sets/unsets pre-integrated rendering.
-    VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool _pre_integrated_rendering) = 0;
+    VIZ_SCENE3D_API virtual void set_pre_integrated_rendering(bool _pre_integrated_rendering) = 0;
 
     ///@brief Returns 'true' if preintegration is used, 'false' otherwise.
     [[nodiscard]] VIZ_SCENE3D_API bool preintegration() const;
 
     /// Computes image positions.
-    VIZ_SCENE3D_API virtual void clipImage(const Ogre::AxisAlignedBox& _clipping_box);
+    VIZ_SCENE3D_API virtual void clip_image(const Ogre::AxisAlignedBox& _clipping_box);
 
     /// Returns the sampling rate.
-    [[nodiscard]] VIZ_SCENE3D_API float samplingDistance() const;
+    [[nodiscard]] VIZ_SCENE3D_API float sampling_distance() const;
 
     ///@brief Returns the current camera information in use.
-    [[nodiscard]] VIZ_SCENE3D_API const camera_info_t& cameraInfo() const;
+    [[nodiscard]] VIZ_SCENE3D_API const camera_info_t& camera_info() const;
 
     /// Called when the size of the viewport changes.
-    VIZ_SCENE3D_API virtual void resizeViewport(int _w, int _h);
+    VIZ_SCENE3D_API virtual void resize_viewport(int _w, int _h);
 
 protected:
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
-    VIZ_SCENE3D_API void scaleTranslateCube(
-        const data::image::Spacing& _spacing,
-        const data::image::Origin& _origin
+    VIZ_SCENE3D_API void scale_translate_cube(
+        const data::image::spacing_t& _spacing,
+        const data::image::origin_t& _origin
     );
 
     /// Updates the sampling distance according to the current camera plane and slice number. Also updates
     /// m_cameraPlane.
-    VIZ_SCENE3D_API void updateSampleDistance();
+    VIZ_SCENE3D_API void update_sample_distance();
 
     /// ID of this object's parent.
-    const std::string M_PARENT_ID;
+    const std::string m_parent_id;
 
     /// This object's scene manager.
-    Ogre::SceneManager* const M_SCENE_MANAGER;
+    Ogre::SceneManager* const m_scene_manager;
 
     /// 3D Image texture.
-    texture::sptr m_3DOgreTexture;
+    texture::sptr m_3d_ogre_texture;
 
     /// texture used for the mask.
-    texture::sptr m_maskTexture;
+    texture::sptr m_mask_texture;
 
     /// TF texture used for rendering.
-    transfer_function::sptr m_gpuVolumeTF;
+    transfer_function::sptr m_gpu_volume_tf;
 
     /// Contains the buffering texture for the 3D image.
-    texture::sptr m_bufferingTexture;
+    texture::sptr m_buffering_texture;
 
     /// Prevents from accessing the textures while they are swapped.
-    std::mutex m_bufferSwapMutex;
+    std::mutex m_buffer_swap_mutex;
 
     ///@brief Indicates if a intermediate buffer is used when converting to negato.
-    const bool M_WITH_BUFFER;
+    const bool m_with_buffer;
 
     /// Pre-integration table.
-    pre_integration_table m_preIntegrationTable;
+    pre_integration_table m_pre_integration_table;
 
     /// Use pre-integration.
     bool m_preintegration = false;
 
     /// This object's scene node.
-    Ogre::SceneNode* m_volumeSceneNode;
+    Ogre::SceneNode* m_volume_scene_node;
 
     /// Camera used for rendering.
     Ogre::Camera* m_camera;
 
     ///@brief Camera information
-    camera_info_t m_cameraInfo;
+    camera_info_t m_camera_info;
 
     /// Sampling rate.
-    std::uint16_t m_nbSlices = 512;
+    std::uint16_t m_nb_slices = 512;
 
     /// Distance between samples in local space.
-    float m_sampleDistance {};
+    float m_sample_distance {};
 
     /// Intersection between the image and the clipping box.
-    std::array<Ogre::Vector3, 8> m_clippedImagePositions;
+    std::array<Ogre::Vector3, 8> m_clipped_image_positions;
 };
 
 //-----------------------------------------------------------------------------
 
-inline float volume_renderer::samplingDistance() const
+inline float volume_renderer::sampling_distance() const
 {
-    return m_sampleDistance;
+    return m_sample_distance;
 }
 
 //------------------------------------------------------------------------------
@@ -254,9 +254,9 @@ inline bool volume_renderer::preintegration() const
 
 //------------------------------------------------------------------------------
 
-inline auto volume_renderer::cameraInfo() const -> const camera_info_t&
+inline auto volume_renderer::camera_info() const -> const camera_info_t&
 {
-    return m_cameraInfo;
+    return m_camera_info;
 }
 
 //-----------------------------------------------------------------------------

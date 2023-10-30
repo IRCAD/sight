@@ -46,54 +46,54 @@ algo_mesh_deformation::~algo_mesh_deformation() noexcept =
 
 //-----------------------------------------------------------------------------
 
-void algo_mesh_deformation::setParam(
+void algo_mesh_deformation::set_param(
     data::mesh::sptr _mesh,
     const unsigned int _nb_step,
     const unsigned int _amplitude
 )
 {
     m_mesh      = _mesh;
-    m_nbStep    = _nb_step;
+    m_nb_step   = _nb_step;
     m_amplitude = _amplitude;
     m_direction = 1;
 
-    m_nbPoints = _mesh->numPoints();
-    m_nbCells  = _mesh->numCells();
+    m_nb_points = _mesh->num_points();
+    m_nb_cells  = _mesh->num_cells();
 }
 
 //-----------------------------------------------------------------------------
 
-void algo_mesh_deformation::computeDeformation(
+void algo_mesh_deformation::compute_deformation(
     data::mesh::sptr _mesh,
     const unsigned int _nb_step,
     const unsigned int _amplitude
 )
 {
     if(m_mesh.expired()
-       || m_nbPoints != _mesh->numPoints()
-       || m_nbCells != _mesh->numCells()
-       || !_mesh->has<data::mesh::Attributes::POINT_COLORS>())
+       || m_nb_points != _mesh->num_points()
+       || m_nb_cells != _mesh->num_cells()
+       || !_mesh->has<data::mesh::attribute::point_colors>())
     {
-        this->setParam(_mesh, _nb_step, _amplitude);
-        this->initSimu();
+        this->set_param(_mesh, _nb_step, _amplitude);
+        this->init_simu();
     }
     else
     {
-        this->computeSimu();
+        this->compute_simu();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void algo_mesh_deformation::initSimu()
+void algo_mesh_deformation::init_simu()
 {
     const auto mesh = m_mesh.lock();
-    m_originMesh = data::object::copy(mesh);
-    m_step       = 0;
+    m_origin_mesh = data::object::copy(mesh);
+    m_step        = 0;
 
-    if(!m_mesh.lock()->has<data::mesh::Attributes::POINT_COLORS>())
+    if(!m_mesh.lock()->has<data::mesh::attribute::point_colors>())
     {
-        geometry::data::mesh::colorizeMeshPoints(mesh);
+        geometry::data::mesh::colorize_mesh_points(mesh);
     }
 
     const auto dump_lock = mesh->dump_lock();
@@ -115,18 +115,18 @@ void algo_mesh_deformation::initSimu()
         }
     }
 
-    m_yCenter = (max - min) / 2 + min;
+    m_y_center = (max - min) / 2 + min;
 }
 
 //-----------------------------------------------------------------------------
 
-void algo_mesh_deformation::computeSimu()
+void algo_mesh_deformation::compute_simu()
 {
     namespace core  = sight::core;
     namespace point = data::iterator::point;
 
     m_step += m_direction;
-    if(m_step == static_cast<int>(m_nbStep))
+    if(m_step == static_cast<int>(m_nb_step))
     {
         m_direction = -1;
     }
@@ -135,13 +135,13 @@ void algo_mesh_deformation::computeSimu()
         m_direction = 1;
     }
 
-    const float scale = static_cast<float>(m_step) / static_cast<float>(m_nbStep);
+    const float scale = static_cast<float>(m_step) / static_cast<float>(m_nb_step);
 
     const auto mesh           = m_mesh.lock();
     const auto dump_lock      = mesh->dump_lock();
-    const auto orig_dump_lock = m_originMesh->dump_lock();
+    const auto orig_dump_lock = m_origin_mesh->dump_lock();
 
-    const auto orig_range = m_originMesh->czip_range<point::xyz, point::rgba>();
+    const auto orig_range = m_origin_mesh->czip_range<point::xyz, point::rgba>();
     const auto range      = mesh->zip_range<point::xyz, point::rgba>();
 
     for(const auto& [orig, cur] : boost::combine(orig_range, range))
@@ -150,9 +150,9 @@ void algo_mesh_deformation::computeSimu()
         auto&& [pt2, c2]      = cur;
 
         pt2.x = pt1.x;
-        if(pt1.y - m_yCenter > 0)
+        if(pt1.y - m_y_center > 0)
         {
-            pt2.y = pt1.y + (pt1.y - m_yCenter) * scale;
+            pt2.y = pt1.y + (pt1.y - m_y_center) * scale;
             c2.r  = core::tools::numeric_round_cast<data::mesh::color_t>(255 * scale);
         }
         else
@@ -163,7 +163,7 @@ void algo_mesh_deformation::computeSimu()
         pt2.z = pt1.z;
     }
 
-    geometry::data::mesh::generatePointNormals(mesh);
+    geometry::data::mesh::generate_point_normals(mesh);
 }
 
 //-----------------------------------------------------------------------------

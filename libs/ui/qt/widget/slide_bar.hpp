@@ -38,26 +38,26 @@ Q_OBJECT
 public:
 
     /// Defines the horizontal alignment of the widget.
-    enum HAlignment
+    enum h_alignment
     {
-        RIGHT,
-        LEFT
+        right,
+        left
     };
 
     /// Defines the vertical alignment of the widget.
-    enum VAlignment
+    enum v_alignment
     {
-        TOP,
-        BOTTOM
+        top,
+        bottom
     };
 
     /// Defines animation direction.
-    enum AnimatableAlignment
+    enum animatable_alignment
     {
-        RIGHT_ANIMATION,
-        LEFT_ANIMATION,
-        TOP_ANIMATION,
-        BOTTOM_ANIMATION
+        right_animation,
+        left_animation,
+        top_animation,
+        bottom_animation
     };
 
     /**
@@ -79,8 +79,8 @@ public:
      */
     UI_QT_API_QT slide_bar(
         QWidget* _parent,
-        HAlignment _h_align,
-        VAlignment _v_align,
+        h_alignment _h_align,
+        v_alignment _v_align,
         int _width,
         bool _percent_width,
         int _height,
@@ -91,20 +91,20 @@ public:
         bool _percent_v_offset,
         double _opacity,
         bool _animatable,
-        AnimatableAlignment _animatable_alignment
+        animatable_alignment _animatable_alignment
     );
 
     /// Destroyes the widget.
     UI_QT_API_QT ~slide_bar() override;
 
     /// Updates the widget position relative of the parent.
-    UI_QT_API_QT void updatePosition();
+    UI_QT_API_QT void update_position();
 
     /// Sets the widget visibility.
     UI_QT_API_QT void setVisible(bool _visible) override;
 
     /// Gets if the widget is shown.
-    [[nodiscard]] inline bool isShown() const;
+    [[nodiscard]] inline bool is_shown() const;
 
 private:
 
@@ -114,43 +114,43 @@ private:
     void init();
 
     /// Hides the widget.
-    void forceHide();
+    void force_hide();
 
     /// Shows the widget.
-    void forceShow();
+    void force_show();
 
     /// Slides the widget with the animation if it's enabled, else, show or hide the widget.
     void slide(bool _visible);
 
     /// Defines the horizontal alignment.
-    HAlignment m_hAlignment {LEFT};
+    h_alignment m_h_alignment {left};
 
     /// Defines the vertical alignment.
-    VAlignment m_vAlignment {TOP};
+    v_alignment m_v_alignment {top};
 
     /// Defines the width of the widget.
     int m_width {100};
 
     /// Defines if the width must be read a percent.
-    bool m_percentWidth {true};
+    bool m_percent_width {true};
 
     /// Defines the height of the widget.
     int m_height {100};
 
     /// Defines if the height must be read a percent.
-    bool m_percentHeight {true};
+    bool m_percent_height {true};
 
     /// Defines the horizontal offset of the widget.
-    int m_hOffset {0};
+    int m_h_offset {0};
 
     /// Defines if the horizontal offset must be read a percent.
-    bool m_percentHOffset {false};
+    bool m_percent_h_offset {false};
 
     /// Defines the vertical offset of the widget.
-    int m_vOffset {0};
+    int m_v_offset {0};
 
     /// Defines if the vertical offset must be read a percent.
-    bool m_percentVOffset {false};
+    bool m_percent_v_offset {false};
 
     /// Defines the widget opacity.
     double m_opacity {1.};
@@ -159,23 +159,23 @@ private:
     bool m_animatable {false};
 
     /// Defines the animation direction.
-    AnimatableAlignment m_animatableAlignment {TOP_ANIMATION};
+    animatable_alignment m_animatable_alignment {top_animation};
 
     /// Defines the position of the widget when it's shown.
-    QRect m_shownPosition;
+    QRect m_shown_position;
 
     /// Defines the position of the widget when it's hidden.
-    QRect m_hiddenPosition;
+    QRect m_hidden_position;
 
     /// Defines the widget visibility.
-    bool m_isShown {false};
+    bool m_is_shown {false};
 };
 
 //------------------------------------------------------------------------------
 
-bool slide_bar::isShown() const
+bool slide_bar::is_shown() const
 {
-    return m_isShown;
+    return m_is_shown;
 }
 
 } // namespace sight::ui::qt::widget

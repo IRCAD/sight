@@ -50,7 +50,7 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG        = "errorCompute
 open_cv_extrinsic::open_cv_extrinsic() noexcept
 {
     new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &open_cv_extrinsic::updateChessboardSize, this);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &open_cv_extrinsic::update_chessboard_size, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -63,20 +63,20 @@ open_cv_extrinsic::~open_cv_extrinsic() noexcept =
 void open_cv_extrinsic::configuring()
 {
     const auto config = this->get_config();
-    m_camIndex = config.get<std::size_t>("camIndex");
+    m_cam_index = config.get<std::size_t>("camIndex");
 
     const auto cfg_board = config.get_child("board.<xmlattr>");
 
-    m_widthKey = cfg_board.get<std::string>("width");
-    SIGHT_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
+    m_width_key = cfg_board.get<std::string>("width");
+    SIGHT_ASSERT("Attribute 'width' is empty", !m_width_key.empty());
 
-    m_heightKey = cfg_board.get<std::string>("height");
-    SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
+    m_height_key = cfg_board.get<std::string>("height");
+    SIGHT_ASSERT("Attribute 'height' is empty", !m_height_key.empty());
 
     if(const auto square_size_key = cfg_board.get_optional<std::string>("squareSize"); square_size_key.has_value())
     {
-        m_squareSizeKey = square_size_key.value();
-        SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
+        m_square_size_key = square_size_key.value();
+        SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_square_size_key.empty());
     }
 }
 
@@ -84,7 +84,7 @@ void open_cv_extrinsic::configuring()
 
 void open_cv_extrinsic::starting()
 {
-    this->updateChessboardSize();
+    this->update_chessboard_size();
 }
 
 // ----------------------------------------------------------------------------
@@ -97,14 +97,14 @@ void open_cv_extrinsic::stopping()
 
 void open_cv_extrinsic::updating()
 {
-    const auto cal_info1 = m_calibrationInfo1.lock();
-    const auto cal_info2 = m_calibrationInfo2.lock();
+    const auto cal_info1 = m_calibration_info1.lock();
+    const auto cal_info2 = m_calibration_info2.lock();
 
     SIGHT_ASSERT("Object with 'calibrationInfo1' is not found", cal_info1);
     SIGHT_ASSERT("Object with 'calibrationInfo2' is not found", cal_info2);
 
-    SIGHT_WARN_IF("Calibration info is empty.", cal_info1->getPointListContainer().empty());
-    if(!cal_info1->getPointListContainer().empty())
+    SIGHT_WARN_IF("Calibration info is empty.", cal_info1->get_point_list_container().empty());
+    if(!cal_info1->get_point_list_container().empty())
     {
         std::vector<std::vector<cv::Point3f> > object_points;
 
@@ -114,8 +114,8 @@ void open_cv_extrinsic::updating()
             for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
                 points.emplace_back(
-                    static_cast<float>(x) * m_squareSize,
-                    static_cast<float>(y) * m_squareSize,
+                    static_cast<float>(x) * m_square_size,
+                    static_cast<float>(y) * m_square_size,
                     0.F
 
                 );
@@ -125,8 +125,8 @@ void open_cv_extrinsic::updating()
         std::vector<std::vector<cv::Point2f> > image_points1;
         std::vector<std::vector<cv::Point2f> > image_points2;
         {
-            const auto pt_lists1 = cal_info1->getPointListContainer();
-            const auto pt_lists2 = cal_info2->getPointListContainer();
+            const auto pt_lists1 = cal_info1->get_point_list_container();
+            const auto pt_lists2 = cal_info2->get_point_list_container();
 
             SIGHT_ERROR_IF("The two calibrationInfo do not have the same size", pt_lists1.size() != pt_lists2.size());
 
@@ -142,22 +142,22 @@ void open_cv_extrinsic::updating()
                 std::vector<cv::Point2f> img_point1;
                 std::vector<cv::Point2f> img_point2;
 
-                for(data::point::csptr point : pt_list1->getPoints())
+                for(data::point::csptr point : pt_list1->get_points())
                 {
                     SIGHT_ASSERT("point is null", point);
                     img_point1.emplace_back(
-                        static_cast<float>(point->getCoord()[0]),
-                        static_cast<float>(point->getCoord()[1])
+                        static_cast<float>(point->get_coord()[0]),
+                        static_cast<float>(point->get_coord()[1])
 
                     );
                 }
 
-                for(data::point::csptr point : pt_list2->getPoints())
+                for(data::point::csptr point : pt_list2->get_points())
                 {
                     SIGHT_ASSERT("point is null", point);
                     img_point2.emplace_back(
-                        static_cast<float>(point->getCoord()[0]),
-                        static_cast<float>(point->getCoord()[1])
+                        static_cast<float>(point->get_coord()[0]),
+                        static_cast<float>(point->get_coord()[1])
 
                     );
                 }
@@ -183,31 +183,31 @@ void open_cv_extrinsic::updating()
 
         SIGHT_ASSERT(
             "camera index must be > 0 and < camSeries->size()",
-            m_camIndex > 0 && m_camIndex < cam_series->size()
+            m_cam_index > 0 && m_cam_index < cam_series->size()
         );
 
-        data::image::csptr img = cal_info1->getImageContainer().front();
+        data::image::csptr img = cal_info1->get_image_container().front();
         cv::Size2i imgsize(static_cast<int>(img->size()[0]), static_cast<int>(img->size()[1]));
         {
             data::camera::csptr cam1 = cam_series->get_camera(0);
-            data::camera::csptr cam2 = cam_series->get_camera(m_camIndex);
+            data::camera::csptr cam2 = cam_series->get_camera(m_cam_index);
 
             data::mt::locked_ptr cam1_lock(cam1);
             data::mt::locked_ptr cam2_lock(cam2);
 
-            camera_matrix1.at<double>(0, 0) = cam1->getFx();
-            camera_matrix1.at<double>(1, 1) = cam1->getFy();
-            camera_matrix1.at<double>(0, 2) = cam1->getCx();
-            camera_matrix1.at<double>(1, 2) = cam1->getCy();
+            camera_matrix1.at<double>(0, 0) = cam1->get_fx();
+            camera_matrix1.at<double>(1, 1) = cam1->get_fy();
+            camera_matrix1.at<double>(0, 2) = cam1->get_cx();
+            camera_matrix1.at<double>(1, 2) = cam1->get_cy();
 
-            camera_matrix2.at<double>(0, 0) = cam2->getFx();
-            camera_matrix2.at<double>(1, 1) = cam2->getFy();
-            camera_matrix2.at<double>(0, 2) = cam2->getCx();
-            camera_matrix2.at<double>(1, 2) = cam2->getCy();
+            camera_matrix2.at<double>(0, 0) = cam2->get_fx();
+            camera_matrix2.at<double>(1, 1) = cam2->get_fy();
+            camera_matrix2.at<double>(0, 2) = cam2->get_cx();
+            camera_matrix2.at<double>(1, 2) = cam2->get_cy();
             for(std::size_t i = 0 ; i < 5 ; ++i)
             {
-                distortion_coefficients1[i] = static_cast<float>(cam1->getDistortionCoefficient()[i]);
-                distortion_coefficients2[i] = static_cast<float>(cam2->getDistortionCoefficient()[i]);
+                distortion_coefficients1[i] = static_cast<float>(cam1->get_distortion_coefficient()[i]);
+                distortion_coefficients2[i] = static_cast<float>(cam2->get_distortion_coefficient()[i]);
             }
         }
         double err = cv::stereoCalibrate(
@@ -241,7 +241,7 @@ void open_cv_extrinsic::updating()
         io::opencv::matrix::copy_from_cv(cv4x4, matrix);
 
         {
-            cam_series->set_extrinsic_matrix(m_camIndex, matrix);
+            cam_series->set_extrinsic_matrix(m_cam_index, matrix);
         }
 
         data::camera_set::extrinsic_calibrated_signal_t::sptr sig;
@@ -258,14 +258,14 @@ void open_cv_extrinsic::updating()
 
 //------------------------------------------------------------------------------
 
-void open_cv_extrinsic::updateChessboardSize()
+void open_cv_extrinsic::update_chessboard_size()
 {
     try
     {
         ui::preferences preferences;
-        m_width      = preferences.get(m_widthKey, m_width);
-        m_height     = preferences.get(m_heightKey, m_height);
-        m_squareSize = preferences.get(m_squareSizeKey, m_squareSize);
+        m_width       = preferences.get(m_width_key, m_width);
+        m_height      = preferences.get(m_height_key, m_height);
+        m_square_size = preferences.get(m_square_size_key, m_square_size);
     }
     catch(const ui::preferences_disabled&)
     {

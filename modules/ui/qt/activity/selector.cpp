@@ -69,7 +69,7 @@ const core::com::signals::key_t selector::LOAD_REQUESTED_SIG       = "loadReques
 
 selector::selector() noexcept
 {
-    new_signal<ActivityIDSelectedSignalType>(ACTIVITY_ID_SELECTED_SIG);
+    new_signal<activity_id_selected_signal_t>(ACTIVITY_ID_SELECTED_SIG);
     new_signal<load_requested_signal_t>(LOAD_REQUESTED_SIG);
 }
 
@@ -96,7 +96,7 @@ void selector::configuring()
             "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
             mode == "include" || mode == "exclude"
         );
-        m_filterMode = mode;
+        m_filter_mode = mode;
 
         // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(const config_t::value_type& v, config_filter.equal_range("id"))
@@ -114,7 +114,7 @@ void selector::starting()
 {
     sight::ui::service::create();
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     auto* group_box = new QGroupBox(tr("Activity"));
 
@@ -125,10 +125,10 @@ void selector::starting()
     auto* main_layout = new QVBoxLayout();
     main_layout->addWidget(scroll_area);
 
-    m_buttonGroup = new QButtonGroup(group_box);
+    m_button_group = new QButtonGroup(group_box);
 
-    auto infos = sight::activity::extension::activity::getDefault()->getInfos();
-    m_activitiesInfo = this->getEnabledActivities(infos);
+    auto infos = sight::activity::extension::activity::get_default()->get_infos();
+    m_activities_info = this->get_enabled_activities(infos);
 
     // Add the load button
     sight::activity::extension::activity_info info_load;
@@ -137,17 +137,17 @@ void selector::starting()
         core::runtime::get_module_resource_file_path("sight::module::ui::icons", "LoadActivity.svg").string();
     info_load.description = "Load a previously saved activity.";
 
-    m_activitiesInfo.insert(m_activitiesInfo.begin(), info_load);
+    m_activities_info.insert(m_activities_info.begin(), info_load);
 
     std::size_t index_button = 0;
-    const float rows         = std::sqrt(static_cast<float>(m_activitiesInfo.size()));
+    const float rows         = std::sqrt(static_cast<float>(m_activities_info.size()));
     int num_cols             = static_cast<int>(std::ceil(rows));
     const int num_rows       = static_cast<int>(std::floor(rows));
     num_cols = 2 * num_cols + 1;
 
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    QWidget* const container = qt_container->getQtContainer();
+    QWidget* const container = qt_container->get_qt_container();
     container->setObjectName(service_id);
     const std::string style_grid("QGridLayout#activities {"
                                  "border-width: 4px;"
@@ -171,7 +171,7 @@ void selector::starting()
     int i = 1;
     int j = 0;
 
-    for(const auto& info : m_activitiesInfo)
+    for(const auto& info : m_activities_info)
     {
         auto* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));
@@ -180,7 +180,7 @@ void selector::starting()
         button->setFont(font);
 
         button->setStyleSheet(QString::fromUtf8(style.c_str()));
-        m_buttonGroup->addButton(button, static_cast<int>(index_button));
+        m_button_group->addButton(button, static_cast<int>(index_button));
 
         auto* label = new QLabel(QString::fromStdString(info.description));
         label->setWordWrap(true);
@@ -208,9 +208,9 @@ void selector::starting()
     activities_layout->setRowMinimumHeight(num_rows * 3, 5);
     activities_layout->setRowStretch(num_rows * 3, 2);
 
-    qt_container->setLayout(main_layout);
+    qt_container->set_layout(main_layout);
 
-    this->connect(m_buttonGroup, SIGNAL(buttonClicked(int)), SLOT(onClicked(int)));
+    this->connect(m_button_group, SIGNAL(buttonClicked(int)), SLOT(on_clicked(int)));
 }
 
 //------------------------------------------------------------------------------
@@ -229,7 +229,7 @@ void selector::updating()
 
 //------------------------------------------------------------------------------
 
-void selector::onClicked(int _id)
+void selector::on_clicked(int _id)
 {
     if(_id == 0)
     {
@@ -238,20 +238,20 @@ void selector::onClicked(int _id)
     }
     else
     {
-        auto sig = this->signal<ActivityIDSelectedSignalType>(ACTIVITY_ID_SELECTED_SIG);
-        sig->async_emit(m_activitiesInfo[static_cast<std::size_t>(_id)].id);
+        auto sig = this->signal<activity_id_selected_signal_t>(ACTIVITY_ID_SELECTED_SIG);
+        sig->async_emit(m_activities_info[static_cast<std::size_t>(_id)].id);
     }
 }
 
 //------------------------------------------------------------------------------
 
-selector::activity_infos_t selector::getEnabledActivities(const activity_infos_t& _infos)
+selector::activity_infos_t selector::get_enabled_activities(const activity_infos_t& _infos)
 {
     activity_infos_t configs;
 
-    if(m_filterMode == "include" || m_filterMode == "exclude")
+    if(m_filter_mode == "include" || m_filter_mode == "exclude")
     {
-        const bool is_include_mode = m_filterMode == "include";
+        const bool is_include_mode = m_filter_mode == "include";
 
         for(const auto& info : _infos)
         {

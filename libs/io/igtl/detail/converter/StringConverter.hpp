@@ -32,30 +32,30 @@ namespace sight::io::igtl::detail::converter
  *
  * @brief class to manage conversion between data::string and igtl::StringMessage
  */
-class IO_IGTL_CLASS_API StringConverter :
+class IO_IGTL_CLASS_API string_converter :
     public base
 {
 public:
 
     /// Constructor
-    IO_IGTL_API StringConverter();
+    IO_IGTL_API string_converter();
 
     /// Destructor
-    IO_IGTL_API ~StringConverter() override;
+    IO_IGTL_API ~string_converter() override;
 
     /**
      * @brief convert a igtl::StringMessage to a data::string
      *
      * @return an data::string converted from an igtl::StringMessage
      */
-    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer _src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr from_igtl_message(::igtl::MessageBase::Pointer _src) const override;
 
     /**
      * @brief convert a data::string to a igtl::StringMessage
      *
      * @return an data::string converted from an igtl::StringMessage
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src) const override;
 
     /**
      * @brief create new StringConverter
@@ -76,15 +76,15 @@ public:
      *
      * @return the fwData Object type supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API std::string const& getFwDataObjectType() const override;
+    [[nodiscard]] IO_IGTL_API std::string const& get_fw_data_object_type() const override;
 
 private:
 
     /// igtl type supported for conversion
-    static const std::string s_IGTL_TYPE;
+    static const std::string IGTL_TYPE;
 
     /// fwData type supported for conversion
-    static const std::string s_FWDATA_OBJECT_TYPE;
+    static const std::string FWDATA_OBJECT_TYPE;
 };
 
 } // namespace sight::io::igtl::detail::converter

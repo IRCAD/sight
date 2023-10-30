@@ -42,95 +42,95 @@ class NodeListener;
  * It can also be displayed in 2D if not attached to anything and it's position can be set and updated through
  * the 'setPosition' method.
  */
-class Text : public sight::viz::scene3d::text
+class text : public sight::viz::scene3d::text
 {
 public:
 
     /// Constructors, instantiates the overlay text element.
-    Text(const sight::viz::scene3d::layer::sptr& _layer);
+    text(const sight::viz::scene3d::layer::sptr& _layer);
 
     /// Destructor, destroys the overlay text element.
-    ~Text() override;
+    ~text() override;
 
     /// Attach the given text to a scene node.
-    void attachToNode(Ogre::SceneNode* _node, Ogre::Camera* _camera) override;
+    void attach_to_node(Ogre::SceneNode* _node, Ogre::Camera* _camera) override;
 
     /// Detach the text from a scene node
-    void detachFromNode() override;
+    void detach_from_node() override;
 
     /// Displayed text.
-    void setText(const std::string& _text) override;
+    void set_text(const std::string& _text) override;
 
     /// Position in screen coordinates.
-    void setPosition(float _x, float _y) override;
+    void set_position(float _x, float _y) override;
 
     /// Text color, white by default.
-    void setTextColor(const Ogre::ColourValue& _color) override;
+    void set_text_color(const Ogre::ColourValue& _color) override;
 
     /// Text color, white by default.
-    void setTextColor(const std::string& _color) override;
+    void set_text_color(const std::string& _color) override;
 
     /// Set the visibility of the text.
-    void setVisible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
     /// Aligns the text by setting the x and y coordinates' origin.
-    void setTextAlignment(const std::string& _h_align, const std::string& _v_align) override;
+    void set_text_alignment(const std::string& _h_align, const std::string& _v_align) override;
 
     /// Sets the font to be used for rendering.
-    void setFont(const std::string& _font) override;
+    void set_font(const std::string& _font) override;
 
     /// Sets the font size to be used for rendering.
-    void setFontSize(std::size_t _size) override;
+    void set_font_size(std::size_t _size) override;
 
     /// Sets the edit mode. If true, the label can be modified, else it is read-only.
-    void setEditMode(bool _edit_mode) override;
+    void set_edit_mode(bool _edit_mode) override;
 
-    void setUnderlyingNodeRect(std::pair<Ogre::Vector2, Ogre::Vector2> _rect);
+    void set_underlying_node_rect(std::pair<Ogre::Vector2, Ogre::Vector2> _rect);
 
 private:
 
     /// Recompute the size according to the object properties
-    void adjustSize();
+    void adjust_size();
 
     /// Compute the style according to the object properties
-    QString computeStyle();
+    QString compute_style();
 
     /// Set the style according to the object properties
-    void adjustStyle();
+    void adjust_style();
 
     /// Contains the displayed stats in the overlay.
     QPointer<QLineEdit> m_text;
     // QPointer<QLabel> m_text;
 
     /// Defines the text's color.
-    QString m_textColor;
+    QString m_text_color;
 
     /// Defines the font size in points.
-    std::size_t m_fontSize {16};
+    std::size_t m_font_size {16};
 
     /// Defines the position of the text.
     std::pair<Ogre::Vector2, Ogre::Vector2> m_position {};
 
     /// Defines the vertical alignment type (top, center or bottom).
-    std::string m_verticalAlignment;
+    std::string m_vertical_alignment;
 
     /// Defines the horizontal alignment type (left, center or right).
-    std::string m_horizontalAlignment;
+    std::string m_horizontal_alignment;
 
     /// Defines the displayed message.
-    std::string m_textString;
+    std::string m_text_string;
 
     /// Defines the font family.
-    QString m_fontFamily;
+    QString m_font_family;
 
     /// To update the text position according to a scene node
-    NodeListener* m_nodeListener {};
+    NodeListener* m_node_listener {};
 
-    using ResizeLayerSlot_t = core::com::slot<void (int, int)>;
-    ResizeLayerSlot_t::sptr m_resizeSlot;
+    using resize_layer_slot_t = core::com::slot<void (int, int)>;
+    resize_layer_slot_t::sptr m_resize_slot;
 
     /// Handles connection with the layer.
-    core::com::connection m_resizeConnection;
+    core::com::connection m_resize_connection;
 };
 
 } // namespace sight::module::viz::scene3d_qt

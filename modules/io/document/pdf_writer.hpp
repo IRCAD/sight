@@ -68,12 +68,12 @@ class MODULE_IO_DOCUMENT_CLASS_API pdf_writer : public sight::io::service::write
 {
 public:
 
-    typedef std::vector<QImage> images_scaled_list_t;
-    typedef std::vector<data::image::sptr> images_list_t;
-    typedef std::vector<std::string> images_i_ds_t;
+    using images_scaled_list_t = std::vector<QImage>;
+    using images_list_t        = std::vector<data::image::sptr>;
+    using images_i_ds_t        = std::vector<std::string>;
 
-    typedef std::vector<QWidget*> containers_list_t;
-    typedef std::vector<std::string> containers_i_ds_t;
+    using containers_list_t = std::vector<QWidget*>;
+    using containers_i_ds_t = std::vector<std::string>;
 
     SIGHT_DECLARE_SERVICE(pdf_writer, sight::io::service::writer);
     /**
@@ -121,7 +121,7 @@ protected:
      * This method is used to set the file path of the PDF to write.
      *
      */
-    MODULE_IO_DOCUMENT_API void openLocationDialog() override;
+    MODULE_IO_DOCUMENT_API void open_location_dialog() override;
 
     /**
      * @brief Updating method. Creates a new PDF.
@@ -143,7 +143,7 @@ protected:
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_DOCUMENT_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DOCUMENT_API sight::io::service::path_type_t get_path_type() const override;
 
 private:
 
@@ -152,27 +152,27 @@ private:
      * @param data::image to convert
      * @return converted QImage
      */
-    static QImage convertFwImageToQImage(const data::image& _image);
+    static QImage convert_fw_image_to_q_image(const data::image& _image);
 
     /**
      * @brief List of images IDs to export into the PDF.
      * Filled at the configuring from the XML configuration, and used at starting().
      */
-    images_i_ds_t m_imagesUIDs;
+    images_i_ds_t m_images_ui_ds;
 
     /**
      * @brief List of containers IDs to export into the PDF.
      * Filled at configuring from the XML configuration, and used at starting().
      */
-    containers_i_ds_t m_containersIDs;
+    containers_i_ds_t m_containers_i_ds;
 
     /**
      * @brief List of containers to export into the PDF.
      */
-    containers_list_t m_containersToExport;
+    containers_list_t m_containers_to_export;
 
-    static constexpr std::string_view s_IMAGE_INPUT = "image";
-    data::ptr_vector<data::image, sight::data::Access::in> m_images {this, s_IMAGE_INPUT};
+    static constexpr std::string_view IMAGE_INPUT = "image";
+    data::ptr_vector<data::image, sight::data::access::in> m_images {this, IMAGE_INPUT};
 };
 
 } // namespace sight::module::io::document

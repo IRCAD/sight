@@ -40,9 +40,8 @@ class base;
 namespace registry
 {
 
-typedef std::string key_type;
-
-typedef core::factory_registry<SPTR(core::memory::policy::base)(), key_type> type;
+using key_t = std::string;
+using type  = core::factory_registry<std::shared_ptr<core::memory::policy::base>(), key_t>;
 
 CORE_API SPTR(type) get();
 

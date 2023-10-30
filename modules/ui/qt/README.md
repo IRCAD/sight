@@ -67,7 +67,7 @@ Here is the list of uncategorised services:
 
 ### Metrics
 
-- **Distance**: allows to show distances in a generic scene. Represented by a button.
+- **distance**: allows to show distances in a generic scene. Represented by a button.
 - **landmarks**: defines a graphical editor to edit landmarks.
 
 ### Model
@@ -77,7 +77,7 @@ Here is the list of uncategorised services:
 
 ### Reconstruction
 
-- **RepresentationEditor**: displays a widget to change the reconstruction representation (surface, point, edge, ...).
+- **representation_editor**: displays a widget to change the reconstruction representation (surface, point, edge, ...).
 - **organ_material_editor**: displays a widget to change the reconstruction material (colour and transparency).
 
 ### Series
@@ -90,14 +90,14 @@ Here is the list of uncategorised services:
 
 ### Video
 
-- **CameraDeviceDlg**: displays a `QDialog` to choose camera device
+- **camera_device_dlg**: displays a `QDialog` to choose camera device
 - **camera**: allows to select the device to use. It updates the data camera identifier
 - **slider**: allows to draw a slider. It is designed to be used with `frame_grabber` to browse a video.
 
 
 ### Viz
 
-- **PointEditor**: displays point information.
+- **point_editor**: displays point information.
 - **matrix_viewer**: defines a viewer for a `data::matrix4`.
 - **snapshot_editor**: allows to snap shot a generic scene. It is represented by a button.
 - **transform_editor**: regulates the position and rotation defined in a transformation matrix.

@@ -47,7 +47,7 @@ void copy_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void copy_test::onStartTest()
+void copy_test::on_start_test()
 {
     using namespace std::literals::string_literals;
 
@@ -62,12 +62,12 @@ void copy_test::onStartTest()
 
     CPPUNIT_ASSERT_NO_THROW(m_copy->start().get());
     auto out_target = m_copy->output<sight::data::string>("outTarget");
-    CPPUNIT_ASSERT_EQUAL("Hello world"s, out_target.lock()->getValue());
+    CPPUNIT_ASSERT_EQUAL("Hello world"s, out_target.lock()->get_value());
 }
 
 //------------------------------------------------------------------------------
 
-void copy_test::onUpdateTest()
+void copy_test::on_update_test()
 {
     using namespace std::literals::string_literals;
 
@@ -83,7 +83,7 @@ void copy_test::onUpdateTest()
     CPPUNIT_ASSERT_NO_THROW(m_copy->start().get());
 
     CPPUNIT_ASSERT_NO_THROW(m_copy->update().get());
-    CPPUNIT_ASSERT_EQUAL("Hello world"s, target->getValue());
+    CPPUNIT_ASSERT_EQUAL("Hello world"s, target->get_value());
 }
 
 //------------------------------------------------------------------------------

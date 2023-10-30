@@ -42,7 +42,7 @@
 namespace itk
 {
 
-InrImageIO::InrImageIO()
+inr_image_io::inr_image_io()
 {
     this->SetNumberOfDimensions(3);
     m_PixelType = SCALAR;
@@ -51,21 +51,21 @@ InrImageIO::InrImageIO()
 
 //------------------------------------------------------------------------------
 
-InrImageIO::~InrImageIO()
+inr_image_io::~inr_image_io()
 = default;
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::PrintSelf(std::ostream& _os, Indent _indent) const
+void inr_image_io::PrintSelf(std::ostream& _os, Indent _indent) const
 {
-    Superclass::PrintSelf(_os, _indent);
+    superclass_t::PrintSelf(_os, _indent);
     _os << _indent << "pixel_t " << m_PixelType << "\n";
     _os << _indent << "component_t " << m_ComponentType << "\n";
 }
 
 //------------------------------------------------------------------------------
 
-bool InrImageIO::CanReadFile(const char* _file_name_to_read)
+bool inr_image_io::CanReadFile(const char* _file_name_to_read)
 {
     // Do not perform extension checking, magic number in the header is better.
     gzFile input_file = gzopen(_file_name_to_read, "rb");
@@ -87,7 +87,7 @@ bool InrImageIO::CanReadFile(const char* _file_name_to_read)
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::ReadImageInformation()
+void inr_image_io::ReadImageInformation()
 {
     using namespace std::literals::string_literals;
 
@@ -101,12 +101,12 @@ void InrImageIO::ReadImageInformation()
     const int line_buf_size = 256;
     std::array<char, line_buf_size> linebuf {};
     std::map<std::string, std::string> header_values;
-    m_headerSize = 0;
+    m_header_size = 0;
     while((gzgets(input_file, linebuf.data(), line_buf_size) != nullptr) && (gzeof(input_file) == 0))
     {
         std::string line(linebuf.data());
         // Count the number of characters we just read : length of the line
-        m_headerSize += std::streamoff(line.length());
+        m_header_size += std::streamoff(line.length());
         // Remove eventual trailing '\n'
         std::string::size_type const end_of_line = line.find('\n');
         line = line.substr(0, end_of_line);
@@ -352,7 +352,7 @@ void InrImageIO::ReadImageInformation()
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::Read(void* _buffer)
+void inr_image_io::Read(void* _buffer)
 {
     using namespace std::literals::string_literals;
 
@@ -364,15 +364,15 @@ void InrImageIO::Read(void* _buffer)
     }
 
     // Skip the header
-    int bytes_skipped = int(gzseek(file, m_headerSize, SEEK_CUR));
-    if(bytes_skipped != m_headerSize)
+    int bytes_skipped = int(gzseek(file, m_header_size, SEEK_CUR));
+    if(bytes_skipped != m_header_size)
     {
         throw ExceptionObject(
                   __FILE__,
                   __LINE__,
                   "INR file "s + GetFileName() + " could not be read (header size : " + std::to_string(
                       bytes_skipped
-                  ) + "/" + std::to_string(m_headerSize) + ")."
+                  ) + "/" + std::to_string(m_header_size) + ")."
         );
     }
 
@@ -584,7 +584,7 @@ void InrImageIO::Read(void* _buffer)
 
 //------------------------------------------------------------------------------
 
-bool InrImageIO::CanWriteFile(const char* _file_name_to_write)
+bool inr_image_io::CanWriteFile(const char* _file_name_to_write)
 {
     // Extension must be .inr or .inr.gz
     std::string const filename(_file_name_to_write);
@@ -601,7 +601,7 @@ bool InrImageIO::CanWriteFile(const char* _file_name_to_write)
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::WriteImageInformation()
+void inr_image_io::WriteImageInformation()
 {
     using namespace std::literals::string_literals;
 
@@ -751,7 +751,7 @@ void InrImageIO::WriteImageInformation()
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::Write(const void* _buffer)
+void inr_image_io::Write(const void* _buffer)
 {
     using namespace std::literals::string_literals;
 

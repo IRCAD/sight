@@ -35,46 +35,46 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-SIGHT_REGISTER_DICOM_FILTER(sight::ui::dicom::sorter::TagValueConfigurableSorter);
+SIGHT_REGISTER_DICOM_FILTER(sight::ui::dicom::sorter::tag_value_configurable_sorter);
 
 namespace sight::ui::dicom::sorter
 {
 
-const std::string TagValueConfigurableSorter::s_FILTER_NAME        = "Tag value configurable sorter";
-const std::string TagValueConfigurableSorter::s_FILTER_DESCRIPTION =
+const std::string tag_value_configurable_sorter::FILTER_NAME        = "Tag value configurable sorter";
+const std::string tag_value_configurable_sorter::FILTER_DESCRIPTION =
     "Sort instances using a tag value.";
 
 //-----------------------------------------------------------------------------
 
-std::string TagValueConfigurableSorter::getName() const
+std::string tag_value_configurable_sorter::get_name() const
 {
-    return TagValueConfigurableSorter::s_FILTER_NAME;
+    return tag_value_configurable_sorter::FILTER_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string TagValueConfigurableSorter::getDescription() const
+std::string tag_value_configurable_sorter::get_description() const
 {
-    return TagValueConfigurableSorter::s_FILTER_DESCRIPTION;
+    return tag_value_configurable_sorter::FILTER_DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSorter::isConfigurationRequired() const
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-
-bool TagValueConfigurableSorter::isConfigurableWithGUI() const
+bool tag_value_configurable_sorter::is_configuration_required() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-void TagValueConfigurableSorter::configureWithGUI()
+bool tag_value_configurable_sorter::is_configurable_with_gui() const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+void tag_value_configurable_sorter::configure_with_gui()
 {
     auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Configure"));
@@ -84,8 +84,8 @@ void TagValueConfigurableSorter::configureWithGUI()
 
     // Create tag selectors
     auto* tag_selector =
-        new ui::dicom::widget::QTagSelectorWidget();
-    tag_selector->setTagValue(m_tag);
+        new ui::dicom::widget::q_tag_selector_widget();
+    tag_selector->set_tag_value(m_tag);
     main_layout->addWidget(tag_selector);
 
     // Create buttons
@@ -100,7 +100,7 @@ void TagValueConfigurableSorter::configureWithGUI()
     int result = dialog->exec();
     if(result == QDialog::Accepted)
     {
-        m_tag = tag_selector->getTag();
+        m_tag = tag_selector->get_tag();
     }
 }
 

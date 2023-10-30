@@ -41,37 +41,37 @@ public:
      * @brief Get the Ogre identifier of the transform in the scene manager.
      * @return This transform service Id.
      */
-    [[nodiscard]] VIZ_SCENE3D_API viz::scene3d::render::ogre_object_id_t getTransformId() const;
+    [[nodiscard]] VIZ_SCENE3D_API viz::scene3d::render::ogre_object_id_t get_transform_id() const;
 
     /**
      * @brief Set the Ogre identifier of the transform in the scene manager.
      * @param _id The new transform service Id.
      */
-    VIZ_SCENE3D_API void setTransformId(viz::scene3d::render::ogre_object_id_t _id);
+    VIZ_SCENE3D_API void set_transform_id(viz::scene3d::render::ogre_object_id_t _id);
 
     /**
      * @brief Retrieve the node matching m_transformId or create it.
      * @param _parentNode The parent node, used if transform node doesn't exists.
      * @return The node matching m_transformId. (cannot be nullptr)
      */
-    VIZ_SCENE3D_API Ogre::SceneNode* getOrCreateTransformNode(Ogre::SceneNode* _parent_node);
+    VIZ_SCENE3D_API Ogre::SceneNode* get_or_create_transform_node(Ogre::SceneNode* _parent_node);
 
     /**
      * @brief Retrieve the  transform node matching m_transformId.
      * @return The node matching m_transformId (can be nullptr if node doesn't exists)
      */
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::SceneNode* getTransformNode() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::SceneNode* get_transform_node() const;
 
     /// The xml attribute to retrieve the transform's id.
-    VIZ_SCENE3D_API static const std::string s_TRANSFORM_CONFIG;
+    VIZ_SCENE3D_API static const std::string TRANSFORM_CONFIG;
 
 private:
 
     /// Ogre transform node.
-    Ogre::SceneNode* m_transformNode {nullptr};
+    Ogre::SceneNode* m_transform_node {nullptr};
 
     /// This transform identifier
-    viz::scene3d::render::ogre_object_id_t m_transformId;
+    viz::scene3d::render::ogre_object_id_t m_transform_id;
 };
 
 } //namespace sight::viz::scene3d

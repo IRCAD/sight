@@ -47,7 +47,7 @@ static const core::com::slots::key_t UPDATE_FROM_PREFS_SLOT = "updateFromPrefere
 
 style_selector::style_selector() noexcept
 {
-    new_slot(UPDATE_FROM_PREFS_SLOT, &style_selector::updateFromPrefs, this);
+    new_slot(UPDATE_FROM_PREFS_SLOT, &style_selector::update_from_prefs, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void style_selector::configuring()
 
 void style_selector::starting()
 {
-    m_styleMap["DEFAULT"] = std::filesystem::path("");
+    m_style_map["DEFAULT"] = std::filesystem::path("");
 
     const auto style_rc = core::runtime::get_module_resource_path("sight::module::ui::qt");
 
@@ -85,19 +85,19 @@ void style_selector::starting()
                 name.begin(),
                 [](unsigned char _c) -> unsigned char {return static_cast<unsigned char>(std::toupper(_c));});
 
-            m_styleMap[name] = f.replace_extension("");
+            m_style_map[name] = f.replace_extension("");
         }
     }
 
     // Apply theme from preferences if any.
-    this->updateFromPrefs();
+    this->update_from_prefs();
 }
 
 //-----------------------------------------------------------------------------
 
 void style_selector::stopping()
 {
-    m_styleMap.clear();
+    m_style_map.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,9 +108,9 @@ void style_selector::updating()
 
 //-----------------------------------------------------------------------------
 
-void style_selector::changeStyle(const std::string& _style_name)
+void style_selector::change_style(const std::string& _style_name)
 {
-    auto path = m_styleMap[_style_name];
+    auto path = m_style_map[_style_name];
 
     sight::ui::preferences preferences;
 
@@ -145,7 +145,7 @@ void style_selector::changeStyle(const std::string& _style_name)
 
 //-----------------------------------------------------------------------------
 
-void style_selector::updateFromPrefs()
+void style_selector::update_from_prefs()
 {
     // Apply previously saved style in preferences file.
     try
@@ -153,7 +153,7 @@ void style_selector::updateFromPrefs()
         sight::ui::preferences preferences;
         if(const auto& theme = preferences.get_optional<std::string>("THEME"); theme)
         {
-            this->changeStyle(*theme);
+            this->change_style(*theme);
         }
     }
     catch(const sight::ui::preferences_disabled& /*e*/)

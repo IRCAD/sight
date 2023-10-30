@@ -60,7 +60,7 @@ viz::scene3d::window_manager::sptr window_manager::get()
 
 // ----------------------------------------------------------------------------
 
-bool window_manager::hasWindow()
+bool window_manager::has_window()
 {
     return !m_windows.empty();
 }

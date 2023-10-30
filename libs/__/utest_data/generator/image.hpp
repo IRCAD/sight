@@ -42,7 +42,7 @@ class UTEST_DATA_CLASS_API image
 public:
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
-    UTEST_DATA_API static void generateRandomImage(
+    UTEST_DATA_API static void generate_random_image(
         data::image::sptr _image,
         core::type _type,
         std::uint32_t _seed = 0
@@ -56,21 +56,21 @@ public:
     /// @param [in] spacing image spacing
     /// @param [in] origin image origin
     /// @param [in] seed [optional] random seed used to generate the buffer. If not set, fill the buffer with 0.
-    UTEST_DATA_API static void generateImage(
+    UTEST_DATA_API static void generate_image(
         data::image::sptr _image,
-        const data::image::Size& _sizes           = {64, 64, 64},
-        const data::image::Spacing& _spacing      = {0, 0, 0},
-        const data::image::Origin& _origin        = {0, 0, 0},
-        const core::type& _type                   = core::type::UINT8,
-        const data::image::PixelFormat& _format   = data::image::PixelFormat::GRAY_SCALE,
-        const std::optional<std::uint32_t>& _seed = std::nullopt
+        const data::image::size_t& _sizes             = {64, 64, 64},
+        const data::image::spacing_t& _spacing        = {0, 0, 0},
+        const data::image::origin_t& _origin          = {0, 0, 0},
+        const core::type& _type                       = core::type::UINT8,
+        const enum data::image::pixel_format& _format = data::image::pixel_format::gray_scale,
+        const std::optional<std::uint32_t>& _seed     = std::nullopt
     );
 
     /// Fill image array with random value
-    UTEST_DATA_API static void randomizeImage(data::image::sptr _image, std::uint32_t _seed = 0);
+    UTEST_DATA_API static void randomize_image(data::image::sptr _image, std::uint32_t _seed = 0);
 
     /// Fill array with random value
-    UTEST_DATA_API static void randomizeArray(data::array::sptr _array, std::uint32_t _seed = 0);
+    UTEST_DATA_API static void randomize_array(data::array::sptr _array, std::uint32_t _seed = 0);
 };
 
 } // namespace sight::utest_data::generator

@@ -43,14 +43,14 @@
 namespace sight::io::session::detail::series
 {
 
-constexpr static auto s_uuid {"uuid"};
-constexpr static auto s_instance_dataset {"instance_dataset.dcm"};
-constexpr static auto s_num_instances {"num_instances"};
+constexpr static auto UUID {"uuid"};
+constexpr static auto INSTANCE_DATASET {"instance_dataset.dcm"};
+constexpr static auto NUM_INSTANCES {"num_instances"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& _archive,
+    zip::archive_writer& _archive,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>&,
@@ -63,24 +63,24 @@ inline static void write(
     helper::write_version<data::series>(_tree, 1);
 
     // Store the instance count to be able to know how many instances to read
-    _tree.put(s_num_instances, series->numInstances());
+    _tree.put(NUM_INSTANCES, series->num_instances());
 
     // Write the "instance" datasets. In case the original data come from a DICOM series with several instances (files)
-    for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
+    for(std::size_t instance = 0, end = series->num_instances() ; instance < end ; ++instance)
     {
-        const auto& ostream = _archive.openFile(
-            std::filesystem::path(series->get_uuid() + "/" + std::to_string(instance) + "_" + s_instance_dataset),
+        const auto& ostream = _archive.open_file(
+            std::filesystem::path(series->get_uuid() + "/" + std::to_string(instance) + "_" + INSTANCE_DATASET),
             _password
         );
 
-        series->getDataSet(instance).Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*ostream);
+        series->get_data_set(instance).Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*ostream);
     }
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::series::sptr read(
-    zip::ArchiveReader& _archive,
+    zip::archive_reader& _archive,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>&,
     data::object::sptr _object,
@@ -94,19 +94,19 @@ inline static data::series::sptr read(
     helper::read_version<data::series>(_tree, 0, 1);
 
     // Get the input stream
-    const auto& uuid = _tree.get<std::string>(s_uuid);
+    const auto& uuid = _tree.get<std::string>(UUID);
 
     // Read the instance count to be able to know how many instances to read
-    for(std::size_t instance = 0, end = _tree.get<std::size_t>(s_num_instances) ; instance < end ; ++instance)
+    for(std::size_t instance = 0, end = _tree.get<std::size_t>(NUM_INSTANCES) ; instance < end ; ++instance)
     {
-        const auto& istream = _archive.openFile(
-            std::filesystem::path(uuid + "/" + std::to_string(instance) + "_" + s_instance_dataset),
+        const auto& istream = _archive.open_file(
+            std::filesystem::path(uuid + "/" + std::to_string(instance) + "_" + INSTANCE_DATASET),
             _password
         );
 
         gdcm::DataSet dataset;
         dataset.Read<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*istream);
-        series->setDataSet(dataset, instance);
+        series->set_data_set(dataset, instance);
     }
 
     return series;

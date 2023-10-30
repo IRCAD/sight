@@ -26,7 +26,7 @@
 
 #include <core/runtime/plugin.hpp>
 
-namespace Tuto06GuiQml
+namespace tuto06_gui_qml
 {
 
 /**
@@ -46,4 +46,4 @@ public:
     TUTO06GUIQML_API void stop() noexcept override;
 };
 
-} // namespace Tuto06GuiQml
+} // namespace tuto06_gui_qml

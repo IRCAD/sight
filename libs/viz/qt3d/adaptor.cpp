@@ -33,19 +33,19 @@ namespace sight::viz::qt3d
 
 //-----------------------------------------------------------------------------
 
-const sight::core::com::slots::key_t adaptor::UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const sight::core::com::slots::key_t adaptor::UPDATE_VISIBILITY_SLOT = "update_visibility";
 const sight::core::com::slots::key_t adaptor::TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 const sight::core::com::slots::key_t adaptor::SHOW_SLOT              = "show";
 const sight::core::com::slots::key_t adaptor::HIDE_SLOT              = "hide";
 
-static const std::string s_VISIBLE_CONFIG = "visible";
+static const std::string VISIBLE_CONFIG = "visible";
 
 //------------------------------------------------------------------------------
 
 adaptor::adaptor()
 {
-    new_slot(UPDATE_VISIBILITY_SLOT, &adaptor::updateVisibility, this);
-    new_slot(TOGGLE_VISIBILITY_SLOT, &adaptor::toggleVisibility, this);
+    new_slot(UPDATE_VISIBILITY_SLOT, &adaptor::update_visibility, this);
+    new_slot(TOGGLE_VISIBILITY_SLOT, &adaptor::toggle_visibility, this);
     new_slot(SHOW_SLOT, &adaptor::show, this);
     new_slot(HIDE_SLOT, &adaptor::hide, this);
 }
@@ -57,10 +57,10 @@ adaptor::~adaptor()
 
 //------------------------------------------------------------------------------
 
-void adaptor::configureParams()
+void adaptor::configure_params()
 {
     const config_t config = this->get_config().get_child("config.<xmlattr>");
-    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
+    m_visible = config.get<bool>(VISIBLE_CONFIG, m_visible);
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void adaptor::configureParams()
 void adaptor::initialize()
 {
     // Retrieve the render service attached to the adaptor.
-    if(m_renderService.expired())
+    if(m_render_service.expired())
     {
         auto services_vector = sight::service::get_services("sight::viz::qt3d::render");
 
@@ -85,52 +85,52 @@ void adaptor::initialize()
             });
         SIGHT_ASSERT("Can't find '" + render_service_id + "' render service.", result != services_vector.end());
 
-        m_renderService = std::dynamic_pointer_cast<viz::qt3d::render>(*result);
+        m_render_service = std::dynamic_pointer_cast<viz::qt3d::render>(*result);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void adaptor::updateVisibility(bool _visibility)
+void adaptor::update_visibility(bool _visibility)
 {
     // Enable/disable qt3d entity according to _visibility.
-    m_isVisible = _visibility;
-    this->setVisible(m_isVisible);
+    m_visible = _visibility;
+    this->set_visible(m_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void adaptor::toggleVisibility()
+void adaptor::toggle_visibility()
 {
-    this->updateVisibility(!m_isVisible);
+    this->update_visibility(!m_visible);
 }
 
 //------------------------------------------------------------------------------
 
 void adaptor::show()
 {
-    this->updateVisibility(true);
+    this->update_visibility(true);
 }
 
 //------------------------------------------------------------------------------
 
 void adaptor::hide()
 {
-    this->updateVisibility(false);
+    this->update_visibility(false);
 }
 
 //------------------------------------------------------------------------------
 
-void adaptor::setVisible(bool /*unused*/)
+void adaptor::set_visible(bool /*unused*/)
 {
     SIGHT_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
 }
 
 //------------------------------------------------------------------------------
 
-render::sptr adaptor::getRenderService() const
+render::sptr adaptor::render_service() const
 {
-    return m_renderService.lock();
+    return m_render_service.lock();
 }
 
 //------------------------------------------------------------------------------

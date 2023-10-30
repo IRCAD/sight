@@ -29,8 +29,8 @@
 namespace sight::io::igtl::detail::converter
 {
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::IntConverter);
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::FloatConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::int_converter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::float_converter);
 
 //-----------------------------------------------------------------------------
 

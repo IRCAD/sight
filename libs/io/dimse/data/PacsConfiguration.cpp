@@ -25,16 +25,16 @@
 #include <data/exception.hpp>
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA(sight::io::dimse::data::PacsConfiguration);
+SIGHT_REGISTER_DATA(sight::io::dimse::data::pacs_configuration);
 
 namespace sight::io::dimse::data
 {
 
 //------------------------------------------------------------------------------
 
-void PacsConfiguration::shallow_copy(const sight::data::object::csptr& _source)
+void pacs_configuration::shallow_copy(const sight::data::object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const PacsConfiguration>(_source);
+    const auto& other = std::dynamic_pointer_cast<const pacs_configuration>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::exception(
@@ -44,15 +44,15 @@ void PacsConfiguration::shallow_copy(const sight::data::object::csptr& _source)
         !bool(other)
     );
 
-    m_localApplicationTitle = other->m_localApplicationTitle;
-    m_pacsHostName          = other->m_pacsHostName;
-    m_pacsApplicationTitle  = other->m_pacsApplicationTitle;
-    m_pacsApplicationPort   = other->m_pacsApplicationPort;
-    m_moveApplicationTitle  = other->m_moveApplicationTitle;
-    m_moveApplicationPort   = other->m_moveApplicationPort;
-    m_retrieveMethod        = other->m_retrieveMethod;
+    m_local_application_title = other->m_local_application_title;
+    m_pacs_host_name          = other->m_pacs_host_name;
+    m_pacs_application_title  = other->m_pacs_application_title;
+    m_pacs_application_port   = other->m_pacs_application_port;
+    m_move_application_title  = other->m_move_application_title;
+    m_move_application_port   = other->m_move_application_port;
+    m_retrieve_method         = other->m_retrieve_method;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------

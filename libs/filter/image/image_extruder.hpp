@@ -70,7 +70,7 @@ public:
      * @brief Stores parameters of the functor.
      * @warning It's not exported since it's only used by the functor.
      */
-    struct Parameters
+    struct parameters
     {
         data::image::sptr m_image;
         data::mesh::csptr m_mesh;
@@ -82,16 +82,16 @@ public:
      * @warning It's not exported, it's only public since the dispatcher need it.
      */
     template<typename IMAGE_TYPE>
-    void operator()(Parameters& _param);
+    void operator()(parameters& _param);
 
 private:
 
     /// Represents a 3D triangle by three points.
-    struct Triangle
+    struct triangle
     {
-        const glm::vec3 A;
-        const glm::vec3 B;
-        const glm::vec3 C;
+        const glm::vec3 a;
+        const glm::vec3 b;
+        const glm::vec3 c;
     };
 };
 

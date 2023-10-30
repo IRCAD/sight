@@ -36,10 +36,10 @@ class landmarks_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(landmarks_test);
-    CPPUNIT_TEST(copyTest);
-    CPPUNIT_TEST(groupTest);
-    CPPUNIT_TEST(pointsTest);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(copy_test);
+    CPPUNIT_TEST(group_test);
+    CPPUNIT_TEST(points_test);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,15 +49,15 @@ public:
     void tearDown() override;
 
     /// test deep and shallow copy
-    static void copyTest();
+    static void copy_test();
 
     /// test to add/remove groups and change properties
-    static void groupTest();
+    static void group_test();
 
     /// test to add/ remove points in group
-    static void pointsTest();
+    static void points_test();
 
-    static void equalityTest();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

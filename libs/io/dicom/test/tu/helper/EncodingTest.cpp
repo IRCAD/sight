@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 
 #include <io/dicom/helper/Encoding.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::EncodingTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::encoding_test);
 
 namespace sight::io::dicom::helper::ut
 {
@@ -34,21 +34,21 @@ using namespace std::literals::string_literals;
 
 //------------------------------------------------------------------------------
 
-void EncodingTest::noCodeExtensionTest()
+void encoding_test::no_code_extension_test()
 {
-    static const std::string source = "\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8"; // ISO-8859-1 string
-    CPPUNIT_ASSERT_EQUAL("¡¢£¤¥¦§¨"s, Encoding::convertString(source, "ISO_IR 100"));
+    static const std::string s_SOURCE = "\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8"; // ISO-8859-1 string
+    CPPUNIT_ASSERT_EQUAL("¡¢£¤¥¦§¨"s, encoding::convert_string(s_SOURCE, "ISO_IR 100"));
 }
 
 //------------------------------------------------------------------------------
 
-void EncodingTest::codeExtensionTest()
+void encoding_test::code_extension_test()
 {
-    static const std::string source =
+    static const std::string s_SOURCE =
         "\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8"  // ISO-8859-1 string
         "\033\x2D\x4C"                      // ISO-8859-5 escape sequence
         "\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8"; // ISO-8859-5 string
-    CPPUNIT_ASSERT_EQUAL("¡¢£¤¥¦§¨ЁЂЃЄЅІЇЈ"s, Encoding::convertString(source, "ISO_IR 100\\ISO_IR 144"));
+    CPPUNIT_ASSERT_EQUAL("¡¢£¤¥¦§¨ЁЂЃЄЅІЇЈ"s, encoding::convert_string(s_SOURCE, "ISO_IR 100\\ISO_IR 144"));
 }
 
 } // namespace sight::io::dicom::helper::ut

@@ -37,11 +37,11 @@ namespace sight::service
  */
 
 #define FWSERVICE_REGISTER_MACRO(service_t, ServiceImpl) \
-    static sight::service::ServiceFactoryRegistry<ServiceImpl> \
+    static sight::service::service_factory_registry<ServiceImpl> \
     BOOST_PP_CAT(serviceRegistry, __LINE__)( #ServiceImpl, #service_t);
 
 #define FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject) \
-    static sight::service::ServiceObjectFactoryRegistry \
+    static sight::service::service_object_factory_registry \
     BOOST_PP_CAT(serviceObjectRegistry, __LINE__)( #ServiceImpl, #ServiceObject);
 
 //@{

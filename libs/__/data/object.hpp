@@ -69,13 +69,13 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry()
+        registry()
         {
-            registry::get()->add_factory(T::classname(), &factory::make<T>);
+            sight::data::registry::get()->add_factory(T::classname(), &factory::make<T>);
         }
     };
 
@@ -84,32 +84,32 @@ public:
      * @{
      */
     /// Type of signal m_sigModified
-    typedef core::com::signal<void ()> modified_signal_t;
+    using modified_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigModified
     DATA_API static const core::com::signals::key_t MODIFIED_SIG;
 
-    typedef std::map<std::string, object::sptr> fields_container_t;
+    using fields_container_t = std::map<std::string, object::sptr>;
     /// Type of signal when objects are added
-    typedef core::com::signal<void (fields_container_t)> added_fields_signal_t;
+    using added_fields_signal_t = core::com::signal<void (fields_container_t)>;
     DATA_API static const core::com::signals::key_t ADDED_FIELDS_SIG;
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    typedef core::com::signal<void (fields_container_t, fields_container_t)> changed_fields_signal_t;
+    using changed_fields_signal_t = core::com::signal<void (fields_container_t, fields_container_t)>;
     DATA_API static const core::com::signals::key_t CHANGED_FIELDS_SIG;
 
     /// Type of signal when objects are removed
-    typedef core::com::signal<void (fields_container_t)> removed_fields_signal_t;
+    using removed_fields_signal_t = core::com::signal<void (fields_container_t)>;
     DATA_API static const core::com::signals::key_t REMOVED_FIELDS_SIG;
     /**
      * @}
      */
 
-    typedef std::string field_name_t;
-    typedef std::vector<field_name_t> field_name_vector_t;
-    typedef std::unordered_map<field_name_t, object::sptr> field_map_t;
+    using field_name_t        = std::string;
+    using field_name_vector_t = std::vector<field_name_t>;
+    using field_map_t         = std::unordered_map<field_name_t, object::sptr>;
 
-    typedef std::unordered_map<object::csptr, object::sptr> deep_copy_cache_t;
+    using deep_copy_cache_t = std::unordered_map<object::csptr, object::sptr>;
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
@@ -229,12 +229,12 @@ public:
 
     /// Accessors
     /// @{
-    inline std::string getDescription() const noexcept;
-    inline void setDescription(const std::string& _description) noexcept;
+    inline std::string get_description() const noexcept;
+    inline void set_description(const std::string& _description) noexcept;
     /// @}
 
     /// Returns a timestamp to know when the object was last modified
-    inline std::uint64_t lastModified() const noexcept;
+    inline std::uint64_t last_modified() const noexcept;
 
 protected:
 
@@ -250,7 +250,7 @@ protected:
     mutable core::mt::read_write_mutex m_mutex;
 
     /// Timestamp that can be incremented each time the object is modified
-    std::uint64_t m_lastModified {0};
+    std::uint64_t m_last_modified {0};
 
 private:
 
@@ -258,7 +258,7 @@ private:
     friend class sight::data::mt::locked_ptr;
 
     /// Increments the last modified timestamp
-    DATA_API inline void setModified() noexcept;
+    DATA_API inline void set_modified() noexcept;
 };
 
 template<typename DATA_TYPE>
@@ -312,30 +312,30 @@ SPTR(DATA_TYPE) object::set_default_field(const field_name_t& _name, SPTR(DATA_T
 
 //------------------------------------------------------------------------------
 
-inline std::string object::getDescription() const noexcept
+inline std::string object::get_description() const noexcept
 {
     return m_description;
 }
 
 //------------------------------------------------------------------------------
 
-inline void object::setDescription(const std::string& _description) noexcept
+inline void object::set_description(const std::string& _description) noexcept
 {
     m_description = _description;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::uint64_t object::lastModified() const noexcept
+inline std::uint64_t object::last_modified() const noexcept
 {
-    return m_lastModified;
+    return m_last_modified;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void object::setModified() noexcept
+inline void object::set_modified() noexcept
 {
-    ++m_lastModified;
+    ++m_last_modified;
 }
 
 //-----------------------------------------------------------------------------

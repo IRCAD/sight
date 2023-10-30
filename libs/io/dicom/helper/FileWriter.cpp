@@ -32,7 +32,7 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-void FileWriter::write(
+void file_writer::write(
     const std::filesystem::path& _filename,
     const SPTR(gdcm::Writer)& _writer
 )
@@ -50,7 +50,7 @@ void FileWriter::write(
     if(!_writer->Write())
     {
         const std::string msg = "Unable to write the file " + _filename.string();
-        throw io::dicom::exception::Failed(msg);
+        throw io::dicom::exception::failed(msg);
     }
 }
 

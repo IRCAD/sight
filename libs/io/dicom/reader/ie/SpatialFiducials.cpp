@@ -36,28 +36,28 @@ namespace sight::io::dicom::reader::ie
 
 //------------------------------------------------------------------------------
 
-SpatialFiducials::SpatialFiducials(
+spatial_fiducials::spatial_fiducials(
     const data::dicom_series::csptr& _dicom_series,
     const SPTR(gdcm::Reader)& _reader,
-    const io::dicom::container::DicomInstance::sptr& _instance,
+    const io::dicom::container::dicom_instance::sptr& _instance,
     const data::image::sptr& _image,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::image>(_dicom_series, _reader, _instance, _image,
-                                                          _logger, _progress, _cancel)
+    io::dicom::reader::ie::information_entity<data::image>(_dicom_series, _reader, _instance, _image,
+                                                           _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SpatialFiducials::~SpatialFiducials()
+spatial_fiducials::~spatial_fiducials()
 = default;
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducials::readLandmark(const gdcm::DataSet& _fiducial_dataset)
+void spatial_fiducials::read_landmark(const gdcm::DataSet& _fiducial_dataset)
 {
     data::point_list::sptr point_list = data::helper::medical_image::get_landmarks(*m_object);
 
@@ -73,7 +73,7 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& _fiducial_dataset)
         graphic_coordinates_data_element.GetValueAsSQ();
 
     const std::string label =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0070, 0x030F>(_fiducial_dataset);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0070, 0x030F>(_fiducial_dataset);
 
     for(unsigned int i = 1 ; i <= graphic_coordinates_data_sequence->GetNumberOfItems() ; ++i)
     {
@@ -94,17 +94,20 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& _fiducial_dataset)
         gdcm::DataSet& referenced_image_dataset = referenced_image_item.GetNestedDataSet();
 
         int frame_number =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1160, int>(referenced_image_dataset);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x1160, int>(referenced_image_dataset);
         double z_coordinate =
-            io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, std::size_t(frame_number));
+            io::dicom::helper::dicom_data_tools::convert_frame_number_to_z_coordinate(
+                m_object,
+                std::size_t(frame_number)
+            );
 
         data::point::sptr point = std::make_shared<data::point>(
             static_cast<double>(point_values[0]),
             static_cast<double>(point_values[1]),
             z_coordinate
         );
-        point->setLabel(label);
-        point_list->getPoints().push_back(point);
+        point->set_label(label);
+        point_list->get_points().push_back(point);
     }
 }
 

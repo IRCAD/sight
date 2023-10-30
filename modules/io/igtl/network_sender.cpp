@@ -35,8 +35,8 @@ const core::com::signals::key_t network_sender::DISCONNECTED_SIGNAL = "disconnec
 //-----------------------------------------------------------------------------
 
 network_sender::network_sender() :
-    m_sigConnected(new_signal<connected_signal_t>(CONNECTED_SIGNAL)),
-    m_sigDisconnected(new_signal<disconnect_signal_t>(DISCONNECTED_SIGNAL))
+    m_sig_connected(new_signal<connected_signal_t>(CONNECTED_SIGNAL)),
+    m_sig_disconnected(new_signal<disconnect_signal_t>(DISCONNECTED_SIGNAL))
 {
 }
 
@@ -59,7 +59,7 @@ void network_sender::updating()
 
             if(object)
             {
-                this->sendObject(object.get_shared(), i);
+                this->send_object(object.get_shared(), i);
             }
         }
     }
@@ -70,7 +70,7 @@ void network_sender::updating()
 service::connections_t network_sender::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_OBJECTS_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(OBJECTS_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

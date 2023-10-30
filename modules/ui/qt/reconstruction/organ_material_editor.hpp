@@ -92,18 +92,18 @@ private:
     void stopping() final;
 
     /// Updates the UI according to the material (color and transparency widgets)
-    void refreshMaterial();
+    void refresh_material();
 
     /// Notifies the material changes.
-    void materialNotification();
+    void material_notification();
 
-    QPointer<QPushButton> m_diffuseColourButton;
-    QPointer<QPushButton> m_ambientColourButton;
-    QPointer<QSlider> m_opacitySlider;
-    QPointer<QLabel> m_transparencyValue;
+    QPointer<QPushButton> m_diffuse_colour_button;
+    QPointer<QPushButton> m_ambient_colour_button;
+    QPointer<QSlider> m_opacity_slider;
+    QPointer<QLabel> m_transparency_value;
 
-    static constexpr std::string_view s_RECONSTRUCTION = "reconstruction";
-    data::ptr<data::reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION, true};
+    static constexpr std::string_view RECONSTRUCTION = "reconstruction";
+    data::ptr<data::reconstruction, data::access::inout> m_rec {this, RECONSTRUCTION, true};
 
 private Q_SLOTS:
 
@@ -111,13 +111,13 @@ private Q_SLOTS:
      * @brief Slot: called when the opacity slider changed.
      * @param _value The new opacity value.
      */
-    void onOpacitySlider(int _value);
+    void on_opacity_slider(int _value);
 
     /// Slot: called when the diffuse color button is clicked.
-    void onDiffuseColorButton();
+    void on_diffuse_color_button();
 
     /// Slot: called when the ambient color button is clicked.
-    void onAmbientColorButton();
+    void on_ambient_color_button();
 };
 
 } // namespace sight::module::ui::qt::reconstruction

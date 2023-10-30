@@ -93,7 +93,7 @@ namespace sight::module::io::session
  *          - \b "default": uses the builtin default behavior which is "archive"
  *
  * @see sight::io::service::reader
- * @see sight::io::session::SessionReader
+ * @see sight::io::session::session_reader
  */
 
 class MODULE_IO_SESSION_CLASS_API reader final : public sight::io::service::reader
@@ -104,8 +104,8 @@ public:
 
     struct signals
     {
-        using JobCreatedSignal  = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
-        using SessionPathSignal = core::com::signal<void (std::filesystem::path)>;
+        using job_created_signal_t = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
+        using session_path_t       = core::com::signal<void (std::filesystem::path)>;
 
         using signal_t = sight::core::com::signals::key_t;
         inline static const signal_t SESSION_LOADED         = "sessionLoaded";
@@ -117,7 +117,7 @@ public:
     MODULE_IO_SESSION_API ~reader() noexcept override;
 
     /// Propose to read a session data file
-    MODULE_IO_SESSION_API void openLocationDialog() override;
+    MODULE_IO_SESSION_API void open_location_dialog() override;
 
 protected:
 
@@ -134,9 +134,9 @@ protected:
     MODULE_IO_SESSION_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_SESSION_API sight::io::service::IOPathType getIOPathType() const override
+    MODULE_IO_SESSION_API sight::io::service::path_type_t get_path_type() const override
     {
-        return sight::io::service::FILE;
+        return sight::io::service::file;
     }
 
 private:

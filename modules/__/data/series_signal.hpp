@@ -45,7 +45,7 @@ namespace sight::module::data
  * It is possible to configure the service to report only one type of series.
  *
  * @section Slots Slots
- * - \b reportSeries(data::series_set::container_type) : This slot is called when a series is added in the series_set.
+ * - \b reportSeries(data::series_set::container_t) : This slot is called when a series is added in the series_set.
  *   It emits a signal for each added series corresponding to the configured type.
  *
  * @section Signal Signal
@@ -56,8 +56,8 @@ namespace sight::module::data
  * @code{.xml}
     <service uid="action_newActivity" type="sight::module::activity::action::series_signal" auto_connect="true" >
         <in key="seriesSet" uid="..." />
-        <!-- Filter mode 'include' allows all given types.
-             Filter mode 'exclude' allows all series excepted given ones. -->
+        <!-- filter mode 'include' allows all given types.
+             filter mode 'exclude' allows all series excepted given ones. -->
         <filter>
             <mode>include</mode>
             <type>data::image_series</type>
@@ -87,7 +87,7 @@ public:
 
     MODULE_DATA_API static const core::com::slots::key_t REPORT_SERIES_SLOT;
 
-    typedef core::com::signal<void (sight::data::series::sptr)> series_added_signal_t;
+    using series_added_signal_t = core::com::signal<void (sight::data::series::sptr)>;
     MODULE_DATA_API static const core::com::signals::key_t SERIES_ADDED_SIG;
 
 protected:
@@ -115,31 +115,31 @@ protected:
 
 private:
 
-    typedef std::vector<std::string> types_t;
+    using types_t = std::vector<std::string>;
 
     /**
      * @brief This slot is called when a series is added in the series_set.
      * It emits a signal for each added series corresponding to the configured type.
      */
-    void reportSeriesSlot(sight::data::series_set::container_type _added_series);
+    void report_series_slot(sight::data::series_set::container_t _added_series);
 
     template<typename T>
-    void reportSeries(const T& _added_series);
+    void report_series(const T& _added_series);
 
     /**
-     * @brief Filter mode : include or exclude activity configurations.
+     * @brief filter mode : include or exclude activity configurations.
      * @note Allowed values : 'include' or 'exclude'
      */
-    std::string m_filterMode;
+    std::string m_filter_mode;
 
     /// Types of series to be enabled or disabled, according to filter mode.
     types_t m_types;
 
     /// Signal emitted when the added series correspond to the configured type.
-    series_added_signal_t::sptr m_sigSeriesAdded;
+    series_added_signal_t::sptr m_sig_series_added;
 
-    static constexpr std::string_view s_SERIES_SET_INPUT = "seriesSet";
-    sight::data::ptr<sight::data::series_set, sight::data::Access::in> m_series_set {this, s_SERIES_SET_INPUT};
+    static constexpr std::string_view SERIES_SET_INPUT = "seriesSet";
+    sight::data::ptr<sight::data::series_set, sight::data::access::in> m_series_set {this, SERIES_SET_INPUT};
 };
 
 } // namespace sight::module::data

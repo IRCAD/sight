@@ -33,11 +33,11 @@ namespace ut
 /**
  * @brief Test the reader and the writer of Mesh/image using VTK.
  */
-class SeriesSetReaderTest : public CPPUNIT_NS::TestFixture
+class series_set_reader_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(SeriesSetReaderTest);
-CPPUNIT_TEST(testSeriesSetReader);
-CPPUNIT_TEST(testMergeSeriesSetReader);
+CPPUNIT_TEST_SUITE(series_set_reader_test);
+CPPUNIT_TEST(test_series_set_reader);
+CPPUNIT_TEST(test_merge_series_set_reader);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,8 +46,8 @@ public:
     void setUp();
     void tearDown();
 
-    static void testSeriesSetReader();
-    static void testMergeSeriesSetReader();
+    static void test_series_set_reader();
+    static void test_merge_series_set_reader();
 };
 
 } //namespace ut

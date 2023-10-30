@@ -27,7 +27,7 @@
 namespace sight::core::log
 {
 
-log::log(level_type _level, std::string _message) :
+log::log(level_t _level, std::string _message) :
     m_level(_level),
     m_message(std::move(_message))
 {

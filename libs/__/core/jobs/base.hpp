@@ -55,72 +55,72 @@ public:
      */
     enum state
     {
-        WAITING = 0,
-        RUNNING,
-        CANCELING,
-        CANCELED,
-        FINISHED
+        waiting = 0,
+        running,
+        canceling,
+        canceled,
+        finished
     };
 
     /**
      * @name Typedef used in base
      * @{ */
-    typedef SPTR(core::jobs::base) sptr;
-    typedef WPTR(core::jobs::base) wptr;
+    using sptr = std::shared_ptr<core::jobs::base>;
+    using wptr = std::weak_ptr<core::jobs::base>;
 
     /// Cancel request callback type
-    typedef std::function<bool ()> cancel_request_callback;
+    using cancel_request_callback = std::function<bool ()>;
 
     /// Job cancel callback type for cancel hook
-    typedef std::function<void (base&)> job_cancel_hook;
+    using job_cancel_hook = std::function<void (base&)>;
 
     /// Log callback type for log hook
-    typedef std::function<void (base&, const std::string&)> log_hook;
+    using log_hook = std::function<void (base&, const std::string&)>;
 
     /// Done work callback type for done work hook
-    typedef std::function<void (base&, std::uint64_t /*oldDoneWork*/)> done_work_hook;
+    using done_work_hook = std::function<void (base&, std::uint64_t)>;
 
     /// Work units callback type for total work unit hook
-    typedef std::function<void (base&, std::uint64_t /*oldTotalWorkUnits*/)> total_work_units_hook;
+    using total_work_units_hook = std::function<void (base&, std::uint64_t)>;
 
     /// Cancel callback type for cancel hook
-    typedef std::function<void ()> cancel_hook;
+    using cancel_hook = std::function<void ()>;
 
     /// State callback type for state hook
-    typedef std::function<void (state)> state_hook;
+    using state_hook = std::function<void (state)>;
 
     /// Job cancel callback sequence type for cancel hook
-    typedef std::vector<job_cancel_hook> cancel_hook_seq;
+    using cancel_hook_seq = std::vector<job_cancel_hook>;
 
     /// Done work callback sequence type for done work hook
-    typedef std::vector<done_work_hook> done_work_hook_seq;
+    using done_work_hook_seq = std::vector<done_work_hook>;
 
     /// Work units callback sequence type for total work unit hook
-    typedef std::vector<total_work_units_hook> total_work_units_hook_seq;
+    using total_work_units_hook_seq = std::vector<total_work_units_hook>;
 
     /// Log callback sequence type for log hook
-    typedef std::vector<log_hook> log_hook_seq;
+    using log_hook_seq = std::vector<log_hook>;
 
     /// Log callback sequence type for state hook
-    typedef std::vector<state_hook> state_hook_seq;
+    using state_hook_seq = std::vector<state_hook>;
 
     /// Log container type
-    typedef std::vector<std::string> logs;
+    using logs = std::vector<std::string>;
 
     /// State signal type
-    typedef core::com::signal<void ()> state_signal;
+    using state_signal = core::com::signal<void ()>;
 
     /// Cancel request signal type
-    typedef core::com::signal<void ()> cancel_requested_signal;
+    using cancel_requested_signal = core::com::signal<void ()>;
 
     /// Done work signal type
-    typedef core::com::signal<void (std::uint64_t, std::uint64_t)> done_work_signal;
+    using done_work_signal = core::com::signal<void (std::uint64_t, std::uint64_t)>;
 
     /// Log signal type
-    typedef core::com::signal<void (std::string)> log_signal;
+    using log_signal = core::com::signal<void (std::string)>;
 
     /// Future type
-    typedef std::shared_future<void> shared_future;
+    using shared_future = std::shared_future<void>;
     /**  @} */
 
     /**
@@ -404,7 +404,7 @@ protected:
     shared_future m_run_future;
 
     /// Job's state
-    state m_state {WAITING};
+    state m_state {waiting};
 };
 
 } //namespace sight::core::jobs

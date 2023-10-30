@@ -25,11 +25,11 @@
 namespace sight::core::memory
 {
 
-typedef enum
+enum file_format_type
 {
-    OTHER = 0,
-    RAW   = 1,
-    RAWZ  = 1 << 2
-} file_format_type;
+    other = 0,
+    raw   = 1,
+    rawz  = 1 << 2
+};
 
 } // namespace sight::core::memory

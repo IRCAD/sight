@@ -49,7 +49,7 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG          = "errorCompu
 point_list_registration::point_list_registration()
 {
     new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
-    new_slot(CHANGE_MODE, &point_list_registration::changeMode, this);
+    new_slot(CHANGE_MODE, &point_list_registration::change_mode, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -70,15 +70,15 @@ void point_list_registration::configuring()
 
         if(mode == "rigid")
         {
-            m_registrationMode = RIGID;
+            m_registration_mode = rigid;
         }
         else if(mode == "similarity")
         {
-            m_registrationMode = SIMILARITY;
+            m_registration_mode = similarity;
         }
         else if(mode == "affine")
         {
-            m_registrationMode = AFFINE;
+            m_registration_mode = affine;
         }
         else
         {
@@ -90,7 +90,7 @@ void point_list_registration::configuring()
     }
     else
     {
-        m_registrationMode = RIGID;
+        m_registration_mode = rigid;
     }
 }
 
@@ -108,42 +108,42 @@ void point_list_registration::stopping()
 
 //-----------------------------------------------------------------------------
 
-void point_list_registration::computeRegistration(core::hires_clock::type /*timestamp*/)
+void point_list_registration::compute_registration(core::hires_clock::type /*timestamp*/)
 {
-    const auto registered_pl = m_registeredPL.lock();
+    const auto registered_pl = m_registered_pl.lock();
     SIGHT_ASSERT("No 'registeredPL' found", registered_pl);
-    const auto reference_pl = m_referencePL.lock();
+    const auto reference_pl = m_reference_pl.lock();
     SIGHT_ASSERT("No 'referencePL' found", reference_pl);
 
-    if(registered_pl->getPoints().size() >= 3
-       && registered_pl->getPoints().size() == reference_pl->getPoints().size())
+    if(registered_pl->get_points().size() >= 3
+       && registered_pl->get_points().size() == reference_pl->get_points().size())
     {
         vtkSmartPointer<vtkLandmarkTransform> landmark_transform = vtkSmartPointer<vtkLandmarkTransform>::New();
 
         vtkSmartPointer<vtkPoints> source_pts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> target_pts = vtkSmartPointer<vtkPoints>::New();
 
-        const auto& first_point     = reference_pl->getPoints()[0];
-        const auto& first_point_reg = registered_pl->getPoints()[0];
+        const auto& first_point     = reference_pl->get_points()[0];
+        const auto& first_point_reg = registered_pl->get_points()[0];
 
         // If the points have labels ...
-        if(!first_point->getLabel().empty() && !first_point_reg->getLabel().empty())
+        if(!first_point->get_label().empty() && !first_point_reg->get_label().empty())
         {
             // ... Then match them according to that label.
-            for(const data::point::sptr& point_ref : reference_pl->getPoints())
+            for(const data::point::sptr& point_ref : reference_pl->get_points())
             {
-                const std::string label_ref = point_ref->getLabel();
+                const std::string label_ref = point_ref->get_label();
 
-                for(const data::point::sptr& point_reg : registered_pl->getPoints())
+                for(const data::point::sptr& point_reg : registered_pl->get_points())
                 {
-                    const std::string label_reg = point_ref->getLabel();
+                    const std::string label_reg = point_ref->get_label();
 
                     if(label_ref == label_reg)
                     {
-                        auto coord = point_ref->getCoord();
+                        auto coord = point_ref->get_coord();
                         source_pts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
-                        coord = point_reg->getCoord();
+                        coord = point_reg->get_coord();
                         target_pts->InsertNextPoint(coord[0], coord[1], coord[2]);
                     }
                 }
@@ -152,15 +152,15 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
         else
         {
             // ... Else match them according to their order.
-            for(const auto& ref_point : reference_pl->getPoints())
+            for(const auto& ref_point : reference_pl->get_points())
             {
-                const auto& coords = ref_point->getCoord();
+                const auto& coords = ref_point->get_coord();
                 source_pts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
 
-            for(const auto& reg_point : registered_pl->getPoints())
+            for(const auto& reg_point : registered_pl->get_points())
             {
-                const auto& coords = reg_point->getCoord();
+                const auto& coords = reg_point->get_coord();
                 target_pts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
         }
@@ -168,11 +168,11 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
         landmark_transform->SetSourceLandmarks(source_pts);
         landmark_transform->SetTargetLandmarks(target_pts);
 
-        if(m_registrationMode == AFFINE)
+        if(m_registration_mode == affine)
         {
             landmark_transform->SetModeToAffine();
         }
-        else if(m_registrationMode == SIMILARITY)
+        else if(m_registration_mode == similarity)
         {
             landmark_transform->SetModeToSimilarity();
         }
@@ -236,24 +236,24 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
     }
     else
     {
-        if(registered_pl->getPoints().size() < 3)
+        if(registered_pl->get_points().size() < 3)
         {
             sight::ui::dialog::message::show(
                 "Error",
                 "You must enter 3 or more points for the registration to work.",
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
-            msg += std::to_string(registered_pl->getPoints().size()) + " != " + std::to_string(
-                reference_pl->getPoints().size()
+            msg += std::to_string(registered_pl->get_points().size()) + " != " + std::to_string(
+                reference_pl->get_points().size()
             );
             sight::ui::dialog::message::show(
                 "Error",
                 msg,
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
     }
@@ -264,24 +264,24 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
 void point_list_registration::updating()
 {
     const core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
-    this->computeRegistration(timestamp);
+    this->compute_registration(timestamp);
 }
 
 //----------------------------------------------------------------------------
 
-void point_list_registration::changeMode(std::string _value)
+void point_list_registration::change_mode(std::string _value)
 {
     if(_value == "RIGID")
     {
-        m_registrationMode = RIGID;
+        m_registration_mode = rigid;
     }
     else if(_value == "SIMILARITY")
     {
-        m_registrationMode = SIMILARITY;
+        m_registration_mode = similarity;
     }
     else if(_value == "AFFINE")
     {
-        m_registrationMode = AFFINE;
+        m_registration_mode = affine;
     }
     else
     {

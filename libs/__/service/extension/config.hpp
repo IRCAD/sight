@@ -35,18 +35,18 @@ namespace sight::service::extension
 
 /**
  */
-class SERVICE_CLASS_API ServiceConfigInfo : public core::base_object
+class SERVICE_CLASS_API service_config_info : public core::base_object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ServiceConfigInfo, core::base_object);
+    SIGHT_DECLARE_CLASS(service_config_info, core::base_object);
 
     /// Constructor, do nothing.
-    ServiceConfigInfo()
+    service_config_info()
     = default;
 
     /// Destructor, do nothing.
-    ~ServiceConfigInfo() override
+    ~service_config_info() override
     = default;
 
     std::string service;
@@ -80,7 +80,7 @@ public:
     SIGHT_DECLARE_CLASS(config, core::base_object);
 
     /// Return the default global instance of config
-    SERVICE_API static config::sptr getDefault();
+    SERVICE_API static config::sptr get_default();
 
     SERVICE_API config()           = default;
     SERVICE_API ~config() override = default;
@@ -100,7 +100,7 @@ public:
      * @param config   the registered config
      * @note This method is thread safe
      */
-    SERVICE_API void addServiceConfigInfo(
+    SERVICE_API void add_service_config_info(
         const std::string& _config_id,
         const std::string& _service,
         const std::string& _desc,
@@ -121,14 +121,14 @@ public:
      * @brief Returns the description of the given configuration name.
      * @note This method is thread safe
      */
-    SERVICE_API const std::string& getConfigDesc(const std::string& _config_id) const;
+    SERVICE_API const std::string& get_config_desc(const std::string& _config_id) const;
 
     /**
      * @brief Returns a vector containing the names of the available config for the service with the given
      * implementation
      * @note This method is thread safe
      */
-    SERVICE_API std::vector<std::string> getAllConfigForService(
+    SERVICE_API std::vector<std::string> get_all_config_for_service(
         std::string _service_impl,
         bool _matching_only = false
     ) const;
@@ -141,18 +141,18 @@ public:
 
 protected:
 
-    typedef std::map<std::string, ServiceConfigInfo::sptr> Registry;
+    using registry = std::map<std::string, service_config_info::sptr>;
 
     /// Container of service information <configId, service config information>
-    Registry m_reg;
+    registry m_reg;
 
     const static std::string CONFIG_EXT_POINT;
 
     /// Used to protect the registry access.
-    mutable core::mt::read_write_mutex m_registryMutex;
+    mutable core::mt::read_write_mutex m_registry_mutex;
 
     /// The global instance of the service config.
-    static config::sptr s_currentServiceConfig;
+    static config::sptr s_current_service_config;
 };
 
 } // namespace sight::service::extension

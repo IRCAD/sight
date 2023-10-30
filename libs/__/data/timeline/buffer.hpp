@@ -35,8 +35,8 @@ class DATA_CLASS_API buffer : public object
 {
 public:
 
-    typedef uint8_t* buffer_data_t;
-    typedef std::function<void (void*)> deleter_t;
+    using buffer_data_t = uint8_t*;
+    using deleter_t     = std::function<void (void*)>;
 
     /// Constructor
     DATA_API buffer(

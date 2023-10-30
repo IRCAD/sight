@@ -25,19 +25,19 @@
                         <icon>Tuto06Filter/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
-                    <menuBar />
+                    <menubar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
                     <view sid="containerView" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
+            <service uid="menuBarView" type="sight::module::ui::menubar" >
                 <gui>
                     <layout>
                         <menu name="File" />
-                        <menu name="Filter" />
+                        <menu name="filter" />
                     </layout>
                 </gui>
                 <registry>

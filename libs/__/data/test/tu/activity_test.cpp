@@ -51,24 +51,24 @@ void activity_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void activity_test::activityConfigIdTest()
+void activity_test::activity_config_id_test()
 {
     const data::activity::config_id_t activity_config_id = "Visu2D";
     CPPUNIT_ASSERT(m_activity);
-    m_activity->setActivityConfigId(activity_config_id);
-    CPPUNIT_ASSERT_EQUAL(activity_config_id, m_activity->getActivityConfigId());
+    m_activity->set_activity_config_id(activity_config_id);
+    CPPUNIT_ASSERT_EQUAL(activity_config_id, m_activity->get_activity_config_id());
 
     auto activity2 = std::make_shared<data::activity>();
     CPPUNIT_ASSERT(*activity2 != *m_activity);
 
     std::ranges::copy(*m_activity, std::inserter(*activity2, activity2->begin()));
-    activity2->setActivityConfigId(m_activity->getActivityConfigId());
+    activity2->set_activity_config_id(m_activity->get_activity_config_id());
     CPPUNIT_ASSERT(*activity2 == *m_activity);
 }
 
 //------------------------------------------------------------------------------
 
-void activity_test::dataTest()
+void activity_test::data_test()
 {
     auto activity2 = std::make_shared<data::activity>();
     CPPUNIT_ASSERT(m_activity);
@@ -78,22 +78,22 @@ void activity_test::dataTest()
     CPPUNIT_ASSERT(*activity2 == *m_activity);
 
     std::ranges::copy(*m_activity, std::inserter(*activity2, activity2->begin()));
-    activity2->setActivityConfigId(m_activity->getActivityConfigId());
+    activity2->set_activity_config_id(m_activity->get_activity_config_id());
     CPPUNIT_ASSERT(*activity2 == *m_activity);
 }
 
 //------------------------------------------------------------------------------
 
-void activity_test::equalityTest()
+void activity_test::equality_test()
 {
     auto activity1 = std::make_shared<data::activity>();
     auto activity2 = std::make_shared<data::activity>();
 
     CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
 
-    activity1->setActivityConfigId("1");
+    activity1->set_activity_config_id("1");
     CPPUNIT_ASSERT(*activity1 != *activity2 && !(*activity1 == *activity2));
-    activity2->setActivityConfigId(activity1->getActivityConfigId());
+    activity2->set_activity_config_id(activity1->get_activity_config_id());
     CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
 
     (*activity1)["data"] = std::make_shared<data::integer>(2);
@@ -104,10 +104,10 @@ void activity_test::equalityTest()
 
 //------------------------------------------------------------------------------
 
-void activity_test::shallow_copyTest()
+void activity_test::shallow_copy_test()
 {
     CPPUNIT_ASSERT(m_activity);
-    m_activity->setActivityConfigId("MyActivity");
+    m_activity->set_activity_config_id("MyActivity");
     (*m_activity)["data"] = std::make_shared<data::string>("Hello world");
 
     auto activity2 = std::make_shared<data::activity>();

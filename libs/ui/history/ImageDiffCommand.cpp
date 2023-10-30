@@ -32,9 +32,9 @@ namespace sight::ui::history
 
 //------------------------------------------------------------------------------
 
-ImageDiffCommand::ImageDiffCommand(const data::image::sptr& _img, filter::image::image_diff _diff) :
+image_diff_command::image_diff_command(const data::image::sptr& _img, filter::image::image_diff _diff) :
     m_img(_img),
-    m_modifiedSig(_img->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)),
+    m_modified_sig(_img->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)),
     m_diff(std::move(_diff))
 {
     m_diff.shrink();
@@ -42,36 +42,36 @@ ImageDiffCommand::ImageDiffCommand(const data::image::sptr& _img, filter::image:
 
 //------------------------------------------------------------------------------
 
-std::size_t ImageDiffCommand::size() const
+std::size_t image_diff_command::size() const
 {
     return sizeof(*this) + m_diff.size();
 }
 
 //------------------------------------------------------------------------------
 
-bool ImageDiffCommand::redo()
+bool image_diff_command::redo()
 {
-    m_diff.applyDiff(m_img);
+    m_diff.apply_diff(m_img);
 
-    m_modifiedSig->async_emit();
+    m_modified_sig->async_emit();
 
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-bool ImageDiffCommand::undo()
+bool image_diff_command::undo()
 {
-    m_diff.revertDiff(m_img);
+    m_diff.revert_diff(m_img);
 
-    m_modifiedSig->async_emit();
+    m_modified_sig->async_emit();
 
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageDiffCommand::getDescription() const
+std::string image_diff_command::get_description() const
 {
     return "image_diff";
 }

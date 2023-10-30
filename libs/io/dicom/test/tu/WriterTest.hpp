@@ -26,12 +26,12 @@
 namespace sight::io::dicom::ut
 {
 
-class WriterTest : public CPPUNIT_NS::TestFixture
+class writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(WriterTest);
-CPPUNIT_TEST(writeEnhancedUSVolumeTest);
-CPPUNIT_TEST(forceCPUTest);
-CPPUNIT_TEST(transferSyntaxTest);
+CPPUNIT_TEST_SUITE(writer_test);
+CPPUNIT_TEST(write_enhanced_us_volume_test);
+CPPUNIT_TEST(force_cpu_test);
+CPPUNIT_TEST(transfer_syntax_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,9 +39,9 @@ public:
     void setUp();
     void tearDown();
 
-    static void writeEnhancedUSVolumeTest();
-    static void forceCPUTest();
-    static void transferSyntaxTest();
+    static void write_enhanced_us_volume_test();
+    static void force_cpu_test();
+    static void transfer_syntax_test();
 };
 
 } // namespace sight::io::dicom::ut

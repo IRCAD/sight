@@ -37,8 +37,8 @@ namespace sight::ui::qt::widget
 
 slide_bar::slide_bar(
     QWidget* _parent,
-    HAlignment _h_align,
-    VAlignment _v_align,
+    h_alignment _h_align,
+    v_alignment _v_align,
     int _width,
     bool _percent_width,
     int _height,
@@ -49,22 +49,22 @@ slide_bar::slide_bar(
     bool _percent_v_offset,
     double _opacity,
     bool _animatable,
-    AnimatableAlignment _animatable_alignment
+    animatable_alignment _animatable_alignment
 ) :
     QWidget(_parent),
-    m_hAlignment(_h_align),
-    m_vAlignment(_v_align),
+    m_h_alignment(_h_align),
+    m_v_alignment(_v_align),
     m_width(_width),
-    m_percentWidth(_percent_width),
+    m_percent_width(_percent_width),
     m_height(_height),
-    m_percentHeight(_percent_height),
-    m_hOffset(_h_offset),
-    m_percentHOffset(_percent_h_offset),
-    m_vOffset(_v_offset),
-    m_percentVOffset(_percent_v_offset),
+    m_percent_height(_percent_height),
+    m_h_offset(_h_offset),
+    m_percent_h_offset(_percent_h_offset),
+    m_v_offset(_v_offset),
+    m_percent_v_offset(_percent_v_offset),
     m_opacity(_opacity),
     m_animatable(_animatable),
-    m_animatableAlignment(_animatable_alignment)
+    m_animatable_alignment(_animatable_alignment)
 {
     this->init();
 }
@@ -76,7 +76,7 @@ void slide_bar::init()
     this->setObjectName("slide_bar");
 
     // Set the widget position
-    this->updatePosition();
+    this->update_position();
 
     // window flags to have a frameless dialog that can be displayed over an openGL widget
     this->setWindowFlags(
@@ -110,13 +110,13 @@ slide_bar::~slide_bar()
 
 //-----------------------------------------------------------------------------
 
-void slide_bar::updatePosition()
+void slide_bar::update_position()
 {
     // Computes the size.
     int width  = this->parentWidget()->width();
     int height = this->parentWidget()->height();
 
-    if(!m_percentWidth)
+    if(!m_percent_width)
     {
         if(m_width > -1)
         {
@@ -128,7 +128,7 @@ void slide_bar::updatePosition()
         width = std::min(width, static_cast<int>(m_width / 100. * width));
     }
 
-    if(!m_percentHeight)
+    if(!m_percent_height)
     {
         if(m_height > -1)
         {
@@ -147,96 +147,96 @@ void slide_bar::updatePosition()
     int h_offset = 0;
     int v_offset = 0;
 
-    if(!m_percentHOffset)
+    if(!m_percent_h_offset)
     {
-        h_offset = m_hOffset;
+        h_offset = m_h_offset;
     }
     else
     {
-        h_offset = static_cast<int>(m_hOffset / 100. * this->parentWidget()->width());
+        h_offset = static_cast<int>(m_h_offset / 100. * this->parentWidget()->width());
     }
 
-    if(!m_percentVOffset)
+    if(!m_percent_v_offset)
     {
-        v_offset = m_vOffset;
+        v_offset = m_v_offset;
     }
     else
     {
-        v_offset = static_cast<int>(m_vOffset / 100. * this->parentWidget()->height());
+        v_offset = static_cast<int>(m_v_offset / 100. * this->parentWidget()->height());
     }
 
     // Compute the shown and hidden position.
-    if(m_hAlignment == LEFT && m_vAlignment == TOP)
+    if(m_h_alignment == left && m_v_alignment == top)
     {
         QPoint pos = this->parentWidget()->rect().topLeft();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition = QRect(pos.x() + h_offset, pos.y() + v_offset, width, height);
+        m_shown_position = QRect(pos.x() + h_offset, pos.y() + v_offset, width, height);
     }
-    else if(m_hAlignment == RIGHT && m_vAlignment == TOP)
+    else if(m_h_alignment == right && m_v_alignment == top)
     {
         QPoint pos = this->parentWidget()->rect().topRight();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition = QRect(pos.x() - width - h_offset, pos.y() + v_offset, width, height);
+        m_shown_position = QRect(pos.x() - width - h_offset, pos.y() + v_offset, width, height);
     }
-    else if(m_hAlignment == LEFT && m_vAlignment == BOTTOM)
+    else if(m_h_alignment == left && m_v_alignment == bottom)
     {
         QPoint pos = this->parentWidget()->rect().bottomLeft();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition = QRect(pos.x() + h_offset, pos.y() - height - v_offset, width, height);
+        m_shown_position = QRect(pos.x() + h_offset, pos.y() - height - v_offset, width, height);
     }
-    else if(m_hAlignment == RIGHT && m_vAlignment == BOTTOM)
+    else if(m_h_alignment == right && m_v_alignment == bottom)
     {
         QPoint pos = this->parentWidget()->rect().bottomRight();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition = QRect(pos.x() - width - h_offset, pos.y() - height - v_offset, width, height);
+        m_shown_position = QRect(pos.x() - width - h_offset, pos.y() - height - v_offset, width, height);
     }
 
-    switch(m_animatableAlignment)
+    switch(m_animatable_alignment)
     {
-        case TOP_ANIMATION:
+        case top_animation:
         {
             QPoint pos = this->parentWidget()->rect().topLeft();
-            pos              = this->parentWidget()->mapToGlobal(pos);
-            m_hiddenPosition = QRect(m_shownPosition.x(), pos.y() - height + v_offset, width, 0);
+            pos               = this->parentWidget()->mapToGlobal(pos);
+            m_hidden_position = QRect(m_shown_position.x(), pos.y() - height + v_offset, width, 0);
             break;
         }
 
-        case BOTTOM_ANIMATION:
+        case bottom_animation:
         {
             QPoint pos = this->parentWidget()->rect().bottomLeft();
-            pos              = this->parentWidget()->mapToGlobal(pos);
-            m_hiddenPosition = QRect(m_shownPosition.x(), pos.y() + v_offset, width, 0);
+            pos               = this->parentWidget()->mapToGlobal(pos);
+            m_hidden_position = QRect(m_shown_position.x(), pos.y() + v_offset, width, 0);
             break;
         }
 
-        case LEFT_ANIMATION:
+        case left_animation:
         {
             QPoint pos = this->parentWidget()->rect().topLeft();
-            pos              = this->parentWidget()->mapToGlobal(pos);
-            m_hiddenPosition = QRect(pos.x() - width + h_offset, m_shownPosition.y(), 0, height);
+            pos               = this->parentWidget()->mapToGlobal(pos);
+            m_hidden_position = QRect(pos.x() - width + h_offset, m_shown_position.y(), 0, height);
             break;
         }
 
-        case RIGHT_ANIMATION:
+        case right_animation:
         {
             QPoint pos = this->parentWidget()->rect().bottomRight();
-            pos              = this->parentWidget()->mapToGlobal(pos);
-            m_hiddenPosition = QRect(pos.x() + h_offset, m_shownPosition.y(), 0, height);
+            pos               = this->parentWidget()->mapToGlobal(pos);
+            m_hidden_position = QRect(pos.x() + h_offset, m_shown_position.y(), 0, height);
             break;
         }
     }
 
-    if(!m_animatable || m_isShown)
+    if(!m_animatable || m_is_shown)
     {
-        this->setGeometry(m_shownPosition);
+        this->setGeometry(m_shown_position);
     }
     else
     {
-        this->setGeometry(m_hiddenPosition);
+        this->setGeometry(m_hidden_position);
     }
 }
 
@@ -249,14 +249,14 @@ void slide_bar::setVisible(bool _visible)
 
 //-----------------------------------------------------------------------------
 
-void slide_bar::forceHide()
+void slide_bar::force_hide()
 {
     this->QWidget::setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
 
-void slide_bar::forceShow()
+void slide_bar::force_show()
 {
     this->QWidget::setVisible(true);
 }
@@ -269,8 +269,8 @@ void slide_bar::slide(bool _visible)
     {
         // Show the widget with the previous opacity. It must be hidden after the slide(false) because if opacity == 0,
         // the widget is still clickable.
-        this->forceShow();
-        this->setWindowOpacity(m_isShown ? m_opacity : 0);
+        this->force_show();
+        this->setWindowOpacity(m_is_shown ? m_opacity : 0);
 
         // Set animation to slide the widget and update the opacity
         auto* animations = new QParallelAnimationGroup();
@@ -283,14 +283,14 @@ void slide_bar::slide(bool _visible)
 
         if(_visible)
         {
-            geom_animation->setEndValue(m_shownPosition);
+            geom_animation->setEndValue(m_shown_position);
         }
         else
         {
-            geom_animation->setEndValue(m_hiddenPosition);
+            geom_animation->setEndValue(m_hidden_position);
 
             // hide the widget when the animation is finished (if opacity == 0, widget is still clickable)
-            QObject::connect(animations, &QAbstractAnimation::finished, this, &slide_bar::forceHide);
+            QObject::connect(animations, &QAbstractAnimation::finished, this, &slide_bar::force_hide);
         }
 
         // opacity animation
@@ -305,14 +305,14 @@ void slide_bar::slide(bool _visible)
     }
     else if(_visible)
     {
-        this->forceShow();
+        this->force_show();
     }
     else
     {
-        this->forceHide();
+        this->force_hide();
     }
 
-    m_isShown = _visible;
+    m_is_shown = _visible;
 }
 
 //-----------------------------------------------------------------------------
@@ -323,18 +323,18 @@ bool slide_bar::eventFilter(QObject* _obj, QEvent* _event)
     if(_event->type() == QEvent::Resize
        || _event->type() == QEvent::Move)
     {
-        this->updatePosition();
+        this->update_position();
     }
     else if(_event->type() == QEvent::Show)
     {
-        if(m_isShown)
+        if(m_is_shown)
         {
-            this->forceShow();
+            this->force_show();
         }
     }
     else if(_event->type() == QEvent::Hide)
     {
-        this->forceHide();
+        this->force_hide();
     }
 
     return QObject::eventFilter(_obj, _event);

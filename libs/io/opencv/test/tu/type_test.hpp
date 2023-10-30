@@ -35,8 +35,8 @@ class type_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(type_test);
-    CPPUNIT_TEST(toCv);
-    CPPUNIT_TEST(fromCv);
+    CPPUNIT_TEST(to_cv);
+    CPPUNIT_TEST(from_cv);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,8 +45,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void toCv();
-    static void fromCv();
+    static void to_cv();
+    static void from_cv();
 };
 
 } // namespace sight::io::opencv::ut

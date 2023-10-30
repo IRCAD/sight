@@ -30,60 +30,60 @@
 
 #include <thread>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::igtl::ut::ClientServerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::igtl::ut::client_server_test);
 
 namespace sight::io::igtl::ut
 {
 
 // Global variable for client.
-static sight::io::igtl::Client::sptr s_client;
+static sight::io::igtl::client::sptr s_client;
 // Global variable for server.
-static sight::io::igtl::Server::sptr s_server;
-// Global variable that stores the runServer future.
+static sight::io::igtl::server::sptr s_server;
+// Global variable that stores the run_server future.
 static std::future<void> s_server_future;
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::setUp()
+void client_server_test::setUp()
 {
     // Create server
-    s_server = std::make_shared<sight::io::igtl::Server>();
+    s_server = std::make_shared<sight::io::igtl::server>();
     // Using 0 as port number will check for the first available port number.
     s_server->start(0);
-    s_server->addAuthorizedDevice("Sight_Tests_Client");
-    s_server->setReceiveTimeout(30);
+    s_server->add_authorized_device("Sight_Tests_Client");
+    s_server->set_receive_timeout(30);
 
     // Run server (waitForConnection on a thread).
-    s_server_future = std::async(std::launch::async, [object_ptr = s_server](auto&& ...){object_ptr->runServer();});
+    s_server_future = std::async(std::launch::async, [object_ptr = s_server](auto&& ...){object_ptr->run_server();});
 
     // Wait for server to be initialized properly.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     // Create client.
-    s_client = std::make_shared<sight::io::igtl::Client>();
+    s_client = std::make_shared<sight::io::igtl::client>();
 
     // Connect client.
-    s_client->connect("127.0.0.1", s_server->getPort());
-    s_client->setDeviceNameOut("Sight_Tests_Client");
-    s_client->addAuthorizedDevice("Sight_Tests_Server");
+    s_client->connect("127.0.0.1", s_server->get_port());
+    s_client->set_device_name_out("Sight_Tests_Client");
+    s_client->add_authorized_device("Sight_Tests_Server");
 
     // Hang until we have a client or we reach the timeout.
     std::uint32_t timeout = 0;
-    while(s_server->numClients() == 0 || timeout >= 1000)
+    while(s_server->num_clients() == 0 || timeout >= 1000)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         timeout += 100;
     }
 
     // Set Name to connected client.
-    s_server->setMessageDeviceName("Sight_Tests_Server");
+    s_server->set_message_device_name("Sight_Tests_Server");
 }
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::tearDown()
+void client_server_test::tearDown()
 {
-    if(s_client->isConnected())
+    if(s_client->is_connected())
     {
         s_client->disconnect();
     }
@@ -101,19 +101,19 @@ void ClientServerTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::clientToServer()
+void client_server_test::client_to_server()
 {
     ::igtl::StringMessage::Pointer string_msg = ::igtl::StringMessage::New();
     string_msg->SetString("Hello world!");
 
-    s_client->sendMsg(static_cast< ::igtl::MessageBase::Pointer>(string_msg));
+    s_client->send_msg(static_cast< ::igtl::MessageBase::Pointer>(string_msg));
 
     CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 1);
 
     std::vector< ::igtl::MessageHeader::Pointer> headers;
-    CPPUNIT_ASSERT_NO_THROW(headers = s_server->receiveHeaders());
+    CPPUNIT_ASSERT_NO_THROW(headers = s_server->receive_headers());
 
     for(const auto& header : headers)
     {
@@ -121,7 +121,7 @@ void ClientServerTest::clientToServer()
         CPPUNIT_ASSERT_MESSAGE("Device Type", std::string(header->GetDeviceType()) == string_msg->GetDeviceType());
 
         ::igtl::MessageBase::Pointer msg;
-        CPPUNIT_ASSERT_NO_THROW(msg = s_server->receiveBody(header, 0));
+        CPPUNIT_ASSERT_NO_THROW(msg = s_server->receive_body(header, 0));
 
         CPPUNIT_ASSERT_MESSAGE("Body message", msg);
 
@@ -142,35 +142,35 @@ void ClientServerTest::clientToServer()
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::clientToServerTimeout()
+void client_server_test::client_to_server_timeout()
 {
     CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 1);
 
-    CPPUNIT_ASSERT_MESSAGE("Timeout", s_server->getReceiveTimeout().has_value());
-    CPPUNIT_ASSERT_MESSAGE("Timeout value", s_server->getReceiveTimeout().value() == 30);
+    CPPUNIT_ASSERT_MESSAGE("Timeout", s_server->get_receive_timeout().has_value());
+    CPPUNIT_ASSERT_MESSAGE("Timeout value", s_server->get_receive_timeout().value() == 30);
 
     // Reach the timeout
     std::vector< ::igtl::MessageHeader::Pointer> headers;
-    CPPUNIT_ASSERT_THROW(headers = s_server->receiveHeaders(), sight::io::igtl::Exception);
+    CPPUNIT_ASSERT_THROW(headers = s_server->receive_headers(), sight::io::igtl::exception);
 }
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::serverToClient()
+void client_server_test::server_to_client()
 {
     ::igtl::StringMessage::Pointer string_msg = ::igtl::StringMessage::New();
     string_msg->SetString("Hello from server!");
 
     CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 1);
 
     s_server->broadcast(static_cast< ::igtl::MessageBase::Pointer>(string_msg));
 
     ::igtl::MessageHeader::Pointer header;
-    CPPUNIT_ASSERT_NO_THROW(header = s_client->receiveHeader());
+    CPPUNIT_ASSERT_NO_THROW(header = s_client->receive_header());
 
     CPPUNIT_ASSERT_MESSAGE("Received header", header);
 
@@ -178,7 +178,7 @@ void ClientServerTest::serverToClient()
     CPPUNIT_ASSERT_MESSAGE("Device Type", std::string(header->GetDeviceType()) == string_msg->GetDeviceType());
 
     ::igtl::MessageBase::Pointer msg;
-    CPPUNIT_ASSERT_NO_THROW(msg = s_client->receiveBody(header));
+    CPPUNIT_ASSERT_NO_THROW(msg = s_client->receive_body(header));
 
     CPPUNIT_ASSERT_MESSAGE("Body message", msg);
 
@@ -198,31 +198,31 @@ void ClientServerTest::serverToClient()
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::serverHeaderExceptionTest()
+void client_server_test::server_header_exception_test()
 {
     CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 1);
 
-    s_server->getSocket()->SetTimeout(200);
-    s_client->getSocket()->SetTimeout(200);
+    s_server->get_socket()->SetTimeout(200);
+    s_client->get_socket()->SetTimeout(200);
 
     // disconnect client.
     s_client->disconnect();
 
-    CPPUNIT_ASSERT_THROW(s_server->receiveHeaders(), sight::io::igtl::Exception);
+    CPPUNIT_ASSERT_THROW(s_server->receive_headers(), sight::io::igtl::exception);
 }
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::clientHeaderExceptionTest()
+void client_server_test::client_header_exception_test()
 {
     CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 1);
 
-    s_server->getSocket()->SetTimeout(200);
-    s_client->getSocket()->SetTimeout(200);
+    s_server->get_socket()->SetTimeout(200);
+    s_client->get_socket()->SetTimeout(200);
 
     // stop server.
     s_server->stop();
@@ -231,31 +231,31 @@ void ClientServerTest::clientHeaderExceptionTest()
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     // Client still connected.
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 0);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 0);
 
     // Timeout exception.
-    CPPUNIT_ASSERT_THROW(s_client->receiveHeader(), sight::io::igtl::Exception);
+    CPPUNIT_ASSERT_THROW(s_client->receive_header(), sight::io::igtl::exception);
 }
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::clientBodyExceptionTest()
+void client_server_test::client_body_exception_test()
 {
     ::igtl::StringMessage::Pointer string_msg = ::igtl::StringMessage::New();
     string_msg->SetString("Hello from server!");
 
     CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 1);
 
-    s_server->getSocket()->SetTimeout(10);
-    s_client->getSocket()->SetTimeout(10);
+    s_server->get_socket()->SetTimeout(10);
+    s_client->get_socket()->SetTimeout(10);
 
     s_server->broadcast(static_cast< ::igtl::MessageBase::Pointer>(string_msg));
 
     ::igtl::MessageHeader::Pointer header;
-    CPPUNIT_ASSERT_NO_THROW(header = s_client->receiveHeader());
+    CPPUNIT_ASSERT_NO_THROW(header = s_client->receive_header());
 
     CPPUNIT_ASSERT_MESSAGE("Received header", header);
 
@@ -270,27 +270,27 @@ void ClientServerTest::clientBodyExceptionTest()
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     ::igtl::MessageBase::Pointer msg;
-    CPPUNIT_ASSERT_THROW(msg = s_client->receiveBody(nullptr), sight::io::igtl::Exception);
+    CPPUNIT_ASSERT_THROW(msg = s_client->receive_body(nullptr), sight::io::igtl::exception);
 }
 
 //------------------------------------------------------------------------------
 
-void ClientServerTest::serverBodyExceptionTest()
+void client_server_test::server_body_exception_test()
 {
     ::igtl::StringMessage::Pointer string_msg = ::igtl::StringMessage::New();
     string_msg->SetString("Hello world!");
 
-    s_client->sendMsg(static_cast< ::igtl::MessageBase::Pointer>(string_msg));
+    s_client->send_msg(static_cast< ::igtl::MessageBase::Pointer>(string_msg));
 
     CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
-    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
-    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->is_connected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->num_clients() == 1);
 
-    s_server->getSocket()->SetTimeout(10);
-    s_client->getSocket()->SetTimeout(10);
+    s_server->get_socket()->SetTimeout(10);
+    s_client->get_socket()->SetTimeout(10);
 
     std::vector< ::igtl::MessageHeader::Pointer> headers;
-    CPPUNIT_ASSERT_NO_THROW(headers = s_server->receiveHeaders());
+    CPPUNIT_ASSERT_NO_THROW(headers = s_server->receive_headers());
 
     // disconnect client.
     s_client->disconnect();
@@ -303,7 +303,7 @@ void ClientServerTest::serverBodyExceptionTest()
         CPPUNIT_ASSERT_MESSAGE("Device Type", std::string(header->GetDeviceType()) == string_msg->GetDeviceType());
 
         ::igtl::MessageBase::Pointer msg;
-        CPPUNIT_ASSERT_THROW(msg = s_server->receiveBody(nullptr, 0), sight::io::igtl::Exception);
+        CPPUNIT_ASSERT_THROW(msg = s_server->receive_body(nullptr, 0), sight::io::igtl::exception);
     }
 }
 

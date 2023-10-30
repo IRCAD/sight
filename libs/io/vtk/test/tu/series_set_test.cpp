@@ -60,12 +60,12 @@ void series_set_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void series_set_test::testImportSeriesSet()
+void series_set_test::test_import_series_set()
 {
     auto series_set = std::make_shared<data::series_set>();
 
-    const std::filesystem::path image_path(utest_data::Data::dir() / "sight/image/vtk/img.vtk");
-    const std::filesystem::path mesh_path(utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk");
+    const std::filesystem::path image_path(utest_data::dir() / "sight/image/vtk/img.vtk");
+    const std::filesystem::path mesh_path(utest_data::dir() / "sight/mesh/vtk/sphere.vtk");
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + image_path.string(), std::filesystem::exists(image_path));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + mesh_path.string(), std::filesystem::exists(mesh_path));
@@ -75,7 +75,7 @@ void series_set_test::testImportSeriesSet()
     paths.push_back(mesh_path);
     paths.push_back(mesh_path);
 
-    io::vtk::SeriesSetReader::sptr reader = std::make_shared<io::vtk::SeriesSetReader>();
+    io::vtk::series_set_reader::sptr reader = std::make_shared<io::vtk::series_set_reader>();
     reader->set_object(series_set);
     reader->set_files(paths);
     reader->read();
@@ -88,20 +88,20 @@ void series_set_test::testImportSeriesSet()
     data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", model_series);
 
-    data::model_series::reconstruction_vector_t rec_vect = model_series->getReconstructionDB();
+    data::model_series::reconstruction_vector_t rec_vect = model_series->get_reconstruction_db();
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), rec_vect.size());
 
     data::reconstruction::sptr rec1 = rec_vect.at(0);
     data::reconstruction::sptr rec2 = rec_vect.at(1);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec1->getOrganName());
-    CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec2->getOrganName());
+    CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec1->get_organ_name());
+    CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec2->get_organ_name());
 
-    data::mesh::sptr mesh1 = rec1->getMesh();
-    data::mesh::sptr mesh2 = rec2->getMesh();
+    data::mesh::sptr mesh1 = rec1->get_mesh();
+    data::mesh::sptr mesh2 = rec2->get_mesh();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->numCells(), (data::mesh::size_t) 720);
-    CPPUNIT_ASSERT_EQUAL(mesh1->numPoints(), (data::mesh::size_t) 362);
+    CPPUNIT_ASSERT_EQUAL(mesh1->num_cells(), (data::mesh::size_t) 720);
+    CPPUNIT_ASSERT_EQUAL(mesh1->num_points(), (data::mesh::size_t) 362);
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }

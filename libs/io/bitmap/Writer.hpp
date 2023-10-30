@@ -65,35 +65,35 @@ namespace sight::io::bitmap
  * On the contrary, nvJPEG2000 is fully lossless and provides a very good compression ratio, but is, of course, slower
  * (still 60 fps guaranteed on nowadays computers).
  */
-class IO_BITMAP_CLASS_API Writer final : public io::writer::generic_object_writer<data::image>,
+class IO_BITMAP_CLASS_API writer final : public io::writer::generic_object_writer<data::image>,
                                          public core::location::single_file,
                                          public core::tools::progress_adviser
 {
 public:
 
-    enum class Mode : std::uint8_t
+    enum class mode : std::uint8_t
     {
-        FAST = 1,
-        BEST = 2
+        fast = 1,
+        best = 2
     };
 
     SIGHT_DECLARE_CLASS(
-        Writer,
+        writer,
         io::writer::generic_object_writer<data::image>,
-        io::writer::factory::make<Writer>
+        io::writer::factory::make<writer>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Delete default constructors and assignment operators
-    Writer(const Writer&)            = delete;
-    Writer(Writer&&)                 = delete;
-    Writer& operator=(const Writer&) = delete;
-    Writer& operator=(Writer&&)      = delete;
+    writer(const writer&)            = delete;
+    writer(writer&&)                 = delete;
+    writer& operator=(const writer&) = delete;
+    writer& operator=(writer&&)      = delete;
 
     /// Constructor/Destructor
-    IO_BITMAP_API Writer();
-    IO_BITMAP_API ~Writer() override;
+    IO_BITMAP_API writer();
+    IO_BITMAP_API ~writer() override;
 
     /// Main writing method from generic_object_writer
     IO_BITMAP_API void write() override;
@@ -103,7 +103,7 @@ public:
     ///      NVJPEG2K. DEFAULT is LIBTIFF and ANY will guess using the file extension. "*J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
-    IO_BITMAP_API std::size_t write(Backend _backend, Mode _mode = Mode::FAST);
+    IO_BITMAP_API std::size_t write(backend _backend, mode _mode = mode::fast);
 
     /// Specialized writing method that allows to write to a ostream
     /// @arg ostream: the stream to write to. It is up to the user to open it.
@@ -113,8 +113,8 @@ public:
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
         std::ostream& _ostream,
-        Backend _backend = Backend::LIBTIFF,
-        Mode _mode       = Mode::FAST
+        backend _backend = backend::libtiff,
+        mode _mode       = mode::fast
     );
 
     /// Specialized writing method that allows to write to a std::uint8_t* buffer
@@ -125,8 +125,8 @@ public:
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
         std::uint8_t** _buffer,
-        Backend _backend = Backend::LIBTIFF,
-        Mode _mode       = Mode::FAST
+        backend _backend = backend::libtiff,
+        mode _mode       = mode::fast
     );
 
     /// Specialized writing method that allows to write to a std::uint8_t* buffer
@@ -137,8 +137,8 @@ public:
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
         std::uint8_t* _buffer,
-        Backend _backend = Backend::LIBTIFF,
-        Mode _mode       = Mode::FAST
+        backend _backend = backend::libtiff,
+        mode _mode       = mode::fast
     );
 
     /// Specialized writing method that allows to write to a std::uint8_t* buffer
@@ -149,8 +149,8 @@ public:
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
         std::vector<uint8_t>& _buffer,
-        Backend _backend = Backend::LIBTIFF,
-        Mode _mode       = Mode::FAST
+        backend _backend = backend::libtiff,
+        mode _mode       = mode::fast
     );
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid

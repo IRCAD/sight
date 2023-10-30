@@ -126,67 +126,67 @@ protected:
     MODULE_UI_QT_API void info(std::ostream& _sstream) final;
 
     /// Slot: Updates the slider position
-    MODULE_UI_QT_API void updateTF();
+    MODULE_UI_QT_API void update_tf();
 
 protected Q_SLOTS:
 
-    void onTextEditingFinished();
+    void on_text_editing_finished();
 
-    void onToggleTF(bool _square_tf);
+    void on_toggle_tf(bool _square_tf);
 
-    void onToggleAutoWL(bool _auto_wl);
+    void on_toggle_auto_wl(bool _auto_wl);
 
-    void onWindowLevelWidgetChanged(double _min, double _max);
+    void on_window_level_widget_changed(double _min, double _max);
 
-    void onDynamicRangeSelectionChanged(QAction* _action);
+    void on_dynamic_range_selection_changed(QAction* _action);
 
 protected:
 
-    typedef data::transfer_function::min_max_t WindowLevelMinMaxType;
+    using window_level_min_max_t = data::transfer_function::min_max_t;
 
-    double toWindowLevel(double _val) const;
+    double to_window_level(double _val) const;
 
-    double fromWindowLevel(double _val);
+    double from_window_level(double _val);
 
-    void onImageWindowLevelChanged(double _image_min, double _image_max);
+    void on_image_window_level_changed(double _image_min, double _image_max);
 
-    void updateWidgetMinMax(double _image_min, double _image_max);
+    void update_widget_min_max(double _image_min, double _image_max);
 
-    void updateImageWindowLevel(double _image_min, double _image_max);
+    void update_image_window_level(double _image_min, double _image_max);
 
-    void updateTextWindowLevel(double _image_min, double _image_max);
+    void update_text_window_level(double _image_min, double _image_max);
 
-    WindowLevelMinMaxType getImageWindowMinMax();
+    window_level_min_max_t get_image_window_min_max();
 
-    static bool getWidgetDoubleValue(QLineEdit* _widget, double& _val);
+    static bool get_widget_double_value(QLineEdit* _widget, double& _val);
 
-    void setWidgetDynamicRange(double _min, double _max);
+    void set_widget_dynamic_range(double _min, double _max);
 
 private:
 
-    QPointer<QLineEdit> m_valueTextMin;
-    QPointer<QLineEdit> m_valueTextMax;
-    QPointer<QToolButton> m_toggleTFButton;
-    QPointer<QToolButton> m_toggleAutoButton;
-    QPointer<QToolButton> m_dynamicRangeSelection;
-    QPointer<QMenu> m_dynamicRangeMenu;
+    QPointer<QLineEdit> m_value_text_min;
+    QPointer<QLineEdit> m_value_text_max;
+    QPointer<QToolButton> m_toggle_tf_button;
+    QPointer<QToolButton> m_toggle_auto_button;
+    QPointer<QToolButton> m_dynamic_range_selection;
+    QPointer<QMenu> m_dynamic_range_menu;
 
-    QPointer<sight::ui::qt::widget::range_slider> m_rangeSlider;
+    QPointer<sight::ui::qt::widget::range_slider> m_range_slider;
 
-    double m_widgetDynamicRangeMin {-1024};
-    double m_widgetDynamicRangeWidth {4000};
+    double m_widget_dynamic_range_min {-1024};
+    double m_widget_dynamic_range_width {4000};
     bool m_minimal {false};
-    bool m_autoWindowing {false};
-    bool m_enableSquareTF {true};
+    bool m_auto_windowing {false};
+    bool m_enable_square_tf {true};
 
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
-    data::transfer_function::sptr m_previousTF;
+    data::transfer_function::sptr m_previous_tf;
 
-    static constexpr std::string_view s_IMAGE = "image";
-    static constexpr std::string_view s_TF    = "tf";
+    static constexpr std::string_view IMAGE = "image";
+    static constexpr std::string_view TF    = "tf";
 
-    data::ptr<data::image, data::Access::inout> m_image {this, s_IMAGE, true};
-    data::ptr<data::transfer_function, data::Access::inout> m_tf {this, s_TF, true};
+    data::ptr<data::image, data::access::inout> m_image {this, IMAGE, true};
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF, true};
 };
 
 } // namespace sight::module::ui::qt::image

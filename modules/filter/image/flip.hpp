@@ -96,22 +96,22 @@ protected:
 private:
 
     /// Slot: flip the first axis
-    void flipAxisX();
+    void flip_axis_x();
 
     /// Slot: flip the second axis
-    void flipAxisY();
+    void flip_axis_y();
 
     /// Slot: flip the third axis
-    void flipAxisZ();
+    void flip_axis_z();
 
     // Store whether to flip or not one of the 3 axis
-    std::array<bool, 3> m_flipAxes {{false, false, false}};
+    std::array<bool, 3> m_flip_axes {{false, false, false}};
 
-    static constexpr std::string_view s_IMAGE_IN  = "source";
-    static constexpr std::string_view s_IMAGE_OUT = "target";
+    static constexpr std::string_view IMAGE_IN  = "source";
+    static constexpr std::string_view IMAGE_OUT = "target";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_source {this, s_IMAGE_IN, true};
-    sight::data::ptr<sight::data::image, sight::data::Access::out> m_target {this, s_IMAGE_OUT, false};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_source {this, IMAGE_IN, true};
+    sight::data::ptr<sight::data::image, sight::data::access::out> m_target {this, IMAGE_OUT, false};
 };
 
 } // namespace sight::module::filter::image

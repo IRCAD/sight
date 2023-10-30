@@ -30,8 +30,8 @@ namespace sight::viz::scene3d::ut
 class resource_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(resource_test);
-CPPUNIT_TEST(textureTest);
-CPPUNIT_TEST(tfTest);
+CPPUNIT_TEST(texture_test);
+CPPUNIT_TEST(tf_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,8 +40,8 @@ public:
     void setUp();
     void tearDown();
 
-    static void textureTest();
-    static void tfTest();
+    static void texture_test();
+    static void tf_test();
 };
 
 } // namespace sight::viz::scene3d::ut

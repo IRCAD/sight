@@ -58,10 +58,10 @@ public:
     MODULE_VIZ_SCENE3D_QT_API ~window_interactor() final;
 
     /// Renders immediately the frame.
-    MODULE_VIZ_SCENE3D_QT_API void renderNow() final;
+    MODULE_VIZ_SCENE3D_QT_API void render_now() final;
 
     /// Renders the frame as soon as possible.
-    MODULE_VIZ_SCENE3D_QT_API void requestRender() final;
+    MODULE_VIZ_SCENE3D_QT_API void request_render() final;
 
     /**
      * @brief Creates the container that holds the QtWidget.
@@ -69,64 +69,64 @@ public:
      * @param _renderOnDemand if true, the rendering will be done only when it's requested.
      * @param _fullscreen enable the fullscreen.
      */
-    MODULE_VIZ_SCENE3D_QT_API void createContainer(
+    MODULE_VIZ_SCENE3D_QT_API void create_container(
         ui::container::widget::sptr _parent,
         bool _fullscreen,
         const std::string& _service_id
     ) final;
 
     /// Connects the widget and the render signals and slots.
-    MODULE_VIZ_SCENE3D_QT_API void connectToContainer() final;
+    MODULE_VIZ_SCENE3D_QT_API void connect_to_container() final;
 
     /// Disconnects the widget and the render signals and slots.
-    MODULE_VIZ_SCENE3D_QT_API void disconnectInteractor() final;
+    MODULE_VIZ_SCENE3D_QT_API void disconnect_interactor() final;
 
     /// Returns the unique identifier of the widget.
-    MODULE_VIZ_SCENE3D_QT_API int getWidgetId() const final;
+    MODULE_VIZ_SCENE3D_QT_API int get_widget_id() const final;
 
     /// Returns current frame number of the render window.
-    MODULE_VIZ_SCENE3D_QT_API int getFrameId() const final;
+    MODULE_VIZ_SCENE3D_QT_API int get_frame_id() const final;
 
     /// Makes the OpenGL context as current one on this thread against this window.
-    MODULE_VIZ_SCENE3D_QT_API void makeCurrent() final;
+    MODULE_VIZ_SCENE3D_QT_API void make_current() final;
 
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
-    MODULE_VIZ_SCENE3D_QT_API Ogre::TexturePtr getRenderTexture() final;
+    MODULE_VIZ_SCENE3D_QT_API Ogre::TexturePtr get_render_texture() final;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
-    MODULE_VIZ_SCENE3D_QT_API sight::viz::scene3d::graphics_worker* createGraphicsWorker() final;
+    MODULE_VIZ_SCENE3D_QT_API sight::viz::scene3d::graphics_worker* create_graphics_worker() final;
 
     /// Gets the vertical logical DPI of the monitor on which the window is displayed.
     /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
-    MODULE_VIZ_SCENE3D_QT_API float getLogicalDotsPerInch() const final;
+    MODULE_VIZ_SCENE3D_QT_API float get_logical_dots_per_inch() const final;
 
     /**
      * @brief Sets the fullscreen or windowed rendering mode.
      * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
      * @param _screenNumber index of the screen on which to render in fullscreen mode.
      */
-    MODULE_VIZ_SCENE3D_QT_API void setFullscreen(bool _fullscreen, int _screen_number) final;
+    MODULE_VIZ_SCENE3D_QT_API void set_fullscreen(bool _fullscreen, int _screen_number) final;
 
-    QWidget* getQtWidget() const;
+    QWidget* get_qt_widget() const;
 
 private Q_SLOTS:
 
     /// Called when the user interacts with the scene using the mouse and keyboard, connected to @ref m_qOgreWidget.
-    void onInteracted(sight::viz::scene3d::window_interactor::InteractionInfo _info);
+    void on_interacted(sight::viz::scene3d::window_interactor::interaction_info _info);
 
 private:
 
-    bool m_isFullScreen {false};
+    bool m_is_full_screen {false};
     /// Contains Qt element of the Widget.
-    QPointer<module::viz::scene3d_qt::Window> m_qOgreWidget;
+    QPointer<module::viz::scene3d_qt::window> m_ogre_widget;
 
     /// Contains the parent of the widget.
-    SPTR(ui::qt::container::widget) m_parentContainer;
+    SPTR(ui::qt::container::widget) m_parent_container;
 };
 
 //-----------------------------------------------------------------------------
 
-inline Ogre::TexturePtr window_interactor::getRenderTexture()
+inline Ogre::TexturePtr window_interactor::get_render_texture()
 {
     SIGHT_ERROR("'window_interactor' doesn't render in a texture.");
     return {};
@@ -134,9 +134,9 @@ inline Ogre::TexturePtr window_interactor::getRenderTexture()
 
 //-----------------------------------------------------------------------------
 
-inline QWidget* window_interactor::getQtWidget() const
+inline QWidget* window_interactor::get_qt_widget() const
 {
-    return m_qOgreWidget;
+    return m_ogre_widget;
 }
 
 } // namespace sight::module::viz::scene3d_qt.

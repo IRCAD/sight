@@ -107,9 +107,9 @@ public:
 
     MODULE_UI_QT_API ~dynamic_view() noexcept override;
 
-    typedef core::com::signal<void (data::object::sptr)> activity_selected_signal_t;
+    using activity_selected_signal_t = core::com::signal<void (data::object::sptr)>;
     MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_SELECTED_SIG;
-    typedef core::com::signal<void ()> nothing_selected_signal_t;
+    using nothing_selected_signal_t = core::com::signal<void ()>;
     MODULE_UI_QT_API static const core::com::signals::key_t NOTHING_SELECTED_SIG;
 
 protected:
@@ -140,9 +140,9 @@ protected:
 
 private:
 
-    typedef std::set<std::string> activity_id_t;
+    using activity_id_t = std::set<std::string>;
 
-    struct dynamic_viewInfo
+    struct dynamic_view_info
     {
         sight::ui::qt::container::widget::sptr container;
         sight::app::config_manager::sptr helper;
@@ -151,69 +151,69 @@ private:
         bool closable {};
         std::string icon;
         std::string tooltip;
-        std::string tabID;
-        std::string viewConfigID;
-        std::map<std::string, std::string> replacementMap;
+        std::string tab_id;
+        std::string view_config_id;
+        std::map<std::string, std::string> replacement_map;
         data::activity::sptr activity;
     };
 
-    typedef std::map<QWidget*, dynamic_viewInfo> dynamic_viewInfoMapType;
+    using dynamic_view_info_map_type = std::map<QWidget*, dynamic_view_info>;
 
     /**
      * @brief Launch tab
      */
-    void launchTab(dynamic_viewInfo& _info);
+    void launch_tab(dynamic_view_info& _info);
 
     /**
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity cannot be launched in two different tabs.
      */
-    void launchActivity(data::activity::sptr _activity) override;
+    void launch_activity(data::activity::sptr _activity) override;
 
     /// launch a new tab according to the receiving msg
-    void createTab(sight::activity::message _info);
+    void create_tab(sight::activity::message _info);
 
     /// Create the main activity and launch the activity
-    virtual void buildMainActivity();
+    virtual void build_main_activity();
 
     /// Create view info from activity
-    dynamic_viewInfo createViewInfo(data::activity::sptr _activity);
+    dynamic_view_info create_view_info(data::activity::sptr _activity);
 
     /**
      * @brief Close the tab at the given index.
      * @param index : index of the tab to close
      * @param forceClose : if true, close the tab even if the tab is not "closable"
      */
-    void closeTab(int _index, bool _force_close);
+    void close_tab(int _index, bool _force_close);
 
 protected Q_SLOTS:
 
     /// Called when the tab close button is clicked: close the tab if it is "closable"
-    void closeTabSignal(int _index);
+    void close_tab_signal(int _index);
 
     /// Called when the current tab selection changed
-    void changedTab(int _index);
+    void changed_tab(int _index);
 
 private:
 
-    std::map<std::string, unsigned int> m_titleToCount;
-    std::set<std::string> m_tabIDList;
+    std::map<std::string, unsigned int> m_title_to_count;
+    std::set<std::string> m_tab_id_list;
 
-    activity_id_t m_activityIds;
+    activity_id_t m_activity_ids;
 
-    dynamic_viewInfoMapType m_dynamicInfoMap;
-    bool m_dynamicConfigStartStop {false};
+    dynamic_view_info_map_type m_dynamic_info_map;
+    bool m_dynamic_config_start_stop {false};
 
-    QPointer<QTabWidget> m_tabWidget;
-    QPointer<QWidget> m_currentWidget;
+    QPointer<QTabWidget> m_tab_widget;
+    QPointer<QWidget> m_current_widget;
 
-    activity_selected_signal_t::sptr m_sigActivitySelected;
-    nothing_selected_signal_t::sptr m_sigNothingSelected;
+    activity_selected_signal_t::sptr m_sig_activity_selected;
+    nothing_selected_signal_t::sptr m_sig_nothing_selected;
 
-    bool m_mainActivityClosable {true};
+    bool m_main_activity_closable {true};
 
     /// Allows to set the document mode.
-    bool m_documentMode {true};
+    bool m_document_mode {true};
 };
 
 } // namespace sight::module::ui::qt::activity

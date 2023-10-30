@@ -60,11 +60,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry(std::string _functor_key)
+        registry(std::string _functor_key)
         {
             sight::activity::validator::registry::get()->add_factory(
                 _functor_key,

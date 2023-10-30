@@ -46,7 +46,7 @@ SIGHT_REGISTER_SCENE3D_OFFSCREEN(
 namespace sight::module::viz::scene3d_qt
 {
 
-int offscreen_window_interactor::m_counter = 0;
+int offscreen_window_interactor::s_counter = 0;
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ offscreen_window_interactor::offscreen_window_interactor(
     unsigned int _width,
     unsigned int _height
 ) :
-    m_id(offscreen_window_interactor::m_counter++),
+    m_id(offscreen_window_interactor::s_counter++),
     m_width(_width),
     m_height(_height)
 {
@@ -67,42 +67,42 @@ offscreen_window_interactor::~offscreen_window_interactor()
 
 //-----------------------------------------------------------------------------
 
-void offscreen_window_interactor::renderNow()
+void offscreen_window_interactor::render_now()
 {
     this->render();
 }
 
 //------------------------------------------------------------------------------
 
-void offscreen_window_interactor::requestRender()
+void offscreen_window_interactor::request_render()
 {
     this->render();
 }
 
 //-----------------------------------------------------------------------------
 
-void offscreen_window_interactor::createContainer(
+void offscreen_window_interactor::create_container(
     sight::ui::container::widget::sptr /*_parent*/,
     bool /*fullscreen*/,
     const std::string& /*id*/
 )
 {
-    m_ogreRoot = sight::viz::scene3d::utils::getOgreRoot();
+    m_ogre_root = sight::viz::scene3d::utils::get_ogre_root();
 
     SIGHT_ASSERT(
         "OpenGL RenderSystem not found",
-        m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos
+        m_ogre_root->getRenderSystem()->getName().find("GL") != std::string::npos
     );
 
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
-    m_offscreenSurface = std::make_unique<QOffscreenSurface>();
-    this->makeCurrent();
+    m_offscreen_surface = std::make_unique<QOffscreenSurface>();
+    this->make_current();
 
     init_resources();
 
     auto& tex_mgr = Ogre::TextureManager::getSingleton();
-    m_ogreTexture = tex_mgr.createManual(
+    m_ogre_texture = tex_mgr.createManual(
         "OffscreenRT" + std::to_string(m_id),
         sight::viz::scene3d::RESOURCE_GROUP,
         Ogre::TEX_TYPE_2D,
@@ -112,58 +112,58 @@ void offscreen_window_interactor::createContainer(
         Ogre::PF_BYTE_RGBA,
         Ogre::TU_RENDERTARGET
     );
-    m_ogreRenderTarget = m_ogreTexture->getBuffer()->getRenderTarget();
+    m_ogre_render_target = m_ogre_texture->getBuffer()->getRenderTarget();
 
-    const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_renderService.lock());
+    const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_render_service.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", render_service);
 
     std::map<int, sight::viz::scene3d::layer::wptr> ordered_layers;
-    for(auto& layer : render_service->getLayers())
+    for(auto& layer : render_service->get_layers())
     {
-        ordered_layers[layer.second->getOrder()] = layer.second;
+        ordered_layers[layer.second->get_order()] = layer.second;
     }
 
     for(auto& layer : ordered_layers)
     {
         const auto l = layer.second.lock();
-        l->setRenderTarget(m_ogreRenderTarget);
+        l->set_render_target(m_ogre_render_target);
         if(!l->initialized())
         {
-            l->createScene();
+            l->create_scene();
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void offscreen_window_interactor::connectToContainer()
+void offscreen_window_interactor::connect_to_container()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void offscreen_window_interactor::disconnectInteractor()
+void offscreen_window_interactor::disconnect_interactor()
 {
-    m_ogreRenderTarget = nullptr;
+    m_ogre_render_target = nullptr;
 
-    if(m_ogreTexture)
+    if(m_ogre_texture)
     {
         auto& tex_mgr = Ogre::TextureManager::getSingleton();
-        tex_mgr.remove(m_ogreTexture);
-        m_ogreTexture.reset();
+        tex_mgr.remove(m_ogre_texture);
+        m_ogre_texture.reset();
     }
 
-    m_offscreenSurface.reset();
+    m_offscreen_surface.reset();
 }
 
 //-----------------------------------------------------------------------------
 
-void offscreen_window_interactor::makeCurrent()
+void offscreen_window_interactor::make_current()
 {
     {
-        QOpenGLContext::globalShareContext()->makeCurrent(m_offscreenSurface.get());
+        QOpenGLContext::globalShareContext()->makeCurrent(m_offscreen_surface.get());
 
-        Ogre::RenderSystem* render_system = m_ogreRoot->getRenderSystem();
+        Ogre::RenderSystem* render_system = m_ogre_root->getRenderSystem();
 
         if(render_system != nullptr)
         {
@@ -182,7 +182,7 @@ void offscreen_window_interactor::makeCurrent()
             render_system->postExtraThreadsStarted();
 
             // This allows to set the current OpenGL context in Ogre internal state
-            render_system->_setRenderTarget(m_ogreRenderTarget);
+            render_system->_setRenderTarget(m_ogre_render_target);
         }
     }
 }
@@ -191,12 +191,12 @@ void offscreen_window_interactor::makeCurrent()
 
 void offscreen_window_interactor::render()
 {
-    service::base::sptr render_service                    = m_renderService.lock();
+    service::base::sptr render_service                    = m_render_service.lock();
     sight::viz::scene3d::render::sptr ogre_render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(
         render_service
     );
 
-    ++m_frameId;
+    ++m_frame_id;
     /*
        How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
        repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
@@ -209,14 +209,14 @@ void offscreen_window_interactor::render()
 
     FW_PROFILE_FRAME_AVG("Ogre", 3);
     FW_PROFILE_AVG("Ogre", 3);
-    this->makeCurrent();
+    this->make_current();
 
-    m_ogreRenderTarget->update(false);
+    m_ogre_render_target->update(false);
 }
 
 //-----------------------------------------------------------------------------
 
-sight::viz::scene3d::graphics_worker* offscreen_window_interactor::createGraphicsWorker()
+sight::viz::scene3d::graphics_worker* offscreen_window_interactor::create_graphics_worker()
 {
     SIGHT_ASSERT("Not supported", false);
     return nullptr;

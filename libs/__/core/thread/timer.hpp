@@ -46,9 +46,9 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef std::shared_ptr<timer> sptr;
-    typedef std::function<void ()> function_type;
-    typedef std::chrono::duration<double> time_duration_t;
+    using sptr            = std::shared_ptr<timer>;
+    using function_type   = std::function<void ()>;
+    using time_duration_t = std::chrono::duration<double>;
     /**  @} */
 
     CORE_API ~timer() override = default;

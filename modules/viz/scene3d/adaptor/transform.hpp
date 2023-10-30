@@ -57,7 +57,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API transform final :
 {
 public:
 
-    static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
+    static constexpr std::string_view TRANSFORM_INOUT = "transform";
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(transform, sight::viz::scene3d::adaptor);
@@ -93,18 +93,18 @@ protected:
 private:
 
     /// Defines the Parent transform identifier.
-    sight::viz::scene3d::render::ogre_object_id_t m_parentTransformId;
+    sight::viz::scene3d::render::ogre_object_id_t m_parent_transform_id;
 
     /// Contains the Ogre transform node.
-    Ogre::SceneNode* m_transformNode {nullptr};
+    Ogre::SceneNode* m_transform_node {nullptr};
 
     /// Contains the Ogre parent transform sceneNode.
-    Ogre::SceneNode* m_parentTransformNode {nullptr};
+    Ogre::SceneNode* m_parent_transform_node {nullptr};
 
     /// Defines the Ogre transformation of this service
-    Ogre::Affine3 m_ogreTransform;
+    Ogre::Affine3 m_ogre_transform;
 
-    data::ptr<data::matrix4, data::Access::inout> m_matrix {this, s_TRANSFORM_INOUT, true};
+    data::ptr<data::matrix4, data::access::inout> m_matrix {this, TRANSFORM_INOUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

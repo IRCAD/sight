@@ -39,7 +39,7 @@ const action_callback_base::registry_key_t action_callback_base::REGISTRY_KEY = 
 
 //-----------------------------------------------------------------------------
 
-void action_callback_base::setSID(std::string _sid)
+void action_callback_base::set_sid(std::string _sid)
 {
     this->m_sid = _sid;
 }
@@ -66,7 +66,7 @@ void action_callback_base::check(bool _checked)
     _checked = (action->inverted() ? !_checked : _checked);
     if(action->checked() != _checked)
     {
-        action->setChecked(_checked);
+        action->set_checked(_checked);
     }
 }
 

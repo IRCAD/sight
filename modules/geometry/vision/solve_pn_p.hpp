@@ -84,7 +84,7 @@ public:
      * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
      * @param _timestamp: not used by the method.
      */
-    MODULE_GEOMETRY_VISION_API void computeRegistration(core::hires_clock::type _timestamp) override;
+    MODULE_GEOMETRY_VISION_API void compute_registration(core::hires_clock::type _timestamp) override;
 
 protected:
 
@@ -102,30 +102,30 @@ private:
     /**
      * @brief Camera structure: handles intrinsic parameters and distorsion coefficients in OpenCV format.
      */
-    struct Camera
+    struct camera
     {
         /// Size of the calibration images (width, height)
-        cv::Size imageSize;
+        cv::Size image_size;
         /// Intrinsic parameters 3x3 matrix:
         /**  | fx, 0,  cx |
          *   | 0,  fy, cy |
          *   | 0,  0,   1 |
          **/
-        cv::Mat intrinsicMat;
+        cv::Mat intrinsic_mat;
         /// Distorsion coefficients 5x1 matrix: | k1, k2, p1, p2, k3 |
-        cv::Mat distCoef;
+        cv::Mat dist_coef;
     };
 
     /// reverse or not output matrix (camera pose vs object pose)
-    bool m_reverseMatrix = {false};
+    bool m_reverse_matrix = {false};
 
     /// Shift back points using cx/cy
-    bool m_shiftPoints = {false};
+    bool m_shift_points = {false};
 
-    data::ptr<data::camera, data::Access::in> m_calibration {this, "calibration"};
-    data::ptr<data::point_list, data::Access::in> m_pointList2d {this, "pointList2d"};
-    data::ptr<data::point_list, data::Access::in> m_pointList3d {this, "pointList3d"};
-    data::ptr<data::matrix4, data::Access::inout> m_matrix {this, "matrix"};
+    data::ptr<data::camera, data::access::in> m_calibration {this, "calibration"};
+    data::ptr<data::point_list, data::access::in> m_point_list2d {this, "pointList2d"};
+    data::ptr<data::point_list, data::access::in> m_point_list3d {this, "pointList3d"};
+    data::ptr<data::matrix4, data::access::inout> m_matrix {this, "matrix"};
 };
 
 } // namespace sight::module::geometry::vision

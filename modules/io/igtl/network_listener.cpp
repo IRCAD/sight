@@ -35,8 +35,8 @@ const core::com::signals::key_t network_listener::DISCONNECTED_SIGNAL = "disconn
 //-----------------------------------------------------------------------------
 
 network_listener::network_listener() :
-    m_sigConnected(new_signal<connected_signal_t>(CONNECTED_SIGNAL)),
-    m_sigDisconnected(new_signal<disconnect_signal_t>(DISCONNECTED_SIGNAL))
+    m_sig_connected(new_signal<connected_signal_t>(CONNECTED_SIGNAL)),
+    m_sig_disconnected(new_signal<disconnect_signal_t>(DISCONNECTED_SIGNAL))
 {
 }
 

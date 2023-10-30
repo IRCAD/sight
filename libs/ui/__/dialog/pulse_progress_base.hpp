@@ -41,11 +41,11 @@ public:
 
     SIGHT_DECLARE_CLASS(pulse_progress_base, ui::object);
 
-    typedef std::string factory_registry_key_t;
+    using factory_registry_key_t = std::string;
 
-    typedef std::function<void ()> Stuff;
+    using Stuff = std::function<void ()>;
 
-    typedef std::uint64_t MilliSecond;
+    using MilliSecond = std::uint64_t;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
     UI_API static const factory_registry_key_t REGISTRY_KEY;
@@ -54,16 +54,16 @@ public:
     UI_API pulse_progress_base();
 
     ///set the title for the dialog
-    UI_API virtual void setTitle(const std::string& _title) = 0;
+    UI_API virtual void set_title(const std::string& _title) = 0;
 
     ///set the message for the dialog
-    UI_API virtual void setMessage(const std::string& _msg) = 0;
+    UI_API virtual void set_message(const std::string& _msg) = 0;
 
     ///set the stuff
-    UI_API virtual void setStuff(Stuff _stuff);
+    UI_API virtual void set_stuff(Stuff _stuff);
 
     ///set the frequence
-    UI_API virtual void setFrequence(MilliSecond _frequence);
+    UI_API virtual void set_frequence(MilliSecond _frequence);
 
     ///show the pulse progress dialog
     UI_API virtual void show() = 0;

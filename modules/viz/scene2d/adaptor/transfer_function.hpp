@@ -56,7 +56,7 @@ namespace sight::module::viz::scene2d::adaptor
    @endcode
  *
  * @subsection Input Input
- * - \b viewport [sight::viz::scene2d::data::Viewport]: object listened to update the adaptor.
+ * - \b viewport [sight::viz::scene2d::data::viewport]: object listened to update the adaptor.
  * - \b tf [sight::data::transfer_function](optional): current transfer function used to change editor selection.
  * It should be the same TF as the output.
  *
@@ -103,7 +103,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::viz::scene2d::data::Viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * Connect sight::viz::scene2d::data::viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
      * Connect data::object::MODIFIED_SIG of s_TF_POOL_INOUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
@@ -125,58 +125,58 @@ private:
     using vec2d_t = sight::viz::scene2d::vec2d_t;
 
     /// Represents a sub-TF which is a TF of the input composite.
-    struct PieceView
+    struct piece_view
     {
         /// Contains the TF data.
         data::transfer_function_piece::sptr m_tf;
 
         /// Sets the z value in the local layer.
-        int m_zIndex {0};
+        int m_z_index {0};
 
         /// Contains a set of graphic point and its coordinates in the window/level space.
-        std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> > m_TFPoints;
+        std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> > m_tf_points;
 
         /// Contains the graphic gradient.
-        std::vector<QAbstractGraphicsShapeItem*> m_TFPolygons;
+        std::vector<QAbstractGraphicsShapeItem*> m_tf_polygons;
     };
 
     /// Deletes pieceView in @ref m_pieceView and clears them.
-    void releaseTFData();
+    void release_tf_data();
 
     /**
      * @brief Creates pieceView for each TF in the composite, fills basic data and create graphic points.
      *
      * @see createPieceView(const data::transfer_function::sptr _tf, int _zIndex)
      */
-    void createTFPoints();
+    void create_tf_points();
 
     /// Removes all graphic points in @ref m_pieceView from the layer and deletes them.
-    void destroyTFPoints();
+    void destroy_tf_points();
 
     /// Creates a pieceView from a TF, fills basic data and creates graphic points.
-    PieceView* createPieceView(const data::transfer_function_piece::sptr _tf, int _z_index);
+    piece_view* create_piece_view(const data::transfer_function_piece::sptr _tf, int _z_index);
 
     /// Creates the gradient of each pieceView and stores it in each element of @ref m_pieceView.
-    void createTFPolygons();
+    void create_tf_polygons();
 
     /**
      * @brief Creates lines and gradient polygons of a pieceView.
      * @param _pieceView the pieceView used to create the gradient and store the generated graphic item.
      */
-    void createTFPolygon(PieceView* _piece_view);
+    void create_tf_polygon(piece_view* _piece_view);
 
     /**
      * @brief Removes all graphic gradient in @ref m_pieceView from the layer and deletes them.
      *
      * @see destroyTFPolygons()
      */
-    void destroyTFPolygons();
+    void destroy_tf_polygons();
 
     /**
      * @brief Removes graphic gradient of the pieceView from the layer and deletes them.
      * @param _pieceView to where destory the polygon.
      */
-    void destroyTFPolygon(PieceView* _piece_view);
+    void destroy_tf_polygon(piece_view* _piece_view);
 
     /**
      * @brief Creates lines and linear gradient polygons of a pieceView.
@@ -185,8 +185,8 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    static void buildLinearPolygons(
-        PieceView* _piece_view,
+    static void build_linear_polygons(
+        piece_view* _piece_view,
         QVector<QPointF>& _position,
         QLinearGradient& _grad,
         double _distance_max
@@ -199,15 +199,15 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    static void buildNearestPolygons(
-        PieceView* _piece_view,
+    static void build_nearest_polygons(
+        piece_view* _piece_view,
         QVector<QPointF>& _position,
         QLinearGradient& _grad,
         double _distance_max
     );
 
     /// Adds graphic items of @ref m_pieceView to @ref m_layer at the right z-index.
-    void buildLayer();
+    void build_layer();
 
     /**
      * @brief Changes @ref m_currentTF with the new one.
@@ -216,14 +216,14 @@ private:
      *
      * @param _pieceView the new current pieceView.
      */
-    void setCurrentTF(PieceView* _piece_view);
+    void set_current_tf(piece_view* _piece_view);
 
     /**
      * @brief Get pieceView that match the clicked coord of the event.
      * @param _event the 2D scene event.
      * @return A list of pieceView.
      */
-    std::vector<PieceView*> getMatchingPieceView(const sight::viz::scene2d::data::Event& _event) const;
+    std::vector<piece_view*> get_matching_piece_view(const sight::viz::scene2d::data::event& _event) const;
 
     /**
      * @brief Filters the event to call the right methods from mouse informations.
@@ -239,7 +239,7 @@ private:
      *                      to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
      * - Wheel move: updates the whole current TF opacity.
      */
-    void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /**
      * @brief Finds the nearest pieceView and set it a the current one.
@@ -247,14 +247,18 @@ private:
      *
      * @see setCurrentTF(PieceView* const)
      */
-    void leftButtonClickEvent(const sight::viz::scene2d::data::Event& _event);
+    void left_button_click_event(const sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Sets @ref m_capturedTFPoint and highlight the captured clicked point.
      * @param _pieceView the selected pieceView.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonClickOnPointEvent(PieceView* _piece_view, std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point);
+    void left_button_click_on_point_event(
+        piece_view* _piece_view,
+        std::pair<vec2d_t,
+                  QGraphicsEllipseItem*>& _tf_point
+    );
 
     /**
      * @brief Move @ref m_capturedTFPoint to the new mouse position and update the related TF.
@@ -263,7 +267,7 @@ private:
      * @pre m_capturedTFPoint must be previously sets.
      * @see leftButtonClickOnPointEvent(PieceView* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
      */
-    void mouseMoveOnPointEvent(PieceView* _piece_view, const sight::viz::scene2d::data::Event& _event);
+    void mouse_move_on_point_event(piece_view* _piece_view, const sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Resets the captured TF point highlighting and sets @ref m_capturedTFPoint to null.
@@ -271,15 +275,15 @@ private:
      * @pre m_capturedTFPoint must be previously sets.
      * @see leftButtonClickOnPointEvent(PieceView* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
      */
-    void leftButtonReleaseEvent();
+    void left_button_release_event();
 
     /**
      * @brief Removes a TF point from the current pieceView and update the related TF.
      * @param _pieceView the selected pieceView.
      * @param _TFPoint the selected TF point.
      */
-    void rightButtonClickOnPointEvent(
-        PieceView* _piece_view,
+    void right_button_click_on_point_event(
+        piece_view* _piece_view,
         std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point
     );
 
@@ -288,8 +292,8 @@ private:
      * @param _pieceView the selected pieceView.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonDoubleClickOnPointEvent(
-        PieceView* _piece_view,
+    void left_button_double_click_on_point_event(
+        piece_view* _piece_view,
         std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point
     );
 
@@ -297,13 +301,13 @@ private:
      * @brief Adds a new TF point to the current pieceView and update the related TF.
      * @param _event the 2D scene event.
      */
-    void leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Event& _event);
+    void left_button_double_click_event(const sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Sets @ref m_capturedTF if the clicked coord if over the current TF.
      * @param _event the 2D scene event.
      */
-    void midButtonClickEvent(sight::viz::scene2d::data::Event& _event);
+    void mid_button_click_event(sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Update the window/level of the current TF relatively to the mouse movement.
@@ -312,7 +316,7 @@ private:
      * @pre m_capturedTF must be previously sets.
      * @see midButtonClickEvent(const sight::viz::scene2d::data::Event&)
      */
-    void mouseMoveOnPieceViewEvent(const sight::viz::scene2d::data::Event& _event);
+    void mouse_move_on_piece_view_event(const sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Resets @ref m_capturedTF.
@@ -320,40 +324,40 @@ private:
      * @pre m_capturedTF must be previously sets.
      * @see midButtonClickEvent(const sight::viz::scene2d::data::Event&)
      */
-    void midButtonReleaseEvent();
+    void mid_button_release_event();
 
     /**
      * @brief Open a context menu to delete or create TF.
      * @param _event the 2D scene event.
      */
-    void rightButtonCLickEvent(const sight::viz::scene2d::data::Event& _event);
+    void right_button_c_lick_event(const sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Updates the whole current TF opacity.
      * @param _event the 2D scene event.
      */
-    void midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _event);
+    void mid_button_wheel_move_event(sight::viz::scene2d::data::event& _event);
 
     /// Deletes the current TF and change the current TF.
-    void removeCurrentTF();
+    void remove_current_tf();
 
     /**
      * @brief Sets if the current TF is clamped or not.
      * @param _clamp the clamp status.
      */
-    void clampCurrentTF(bool _clamp);
+    void clamp_current_tf(bool _clamp);
 
     /**
      * @brief Sets if the current TF interpolation mode is linear or nearest.
      * @param _linear uses true is the interpolation mode must be linear.
      */
-    void toggleLinearCurrentTF(bool _linear);
+    void toggle_linear_current_tf(bool _linear);
 
     /**
      * @brief Adds a new TF to the composite and re draw the scene.
      * @param _tf the new TF to add.
      */
-    void addNewTF(const data::transfer_function_piece::sptr _tf);
+    void add_new_tf(const data::transfer_function_piece::sptr _tf);
 
     /**
      * @brief Adds a left ramp pieceView and update the composite.
@@ -361,7 +365,7 @@ private:
      *
      * @see addNewTF(const data::transfer_function::sptr, const data::composite::key_t&)
      */
-    void addLeftRamp(const sight::viz::scene2d::data::Event& _event);
+    void add_left_ramp(const sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Adds a right ramp pieceView and update the composite.
@@ -369,7 +373,7 @@ private:
      *
      * @see addNewTF(const data::transfer_function::sptr, const data::composite::key_t&)
      */
-    void addRightRamp(const sight::viz::scene2d::data::Event& _event);
+    void add_right_ramp(const sight::viz::scene2d::data::event& _event);
 
     /**
      * @brief Adds a trapeze pieceView and update the composite.
@@ -377,30 +381,30 @@ private:
      *
      * @see addNewTF(const data::transfer_function::sptr, const data::composite::key_t&)
      */
-    void addTrapeze(const sight::viz::scene2d::data::Event& _event);
+    void add_trapeze(const sight::viz::scene2d::data::event& _event);
 
     /// Updates the transfer function.
-    void updateTF();
+    void update_tf();
     /// Sends the point modified signal of input _tf.
-    void pointsModified(const sight::data::transfer_function& _tf) const;
+    void points_modified(const sight::data::transfer_function& _tf) const;
 
     /// Defines the size of TF points in a ratio relative to the window.
-    float m_pointSize {0.03F};
+    float m_point_size {0.03F};
 
     /// Defines the pen used by gradients.
-    QPen m_polygonsPen;
+    QPen m_polygons_pen;
 
     /// Defines the pen used by TF points.
-    QPen m_pointsPen;
+    QPen m_points_pen;
 
     /// Defines the opacity used for TF except for the current one.
-    float m_secondOpacity {0.0F};
+    float m_second_opacity {0.0F};
 
     /// Sets if interactions are enable or not.
     bool m_interactive {true};
 
     /// Stores all created pieceView.
-    std::vector<PieceView*> m_pieceView;
+    std::vector<piece_view*> m_piece_view;
 
     /// Stores the main layer.
     QGraphicsItemGroup* m_layer {};
@@ -412,24 +416,24 @@ private:
      * We must differentiate them correctly. We do it with an additional timer that needs to be a bit longer than the
      * inbuilt Qt timer for detecting double clicks.
      */
-    QTimer* m_eventFilter {nullptr};
+    QTimer* m_event_filter {nullptr};
 
     /// Stores the current working TF.
-    data::transfer_function_piece::sptr m_currentTF {nullptr};
+    data::transfer_function_piece::sptr m_current_tf {nullptr};
 
     /// Stores the captured clicked point.
-    std::pair<vec2d_t, QGraphicsEllipseItem*>* m_capturedTFPoint {nullptr};
+    std::pair<vec2d_t, QGraphicsEllipseItem*>* m_captured_tf_point {nullptr};
 
     /// Stores the captured clicked TF and the current mouse position,
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
-    std::pair<data::transfer_function_piece::sptr, sight::viz::scene2d::vec2d_t> m_capturedTF;
+    std::pair<data::transfer_function_piece::sptr, sight::viz::scene2d::vec2d_t> m_captured_tf;
 
-    static constexpr std::string_view s_VIEWPORT_INPUT   = "viewport";
-    static constexpr std::string_view s_CURRENT_TF_INOUT = "tf";
+    static constexpr std::string_view VIEWPORT_INPUT   = "viewport";
+    static constexpr std::string_view CURRENT_TF_INOUT = "tf";
 
-    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT, true};
-    data::ptr<sight::data::transfer_function, sight::data::Access::inout> m_tf {this, s_CURRENT_TF_INOUT, true};
+    data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::in> m_viewport {this, VIEWPORT_INPUT, true};
+    data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, CURRENT_TF_INOUT, true};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

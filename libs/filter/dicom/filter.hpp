@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/exceptions/FilterFailure.hpp"
+#include "filter/dicom/exceptions/filter_failure.hpp"
 #include "filter/dicom/factory/new.hpp"
 #include "filter/dicom/registry/detail.hpp"
 
@@ -49,11 +49,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry()
+        registry()
         {
             sight::filter::dicom::registry::get()->add_factory(T::classname(), &sight::filter::dicom::factory::make<T>);
         }
@@ -61,19 +61,19 @@ public:
 
     SIGHT_DECLARE_CLASS(filter, core::tools::object);
 
-    typedef std::vector<data::dicom_series::sptr> dicom_series_container_t;
+    using dicom_series_container_t = std::vector<data::dicom_series::sptr>;
 
     /**
-     * @brief Filter types
+     * @brief filter types
      */
-    typedef enum
+    enum filter_t
     {
-        MODIFIER  = 0, /*! Modifier */
-        SORTER    = 1, /*! Sorter */
-        SPLITTER  = 2, /*! Splitter */
-        COMPOSITE = 3, /*! Composite */
-        CUSTOM    = 4  /*! Custom */
-    } filter_t;
+        modifier  = 0, /*! Modifier */
+        sorter    = 1, /*! Sorter */
+        splitter  = 2, /*! Splitter */
+        composite = 3, /*! Composite */
+        custom    = 4  /*! Custom */
+    };
 
     /// Destructor
     FILTER_DICOM_API ~filter() override;
@@ -88,22 +88,22 @@ public:
     ) const = 0;
 
     /// Return the name of the filter
-    FILTER_DICOM_API virtual std::string getName() const = 0;
+    FILTER_DICOM_API virtual std::string get_name() const = 0;
 
     /// Return the description of the filter
-    FILTER_DICOM_API virtual std::string getDescription() const = 0;
+    FILTER_DICOM_API virtual std::string get_description() const = 0;
 
     /// Return filter type
     FILTER_DICOM_API virtual filter_t get_filter_type() const = 0;
 
     /// Return true if a configuration is required
-    FILTER_DICOM_API virtual bool isConfigurationRequired() const;
+    FILTER_DICOM_API virtual bool is_configuration_required() const;
 
     /// Return true if the filter is configurable using GUI
-    FILTER_DICOM_API virtual bool isConfigurableWithGUI() const;
+    FILTER_DICOM_API virtual bool is_configurable_with_gui() const;
 
     /// Configure the filter using GUI dialog
-    FILTER_DICOM_API virtual void configureWithGUI();
+    FILTER_DICOM_API virtual void configure_with_gui();
 
 protected:
 

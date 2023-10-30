@@ -32,8 +32,8 @@ namespace sight::module::data::ut
 class get_vector_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(get_vector_test);
-CPPUNIT_TEST(extractsElementFromVector);
-CPPUNIT_TEST(invalidVector);
+CPPUNIT_TEST(extracts_element_from_vector);
+CPPUNIT_TEST(invalid_vector);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,8 +42,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void extractsElementFromVector();
-    static void invalidVector();
+    static void extracts_element_from_vector();
+    static void invalid_vector();
 };
 
 } // namespace sight::module::data::ut

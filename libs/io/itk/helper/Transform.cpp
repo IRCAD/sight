@@ -27,7 +27,7 @@ namespace sight::io::itk::helper
 
 //-----------------------------------------------------------------------------
 
-Transform::matrix_t Transform::convertToITK(const data::matrix4::csptr& _in_trf)
+transform::matrix_t transform::convert_to_itk(const data::matrix4::csptr& _in_trf)
 {
     matrix_t itk_mat;
 
@@ -44,7 +44,7 @@ Transform::matrix_t Transform::convertToITK(const data::matrix4::csptr& _in_trf)
 
 //-----------------------------------------------------------------------------
 
-void Transform::convertFromITK(const matrix_t& _in_trf, data::matrix4::sptr& _out_trf)
+void transform::convert_from_itk(const matrix_t& _in_trf, data::matrix4::sptr& _out_trf)
 {
     SIGHT_ASSERT("Input itk Matrix should be 4x4", _in_trf.ColumnDimensions == 4 && _in_trf.RowDimensions == 4);
 

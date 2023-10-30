@@ -123,9 +123,9 @@ private:
     std::string m_xsd_content;
     std::ostringstream m_error_log;
 
-    typedef std::shared_ptr<xmlSchemaParserCtxt> schema_parser_ctxt_sptr;
-    typedef std::shared_ptr<xmlSchema> schema_sptr;
-    typedef std::shared_ptr<xmlSchemaValidCtxt> schema_valid_ctxt_sptr;
+    using schema_parser_ctxt_sptr = std::shared_ptr<xmlSchemaParserCtxt>;
+    using schema_sptr             = std::shared_ptr<xmlSchema>;
+    using schema_valid_ctxt_sptr  = std::shared_ptr<xmlSchemaValidCtxt>;
 
     schema_parser_ctxt_sptr m_schema_parser_context;
     schema_sptr m_schema;

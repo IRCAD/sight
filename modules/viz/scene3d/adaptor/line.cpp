@@ -45,7 +45,7 @@ static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateLength";
 
 line::line() noexcept
 {
-    new_slot(UPDATE_LENGTH_SLOT, &line::updateLength, this);
+    new_slot(UPDATE_LENGTH_SLOT, &line::update_length, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,35 +57,35 @@ line::~line() noexcept =
 
 void line::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
     // parsing transform or create an "empty" one
-    this->setTransformId(
+    this->set_transform_id(
         config.get<std::string>(
-            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
             this->get_id() + "_transform"
         )
     );
 
-    static const std::string s_LENGTH_CONFIG     = s_CONFIG + "length";
-    static const std::string s_DASHED_CONFIG     = s_CONFIG + "dashed";
-    static const std::string s_DASHLENGTH_CONFIG = s_CONFIG + "dashLength";
-    static const std::string s_COLOR_CONFIG      = s_CONFIG + "color";
+    static const std::string s_LENGTH_CONFIG     = CONFIG + "length";
+    static const std::string s_DASHED_CONFIG     = CONFIG + "dashed";
+    static const std::string s_DASHLENGTH_CONFIG = CONFIG + "dashLength";
+    static const std::string s_COLOR_CONFIG      = CONFIG + "color";
 
     m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
 
     const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
     std::array<std::uint8_t, 4> rgba {};
-    data::tools::color::hexaStringToRGBA(color, rgba);
+    data::tools::color::hexa_string_to_rgba(color, rgba);
     m_color.r = static_cast<float>(rgba[0]) / 255.F;
     m_color.g = static_cast<float>(rgba[1]) / 255.F;
     m_color.b = static_cast<float>(rgba[2]) / 255.F;
     m_color.a = static_cast<float>(rgba[3]) / 255.F;
 
-    m_dashed     = config.get(s_DASHED_CONFIG, m_dashed);
-    m_dashLength = config.get(s_DASHLENGTH_CONFIG, m_dashLength);
+    m_dashed      = config.get(s_DASHED_CONFIG, m_dashed);
+    m_dash_length = config.get(s_DASHLENGTH_CONFIG, m_dash_length);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,9 +93,9 @@ void line::configuring()
 void line::starting()
 {
     this->initialize();
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
 
     m_line = scene_mgr->createManualObject(this->get_id() + "_line");
     // Set the line as dynamic, so we can update it later on, when the length changes
@@ -104,24 +104,24 @@ void line::starting()
     // Set the material
     m_material = std::make_shared<data::material>();
 
-    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::material>(
+    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
     );
-    m_materialAdaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->configure(
-        this->get_id() + m_materialAdaptor->get_id(),
-        this->get_id() + m_materialAdaptor->get_id(),
-        this->getRenderService(),
-        m_layerID,
+    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
+    m_material_adaptor->configure(
+        this->get_id() + m_material_adaptor->get_id(),
+        this->get_id() + m_material_adaptor->get_id(),
+        this->render_service(),
+        m_layer_id,
         "ambient"
     );
-    m_materialAdaptor->start();
+    m_material_adaptor->start();
 
-    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
-    m_materialAdaptor->update();
+    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
+    m_material_adaptor->update();
 
     // Draw the line
-    this->drawLine(false);
+    this->draw_line(false);
 
     // Set the bounding box of your Manual Object
     Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
@@ -129,20 +129,20 @@ void line::starting()
     Ogre::AxisAlignedBox box(bb_min, bb_max);
     m_line->setBoundingBox(box);
 
-    this->attachNode(m_line);
+    this->attach_node(m_line);
 
-    this->setVisible(m_isVisible);
+    this->set_visible(m_visible);
 }
 
 //-----------------------------------------------------------------------------
 
 void line::updating()
 {
-    if(m_isVisible)
+    if(m_visible)
     {
-        this->getRenderService()->makeCurrent();
+        this->render_service()->make_current();
         // Draw
-        this->drawLine(true);
+        this->draw_line(true);
 
         // Set the bounding box of your Manual Object
         Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
@@ -151,44 +151,44 @@ void line::updating()
         m_line->setBoundingBox(box);
     }
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
 void line::stopping()
 {
-    this->getRenderService()->makeCurrent();
-    this->unregisterServices();
+    this->render_service()->make_current();
+    this->unregister_services();
     m_material = nullptr;
     if(m_line != nullptr)
     {
         m_line->detachFromParent();
-        this->getSceneManager()->destroyManualObject(m_line);
+        this->get_scene_manager()->destroyManualObject(m_line);
         m_line = nullptr;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void line::attachNode(Ogre::MovableObject* _object)
+void line::attach_node(Ogre::MovableObject* _object)
 {
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
-    trans_node->setVisible(m_isVisible);
+    trans_node->setVisible(m_visible);
     trans_node->attachObject(_object);
 }
 
 //-----------------------------------------------------------------------------
 
-void line::drawLine(bool _existing_line)
+void line::draw_line(bool _existing_line)
 {
     if(!_existing_line)
     {
         m_line->begin(
-            m_materialAdaptor->getMaterialName(),
+            m_material_adaptor->get_material_name(),
             Ogre::RenderOperation::OT_LINE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );
@@ -203,12 +203,12 @@ void line::drawLine(bool _existing_line)
     if(m_dashed)
     {
         float f = 0.F;
-        for(std::size_t i = 0 ; i <= static_cast<std::size_t>(m_length / (m_dashLength * 2)) ; i++)
+        for(std::size_t i = 0 ; i <= static_cast<std::size_t>(m_length / (m_dash_length * 2)) ; i++)
         {
             m_line->position(0, 0, f);
-            m_line->position(0, 0, f + m_dashLength);
+            m_line->position(0, 0, f + m_dash_length);
 
-            f += m_dashLength * 2;
+            f += m_dash_length * 2;
         }
     }
     else
@@ -222,17 +222,17 @@ void line::drawLine(bool _existing_line)
 
 //-----------------------------------------------------------------------------
 
-void line::setVisible(bool /*_visible*/)
+void line::set_visible(bool /*_visible*/)
 {
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
-    trans_node->setVisible(m_isVisible);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
+    trans_node->setVisible(m_visible);
     this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void line::updateLength(float _length)
+void line::update_length(float _length)
 {
     m_length = _length;
     this->updating();

@@ -44,7 +44,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief Surface Information Entity class
  */
-class IO_DICOM_CLASS_API Surface : public io::dicom::reader::ie::InformationEntity<data::model_series>
+class IO_DICOM_CLASS_API surface : public io::dicom::reader::ie::information_entity<data::model_series>
 {
 public:
 
@@ -58,14 +58,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Surface(
+    IO_DICOM_API surface(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::model_series::sptr& _series,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /**
@@ -73,16 +73,16 @@ public:
      * @param[in] filepath Path to the registry CSV file
      * @return True on success
      */
-    IO_DICOM_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& _filepath);
+    IO_DICOM_API bool load_segmented_property_registry(const std::filesystem::path& _filepath);
 
     /// Destructor
-    IO_DICOM_API ~Surface() override;
+    IO_DICOM_API ~surface() override;
 
     /**
      * @brief Read Surface Segmentation and Surface Mesh Modules
      * @see PS 3.3 C.8.23.1 and PS 3.3 C.27.1
      */
-    IO_DICOM_API virtual void readSurfaceSegmentationAndSurfaceMeshModules();
+    IO_DICOM_API virtual void read_surface_segmentation_and_surface_mesh_modules();
 
 protected:
 
@@ -93,7 +93,7 @@ protected:
      * @param[in] segmentItem GDCM segment item
      * @see PS 3.3 C.8.23.1
      */
-    virtual void readSurfaceSegmentationModule(
+    virtual void read_surface_segmentation_module(
         const SPTR(data::reconstruction)& _reconstruction,
         const gdcm::SmartPointer<gdcm::Segment>& _segment,
         const gdcm::Item& _segment_item
@@ -104,12 +104,12 @@ protected:
      * @param[in] surface GDCM surface
      * @see PS 3.3 C.27.1
      */
-    IO_DICOM_API virtual void readSurfaceMeshModule(
+    IO_DICOM_API virtual void read_surface_mesh_module(
         const SPTR(data::reconstruction)& _reconstruction,
         const gdcm::SmartPointer<gdcm::Surface>& _surface
     );
     /// Segment Property Registry
-    io::dicom::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;
+    io::dicom::helper::segmented_property_registry m_segmented_property_registry;
 };
 
 } // namespace sight::io::dicom::reader::ie

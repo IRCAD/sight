@@ -27,25 +27,25 @@ namespace sight::ui::qml::dialog
 
 //------------------------------------------------------------------------------
 
-StandardButton::StandardButton()
+standard_button::standard_button()
 = default;
 
 //------------------------------------------------------------------------------
 
-StandardButton::~StandardButton()
+standard_button::~standard_button()
 = default;
 
 //------------------------------------------------------------------------------
 
-void StandardButton::setButton(ButtonList _button)
+void standard_button::set_button(button_list _button)
 {
     m_button = _button;
-    Q_EMIT buttonChanged();
+    Q_EMIT button_changed();
 }
 
 //------------------------------------------------------------------------------
 
-const StandardButton::ButtonList& StandardButton::getButton()
+const standard_button::button_list& standard_button::get_button()
 {
     return m_button;
 }

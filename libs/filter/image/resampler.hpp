@@ -50,9 +50,9 @@ public:
         const data::image::csptr& _in_image,
         const data::image::sptr& _out_image,
         const data::matrix4::csptr& _trf,
-        std::optional<std::tuple<data::image::Size,
-                                 data::image::Origin,
-                                 data::image::Spacing> > _parameters = std::nullopt
+        std::optional<std::tuple<data::image::size_t,
+                                 data::image::origin_t,
+                                 data::image::spacing_t> > _parameters = std::nullopt
     );
 
     /**
@@ -65,7 +65,7 @@ public:
     static FILTER_IMAGE_API data::image::sptr resample(
         const data::image::csptr& _img,
         const data::matrix4::csptr& _trf,
-        const data::image::Spacing& _output_spacing
+        const data::image::spacing_t& _output_spacing
     );
 };
 

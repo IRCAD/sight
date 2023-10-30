@@ -50,7 +50,7 @@ static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessb
 
 calibration_info_reader::calibration_info_reader() noexcept
 {
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &calibration_info_reader::updateChessboardSize, this);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &calibration_info_reader::update_chessboard_size, this);
 }
 
 //------------------------------------------------------------------------------
@@ -60,22 +60,22 @@ calibration_info_reader::~calibration_info_reader() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType calibration_info_reader::getIOPathType() const
+sight::io::service::path_type_t calibration_info_reader::get_path_type() const
 {
-    return sight::io::service::FOLDER;
+    return sight::io::service::folder;
 }
 
 //------------------------------------------------------------------------------
 
-void calibration_info_reader::openLocationDialog()
+void calibration_info_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::READ);
-    dialog_file.setType(ui::dialog::location::FOLDER);
+    dialog_file.set_title(m_window_title.empty() ? "Select a folder holding calibration inputs" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::read);
+    dialog_file.set_type(ui::dialog::location::folder);
 
     auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
 
@@ -83,11 +83,11 @@ void calibration_info_reader::openLocationDialog()
     {
         this->set_folder(result->get_folder());
         default_directory->set_folder(result->get_folder().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -100,25 +100,25 @@ void calibration_info_reader::configuring()
     const config_t config       = this->get_config();
     const config_t board_config = config.get_child("board");
 
-    m_widthKey = board_config.get<std::string>("<xmlattr>.width");
-    SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
-    m_heightKey = board_config.get<std::string>("<xmlattr>.height");
-    SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
-    m_scaleKey = board_config.get<std::string>("<xmlattr>.scale", "");
+    m_width_key = board_config.get<std::string>("<xmlattr>.width");
+    SIGHT_ASSERT("Missing board width preference key.", !m_width_key.empty());
+    m_height_key = board_config.get<std::string>("<xmlattr>.height");
+    SIGHT_ASSERT("Missing board height preference key.", !m_height_key.empty());
+    m_scale_key = board_config.get<std::string>("<xmlattr>.scale", "");
 }
 
 //------------------------------------------------------------------------------
 
 void calibration_info_reader::starting()
 {
-    this->updateChessboardSize();
+    this->update_chessboard_size();
 }
 
 //------------------------------------------------------------------------------
 
 void calibration_info_reader::updating()
 {
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         const auto data       = m_data.lock();
         const auto calib_info = std::dynamic_pointer_cast<data::calibration_info>(data.get_shared());
@@ -127,7 +127,7 @@ void calibration_info_reader::updating()
         data::mt::locked_ptr calib_info_lock(calib_info);
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
         using detection_pair_t = std::pair<data::image::sptr, data::point_list::sptr>;
 
@@ -157,8 +157,8 @@ void calibration_info_reader::updating()
                     data::image::sptr calib_img = std::make_shared<data::image>();
                     sight::io::opencv::image::copy_from_cv(*calib_img.get(), img);
 
-                    calib_img->setSpacing({{1., 1., 1.}});
-                    calib_img->setOrigin({{0., 0., 0.}});
+                    calib_img->set_spacing({{1., 1., 1.}});
+                    calib_img->set_origin({{0., 0., 0.}});
 
                     const auto detection_pair = std::make_pair(calib_img, chessboard_pts);
                     const auto filename       = dir_entry.filename().string();
@@ -180,14 +180,14 @@ void calibration_info_reader::updating()
             {
                 error_message += "\n\n Abort reading?";
                 sight::ui::dialog::message message_box("Reading calibration inputs failed", error_message,
-                                                       sight::ui::dialog::message::WARNING);
+                                                       sight::ui::dialog::message::warning);
 
-                message_box.addButton(ui::dialog::message::YES_NO);
+                message_box.add_button(ui::dialog::message::yes_no);
 
-                if((message_box.show() & sight::ui::dialog::message::YES) != 0)
+                if((message_box.show() & sight::ui::dialog::message::yes) != 0)
                 {
                     filename_detection_map.clear();
-                    m_readFailed = true;
+                    m_read_failed = true;
                     break;
                 }
 
@@ -195,14 +195,14 @@ void calibration_info_reader::updating()
             }
         }
 
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
 
         if(!filename_detection_map.empty())
         {
             for(auto& [fname, detection] : filename_detection_map)
             {
                 auto& [img, chessboard] = detection;
-                calib_info->addRecord(img, chessboard);
+                calib_info->add_record(img, chessboard);
             }
 
             auto sig = calib_info->signal<data::calibration_info::added_record_signal_t>
@@ -213,7 +213,7 @@ void calibration_info_reader::updating()
     }
     else
     {
-        m_readFailed = true;
+        m_read_failed = true;
     }
 }
 
@@ -225,23 +225,23 @@ void calibration_info_reader::stopping()
 
 // ----------------------------------------------------------------------------
 
-void calibration_info_reader::updateChessboardSize()
+void calibration_info_reader::update_chessboard_size()
 {
     try
     {
         ui::preferences preferences;
 
-        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
+        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_width_key); saved)
         {
             m_width = *saved;
         }
 
-        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_heightKey); saved)
+        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_height_key); saved)
         {
             m_height = *saved;
         }
 
-        if(const auto& saved = preferences.get_optional<decltype(m_scale)>(m_scaleKey); saved)
+        if(const auto& saved = preferences.get_optional<decltype(m_scale)>(m_scale_key); saved)
         {
             m_scale = *saved;
 

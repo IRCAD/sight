@@ -95,44 +95,44 @@ protected:
 private Q_SLOTS:
 
     /// Slot called when slider value changed.
-    void onSliderChanged(int _value);
+    void on_slider_changed(int _value);
 
     /// Slot called when line edit value changed.
-    void onTextChanged();
+    void on_text_changed();
 
 private:
 
     /// Update the editor when the matrix changes
-    void updateFromMatrix();
+    void update_from_matrix();
 
     /*
      * @brief This enum defines the transformation matrix entries indexes
      */
-    enum SliderIndex
+    enum slider_index
     {
-        POSITION_X = 0,
-        POSITION_Y,
-        POSITION_Z,
-        ROTATION_X,
-        ROTATION_Y,
-        ROTATION_Z,
-        MAX_SLIDER_INDEX
+        position_x = 0,
+        position_y,
+        position_z,
+        rotation_x,
+        rotation_y,
+        rotation_z,
+        max_slider_index
     };
 
     /*
      * @brief This struct regulates a transformation matrix entry in the editor
      */
-    struct SliderWidget
+    struct slider_widget
     {
-        QPointer<QSlider> m_slider;         ///< Slider to change coefficient value.
-        QPointer<QLabel> m_labelMin;        ///< Label to show the min value.
-        QPointer<QLabel> m_labelMax;        ///< Label to show the max value.
-        QPointer<QLabel> m_labelDefinition; ///< Label to show the coefficient description.
-        QPointer<QLineEdit> m_sliderValue;  ///< Editor to show the current value of the slider.
+        QPointer<QSlider> m_slider;          ///< Slider to change coefficient value.
+        QPointer<QLabel> m_label_min;        ///< Label to show the min value.
+        QPointer<QLabel> m_label_max;        ///< Label to show the max value.
+        QPointer<QLabel> m_label_definition; ///< Label to show the coefficient description.
+        QPointer<QLineEdit> m_slider_value;  ///< Editor to show the current value of the slider.
     };
 
     /// Array containing the different structs to regulate the transformation matrix entries.
-    std::array<SliderWidget, MAX_SLIDER_INDEX> m_sliders;
+    std::array<slider_widget, max_slider_index> m_sliders;
 
     /// Contains a string identifying which axes [xyz] are displayed for rotation
     std::string m_rotation;
@@ -141,13 +141,13 @@ private:
     std::string m_translation;
 
     /// Range of translation sliders
-    std::array<int, 2> m_translationRange {};
+    std::array<int, 2> m_translation_range {};
 
     /// Range of rotation sliders
-    std::array<int, 2> m_rotationRange {};
+    std::array<int, 2> m_rotation_range {};
 
-    static constexpr std::string_view s_MATRIX_INOUT = "matrix";
-    data::ptr<data::matrix4, sight::data::Access::inout> m_matrix {this, s_MATRIX_INOUT, true};
+    static constexpr std::string_view MATRIX_INOUT = "matrix";
+    data::ptr<data::matrix4, sight::data::access::inout> m_matrix {this, MATRIX_INOUT, true};
 };
 
 } // namespace sight::module::ui::qt::viz

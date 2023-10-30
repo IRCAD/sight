@@ -35,9 +35,9 @@ namespace sight::service::ut
 class service_config_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(service_config_test);
-CPPUNIT_TEST(serviceConfigTest);
+CPPUNIT_TEST(config_test);
 CPPUNIT_TEST(concurrent_access_to_service_config_test);
-CPPUNIT_TEST(getAllConfigsTest);
+CPPUNIT_TEST(get_all_configs_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,13 +46,13 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void serviceConfigTest();
+    static void config_test();
     static void concurrent_access_to_service_config_test();
-    static void getAllConfigsTest();
+    static void get_all_configs_test();
 
 private:
 
-    static service::config_t buildConfig();
+    static service::config_t build_config();
 };
 
 } // namespace sight::service::ut

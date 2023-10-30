@@ -54,7 +54,7 @@ public:
     SIGHT_DECLARE_SERVICE(signal, sight::ui::action);
 
     /// Type of triggered signal
-    typedef core::com::signal<void (bool)> triggered_signal_t;
+    using triggered_signal_t_t = core::com::signal<void (bool)>;
 
     /**
      * @brief Constructor. Do nothing.
@@ -84,9 +84,9 @@ protected:
     MODULE_UI_API void info(std::ostream& _sstream) override;
 
     /// Signal trigerred when action has been triggered
-    SPTR(triggered_signal_t) m_sigTriggered;
+    SPTR(triggered_signal_t_t) m_sig_triggered;
     /// Signal trigerred when action has been cancelled
-    SPTR(triggered_signal_t) m_sigCancelled;
+    SPTR(triggered_signal_t_t) m_sig_cancelled;
 };
 
 } // namespace sight::module::ui::com

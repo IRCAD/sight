@@ -119,51 +119,51 @@ private:
     using error_computed_signal_t = core::com::signal<void (double)>;
 
     /// Fetches the chessboard dimension from the preferences and computes the model.
-    void updateChessboardSize();
+    void update_chessboard_size();
 
     /// Enables/disabled distorting the reprojected points.
-    void toggleDistortion();
+    void toggle_distortion();
 
     /// Preference key to retrieve the chessboard width.
-    std::string m_widthKey;
+    std::string m_width_key;
 
     /// Preference key to retrieve the chessboard height.
-    std::string m_heightKey;
+    std::string m_height_key;
 
     /// Preference key to retrieve the size of the chessboard's squares.
-    std::string m_squareSizeKey;
+    std::string m_square_size_key;
 
     /// Apply distortion to the reprojected points if true. Undistort the detected points otherwise.
-    bool m_distortReprojection {true};
+    bool m_distort_reprojection {true};
 
     /// Draw reprojection points on the image if true.
-    bool m_drawReprojection {true};
+    bool m_draw_reprojection {true};
 
     /// Draw detected points on the image if true.
-    bool m_drawDetected {true};
+    bool m_draw_detected {true};
 
     /// Draw the reprojection error on the image if true.
-    bool m_drawReprojectionError {true};
+    bool m_draw_reprojection_error {true};
 
     /// True if this service outputs the chessboard model.
-    bool m_hasOutputChessboard {false};
+    bool m_has_output_chessboard {false};
 
     /// Chessboard model.
-    std::vector<cv::Point3f> m_chessboardModel;
+    std::vector<cv::Point3f> m_chessboard_model;
 
     /// Signal sent when the reprojection error is computed.
-    error_computed_signal_t::sptr m_errorComputedSig;
+    error_computed_signal_t::sptr m_error_computed_sig;
 
-    static constexpr std::string_view s_TRANSFORM_INPUT           = "transform";
-    static constexpr std::string_view s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
-    static constexpr std::string_view s_CAMERA_INPUT              = "camera";
-    static constexpr std::string_view s_CHESSBOARD_MODEL_OUTPUT   = "chessboardModel";
+    static constexpr std::string_view TRANSFORM_INPUT           = "transform";
+    static constexpr std::string_view DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
+    static constexpr std::string_view CAMERA_INPUT              = "camera";
+    static constexpr std::string_view CHESSBOARD_MODEL_OUTPUT   = "chessboardModel";
 
-    data::ptr<data::matrix4, data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
-    data::ptr<data::point_list, data::Access::in> m_detectedChessboard {this, s_DETECTED_CHESSBOARD_INPUT};
-    data::ptr<data::image, data::Access::inout> m_videoImage {this, "videoImage"};
-    data::ptr<data::point_list, data::Access::out> m_chessboardModelOut {this, s_CHESSBOARD_MODEL_OUTPUT};
+    data::ptr<data::matrix4, data::access::in> m_transform {this, TRANSFORM_INPUT};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
+    data::ptr<data::point_list, data::access::in> m_detected_chessboard {this, DETECTED_CHESSBOARD_INPUT};
+    data::ptr<data::image, data::access::inout> m_video_image {this, "videoImage"};
+    data::ptr<data::point_list, data::access::out> m_chessboard_model_out {this, CHESSBOARD_MODEL_OUTPUT};
 };
 
 } //namespace sight::module::geometry::vision

@@ -35,20 +35,20 @@ namespace sight::filter::image
 
 line_drawer::line_drawer(data::image::sptr _img, data::image::csptr _roi) :
     m_image(std::move(_img)),
-    m_roiImage(std::move(_roi))
+    m_roi_image(std::move(_roi))
 {
-    m_useROI = data::helper::medical_image::check_image_validity(m_roiImage);
+    m_use_roi = data::helper::medical_image::check_image_validity(m_roi_image);
 
-    m_imageTypeSize = std::uint8_t(m_image->getType().size());
-    m_roiTypeSize   = m_useROI ? std::uint8_t(m_roiImage->getType().size()) : 0;
+    m_image_type_size = std::uint8_t(m_image->type().size());
+    m_roi_type_size   = m_use_roi ? std::uint8_t(m_roi_image->type().size()) : 0;
     const auto& size = m_image->size();
-    m_yPitch = size[0];
-    m_zPitch = size[1] * m_yPitch;
+    m_y_pitch = size[0];
+    m_z_pitch = size[1] * m_y_pitch;
 }
 
 //-----------------------------------------------------------------------------
 
-bool line_drawer::drawEllipse(
+bool line_drawer::draw_ellipse(
     const line_drawer::coordinates_t& _c,
     data::image::buffer_t* _value,
     const double _radius,
@@ -60,7 +60,7 @@ bool line_drawer::drawEllipse(
 {
     bool modified = false;
 
-    const auto& spacing = m_image->getSpacing();
+    const auto& spacing = m_image->spacing();
     const auto& size    = m_image->size();
 
     const double width  = _radius / spacing[_first_dim];
@@ -88,9 +88,9 @@ bool line_drawer::drawEllipse(
                 point[_first_dim]  = static_cast<data::image::index_t>(orig_x) + static_cast<data::image::index_t>(x);
                 point[_second_dim] = static_cast<data::image::index_t>(orig_y) + static_cast<data::image::index_t>(y);
 
-                const data::image::index_t index = point[0] + point[1] * m_yPitch + point[2] * m_zPitch;
+                const data::image::index_t index = point[0] + point[1] * m_y_pitch + point[2] * m_z_pitch;
 
-                modified |= this->drawPixel(index, _value, _overwrite, _diff);
+                modified |= this->draw_pixel(index, _value, _overwrite, _diff);
             }
         }
     }
@@ -100,7 +100,7 @@ bool line_drawer::drawEllipse(
 
 //-----------------------------------------------------------------------------
 
-bool line_drawer::drawPixel(
+bool line_drawer::draw_pixel(
     const data::image::index_t _index,
     data::image::buffer_t* _value,
     const bool _overwrite,
@@ -108,30 +108,30 @@ bool line_drawer::drawPixel(
 )
 {
     const data::image::buffer_t* pix_buf =
-        reinterpret_cast<data::image::buffer_t*>(m_image->getPixel(_index));
+        reinterpret_cast<data::image::buffer_t*>(m_image->get_pixel(_index));
 
-    if(m_useROI)
+    if(m_use_roi)
     {
         const auto* roi_val =
-            reinterpret_cast<const data::image::buffer_t*>(m_roiImage->getPixel(_index));
-        if(data::helper::medical_image::is_buf_null(roi_val, m_roiTypeSize))
+            reinterpret_cast<const data::image::buffer_t*>(m_roi_image->get_pixel(_index));
+        if(data::helper::medical_image::is_buf_null(roi_val, m_roi_type_size))
         {
             return false;
         }
     }
 
-    if(std::equal(pix_buf, pix_buf + m_imageTypeSize, _value))
+    if(std::equal(pix_buf, pix_buf + m_image_type_size, _value))
     {
         return false;
     }
 
-    if(!_overwrite && !data::helper::medical_image::is_buf_null(pix_buf, m_imageTypeSize))
+    if(!_overwrite && !data::helper::medical_image::is_buf_null(pix_buf, m_image_type_size))
     {
         return false;
     }
 
-    _diff.addDiff(_index, pix_buf, _value);
-    m_image->setPixel(_index, _value);
+    _diff.add_diff(_index, pix_buf, _value);
+    m_image->set_pixel(_index, _value);
 
     return true;
 }
@@ -147,24 +147,24 @@ image_diff line_drawer::draw(
     const bool _overwrite
 )
 {
-    image_diff diff(m_imageTypeSize, 128);
+    image_diff diff(m_image_type_size, 128);
 
     std::size_t dim0 = 0;
     std::size_t dim1 = 0;
 
     switch(_orientation)
     {
-        case bresenham_line::Orientation::Z_AXIS:
+        case bresenham_line::Orientation::z_axis:
             dim0 = 0;
             dim1 = 1;
             break;
 
-        case bresenham_line::Orientation::Y_AXIS:
+        case bresenham_line::Orientation::y_axis:
             dim0 = 2;
             dim1 = 0;
             break;
 
-        case bresenham_line::Orientation::X_AXIS:
+        case bresenham_line::Orientation::x_axis:
             dim0 = 1;
             dim1 = 2;
             break;
@@ -184,7 +184,7 @@ image_diff line_drawer::draw(
 
     for( ; pixel != end_pixel ; ++pixel)
     {
-        modified = this->drawEllipse(*pixel, _value, _thickness / 2.0, dim0, dim1, _overwrite, diff) || modified;
+        modified = this->draw_ellipse(*pixel, _value, _thickness / 2.0, dim0, dim1, _overwrite, diff) || modified;
     }
 
     return diff;

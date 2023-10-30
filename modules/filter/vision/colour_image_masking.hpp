@@ -116,60 +116,60 @@ protected:
 private:
 
     /// SLOT: Sets background image and learn background model.
-    void setBackground();
+    void set_background();
 
     /// SLOT: Sets foreground image and learn foreground model.
-    void setForeground();
+    void set_foreground();
 
     /// SLOT: Sets the threshold value to compute final binary image.
-    void setThreshold(int _threshold);
+    void set_threshold(int _threshold);
 
     /// SLOT: Sets the noise level added in the learning steps.
-    void setNoiseLevel(double _noise_level);
+    void set_noise_level(double _noise_level);
 
     /// SLOT: Sets the number of background components learned.
-    void setBackgroundComponents(int _bg_components);
+    void set_background_components(int _bg_components);
 
     /// SLOT: Sets the number of foreground components learned.
-    void setForegroundComponents(int _fg_components);
+    void set_foreground_components(int _fg_components);
 
     /// SLOT: Clears the output mask timeline and reset the last timestamp.
-    void clearMaskTL();
+    void clear_mask_tl();
 
     /// Object performing the Expectation Maximization segmentation.
     std::unique_ptr<sight::filter::vision::masker> m_masker;
 
     /// Current timestamp.
-    core::hires_clock::type m_lastVideoTimestamp {0.};
+    core::hires_clock::type m_last_video_timestamp {0.};
 
     /// Reduction factor.
-    float m_scaleFactor {1.};
+    float m_scale_factor {1.};
 
     /// Opencv scale factor.
-    cv::Size m_maskDownsize;
+    cv::Size m_mask_downsize;
 
     /// Opencv HSV lower value to threshold the image used during foreground color model learning step.
-    cv::Scalar m_lowerColor;
+    cv::Scalar m_lower_color;
 
     /// Opencv HSV upper value to threshold the image used during foreground color model learning step.
-    cv::Scalar m_upperColor;
+    cv::Scalar m_upper_color;
 
     /// Noise level to add during the foreground learning step.
     double m_noise {0.};
 
     /// Number of background components.
-    int m_backgroundComponents {5};
+    int m_background_components {5};
 
     /// Number of foreground components.
-    int m_foregroundComponents {5};
+    int m_foreground_components {5};
 
-    static constexpr std::string_view s_MASK_KEY          = "mask";
-    static constexpr std::string_view s_VIDEO_TL_KEY      = "videoTL";
-    static constexpr std::string_view s_VIDEO_MASK_TL_KEY = "videoMaskTL";
+    static constexpr std::string_view MASK_KEY          = "mask";
+    static constexpr std::string_view VIDEO_TL_KEY      = "videoTL";
+    static constexpr std::string_view VIDEO_MASK_TL_KEY = "videoMaskTL";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_mask {this, s_MASK_KEY};
-    sight::data::ptr<sight::data::frame_tl, sight::data::Access::in> m_videoTL {this, s_VIDEO_TL_KEY};
-    sight::data::ptr<sight::data::frame_tl, sight::data::Access::inout> m_videoMaskTL {this, s_VIDEO_MASK_TL_KEY};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, MASK_KEY};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_video_tl {this, VIDEO_TL_KEY};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::inout> m_video_mask_tl {this, VIDEO_MASK_TL_KEY};
 };
 
 } // namespace sight::module::filter::vision.

@@ -40,15 +40,10 @@ static const core::com::signals::key_t TRIGGERED_AS_STRING_SIG = "triggeredAsStr
 //-----------------------------------------------------------------------------
 
 timestamp_signal::timestamp_signal() noexcept :
-    m_sigTriggered(new_signal<triggered_signal_t>(TRIGGERED_SIG)),
-    m_sigTriggeredAsString(new_signal<TriggeredAsStringSignalType>(TRIGGERED_AS_STRING_SIG))
+    m_sig_triggered(new_signal<triggered_signal_t_t>(TRIGGERED_SIG)),
+    m_sig_triggered_as_string(new_signal<triggered_as_string_signal_t>(TRIGGERED_AS_STRING_SIG))
 {
 }
-
-//-----------------------------------------------------------------------------
-
-timestamp_signal::~timestamp_signal() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -57,22 +52,22 @@ void timestamp_signal::configuring()
     this->initialize();
 
     service::config_t config = this->get_config();
-    m_useSystemClock     = config.get<bool>("useSystemClock", false);
-    m_formatStringAsDate = config.get<bool>("formatStringAsDate", true);
+    m_use_system_clock      = config.get<bool>("useSystemClock", false);
+    m_format_string_as_date = config.get<bool>("formatStringAsDate", true);
 }
 
 //-----------------------------------------------------------------------------
 
 void timestamp_signal::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //-----------------------------------------------------------------------------
 
 void timestamp_signal::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +82,7 @@ void timestamp_signal::info(std::ostream& _sstream)
 void timestamp_signal::updating()
 {
     double ts = 0.0;
-    if(m_useSystemClock)
+    if(m_use_system_clock)
     {
         const auto now = std::chrono::system_clock::now();
         const auto res = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
@@ -100,7 +95,7 @@ void timestamp_signal::updating()
         ts = static_cast<double>(res);
     }
 
-    m_sigTriggered->async_emit(ts);
+    m_sig_triggered->async_emit(ts);
 
     // Should we return the timestamp as a string or format it ?
     const auto tt                             = static_cast<std::int64_t>(ts);
@@ -113,7 +108,7 @@ void timestamp_signal::updating()
     oss << std::setw(2) << std::setfill('0') << local_time.time_of_day().minutes();
     oss << std::setw(2) << std::setfill('0') << local_time.time_of_day().seconds();
 
-    m_sigTriggeredAsString->async_emit(oss.str());
+    m_sig_triggered_as_string->async_emit(oss.str());
 }
 
 //-----------------------------------------------------------------------------

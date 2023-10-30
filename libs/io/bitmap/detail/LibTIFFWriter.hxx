@@ -34,19 +34,19 @@ namespace sight::io::bitmap::detail
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_TIFF(func) SIGHT_THROW_IF("The function " #func " failed.", (func) == 0)
 
-class LibTIFFWriter final
+class lib_tiff_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibTIFFWriter(const LibTIFFWriter&)            = delete;
-    LibTIFFWriter& operator=(const LibTIFFWriter&) = delete;
+    lib_tiff_writer(const lib_tiff_writer&)            = delete;
+    lib_tiff_writer& operator=(const lib_tiff_writer&) = delete;
 
     /// Constructor
-    inline LibTIFFWriter() noexcept = default;
+    inline lib_tiff_writer() noexcept = default;
 
     /// Destructor
-    inline ~LibTIFFWriter() noexcept = default;
+    inline ~lib_tiff_writer() noexcept = default;
 
     /// Writing
     template<
@@ -62,19 +62,19 @@ public:
     inline std::size_t write(
         const data::image& _image,
         O& _output,
-        Writer::Mode _mode,
-        Flag = Flag::NONE
+        writer::mode _mode,
+        flag = flag::none
 )
     {
-        const auto& pixel_format = _image.getPixelFormat();
+        const auto& pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format != data::image::PixelFormat::RGB
-            && pixel_format != data::image::PixelFormat::RGBA
-            && pixel_format != data::image::PixelFormat::GRAY_SCALE
+            pixel_format != data::image::pixel_format::rgb
+            && pixel_format != data::image::pixel_format::rgba
+            && pixel_format != data::image::pixel_format::gray_scale
         );
 
-        const auto& pixel_type = _image.getType();
+        const auto& pixel_type = _image.type();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel type: " << pixel_type,
             pixel_type != core::type::INT8
@@ -84,9 +84,9 @@ public:
             && pixel_type != core::type::FLOAT
         );
 
-        struct Keeper final
+        struct keeper final
         {
-            inline ~Keeper()
+            inline ~keeper()
             {
                 if(m_tiff != nullptr)
                 {
@@ -104,11 +104,11 @@ public:
         // Open the stream for writing
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            keeper.m_tiff = tiffStreamOpen(_output);
+            keeper.m_tiff = tiff_stream_open(_output);
         }
         else
         {
-            keeper.m_tiff = tiffStreamOpen(keeper.m_buffer);
+            keeper.m_tiff = tiff_stream_open(keeper.m_buffer);
         }
 
         SIGHT_THROW_IF("TIFFOpen() failed.", keeper.m_tiff == nullptr);
@@ -137,7 +137,7 @@ public:
         // Compression
         switch(_mode)
         {
-            case Writer::Mode::BEST:
+            case writer::mode::best:
             {
                 // COMPRESSION_LZW + PREDICTOR_HORIZONTAL is 2x slower than COMPRESSION_PACKBITS, but 30% smaller
                 // CHECK_TIFF(TIFFSetField(m_tiff, TIFFTAG_COMPRESSION, COMPRESSION_LZW));
@@ -159,7 +159,7 @@ public:
             }
         }
 
-        const auto& num_components = _image.numComponents();
+        const auto& num_components = _image.num_components();
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLESPERPIXEL, num_components));
         CHECK_TIFF(
             TIFFSetField(
@@ -189,7 +189,7 @@ public:
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG));
 
         // Store "spacing"
-        if(const auto& spacings = _image.getSpacing(); spacings[0] > 0.0 && spacings[1] > 0.0)
+        if(const auto& spacings = _image.spacing(); spacings[0] > 0.0 && spacings[1] > 0.0)
         {
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_XRESOLUTION, 10 / spacings[0]));
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_YRESOLUTION, 10 / spacings[1]));
@@ -210,7 +210,7 @@ public:
         for(std::uint32_t row = 0 ; row < image_height ; ++row)
         {
             // Copy to row buffer the original data
-            std::memcpy(m_row_buffer.data(), _image.getPixel(row * image_width), strip_size);
+            std::memcpy(m_row_buffer.data(), _image.get_pixel(row * image_width), strip_size);
 
             SIGHT_THROW_IF(
                 "TIFFWriteScanline() failed.",
@@ -267,7 +267,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static TIFF* tiffStreamOpen(std::ostream& _ostream)
+    inline static TIFF* tiff_stream_open(std::ostream& _ostream)
     {
         // If os is either a ostrstream or ostringstream, and has no data
         // written to it yet, then tellp() will return -1 which will break us.
@@ -286,11 +286,11 @@ private:
             "stream",
             "wm",
             reinterpret_cast<thandle_t>(data),
-            tiffReadProc,
-            tiffWriteProc,
-            tiffSeekProc,
-            tiffCloseProc,
-            tiffSizeProc,
+            tiff_read_proc,
+            tiff_write_proc,
+            tiff_seek_proc,
+            tiff_close_proc,
+            tiff_size_proc,
             tiff::map_proc,
             tiff::unmap_proc
         );
@@ -300,14 +300,14 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiffReadProc(thandle_t, void*, tmsize_t)
+    inline static tmsize_t tiff_read_proc(thandle_t, void*, tmsize_t)
     {
         return -1;
     }
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiffWriteProc(thandle_t _fd, void* _buf, tmsize_t _size)
+    inline static tmsize_t tiff_write_proc(thandle_t _fd, void* _buf, tmsize_t _size)
     {
         tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
         const auto pos               = data->ostream.tellp();
@@ -326,7 +326,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSeekProc(thandle_t _fd, toff_t _off, int _whence)
+    inline static toff_t tiff_seek_proc(thandle_t _fd, toff_t _off, int _whence)
     {
         tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 
@@ -439,7 +439,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static int tiffCloseProc(thandle_t _fd)
+    inline static int tiff_close_proc(thandle_t _fd)
     {
         // Our stream was not allocated by us, so it shouldn't be closed by us.
         delete reinterpret_cast<tiff_stream_data*>(_fd);
@@ -448,7 +448,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSizeProc(thandle_t _fd)
+    inline static toff_t tiff_size_proc(thandle_t _fd)
     {
         tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
         const auto initial_pos       = data->ostream.tellp();

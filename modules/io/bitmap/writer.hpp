@@ -75,7 +75,7 @@ namespace sight::module::io::bitmap
  * @subsection Input Input
  * - \b data [sight::data::image]: image to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  *           define the path.
  * - \b dialog(optional):
  *      \b description: allows to display a label in the file dialog / confirmation dialog.
@@ -113,7 +113,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(writer, sight::io::service::writer);
 
-    using JobCreatedSignal = core::com::signal<void (core::jobs::base::sptr)>;
+    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
     /// Trivial constructor / destructor
     /// @{
@@ -122,11 +122,11 @@ public:
     /// @}
 
     /// Show a file selection dialog
-    MODULE_IO_BITMAP_API void openLocationDialog() override;
+    MODULE_IO_BITMAP_API void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_BITMAP_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_BITMAP_API sight::io::service::path_type_t get_path_type() const override;
 
     /// Does nothing
     MODULE_IO_BITMAP_API void starting() override;
@@ -145,20 +145,20 @@ private:
     /// Retrieve the backend in the enabled backend list from the given extension
     /// @param extension the extension of the file to write
     /// @return the found backend
-    sight::io::bitmap::Backend findBackend(const std::string& _extension) const;
+    sight::io::bitmap::backend find_backend(const std::string& _extension) const;
 
     /// How and When display a dialog
-    DialogPolicy m_dialog_policy {DialogPolicy::NEVER};
+    dialog_policy m_dialog_policy {dialog_policy::never};
 
     /// Signal emitted when job created.
-    JobCreatedSignal::sptr m_job_created_signal {new_signal<JobCreatedSignal>("jobCreated")};
+    job_created_signal_t::sptr m_job_created_signal {new_signal<job_created_signal_t>("jobCreated")};
 
     /// Selected backend
-    sight::io::bitmap::Backend m_selected_backend {sight::io::bitmap::Backend::LIBTIFF};
+    sight::io::bitmap::backend m_selected_backend {sight::io::bitmap::backend::libtiff};
 
     /// Enabled backends
-    std::map<sight::io::bitmap::Backend, sight::io::bitmap::Writer::Mode> m_mode_by_backend {
-        {sight::io::bitmap::Backend::LIBTIFF, sight::io::bitmap::Writer::Mode::FAST}
+    std::map<sight::io::bitmap::backend, sight::io::bitmap::writer::mode> m_mode_by_backend {
+        {sight::io::bitmap::backend::libtiff, sight::io::bitmap::writer::mode::fast}
     };
 
     /// Used internally to avoid double dialog display

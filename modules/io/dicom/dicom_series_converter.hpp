@@ -66,7 +66,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(dicom_series_converter, sight::ui::action);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Constructor
@@ -98,12 +98,12 @@ protected:
 protected:
 
     /// Signal emitted when a job is created
-    SPTR(JobCreatedSignal) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 
 private:
 
-    sight::data::ptr<sight::data::series_set, sight::data::Access::in> m_source {this, "source"};
-    sight::data::ptr<sight::data::series_set, sight::data::Access::inout> m_target {this, "target"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::in> m_source {this, "source"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_target {this, "target"};
 };
 
 } // namespace sight::module::io::dicom

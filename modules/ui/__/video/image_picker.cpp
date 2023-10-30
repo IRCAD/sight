@@ -36,10 +36,10 @@ const core::com::slots::key_t GET_INTERACTION_SLOT = "getInteraction";
 
 image_picker::image_picker() noexcept
 {
-    new_slot(GET_INTERACTION_SLOT, &image_picker::getInteraction, this);
+    new_slot(GET_INTERACTION_SLOT, &image_picker::get_interaction, this);
 
-    m_videoRefMap["top_left"] = VideoReference::TOP_LEFT;
-    m_videoRefMap["center"]   = VideoReference::CENTER;
+    m_video_ref_map["top_left"] = video_reference_t::top_left;
+    m_video_ref_map["center"]   = video_reference_t::center;
 }
 
 //-----------------------------------------------------------------------------
@@ -67,19 +67,19 @@ void image_picker::configuring()
 
     const std::string video_ref = config.get<std::string>("videoReference", "center");
 
-    auto it = m_videoRefMap.find(video_ref);
+    auto it = m_video_ref_map.find(video_ref);
 
-    if(it == m_videoRefMap.end())
+    if(it == m_video_ref_map.end())
     {
         SIGHT_WARN("'videoReference' of value '" + video_ref + "' is not handled.");
     }
     else
     {
-        m_videoRef = it->second;
+        m_video_ref = it->second;
     }
 
-    m_useCtrlModifier = config.get<bool>("useCtrlModifier", true);
-    m_singlePointMode = config.get<bool>("singlePointMode", false);
+    m_use_ctrl_modifier = config.get<bool>("useCtrlModifier", true);
+    m_single_point_mode = config.get<bool>("singlePointMode", false);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,55 +90,55 @@ void image_picker::updating()
 
 //-----------------------------------------------------------------------------
 
-void image_picker::getInteraction(data::tools::picking_info _info)
+void image_picker::get_interaction(data::tools::picking_info _info)
 {
-    if(_info.m_modifierMask == data::tools::picking_info::CTRL || !m_useCtrlModifier)
+    if(_info.m_modifier_mask == data::tools::picking_info::ctrl || !m_use_ctrl_modifier)
     {
-        if(_info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_DOWN)
+        if(_info.m_event_id == data::tools::picking_info::event::mouse_left_down)
         {
-            const double x = _info.m_worldPos[0];
-            const double y = _info.m_worldPos[1];
-            const double z = _info.m_worldPos[2];
+            const double x = _info.m_world_pos[0];
+            const double y = _info.m_world_pos[1];
+            const double z = _info.m_world_pos[2];
 
             const std::array<double, 3> position = {{x, y, z}};
 
-            if(m_singlePointMode)
+            if(m_single_point_mode)
             {
                 std::size_t n_points = 0;
                 {
-                    auto point_list = m_pointList.lock();
-                    n_points = point_list->getPoints().size();
+                    auto point_list = m_point_list.lock();
+                    n_points = point_list->get_points().size();
                 }
 
                 if(n_points > 0)
                 {
-                    this->removeLastPoint();
+                    this->remove_last_point();
                 }
                 else
                 {
-                    this->addPoint(position);
+                    this->add_point(position);
                 }
             }
             else
             {
-                this->addPoint(position);
+                this->add_point(position);
             }
         }
-        else if(_info.m_eventId == data::tools::picking_info::Event::MOUSE_RIGHT_DOWN)
+        else if(_info.m_event_id == data::tools::picking_info::event::mouse_right_down)
         {
-            this->removeLastPoint();
+            this->remove_last_point();
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void image_picker::addPoint(const std::array<double, 3>& _current_point)
+void image_picker::add_point(const std::array<double, 3>& _current_point)
 {
     // Set z to 0 as it is an image.
 
-    auto point_list       = m_pointList.lock();
-    auto pixel_point_list = m_pixelPointList.lock();
+    auto point_list       = m_point_list.lock();
+    auto pixel_point_list = m_pixel_point_list.lock();
 
     data::point::sptr point = std::make_shared<data::point>(_current_point[0], _current_point[1], 0.);
 
@@ -146,24 +146,20 @@ void image_picker::addPoint(const std::array<double, 3>& _current_point)
 
     data::point::sptr pixel;
 
-    switch(m_videoRef)
+    switch(m_video_ref)
     {
-        case VideoReference::CENTER:
+        case video_reference_t::center:
         {
-            const std::array offset {static_cast<float>(camera->getWidth()) / 2.F,
-                                     static_cast<float>(camera->getHeight()) / 2.F
+            const std::array offset {static_cast<float>(camera->get_width()) / 2.F,
+                                     static_cast<float>(camera->get_height()) / 2.F
             };
 
             // Shift point to set reference at top_left corner & inverse y axis.
-            pixel = std::make_shared<data::point>(
-                _current_point[0] + offset[0],
-                offset[1] - _current_point[1],
-                0.
-            );
+            pixel = std::make_shared<data::point>(_current_point[0] + offset[0], offset[1] - _current_point[1], 0.);
             break;
         }
 
-        case VideoReference::TOP_LEFT:
+        case video_reference_t::top_left:
             pixel = std::make_shared<data::point>(_current_point[0], _current_point[1], 0.);
             break;
 
@@ -174,65 +170,52 @@ void image_picker::addPoint(const std::array<double, 3>& _current_point)
 
     // "World" points.
     {
-        point_list->getPoints().push_back(point);
-        auto sig = point_list->signal<data::point_list::modified_signal_t>(
-            data::point_list::MODIFIED_SIG
-        );
+        point_list->get_points().push_back(point);
+        auto sig = point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
         sig->async_emit();
 
-        auto sig2 = point_list->signal<data::point_list::point_added_signal_t>(
-            data::point_list::POINT_ADDED_SIG
-        );
+        auto sig2 = point_list->signal<data::point_list::point_added_signal_t>(data::point_list::POINT_ADDED_SIG);
         sig2->async_emit(point);
     }
 
     // Pixel points.
     {
-        pixel_point_list->getPoints().push_back(pixel);
-        auto sig = pixel_point_list->signal<data::point_list::modified_signal_t>(
-            data::point_list::MODIFIED_SIG
-        );
+        pixel_point_list->get_points().push_back(pixel);
+        auto sig = pixel_point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
         sig->async_emit();
 
-        auto sig2 = pixel_point_list->signal<data::point_list::point_added_signal_t>(
-            data::point_list::POINT_ADDED_SIG
-        );
+        auto sig2 = pixel_point_list->signal<data::point_list::point_added_signal_t>(data::point_list::POINT_ADDED_SIG);
         sig2->async_emit(point);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void image_picker::removeLastPoint()
+void image_picker::remove_last_point()
 {
-    auto point_list       = m_pointList.lock();
-    auto pixel_point_list = m_pixelPointList.lock();
+    auto point_list       = m_point_list.lock();
+    auto pixel_point_list = m_pixel_point_list.lock();
     data::point::sptr point;
 
-    if(!point_list->getPoints().empty() && !pixel_point_list->getPoints().empty())
+    if(!point_list->get_points().empty() && !pixel_point_list->get_points().empty())
     {
         {
-            point = point_list->getPoints().back();
-            point_list->getPoints().pop_back();
+            point = point_list->get_points().back();
+            point_list->get_points().pop_back();
 
-            auto sig = point_list->signal<data::point_list::modified_signal_t>(
-                data::point_list::MODIFIED_SIG
-            );
+            auto sig = point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
             sig->async_emit();
 
-            auto sig2 = point_list->signal<data::point_list::point_removed_signal_t>(
-                data::point_list::POINT_REMOVED_SIG
-            );
+            auto sig2 =
+                point_list->signal<data::point_list::point_removed_signal_t>(data::point_list::POINT_REMOVED_SIG);
             sig2->async_emit(point);
         }
 
         {
-            point = pixel_point_list->getPoints().back();
-            pixel_point_list->getPoints().pop_back();
+            point = pixel_point_list->get_points().back();
+            pixel_point_list->get_points().pop_back();
 
-            auto sig = pixel_point_list->signal<data::point_list::modified_signal_t>(
-                data::point_list::MODIFIED_SIG
-            );
+            auto sig = pixel_point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
             sig->async_emit();
 
             auto sig2 = pixel_point_list->signal<data::point_list::point_removed_signal_t>(

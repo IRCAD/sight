@@ -36,19 +36,19 @@ namespace sight::app::ut
 /**
  * @brief   Service type for test.
  */
-class TestConfigService : public service::base
+class test_config_service : public service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(TestConfigService, service::base);
+    SIGHT_DECLARE_SERVICE(test_config_service, service::base);
 
-    ~TestConfigService() noexcept override =
+    ~test_config_service() noexcept override =
         default;
 
     /// return true if the service is updated with updating() method
-    bool getIsUpdated() const
+    bool get_is_updated() const
     {
-        return m_isUpdated;
+        return m_is_updated;
     }
 
 protected:
@@ -84,19 +84,19 @@ protected:
         _sstream << "TestConfigService";
     }
 
-    bool m_isUpdated {false};
+    bool m_is_updated {false};
 };
 
 /**
  * @brief   Test service implementation for image
  */
-class STest1Image : public TestConfigService
+class test1_image : public test_config_service
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest1Image, app::ut::TestConfigService);
+    SIGHT_DECLARE_SERVICE(test1_image, app::ut::test_config_service);
 
-    ~STest1Image() noexcept override =
+    ~test1_image() noexcept override =
         default;
 
     //------------------------------------------------------------------------------
@@ -121,10 +121,10 @@ public:
 
     void updating() override
     {
-        m_isUpdated = true;
+        m_is_updated = true;
     }
 
-    data::ptr<data::image, data::Access::in> m_input {this, "data", true, true};
+    data::ptr<data::image, data::access::in> m_input {this, "data", true, true};
 };
 
 } // namespace sight::app::ut

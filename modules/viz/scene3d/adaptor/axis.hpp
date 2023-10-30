@@ -47,7 +47,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor shows a simple coordinate system.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): sets whether the axis is shown or not.
+ * - \b update_visibility(bool): sets whether the axis is shown or not.
  * - \b toggleVisibility(): toggle whether the axis is shown or not.
  * - \b show(): shows the axis.
  * - \b hide(): hides the axis.
@@ -104,68 +104,68 @@ protected:
      * @brief Sets the axis visibility.
      * @param _visible the visibility status of the axis.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
 private:
 
     /// SLOT: internal function to update origin color using provided data::color.
-    void updateOriginColor(sight::data::color::sptr _new_color);
+    void update_origin_color(sight::data::color::sptr _new_color);
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
 
     /// Contains the material for the origin (to change its color dynamically).
-    data::material::sptr m_originMaterial {nullptr};
+    data::material::sptr m_origin_material {nullptr};
 
     /// Defines the axis length in scene units.
     float m_length {50.F};
 
     /// Enables the visibility of axis labels.
-    bool m_enableLabel {true};
+    bool m_enable_label {true};
 
     /// Contains the origin of the axis.
     Ogre::ManualObject* m_origin {nullptr};
 
     /// Enables the origin visibility.
-    bool m_originVisibility {false};
+    bool m_origin_visibility {false};
 
     /// Enables the axes visibility.
-    bool m_axisVisibility {true};
+    bool m_axis_visibility {true};
 
     /// Defines the origin color.
-    std::string m_originColor {"#FFFFFF"};
+    std::string m_origin_color {"#FFFFFF"};
 
     /// Contains the line along the x axis.
-    Ogre::ManualObject* m_xLine {nullptr};
+    Ogre::ManualObject* m_x_line {nullptr};
 
     /// Contains the line along the y axis.
-    Ogre::ManualObject* m_yLine {nullptr};
+    Ogre::ManualObject* m_y_line {nullptr};
 
     /// Contains the line along the z axis.
-    Ogre::ManualObject* m_zLine {nullptr};
+    Ogre::ManualObject* m_z_line {nullptr};
 
     /// Contains the arrow of the x axis.
-    Ogre::ManualObject* m_xCone {nullptr};
+    Ogre::ManualObject* m_x_cone {nullptr};
 
     /// Contains the arrow of the y axis.
-    Ogre::ManualObject* m_yCone {nullptr};
+    Ogre::ManualObject* m_y_cone {nullptr};
 
     /// Contains the arrow of the z axis.
-    Ogre::ManualObject* m_zCone {nullptr};
+    Ogre::ManualObject* m_z_cone {nullptr};
 
     /// Contains the scene node where all of manual objects are attached.
-    Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_scene_node {nullptr};
 
     /// Stores labels attached to each axis.
-    std::array<sight::viz::scene3d::text::sptr, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
+    std::array<sight::viz::scene3d::text::sptr, 3> m_axis_labels {{nullptr, nullptr, nullptr}};
 
-    sight::viz::scene3d::text::sptr m_axisNameTxt {nullptr};
+    sight::viz::scene3d::text::sptr m_axis_name_txt {nullptr};
 
     /// Defines labels font size in points.
-    std::size_t m_fontSize {12};
+    std::size_t m_font_size {12};
 
     /// Axis name, default empty.
-    std::string m_axisName;
+    std::string m_axis_name;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

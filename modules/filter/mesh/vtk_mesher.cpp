@@ -55,7 +55,7 @@ static const sight::core::com::slots::key_t UPDATE_THRESHOLD_SLOT = "updateThres
 
 vtk_mesher::vtk_mesher() noexcept
 {
-    new_slot(UPDATE_THRESHOLD_SLOT, &vtk_mesher::updateThreshold, this);
+    new_slot(UPDATE_THRESHOLD_SLOT, &vtk_mesher::update_threshold, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,35 +131,35 @@ void vtk_mesher::updating()
         decimate->SetSplitAngle(120);
         decimate->Update();
         poly_data = decimate->GetOutput();
-        io::vtk::helper::mesh::fromVTKMesh(poly_data, mesh);
+        io::vtk::helper::mesh::from_vtk_mesh(poly_data, mesh);
     }
     else
     {
         poly_data = smooth_filter->GetOutput();
-        io::vtk::helper::mesh::fromVTKMesh(poly_data, mesh);
+        io::vtk::helper::mesh::from_vtk_mesh(poly_data, mesh);
     }
 
     auto reconstruction = std::make_shared<data::reconstruction>();
 
     static unsigned int organ_number = 0;
     ++organ_number;
-    reconstruction->setOrganName("OrganMesher_VTK_" + std::to_string(organ_number));
+    reconstruction->set_organ_name("OrganMesher_VTK_" + std::to_string(organ_number));
     reconstruction->set_structure_type("organ_t");
-    reconstruction->setIsVisible(true);
+    reconstruction->set_is_visible(true);
     // Set Mesh
-    reconstruction->setMesh(mesh);
+    reconstruction->set_mesh(mesh);
 
-    data::model_series::reconstruction_vector_t recs = model_series->getReconstructionDB();
+    data::model_series::reconstruction_vector_t recs = model_series->get_reconstruction_db();
     recs.push_back(reconstruction);
-    model_series->setReconstructionDB(recs);
-    model_series->setDicomReference(image_series->getDicomReference());
+    model_series->set_reconstruction_db(recs);
+    model_series->set_dicom_reference(image_series->get_dicom_reference());
 
     m_model = model_series;
 }
 
 //------------------------------------------------------------------------------
 
-void vtk_mesher::updateThreshold(int _threshold)
+void vtk_mesher::update_threshold(int _threshold)
 {
     m_threshold = (_threshold >= 0) ? static_cast<unsigned int>(_threshold) : 0;
     this->update();

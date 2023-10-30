@@ -38,7 +38,7 @@ namespace sight::io::dicom::writer
 //------------------------------------------------------------------------------
 
 series_set::series_set() :
-    m_fiducialsExportMode(io::dicom::writer::series::SPATIAL_FIDUCIALS)
+    m_fiducials_export_mode(io::dicom::writer::series::spatial_fiducials)
 {
 }
 
@@ -49,11 +49,11 @@ void series_set::write()
 //    // Disable GDCM Warnings
 //    gdcm::Trace::SetWarning(false);
 
-    auto series_set = this->getConcreteObject();
+    auto series_set = this->get_concrete_object();
     SIGHT_ASSERT("series_set not instanced", series_set);
 
     auto writer = std::make_shared<io::dicom::writer::series>();
-    writer->setFiducialsExportMode(m_fiducialsExportMode);
+    writer->set_fiducials_export_mode(m_fiducials_export_mode);
 
     // Copy and sort container in order to write ImageSeries before ModelSeries
     std::vector<data::series::csptr> series_container(series_set->size());
@@ -74,7 +74,7 @@ void series_set::write()
     for(const auto& series : series_container)
     {
         // Create a new directory
-        const std::filesystem::path& series_path = this->get_folder() / series->getSeriesInstanceUID();
+        const std::filesystem::path& series_path = this->get_folder() / series->get_series_instance_uid();
         std::filesystem::create_directories(series_path);
         writer->set_object(series);
         writer->set_folder(series_path);

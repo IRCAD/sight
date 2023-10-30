@@ -58,10 +58,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(shader_parameter_editor, sight::ui::editor);
 
-    typedef std::string editor_implementation_t;
-    typedef std::string object_classname_t;
-    typedef std::string ObjectId;
-    typedef std::map<object_classname_t, editor_implementation_t> editor_map_t;
+    using editor_implementation_t = std::string;
+    using object_classname_t      = std::string;
+    using object_id               = std::string;
+    using editor_map_t            = std::map<object_classname_t, editor_implementation_t>;
 
     /// Constructor.
     MODULE_UI_VIZ_API shader_parameter_editor() noexcept;
@@ -88,27 +88,27 @@ private:
     /// Clear the current container
     void clear();
     /// Retrieves the shader parameters attached to the Reconstruction object and stores them into a collection
-    void updateGuiInfo();
+    void update_gui_info();
     /// Instanciates the needed ui editors according to the stored informations
-    void fillGui();
+    void fill_gui();
 
     /// Internal class that contain the informations concerning the editor that is created.
-    struct ShaderEditorInfo
+    struct shader_editor_info
     {
         std::string uuid;
-        sight::ui::qt::container::widget::sptr editorPanel;
+        sight::ui::qt::container::widget::sptr editor_panel;
         service::base::wptr srv;
         core::com::helper::sig_slot_connection connections;
     };
 
-    ShaderEditorInfo m_editorInfo;
+    shader_editor_info m_editor_info;
 
     /// Connection to the material
     core::com::helper::sig_slot_connection m_connections;
 
     QVBoxLayout* m_sizer {};
 
-    data::ptr<data::reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
+    data::ptr<data::reconstruction, data::access::inout> m_reconstruction {this, "reconstruction"};
 };
 
 } // namespace sight::module::ui::viz

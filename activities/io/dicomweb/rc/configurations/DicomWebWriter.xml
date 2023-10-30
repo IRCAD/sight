@@ -18,17 +18,17 @@
                     <view caption="Information" align="center" minWidth="200" />
                     <view caption="Preview" align="bottom" minHeight="200" />
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="true" />
+                <toolbar sid="toolbar" start="true" />
                 <view sid="selector" start="true" />
                 <view wid="preview" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::tool_bar">
+        <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />

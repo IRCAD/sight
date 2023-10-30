@@ -36,7 +36,7 @@ plugin::~plugin() noexcept =
 
 void plugin::start()
 {
-    sight::activity::extension::activity::getDefault()->parse_plugin_infos();
+    sight::activity::extension::activity::get_default()->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ void plugin::start()
 void plugin::stop() noexcept
 {
     // Clear all operator configurations
-    sight::activity::extension::activity::getDefault()->clear_registry();
+    sight::activity::extension::activity::get_default()->clear_registry();
 }
 
 } // namespace sight::module::activity

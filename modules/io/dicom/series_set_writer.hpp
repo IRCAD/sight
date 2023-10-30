@@ -71,7 +71,7 @@ public:
     MODULE_IO_DICOM_API ~series_set_writer() noexcept override = default;
 
     /// Propose a directory selection where to save the DICOM files.
-    MODULE_IO_DICOM_API void openLocationDialog() override;
+    MODULE_IO_DICOM_API void open_location_dialog() override;
 
 protected:
 
@@ -88,7 +88,7 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override;
 
 private:
 
@@ -97,13 +97,13 @@ private:
      * @param[in] folder DICOM folder
      * @param[in] series_set series_set that must be written
      */
-    void saveSeriesSet(const std::filesystem::path _folder, SPTR(data::series_set) _series_set);
+    void save_series_set(const std::filesystem::path _folder, SPTR(data::series_set) _series_set);
 
     /// Select Fiducial Export Mode using a dialog
-    bool selectFiducialsExportMode();
+    bool select_fiducials_export_mode();
 
     /// Fiducial Export Mode
-    sight::io::dicom::writer::series::FiducialsExportMode m_fiducialsExportMode;
+    sight::io::dicom::writer::series::fiducials_export_mode m_fiducials_export_mode;
 };
 
 } // namespace sight::module::io::dicom

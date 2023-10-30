@@ -40,7 +40,7 @@ namespace sight::ui::qml
 
 //-----------------------------------------------------------------------------
 
-QmlEngine::QmlEngine() :
+qml_engine::qml_engine() :
     m_engine(new QQmlApplicationEngine())
 {
 #ifdef WIN32
@@ -68,27 +68,27 @@ QmlEngine::QmlEngine() :
 
 //-----------------------------------------------------------------------------
 
-QmlEngine::~QmlEngine()
+qml_engine::~qml_engine()
 = default;
 
 //-----------------------------------------------------------------------------
 
-SPTR(QmlEngine) QmlEngine::getDefault()
+SPTR(qml_engine) qml_engine::get_default()
 {
-    auto engine_instance = core::lazy_instantiator<QmlEngine>::get_instance();
+    auto engine_instance = core::lazy_instantiator<qml_engine>::get_instance();
     return engine_instance;
 }
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::loadMainComponent(const std::filesystem::path& _file)
+void qml_engine::load_main_component(const std::filesystem::path& _file)
 {
     m_engine->load(QUrl::fromLocalFile(QString::fromStdString(_file.string())));
 }
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const std::filesystem::path& _file, QSharedPointer<QQmlContext>& _context)
+QObject* qml_engine::create_component(const std::filesystem::path& _file, QSharedPointer<QQmlContext>& _context)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(_file.string())));
     if(component.status() == QQmlComponent::Status::Error)
@@ -106,7 +106,7 @@ QObject* QmlEngine::createComponent(const std::filesystem::path& _file, QSharedP
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const std::filesystem::path& _file)
+QObject* qml_engine::create_component(const std::filesystem::path& _file)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(_file.string())));
     if(component.status() == QQmlComponent::Status::Error)
@@ -124,20 +124,20 @@ QObject* QmlEngine::createComponent(const std::filesystem::path& _file)
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::importModulePath(const std::filesystem::path& _path)
+void qml_engine::import_module_path(const std::filesystem::path& _path)
 {
     m_engine->addImportPath(QString::fromStdString(_path.string()));
 }
 
 //-----------------------------------------------------------------------------
 
-QList<QObject*> QmlEngine::getRootObjects()
+QList<QObject*> qml_engine::get_root_objects()
 {
     return m_engine->rootObjects();
 }
 
 //-----------------------------------------------------------------------------
-QQmlContext* QmlEngine::getRootContext()
+QQmlContext* qml_engine::get_root_context()
 {
     return m_engine->rootContext();
 }

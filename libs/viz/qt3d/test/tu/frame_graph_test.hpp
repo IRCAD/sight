@@ -30,7 +30,7 @@ namespace sight::viz::qt3d_test::ut
 class frame_graph_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(frame_graph_test);
-CPPUNIT_TEST(initializeFrameGraph);
+CPPUNIT_TEST(initialize_frame_graph);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,7 +43,7 @@ public:
 
     void tearDown() override;
 
-    static void initializeFrameGraph();
+    static void initialize_frame_graph();
 };
 
 } // namespace sight::viz::qt3dTest::ut

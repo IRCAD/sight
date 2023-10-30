@@ -38,7 +38,7 @@ void buffer_info::clear()
     loaded              = true;
     user_stream_factory = false;
     fs_file.clear();
-    file_format = core::memory::OTHER;
+    file_format = core::memory::other;
     lock_counter.reset();
     last_access = core::logic_stamp();
     buffer_policy.reset();

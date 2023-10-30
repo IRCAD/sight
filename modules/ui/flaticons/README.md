@@ -10,7 +10,7 @@ Example in a toolbar:
 
 ```xml
 
-<service uid="topToolbarView" type="sight::module::ui::tool_bar">
+<service uid="topToolbarView" type="sight::module::ui::toolbar">
     <gui>
         <layout>
             <menuItem name="Show parameters" icon="sight::module::ui::flaticons/YellowLeftChevron.svg" />

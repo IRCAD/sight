@@ -59,7 +59,7 @@ namespace sight::module::viz::scene3d::adaptor
  * one of the two.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the points are visible or not.
+ * - \b update_visibility(bool): Sets whether the points are visible or not.
  * - \b toggleVisibility(): Toggle whether the points are visible or not.
  * - \b show(): shows the video.
  * - \b hide(): hides the video.
@@ -143,7 +143,7 @@ protected:
      * @brief Sets the point list visibility.
      * @param _visible the visibility status of the point list.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
 
 private:
 
@@ -151,83 +151,83 @@ private:
      * @brief Get the point list visibility.
      * @return True if the point list is visible.
      */
-    bool getVisibility() const;
+    bool get_visibility() const;
 
     /**
      * @brief Updates the point list from a point list, checks if color, number of vertices have changed, and updates
      * them.
      * @param _pointList point list used for the update.
      */
-    void updateMesh(const data::point_list::csptr& _point_list);
+    void update_mesh(const data::point_list::csptr& _point_list);
 
     /**
      * @brief Updates the point list from a mesh, checks if color, number of vertices have changed, and updates them.
      * @param _mesh mesh used for the update.
      */
-    void updateMesh(const data::mesh::csptr& _mesh);
+    void update_mesh(const data::mesh::csptr& _mesh);
 
     /**
      * @brief Instantiates a new material adaptor.
      */
-    module::viz::scene3d::adaptor::material::sptr createMaterialService(const std::string& _mesh_id);
+    module::viz::scene3d::adaptor::material::sptr create_material_service(const std::string& _mesh_id);
 
     /// Associates a new material to the managed point_list.
     /// With this method, point_list is responsible for creating a material.
-    void updateMaterialAdaptor(const std::string& _mesh_id);
+    void update_material_adaptor(const std::string& _mesh_id);
 
     /**
      * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(Ogre::MovableObject* _node);
+    void attach_node(Ogre::MovableObject* _node);
 
     /// Detaches and destroy @ref m_entity from the scene graph.
-    void detachAndDestroyEntity();
+    void detach_and_destroy_entity();
 
     /**
      * @brief Creates all the labels and attach them to the sceneNode vector.
      * @param _pointList point list used to retreive each point informations.
      */
-    void createLabel(const data::point_list::csptr& _point_list);
+    void create_label(const data::point_list::csptr& _point_list);
 
     /// Destroys all the labels and delete them from the sceneNode vector.
-    void destroyLabel();
+    void destroy_label();
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera {true};
+    bool m_auto_reset_camera {true};
 
     /// Defines whether the material was set by the user or not.
-    bool m_customMaterial {false};
+    bool m_custom_material {false};
 
     /// Contains the node in the scene graph.
     Ogre::Entity* m_entity {nullptr};
 
     /// Contains the material attached to the mesh.
-    module::viz::scene3d::adaptor::material::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
 
     /// Contains the Ogre material related to the mesh.
     data::material::sptr m_material {nullptr};
 
     /// Defines the attached material's name.
-    std::string m_materialTemplateName {"Billboard_Default"};
+    std::string m_material_template_name {"Billboard_Default"};
 
     /// Defines the attached texture adaptor UID.
-    std::string m_textureName;
+    std::string m_texture_name;
 
     /// Contains the mesh support used to render the pointlist.
-    sight::viz::scene3d::mesh::sptr m_meshGeometry {nullptr};
+    sight::viz::scene3d::mesh::sptr m_mesh_geometry {nullptr};
 
     /// Defines the billboards radius.
     float m_radius {1.F};
 
     /// Defines if label numbers are displayed.
-    bool m_displayLabel {false};
+    bool m_display_label {false};
 
     /// Contains the RGB color for the label point color.
-    data::color::sptr m_labelColor {nullptr};
+    data::color::sptr m_label_color {nullptr};
 
     /// Defines the mask for picking requests.
-    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Stores label of each point.
     std::vector<sight::viz::scene3d::text::sptr> m_labels;
@@ -236,26 +236,26 @@ private:
     std::vector<Ogre::SceneNode*> m_nodes;
 
     /// Contains the scene node where all of our manual objects are attached.
-    Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_scene_node {nullptr};
 
     /// Defines the true_t font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    std::string m_font_source {"DejaVuSans.ttf"};
 
     /// Defines the font size in points.
-    std::size_t m_fontSize {16};
+    std::size_t m_font_size {16};
 
-    static constexpr std::string_view s_POINTLIST_INPUT = "pointList";
-    static constexpr std::string_view s_MESH_INPUT      = "mesh";
+    static constexpr std::string_view POINTLIST_INPUT = "pointList";
+    static constexpr std::string_view MESH_INPUT      = "mesh";
 
-    data::ptr<data::point_list, data::Access::in> m_pointList {this, s_POINTLIST_INPUT, true, true};
-    data::ptr<data::mesh, data::Access::in> m_mesh {this, s_MESH_INPUT, true, true};
+    data::ptr<data::point_list, data::access::in> m_point_list {this, POINTLIST_INPUT, true, true};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_INPUT, true, true};
 };
 
 //------------------------------------------------------------------------------
 
-inline bool point_list::getVisibility() const
+inline bool point_list::get_visibility() const
 {
-    return m_entity != nullptr ? m_entity->getVisible() : m_isVisible;
+    return m_entity != nullptr ? m_entity->getVisible() : m_visible;
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

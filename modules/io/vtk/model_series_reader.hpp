@@ -62,7 +62,7 @@ namespace sight::module::io::vtk
  * @subsection In-Out In-Out
  * - \b data [sight::data::model_series]: model series that will contain the loaded meshes.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the files to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
 class MODULE_IO_VTK_CLASS_API model_series_reader : public sight::io::service::reader
@@ -71,7 +71,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(model_series_reader, sight::io::service::reader);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Constructor. Do nothing.
@@ -86,11 +86,11 @@ public:
      *
      * This method is used to find the file path  using a file selector.
      */
-    MODULE_IO_VTK_API void openLocationDialog() override;
+    MODULE_IO_VTK_API void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
@@ -136,9 +136,9 @@ private:
      * @param[in] _file path to the file to read.
      * @param[out] _mesh data::mesh::sptr, the loaded mesh.
      */
-    void loadMesh(const std::filesystem::path& _file, data::mesh::sptr _mesh);
+    void load_mesh(const std::filesystem::path& _file, data::mesh::sptr _mesh);
 
-    SPTR(job_created_signal_t) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

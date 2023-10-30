@@ -32,10 +32,10 @@ class slots_signals_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(slots_signals_test);
-    CPPUNIT_TEST(basicTest);
-    CPPUNIT_TEST(comObjectServiceTest);
-    CPPUNIT_TEST(comServiceToServiceTest);
-    CPPUNIT_TEST(blockConnectionTest);
+    CPPUNIT_TEST(basic_test);
+    CPPUNIT_TEST(com_object_service_test);
+    CPPUNIT_TEST(com_service_to_service_test);
+    CPPUNIT_TEST(block_connection_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,10 +43,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void basicTest();
-    static void comObjectServiceTest();
-    static void comServiceToServiceTest();
-    static void blockConnectionTest();
+    static void basic_test();
+    static void com_object_service_test();
+    static void com_service_to_service_test();
+    static void block_connection_test();
 };
 
 } // namespace sight::service::ut

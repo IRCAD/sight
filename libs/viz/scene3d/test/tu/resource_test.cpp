@@ -59,17 +59,17 @@ void resource_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void resource_test::textureTest()
+void resource_test::texture_test()
 {
     data::image::sptr image = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(
+    utest_data::generator::image::generate_image(
         image,
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
         core::type::UINT8,
-        data::image::PixelFormat::GRAY_SCALE
+        data::image::pixel_format::gray_scale
     );
     image->set_id("image1");
 
@@ -101,9 +101,9 @@ void resource_test::textureTest()
 
 //------------------------------------------------------------------------------
 
-void resource_test::tfTest()
+void resource_test::tf_test()
 {
-    data::transfer_function::sptr tf = data::transfer_function::createDefaultTF();
+    data::transfer_function::sptr tf = data::transfer_function::create_default_tf();
     tf->set_id("default");
 
     {

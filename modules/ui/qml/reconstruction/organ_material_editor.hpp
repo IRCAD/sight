@@ -86,7 +86,7 @@ public:
 
 Q_SIGNALS:
 
-    void materialChanged(QColor _color, int _opacity);
+    void material_changed(QColor _color, int _opacity);
 
 protected:
 
@@ -113,18 +113,18 @@ protected:
 protected Q_SLOTS:
 
     /// Called when the opacity changed, it will update the reconstruction Material
-    void onOpacitySlider(int _value);
+    void on_opacity_slider(int _value);
 
     /// Called when the color changed, it will update the reconstruction Material
-    void onColor(QColor _color);
+    void on_color(QColor _color);
 
 private:
 
     /// Notify the material changes
-    void materialNotification();
+    void material_notification();
 
-    static constexpr std::string_view s_RECONSTRUCTION_INOUT = "reconstruction";
-    data::ptr<data::reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
+    static constexpr std::string_view RECONSTRUCTION_INOUT = "reconstruction";
+    data::ptr<data::reconstruction, data::access::inout> m_rec {this, RECONSTRUCTION_INOUT, true};
 };
 
 } // namespace sight::module::ui::qml::reconstruction

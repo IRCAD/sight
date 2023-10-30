@@ -48,9 +48,9 @@ const core::com::signals::key_t series_signal::SERIES_ADDED_SIG = "seriesAdded";
 //------------------------------------------------------------------------------
 
 series_signal::series_signal() noexcept :
-    m_sigSeriesAdded(new_signal<series_added_signal_t>(SERIES_ADDED_SIG))
+    m_sig_series_added(new_signal<series_added_signal_t>(SERIES_ADDED_SIG))
 {
-    new_slot(REPORT_SERIES_SLOT, &series_signal::reportSeriesSlot, this);
+    new_slot(REPORT_SERIES_SLOT, &series_signal::report_series_slot, this);
 }
 
 //------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ void series_signal::configuring()
             "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
             mode == "include" || mode == "exclude"
         );
-        m_filterMode = mode;
+        m_filter_mode = mode;
 
         // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(const config_t::value_type& v, config_filter.equal_range("type"))
@@ -101,9 +101,9 @@ void series_signal::configuring()
 //------------------------------------------------------------------------------
 
 template<typename T>
-void series_signal::reportSeries(const T& _added_series)
+void series_signal::report_series(const T& _added_series)
 {
-    const bool is_include_mode = m_filterMode == "include";
+    const bool is_include_mode = m_filter_mode == "include";
 
     for(const auto& series : _added_series)
     {
@@ -111,16 +111,16 @@ void series_signal::reportSeries(const T& _added_series)
 
         if(key_it != m_types.end() && is_include_mode)
         {
-            m_sigSeriesAdded->async_emit(series);
+            m_sig_series_added->async_emit(series);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void series_signal::reportSeriesSlot(sight::data::series_set::container_type _added_series)
+void series_signal::report_series_slot(sight::data::series_set::container_t _added_series)
 {
-    reportSeries(_added_series);
+    report_series(_added_series);
 }
 
 //------------------------------------------------------------------------------
@@ -128,9 +128,9 @@ void series_signal::reportSeriesSlot(sight::data::series_set::container_type _ad
 void series_signal::updating()
 {
     const auto series_set = m_series_set.lock();
-    SIGHT_ASSERT("input '" << s_SERIES_SET_INPUT << "' does not exist.", series_set);
+    SIGHT_ASSERT("input '" << SERIES_SET_INPUT << "' does not exist.", series_set);
 
-    reportSeries(*series_set);
+    report_series(*series_set);
 }
 
 //------------------------------------------------------------------------------
@@ -138,8 +138,8 @@ void series_signal::updating()
 service::connections_t series_signal::auto_connections() const
 {
     return {
-        {s_SERIES_SET_INPUT, sight::data::series_set::ADDED_OBJECTS_SIG, REPORT_SERIES_SLOT},
-        {s_SERIES_SET_INPUT, sight::data::series_set::MODIFIED_SIG, service::slots::UPDATE}
+        {SERIES_SET_INPUT, sight::data::series_set::ADDED_OBJECTS_SIG, REPORT_SERIES_SLOT},
+        {SERIES_SET_INPUT, sight::data::series_set::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

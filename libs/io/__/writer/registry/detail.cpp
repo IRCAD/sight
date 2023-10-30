@@ -27,11 +27,11 @@
 namespace sight::io::writer::registry
 {
 
-struct FwDataIOWriterRegistryInstantiatorTag {};
+struct data_io_writer_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwDataIOWriterRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, data_io_writer_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

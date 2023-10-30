@@ -51,14 +51,14 @@ void default_action::configuring()
 
 void default_action::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //-----------------------------------------------------------------------------
 
 void default_action::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------

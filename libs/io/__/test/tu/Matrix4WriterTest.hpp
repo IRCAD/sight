@@ -26,15 +26,15 @@
 namespace sight::io::ut
 {
 
-class Matrix4WriterTest : public CPPUNIT_NS::TestFixture
+class matrix4_writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(Matrix4WriterTest);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST_SUITE(matrix4_writer_test);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void basicTest();
+    static void basic_test();
 };
 
 } // namespace sight::io::ut

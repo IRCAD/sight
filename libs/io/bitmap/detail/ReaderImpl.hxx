@@ -56,8 +56,8 @@ public:
     ReaderImpl& operator=(ReaderImpl&&)      = delete;
 
     /// Constructor
-    inline explicit ReaderImpl(Reader* const _reader) :
-        M_READER(_reader)
+    inline explicit ReaderImpl(reader* const _reader) :
+        m_reader(_reader)
     {
     }
 
@@ -65,64 +65,64 @@ public:
     inline ~ReaderImpl() noexcept = default;
 
     /// Main read function
-    inline void read(std::istream& _istream, Backend _backend)
+    inline void read(std::istream& _istream, backend _backend)
     {
         // Get the image pointer
-        auto image = M_READER->getConcreteObject();
+        auto image = m_reader->get_concrete_object();
         SIGHT_THROW_IF("Output image is null", image == nullptr);
 
         // Protect the image from dump
         const auto dump_lock = image->dump_lock();
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-        if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K)
+        if(nv_jpeg_2k() && _backend == backend::nvjpeg2k)
         {
-            read<NvJPEG2KReader>(m_nvJPEG2K, *image, _istream);
+            read<nv_jpe_g2_k_reader>(m_nv_jpe_g2_k, *image, _istream);
         }
-        else if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K_J2K)
+        else if(nv_jpeg_2k() && _backend == backend::nvjpeg2k_j2k)
         {
-            read<NvJPEG2KReader>(
-                m_nvJPEG2K,
+            read<nv_jpe_g2_k_reader>(
+                m_nv_jpe_g2_k,
                 *image,
                 _istream,
-                Flag::J2K_STREAM
+                flag::j2_k_stream
             );
         }
         else
 #endif
-        if(_backend == Backend::OPENJPEG)
+        if(_backend == backend::openjpeg)
         {
-            read<OpenJPEGReader>(m_openJPEG, *image, _istream);
+            read<open_jpeg_reader>(m_open_jpeg, *image, _istream);
         }
-        else if(_backend == Backend::OPENJPEG_J2K)
+        else if(_backend == backend::openjpeg_j2_k)
         {
-            read<OpenJPEGReader>(
-                m_openJPEG,
+            read<open_jpeg_reader>(
+                m_open_jpeg,
                 *image,
                 _istream,
-                Flag::J2K_STREAM
+                flag::j2_k_stream
             );
         }
         else
 
 #ifdef SIGHT_ENABLE_NVJPEG
-        if(nv_jpeg() && _backend == Backend::NVJPEG)
+        if(nv_jpeg() && _backend == backend::nvjpeg)
         {
-            read<NvJPEGReader>(m_nvJPEG, *image, _istream);
+            read<nv_jpeg_reader>(m_nv_jpeg, *image, _istream);
         }
         else
 #endif
-        if(_backend == Backend::LIBJPEG)
+        if(_backend == backend::libjpeg)
         {
-            read<LibJPEGReader>(m_libJPEG, *image, _istream);
+            read<lib_jpeg_reader>(m_lib_jpeg, *image, _istream);
         }
-        else if(_backend == Backend::LIBTIFF)
+        else if(_backend == backend::libtiff)
         {
-            read<LibTIFFReader>(m_libTIFF, *image, _istream);
+            read<lib_tiff_reader>(m_lib_tiff, *image, _istream);
         }
-        else if(_backend == Backend::LIBPNG)
+        else if(_backend == backend::libpng)
         {
-            read<LibPNGReader>(m_libPNG, *image, _istream);
+            read<lib_png_reader>(m_lib_png, *image, _istream);
         }
         else
         {
@@ -141,7 +141,7 @@ private:
         std::unique_ptr<W>& _backend,
         data::image& _image,
         std::istream& _istream,
-        Flag _flag = Flag::NONE
+        flag _flag = flag::none
 )
     {
         if(_backend == nullptr)
@@ -154,20 +154,20 @@ private:
     }
 
     /// Pointer to the public interface
-    Reader* const M_READER;
+    reader* const m_reader;
 
 #ifdef SIGHT_ENABLE_NVJPEG
-    std::unique_ptr<NvJPEGReader> m_nvJPEG;
+    std::unique_ptr<nv_jpeg_reader> m_nv_jpeg;
 #endif
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    std::unique_ptr<NvJPEG2KReader> m_nvJPEG2K;
+    std::unique_ptr<nv_jpe_g2_k_reader> m_nv_jpe_g2_k;
 #endif
 
-    std::unique_ptr<LibJPEGReader> m_libJPEG;
-    std::unique_ptr<LibTIFFReader> m_libTIFF;
-    std::unique_ptr<LibPNGReader> m_libPNG;
-    std::unique_ptr<OpenJPEGReader> m_openJPEG;
+    std::unique_ptr<lib_jpeg_reader> m_lib_jpeg;
+    std::unique_ptr<lib_tiff_reader> m_lib_tiff;
+    std::unique_ptr<lib_png_reader> m_lib_png;
+    std::unique_ptr<open_jpeg_reader> m_open_jpeg;
 };
 
 } // namespace sight::io::bitmap::detail

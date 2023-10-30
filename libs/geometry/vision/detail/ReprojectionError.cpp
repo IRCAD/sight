@@ -27,24 +27,24 @@ namespace sight::geometry::vision::detail
 
 //-----------------------------------------------------------------------------
 
-ReprojectionError::ReprojectionError(
+reprojection_error::reprojection_error(
     cv::Mat _camera_mat,
     cv::Mat _dist_coef,
     cv::Point2f _image_points,
     cv::Point3f _object_points,
     cv::Mat _extrinsic
 ) :
-    m_imagePoint(std::move(_image_points)),
-    m_objectPoint(std::move(_object_points)),
+    m_image_point(std::move(_image_points)),
+    m_object_point(std::move(_object_points)),
     m_extrinsic(std::move(_extrinsic)),
-    m_cameraMatrix(std::move(_camera_mat)),
-    m_distCoef(std::move(_dist_coef))
+    m_camera_matrix(std::move(_camera_mat)),
+    m_dist_coef(std::move(_dist_coef))
 {
 }
 
 //-----------------------------------------------------------------------------
 
-::ceres::CostFunction* ReprojectionError::Create(
+::ceres::CostFunction* reprojection_error::create(
     const cv::Mat& _camera_matrix,
     const cv::Mat& _dist_coef,
     const cv::Point2f& _image_points,
@@ -52,8 +52,8 @@ ReprojectionError::ReprojectionError(
     const cv::Mat& _extrinsic
 )
 {
-    auto* rep = new ReprojectionError(_camera_matrix, _dist_coef, _image_points, _object_points, _extrinsic);
-    return new ::ceres::NumericDiffCostFunction<ReprojectionError, ::ceres::FORWARD, 2, 6>(rep);
+    auto* rep = new reprojection_error(_camera_matrix, _dist_coef, _image_points, _object_points, _extrinsic);
+    return new ::ceres::NumericDiffCostFunction<reprojection_error, ::ceres::FORWARD, 2, 6>(rep);
 }
 
 //-----------------------------------------------------------------------------

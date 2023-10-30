@@ -44,8 +44,8 @@ namespace sight::service
  * @section Slots Slots
  * - \b track(core::hires_clock::type  timestamp) : performs the tracking, does nothing if the tracking is
  *   not started.
- * - \b startTracking() : start the tracking
- * - \b stopTracking() : stop the tracking
+ * - \b start_tracking() : start the tracking
+ * - \b stop_tracking() : stop the tracking
  *
  * @subsection Input Input
  * - \b timeline : timeline used to retrieve the tracked objects
@@ -63,28 +63,28 @@ public:
     SERVICE_API static const core::com::slots::key_t START_TRACKING_SLOT;
     SERVICE_API static const core::com::slots::key_t STOP_TRACKING_SLOT;
 
-    SERVICE_API static constexpr std::string_view s_TIMELINE_INPUT = "timeline";
-    SERVICE_API static constexpr std::string_view s_FRAME_INOUT    = "frame";
+    SERVICE_API static constexpr std::string_view TIMELINE_INPUT = "timeline";
+    SERVICE_API static constexpr std::string_view FRAME_INOUT    = "frame";
 
     /// Defines the auto-connection between the timeline and the 'track' slot
     SERVICE_API service::connections_t auto_connections() const override;
 
     /// Return true if the tracking is started.
-    bool isTracking() const
+    bool is_tracking() const
     {
-        return m_isTracking;
+        return m_is_tracking;
     }
 
     /// Enable/Disable drop
-    void enableDrop(bool _enable)
+    void enable_drop(bool _enable)
     {
-        m_dropObj = _enable;
+        m_drop_obj = _enable;
     }
 
     /// Return true if tracker drop frames
-    bool isDropping() const
+    bool is_dropping() const
     {
-        return m_dropObj;
+        return m_drop_obj;
     }
 
 protected:
@@ -106,10 +106,10 @@ protected:
     SERVICE_API virtual void track(core::hires_clock::type _timestamp);
 
     /// start the tracking
-    SERVICE_API virtual void startTracking();
+    SERVICE_API virtual void start_tracking();
 
     /// stop the tracking
-    SERVICE_API virtual void stopTracking();
+    SERVICE_API virtual void stop_tracking();
 
     /**
      * @brief process the tracking
@@ -118,15 +118,15 @@ protected:
     SERVICE_API virtual void tracking(core::hires_clock::type& _timestamp) = 0;
 
     /// timestamp of the last tracking
-    core::hires_clock::type m_lastTimestamp {0};
+    core::hires_clock::type m_last_timestamp {0};
 
     /// If true, only last object is retrived
-    bool m_dropObj {true};
+    bool m_drop_obj {true};
 
     /// If false, the trackMethod does nothing
-    bool m_isTracking {false};
+    bool m_is_tracking {false};
 
-    sight::data::ptr<sight::data::frame_tl, sight::data::Access::in> m_timeline {this, s_TIMELINE_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, TIMELINE_INPUT};
 };
 
 } // namespace sight::service

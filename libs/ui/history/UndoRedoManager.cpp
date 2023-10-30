@@ -29,68 +29,68 @@ namespace sight::ui::history
 
 //-----------------------------------------------------------------------------
 
-UndoRedoManager::UndoRedoManager(std::size_t _max_memory, std::size_t _max_commands) :
-    m_maxMemory(_max_memory),
-    m_maxCommands(_max_commands == 0 ? 1 : _max_commands)
+undo_redo_manager::undo_redo_manager(std::size_t _max_memory, std::size_t _max_commands) :
+    m_max_memory(_max_memory),
+    m_max_commands(_max_commands == 0 ? 1 : _max_commands)
 {
     SIGHT_ASSERT("The number of commands must be greater than 0", _max_commands > 0);
 }
 
 //-----------------------------------------------------------------------------
 
-bool UndoRedoManager::enqueue(command::sptr _cmd)
+bool undo_redo_manager::enqueue(command::sptr _cmd)
 {
-    if(m_maxMemory == 0)
+    if(m_max_memory == 0)
     {
         SIGHT_WARN("Cannot add a command because maxMemory is 0.");
         return false;
     }
 
-    if(_cmd->size() > m_maxMemory)
+    if(_cmd->size() > m_max_memory)
     {
         SIGHT_WARN("The current command is bigger than the maximum history size");
         return false;
     }
 
     // Remove all commands following the current history point.
-    if(!m_commandQueue.empty())
+    if(!m_command_queue.empty())
     {
-        for(std::size_t i = m_commandQueue.size() - 1 ; i > std::size_t(m_commandIndex) ; --i)
+        for(std::size_t i = m_command_queue.size() - 1 ; i > std::size_t(m_command_index) ; --i)
         {
-            m_usedMemory -= m_commandQueue[i]->size();
-            m_commandQueue.pop_back();
+            m_used_memory -= m_command_queue[i]->size();
+            m_command_queue.pop_back();
         }
     }
 
     // Remove the oldest command if we reached the maximum number of commands.
-    if(m_maxCommands == m_commandQueue.size())
+    if(m_max_commands == m_command_queue.size())
     {
-        popFront();
+        pop_front();
     }
 
     // Remove the oldest commands if we reached the maximum history size.
-    while(m_usedMemory + _cmd->size() > m_maxMemory)
+    while(m_used_memory + _cmd->size() > m_max_memory)
     {
-        popFront();
+        pop_front();
     }
 
-    m_commandQueue.push_back(_cmd);
-    m_usedMemory  += _cmd->size();
-    m_commandIndex = static_cast<std::int64_t>(m_commandQueue.size() - 1);
+    m_command_queue.push_back(_cmd);
+    m_used_memory  += _cmd->size();
+    m_command_index = static_cast<std::int64_t>(m_command_queue.size() - 1);
 
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool UndoRedoManager::redo()
+bool undo_redo_manager::redo()
 {
     bool success = false;
 
-    if(std::size_t(m_commandIndex) != m_commandQueue.size() - 1)
+    if(std::size_t(m_command_index) != m_command_queue.size() - 1)
     {
-        m_commandIndex++;
-        success = m_commandQueue[std::size_t(m_commandIndex)]->redo();
+        m_command_index++;
+        success = m_command_queue[std::size_t(m_command_index)]->redo();
     }
 
     return success;
@@ -98,14 +98,14 @@ bool UndoRedoManager::redo()
 
 //-----------------------------------------------------------------------------
 
-bool UndoRedoManager::undo()
+bool undo_redo_manager::undo()
 {
     bool success = false;
 
-    if(m_commandIndex > -1)
+    if(m_command_index > -1)
     {
-        success = m_commandQueue[std::size_t(m_commandIndex)]->undo();
-        m_commandIndex--;
+        success = m_command_queue[std::size_t(m_command_index)]->undo();
+        m_command_index--;
     }
 
     return success;
@@ -113,65 +113,65 @@ bool UndoRedoManager::undo()
 
 //-----------------------------------------------------------------------------
 
-bool UndoRedoManager::canUndo() const
+bool undo_redo_manager::can_undo() const
 {
-    return m_commandIndex > -1;
+    return m_command_index > -1;
 }
 
 //-----------------------------------------------------------------------------
 
-bool UndoRedoManager::canRedo() const
+bool undo_redo_manager::can_redo() const
 {
-    return (std::size_t(m_commandIndex) != this->getCommandCount() - 1) && (this->getCommandCount() > 0);
+    return (std::size_t(m_command_index) != this->get_command_count() - 1) && (this->get_command_count() > 0);
 }
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::clear()
+void undo_redo_manager::clear()
 {
-    m_commandQueue.clear();
-    m_commandIndex = -1;
-    m_usedMemory   = 0;
+    m_command_queue.clear();
+    m_command_index = -1;
+    m_used_memory   = 0;
 }
 
 //-----------------------------------------------------------------------------
 
-std::size_t UndoRedoManager::getCommandCount() const
+std::size_t undo_redo_manager::get_command_count() const
 {
-    return m_commandQueue.size();
+    return m_command_queue.size();
 }
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::setCommandCount(std::size_t _cmd_count)
+void undo_redo_manager::set_command_count(std::size_t _cmd_count)
 {
     this->clear();
-    m_maxCommands = _cmd_count;
+    m_max_commands = _cmd_count;
 }
 
 //-----------------------------------------------------------------------------
 
-std::size_t UndoRedoManager::getHistorySize() const
+std::size_t undo_redo_manager::get_history_size() const
 {
-    return m_usedMemory;
+    return m_used_memory;
 }
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::setHistorySize(std::size_t _hist_size)
+void undo_redo_manager::set_history_size(std::size_t _hist_size)
 {
     this->clear();
-    m_maxMemory = _hist_size;
+    m_max_memory = _hist_size;
 }
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::popFront()
+void undo_redo_manager::pop_front()
 {
-    auto it = m_commandQueue.begin();
+    auto it = m_command_queue.begin();
 
-    m_usedMemory -= (*it)->size();
-    m_commandQueue.pop_front();
+    m_used_memory -= (*it)->size();
+    m_command_queue.pop_front();
 }
 
 //-----------------------------------------------------------------------------

@@ -75,12 +75,12 @@ private:
      * @brief the m_bServiceIsConfigured value is \b true
      * if the help files path is known.
      */
-    bool m_bServiceIsConfigured {false};
+    bool m_b_service_is_configured {false};
 
     /**
      * @brief help files path.
      */
-    std::filesystem::path m_fsHelpPath;
+    std::filesystem::path m_fs_help_path;
 };
 
 } // namespace sight::module::ui::qt

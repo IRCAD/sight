@@ -96,7 +96,7 @@ protected:
 private:
 
     /// Changes a distance value to a string.
-    static std::string distanceToStr(double _dist);
+    static std::string distance_to_str(double _dist);
 
     /**
      * @brief Opens a gui dialog to choose the distance to remove.
@@ -105,19 +105,19 @@ private:
      * @return The distance to removed only if a specific distance is chosen, if all distances need to be removed, a
      * nullptr is return.
      */
-    static data::point_list::sptr getDistanceToRemove(const data::image::csptr _image, bool& _remove_all);
+    static data::point_list::sptr get_distance_to_remove(const data::image::csptr _image, bool& _remove_all);
 
     /**
      * @brief Sends a signal when a distance is removed.
      * @param _image The image where the distance has been added.
      * @param _distance The distance value.
      */
-    static void notifyDeleteDistance(const data::image::csptr& _image, const data::point_list::csptr& _distance);
+    static void notify_delete_distance(const data::image::csptr& _image, const data::point_list::csptr& _distance);
 
     /// Removes the last added distance.
-    void removeLastDistance();
+    void remove_last_distance();
 
-    data::ptr<data::image, data::Access::inout> m_image {this, "image"};
+    data::ptr<data::image, data::access::inout> m_image {this, "image"};
 };
 
 } // namespace sight::module::ui::metrics

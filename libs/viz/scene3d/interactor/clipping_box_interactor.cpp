@@ -40,7 +40,7 @@ clipping_box_interactor::clipping_box_interactor(
     const std::string& _handle_mtl_name
 ) noexcept :
     base(_layer, _layer_order_dependant),
-    m_widget(_id, _parent_scene_node, _layer->getDefaultCamera(), _layer->getSceneManager(),
+    m_widget(_id, _parent_scene_node, _layer->get_default_camera(), _layer->get_scene_manager(),
              _clipping_matrix, _clipping_update_cb, _box_mtl_name, _handle_mtl_name)
 {
     SIGHT_ASSERT("This interactor must know its layer.", _layer);
@@ -48,11 +48,11 @@ clipping_box_interactor::clipping_box_interactor(
 
 //------------------------------------------------------------------------------
 
-Ogre::MovableObject* clipping_box_interactor::pickObject(int _x, int _y)
+Ogre::MovableObject* clipping_box_interactor::pick_object(int _x, int _y)
 {
     if(auto layer = m_layer.lock())
     {
-        const auto result = viz::scene3d::utils::pickObject(_x, _y, 0xFFFFFFFF, *layer->getSceneManager());
+        const auto result = viz::scene3d::utils::pick_object(_x, _y, 0xFFFFFFFF, *layer->get_scene_manager());
 
         return result.has_value() ? result->first : nullptr;
     }
@@ -62,88 +62,95 @@ Ogre::MovableObject* clipping_box_interactor::pickObject(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int _dx, int _dy)
+void clipping_box_interactor::mouse_move_event(
+    mouse_button _button,
+    modifier /*_mods*/,
+    int _x,
+    int _y,
+    int _dx,
+    int _dy
+)
 {
-    if(m_widget.getVisibility()) // If a widget is present in the scene.
+    if(m_widget.get_visibility()) // If a widget is present in the scene.
     {
-        bool interacted = m_pickedObject != nullptr;
+        bool interacted = m_picked_object != nullptr;
 
-        if(_button == LEFT && interacted)
+        if(_button == left && interacted)
         {
-            m_widget.widgetPicked(m_pickedObject, _x, _y);
+            m_widget.widget_picked(m_picked_object, _x, _y);
         }
-        else if(_button == MIDDLE)
+        else if(_button == middle)
         {
             interacted = m_widget.move_clipping_box(_x, _y, -_dx, -_dy);
         }
-        else if(_button == RIGHT)
+        else if(_button == right)
         {
             interacted = m_widget.scale_clipping_box(_x, _y, _dy);
         }
 
         if(interacted)
         {
-            this->cancelFurtherLayerInteractions();
-            m_layer.lock()->requestRender();
+            this->cancel_further_layer_interactions();
+            m_layer.lock()->request_render();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
+void clipping_box_interactor::button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
-    if(m_widget.getVisibility())
+    if(m_widget.get_visibility())
     {
-        m_widget.widgetReleased();
-        m_pickedObject = nullptr;
-        m_layer.lock()->requestRender();
+        m_widget.widget_released();
+        m_picked_object = nullptr;
+        m_layer.lock()->request_render();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
+void clipping_box_interactor::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
-    if(m_widget.getVisibility())
+    if(m_widget.get_visibility())
     {
         bool interacted = false;
-        if(_button == LEFT)
+        if(_button == left)
         {
-            m_pickedObject = pickObject(_x, _y);
+            m_picked_object = pick_object(_x, _y);
 
-            interacted = m_widget.belongsToWidget(m_pickedObject);
+            interacted = m_widget.belongs_to_widget(m_picked_object);
             if(interacted)
             {
-                m_widget.widgetPicked(m_pickedObject, _x, _y);
+                m_widget.widget_picked(m_picked_object, _x, _y);
             }
             else
             {
-                m_pickedObject = nullptr;
+                m_picked_object = nullptr;
             }
         }
-        else if(_button == MIDDLE)
+        else if(_button == middle)
         {
             interacted = m_widget.move_clipping_box(_x, _y, 0, 0);
         }
-        else if(_button == RIGHT)
+        else if(_button == right)
         {
             interacted = m_widget.scale_clipping_box(_x, _y, 0);
         }
 
         if(interacted)
         {
-            this->cancelFurtherLayerInteractions();
-            m_layer.lock()->requestRender();
+            this->cancel_further_layer_interactions();
+            m_layer.lock()->request_render();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::pinchGestureEvent(double _scale_factor, int _center_x, int _center_y)
+void clipping_box_interactor::pinch_gesture_event(double _scale_factor, int _center_x, int _center_y)
 {
-    if(m_widget.getVisibility())
+    if(m_widget.get_visibility())
     {
         // Convert back the scale from "delta"
         if(_scale_factor < 0)
@@ -153,43 +160,43 @@ void clipping_box_interactor::pinchGestureEvent(double _scale_factor, int _cente
 
         const auto dy = int(((_center_y * _scale_factor) - _center_y) * 0.5);
 
-        if(m_widget.scale_clipping_box(_center_x, _center_y, dy) || m_pickedObject != nullptr)
+        if(m_widget.scale_clipping_box(_center_x, _center_y, dy) || m_picked_object != nullptr)
         {
-            cancelFurtherLayerInteractions();
+            cancel_further_layer_interactions();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+void clipping_box_interactor::pan_gesture_move_event(int _x, int _y, int _dx, int _dy)
 {
-    if(m_widget.getVisibility())
+    if(m_widget.get_visibility())
     {
-        if(m_widget.move_clipping_box(_x, _y, -_dx, -_dy) || m_pickedObject != nullptr)
+        if(m_widget.move_clipping_box(_x, _y, -_dx, -_dy) || m_picked_object != nullptr)
         {
-            cancelFurtherLayerInteractions();
+            cancel_further_layer_interactions();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
+void clipping_box_interactor::pan_gesture_release_event(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
 {
-    if(m_widget.getVisibility())
+    if(m_widget.get_visibility())
     {
-        m_widget.widgetReleased();
-        m_pickedObject = nullptr;
+        m_widget.widget_released();
+        m_picked_object = nullptr;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::setBoxVisibility(bool _visibility)
+void clipping_box_interactor::set_box_visibility(bool _visibility)
 {
-    m_widget.setVisibility(_visibility);
-    m_layer.lock()->requestRender();
+    m_widget.set_visibility(_visibility);
+    m_layer.lock()->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -208,19 +215,19 @@ Ogre::Matrix4 clipping_box_interactor::get_clipping_transform() const
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::updateFromTransform(const Ogre::Matrix4& _clipping_trf)
+void clipping_box_interactor::update_from_transform(const Ogre::Matrix4& _clipping_trf)
 {
-    m_widget.updateFromTransform(_clipping_trf);
+    m_widget.update_from_transform(_clipping_trf);
 }
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::cancelFurtherLayerInteractions()
+void clipping_box_interactor::cancel_further_layer_interactions()
 {
     const auto layer = m_layer.lock();
     if(layer)
     {
-        layer->cancelFurtherInteraction();
+        layer->cancel_further_interaction();
     }
 }
 

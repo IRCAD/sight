@@ -30,7 +30,7 @@ namespace sight::viz::qt3d_test::ut
 class material_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(material_test);
-CPPUNIT_TEST(initializeMaterial);
+CPPUNIT_TEST(initialize_material);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,7 +43,7 @@ public:
 
     void tearDown() override;
 
-    static void initializeMaterial();
+    static void initialize_material();
 };
 
 } // namespace sight::viz::qt3dTest::ut

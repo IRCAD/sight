@@ -47,7 +47,7 @@ namespace sight::module::viz::scene2d::adaptor
  * during resizing.
  *
  * Each change onto the shutter will cause this adaptor to update the managed
- * sight::viz::scene2d::data::Viewport object.
+ * sight::viz::scene2d::data::viewport object.
  *
  * @section XML XML Configuration
  *
@@ -61,9 +61,9 @@ namespace sight::module::viz::scene2d::adaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b viewport [sight::viz::scene2d::data::Viewport]: viewport object used to display this adaptor. If the viewport
+ * - \b viewport [sight::viz::scene2d::data::viewport]: viewport object used to display this adaptor. If the viewport
  * is not initialized, it will be updated to fit the scene size.
- * - \b selectedviewport [sight::viz::scene2d::data::Viewport]: viewport object whose range is modified.
+ * - \b selectedviewport [sight::viz::scene2d::data::viewport]: viewport object whose range is modified.
  * - \b image [sight::data::image] (optional): if specified, computes \b selectedviewport from the image range instead
  * of the
  * initialPos and initialWidth parameters.
@@ -100,7 +100,7 @@ public:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::viz::scene2d::data::Viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * Connect sight::viz::scene2d::data::viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
      * module::viz::scene2d::adaptor::viewport_range_selector::service::slots::UPDATE.
      */
     connections_t auto_connections() const override;
@@ -117,10 +117,10 @@ private:
      * @brief Filters the event to call the right methods from mouse informations.
      * @param _event the 2D scene event.
      */
-    void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /// Recomputes the viewport. Can signal or not the data depending from where it is called.
-    void updateViewport(bool _signal_selected_viewport);
+    void update_viewport(bool _signal_selected_viewport);
 
     /**
      * @brief Update the viewport object according to the current state of the shutter.
@@ -129,55 +129,55 @@ private:
      * @param width width of the shutter.
      * @param height height of the shutter.
      */
-    void updateViewportFromShutter(double _x, double _y, double _width, double _height);
+    void update_viewport_from_shutter(double _x, double _y, double _width, double _height);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border.
-    bool mouseOnShutterLeft(sight::viz::scene2d::vec2d_t _coord);
+    bool mouse_on_shutter_left(sight::viz::scene2d::vec2d_t _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's right border.
-    bool mouseOnShutterRight(sight::viz::scene2d::vec2d_t _coord);
+    bool mouse_on_shutter_right(sight::viz::scene2d::vec2d_t _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's middle part.
-    bool mouseOnShutterMiddle(sight::viz::scene2d::vec2d_t _coord);
+    bool mouse_on_shutter_middle(sight::viz::scene2d::vec2d_t _coord);
 
     /// Stores the graphic item that represents the shutter.
     QGraphicsRectItem* m_shutter {nullptr};
 
     /// Sets if there is interaction onto shutter's left border.
-    bool m_isLeftInteracting {false};
+    bool m_is_left_interacting {false};
 
     /// Sets if there is interaction onto shutter's right border.
-    bool m_isRightInteracting {false};
+    bool m_is_right_interacting {false};
 
     /// Sets if there is interaction onto the whole shutter.
-    bool m_isInteracting {false};
+    bool m_is_interacting {false};
 
     /// Sets if there is a dragging interaction.
-    sight::viz::scene2d::vec2d_t m_dragStartPoint {0., 0.};
+    sight::viz::scene2d::vec2d_t m_drag_start_point {0., 0.};
 
     ///  Defines the shutter position when dragging starts.
-    sight::viz::scene2d::vec2d_t m_dragStartShutterPos {0., 0.};
+    sight::viz::scene2d::vec2d_t m_drag_start_shutter_pos {0., 0.};
 
     /// Sets the spacing value for an easier picking onto shutter borders.
-    int m_clickCatchRange {1};
+    int m_click_catch_range {1};
 
     /// Stores the main layer.
     QGraphicsItemGroup* m_layer {nullptr};
 
     /// Defines the initial position of the shutter on the X axis.
-    double m_initialX {0.F};
+    double m_initial_x {0.F};
 
     /// Defines the initial width of the shutter.
-    double m_initialWidth {1.};
+    double m_initial_width {1.};
 
     /// Defines the color used for graphic item's.
     QPen m_color;
 
     /// Cache the minimum intensity found in an image
-    double m_imageMin {std::numeric_limits<double>::max()};
+    double m_image_min {std::numeric_limits<double>::max()};
 
     /// Cache the maximum intensity found in an image
-    double m_imageMax {std::numeric_limits<double>::lowest()};
+    double m_image_max {std::numeric_limits<double>::lowest()};
 
     /// Cache the minimum intensity found in an image or in the transfer function
     double m_min {std::numeric_limits<double>::max()};
@@ -185,16 +185,17 @@ private:
     /// Cache the maximum intensity found in an image or in the transfer function
     double m_max {std::numeric_limits<double>::lowest()};
 
-    static constexpr std::string_view s_VIEWPORT_INOUT          = "viewport";
-    static constexpr std::string_view s_SELECTED_VIEWPORT_INOUT = "selectedViewport";
-    static constexpr std::string_view s_IMAGE_INPUT             = "image";
-    static constexpr std::string_view s_TF_INPUT                = "tf";
+    static constexpr std::string_view VIEWPORT_INOUT          = "viewport";
+    static constexpr std::string_view SELECTED_VIEWPORT_INOUT = "selectedViewport";
+    static constexpr std::string_view IMAGE_INPUT             = "image";
+    static constexpr std::string_view TF_INPUT                = "tf";
 
-    data::ptr<s2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT};
-    data::ptr<s2d::data::Viewport, sight::data::Access::inout> m_selectedViewport {this, s_SELECTED_VIEWPORT_INOUT, true
+    data::ptr<s2d::data::viewport, sight::data::access::inout> m_viewport {this, VIEWPORT_INOUT};
+    data::ptr<s2d::data::viewport, sight::data::access::inout> m_selected_viewport {this, SELECTED_VIEWPORT_INOUT,
+                                                                                    true
     };
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
-    data::ptr<sight::data::transfer_function, sight::data::Access::in> m_tf {this, s_TF_INPUT, true, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true, true};
+    data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

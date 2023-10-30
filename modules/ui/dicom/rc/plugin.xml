@@ -4,7 +4,7 @@
         <type>sight::ui::editor</type>
         <service>sight::module::ui::dicom::filter_selection_editor</service>
         <object>sight::data::vector</object>
-        <desc>Filter Selection Editor</desc>
+        <desc>filter Selection Editor</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">

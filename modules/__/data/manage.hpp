@@ -149,14 +149,14 @@ protected:
     void add();
 
     /// Adds a copy of object into the composite with the key given by config.
-    void addCopy();
+    void add_copy();
 
     /**
      * @brief Adds or swap the object into the composite with the key given by config.
      *
      * Adds the object if it is not present in the composite, else swaps it.
      */
-    void addOrSwap();
+    void add_or_swap();
 
     /// Swaps the object into the composite with the key given by config.
     void swap();
@@ -165,7 +165,7 @@ protected:
     void remove();
 
     /// Removes the object from the composite at the key given by config if it is present.
-    void removeIfPresent();
+    void remove_if_present();
 
     /// Removes all objects.
     void clear();
@@ -175,14 +175,14 @@ protected:
 
 private:
 
-    void internalAdd(bool _copy);
+    void internal_add(bool _copy);
 
-    std::string m_objectUid;    ///< uid of the object
-    std::string m_compositeKey; ///< key of the object to manage in the composite
-    std::string m_fieldName;    ///< name of the field to manage in the object
+    std::string m_object_uid;    ///< uid of the object
+    std::string m_composite_key; ///< key of the object to manage in the composite
+    std::string m_field_name;    ///< name of the field to manage in the object
 
-    sight::data::ptr<sight::data::object, sight::data::Access::inout> m_object {this, "object", false, true};
-    sight::data::ptr<sight::data::object, sight::data::Access::inout> m_container {this, "container"};
+    sight::data::ptr<sight::data::object, sight::data::access::inout> m_object {this, "object", false, true};
+    sight::data::ptr<sight::data::object, sight::data::access::inout> m_container {this, "container"};
 };
 
 } // namespace sight::module::data

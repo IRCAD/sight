@@ -96,10 +96,10 @@ protected:
 private Q_SLOTS:
 
     /// Slot called when querying on patient name
-    void queryPatientName();
+    void query_patient_name();
 
     /// Slot called when querying on study date
-    void queryStudyDate();
+    void query_study_date();
 
 private:
 
@@ -107,45 +107,45 @@ private:
      * @brief Display an error message
      * @param[in] message Error message to display
      */
-    static void displayErrorMessage(const std::string& _message);
+    static void display_error_message(const std::string& _message);
 
     /**
      * @brief Update the series_set with the series retrieved from the pacs
      * @param[in] series Series which must be added to the series_set
      */
-    void updateSeriesSet(const data::series_set::container_type& _series);
+    void update_series_set(const data::series_set::container_t& _series);
 
     /// Patient Name field
-    QPointer<QLineEdit> m_patientNameLineEdit;
+    QPointer<QLineEdit> m_patient_name_line_edit;
 
     /// Patient Name Query Button
-    QPointer<QPushButton> m_patientNameQueryButton;
+    QPointer<QPushButton> m_patient_name_query_button;
 
     /// Begin study date widget
-    QPointer<QDateEdit> m_beginStudyDateEdit;
+    QPointer<QDateEdit> m_begin_study_date_edit;
 
     /// End study date widget
-    QPointer<QDateEdit> m_endStudyDateEdit;
+    QPointer<QDateEdit> m_end_study_date_edit;
 
     /// Study Date Query Button
-    QPointer<QPushButton> m_studyDateQueryButton;
+    QPointer<QPushButton> m_study_date_query_button;
 
     /// Http Qt Client
-    sight::io::http::ClientQt m_clientQt;
+    sight::io::http::client_qt m_client_qt;
 
     /// Server hostname preference key
-    std::string m_serverHostnameKey;
+    std::string m_server_hostname_key;
 
     /// Server port preference key
-    std::string m_serverPortKey;
+    std::string m_server_port_key;
 
     /// Server hostname
-    std::string m_serverHostname {"localhost"};
+    std::string m_server_hostname {"localhost"};
 
     /// Server port
-    int m_serverPort {4242};
+    int m_server_port {4242};
 
-    sight::data::ptr<sight::data::series_set, sight::data::Access::inout> m_series_set {this, "seriesSet"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "seriesSet"};
 };
 
 } // namespace sight::module::io::dicomweb

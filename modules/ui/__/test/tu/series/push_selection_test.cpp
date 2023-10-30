@@ -35,10 +35,10 @@ namespace sight::module::ui::series::ut
 
 void push_selection_test::setUp()
 {
-    m_pushSelection = service::add("sight::module::ui::series::push_selection");
+    m_push_selection = service::add("sight::module::ui::series::push_selection");
     CPPUNIT_ASSERT_MESSAGE(
         "Failed to create service 'sight::module::ui::series::push_selection'",
-        m_pushSelection
+        m_push_selection
     );
 }
 
@@ -46,29 +46,29 @@ void push_selection_test::setUp()
 
 void push_selection_test::tearDown()
 {
-    if(!m_pushSelection->stopped())
+    if(!m_push_selection->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_pushSelection->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_push_selection->stop().get());
     }
 
-    service::remove(m_pushSelection);
+    service::remove(m_push_selection);
 }
 
 //------------------------------------------------------------------------------
 
-void push_selection_test::basicTest()
+void push_selection_test::basic_test()
 {
     auto selected_series = std::make_shared<data::vector>();
     auto series          = std::make_shared<data::series>();
     selected_series->push_back(series);
-    m_pushSelection->set_input(selected_series, "selectedSeries");
+    m_push_selection->set_input(selected_series, "selectedSeries");
     auto series_set = std::make_shared<data::series_set>();
-    m_pushSelection->set_inout(series_set, "seriesSet");
+    m_push_selection->set_inout(series_set, "seriesSet");
     CPPUNIT_ASSERT(series_set->empty());
-    CPPUNIT_ASSERT_NO_THROW(m_pushSelection->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_pushSelection->start().get());
-    CPPUNIT_ASSERT_NO_THROW(m_pushSelection->update().get());
-    CPPUNIT_ASSERT_NO_THROW(m_pushSelection->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(m_push_selection->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_push_selection->start().get());
+    CPPUNIT_ASSERT_NO_THROW(m_push_selection->update().get());
+    CPPUNIT_ASSERT_NO_THROW(m_push_selection->stop().get());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
     CPPUNIT_ASSERT((*series_set)[0] == series);
 }

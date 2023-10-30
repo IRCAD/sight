@@ -39,21 +39,21 @@ static std::recursive_mutex s_mutex;
 
 inline static std::string random_name(std::size_t _length)
 {
-    static constexpr std::string_view chars {
+    static constexpr std::string_view s_CHARS {
         "0123456789"
         "abcdefghijklmnopqrstuvwxyz"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     };
 
     static std::mt19937 rg {std::random_device {}()};
-    static std::uniform_int_distribution<std::string_view::size_type> pick(0, chars.size() - 1);
+    static std::uniform_int_distribution<std::string_view::size_type> pick(0, s_CHARS.size() - 1);
 
     std::string s;
     s.reserve(_length);
 
     for(std::size_t i = 0 ; i < _length ; ++i)
     {
-        s += chars[pick(rg)];
+        s += s_CHARS[pick(rg)];
     }
 
     return s;
@@ -150,7 +150,7 @@ inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > 
 
 temp_path::temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& _path_and_stream) :
     m_ofstream(_path_and_stream.second),
-    M_PATH(_path_and_stream.first)
+    m_path(_path_and_stream.first)
 {
 }
 
@@ -164,9 +164,9 @@ temp_path::~temp_path() noexcept
 
     // use std::error_code instead of exception
     std::error_code error;
-    std::filesystem::remove_all(M_PATH, error);
+    std::filesystem::remove_all(m_path, error);
 
-    SIGHT_WARN_IF("Failed to remove temporary directory '" + M_PATH.string() + "'", error);
+    SIGHT_WARN_IF("Failed to remove temporary directory '" + m_path.string() + "'", error);
 }
 
 //------------------------------------------------------------------------------
@@ -177,18 +177,18 @@ std::filesystem::path temp_path::shared_directory(const std::string& _subdirecto
     std::unique_lock guard(s_mutex);
 
     // Create the temporary root directory as a static variable
-    static const temp_path s_root(
+    static const temp_path s_ROOT(
         std::make_pair(generate_temp_dir(std::filesystem::temp_directory_path()), nullptr)
     );
 
     if(_subdirectory_prefix.empty())
     {
         // Return the path without creating a subdirectory
-        return s_root;
+        return s_ROOT;
     }
 
     // Return the path with a subdirectory
-    return generate_temp_dir(s_root, _subdirectory_prefix);
+    return generate_temp_dir(s_ROOT, _subdirectory_prefix);
 }
 
 temp_dir::temp_dir(const std::optional<std::filesystem::path>& _path) :

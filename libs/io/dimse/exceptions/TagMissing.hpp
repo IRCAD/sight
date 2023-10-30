@@ -29,9 +29,9 @@ namespace sight::io::dimse::exceptions
 {
 
 /**
- * @brief TagMissing Exceptions
+ * @brief TagMissing exceptions
  */
-class IO_DIMSE_CLASS_API TagMissing : public sight::io::dimse::exceptions::Base
+class IO_DIMSE_CLASS_API tag_missing : public sight::io::dimse::exceptions::base
 {
 public:
 
@@ -39,10 +39,10 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DIMSE_API TagMissing(const std::string& _message);
+    IO_DIMSE_API tag_missing(const std::string& _message);
 
     /// Destructor
-    IO_DIMSE_API ~TagMissing() noexcept override;
+    IO_DIMSE_API ~tag_missing() noexcept override;
 };
 
 } // namespace sight::io::dimse::exceptions

@@ -82,21 +82,21 @@ void cross_type_action_test::test(const std::string& _cross_type, double _expect
 
 //------------------------------------------------------------------------------
 
-void cross_type_action_test::fullTest()
+void cross_type_action_test::full_test()
 {
     test("full", 1);
 }
 
 //------------------------------------------------------------------------------
 
-void cross_type_action_test::halfTest()
+void cross_type_action_test::half_test()
 {
     test("half", 0.5);
 }
 
 //------------------------------------------------------------------------------
 
-void cross_type_action_test::hideTest()
+void cross_type_action_test::hide_test()
 {
     test("hide", 0);
 }

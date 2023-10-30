@@ -47,7 +47,7 @@ public:
         return std::make_shared<menu>(_sid);
     }
 
-    typedef std::vector<ui::menu_item_callback::sptr> callbacks_t;
+    using callbacks_t = std::vector<ui::menu_item_callback::sptr>;
 
     /// Constructor.
     menu(std::string _sid);
@@ -56,7 +56,7 @@ public:
     ~menu() override = default;
 
     /// Return the parent container
-    virtual ui::container::menu::sptr getParent();
+    virtual ui::container::menu::sptr get_parent();
 
     /**
      * @brief Return the menu_item associated with the actionSid.
@@ -114,8 +114,8 @@ public:
      *  - the associated action has attribute enabled="false" then the menuItem will be disabled.\n
      *  - the associated action has attribute enabled="true" then the menuItem will be enabled.\n
      *
-     * If an action manages by menuItems in a toolbar and/or in the menuBar has its attribute enabled="false",
-     * the associated menuItems will be disabled in toolbar and in menuBar.
+     * If an action manages by menuItems in a toolbar and/or in the menubar has its attribute enabled="false",
+     * the associated menuItems will be disabled in toolbar and in menubar.
      *
      * @warning If the action is present in different toolbars and menus it must be started only one time.
      *
@@ -144,31 +144,31 @@ public:
     /**
      * @brief This method is called when an action is clicked.
      */
-    virtual void onItemAction();
+    virtual void on_item_action();
 
     /**
      * @brief Returns callbacks associate with menu items.
      */
-    virtual callbacks_t getCallbacks()
+    virtual callbacks_t get_callbacks()
     {
         return m_callbacks;
     }
 
 protected:
 
-    typedef std::map<std::string, std::pair<unsigned int, bool> > SIDmenuMapType;
+    using sid_menu_map_t = std::map<std::string, std::pair<unsigned int, bool> >;
 
     /**
      * @brief All menu services ID (sid) managed is associated with pair containing:
      * an action's position in the menu and boolean describing if is started by the manager.
      */
-    SIDmenuMapType m_actionSids;
+    sid_menu_map_t m_action_sids;
 
     /**
-     * @brief All toolBar services ID managed and associated with pair containing:
+     * @brief All toolbar services ID managed and associated with pair containing:
      * menu's index vector and boolean describing if is started by the manager.
      */
-    SIDmenuMapType m_menuSids;
+    sid_menu_map_t m_menu_sids;
 
     /// Main service ID associate with this menu
     std::string m_sid;

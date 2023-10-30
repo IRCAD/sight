@@ -37,17 +37,17 @@ const core::com::slots::key_t reader::SET_FILE_FOLDER = "setFileFolder";
 static const core::com::slots::key_t READ_FOLDER_SLOT     = "readFolder";
 static const core::com::slots::key_t READ_FILE_SLOT       = "readFile";
 static const core::com::slots::key_t READ_FILES_SLOT      = "readFiles";
-static const core::com::slots::key_t OPEN_LOCATION_DIALOG = "openLocationDialog";
+static const core::com::slots::key_t OPEN_LOCATION_DIALOG = "open_location_dialog";
 
 //-----------------------------------------------------------------------------
 
 reader::reader() noexcept
 {
-    new_slot(READ_FOLDER_SLOT, &reader::readFolder, this);
-    new_slot(READ_FILE_SLOT, &reader::readFile, this);
-    new_slot(READ_FILES_SLOT, &reader::readFiles, this);
-    new_slot(OPEN_LOCATION_DIALOG, &reader::openLocationDialog, this);
-    new_slot(SET_FILE_FOLDER, &reader::setFileFolder, this);
+    new_slot(READ_FOLDER_SLOT, &reader::read_folder, this);
+    new_slot(READ_FILE_SLOT, &reader::read_file, this);
+    new_slot(READ_FILES_SLOT, &reader::read_files, this);
+    new_slot(OPEN_LOCATION_DIALOG, &reader::open_location_dialog, this);
+    new_slot(SET_FILE_FOLDER, &reader::set_file_folder, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,14 +57,14 @@ reader::~reader() noexcept =
 
 //-----------------------------------------------------------------------------
 
-std::string reader::getSelectorDialogTitle()
+std::string reader::get_selector_dialog_title()
 {
     return "Choose a file";
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> reader::getSupportedExtensions()
+std::vector<std::string> reader::get_supported_extensions()
 {
     return {};
 }
@@ -73,7 +73,7 @@ std::vector<std::string> reader::getSupportedExtensions()
 
 const std::filesystem::path& reader::get_file() const
 {
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILE));
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::file));
     SIGHT_THROW_IF("Exactly one file must be defined in location", m_locations.size() != 1);
     return m_locations.front();
 }
@@ -82,7 +82,7 @@ const std::filesystem::path& reader::get_file() const
 
 void reader::set_file(const std::filesystem::path& _file)
 {
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILE));
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::file));
     m_locations.clear();
     m_locations.push_back(_file);
 }
@@ -91,7 +91,7 @@ void reader::set_file(const std::filesystem::path& _file)
 
 const io::service::locations_t& reader::get_files() const
 {
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILES));
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::files));
     SIGHT_THROW_IF("At least one file must be define in location", m_locations.empty());
     return m_locations;
 }
@@ -100,7 +100,7 @@ const io::service::locations_t& reader::get_files() const
 
 void reader::set_files(const io::service::locations_t& _files)
 {
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILES));
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::files));
     m_locations = _files;
 }
 
@@ -108,7 +108,7 @@ void reader::set_files(const io::service::locations_t& _files)
 
 const std::filesystem::path& reader::get_folder() const
 {
-    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::service::FOLDER));
+    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->get_path_type() & io::service::folder));
     SIGHT_THROW_IF("Exactly one folder must be define in location", m_locations.size() != 1);
     return m_locations.front();
 }
@@ -117,19 +117,19 @@ const std::filesystem::path& reader::get_folder() const
 
 void reader::set_folder(const std::filesystem::path& _folder)
 {
-    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::service::FOLDER));
+    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->get_path_type() & io::service::folder));
     m_locations.clear();
     m_locations.push_back(_folder);
 }
 
 //-----------------------------------------------------------------------------
 
-void reader::setFileFolder(std::filesystem::path _folder)
+void reader::set_file_folder(std::filesystem::path _folder)
 {
     SIGHT_THROW_IF(
         "This reader doesn't manage file or files",
-        !(this->getIOPathType() & io::service::FILE)
-        && !(this->getIOPathType() & io::service::FILES)
+        !(this->get_path_type() & io::service::file)
+        && !(this->get_path_type() & io::service::files)
     );
 
     for(auto& file : m_locations)
@@ -141,7 +141,7 @@ void reader::setFileFolder(std::filesystem::path _folder)
 
 //-----------------------------------------------------------------------------
 
-const io::service::locations_t& reader::getLocations() const
+const io::service::locations_t& reader::get_locations() const
 {
     SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty());
     return m_locations;
@@ -149,7 +149,7 @@ const io::service::locations_t& reader::getLocations() const
 
 //-----------------------------------------------------------------------------
 
-void reader::clearLocations()
+void reader::clear_locations()
 {
     m_locations.clear();
 }
@@ -162,25 +162,25 @@ void reader::configuring()
 
     SIGHT_ASSERT(
         "Generic configuring method is only available for io service that use paths.",
-        !(this->getIOPathType() & io::service::TYPE_NOT_DEFINED)
+        !(this->get_path_type() & io::service::type_not_defined)
     );
 
     SIGHT_ASSERT(
         "This reader does not manage folders and a folder path is given in the configuration",
-        (this->getIOPathType() & io::service::FOLDER) || (config.count("folder") == 0)
+        (this->get_path_type() & io::service::folder) || (config.count("folder") == 0)
     );
 
     SIGHT_ASSERT(
         "This reader does not manage files and a file path is given in the configuration",
-        (this->getIOPathType() & io::service::FILE || this->getIOPathType() & io::service::FILES)
+        (this->get_path_type() & io::service::file || this->get_path_type() & io::service::files)
         || (config.count("file") == 0)
     );
 
-    m_windowTitle = config.get("windowTitle", "");
+    m_window_title = config.get("windowTitle", "");
 
-    if((this->getIOPathType() & io::service::FILE) != 0)
+    if((this->get_path_type() & io::service::file) != 0)
     {
-        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::service::FILES);
+        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->get_path_type() & io::service::files);
         SIGHT_THROW_IF("At least one file must be defined in configuration", config.count("file") > 1);
         if(config.count("file") == 1)
         {
@@ -195,9 +195,9 @@ void reader::configuring()
         }
     }
 
-    if((this->getIOPathType() & io::service::FILES) != 0)
+    if((this->get_path_type() & io::service::files) != 0)
     {
-        SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::service::FILE);
+        SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->get_path_type() & io::service::file);
 
         io::service::locations_t locations;
 
@@ -219,7 +219,7 @@ void reader::configuring()
         this->set_files(locations);
     }
 
-    if((this->getIOPathType() & io::service::FOLDER) != 0)
+    if((this->get_path_type() & io::service::folder) != 0)
     {
         SIGHT_THROW_IF("At least one folder must be defined in configuration", config.count("folder") > 1);
         if(config.count("folder") == 1)
@@ -248,28 +248,28 @@ void reader::configuring()
 
 //-----------------------------------------------------------------------------
 
-io::service::IOPathType reader::getIOPathType() const
+io::service::path_type_t reader::get_path_type() const
 {
-    return io::service::TYPE_NOT_DEFINED;
+    return io::service::type_not_defined;
 }
 
 //-----------------------------------------------------------------------------
 
-bool reader::hasLocationDefined() const
+bool reader::has_location_defined() const
 {
     return !m_locations.empty();
 }
 
 //-----------------------------------------------------------------------------
 
-bool reader::hasFailed() const
+bool reader::has_failed() const
 {
-    return m_readFailed;
+    return m_read_failed;
 }
 
 //-----------------------------------------------------------------------------
 
-void reader::readFolder(std::filesystem::path _folder)
+void reader::read_folder(std::filesystem::path _folder)
 {
     this->set_folder(_folder);
     this->updating();
@@ -277,7 +277,7 @@ void reader::readFolder(std::filesystem::path _folder)
 
 //-----------------------------------------------------------------------------
 
-void reader::readFile(std::filesystem::path _file)
+void reader::read_file(std::filesystem::path _file)
 {
     this->set_file(_file);
     this->updating();
@@ -285,7 +285,7 @@ void reader::readFile(std::filesystem::path _file)
 
 //-----------------------------------------------------------------------------
 
-void reader::readFiles(io::service::locations_t _files)
+void reader::read_files(io::service::locations_t _files)
 {
     this->set_files(_files);
     this->updating();

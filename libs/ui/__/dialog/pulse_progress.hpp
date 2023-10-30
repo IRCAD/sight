@@ -57,10 +57,10 @@ public:
     );
 
     ///set the title for the dialog
-    UI_API void setTitle(const std::string& _title) override;
+    UI_API void set_title(const std::string& _title) override;
 
     ///set the message for the dialog
-    UI_API void setMessage(const std::string& _message) override;
+    UI_API void set_message(const std::string& _message) override;
 
     ///show the pulse progress dialog
     UI_API void show() override;

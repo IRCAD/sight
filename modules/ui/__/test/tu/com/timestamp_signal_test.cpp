@@ -36,10 +36,10 @@ namespace sight::module::ui::com::ut
 
 void timestamp_signal_test::setUp()
 {
-    m_timestampSignal = service::add("sight::module::ui::com::timestamp_signal");
+    m_timestamp_signal = service::add("sight::module::ui::com::timestamp_signal");
     CPPUNIT_ASSERT_MESSAGE(
         "Failed to create service 'sight::module::ui::com::timestamp_signal'",
-        m_timestampSignal
+        m_timestamp_signal
     );
 }
 
@@ -48,12 +48,12 @@ void timestamp_signal_test::setUp()
 void timestamp_signal_test::tearDown()
 {
     m_worker->stop();
-    if(!m_timestampSignal->stopped())
+    if(!m_timestamp_signal->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_timestamp_signal->stop().get());
     }
 
-    service::remove(m_timestampSignal);
+    service::remove(m_timestamp_signal);
 }
 
 //------------------------------------------------------------------------------
@@ -64,9 +64,9 @@ void timestamp_signal_test::test(bool _use_system_clock)
 
     boost::property_tree::ptree ptree;
     ptree.put("useSystemClock", _use_system_clock);
-    m_timestampSignal->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->start().get());
+    m_timestamp_signal->set_config(ptree);
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_signal->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_signal->start().get());
 
     std::vector<double> timestamps;
     auto triggered_slot = core::com::new_slot(
@@ -76,15 +76,15 @@ void timestamp_signal_test::test(bool _use_system_clock)
         });
     m_worker = core::thread::worker::make();
     triggered_slot->set_worker(m_worker);
-    m_timestampSignal->signal("triggered")->connect(triggered_slot);
+    m_timestamp_signal->signal("triggered")->connect(triggered_slot);
 
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->update().get());
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_signal->update().get());
     SIGHT_TEST_WAIT(1 == timestamps.size());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), timestamps.size());
 
     std::this_thread::sleep_for(1000ms);
 
-    CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->update().get());
+    CPPUNIT_ASSERT_NO_THROW(m_timestamp_signal->update().get());
     SIGHT_TEST_WAIT(2 == timestamps.size());
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), timestamps.size());
 
@@ -93,14 +93,14 @@ void timestamp_signal_test::test(bool _use_system_clock)
 
 //------------------------------------------------------------------------------
 
-void timestamp_signal_test::systemClockTest()
+void timestamp_signal_test::system_clock_test()
 {
     test(true);
 }
 
 //------------------------------------------------------------------------------
 
-void timestamp_signal_test::highResClockTest()
+void timestamp_signal_test::high_res_clock_test()
 {
     test(false);
 }

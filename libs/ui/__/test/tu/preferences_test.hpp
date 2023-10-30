@@ -35,12 +35,12 @@ namespace sight::ui::ut
 class preferences_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(preferences_test);
-CPPUNIT_TEST(runtimeTest);
-CPPUNIT_TEST(simpleTest);
-CPPUNIT_TEST(delimeterTest);
-CPPUNIT_TEST(parsedGetTest);
-CPPUNIT_TEST(encryptedTest);
-CPPUNIT_TEST(forcedEncryptionTest);
+CPPUNIT_TEST(runtime_test);
+CPPUNIT_TEST(simple_test);
+CPPUNIT_TEST(delimeter_test);
+CPPUNIT_TEST(parsed_get_test);
+CPPUNIT_TEST(encrypted_test);
+CPPUNIT_TEST(forced_encryption_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,18 +49,18 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void runtimeTest();
-    void simpleTest();
-    static void delimeterTest();
-    static void parsedGetTest();
-    void encryptedTest();
-    void forcedEncryptionTest();
+    void runtime_test();
+    void simple_test();
+    static void delimeter_test();
+    static void parsed_get_test();
+    void encrypted_test();
+    void forced_encryption_test();
 
 private:
 
     core::runtime::profile::sptr m_profile;
-    std::filesystem::path m_preferencesPath;
-    std::filesystem::path m_encryptedPath;
+    std::filesystem::path m_preferences_path;
+    std::filesystem::path m_encrypted_path;
 };
 
 } // namespace sight::ui::ut

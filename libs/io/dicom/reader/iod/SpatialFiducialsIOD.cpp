@@ -37,25 +37,25 @@ namespace sight::io::dicom::reader::iod
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::SpatialFiducialsIOD(
+spatial_fiducials_iod::spatial_fiducials_iod(
     const data::dicom_series::csptr& _dicom_series,
-    const io::dicom::container::DicomInstance::sptr& _instance,
+    const io::dicom::container::dicom_instance::sptr& _instance,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::reader::iod::InformationObjectDefinition(_dicom_series, _instance, _logger, _progress, _cancel)
+    io::dicom::reader::iod::information_object_definition(_dicom_series, _instance, _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::~SpatialFiducialsIOD()
+spatial_fiducials_iod::~spatial_fiducials_iod()
 = default;
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::read(data::series::sptr _series)
+void spatial_fiducials_iod::read(data::series::sptr _series)
 {
     // Retrieve images
     data::image_series::sptr image_series = std::dynamic_pointer_cast<data::image_series>(_series);
@@ -65,7 +65,7 @@ void SpatialFiducialsIOD::read(data::series::sptr _series)
     SPTR(gdcm::Reader) reader = std::make_shared<gdcm::Reader>();
 
     // Read the first file
-    data::dicom_series::dicom_container_t dicom_container = m_dicomSeries->getDicomContainer();
+    data::dicom_series::dicom_container_t dicom_container = m_dicom_series->get_dicom_container();
 
     if(dicom_container.size() > 1)
     {
@@ -82,7 +82,7 @@ void SpatialFiducialsIOD::read(data::series::sptr _series)
 
     const bool success = reader->Read();
     SIGHT_THROW_EXCEPTION_IF(
-        io::dicom::exception::Failed(
+        io::dicom::exception::failed(
             "Unable to read the DICOM instance \""
             + buffer_obj->get_stream_info().fs_file.string()
             + "\" using the GDCM Reader."
@@ -91,9 +91,9 @@ void SpatialFiducialsIOD::read(data::series::sptr _series)
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::SpatialFiducials spatial_fiducials_ie(
-        m_dicomSeries, reader, m_instance, image_series,
-        m_logger, m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::spatial_fiducials spatial_fiducials_ie(
+        m_dicom_series, reader, m_instance, image_series,
+        m_logger, m_progress_callback, m_cancel_requested_callback);
 
     // Retrieve dataset
     const gdcm::DataSet& dataset_root = reader->GetFile().GetDataSet();
@@ -119,11 +119,11 @@ void SpatialFiducialsIOD::read(data::series::sptr _series)
             gdcm::Item fiducial_item              = fiducial_sequence->GetItem(j);
             const gdcm::DataSet& fiducial_dataset = fiducial_item.GetNestedDataSet();
             const std::string shape_type          =
-                io::dicom::helper::DicomDataReader::getTagValue<0x0070, 0x0306>(fiducial_dataset);
+                io::dicom::helper::dicom_data_reader::get_tag_value<0x0070, 0x0306>(fiducial_dataset);
 
             if(shape_type == "POINT")
             {
-                spatial_fiducials_ie.readLandmark(fiducial_dataset);
+                spatial_fiducials_ie.read_landmark(fiducial_dataset);
             }
             else
             {

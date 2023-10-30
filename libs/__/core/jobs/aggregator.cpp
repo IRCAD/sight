@@ -95,11 +95,11 @@ void aggregator::add(const core::jobs::base::sptr& _i_job, double _weight)
 
     core::mt::read_to_write_lock lock(m_mutex);
 
-    SIGHT_ASSERT("Jobs can't be added when aggregator is running", m_state == WAITING || m_state == RUNNING);
+    SIGHT_ASSERT("Jobs can't be added when aggregator is running", m_state == waiting || m_state == running);
 
     const auto norm_value = std::uint64_t(_weight * 100);
 
-    if(m_state == WAITING || m_state == RUNNING)
+    if(m_state == waiting || m_state == running)
     {
         m_job_info[_i_job.get()] = job_info(*_i_job);
         auto& job_info = m_job_info[_i_job.get()];

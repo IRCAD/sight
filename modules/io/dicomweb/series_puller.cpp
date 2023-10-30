@@ -60,8 +60,8 @@ void series_puller::configuring()
 {
     const auto& config = this->get_config();
 
-    m_dicomReaderType      = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
-    m_dicomReaderSrvConfig = config.get<std::string>("config.<xmlattr>.readerConfig", m_dicomReaderSrvConfig);
+    m_dicom_reader_type       = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicom_reader_type);
+    m_dicom_reader_srv_config = config.get<std::string>("config.<xmlattr>.readerConfig", m_dicom_reader_srv_config);
 
     //Parse server port and hostname
     if(config.count("server") != 0U)
@@ -70,8 +70,8 @@ void series_puller::configuring()
         const std::string::size_type split_position = server_info.find(':');
         SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_serverHostnameKey = server_info.substr(0, split_position);
-        m_serverPortKey     = server_info.substr(split_position + 1, server_info.size());
+        m_server_hostname_key = server_info.substr(0, split_position);
+        m_server_port_key     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -87,33 +87,33 @@ void series_puller::starting()
     m_tmp_series_set = std::make_shared<data::series_set>();
 
     // Create reader
-    m_dicomReader = service::add<sight::io::service::reader>(m_dicomReaderType);
+    m_dicom_reader = service::add<sight::io::service::reader>(m_dicom_reader_type);
     SIGHT_ASSERT(
-        "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in module::io::dicomweb::series_puller.",
-        m_dicomReader
+        "Unable to create a reader of type: \"" + m_dicom_reader_type + "\" in module::io::dicomweb::series_puller.",
+        m_dicom_reader
     );
-    m_dicomReader->set_inout(m_tmp_series_set, sight::io::service::s_DATA_KEY);
+    m_dicom_reader->set_inout(m_tmp_series_set, sight::io::service::DATA_KEY);
 
-    if(!m_dicomReaderSrvConfig.empty())
+    if(!m_dicom_reader_srv_config.empty())
     {
         // Get the config
-        const auto reader_config = service::extension::config::getDefault()->get_service_config(
-            m_dicomReaderSrvConfig,
+        const auto reader_config = service::extension::config::get_default()->get_service_config(
+            m_dicom_reader_srv_config,
             "sight::io::service::reader"
         );
 
         SIGHT_ASSERT(
             "Sorry, there is no service configuration "
-            << m_dicomReaderSrvConfig
+            << m_dicom_reader_srv_config
             << " for sight::io::service::reader",
             !reader_config.empty()
         );
 
-        m_dicomReader->set_config(reader_config);
+        m_dicom_reader->set_config(reader_config);
     }
 
-    m_dicomReader->configure();
-    m_dicomReader->start();
+    m_dicom_reader->configure();
+    m_dicom_reader->start();
 }
 
 //------------------------------------------------------------------------------
@@ -121,8 +121,8 @@ void series_puller::starting()
 void series_puller::stopping()
 {
     // Stop reader service
-    m_dicomReader->stop();
-    service::remove(m_dicomReader);
+    m_dicom_reader->stop();
+    service::remove(m_dicom_reader);
 }
 
 //------------------------------------------------------------------------------
@@ -132,65 +132,65 @@ void series_puller::updating()
     try
     {
         ui::preferences preferences;
-        m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
-        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
+        m_server_port     = preferences.delimited_get(m_server_port_key, m_server_port);
+        m_server_hostname = preferences.delimited_get(m_server_hostname_key, m_server_hostname);
     }
     catch(...)
     {
         // Do nothing
     }
 
-    if(m_isPulling)
+    if(m_is_pulling)
     {
         // Display a message to inform the user that the service is already pulling data.
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Pulling Series");
-        message_box.setMessage(
+        message_box.set_title("Pulling Series");
+        message_box.set_message(
             "The service is already pulling data. Please wait until the pulling is done "
             "before sending a new pull request."
         );
-        message_box.setIcon(ui::dialog::message::INFO);
-        message_box.addButton(ui::dialog::message::OK);
+        message_box.set_icon(ui::dialog::message::info);
+        message_box.add_button(ui::dialog::message::ok);
         message_box.show();
     }
     else
     {
-        const auto selected_series = m_selectedSeries.lock();
+        const auto selected_series = m_selected_series.lock();
         if(selected_series->empty())
         {
             // Display a message to inform the user that there is no series selected.
             sight::ui::dialog::message message_box;
-            message_box.setTitle("Pulling Series");
-            message_box.setMessage("Unable to pull series, there is no series selected. ");
-            message_box.setIcon(ui::dialog::message::INFO);
-            message_box.addButton(ui::dialog::message::OK);
+            message_box.set_title("Pulling Series");
+            message_box.set_message("Unable to pull series, there is no series selected. ");
+            message_box.set_icon(ui::dialog::message::info);
+            message_box.add_button(ui::dialog::message::ok);
             message_box.show();
         }
         else
         {
-            this->pullSeries();
+            this->pull_series();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void series_puller::pullSeries()
+void series_puller::pull_series()
 {
     // Catch any errors
     try
     {
         // Clear map of Dicom series being pulled
-        m_pullingDicomSeriesMap.clear();
+        m_pulling_dicom_series_map.clear();
 
         // Set pulling boolean to true
-        m_isPulling = true;
+        m_is_pulling = true;
 
         // Reset Counters
-        m_seriesIndex   = 0;
-        m_instanceCount = 0;
+        m_series_index   = 0;
+        m_instance_count = 0;
 
-        const auto selected_series = m_selectedSeries.lock();
+        const auto selected_series = m_selected_series.lock();
 
         // Find which selected series must be pulled
         dicom_series_container_t pull_series_vector;
@@ -204,16 +204,16 @@ void series_puller::pullSeries()
             // Check if the series must be pulled
             if(series
                && std::find(
-                   m_localSeries.begin(),
-                   m_localSeries.end(),
-                   series->getSeriesInstanceUID()
-               ) == m_localSeries.end())
+                   m_local_series.begin(),
+                   m_local_series.end(),
+                   series->get_series_instance_uid()
+               ) == m_local_series.end())
             {
                 // Add series in the pulling series map
-                m_pullingDicomSeriesMap[series->getSeriesInstanceUID()] = series;
+                m_pulling_dicom_series_map[series->get_series_instance_uid()] = series;
 
                 pull_series_vector.push_back(series);
-                m_instanceCount += series->numInstances();
+                m_instance_count += series->num_instances();
             }
 
             selected_series_vector.push_back(series);
@@ -223,8 +223,8 @@ void series_puller::pullSeries()
         if(!pull_series_vector.empty())
         {
             /// GET
-            const InstanceUIDContainerType& series_instances_ui_ds =
-                sight::io::http::helper::Series::toSeriesInstanceUIDContainer(pull_series_vector);
+            const instance_uid_container_t& series_instances_ui_ds =
+                sight::io::http::helper::series::to_series_instance_uid_container(pull_series_vector);
             for(const std::string& series_instances_uid : series_instances_ui_ds)
             {
                 // Find Series according to SeriesInstanceUID
@@ -237,26 +237,26 @@ void series_puller::pullSeries()
                 body.insert("Limit", 0);
 
                 /// Url PACS
-                const std::string pacs_server("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+                const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
 
                 /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-                sight::io::http::Request::sptr request = sight::io::http::Request::New(
+                sight::io::http::request::sptr request = sight::io::http::request::New(
                     pacs_server + "/tools/find"
                 );
                 QByteArray series_answer;
                 try
                 {
-                    series_answer = m_clientQt.post(request, QJsonDocument(body).toJson());
+                    series_answer = m_client_qt.post(request, QJsonDocument(body).toJson());
                 }
-                catch(sight::io::http::exceptions::HostNotFound& exception)
+                catch(sight::io::http::exceptions::host_not_found& exception)
                 {
                     std::stringstream ss;
                     ss << "Host not found:\n"
                     << " Please check your configuration: \n"
-                    << "Pacs host name: " << m_serverHostname << "\n"
-                    << "Pacs port: " << m_serverPort << "\n";
+                    << "Pacs host name: " << m_server_hostname << "\n"
+                    << "Pacs port: " << m_server_port << "\n";
 
-                    sight::module::io::dicomweb::series_puller::displayErrorMessage(ss.str());
+                    sight::module::io::dicomweb::series_puller::display_error_message(ss.str());
                     SIGHT_WARN(exception.what());
                 }
 
@@ -271,7 +271,7 @@ void series_puller::pullSeries()
                     /// GET all Instances by Series.
                     const std::string& instances_url(std::string(pacs_server) + "/series/" + series_uid);
                     const QByteArray& instances_answer =
-                        m_clientQt.get(sight::io::http::Request::New(instances_url));
+                        m_client_qt.get(sight::io::http::request::New(instances_url));
                     json_response = QJsonDocument::fromJson(instances_answer);
                     const QJsonObject& json_obj       = json_response.object();
                     const QJsonArray& instances_array = json_obj["Instances"].toArray();
@@ -286,15 +286,15 @@ void series_puller::pullSeries()
 
                         try
                         {
-                            m_path = m_clientQt.get_file(sight::io::http::Request::New(instance_url));
+                            m_path = m_client_qt.get_file(sight::io::http::request::New(instance_url));
                         }
-                        catch(sight::io::http::exceptions::ContentNotFound& exception)
+                        catch(sight::io::http::exceptions::content_not_found& exception)
                         {
                             std::stringstream ss;
                             ss << "Content not found:  \n"
                             << "Unable download the DICOM instance. \n";
 
-                            sight::module::io::dicomweb::series_puller::displayErrorMessage(ss.str());
+                            sight::module::io::dicomweb::series_puller::display_error_message(ss.str());
                             SIGHT_WARN(exception.what());
                         }
 
@@ -311,44 +311,44 @@ void series_puller::pullSeries()
         }
 
         // Read series if there is no error
-        if(m_isPulling)
+        if(m_is_pulling)
         {
-            this->readLocalSeries(selected_series_vector);
+            this->read_local_series(selected_series_vector);
         }
 
         // Set pulling boolean to false
-        m_isPulling = false;
+        m_is_pulling = false;
     }
-    catch(sight::io::http::exceptions::Base& exception)
+    catch(sight::io::http::exceptions::base& exception)
     {
         std::stringstream ss;
         ss << "Unknown error.";
-        sight::module::io::dicomweb::series_puller::displayErrorMessage(ss.str());
+        sight::module::io::dicomweb::series_puller::display_error_message(ss.str());
         SIGHT_WARN(exception.what());
-        m_isPulling = false;
+        m_is_pulling = false;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void series_puller::readLocalSeries(dicom_series_container_t _selected_series)
+void series_puller::read_local_series(dicom_series_container_t _selected_series)
 {
     const auto dest_series_set = m_series_set.lock();
 
     const auto scoped_emitter = dest_series_set->scoped_emit();
 
     // Read only series that are not in the series_set
-    const InstanceUIDContainerType& already_loaded_series =
-        sight::io::http::helper::Series::toSeriesInstanceUIDContainer(dest_series_set->get_content());
+    const instance_uid_container_t& already_loaded_series =
+        sight::io::http::helper::series::to_series_instance_uid_container(dest_series_set->get_content());
 
     for(const auto& series : _selected_series)
     {
-        const std::string& selected_series_uid = series->getSeriesInstanceUID();
+        const std::string& selected_series_uid = series->get_series_instance_uid();
 
         // Add the series to the local series vector
-        if(std::find(m_localSeries.begin(), m_localSeries.end(), selected_series_uid) == m_localSeries.end())
+        if(std::find(m_local_series.begin(), m_local_series.end(), selected_series_uid) == m_local_series.end())
         {
-            m_localSeries.push_back(selected_series_uid);
+            m_local_series.push_back(selected_series_uid);
         }
 
         // Check if the series is loaded
@@ -361,8 +361,8 @@ void series_puller::readLocalSeries(dicom_series_container_t _selected_series)
             // Clear temporary series
             m_tmp_series_set->clear();
 
-            m_dicomReader->set_folder(m_path);
-            m_dicomReader->update();
+            m_dicom_reader->set_folder(m_path);
+            m_dicom_reader->update();
 
             // Merge series
             std::copy(m_tmp_series_set->cbegin(), m_tmp_series_set->cend(), sight::data::inserter(*dest_series_set));
@@ -372,14 +372,14 @@ void series_puller::readLocalSeries(dicom_series_container_t _selected_series)
 
 //------------------------------------------------------------------------------
 
-void series_puller::displayErrorMessage(const std::string& _message)
+void series_puller::display_error_message(const std::string& _message)
 {
     SIGHT_WARN("Error: " + _message);
     sight::ui::dialog::message message_box;
-    message_box.setTitle("Error");
-    message_box.setMessage(_message);
-    message_box.setIcon(ui::dialog::message::CRITICAL);
-    message_box.addButton(ui::dialog::message::OK);
+    message_box.set_title("Error");
+    message_box.set_message(_message);
+    message_box.set_icon(ui::dialog::message::critical);
+    message_box.add_button(ui::dialog::message::ok);
     message_box.show();
 }
 

@@ -37,9 +37,9 @@ namespace sight::app::ut
 class data_parser_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(data_parser_test);
-CPPUNIT_TEST(testObjectCreationWithConfig);
-CPPUNIT_TEST(testImageParser);
-CPPUNIT_TEST(testTransferFunctionParser);
+CPPUNIT_TEST(test_object_creation_with_config);
+CPPUNIT_TEST(test_image_parser);
+CPPUNIT_TEST(test_transfer_function_parser);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,14 +48,14 @@ public:
     void tearDown() override;
 
     /// test object with services creation from a configuration
-    static void testObjectCreationWithConfig();
-    static void testImageParser();
-    static void testTransferFunctionParser();
+    static void test_object_creation_with_config();
+    static void test_image_parser();
+    static void test_transfer_function_parser();
 
 private:
 
     /// Create a configuration to build an object
-    static service::config_t buildObjectConfig();
+    static service::config_t build_object_config();
 };
 
 } // namespace sight::app::ut

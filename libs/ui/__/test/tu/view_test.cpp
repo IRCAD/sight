@@ -32,17 +32,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::ut::view_test);
 namespace sight::ui::ut
 {
 
-class TestView : public ui::detail::registry::view
+class test_view : public ui::detail::registry::view
 {
 public:
 
-    TestView() = delete;
-    explicit TestView(const std::string& _sid) :
+    test_view() = delete;
+    explicit test_view(const std::string& _sid) :
         ui::detail::registry::view(_sid)
     {
     }
 
-    ~TestView() override = default;
+    ~test_view() override = default;
 
     friend view_test;
 };
@@ -61,22 +61,22 @@ void view_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void view_test::configuringTest()
+void view_test::configuring_test()
 {
     {
-        auto view = std::make_shared<TestView>("view");
+        auto view = std::make_shared<test_view>("view");
 
         std::stringstream xml_config;
         xml_config << ""
-                      "<menuBar sid=\"myMenu\"/>"
-                      "<toolBar sid=\"myToolBar\"/>"
+                      "<menubar sid=\"myMenu\"/>"
+                      "<toolbar sid=\"myToolBar\"/>"
                       "<view sid=\"view1\" start=\"true\"/>"
                       "<view sid=\"view2\" start=\"true\"/>"
                       "<slideView sid=\"slideView1\" start=\"false\"/>"
                       "<view sid=\"view3\" />"
                       "<slideView sid=\"slideView2\" start=\"true\"/>"
-                      "<menuBar sid=\"ignored\"/>"
-                      "<toolBar sid=\"ignored\"/>"
+                      "<menubar sid=\"ignored\"/>"
+                      "<toolbar sid=\"ignored\"/>"
                       "";
         boost::property_tree::ptree config;
         boost::property_tree::read_xml(xml_config, config);
@@ -95,8 +95,8 @@ void view_test::configuringTest()
         CPPUNIT_ASSERT_EQUAL(true, view->m_sids.find("slideView2")->second.second);
         CPPUNIT_ASSERT(view->m_sids.find("view4") == view->m_sids.end());
         CPPUNIT_ASSERT(view->m_sids.find("slideView3") == view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(std::string("myMenu"), view->m_menuBarSid.first);
-        CPPUNIT_ASSERT_EQUAL(std::string("myToolBar"), view->m_toolBarSid.first);
+        CPPUNIT_ASSERT_EQUAL(std::string("myMenu"), view->m_menu_bar_sid.first);
+        CPPUNIT_ASSERT_EQUAL(std::string("myToolBar"), view->m_tool_bar_sid.first);
     }
 }
 

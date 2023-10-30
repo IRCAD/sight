@@ -43,7 +43,7 @@ executable_factory::~executable_factory()
 
 //------------------------------------------------------------------------------
 
-std::string executable_factory::get_type() const
+std::string executable_factory::type() const
 {
     return m_type;
 }

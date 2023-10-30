@@ -25,6 +25,6 @@
 namespace sight::io::service
 {
 
-const std::string s_DATA_KEY = "data";
+const std::string DATA_KEY = "data";
 
 } // namespace sight::io::service

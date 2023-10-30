@@ -31,16 +31,16 @@
 namespace sight::io::session::detail::resection_db
 {
 
-constexpr static auto s_SafeResection {"SafeResection"};
-constexpr static auto s_PlaneList {"PlaneList"};
-constexpr static auto s_IsSafePart {"IsSafePart"};
-constexpr static auto s_IsValid {"IsValid"};
-constexpr static auto s_IsVisible {"IsVisible"};
+constexpr static auto SAFE_RESECTION {"SafeResection"};
+constexpr static auto PLANE_LIST {"PlaneList"};
+constexpr static auto IS_SAFE_PART {"IsSafePart"};
+constexpr static auto IS_VALID {"IsValid"};
+constexpr static auto IS_VISIBLE {"IsVisible"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -53,10 +53,10 @@ inline static void write(
     helper::write_version<data::resection_db>(_tree, 1);
 
     // Serialize attributes
-    _children[s_SafeResection] = resection_db->getSafeResection();
+    _children[SAFE_RESECTION] = resection_db->get_safe_resection();
 
     std::size_t index = 0;
-    for(const auto& resection : resection_db->getResections())
+    for(const auto& resection : resection_db->get_resections())
     {
         _children[data::resection::classname() + std::to_string(index++)] = resection;
     }
@@ -65,7 +65,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::resection_db::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -78,10 +78,10 @@ inline static data::resection_db::sptr read(
     // Check version number. Not mandatory, but could help for future release
     helper::read_version<data::resection_db>(_tree, 0, 1);
 
-    resection_db->setSafeResection(std::dynamic_pointer_cast<data::resection>(_children.at(s_SafeResection)));
+    resection_db->set_safe_resection(std::dynamic_pointer_cast<data::resection>(_children.at(SAFE_RESECTION)));
 
     // Clearing is required in case the object is reused
-    resection_db->setResections(data::resection_db::resection_container_t());
+    resection_db->set_resections(data::resection_db::resection_container_t());
 
     for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
@@ -92,7 +92,7 @@ inline static data::resection_db::sptr read(
             break;
         }
 
-        resection_db->addResection(std::dynamic_pointer_cast<data::resection>(it->second));
+        resection_db->add_resection(std::dynamic_pointer_cast<data::resection>(it->second));
     }
 
     return resection_db;

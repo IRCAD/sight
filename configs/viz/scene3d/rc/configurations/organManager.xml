@@ -54,7 +54,7 @@
         <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::organ_material_editor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" >
+        <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::representation_editor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
         <service uid="textureSelectorSrv" type="sight::module::ui::viz::texture_selector" >

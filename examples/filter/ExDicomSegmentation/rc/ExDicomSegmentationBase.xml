@@ -29,7 +29,7 @@
 
         <service uid="containerView" type="sight::module::ui::view" >
             <gui>
-                <toolBar/>
+                <toolbar/>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" />
@@ -38,13 +38,13 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" start="true" />
                 <view sid="selectorSrv" start="true" />
                 <view wid="previewView" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::tool_bar" >
+        <service uid="toolBarView" type="sight::module::ui::toolbar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::flaticons/BlueLoad.svg" />

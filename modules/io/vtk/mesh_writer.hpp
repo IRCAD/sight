@@ -67,7 +67,7 @@ namespace sight::module::io::vtk
  * @subsection Input Input
  * - \b data [sight::data::mesh]: mesh to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
 class MODULE_IO_VTK_CLASS_API mesh_writer : public sight::io::service::writer
@@ -79,7 +79,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(mesh_writer, sight::io::service::writer);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Constructor. Do nothing.
@@ -92,11 +92,11 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    MODULE_IO_VTK_API void openLocationDialog() override;
+    MODULE_IO_VTK_API void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
@@ -140,12 +140,12 @@ private:
     /**
      * @brief Mesh path .
      */
-    std::filesystem::path m_fsMeshPath;
+    std::filesystem::path m_fs_mesh_path;
 
-    SPTR(job_created_signal_t) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 
     /// Extension selected in file dialog
-    std::string m_selectedExtension;
+    std::string m_selected_extension;
 };
 
 } // namespace sight::module::io::vtk

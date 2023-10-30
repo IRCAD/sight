@@ -52,27 +52,27 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 model_series_obj_writer::model_series_obj_writer() noexcept
 {
-    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
+    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType model_series_obj_writer::getIOPathType() const
+sight::io::service::path_type_t model_series_obj_writer::get_path_type() const
 {
-    return sight::io::service::FOLDER;
+    return sight::io::service::folder;
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_obj_writer::openLocationDialog()
+void model_series_obj_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
-    dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
-    dialog.setDefaultLocation(default_directory);
-    dialog.setOption(ui::dialog::location::WRITE);
-    dialog.setType(ui::dialog::location::FOLDER);
+    dialog.set_title(m_window_title.empty() ? "Choose a directory to save meshes" : m_window_title);
+    dialog.set_default_location(default_directory);
+    dialog.set_option(ui::dialog::location::write);
+    dialog.set_type(ui::dialog::location::folder);
 
     core::location::single_folder::sptr result;
 
@@ -85,12 +85,12 @@ void model_series_obj_writer::openLocationDialog()
 
         // message box
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Overwrite confirmation");
-        message_box.setMessage("The selected directory is not empty. Write anyway ?");
-        message_box.setIcon(ui::dialog::message::QUESTION);
-        message_box.addButton(ui::dialog::message::YES);
-        message_box.addButton(ui::dialog::message::CANCEL);
-        if(message_box.show() == sight::ui::dialog::message::YES)
+        message_box.set_title("Overwrite confirmation");
+        message_box.set_message("The selected directory is not empty. Write anyway ?");
+        message_box.set_icon(ui::dialog::message::question);
+        message_box.add_button(ui::dialog::message::yes);
+        message_box.add_button(ui::dialog::message::cancel);
+        if(message_box.show() == sight::ui::dialog::message::yes)
         {
             break;
         }
@@ -100,11 +100,11 @@ void model_series_obj_writer::openLocationDialog()
     {
         this->set_folder(result->get_folder());
         default_directory->set_folder(result->get_folder().parent_path());
-        dialog.saveDefaultLocation(default_directory);
+        dialog.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -138,9 +138,9 @@ void model_series_obj_writer::info(std::ostream& _sstream)
 
 void model_series_obj_writer::updating()
 {
-    m_writeFailed = true;
+    m_write_failed = true;
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         // Retrieve dataStruct associated with this service
         const auto locked       = m_data.lock();
@@ -150,24 +150,24 @@ void model_series_obj_writer::updating()
             "The object is not a '"
             + data::model_series::classname()
             + "' or '"
-            + sight::io::service::s_DATA_KEY
+            + sight::io::service::DATA_KEY
             + "' is not correctly set.",
             model_series
         );
 
-        auto writer = std::make_shared<sight::io::vtk::ModelSeriesObjWriter>();
+        auto writer = std::make_shared<sight::io::vtk::model_series_obj_writer>();
         writer->set_object(model_series);
         writer->set_folder(this->get_folder());
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
         try
         {
-            m_sigJobCreated->emit(writer->getJob());
+            m_sig_job_created->emit(writer->get_job());
             writer->write();
 
-            m_writeFailed = false;
+            m_write_failed = false;
         }
         catch(const std::exception& e)
         {
@@ -175,10 +175,10 @@ void model_series_obj_writer::updating()
             ss << "Warning during saving : " << e.what();
 
             sight::ui::dialog::message message_box;
-            message_box.setTitle("Warning");
-            message_box.setMessage(ss.str());
-            message_box.setIcon(ui::dialog::message::WARNING);
-            message_box.addButton(ui::dialog::message::OK);
+            message_box.set_title("Warning");
+            message_box.set_message(ss.str());
+            message_box.set_icon(ui::dialog::message::warning);
+            message_box.add_button(ui::dialog::message::ok);
             message_box.show();
         }
         catch(...)
@@ -187,14 +187,14 @@ void model_series_obj_writer::updating()
             ss << "Warning during saving.";
 
             sight::ui::dialog::message message_box;
-            message_box.setTitle("Warning");
-            message_box.setMessage(ss.str());
-            message_box.setIcon(ui::dialog::message::WARNING);
-            message_box.addButton(ui::dialog::message::OK);
+            message_box.set_title("Warning");
+            message_box.set_message(ss.str());
+            message_box.set_icon(ui::dialog::message::warning);
+            message_box.add_button(ui::dialog::message::ok);
             message_box.show();
         }
 
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
 }
 

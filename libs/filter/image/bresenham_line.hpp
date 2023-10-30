@@ -39,13 +39,13 @@ class FILTER_IMAGE_CLASS_API bresenham_line
 public:
 
     /// image orientation.
-    typedef data::helper::medical_image::orientation_t Orientation;
+    using Orientation = data::helper::medical_image::orientation_t;
 
     /// Voxel coordinate type.
-    typedef std::array<data::image::index_t, 3> coordinates_t;
+    using coordinates_t = std::array<data::image::index_t, 3>;
 
     /// Series of coordinates making up a line.
-    typedef std::vector<coordinates_t> path_t;
+    using path_t = std::vector<coordinates_t>;
 
     /// Computes a Bresenham line in a 3D image slice.
     FILTER_IMAGE_API static path_t draw(

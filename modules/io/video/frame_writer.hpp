@@ -78,10 +78,10 @@ public:
     MODULE_IO_VIDEO_API service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_VIDEO_API void openLocationDialog() override;
+    MODULE_IO_VIDEO_API void open_location_dialog() override;
 
     /// Return file type (io::service::FOLDER)
-    MODULE_IO_VIDEO_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VIDEO_API sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 
@@ -100,29 +100,29 @@ protected:
 private:
 
     /// SLOT: Adds the current frame in the video
-    void saveFrame(core::hires_clock::type _timestamp);
+    void save_frame(core::hires_clock::type _timestamp);
 
     /// Writes frame on the disk
     void write(core::hires_clock::type _timestamp);
 
     /// SLOT: Starts recording
-    void startRecord();
+    void start_record();
 
     /// SLOT: Stops recording
-    void stopRecord();
+    void stop_record();
 
     /// SLOT: Starts/stops recording, according to the parameter value
     void record(bool /*state*/);
 
     /// SLOT: Toggle the recording.
-    void toggleRecording();
+    void toggle_recording();
 
     /// Slot called when a format is changed
-    void setFormatParameter(std::string _val, std::string _key);
+    void set_format_parameter(std::string _val, std::string _key);
 
-    int m_imageType {0}; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
+    int m_image_type {0}; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
 
-    bool m_isRecording {false}; ///< flag if the service is recording.
+    bool m_is_recording {false}; ///< flag if the service is recording.
 
     std::string m_format; ///< file format (.tiff by default)
 };

@@ -40,9 +40,9 @@ class CORE_CLASS_API signals
 {
 public:
 
-    using key_t                     = std::string;
-    using signal_key_type           = key_t;
-    using signal_key_container_type = std::vector<key_t>;
+    using key_t                  = std::string;
+    using signal_key_type        = key_t;
+    using signal_key_container_t = std::vector<key_t>;
 
     CORE_API signals()          = default;
     CORE_API virtual ~signals() = default;
@@ -57,7 +57,7 @@ public:
     CORE_API SPTR(signal_base) operator[](const key_t& _key) const;
 
     /// Returns all key_t registered in m_signals
-    [[nodiscard]] CORE_API signal_key_container_type get_signal_keys() const;
+    [[nodiscard]] CORE_API signal_key_container_t get_signal_keys() const;
 
 protected:
 

@@ -56,14 +56,14 @@ namespace sight::io::dicom::reader::ie
 image::image(
     const data::dicom_series::csptr& _dicom_series,
     const SPTR(gdcm::Reader)& _reader,
-    const io::dicom::container::DicomInstance::sptr& _instance,
+    const io::dicom::container::dicom_instance::sptr& _instance,
     const data::image::sptr& _image,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::image>(_dicom_series, _reader, _instance, _image,
-                                                          _logger, _progress, _cancel)
+    io::dicom::reader::ie::information_entity<data::image>(_dicom_series, _reader, _instance, _image,
+                                                           _logger, _progress, _cancel)
 {
 }
 
@@ -93,29 +93,29 @@ double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_
     if(!dataset.FindDataElement(gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(gdcm::Tag(0x0020, 0x0037)))
     {
         const std::string msg = "Unable to compute the spacing between slices of the series.";
-        throw io::dicom::exception::Failed(msg);
+        throw io::dicom::exception::failed(msg);
     }
 
     // Retrieve image position
     const gdcm::Image& gdcm_image = reader.GetImage();
     const double* gdcm_origin     = gdcm_image.GetOrigin();
-    const fwVec3d image_position  = {gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]};
+    const fw_vec3d image_position = {gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]};
 
     // Retrieve image orientation
-    const double* direction_cosines   = gdcm_image.GetDirectionCosines();
-    const fwVec3d image_orientation_u = {
+    const double* direction_cosines    = gdcm_image.GetDirectionCosines();
+    const fw_vec3d image_orientation_u = {
         std::round(direction_cosines[0]),
         std::round(direction_cosines[1]),
         std::round(direction_cosines[2])
     };
-    const fwVec3d image_orientation_v = {
+    const fw_vec3d image_orientation_v = {
         std::round(direction_cosines[3]),
         std::round(direction_cosines[4]),
         std::round(direction_cosines[5])
     };
 
     //Compute Z direction (cross product)
-    const fwVec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
+    const fw_vec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
 
     //Compute dot product to get the index
     const double index = geometry::data::dot(image_position, z_vector);
@@ -125,30 +125,30 @@ double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_
 
 //------------------------------------------------------------------------------
 
-void image::readImagePlaneModule()
+void image::read_image_plane_module()
 {
     // Retrieve GDCM image
     SPTR(gdcm::ImageReader) image_reader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
     const gdcm::Image& gdcm_image = image_reader->GetImage();
 
     // image Position (Patient) - Type 1
-    const double* gdcm_origin  = gdcm_image.GetOrigin();
-    data::image::Origin origin = {0., 0., 0.
+    const double* gdcm_origin    = gdcm_image.GetOrigin();
+    data::image::origin_t origin = {0., 0., 0.
     };
     if(gdcm_origin != nullptr)
     {
         std::copy(gdcm_origin, gdcm_origin + 3, origin.begin());
     }
 
-    m_object->setOrigin(origin);
+    m_object->set_origin(origin);
 
     // Pixel Spacing - Type 1
     // image dimension
     const unsigned int dimension = gdcm_image.GetNumberOfDimensions();
 
     // image's spacing
-    const double* gdcm_spacing   = gdcm_image.GetSpacing();
-    data::image::Spacing spacing = {1., 1., 1.
+    const double* gdcm_spacing     = gdcm_image.GetSpacing();
+    data::image::spacing_t spacing = {1., 1., 1.
     };
     if(gdcm_spacing != nullptr)
     {
@@ -157,7 +157,7 @@ void image::readImagePlaneModule()
 
     // Computing Z image spacing from two adjacent slices is preferable than reading Slice Thickness tag
     // See http://gdcm.sourceforge.net/wiki/index.php/Imager_Pixel_Spacing, Spacing along Z (third dimension)
-    const data::dicom_series::dicom_container_t dicom_container = m_dicomSeries->getDicomContainer();
+    const data::dicom_series::dicom_container_t dicom_container = m_dicom_series->get_dicom_container();
     if(dicom_container.size() > 1)
     {
         auto first_item       = dicom_container.begin();
@@ -190,23 +190,23 @@ void image::readImagePlaneModule()
         if(dataset.FindDataElement(gdcm::Tag(0x0018, 0x0050)))
         {
             const std::string& slice_thickness =
-                io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x0050>(dataset);
+                io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x0050>(dataset);
             spacing[2] = std::stod(slice_thickness);
         }
     }
 
-    m_object->setSpacing(spacing);
+    m_object->set_spacing(spacing);
 }
 
 //------------------------------------------------------------------------------
 
-void image::readVOILUTModule()
+void image::read_voilut_module()
 {
     // Retrieve dataset
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     //image's window center (double)
-    std::string window_center = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1050>(dataset);
+    std::string window_center = io::dicom::helper::dicom_data_reader::get_tag_value<0x0028, 0x1050>(dataset);
     std::vector<std::string> split_window_centers;
     if(!window_center.empty())
     {
@@ -217,11 +217,11 @@ void image::readVOILUTModule()
             std::back_inserter(window_centers),
             [](const auto& _e){return std::stod(_e);});
 
-        m_object->setWindowCenter(window_centers);
+        m_object->set_window_center(window_centers);
     }
 
     //image's window width (double)
-    std::string window_width = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1051>(dataset);
+    std::string window_width = io::dicom::helper::dicom_data_reader::get_tag_value<0x0028, 0x1051>(dataset);
     std::vector<std::string> split_window_widths;
     if(!window_width.empty())
     {
@@ -232,7 +232,7 @@ void image::readVOILUTModule()
             std::back_inserter(window_widths),
             [](const auto& _e){return std::stod(_e);});
 
-        m_object->setWindowWidth(window_widths);
+        m_object->set_window_width(window_widths);
     }
 }
 
@@ -249,8 +249,8 @@ std::vector<double> get_rescale_intercept_slope_value(gdcm::ImageReader* _image_
     // Correct Rescale Intercept and Rescale Slope as GDCM may fail to retrieve them.
     if(dataset.FindDataElement(gdcm::Tag(0x0028, 0x1052)) && dataset.FindDataElement(gdcm::Tag(0x0028, 0x1053)))
     {
-        rescale[0] = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1052, double>(dataset);
-        rescale[1] = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1053, double>(dataset);
+        rescale[0] = io::dicom::helper::dicom_data_reader::get_tag_value<0x0028, 0x1052, double>(dataset);
+        rescale[1] = io::dicom::helper::dicom_data_reader::get_tag_value<0x0028, 0x1053, double>(dataset);
     }
 
     return rescale;
@@ -258,7 +258,7 @@ std::vector<double> get_rescale_intercept_slope_value(gdcm::ImageReader* _image_
 
 //------------------------------------------------------------------------------
 
-void image::readImagePixelModule()
+void image::read_image_pixel_module()
 {
     // Retrieve GDCM image
     SPTR(gdcm::ImageReader) image_reader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
@@ -285,19 +285,19 @@ void image::readImagePixelModule()
     data::dicom::image image_helper(
         samples_per_pixel, bits_allocated, bits_stored, high_bit, pixel_representation, rescale_slope,
         rescale_intercept);
-    core::type image_type                 = image_helper.findImageTypeFromMinMaxValues();
-    gdcm::PixelFormat target_pixel_format = io::dicom::helper::DicomDataTools::get_pixel_type(image_type);
+    core::type image_type                 = image_helper.find_image_type_from_min_max_values();
+    gdcm::PixelFormat target_pixel_format = io::dicom::helper::dicom_data_tools::get_pixel_type(image_type);
 
     if(target_pixel_format == gdcm::PixelFormat::UNKNOWN)
     {
-        throw io::dicom::exception::Failed("Unsupported image pixel format.");
+        throw io::dicom::exception::failed("Unsupported image pixel format.");
     }
 
     // Compute number of components
     const std::string photometric_interpretation =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x0004>(dataset);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0028, 0x0004>(dataset);
     const std::string pixel_presentation =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x9205>(dataset);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x9205>(dataset);
 
     // Retrieve image dimensions
     std::vector<unsigned int> dimensions = gdcm::ImageHelper::GetDimensionsValue(image_reader->GetFile());
@@ -307,7 +307,7 @@ void image::readImagePixelModule()
     const std::uint64_t frame_buffer_size = gdcm_image.GetBufferLength();
     const std::uint64_t depth             = frame_buffer_size
                                             / (std::uint64_t(dimensions[0]) * dimensions[1] * (bits_allocated / 8));
-    dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
+    dimensions[2] = static_cast<unsigned int>(m_dicom_series->get_dicom_container().size() * depth);
 
     const std::uint64_t image_buffer_size =
         std::uint64_t(dimensions[0]) * dimensions[1] * dimensions[2] * (bits_allocated / 8);
@@ -316,7 +316,7 @@ void image::readImagePixelModule()
 
     // Let's read the image buffer
     bool perform_rescale = (photometric_interpretation != "PALETTE COLOR" && pixel_presentation != "COLOR");
-    char* image_buffer   = this->readImageBuffer(
+    char* image_buffer   = this->read_image_buffer(
         dimensions,
         image_type,
         bits_allocated,
@@ -325,9 +325,9 @@ void image::readImagePixelModule()
     );
 
     // Correct image buffer according to the image orientation
-    if(!(m_cancelRequestedCallback && m_cancelRequestedCallback()) && m_enableBufferRotation)
+    if(!(m_cancel_requested_callback && m_cancel_requested_callback()) && m_enable_buffer_rotation)
     {
-        image_buffer = this->correctImageOrientation(
+        image_buffer = this->correct_image_orientation(
             image_buffer,
             dimensions,
             (perform_rescale) ? target_pixel_format.GetBitsAllocated() : bits_allocated
@@ -335,7 +335,7 @@ void image::readImagePixelModule()
     }
 
     // Apply lookup table if required
-    if(!(m_cancelRequestedCallback && m_cancelRequestedCallback())
+    if(!(m_cancel_requested_callback && m_cancel_requested_callback())
        && (photometric_interpretation == "PALETTE COLOR" || pixel_presentation == "COLOR"))
     {
         try
@@ -353,34 +353,34 @@ void image::readImagePixelModule()
         }
         catch(...)
         {
-            throw io::dicom::exception::Failed("There is not enough memory available to open this image.");
+            throw io::dicom::exception::failed("There is not enough memory available to open this image.");
         }
     }
 
     // TODO_FB: This should probably be finer-tuned, but we would need to add new pixel formats before
-    sight::data::image::PixelFormat format {sight::data::image::PixelFormat::UNDEFINED};
+    enum sight::data::image::pixel_format format {sight::data::image::pixel_format::undefined};
     if(photometric_interpretation == "MONOCHROME2")
     {
-        format = data::image::PixelFormat::GRAY_SCALE;
+        format = data::image::pixel_format::gray_scale;
     }
     else if(photometric_interpretation == "RGB" || photometric_interpretation == "YBR"
             || photometric_interpretation == "PALETTE COLOR" || pixel_presentation == "COLOR")
     {
-        format = data::image::PixelFormat::RGB;
+        format = data::image::pixel_format::rgb;
     }
     else if(photometric_interpretation == "ARGB" || photometric_interpretation == "CMYK")
     {
-        format = data::image::PixelFormat::RGBA;
+        format = data::image::pixel_format::rgba;
     }
     else
     {
         const std::string msg = "The photometric interpretation \"" + photometric_interpretation
                                 + "\" is not supported.";
-        throw io::dicom::exception::Failed(msg);
+        throw io::dicom::exception::failed(msg);
     }
 
     // Last, set image buffer
-    m_object->setBuffer(
+    m_object->set_buffer(
         image_buffer,
         true,
         image_type,
@@ -397,7 +397,7 @@ void image::readImagePixelModule()
 
 //------------------------------------------------------------------------------
 
-char* image::readImageBuffer(
+char* image::read_image_buffer(
     const std::vector<unsigned int>& _dimensions,
     const core::type _image_type,
     const std::uint16_t _bits_allocated,
@@ -410,7 +410,7 @@ char* image::readImageBuffer(
     const gdcm::Image& gdcm_first_image = image_reader->GetImage();
 
     // Path container
-    data::dicom_series::dicom_container_t dicom_container = m_dicomSeries->getDicomContainer();
+    data::dicom_series::dicom_container_t dicom_container = m_dicom_series->get_dicom_container();
 
     // Raw buffer for all frames
     char* frame_buffer                        = nullptr;
@@ -428,7 +428,7 @@ char* image::readImageBuffer(
     }
     catch(...)
     {
-        throw io::dicom::exception::Failed("There is not enough memory available to open this image.");
+        throw io::dicom::exception::failed("There is not enough memory available to open this image.");
     }
 
     // Read every frames
@@ -450,20 +450,20 @@ char* image::readImageBuffer(
             // Check frame buffer size
             if(frame_buffer_size != gdcm_image.GetBufferLength())
             {
-                throw io::dicom::exception::Failed("The frame buffer does not have the expected size : " + dicom_path);
+                throw io::dicom::exception::failed("The frame buffer does not have the expected size : " + dicom_path);
             }
 
             // Get raw buffer and set it in the image buffer
             if(!gdcm_image.GetBuffer(frame_buffer))
             {
-                throw io::dicom::exception::Failed("Failed to get a frame buffer");
+                throw io::dicom::exception::failed("Failed to get a frame buffer");
             }
         }
         else
         {
             std::stringstream ss;
             ss << "Reading error on frame : " << frame_number;
-            throw io::dicom::exception::Failed(ss.str());
+            throw io::dicom::exception::failed(ss.str());
         }
 
         // Rescale
@@ -477,11 +477,12 @@ char* image::readImageBuffer(
             // Retrieve image information before processing the rescaling
             gdcm::PixelFormat pixel_format            = gdcm::ImageHelper::GetPixelFormatValue(frame_reader.GetFile());
             gdcm::PixelFormat::ScalarType scalar_type = pixel_format.GetScalarType();
-            gdcm::PixelFormat target_pixel_format     = io::dicom::helper::DicomDataTools::get_pixel_type(_image_type);
+            gdcm::PixelFormat target_pixel_format     =
+                io::dicom::helper::dicom_data_tools::get_pixel_type(_image_type);
 
             if(target_pixel_format == gdcm::PixelFormat::UNKNOWN)
             {
-                throw io::dicom::exception::Failed("Unsupported image pixel format.");
+                throw io::dicom::exception::failed("Unsupported image pixel format.");
             }
 
             // Create rescaler
@@ -503,12 +504,12 @@ char* image::readImageBuffer(
 
         // Reference SOP Instance UID in dicomInstance for SR reading
         const gdcm::DataSet& gdcm_dataset_root = frame_reader.GetFile().GetDataSet();
-        const std::string sop_instance_uid     = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(
+        const std::string sop_instance_uid     = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0018>(
             gdcm_dataset_root
         );
         if(!sop_instance_uid.empty())
         {
-            m_instance->getSOPInstanceUIDContainer().push_back(sop_instance_uid);
+            m_instance->get_sop_instance_uid_container().push_back(sop_instance_uid);
         }
         else
         {
@@ -520,9 +521,9 @@ char* image::readImageBuffer(
 
         auto progress =
             static_cast<unsigned int>(18 + (frame_number * 100 / static_cast<double>(dicom_container.size())) * 0.6);
-        m_progressCallback(progress);
+        m_progress_callback(progress);
 
-        if(m_cancelRequestedCallback && m_cancelRequestedCallback())
+        if(m_cancel_requested_callback && m_cancel_requested_callback())
         {
             break;
         }
@@ -536,7 +537,7 @@ char* image::readImageBuffer(
 
 //------------------------------------------------------------------------------
 
-char* image::correctImageOrientation(
+char* image::correct_image_orientation(
     char* _buffer,
     std::vector<unsigned int>& _dimensions,
     std::uint16_t _bits_allocated
@@ -673,7 +674,7 @@ char* image::correctImageOrientation(
         std::uint16_t old_x = 0;
         std::uint16_t old_y = 0;
         std::uint16_t old_z = 0;
-        for(z = 0 ; z < new_size_z && !(m_cancelRequestedCallback && m_cancelRequestedCallback()) ; ++z)
+        for(z = 0 ; z < new_size_z && !(m_cancel_requested_callback && m_cancel_requested_callback()) ; ++z)
         {
             for(y = 0 ; y < new_size_y ; ++y)
             {
@@ -707,7 +708,7 @@ char* image::correctImageOrientation(
             }
 
             auto progress = static_cast<unsigned int>(78 + (z * 100. / new_size_z) * 0.2);
-            m_progressCallback(progress);
+            m_progress_callback(progress);
         }
 
         result = new_buffer;
@@ -716,24 +717,25 @@ char* image::correctImageOrientation(
         _dimensions = {new_size_x, new_size_y, new_size_z};
 
         // Update image spacing
-        const data::image::Spacing spacing = m_object->getSpacing();
+        const data::image::spacing_t spacing = m_object->spacing();
         glm::dvec4 spacing_vector {spacing[0], spacing[1], spacing[2], 0.};
         glm::dvec4 new_spacing_vector = spacing_vector * inverse_matrix;
-        data::image::Spacing new_spacing {std::fabs(new_spacing_vector[0]), std::fabs(new_spacing_vector[1]), std::fabs(
-                                              new_spacing_vector[2]
-        )
+        data::image::spacing_t new_spacing {std::fabs(new_spacing_vector[0]), std::fabs(new_spacing_vector[1]),
+                                            std::fabs(
+                                                new_spacing_vector[2]
+                                            )
         };
-        m_object->setSpacing(new_spacing);
+        m_object->set_spacing(new_spacing);
 
         // Update image origin
-        const data::image::Origin origin = m_object->getOrigin();
+        const data::image::origin_t origin = m_object->origin();
         glm::dvec4 origin_vector {origin[0], origin[1], origin[2], 0.};
         glm::dvec4 new_origin_vector = origin_vector * inverse_matrix;
-        data::image::Origin new_origin;
+        data::image::origin_t new_origin;
         new_origin[0] = new_origin_vector[0];
         new_origin[1] = new_origin_vector[1];
         new_origin[2] = new_origin_vector[2];
-        m_object->setOrigin(new_origin);
+        m_object->set_origin(new_origin);
 
         m_logger->warning(
             "image buffer has been rotated in order to match patient orientation: "

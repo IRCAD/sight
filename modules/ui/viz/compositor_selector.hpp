@@ -60,7 +60,7 @@ public:
      * @name Slots API
      * @{
      */
-    typedef core::com::slot<void (sight::viz::scene3d::layer::sptr)> init_layer_slot_t;
+    using init_layer_slot_t = core::com::slot<void (sight::viz::scene3d::layer::sptr)>;
 
     /// Slot: Populate the list of available compositors for the selected layer
     MODULE_UI_VIZ_API static const core::com::slots::key_t INIT_COMPOSITOR_LIST_SLOT;
@@ -99,43 +99,43 @@ private Q_SLOTS:
 
     /// Slot: called when a layer is selected
     /// Sets the current layer and initializes the compositor list
-    void onSelectedLayerItem(int _index);
+    void on_selected_layer_item(int _index);
 
     /// Slot: called when an item of the list widget is checked
-    void onSelectedCompositorItem(QListWidgetItem* _compositor_item);
+    void on_selected_compositor_item(QListWidgetItem* _compositor_item);
 
 private:
 
     /// Slot: Populate the list of available compositors for the selected layer
-    void initCompositorList(sight::viz::scene3d::layer::sptr _layer);
+    void init_compositor_list(sight::viz::scene3d::layer::sptr _layer);
 
     /// Retrieves all the layers from the application thanks to the render services
-    void refreshRenderers();
+    void refresh_renderers();
 
     /// Checks if there is an XML configured compositor chain.
     /// Sets the local compositor chain according to this.
-    void synchroniseWithLayerCompositorChain();
+    void synchronise_with_layer_compositor_chain();
 
     /// Retrieves the available compositors from the compositor resource group and stores them in the list widget
-    void updateCompositorList();
+    void update_compositor_list();
 
     /// Iterates through the compositor chain and checks the enabled compositors
-    void checkEnabledCompositors();
+    void check_enabled_compositors();
 
     /// Iterates through the compositor chain and unchecks them
-    void uncheckCompositors();
+    void uncheck_compositors();
 
     /// Indicates if a compositor is enabled on the layer
-    bool isEnabledCompositor(const std::string& _compositor_name);
+    bool is_enabled_compositor(const std::string& _compositor_name);
 
-    QPointer<QComboBox> m_layersBox;
+    QPointer<QComboBox> m_layers_box;
 
-    QPointer<QListWidget> m_compositorChain;
+    QPointer<QListWidget> m_compositor_chain;
 
     std::vector<sight::viz::scene3d::layer::wptr> m_layers;
-    sight::viz::scene3d::layer::wptr m_currentLayer;
+    sight::viz::scene3d::layer::wptr m_current_layer;
 
-    sight::viz::scene3d::compositor::chain_manager::compositor_chain_t m_layerCompositorChain;
+    sight::viz::scene3d::compositor::chain_manager::compositor_chain_t m_layer_compositor_chain;
 
     ///Connection service, needed for slot/signal association
     core::com::helper::sig_slot_connection m_connections;

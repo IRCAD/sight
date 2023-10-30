@@ -52,11 +52,11 @@ void series_set_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void series_set_test::generationTest()
+void series_set_test::generation_test()
 {
     const unsigned char nb_img_series   = 3;
     const unsigned char nb_model_series = 4;
-    auto series_set                     = utest_data::generator::series_set::createSeriesSet(
+    auto series_set                     = utest_data::generator::series_set::create_series_set(
         nb_img_series,
         nb_model_series
     );
@@ -81,30 +81,30 @@ void series_set_test::generationTest()
         str << count++;
         CPPUNIT_ASSERT_EQUAL(
             std::string("1.2.826.0.1.3680043.2.1125.102906542887009256605006409108689" + str.str()),
-            series->getSeriesInstanceUID()
+            series->get_series_instance_uid()
         );
-        CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->getModality());
-        CPPUNIT_ASSERT_EQUAL(std::string("20130418"), series->getSeriesDate());
-        CPPUNIT_ASSERT_EQUAL(std::string("101010.101010"), series->getSeriesTime());
-        CPPUNIT_ASSERT_EQUAL(std::string("Description"), series->getSeriesDescription());
-        CPPUNIT_ASSERT(performing_physician_name == series->getPerformingPhysicianName());
+        CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->get_modality());
+        CPPUNIT_ASSERT_EQUAL(std::string("20130418"), series->get_series_date());
+        CPPUNIT_ASSERT_EQUAL(std::string("101010.101010"), series->get_series_time());
+        CPPUNIT_ASSERT_EQUAL(std::string("Description"), series->get_series_description());
+        CPPUNIT_ASSERT(performing_physician_name == series->get_performing_physician_name());
 
-        CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesSet1^PrenomSeriesSet1"), series->getPatientName());
-        CPPUNIT_ASSERT_EQUAL(std::string("4564383757"), series->getPatientID());
-        CPPUNIT_ASSERT_EQUAL(std::string("19710418"), series->getPatientBirthDate());
-        CPPUNIT_ASSERT_EQUAL(std::string("O"), series->getPatientSex());
+        CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesSet1^PrenomSeriesSet1"), series->get_patient_name());
+        CPPUNIT_ASSERT_EQUAL(std::string("4564383757"), series->get_patient_id());
+        CPPUNIT_ASSERT_EQUAL(std::string("19710418"), series->get_patient_birth_date());
+        CPPUNIT_ASSERT_EQUAL(std::string("O"), series->get_patient_sex());
 
         CPPUNIT_ASSERT_EQUAL(
             std::string("1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str()),
-            series->getStudyInstanceUID()
+            series->get_study_instance_uid()
         );
-        CPPUNIT_ASSERT_EQUAL(std::string("20130418"), series->getStudyDate());
-        CPPUNIT_ASSERT_EQUAL(std::string("095948.689872"), series->getStudyTime());
-        CPPUNIT_ASSERT_EQUAL(std::string("Dr^Jekyl"), series->getReferringPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(std::string("Say 33."), series->getStudyDescription());
-        CPPUNIT_ASSERT_EQUAL(std::string("042Y"), series->getPatientAge());
+        CPPUNIT_ASSERT_EQUAL(std::string("20130418"), series->get_study_date());
+        CPPUNIT_ASSERT_EQUAL(std::string("095948.689872"), series->get_study_time());
+        CPPUNIT_ASSERT_EQUAL(std::string("Dr^Jekyl"), series->get_referring_physician_name());
+        CPPUNIT_ASSERT_EQUAL(std::string("Say 33."), series->get_study_description());
+        CPPUNIT_ASSERT_EQUAL(std::string("042Y"), series->get_patient_age());
 
-        CPPUNIT_ASSERT_EQUAL(std::string("IRCAD"), series->getInstitutionName());
+        CPPUNIT_ASSERT_EQUAL(std::string("IRCAD"), series->get_institution_name());
 
         data::image_series::sptr img_series   = std::dynamic_pointer_cast<data::image_series>(series);
         data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(series);
@@ -112,12 +112,12 @@ void series_set_test::generationTest()
         if(img_series)
         {
             ++nb_is;
-            CPPUNIT_ASSERT(img_series->getSizeInBytes() > 0);
+            CPPUNIT_ASSERT(img_series->size_in_bytes() > 0);
         }
         else if(model_series)
         {
             ++nb_ms;
-            CPPUNIT_ASSERT(!model_series->getReconstructionDB().empty());
+            CPPUNIT_ASSERT(!model_series->get_reconstruction_db().empty());
         }
     }
 

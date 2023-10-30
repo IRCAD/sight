@@ -31,7 +31,7 @@ namespace sight::viz::scene3d::helper
 
 //------------------------------------------------------------------------------
 
-Ogre::SceneNode* scene::getNodeById(
+Ogre::SceneNode* scene::get_node_by_id(
     viz::scene3d::render::ogre_object_id_t _node_id,
     Ogre::SceneNode* _scene_node
 )
@@ -67,7 +67,7 @@ Ogre::SceneNode* scene::getNodeById(
 
 //------------------------------------------------------------------------------
 
-Ogre::AxisAlignedBox scene::computeBoundingBox(const Ogre::SceneNode* _root_scene_node)
+Ogre::AxisAlignedBox scene::compute_bounding_box(const Ogre::SceneNode* _root_scene_node)
 {
     // The bounding box in which all the object's bounding boxes will be merged
     Ogre::AxisAlignedBox world_coord_bounding_box;
@@ -125,33 +125,33 @@ Ogre::AxisAlignedBox scene::computeBoundingBox(const Ogre::SceneNode* _root_scen
 
 //------------------------------------------------------------------------------
 
-std::pair<Ogre::Vector2, Ogre::Vector2> scene::computeBoundingRect(
+std::pair<Ogre::Vector2, Ogre::Vector2> scene::compute_bounding_rect(
     const Ogre::Camera& _camera,
     const Ogre::SceneNode* _root_scene_node
 )
 {
-    const Ogre::AxisAlignedBox bounding_box = computeBoundingBox(_root_scene_node);
+    const Ogre::AxisAlignedBox bounding_box = compute_bounding_box(_root_scene_node);
     if(!bounding_box.isFinite())
     {
-        const Ogre::Vector2 screen_pos = camera::convertWorldSpaceToScreenSpace(
+        const Ogre::Vector2 screen_pos = camera::convert_world_space_to_screen_space(
             _camera,
             _root_scene_node->_getDerivedPosition()
         );
         return {{screen_pos.x, screen_pos.y}, {screen_pos.x, screen_pos.y}};
     }
 
-    const std::array corners                = bounding_box.getAllCorners();
-    static constexpr std::size_t NB_CORNERS = std::tuple_size_v<decltype(corners)>;
-    std::array<Ogre::Vector2, NB_CORNERS> corners_screen_pos;
+    const std::array corners                  = bounding_box.getAllCorners();
+    static constexpr std::size_t s_NB_CORNERS = std::tuple_size_v<decltype(corners)>;
+    std::array<Ogre::Vector2, s_NB_CORNERS> corners_screen_pos;
     std::ranges::transform(
         corners,
         corners_screen_pos.begin(),
         [&_camera](const Ogre::Vector3& _world_pos)
         {
-            return sight::viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(_camera, _world_pos);
+            return sight::viz::scene3d::helper::camera::convert_world_space_to_screen_space(_camera, _world_pos);
         });
-    std::array<float, NB_CORNERS> screen_x {};
-    std::array<float, NB_CORNERS> screen_y {};
+    std::array<float, s_NB_CORNERS> screen_x {};
+    std::array<float, s_NB_CORNERS> screen_y {};
     for(std::size_t i = 0 ; i < corners_screen_pos.size() ; i++)
     {
         screen_x[i] = corners_screen_pos[i].x;

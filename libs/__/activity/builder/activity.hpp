@@ -31,16 +31,16 @@ namespace sight::activity::builder
 /**
  * @brief Defines the default builder for the data Activity.
  */
-class ACTIVITY_CLASS_API Activity : public sight::activity::builder::base
+class ACTIVITY_CLASS_API activity : public sight::activity::builder::base
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Activity, activity::builder::base);
+    SIGHT_DECLARE_CLASS(activity, sight::activity::builder::base);
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~Activity() = default;
+    ACTIVITY_API virtual ~activity() = default;
 
     /**
      * @brief Build an Activity with required data present in currentSelection and defined in configuration.
@@ -50,8 +50,8 @@ public:
      * @param[in] currentSelection a vector which contains current selected data.
      * @return Activity or null
      */
-    ACTIVITY_API virtual data::activity::sptr buildData(
-        const activity::extension::activity_info& _activity_info,
+    ACTIVITY_API virtual data::activity::sptr build_data(
+        const sight::activity::extension::activity_info& _activity_info,
         const CSPTR(data::vector)& _current_selection
     ) const override;
 };

@@ -83,28 +83,28 @@ protected:
 private:
 
     /// Slot: update the interface.
-    void updateCompositor(std::string _compositor_name, bool _enabled, sight::viz::scene3d::layer::sptr _layer);
+    void update_compositor(std::string _compositor_name, bool _enabled, sight::viz::scene3d::layer::sptr _layer);
 
     /// Clear the current container
     void clear();
     /// Instanciates the needed ui editors according to the stored informations
-    void fillGui();
+    void fill_gui();
 
     /// Internal class that contain the informations concerning the editor that is created.
-    struct ShaderEditorInfo
+    struct shader_editor_info
     {
         std::string uuid;
-        sight::ui::qt::container::widget::sptr editorPanel;
+        sight::ui::qt::container::widget::sptr editor_panel;
         service::base::wptr srv;
         core::com::helper::sig_slot_connection connections;
     };
 
-    ShaderEditorInfo m_editorInfo;
+    shader_editor_info m_editor_info;
 
     QVBoxLayout* m_sizer {};
 
     /// Name of the layer when we configure it in XML
-    std::string m_layerID;
+    std::string m_layer_id;
 };
 
 } // namespace sight::module::ui::viz

@@ -37,15 +37,15 @@ const core::com::signals::key_t config_launcher::LAUNCHED_SIG = "launched";
 
 static const core::com::slots::key_t STOP_CONFIG_SLOT = "stopConfig";
 
-static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
+static const std::string CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
 
 config_launcher::config_launcher() noexcept :
-    m_sigLaunched(new_signal<launched_signal_t>(LAUNCHED_SIG)),
-    m_configLauncher(std::make_unique<app::helper::config_launcher>())
+    m_sig_launched(new_signal<launched_signal_t>(LAUNCHED_SIG)),
+    m_config_launcher(std::make_unique<app::helper::config_launcher>())
 {
-    new_slot(STOP_CONFIG_SLOT, &config_launcher::stopConfig, this);
+    new_slot(STOP_CONFIG_SLOT, &config_launcher::stop_config, this);
 }
 
 //------------------------------------------------------------------------------
@@ -59,15 +59,15 @@ void config_launcher::starting()
 {
     m_proxychannel = this->get_id() + "_stopConfig";
 
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //------------------------------------------------------------------------------
 
 void config_launcher::stopping()
 {
-    this->stopConfig();
-    this->actionServiceStopping();
+    this->stop_config();
+    this->action_service_stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -76,30 +76,30 @@ void config_launcher::configuring()
 {
     this->initialize();
 
-    m_configLauncher->parseConfig(this->get_config(), this->get_sptr());
+    m_config_launcher->parse_config(this->get_config(), this->get_sptr());
 }
 
 //-----------------------------------------------------------------------------
 
-void config_launcher::setChecked(bool _is_checked)
+void config_launcher::set_checked(bool _is_checked)
 {
-    this->sight::ui::action::setChecked(_is_checked);
+    this->sight::ui::action::set_checked(_is_checked);
     if(_is_checked)
     {
         // Check if the config is already running, this avoids to start a running config.
-        if(!m_configLauncher->configIsRunning())
+        if(!m_config_launcher->config_is_running())
         {
             core::com::proxy::sptr proxies = core::com::proxy::get();
             proxies->connect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
             app::field_adaptor_t replace_map;
-            replace_map[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
-            m_configLauncher->startConfig(this->get_sptr(), replace_map);
-            m_sigLaunched->async_emit();
+            replace_map[CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
+            m_config_launcher->start_config(this->get_sptr(), replace_map);
+            m_sig_launched->async_emit();
         }
     }
     else
     {
-        this->stopConfig();
+        this->stop_config();
     }
 }
 
@@ -111,14 +111,14 @@ void config_launcher::updating()
 
 //------------------------------------------------------------------------------
 
-void config_launcher::stopConfig()
+void config_launcher::stop_config()
 {
-    if(m_configLauncher->configIsRunning())
+    if(m_config_launcher->config_is_running())
     {
-        m_configLauncher->stopConfig();
+        m_config_launcher->stop_config();
         core::com::proxy::sptr proxies = core::com::proxy::get();
         proxies->disconnect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
-        this->setChecked(false);
+        this->set_checked(false);
     }
 }
 

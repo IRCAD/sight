@@ -50,7 +50,7 @@ public:
      * @param[in] _pointList2 second point list
      * @return array of the size of one the pointlists (they must have the same size)
      */
-    GEOMETRY_DATA_API static sight::data::array::sptr computeDistance(
+    GEOMETRY_DATA_API static sight::data::array::sptr compute_distance(
         sight::data::point_list::sptr _point_list1,
         sight::data::point_list::sptr _point_list2
     );
@@ -84,7 +84,7 @@ public:
      * @param[in] _delta: the maximum tolerance  between the reference point and the point to find
      * @return the removed point or nullptr if no point has been removed
      */
-    GEOMETRY_DATA_API static sight::data::point::sptr removeClosestPoint(
+    GEOMETRY_DATA_API static sight::data::point::sptr remove_closest_point(
         const sight::data::point_list::sptr& _point_list,
         const sight::data::point::csptr& _point,
         float _delta

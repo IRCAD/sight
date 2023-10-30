@@ -29,7 +29,7 @@ namespace sight::viz::scene3d::helper
 
 //-----------------------------------------------------------------------------
 
-Ogre::Matrix4 camera::computeFrustumShearTransform(const Ogre::Camera& _camera, float _angle)
+Ogre::Matrix4 camera::compute_frustum_shear_transform(const Ogre::Camera& _camera, float _angle)
 {
     Ogre::Matrix4 shear_transform = Ogre::Matrix4::IDENTITY;
 
@@ -44,7 +44,7 @@ Ogre::Matrix4 camera::computeFrustumShearTransform(const Ogre::Camera& _camera, 
 
 //-----------------------------------------------------------------------------
 
-Ogre::Matrix4 camera::computeProjectionMatrix(
+Ogre::Matrix4 camera::compute_projection_matrix(
     const data::camera& _calibration,
     float _width,
     float _height,
@@ -57,15 +57,15 @@ Ogre::Matrix4 camera::computeProjectionMatrix(
     SIGHT_ASSERT("near width should be > 0.", _near > 0.0F);
     SIGHT_ASSERT("far width should be > 0.", _far > 0.0F);
     SIGHT_ASSERT("far width should be > near.", _far > _near);
-    const auto fx = static_cast<float>(_calibration.getFx());
-    const auto fy = static_cast<float>(_calibration.getFy());
+    const auto fx = static_cast<float>(_calibration.get_fx());
+    const auto fy = static_cast<float>(_calibration.get_fy());
 
-    const auto cx = static_cast<float>(_calibration.getCx());
-    const auto cy = static_cast<float>(_calibration.getCy());
+    const auto cx = static_cast<float>(_calibration.get_cx());
+    const auto cy = static_cast<float>(_calibration.get_cy());
 
     //calibration images size
-    const auto im_w = static_cast<float>(_calibration.getWidth());
-    const auto im_h = static_cast<float>(_calibration.getHeight());
+    const auto im_w = static_cast<float>(_calibration.get_width());
+    const auto im_h = static_cast<float>(_calibration.get_height());
 
     //compute ratio between calibration image height & displayed image height
     const float ratio_h = _height / im_h;
@@ -125,7 +125,7 @@ Ogre::Matrix4 camera::computeProjectionMatrix(
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector2 camera::convertFromWindowToViewportSpace(
+Ogre::Vector2 camera::convert_from_window_to_viewport_space(
     const Ogre::Camera& _camera,
     int _render_window_x,
     int _render_window_y
@@ -145,7 +145,7 @@ Ogre::Vector2 camera::convertFromWindowToViewportSpace(
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 camera::convertScreenSpaceToViewSpace(const Ogre::Camera& _camera, const Ogre::Vector3& _screen_pos)
+Ogre::Vector3 camera::convert_screen_space_to_view_space(const Ogre::Camera& _camera, const Ogre::Vector3& _screen_pos)
 {
     const Ogre::Viewport* viewport = _camera.getViewport();
 
@@ -158,12 +158,12 @@ Ogre::Vector3 camera::convertScreenSpaceToViewSpace(const Ogre::Camera& _camera,
     ndc_pos    = ndc_pos * 2.F - 1.F;
     ndc_pos.y *= -1.F;
 
-    return convertNDCToViewSpace(_camera, ndc_pos);
+    return convert_ndc_to_view_space(_camera, ndc_pos);
 }
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 camera::convertNDCToViewSpace(const Ogre::Camera& _camera, const Ogre::Vector3& _ndc_pos)
+Ogre::Vector3 camera::convert_ndc_to_view_space(const Ogre::Camera& _camera, const Ogre::Vector3& _ndc_pos)
 {
     Ogre::Vector4 clipping_coordinate_pixel;
     if(_camera.getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
@@ -194,7 +194,7 @@ Ogre::Vector3 camera::convertNDCToViewSpace(const Ogre::Camera& _camera, const O
 
 //------------------------------------------------------------------------------
 
-Ogre::Vector2 camera::convertWorldSpaceToScreenSpace(const Ogre::Camera& _camera, const Ogre::Vector3& _world_pos)
+Ogre::Vector2 camera::convert_world_space_to_screen_space(const Ogre::Camera& _camera, const Ogre::Vector3& _world_pos)
 {
     const Ogre::Affine3& view_mat = _camera.getViewMatrix();
     const Ogre::Matrix4& proj_mat = _camera.getProjectionMatrix();

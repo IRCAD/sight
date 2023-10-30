@@ -25,14 +25,14 @@
 namespace sight::io::dimse::exceptions
 {
 
-TagMissing::TagMissing(const std::string& _message) :
-    io::dimse::exceptions::Base(_message)
+tag_missing::tag_missing(const std::string& _message) :
+    io::dimse::exceptions::base(_message)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-TagMissing::~TagMissing() noexcept =
+tag_missing::~tag_missing() noexcept =
     default;
 
 } // namespace sight::io::dimse::exceptions

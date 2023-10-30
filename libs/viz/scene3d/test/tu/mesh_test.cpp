@@ -50,7 +50,7 @@ void mesh_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void mesh_test::copyColors()
+void mesh_test::copy_colors()
 {
     ////////////////////////////////////////////////////////////////////////////
     /// 3 components
@@ -70,7 +70,7 @@ void mesh_test::copyColors()
             p_src   += num_components;
         }
 
-        viz::scene3d::helper::mesh::copyColors(p_dest, p_src_alloc, num_points, num_components);
+        viz::scene3d::helper::mesh::copy_colors(p_dest, p_src_alloc, num_points, num_components);
 
         p_src = p_src_alloc;
         for(std::size_t i = 0 ; i < num_points ; ++i)
@@ -106,7 +106,7 @@ void mesh_test::copyColors()
             p_src   += num_components;
         }
 
-        viz::scene3d::helper::mesh::copyColors(p_dest, p_src_alloc, num_points, num_components);
+        viz::scene3d::helper::mesh::copy_colors(p_dest, p_src_alloc, num_points, num_components);
 
         p_src = p_src_alloc;
         for(std::size_t i = 0 ; i < num_points ; ++i)

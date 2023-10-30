@@ -47,12 +47,12 @@ namespace sight::io::dicom::reader::ie
  * @brief InformationEntity base class used to read modules
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API InformationEntity
+class IO_DICOM_CLASS_API information_entity
 {
 public:
 
-    typedef std::function<void (std::uint64_t)> ProgressCallback;
-    typedef std::function<bool ()> CancelRequestedCallback;
+    using progress_callback         = std::function<void (std::uint64_t)>;
+    using cancel_requested_callback = std::function<bool ()>;
 
     /**
      * @brief Constructor
@@ -64,29 +64,29 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API InformationEntity(
+    IO_DICOM_API information_entity(
         CSPTR(data::dicom_series)_dicom_series,
         SPTR(gdcm::Reader)_reader,
-        SPTR(io::dicom::container::DicomInstance)_instance,
+        SPTR(io::dicom::container::dicom_instance)_instance,
         SPTR(DATATYPE)_object,
-        core::log::logger::sptr _logger = nullptr,
-        ProgressCallback _progress      = nullptr,
-        CancelRequestedCallback _cancel = nullptr
+        core::log::logger::sptr _logger   = nullptr,
+        progress_callback _progress       = nullptr,
+        cancel_requested_callback _cancel = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~InformationEntity();
+    IO_DICOM_API virtual ~information_entity();
 
 protected:
 
     /// Dicom Series
-    CSPTR(data::dicom_series) m_dicomSeries;
+    CSPTR(data::dicom_series) m_dicom_series;
 
     /// GDCM Reader
     SPTR(gdcm::Reader) m_reader;
 
     /// DICOM Instance
-    SPTR(io::dicom::container::DicomInstance) m_instance;
+    SPTR(io::dicom::container::dicom_instance) m_instance;
 
     /// Sight Object
     SPTR(DATATYPE) m_object;
@@ -95,33 +95,33 @@ protected:
     core::log::logger::sptr m_logger;
 
     /// Progress callback for jobs
-    ProgressCallback m_progressCallback;
+    progress_callback m_progress_callback;
 
     /// Cancel information for jobs
-    CancelRequestedCallback m_cancelRequestedCallback;
+    cancel_requested_callback m_cancel_requested_callback;
 };
 
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-InformationEntity<DATATYPE>::InformationEntity(
+information_entity<DATATYPE>::information_entity(
     CSPTR(data::dicom_series)_dicom_series,
     SPTR(gdcm::Reader)_reader,
-    SPTR(io::dicom::container::DicomInstance)_instance,
+    SPTR(io::dicom::container::dicom_instance)_instance,
     SPTR(DATATYPE)_object,
     core::log::logger::sptr _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    m_dicomSeries(std::move(_dicom_series)),
+    m_dicom_series(std::move(_dicom_series)),
     m_reader(std::move(_reader)),
     m_instance(std::move(_instance)),
     m_object(std::move(_object)),
     m_logger(std::move(_logger)),
-    m_progressCallback(std::move(_progress)),
-    m_cancelRequestedCallback(std::move(_cancel))
+    m_progress_callback(std::move(_progress)),
+    m_cancel_requested_callback(std::move(_cancel))
 {
-    SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null.", m_dicom_series);
     SIGHT_ASSERT("Reader should not be null.", m_reader);
     SIGHT_ASSERT("Instance should not be null.", m_instance);
     SIGHT_ASSERT("Object should not be null.", m_object);
@@ -130,7 +130,7 @@ InformationEntity<DATATYPE>::InformationEntity(
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE> InformationEntity<DATATYPE>::~InformationEntity()
+template<class DATATYPE> information_entity<DATATYPE>::~information_entity()
 = default;
 
 } // namespace sight::io::dicom::reader::ie

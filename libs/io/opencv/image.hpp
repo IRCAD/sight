@@ -71,7 +71,7 @@ public:
      *
      * @note The cvImage allocates its own buffer and has the ownership.
      */
-    IO_OPENCV_API static cv::Mat copyToCv(const data::image::csptr& _image);
+    IO_OPENCV_API static cv::Mat copy_to_cv(const data::image::csptr& _image);
 };
 
 } // namespace sight::io::opencv

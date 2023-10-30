@@ -44,22 +44,22 @@ public:
 
     DATA_API ~line() noexcept override = default;
 
-    DATA_API void setValue(const point::sptr& _position, const point::sptr& _direction);
+    DATA_API void set_value(const point::sptr& _position, const point::sptr& _direction);
 
     /** @{
      *  @brief get/set point position
      */
-    point::sptr& getPosition();
-    point::csptr getPosition() const;
-    void setPosition(const point::sptr& _position);
+    point::sptr& get_position();
+    point::csptr get_position() const;
+    void set_position(const point::sptr& _position);
     /// @}
 
     /** @{
      *  @brief get/set point direction
      */
-    point::sptr& getDirection();
-    const point::sptr& getDirection() const;
-    void setDirection(const point::sptr& _direction);
+    point::sptr& get_direction();
+    const point::sptr& get_direction() const;
+    void set_direction(const point::sptr& _direction);
     /// @}
 
     /// Equality comparison operators
@@ -91,42 +91,42 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline point::sptr& line::getPosition()
+inline point::sptr& line::get_position()
 {
     return this->m_position;
 }
 
 //-----------------------------------------------------------------------------
 
-inline point::csptr line::getPosition() const
+inline point::csptr line::get_position() const
 {
     return this->m_position;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void line::setPosition(const point::sptr& _position)
+inline void line::set_position(const point::sptr& _position)
 {
     this->m_position = _position;
 }
 
 //-----------------------------------------------------------------------------
 
-inline point::sptr& line::getDirection()
+inline point::sptr& line::get_direction()
 {
     return this->m_direction;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const point::sptr& line::getDirection() const
+inline const point::sptr& line::get_direction() const
 {
     return this->m_direction;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void line::setDirection(const point::sptr& _direction)
+inline void line::set_direction(const point::sptr& _direction)
 {
     this->m_direction = _direction;
 }

@@ -31,9 +31,9 @@ namespace sight::module::ui::viz::ut
 class cross_type_action_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(cross_type_action_test);
-CPPUNIT_TEST(fullTest);
-CPPUNIT_TEST(halfTest);
-CPPUNIT_TEST(hideTest);
+CPPUNIT_TEST(full_test);
+CPPUNIT_TEST(half_test);
+CPPUNIT_TEST(hide_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,9 +43,9 @@ public:
 
     void test(const std::string& _cross_type, double _expected_scale);
 
-    void fullTest();
-    void halfTest();
-    void hideTest();
+    void full_test();
+    void half_test();
+    void hide_test();
 
 private:
 

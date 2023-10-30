@@ -34,7 +34,7 @@ static boost::uuids::random_generator s_generator;
 static std::mutex s_generator_mutex;
 
 /// generate a uuid
-std::string UUID::generate()
+std::string uuid::generate()
 {
     std::lock_guard guard(s_generator_mutex);
     return boost::uuids::to_string(s_generator());

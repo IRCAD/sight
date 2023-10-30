@@ -40,7 +40,7 @@
 #include <ui/__/macros.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::session::ut::SessionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::session::ut::session_test);
 
 SIGHT_REGISTER_GUI(sight::ui::dialog::location_dummy, sight::ui::dialog::location_base::REGISTRY_KEY);
 SIGHT_REGISTER_GUI(sight::ui::dialog::input_dummy, sight::ui::dialog::input_base::REGISTRY_KEY);
@@ -51,13 +51,13 @@ namespace sight::module::io::session::ut
 
 //------------------------------------------------------------------------------
 
-void SessionTest::setUp()
+void session_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::tearDown()
+void session_test::tearDown()
 {
 }
 
@@ -109,7 +109,7 @@ inline static void basic_test(const bool _raw = false)
 
         // Set data input
         auto in_string = std::make_shared<data::string>(expected);
-        writer->set_input(in_string, sight::io::service::s_DATA_KEY);
+        writer->set_input(in_string, sight::io::service::DATA_KEY);
 
         // Set file output
         writer->set_file(tmp_file);
@@ -143,7 +143,7 @@ inline static void basic_test(const bool _raw = false)
 
         // Set data output
         auto out_string = std::make_shared<data::string>();
-        reader->set_inout(out_string, sight::io::service::s_DATA_KEY);
+        reader->set_inout(out_string, sight::io::service::DATA_KEY);
 
         // Set file input
         reader->set_file(tmp_file);
@@ -189,20 +189,20 @@ inline static void basic_test(const bool _raw = false)
         CPPUNIT_ASSERT(!session_loading_failed);
         CPPUNIT_ASSERT_EQUAL(session_loading_failed_path, std::filesystem::path(""));
 
-        CPPUNIT_ASSERT_EQUAL(expected, out_string->getValue());
+        CPPUNIT_ASSERT_EQUAL(expected, out_string->get_value());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::basicArchiveTest()
+void session_test::basic_archive_test()
 {
     basic_test(false);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::basicRawTest()
+void session_test::basic_raw_test()
 {
     basic_test(true);
 }
@@ -230,28 +230,28 @@ static void bad_policy_test(bool _reader, const std::string& _key, const std::st
 
 //------------------------------------------------------------------------------
 
-void SessionTest::readerBadDialogPolicyTest()
+void session_test::reader_bad_dialog_policy_test()
 {
     bad_policy_test(true, "dialog.<xmlattr>.policy", "whenever_i_want");
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::readerBadPasswordPolicyTest()
+void session_test::reader_bad_password_policy_test()
 {
     bad_policy_test(true, "password.<xmlattr>.policy", "when_i_remember_it");
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::readerBadPasswordEncryptionTest()
+void session_test::reader_bad_password_encryption_test()
 {
     bad_policy_test(true, "password.<xmlattr>.encryption", "sweet");
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::readerBadFile()
+void session_test::reader_bad_file()
 {
     // Create a temporary file
     core::os::temp_dir tmp_dir;
@@ -266,7 +266,7 @@ void SessionTest::readerBadFile()
 
         // Set data output
         auto out_string = std::make_shared<data::string>();
-        reader->set_inout(out_string, sight::io::service::s_DATA_KEY);
+        reader->set_inout(out_string, sight::io::service::DATA_KEY);
 
         // Set file input
         reader->set_file(tmp_file);
@@ -316,28 +316,28 @@ void SessionTest::readerBadFile()
 
 //------------------------------------------------------------------------------
 
-void SessionTest::writerBadDialogPolicyTest()
+void session_test::writer_bad_dialog_policy_test()
 {
     bad_policy_test(false, "dialog.<xmlattr>.policy", "whenever_i_want");
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::writerBadPasswordPolicyTest()
+void session_test::writer_bad_password_policy_test()
 {
     bad_policy_test(false, "password.<xmlattr>.policy", "when_i_remember_it");
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::writerBadPasswordEncryptionTest()
+void session_test::writer_bad_password_encryption_test()
 {
     bad_policy_test(false, "password.<xmlattr>.encryption", "sweet");
 }
 
 //------------------------------------------------------------------------------
 
-void SessionTest::fileDialogTest()
+void session_test::file_dialog_test()
 {
     // Create a temporary file
     core::os::temp_dir tmp_dir;
@@ -353,7 +353,7 @@ void SessionTest::fileDialogTest()
 
         // Set data input
         auto in_string = std::make_shared<data::string>(expected);
-        writer->set_input(in_string, sight::io::service::s_DATA_KEY);
+        writer->set_input(in_string, sight::io::service::DATA_KEY);
 
         // Configure the writer service
         auto config = setup_config(false);
@@ -364,7 +364,7 @@ void SessionTest::fileDialogTest()
         // Execute the writer service
         writer->start().wait();
 
-        sight::ui::dialog::location_dummy::setPaths({tmp_file});
+        sight::ui::dialog::location_dummy::set_paths({tmp_file});
 
         writer->update().wait();
         writer->stop().wait();
@@ -391,7 +391,7 @@ void SessionTest::fileDialogTest()
 
         // Set data output
         auto out_string = std::make_shared<data::string>();
-        reader->set_inout(out_string, sight::io::service::s_DATA_KEY);
+        reader->set_inout(out_string, sight::io::service::DATA_KEY);
 
         // Configure the reader service
         auto config = setup_config(true);
@@ -402,7 +402,7 @@ void SessionTest::fileDialogTest()
         // Execute the writer service
         reader->start().wait();
 
-        sight::ui::dialog::location_dummy::setPaths({tmp_file});
+        sight::ui::dialog::location_dummy::set_paths({tmp_file});
 
         reader->update().wait();
         reader->stop().wait();
@@ -411,7 +411,7 @@ void SessionTest::fileDialogTest()
         service::unregister_service(reader);
 
         // Final test
-        CPPUNIT_ASSERT_EQUAL(expected, out_string->getValue());
+        CPPUNIT_ASSERT_EQUAL(expected, out_string->get_value());
 
         CPPUNIT_ASSERT(sight::ui::dialog::location_dummy::clear());
     }
@@ -419,7 +419,7 @@ void SessionTest::fileDialogTest()
 
 //------------------------------------------------------------------------------
 
-void SessionTest::passwordTest()
+void session_test::password_test()
 {
     // Create a temporary file
     core::os::temp_dir tmp_dir;
@@ -435,7 +435,7 @@ void SessionTest::passwordTest()
 
         // Set data input
         auto in_string = std::make_shared<data::string>(expected);
-        writer->set_input(in_string, sight::io::service::s_DATA_KEY);
+        writer->set_input(in_string, sight::io::service::DATA_KEY);
 
         // Set file output
         writer->set_file(tmp_file);
@@ -449,7 +449,7 @@ void SessionTest::passwordTest()
         // Execute the writer service
         writer->start().wait();
 
-        sight::ui::dialog::input_dummy::pushInput("case-sensitive");
+        sight::ui::dialog::input_dummy::push_input("case-sensitive");
 
         writer->update().wait();
         writer->stop().wait();
@@ -476,7 +476,7 @@ void SessionTest::passwordTest()
 
         // Set data output
         auto out_string = std::make_shared<data::string>();
-        reader->set_inout(out_string, sight::io::service::s_DATA_KEY);
+        reader->set_inout(out_string, sight::io::service::DATA_KEY);
 
         // Set file input
         reader->set_file(tmp_file);
@@ -490,13 +490,13 @@ void SessionTest::passwordTest()
         // Execute the writer service
         reader->start().wait();
 
-        sight::ui::dialog::input_dummy::pushInput("Oops");
-        ui::dialog::message_dummy::pushAction(sight::ui::dialog::message_dummy::RETRY);
-        sight::ui::dialog::input_dummy::pushInput("I forgot");
-        ui::dialog::message_dummy::pushAction(sight::ui::dialog::message_dummy::RETRY);
-        sight::ui::dialog::input_dummy::pushInput("Wait I remember");
-        ui::dialog::message_dummy::pushAction(sight::ui::dialog::message_dummy::RETRY);
-        sight::ui::dialog::input_dummy::pushInput("case-sensitive");
+        sight::ui::dialog::input_dummy::push_input("Oops");
+        ui::dialog::message_dummy::push_action(sight::ui::dialog::message_dummy::retry);
+        sight::ui::dialog::input_dummy::push_input("I forgot");
+        ui::dialog::message_dummy::push_action(sight::ui::dialog::message_dummy::retry);
+        sight::ui::dialog::input_dummy::push_input("Wait I remember");
+        ui::dialog::message_dummy::push_action(sight::ui::dialog::message_dummy::retry);
+        sight::ui::dialog::input_dummy::push_input("case-sensitive");
 
         reader->update().wait();
         reader->stop().wait();
@@ -505,7 +505,7 @@ void SessionTest::passwordTest()
         service::unregister_service(reader);
 
         // Final test
-        CPPUNIT_ASSERT_EQUAL(expected, out_string->getValue());
+        CPPUNIT_ASSERT_EQUAL(expected, out_string->get_value());
 
         CPPUNIT_ASSERT(sight::ui::dialog::input_dummy::clear());
         CPPUNIT_ASSERT(ui::dialog::message_dummy::clear());

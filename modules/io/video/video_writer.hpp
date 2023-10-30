@@ -66,10 +66,10 @@ public:
     MODULE_IO_VIDEO_API service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_VIDEO_API void openLocationDialog() override;
+    MODULE_IO_VIDEO_API void open_location_dialog() override;
 
     /// Return file type (io::service::FILE)
-    MODULE_IO_VIDEO_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VIDEO_API sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 
@@ -88,43 +88,43 @@ protected:
 private:
 
     /// SLOT: adds the current frame in the video
-    void saveFrame(core::hires_clock::type _timestamp);
+    void save_frame(core::hires_clock::type _timestamp);
 
     /// saves current buffer with OpenCV video writer (m_writer must be initialized)
-    void writeBuffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t) _buffer);
+    void write_buffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t) _buffer);
 
     /// SLOT: Starts recording
-    void startRecord();
+    void start_record();
 
     /// SLOT: Stops recording
-    void stopRecord();
+    void stop_record();
 
     /// SLOT: Starts/stops recording, according to the parameter value
     void record(bool /*state*/);
 
     /// SLOT: Toggles recording.
-    void toggleRecording();
+    void toggle_recording();
 
     /// opencv video writer
     UPTR(cv::VideoWriter) m_writer;
 
     /// opencv image type ( CV_8UC3, CV_8UC4, ...)
-    int m_imageType {0};
+    int m_image_type {0};
 
     /// flag if the service is recording.
-    bool m_isRecording {false};
+    bool m_is_recording {false};
 
     /// container used to store first video frame timestamps to compute framerate of the video stream
     std::vector<core::hires_clock::type> m_timestamps;
 
     /// Extension selected in file dialog
-    std::string m_selectedExtension;
+    std::string m_selected_extension;
 
     ///  static string containing the file extension
-    static const std::string s_MP4_EXTENSION;
+    static const std::string P4_EXTENSION;
 
     ///  static string containing the codec to use
-    static const std::string s_AVC1_CODEC;
+    static const std::string AV_C1_CODEC;
 };
 
 } // namespace sight::module::io::video

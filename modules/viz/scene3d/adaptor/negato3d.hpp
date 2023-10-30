@@ -50,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b sliceType(int, int): update image slice index .
  * - \b sliceIndex(int, int, int): update image slice type.
  * - \b setTransparency(double): sets the global transparency of the three image planes.
- * - \b updateVisibility(bool): sets whether the negato is shown or not.
+ * - \b update_visibility(bool): sets whether the negato is shown or not.
  * - \b toggleVisibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
  * - \b hide(): hides the negato.
@@ -92,7 +92,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API negato3d final :
 {
 public:
 
-    typedef data::helper::medical_image::orientation_t OrientationMode;
+    using orientation_mode = data::helper::medical_image::orientation_t;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato3d, sight::viz::scene3d::adaptor);
@@ -132,12 +132,12 @@ protected:
      * @brief Sets the negato visibility.
      * @param _visible the visibility status of the negato.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
 private:
 
     /// Update the displayed transfer function.
-    void updateTF();
+    void update_tf();
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -154,7 +154,7 @@ private:
      * @param _dx the cursor's width displacement since the last event.
      * @param _dy the cursor's height displacement since the last event.
      */
-    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int _dx, int _dy) override;
+    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int _dx, int _dy) override;
 
     /**
      * @brief Attempts to pick the negato and starts interactions if picking was successful.
@@ -162,24 +162,24 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) override;
 
     /// Ends all interactions, regardless of the input.
-    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
+    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
 
     /**
      * @brief Sets the slice intersection at the (_x, _y) screen position if possible.
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    void moveSlices(int _x, int _y);
+    void move_slices(int _x, int _y);
 
     /**
      * @brief Picks the intensity value at the (_x, _y) screen position.
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    void pickIntensity(int _x, int _y);
+    void pick_intensity(int _x, int _y);
 
     /**
      * @brief Update slices index to match x,y,z world coordinates
@@ -187,20 +187,20 @@ private:
      * @param _y world coordinates in double.
      * @param _z world coordinates in double.
      */
-    void updateSlicesFromWorld(double _x, double _y, double _z);
+    void update_slices_from_world(double _x, double _y, double _z);
 
     /**
      * @brief Updates the transfer function window and level by adding the input values.
      * @param _dw window delta.
      * @param _dl level delta.
      */
-    void updateWindowing(double _dw, double _dl);
+    void update_windowing(double _dw, double _dl);
 
     /// SLOT: updates the image buffer.
-    void newImage();
+    void new_image();
 
     /// SLOT: updates the image slice type.
-    void changeSliceType(int /*unused*/, int /*unused*/);
+    void change_slice_type(int /*unused*/, int /*unused*/);
 
     /**
      * @brief SLOT: updates the image slice index.
@@ -208,22 +208,22 @@ private:
      * @param _frontalIndex new frontal slice index.
      * @param _sagittalIndex new sagittal slice index.
      */
-    void changeSliceIndex(int _axial_index, int _frontal_index, int _sagittal_index);
+    void change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index);
 
     /// SLOT: sets the planes's opacity.
-    void setTransparency(double _transparency);
+    void set_transparency(double _transparency);
 
     /// Sets the picking flags on all three negato planes.
-    void setPlanesQueryFlags(std::uint32_t _flags);
+    void set_planes_query_flags(std::uint32_t _flags);
 
     /// Attemps to pick the negato planes, returns the world space position of the intersection if successful.
-    std::optional<Ogre::Vector3> getPickedSlices(int _x, int _y);
+    std::optional<Ogre::Vector3> get_picked_slices(int _x, int _y);
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera {true};
+    bool m_auto_reset_camera {true};
 
     /// Enables the opacity to that of the transfer function.
-    bool m_enableAlpha {false};
+    bool m_enable_alpha {false};
 
     /// Enables whether or not interactions are enabled on the negato.
     bool m_interactive {false};
@@ -232,50 +232,50 @@ private:
     int m_priority {1};
 
     /// Contains the ogre texture which will be displayed on the negato.
-    sight::viz::scene3d::texture::sptr m_3DOgreTexture;
+    sight::viz::scene3d::texture::sptr m_3d_ogre_texture;
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
-    sight::viz::scene3d::transfer_function::uptr m_gpuTF {nullptr};
+    sight::viz::scene3d::transfer_function::uptr m_gpu_tf {nullptr};
 
     /// Stores the planes on which we will apply our texture.
     std::array<sight::viz::scene3d::plane::sptr, 3> m_planes;
 
     /// Contains the plane that the user is currently interacting with.
-    sight::viz::scene3d::plane::sptr m_pickedPlane {nullptr};
+    sight::viz::scene3d::plane::sptr m_picked_plane {nullptr};
 
     /// Contains the widget displayed to pick intensities.
-    std::unique_ptr<sight::viz::scene3d::picking_cross> m_pickingCross;
+    std::unique_ptr<sight::viz::scene3d::picking_cross> m_picking_cross;
 
     /// Contains the scene node allowing to move the entire negato.
-    Ogre::SceneNode* m_negatoSceneNode {nullptr};
+    Ogre::SceneNode* m_negato_scene_node {nullptr};
 
     /// Defines the filtering type for this negato.
-    sight::viz::scene3d::plane::filter_t m_filtering {sight::viz::scene3d::plane::filter_t::NONE};
+    sight::viz::scene3d::plane::filter_t m_filtering {sight::viz::scene3d::plane::filter_t::none};
 
     /// Defines the transfer function window value at the time the interaction started.
-    double m_initialWindow {0.F};
+    double m_initial_window {0.F};
 
     /// Defines the transfer function level value at the time the interaction started.
-    double m_initialLevel {0.F};
+    double m_initial_level {0.F};
 
     /// Defines the mouse position at the time the windowing interaction started.
-    Ogre::Vector2i m_initialPos {-1, -1};
+    Ogre::Vector2i m_initial_pos {-1, -1};
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines if the plane border is used or not.
     bool m_border {true};
 
     /// Defines the signal sent when a voxel is picked using the left mouse button.
     using picked_voxel_sig_t = core::com::signal<void (std::string)>;
-    picked_voxel_sig_t::sptr m_pickedVoxelSignal {nullptr};
+    picked_voxel_sig_t::sptr m_picked_voxel_signal {nullptr};
 
-    static constexpr std::string_view s_IMAGE_IN = "image";
-    data::ptr<data::image, data::Access::in> m_image {this, s_IMAGE_IN, true};
+    static constexpr std::string_view IMAGE_IN = "image";
+    data::ptr<data::image, data::access::in> m_image {this, IMAGE_IN, true};
 
-    static constexpr std::string_view s_TF_INOUT = "tf";
-    data::ptr<data::transfer_function, data::Access::inout> m_tf {this, s_TF_INOUT, true};
+    static constexpr std::string_view TF_INOUT = "tf";
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <ui/testCore/Tester.hpp>
+#include <ui/testCore/tester.hpp>
 
 namespace sight::ui::test_core::helper
 {
@@ -36,7 +36,7 @@ public:
      * @param selection The item to be selected
      * @warning This method assumes that the selection dialog is already open.
      */
-    GUITEST_API static void select(Tester& _tester, const std::string& _selection);
+    GUITEST_API static void select(tester& _tester, const std::string& _selection);
 };
 
 } // namespace sight::ui::testCore::helper

@@ -38,7 +38,7 @@ namespace sight::service::ut
 class registry_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(registry_test);
-CPPUNIT_TEST(registerKeyTest);
+CPPUNIT_TEST(register_key_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,7 +46,7 @@ public:
     // interface
     void setUp() override;
     void tearDown() override;
-    static void registerKeyTest();
+    static void register_key_test();
 };
 
 } // namespace sight::service::ut

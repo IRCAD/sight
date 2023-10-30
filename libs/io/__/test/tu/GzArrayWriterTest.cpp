@@ -31,14 +31,14 @@
 
 #include <numeric>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::GzArrayWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::gz_array_writer_test);
 
 namespace sight::io::ut
 {
 
 //------------------------------------------------------------------------------
 
-void GzArrayWriterTest::basicTest()
+void gz_array_writer_test::basic_test()
 {
     auto gz_array_writer           = std::make_shared<writer::gz_array_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + gz_array_writer->extension());

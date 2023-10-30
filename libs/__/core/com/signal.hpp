@@ -56,21 +56,21 @@ struct CORE_CLASS_API signal<R(A ...)>: signal_base
     /**
      * @name Typedefs
      * @{ */
-    typedef R signature_type(A ...);
+    using signature_type = R(A ...);
 
-    typedef signal<signature_type> self_type;
+    using self_t = signal<signature_type>;
 
-    typedef SPTR(self_type) sptr;
-    typedef WPTR(self_type) wptr;
+    using sptr = std::shared_ptr<self_t>;
+    using wptr = std::weak_ptr<self_t>;
 
-    typedef slot_run<signature_type> slot_run_type;
-    typedef SPTR(slot_run_type)      slot_sptr;
+    using slot_run_type = slot_run<signature_type>;
+    using slot_sptr     = std::shared_ptr<slot_run_type>;
 
-    typedef std::pair<bool, WPTR(slot_run_type)> pair_type;
-    typedef std::list<pair_type*> slot_container_type;
+    using pair_type        = std::pair<bool, std::weak_ptr<slot_run_type> >;
+    using slot_container_t = std::list<pair_type*>;
 
-    typedef std::map<WPTR(slot_base), WPTR(slot_connection_base),
-                     std::owner_less<WPTR(slot_base)> > connection_map_type;
+    using connection_map_type = std::map<std::weak_ptr<slot_base>, std::weak_ptr<slot_connection_base>,
+                                         std::owner_less<std::weak_ptr<slot_base> > >;
     /**  @} */
 
     /// Destructor : disconnects all remaining connections.
@@ -133,7 +133,7 @@ struct CORE_CLASS_API signal<R(A ...)>: signal_base
         connection connect(SPTR(slot_base) _slot);
 
         /// Connected slots.
-        slot_container_type m_slots;
+        slot_container_t m_slots;
 
         /// Container of current connections.
         connection_map_type m_connections;

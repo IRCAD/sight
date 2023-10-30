@@ -60,7 +60,7 @@ void export_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void export_test::basicTest()
+void export_test::basic_test()
 {
     auto data = std::make_shared<data::series>();
     m_export->set_inout(data, "data");
@@ -69,7 +69,7 @@ void export_test::basicTest()
     CPPUNIT_ASSERT(container->empty());
     CPPUNIT_ASSERT_NO_THROW(m_export->configure());
     CPPUNIT_ASSERT_NO_THROW(m_export->start().get());
-    sight::ui::dialog::input_dummy::pushInput("I don't care");
+    sight::ui::dialog::input_dummy::push_input("I don't care");
     CPPUNIT_ASSERT_NO_THROW(m_export->update().get());
     CPPUNIT_ASSERT_NO_THROW(m_export->stop().get());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());

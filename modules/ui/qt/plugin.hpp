@@ -58,7 +58,7 @@ public:
 
 protected:
 
-    MODULE_UI_QT_API void loadStyleSheet();
+    MODULE_UI_QT_API void load_style_sheet();
 };
 
 } // namespace sight::module::ui::qt

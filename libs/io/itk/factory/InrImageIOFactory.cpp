@@ -31,45 +31,45 @@
 #include <itkCreateObjectFunction.h>
 #include <itkVersion.h>
 
-REGISTER_IMAGEIOFACTORY(itk::InrImageIOFactory);
+REGISTER_IMAGEIOFACTORY(itk::inr_image_io_factory);
 
 namespace itk
 {
 
 //------------------------------------------------------------------------------
 
-void InrImageIOFactory::PrintSelf(std::ostream& /*os*/, Indent /*indent*/) const
+void inr_image_io_factory::PrintSelf(std::ostream& /*os*/, Indent /*indent*/) const
 {
 }
 
 //------------------------------------------------------------------------------
 
-InrImageIOFactory::InrImageIOFactory()
+inr_image_io_factory::inr_image_io_factory()
 {
     this->RegisterOverride(
         "itkImageIOBase",
         "InrImageIO",
         "InrImage IO",
         true,
-        CreateObjectFunction<InrImageIO>::New()
+        CreateObjectFunction<inr_image_io>::New()
     );
 }
 
 //------------------------------------------------------------------------------
 
-InrImageIOFactory::~InrImageIOFactory()
+inr_image_io_factory::~inr_image_io_factory()
 = default;
 
 //------------------------------------------------------------------------------
 
-const char* InrImageIOFactory::GetITKSourceVersion() const
+const char* inr_image_io_factory::GetITKSourceVersion() const
 {
     return ITK_SOURCE_VERSION;
 }
 
 //------------------------------------------------------------------------------
 
-const char* InrImageIOFactory::GetDescription() const
+const char* inr_image_io_factory::GetDescription() const
 {
     return "InrImage ImageIO factory, allows the loading of InrImage into ITK";
 }

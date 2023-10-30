@@ -44,7 +44,7 @@ public:
     SIGHT_DECLARE_CLASS(parameters, core::base_object);
 
     /// Return the default global instance of parameters
-    APP_API static parameters::sptr getDefault();
+    APP_API static parameters::sptr get_default();
 
     APP_API parameters();
     APP_API ~parameters() override = default;
@@ -60,7 +60,7 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    APP_API const field_adaptor_t& getParameters(const std::string& _extension_id) const;
+    APP_API const field_adaptor_t& get_parameters(const std::string& _extension_id) const;
 
     /**
      * @brief Clear the registry.
@@ -70,16 +70,16 @@ public:
 
 protected:
 
-    typedef std::map<std::string, field_adaptor_t> Registry;
+    using registry = std::map<std::string, field_adaptor_t>;
 
     /// Container of parameter information
-    Registry m_reg;
+    registry m_reg;
 
     /// Used to protect the registry access.
-    mutable core::mt::read_write_mutex m_registryMutex;
+    mutable core::mt::read_write_mutex m_registry_mutex;
 
     /// The global instance of the app config parameters.
-    static parameters::sptr s_appConfigParameters;
+    static parameters::sptr s_app_config_parameters;
 };
 
 } // namespace sight::app::extension

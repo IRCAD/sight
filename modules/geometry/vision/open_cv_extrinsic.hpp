@@ -63,14 +63,14 @@ namespace sight::module::geometry::vision
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API open_cv_extrinsic : public sight::geometry::vision::ICalibration
+class MODULE_GEOMETRY_VISION_CLASS_API open_cv_extrinsic : public sight::geometry::vision::i_calibration
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(open_cv_extrinsic, sight::geometry::vision::ICalibration);
+    SIGHT_DECLARE_SERVICE(open_cv_extrinsic, sight::geometry::vision::i_calibration);
 
     /// Double changed signal type
-    typedef core::com::signal<void (double)> error_computed_signal_t;
+    using error_computed_signal_t = core::com::signal<void (double)>;
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API open_cv_extrinsic() noexcept;
@@ -97,22 +97,22 @@ private:
     /**
      * @brief SLOT: update the chessboard size.
      */
-    void updateChessboardSize();
+    void update_chessboard_size();
 
     /// FwId of the first calibrationInfo
-    std::string m_calibrationInfo1ID;
+    std::string m_calibration_info1_id;
 
     /// FwId of the second calibrationInfo
-    std::string m_calibrationInfo2ID;
+    std::string m_calibration_info2_id;
 
     /// Preference key to retrieve width of the chessboard used for calibration
-    std::string m_widthKey;
+    std::string m_width_key;
 
     /// Preference key to retrieve height of the chessboard used for calibration
-    std::string m_heightKey;
+    std::string m_height_key;
 
     /// Preference key to retrieve size of the chessboard'square used for calibration
-    std::string m_squareSizeKey;
+    std::string m_square_size_key;
 
     /// Width of the chessboard used for calibration
     unsigned int m_width {11};
@@ -121,15 +121,15 @@ private:
     unsigned int m_height {8};
 
     /// Size of the chessboard'square used for calibration
-    float m_squareSize {20.0};
+    float m_square_size {20.0};
 
     /// Index of the camera in cameraSet used to compute extrinsic matrix (from camera[0] to camera[index]).
-    std::size_t m_camIndex {1};
+    std::size_t m_cam_index {1};
 
-    data::ptr<data::calibration_info, data::Access::in> m_calibrationInfo1 {this, "calibrationInfo1"};
-    data::ptr<data::calibration_info, data::Access::in> m_calibrationInfo2 {this, "calibrationInfo2"};
-    data::ptr<data::camera_set, data::Access::inout> m_camera_set {this, "cameraSet"};
-    data::ptr<data::matrix4, data::Access::out> m_matrix {this, "matrix"};
+    data::ptr<data::calibration_info, data::access::in> m_calibration_info1 {this, "calibrationInfo1"};
+    data::ptr<data::calibration_info, data::access::in> m_calibration_info2 {this, "calibrationInfo2"};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "cameraSet"};
+    data::ptr<data::matrix4, data::access::out> m_matrix {this, "matrix"};
 };
 
 } // namespace sight::module::geometry::vision

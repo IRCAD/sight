@@ -40,12 +40,12 @@ const core::com::signals::key_t resection::VISIBILITY_MODIFIED_SIG  = "pointTexC
 //------------------------------------------------------------------------------
 
 resection::resection() :
-    m_planeList(std::make_shared<data::plane_list>()),
-    m_sigReconstructionAdded(std::make_shared<reconstruction_added_signal_t>()),
-    m_sigVisibilityModified(std::make_shared<visibility_modified_signal_t>())
+    m_plane_list(std::make_shared<data::plane_list>()),
+    m_sig_reconstruction_added(std::make_shared<reconstruction_added_signal_t>()),
+    m_sig_visibility_modified(std::make_shared<visibility_modified_signal_t>())
 {
-    m_signals(RECONSTRUCTION_ADDED_SIG, m_sigReconstructionAdded)
-        (VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
+    m_signals(RECONSTRUCTION_ADDED_SIG, m_sig_reconstruction_added)
+        (VISIBILITY_MODIFIED_SIG, m_sig_visibility_modified);
 }
 
 //------------------------------------------------------------------------------
@@ -62,15 +62,15 @@ void resection::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_name       = other->m_name;
-    m_isSafePart = other->m_isSafePart;
-    m_isValid    = other->m_isValid;
-    m_isVisible  = other->m_isVisible;
-    m_planeList  = other->m_planeList;
-    m_vInputs    = other->m_vInputs;
-    m_vOutputs   = other->m_vOutputs;
+    m_name         = other->m_name;
+    m_is_safe_part = other->m_is_safe_part;
+    m_is_valid     = other->m_is_valid;
+    m_visible      = other->m_visible;
+    m_plane_list   = other->m_plane_list;
+    m_v_inputs     = other->m_v_inputs;
+    m_v_outputs    = other->m_v_outputs;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -87,25 +87,25 @@ void resection::deep_copy(const object::csptr& _source, const std::unique_ptr<de
         !bool(other)
     );
 
-    m_name       = other->m_name;
-    m_isSafePart = other->m_isSafePart;
-    m_isValid    = other->m_isValid;
-    m_isVisible  = other->m_isVisible;
-    m_planeList  = data::object::copy(other->m_planeList, _cache);
+    m_name         = other->m_name;
+    m_is_safe_part = other->m_is_safe_part;
+    m_is_valid     = other->m_is_valid;
+    m_visible      = other->m_visible;
+    m_plane_list   = data::object::copy(other->m_plane_list, _cache);
 
-    this->m_vInputs.clear();
-    for(const ResectionInputs::value_type& r : other->m_vInputs)
+    this->m_v_inputs.clear();
+    for(const auto& r : other->m_v_inputs)
     {
-        m_vInputs.push_back(data::object::copy(r, _cache));
+        m_v_inputs.push_back(data::object::copy(r, _cache));
     }
 
-    this->m_vOutputs.clear();
-    for(const ResectionOutputs::value_type& r : other->m_vOutputs)
+    this->m_v_outputs.clear();
+    for(const auto& r : other->m_v_outputs)
     {
-        m_vOutputs.push_back(data::object::copy(r, _cache));
+        m_v_outputs.push_back(data::object::copy(r, _cache));
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -113,18 +113,18 @@ void resection::deep_copy(const object::csptr& _source, const std::unique_ptr<de
 bool resection::operator==(const resection& _other) const noexcept
 {
     if(m_name != _other.m_name
-       || m_isSafePart != _other.m_isSafePart
-       || m_isValid != _other.m_isValid
-       || m_isVisible != _other.m_isVisible
-       || !core::tools::is_equal(m_planeList, _other.m_planeList)
-       || !core::tools::is_equal(m_vInputs, _other.m_vInputs)
-       || !core::tools::is_equal(m_vOutputs, _other.m_vOutputs))
+       || m_is_safe_part != _other.m_is_safe_part
+       || m_is_valid != _other.m_is_valid
+       || m_visible != _other.m_visible
+       || !core::tools::is_equal(m_plane_list, _other.m_plane_list)
+       || !core::tools::is_equal(m_v_inputs, _other.m_v_inputs)
+       || !core::tools::is_equal(m_v_outputs, _other.m_v_outputs))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

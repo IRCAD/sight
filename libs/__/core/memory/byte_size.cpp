@@ -42,8 +42,8 @@ byte_size::byte_size(size_t _size, unit_t _unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
-        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
+        (_unit == BYTES) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == KI_B) || (_unit == MI_B) || (_unit == GI_B) || (_unit == TI_B) || (_unit == PI_B)
     );
     this->set_size(_size, _unit);
 }
@@ -54,8 +54,8 @@ byte_size::byte_size(double _size, unit_t _unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
-        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
+        (_unit == BYTES) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == KI_B) || (_unit == MI_B) || (_unit == GI_B) || (_unit == TI_B) || (_unit == PI_B)
     );
     if(_size < 0)
     {
@@ -107,8 +107,8 @@ void byte_size::set_size(size_t _size, unit_t _unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
-        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
+        (_unit == BYTES) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == KI_B) || (_unit == MI_B) || (_unit == GI_B) || (_unit == TI_B) || (_unit == PI_B)
     );
     m_size = _size * _unit;
 }
@@ -124,8 +124,8 @@ void byte_size::set_size(double _size, unit_t _unit)
 
     SIGHT_ASSERT(
         "Bad Unit",
-        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
-        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
+        (_unit == BYTES) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == KI_B) || (_unit == MI_B) || (_unit == GI_B) || (_unit == TI_B) || (_unit == PI_B)
     );
     m_size = static_cast<size_t>(_size * static_cast<double>(_unit));
 }
@@ -152,7 +152,7 @@ std::string byte_size::unit_to_string(byte_size::unit_t _unit)
 {
     switch(_unit)
     {
-        case bytes:
+        case BYTES:
             return "Bytes";
 
         case KB:
@@ -170,19 +170,19 @@ std::string byte_size::unit_to_string(byte_size::unit_t _unit)
         case PB:
             return "PB";
 
-        case ki_b:
+        case KI_B:
             return "KiB";
 
-        case gi_b:
+        case GI_B:
             return "GiB";
 
-        case mi_b:
+        case MI_B:
             return "MiB";
 
-        case ti_b:
+        case TI_B:
             return "TiB";
 
-        case pi_b:
+        case PI_B:
             return "PiB";
 
         default:
@@ -211,22 +211,22 @@ bool byte_size::parse_size(const std::string& _s, size_t& _size)
 
     byte_size::size_t int_size   = 0;
     double float_size            = 0;
-    byte_size::size_t multiplier = byte_size::bytes;
+    byte_size::size_t multiplier = byte_size::BYTES;
 
     symbols<char, byte_size::size_t> unit;
 
     unit.add
-        ("b", byte_size::bytes)("byte", byte_size::bytes)("bytes", byte_size::bytes)
+        ("b", byte_size::BYTES)("byte", byte_size::BYTES)("bytes", byte_size::BYTES)
         ("kb", byte_size::KB)
         ("mb", byte_size::MB)
         ("gb", byte_size::GB)
         ("tb", byte_size::TB)
         ("pb", byte_size::PB)
-        ("k", byte_size::ki_b)("kib", byte_size::ki_b)
-        ("m", byte_size::mi_b)("mib", byte_size::mi_b)
-        ("g", byte_size::gi_b)("gib", byte_size::gi_b)
-        ("t", byte_size::ti_b)("tib", byte_size::ti_b)
-        ("p", byte_size::pi_b)("pib", byte_size::pi_b)
+        ("k", byte_size::KI_B)("kib", byte_size::KI_B)
+        ("m", byte_size::MI_B)("mib", byte_size::MI_B)
+        ("g", byte_size::GI_B)("gib", byte_size::GI_B)
+        ("t", byte_size::TI_B)("tib", byte_size::TI_B)
+        ("p", byte_size::PI_B)("pib", byte_size::PI_B)
     ;
 
     bool r = false;
@@ -280,13 +280,13 @@ std::string byte_size::get_size_as_string(unit_t _unit) const
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
-        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
+        (_unit == BYTES) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == KI_B) || (_unit == MI_B) || (_unit == GI_B) || (_unit == TI_B) || (_unit == PI_B)
     );
     std::stringstream sstr;
     sstr << std::noshowpoint;
 
-    if(_unit == bytes)
+    if(_unit == BYTES)
     {
         sstr << m_size;
     }
@@ -304,15 +304,15 @@ std::string byte_size::get_size_as_string(unit_t _unit) const
 
 std::string byte_size::get_human_readable_size(standard_type _standard) const
 {
-    static const std::array si {bytes, KB, MB, GB, TB, PB};
-    static const std::array iec {bytes, ki_b, mi_b, gi_b, ti_b, pi_b};
-    static_assert(si.size() == iec.size());
-    const std::size_t size_of_standard_set = si.size();
+    static const std::array s_SI {BYTES, KB, MB, GB, TB, PB};
+    static const std::array s_IEC {BYTES, KI_B, MI_B, GI_B, TI_B, PI_B};
+    static_assert(s_SI.size() == s_IEC.size());
+    const std::size_t size_of_standard_set = s_SI.size();
 
-    const auto* unit_set = &iec;
-    if(_standard == SI)
+    const auto* unit_set = &s_IEC;
+    if(_standard == si)
     {
-        unit_set = &si;
+        unit_set = &s_SI;
     }
 
     std::size_t i = 0;

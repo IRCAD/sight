@@ -93,7 +93,7 @@ class slideview;
                <view caption="view4" />
                <view caption="view5" />
            </layout>
-           <toolBar />
+           <toolbar />
            <slideView />
            <slideView align="top" size="200" opacity="1.0">
                <styleSheet>color: blue; background-color: yellow</styleSheet>
@@ -101,7 +101,7 @@ class slideview;
        </gui>
        <registry>
            <parent wid="myView" />
-           <toolBar sid="toolbar1" start="true" />
+           <toolbar sid="toolbar1" start="true" />
            <view sid="subView3" start="true" />
            <view wid="subView4" />
            <view sid="subView5" />
@@ -123,7 +123,7 @@ class slideview;
  *           @see ui::layout::tab
  *     - \b ui::layout::toolbox : all views will be draw in toolbox.
  *           @see ui::layout::toolbox
- *  - \b toolBar: defines the toolBar configuration.
+ *  - \b toolbar: defines the toolbar configuration.
  *           @see ui::builder::toolbar
  *  - \b slideView: defines a slide view.
  *           @see ui::builder::slideview
@@ -143,9 +143,9 @@ public:
 
     SIGHT_DECLARE_SERVICE(service, service::base);
 
-    UI_API SPTR(ui::container::widget) getContainer();
+    UI_API SPTR(ui::container::widget) get_container();
 
-    UI_API void setParent(std::string _wid);
+    UI_API void set_parent(std::string _wid);
 
     /// @name Slots
     /// @{
@@ -167,10 +167,10 @@ public:
     };
 
     /// SLOT: enable/disable the container
-    UI_API virtual void setEnabled(bool _is_enabled);
+    UI_API virtual void set_enabled(bool _is_enabled);
 
     /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
-    UI_API virtual void setEnabledByParameter(ui::parameter_t);
+    UI_API virtual void set_enabled_by_parameter(ui::parameter_t);
 
     /// SLOT: enable the container
     UI_API virtual void enable();
@@ -179,10 +179,10 @@ public:
     UI_API virtual void disable();
 
     /// SLOT: show/hide the container
-    UI_API virtual void setVisible(bool _is_visible);
+    UI_API virtual void set_visible(bool _is_visible);
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    UI_API virtual void setVisibleByParameter(ui::parameter_t);
+    UI_API virtual void set_visible_by_parameter(ui::parameter_t);
 
     /// SLOT: show the container
     UI_API virtual void show();
@@ -191,10 +191,10 @@ public:
     UI_API virtual void hide();
 
     /// SLOT: show the container if it is hidden or hide it if it is shown
-    UI_API void toggleVisibility();
+    UI_API void toggle_visibility();
 
     /// SLOT: modify a layout element, depending of the key. Forwarded to the view layout manager.
-    UI_API virtual void modifyLayout(ui::parameter_t _parameter, std::string _key);
+    UI_API virtual void modify_layout(ui::parameter_t _parameter, std::string _key);
 
     /// @}
 
@@ -223,21 +223,21 @@ protected:
 
 private:
 
-    typedef std::vector<SPTR(ui::builder::slideview)> slide_view_container_t;
+    using slide_view_container_t = std::vector<std::shared_ptr<ui::builder::slideview> >;
 
-    void initializeLayoutManager(const ui::config_t& _layout_config);
-    void initializeToolBarBuilder(const ui::config_t& _tool_bar_config);
-    void initializeSlideViewBuilder(const ui::config_t& _slide_view_config);
+    void initialize_layout_manager(const ui::config_t& _layout_config);
+    void initialize_tool_bar_builder(const ui::config_t& _tool_bar_config);
+    void initialize_slide_view_builder(const ui::config_t& _slide_view_config);
 
-    bool m_viewLayoutManagerIsCreated {false};
-    SPTR(ui::layout::view) m_viewLayoutManager;
+    bool m_view_layout_manager_is_created {false};
+    SPTR(ui::layout::view) m_view_layout_manager;
 
-    SPTR(ui::detail::registry::view) m_viewRegistry;
-    SPTR(ui::builder::toolbar) m_toolBarBuilder;
-    SPTR(ui::builder::widget) m_containerBuilder;
-    slide_view_container_t m_slideViewBuilders;
+    SPTR(ui::detail::registry::view) m_view_registry;
+    SPTR(ui::builder::toolbar) m_tool_bar_builder;
+    SPTR(ui::builder::widget) m_container_builder;
+    slide_view_container_t m_slide_view_builders;
 
-    bool m_hasToolBar {false};
+    bool m_has_tool_bar {false};
 };
 
 } // namespace sight::ui

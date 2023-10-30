@@ -100,14 +100,14 @@ std::uint64_t base::get_total_work_units() const
 base::shared_future base::cancel()
 {
     core::mt::read_to_write_lock lock(m_mutex);
-    if(m_cancelable && (m_state == WAITING || m_state == RUNNING))
+    if(m_cancelable && (m_state == waiting || m_state == running))
     {
-        state next_state = (m_state == WAITING) ? CANCELED : CANCELING;
+        state next_state = (m_state == waiting) ? canceled : canceling;
 
         {
             core::mt::upgrade_to_write_lock write_lock(lock);
             m_cancel_requested = true;
-            this->set_state_no_lock(CANCELING);
+            this->set_state_no_lock(canceling);
         }
 
         // unlock mutex for cancel callbacks sanity
@@ -125,14 +125,14 @@ base::shared_future base::cancel()
 
         SIGHT_ASSERT(
             "State shall be only CANCELING or CANCELED, not " << m_state,
-            m_state == CANCELED || m_state == CANCELING
+            m_state == canceled || m_state == canceling
         );
 
-        if(m_state == CANCELING)
+        if(m_state == canceling)
         {
             this->set_state_no_lock(next_state);
 
-            if(next_state == CANCELED && !m_run_future.valid())
+            if(next_state == canceled && !m_run_future.valid())
             {
                 // If we use the default constructor, the future is not valid and we will not be able to wait for it
                 // Thus we build a dummy future to get a valid one
@@ -220,11 +220,11 @@ base::shared_future base::run()
 {
     core::mt::read_to_write_lock lock(m_mutex);
 
-    if(m_state == WAITING)
+    if(m_state == waiting)
     {
         {
             core::mt::upgrade_to_write_lock write_lock(lock);
-            this->set_state_no_lock(RUNNING);
+            this->set_state_no_lock(running);
         }
 
         lock.unlock();
@@ -253,22 +253,22 @@ void base::set_state_no_lock(base::state _state)
     m_state = _state;
     switch(_state)
     {
-        case WAITING:
+        case waiting:
             break;
 
-        case RUNNING:
+        case running:
             m_sig_started->async_emit();
             break;
 
-        case CANCELING:
+        case canceling:
             m_sig_cancel_requested->async_emit();
             break;
 
-        case CANCELED:
+        case canceled:
             m_sig_canceled->async_emit();
             break;
 
-        case FINISHED:
+        case finished:
             m_sig_finished->async_emit();
             break;
 
@@ -297,7 +297,7 @@ void base::finish()
 
 void base::finish_no_lock()
 {
-    this->set_state_no_lock((m_state == CANCELING) ? CANCELED : FINISHED);
+    this->set_state_no_lock((m_state == canceling) ? canceled : finished);
 }
 
 //------------------------------------------------------------------------------
@@ -364,7 +364,7 @@ base::state base::get_state_no_lock() const
 
 void base::add_cancel_hook_no_lock(job_cancel_hook _callback)
 {
-    if(m_state == WAITING || m_state == RUNNING)
+    if(m_state == waiting || m_state == running)
     {
         m_cancel_hooks.push_back(_callback);
     }
@@ -374,7 +374,7 @@ void base::add_cancel_hook_no_lock(job_cancel_hook _callback)
 
 void base::add_done_work_hook_no_lock(done_work_hook _callback)
 {
-    if(m_state == WAITING || m_state == RUNNING)
+    if(m_state == waiting || m_state == running)
     {
         m_done_work_hooks.push_back(_callback);
     }
@@ -384,7 +384,7 @@ void base::add_done_work_hook_no_lock(done_work_hook _callback)
 
 void base::add_total_work_units_hook_no_lock(total_work_units_hook _callback)
 {
-    if(m_state == WAITING || m_state == RUNNING)
+    if(m_state == waiting || m_state == running)
     {
         m_total_work_units_hooks.push_back(_callback);
     }

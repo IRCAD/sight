@@ -46,21 +46,21 @@ public:
     UI_API ~progress() override;
 
     ///set the title for the dialog
-    UI_API void setTitle(const std::string& _title) override;
+    UI_API void set_title(const std::string& _title) override;
 
     ///set the message for the dialog
-    UI_API void setMessage(const std::string& _message) override;
+    UI_API void set_message(const std::string& _message) override;
 
     /// action called by core::tools::progress_adviser
     UI_API void operator()(float _percent, std::string _msg) override;
 
-    UI_API void setCancelCallback(cancel_callback_t _callback) override;
+    UI_API void set_cancel_callback(cancel_callback_t _callback) override;
 
-    UI_API void hideCancelButton() override;
+    UI_API void hide_cancel_button() override;
 
 protected:
 
-    UI_API void cancelPressed() override;
+    UI_API void cancel_pressed() override;
 
     ui::dialog::progress_base::sptr m_implementation;
 };

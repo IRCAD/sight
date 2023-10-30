@@ -28,108 +28,108 @@
 
 #include <cppunit/Exception.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::SeriesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::series_test);
 
 namespace sight::io::http::ut
 {
 
-const QString seriesInstanceUID("1.2.250.317.4553866982239972067453446023029080307");
-const QString seriesDate("20171028");
-const QString seriesTime("180156.734");
-const QString seriesDescription("OS 0.5");
-const QString modality("CT");
-const QString numberOfSeriesRelatedInstances(403);
-const QString patientName("ANONYMIZED^ANONYMIZED");
-const QString patientID("ANONYMIZED");
-const QString patientBirthDate("19000101");
-const QString patientSex("O");
-const QString studyInstanceUID("1.2.826.0.1.3680043.2.1143.3387620735642715927946151392447602822");
-const QString studyDate("19000101");
-const QString studyTime("000000.000000");
-const QString studyDescription("");
-const QString patientAge("");
-const QString institutionName("IRCAD IHU");
+const QString SERIES_INSTANCE_UID("1.2.250.317.4553866982239972067453446023029080307");
+const QString SERIES_DATE("20171028");
+const QString SERIES_TIME("180156.734");
+const QString SERIES_DESCRIPTION("OS 0.5");
+const QString MODALITY("CT");
+const QString NUMBER_OF_SERIES_RELATED_INSTANCES(403);
+const QString PATIENT_NAME("ANONYMIZED^ANONYMIZED");
+const QString PATIENT_ID("ANONYMIZED");
+const QString PATIENT_BIRTH_DATE("19000101");
+const QString PATIENT_SEX("O");
+const QString STUDY_INSTANCE_UID("1.2.826.0.1.3680043.2.1143.3387620735642715927946151392447602822");
+const QString STUDY_DATE("19000101");
+const QString STUDY_TIME("000000.000000");
+const QString STUDY_DESCRIPTION("");
+const QString PATIENT_AGE("");
+const QString INSTITUTION_NAME("IRCAD IHU");
 
 //------------------------------------------------------------------------------
 
-void SeriesTest::setUp()
+void series_test::setUp()
 {
     // ==================================
     // Series
     // ==================================
-    m_json.insert("SeriesInstanceUID", seriesInstanceUID);
-    m_json.insert("SeriesDate", seriesDate);
-    m_json.insert("SeriesTime", seriesTime);
-    m_json.insert("SeriesDescription", seriesDescription);
-    m_json.insert("Modality", modality);
-    m_json.insert("NumberOfSeriesRelatedInstances", numberOfSeriesRelatedInstances);
+    m_json.insert("SeriesInstanceUID", SERIES_INSTANCE_UID);
+    m_json.insert("SeriesDate", SERIES_DATE);
+    m_json.insert("SeriesTime", SERIES_TIME);
+    m_json.insert("SeriesDescription", SERIES_DESCRIPTION);
+    m_json.insert("Modality", MODALITY);
+    m_json.insert("NumberOfSeriesRelatedInstances", NUMBER_OF_SERIES_RELATED_INSTANCES);
 
     // ==================================
     // Patient
     // ==================================
-    m_json.insert("PatientName", patientName);
-    m_json.insert("PatientID", patientID);
-    m_json.insert("PatientBirthDate", patientBirthDate);
-    m_json.insert("PatientSex", patientSex);
+    m_json.insert("PatientName", PATIENT_NAME);
+    m_json.insert("PatientID", PATIENT_ID);
+    m_json.insert("PatientBirthDate", PATIENT_BIRTH_DATE);
+    m_json.insert("PatientSex", PATIENT_SEX);
 
     // ==================================
     // Study
     // ==================================
-    m_json.insert("StudyInstanceUID", studyInstanceUID);
-    m_json.insert("StudyDate", studyDate);
-    m_json.insert("StudyTime", studyTime);
-    m_json.insert("StudyDescription", studyDescription);
-    m_json.insert("PatientAge", patientAge);
+    m_json.insert("StudyInstanceUID", STUDY_INSTANCE_UID);
+    m_json.insert("StudyDate", STUDY_DATE);
+    m_json.insert("StudyTime", STUDY_TIME);
+    m_json.insert("StudyDescription", STUDY_DESCRIPTION);
+    m_json.insert("PatientAge", PATIENT_AGE);
 
     // ==================================
     // Equipment
     // ==================================
-    m_json.insert("InstitutionName", institutionName);
+    m_json.insert("InstitutionName", INSTITUTION_NAME);
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesTest::tearDown()
+void series_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesTest::testSeries()
+void series_test::test_series()
 {
-    io::http::helper::Series::DicomSeriesContainer series_vector =
-        io::http::helper::Series::toFwMedData(m_json);
+    io::http::helper::series::DicomSeriesContainer series_vector =
+        io::http::helper::series::to_fw_med_data(m_json);
     CPPUNIT_ASSERT(series_vector.size() == 1);
     const auto& series = series_vector[0];
     CPPUNIT_ASSERT(series);
 
     data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
     CPPUNIT_ASSERT(dicom_series);
-    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesInstanceUID(), seriesInstanceUID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesDate(), seriesDate.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesTime(), seriesTime.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesDescription(), seriesDescription.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->getModality(), modality.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_instance_uid(), SERIES_INSTANCE_UID.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_date(), SERIES_DATE.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_time(), SERIES_TIME.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_description(), SERIES_DESCRIPTION.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->get_modality(), MODALITY.toStdString());
     CPPUNIT_ASSERT_EQUAL(
-        dicom_series->numInstances(),
-        static_cast<std::size_t>(numberOfSeriesRelatedInstances.toULong())
+        dicom_series->num_instances(),
+        static_cast<std::size_t>(NUMBER_OF_SERIES_RELATED_INSTANCES.toULong())
     );
 
-    CPPUNIT_ASSERT_EQUAL(series->getPatientName(), patientName.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->getPatientID(), patientID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->getPatientBirthDate(), patientBirthDate.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->getPatientSex(), patientSex.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_patient_name(), PATIENT_NAME.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_patient_id(), PATIENT_ID.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_patient_birth_date(), PATIENT_BIRTH_DATE.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_patient_sex(), PATIENT_SEX.toStdString());
 
-    CPPUNIT_ASSERT_EQUAL(series->getStudyInstanceUID(), studyInstanceUID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->getStudyDate(), studyDate.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->getStudyTime(), studyTime.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->getStudyDescription(), studyDescription.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->getPatientAge(), patientAge.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_study_instance_uid(), STUDY_INSTANCE_UID.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_study_date(), STUDY_DATE.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_study_time(), STUDY_TIME.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_study_description(), STUDY_DESCRIPTION.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_patient_age(), PATIENT_AGE.toStdString());
 
-    CPPUNIT_ASSERT_EQUAL(series->getInstitutionName(), institutionName.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->get_institution_name(), INSTITUTION_NAME.toStdString());
 
-    io::http::helper::Series::InstanceUIDContainer instances =
-        io::http::helper::Series::toSeriesInstanceUIDContainer(series_vector);
+    io::http::helper::series::InstanceUIDContainer instances =
+        io::http::helper::series::to_series_instance_uid_container(series_vector);
     CPPUNIT_ASSERT(instances.size() == 1);
 }
 

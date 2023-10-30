@@ -33,7 +33,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Spatial Fiducials Information Entity class
  */
-class IO_DICOM_CLASS_API SpatialFiducials : public io::dicom::writer::ie::InformationEntity<data::image>
+class IO_DICOM_CLASS_API spatial_fiducials : public io::dicom::writer::ie::information_entity<data::image>
 {
 public:
 
@@ -46,35 +46,35 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API SpatialFiducials(
+    IO_DICOM_API spatial_fiducials(
         const SPTR(gdcm::Writer)& _writer,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::csptr& _series,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~SpatialFiducials() override;
+    IO_DICOM_API ~spatial_fiducials() override;
 
     /**
      * @brief Write Spatial Fiducials Module tags
      * @see PS 3.3 C.21.2
      */
-    IO_DICOM_API virtual void writeSpatialFiducialsModule();
+    IO_DICOM_API virtual void write_spatial_fiducials_module();
 
     /**
      * @brief Write Common Instance Reference Module tags
      * @see PS 3.3 C.12.2
      */
-    IO_DICOM_API virtual void writeCommonInstanceReferenceModule();
+    IO_DICOM_API virtual void write_common_instance_reference_module();
 
     /**
      * @brief Write SOP Common Module tags
      * @see PS 3.3 C.12.1
      */
-    IO_DICOM_API virtual void writeSOPCommonModule();
+    IO_DICOM_API virtual void write_sop_common_module();
 
 protected:
 
@@ -82,12 +82,12 @@ protected:
      * @brief Write image landmarks into sequence
      * @throw(io::dicom::exception::Failed)
      */
-    void writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence);
+    void write_landmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence);
 
     /**
      * @brief Write image distances into sequence
      */
-    void writeDistances(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence);
+    void write_distances(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence);
 
     /**
      * @brief Add a frame number to the referenced image sequence
@@ -95,7 +95,7 @@ protected:
      * @param[in] referencedImageSequence Destination sequence
      * @throw(io::dicom::exception::Failed)
      */
-    void addReferencedImage(
+    void add_referenced_image(
         int _frame_number,
         gdcm::SmartPointer<gdcm::SequenceOfItems> _referenced_image_sequence
     );

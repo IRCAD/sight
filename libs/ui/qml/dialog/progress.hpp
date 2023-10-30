@@ -43,8 +43,8 @@ class UI_QML_CLASS_API progress : public QObject,
 {
 Q_OBJECT
 Q_PROPERTY(bool visible MEMBER m_visible)
-Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(bool hasCallback MEMBER m_hasCallback NOTIFY hasCallbackChanged)
+Q_PROPERTY(QString title MEMBER m_title NOTIFY title_changed)
+Q_PROPERTY(bool has_callback MEMBER m_has_callback NOTIFY has_callback_changed)
 
 public:
 
@@ -61,21 +61,21 @@ public:
     UI_QML_API void operator()(float _percent, std::string _msg) override;
 
     /// override
-    UI_QML_API void setTitle(const std::string& _title) override;
+    UI_QML_API void set_title(const std::string& _title) override;
 
     /// override
-    UI_QML_API void setMessage(const std::string& _message) override;
+    UI_QML_API void set_message(const std::string& _message) override;
 
-    UI_QML_API void hideCancelButton() override;
+    UI_QML_API void hide_cancel_button() override;
 
 Q_SIGNALS:
 
-    void titleChanged();
-    void hasCallbackChanged();
+    void title_changed();
+    void has_callback_changed();
 
 protected Q_SLOTS:
 
-    void cancelPressed() override;
+    void cancel_pressed() override;
 
 private:
 
@@ -88,7 +88,7 @@ private:
     /// title string
     QString m_title;
     /// boolean to enable Cancel button
-    bool m_hasCallback {true};
+    bool m_has_callback {true};
 };
 
 } // namespace sight::ui::qml::dialog

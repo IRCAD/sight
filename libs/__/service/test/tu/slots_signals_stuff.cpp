@@ -36,57 +36,57 @@ namespace sight::service::ut
 
 SIGHT_REGISTER_DATA(buffer);
 
-SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::SBasicTest);
-SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SBasicTest, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::readerTest);
-SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::readerTest, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::SShowTest);
-SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SShowTest, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::reader2Test);
-SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::reader2Test, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::SShow2Test);
-SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SShow2Test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::s_basic_test);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::s_basic_test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::reader_test);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::reader_test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::s_show_test);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::s_show_test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::reader2_test);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::reader2_test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::basic_srv, sight::service::ut::s_show2_test);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::s_show2_test, service::ut::Buffer);
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-SBasicTest::SBasicTest()
+s_basic_test::s_basic_test()
 = default;
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::starting()
+void s_basic_test::starting()
 {
-    std::this_thread::sleep_for(m_startRetarder);
+    std::this_thread::sleep_for(m_start_retarder);
 }
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::stopping()
+void s_basic_test::stopping()
 {
-    std::this_thread::sleep_for(m_stopRetarder);
+    std::this_thread::sleep_for(m_stop_retarder);
 }
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::swapping(std::string_view /*unused*/)
+void s_basic_test::swapping(std::string_view /*unused*/)
 {
-    std::this_thread::sleep_for(m_swapRetarder);
-    m_swapFinished = true;
+    std::this_thread::sleep_for(m_swap_retarder);
+    m_swap_finished = true;
 }
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::updating()
+void s_basic_test::updating()
 {
-    std::this_thread::sleep_for(m_updateRetarder);
-    m_updateFinished = true;
+    std::this_thread::sleep_for(m_update_retarder);
+    m_update_finished = true;
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-void readerTest::updating()
+void reader_test::updating()
 {
     auto buff = m_buffer.lock();
 
@@ -103,79 +103,79 @@ void readerTest::updating()
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t SShowTest::CHANGE_SLOT = "change";
+const core::com::slots::key_t s_show_test::CHANGE_SLOT = "change";
 
 //------------------------------------------------------------------------------
 
-SShowTest::SShowTest()
+s_show_test::s_show_test()
 {
-    m_slotChange = core::com::new_slot(&SShowTest::change, this);
-    core::com::has_slots::m_slots(CHANGE_SLOT, m_slotChange);
+    m_slot_change = core::com::new_slot(&s_show_test::change, this);
+    core::com::has_slots::m_slots(CHANGE_SLOT, m_slot_change);
 }
 
 //------------------------------------------------------------------------------
 
-void SShowTest::updating()
+void s_show_test::updating()
 {
-    std::this_thread::sleep_for(m_receiveRetarder);
+    std::this_thread::sleep_for(m_receive_retarder);
     const auto buffer = m_buffer.lock();
-    ++m_receiveCount;
+    ++m_receive_count;
 }
 
 //------------------------------------------------------------------------------
 
-void SShowTest::change()
+void s_show_test::change()
 {
     core::mt::scoped_lock lock(m_mutex);
-    ++m_changeCount;
+    ++m_change_count;
 }
 
 //------------------------------------------------------------------------------
 
-service::connections_t SShowTest::auto_connections() const
+service::connections_t s_show_test::auto_connections() const
 {
-    return {{s_BUFFER_INOUT, data::object::MODIFIED_SIG, slots::UPDATE}};
+    return {{BUFFER_INOUT, data::object::MODIFIED_SIG, slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t reader2Test::CHANGED_SIG = "changed";
+const core::com::signals::key_t reader2_test::CHANGED_SIG = "changed";
 
 //------------------------------------------------------------------------------
 
-reader2Test::reader2Test() :
-    m_sigChanged(std::make_shared<changed_signal_t>())
+reader2_test::reader2_test() :
+    m_sig_changed(std::make_shared<changed_signal_t>())
 {
     // Register
-    core::com::has_signals::m_signals(CHANGED_SIG, m_sigChanged);
+    core::com::has_signals::m_signals(CHANGED_SIG, m_sig_changed);
 }
 
 //------------------------------------------------------------------------------
 
-void reader2Test::updating()
+void reader2_test::updating()
 {
     // Emit object Modified
-    reader2Test::changed_signal_t::sptr sig;
-    sig = this->signal<reader2Test::changed_signal_t>(reader2Test::CHANGED_SIG);
+    reader2_test::changed_signal_t::sptr sig;
+    sig = this->signal<reader2_test::changed_signal_t>(reader2_test::CHANGED_SIG);
     sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t SShow2Test::UPDATE_BUFFER_SLOT = "updateBuffer";
+const core::com::slots::key_t s_show2_test::UPDATE_BUFFER_SLOT = "updateBuffer";
 
 //------------------------------------------------------------------------------
 
-SShow2Test::SShow2Test()
+s_show2_test::s_show2_test()
 {
-    new_slot(UPDATE_BUFFER_SLOT, &SShow2Test::updateBuffer, this);
+    new_slot(UPDATE_BUFFER_SLOT, &s_show2_test::update_buffer, this);
 }
 
 //------------------------------------------------------------------------------
 
-void SShow2Test::updating()
+void s_show2_test::updating()
 {
     const auto buffer = m_buffer.lock();
 
@@ -190,12 +190,12 @@ void SShow2Test::updating()
 
 //------------------------------------------------------------------------------
 
-void SShow2Test::updateBuffer()
+void s_show2_test::update_buffer()
 {
     {
-        std::this_thread::sleep_for(m_receiveRetarder);
+        std::this_thread::sleep_for(m_receive_retarder);
         const auto buffer = m_buffer.lock();
-        ++m_receiveCount;
+        ++m_receive_count;
     }
 
     this->updating();

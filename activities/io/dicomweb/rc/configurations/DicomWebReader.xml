@@ -24,18 +24,18 @@
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="true" />
+                <toolbar sid="toolbar" start="true" />
                 <view sid="topView" start="true" />
                 <view sid="centerView" start="true" />
                 <view sid="bottomView" start="true" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::tool_bar" >
+        <service uid="toolbar" type="sight::module::ui::toolbar" >
             <gui>
                 <layout>
                     <menuItem name="Pull selected series from Pacs" icon="sight::module::ui::icons/Pull.svg" />
@@ -141,7 +141,7 @@
 
         <service uid="seriesSetReader" type="sight::module::io::dicom::series_set_reader" >
             <inout key="data" uid="localSeriesSet" />
-            <config filterType="sight::filter::dicom::sorter::ImagePositionPatientSorter" />
+            <config filterType="sight::filter::dicom::sorter::image_position_patient_sorter" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->

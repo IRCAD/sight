@@ -35,27 +35,27 @@ namespace sight::service
 {
 
 /// Defines Notification type
-struct SERVICE_CLASS_API Notification final
+struct SERVICE_CLASS_API notification final
 {
     // Notification Type (changes Qss style).
-    enum class SERVICE_CLASS_API Type : std::uint8_t
+    enum type
     {
-        INFO = 0,
-        SUCCESS,
-        FAILURE
-    } type {Type::INFO};
+        info = 0,
+        success,
+        failure
+    } type {type::info};
 
     /// Where to display notifications.
-    enum class SERVICE_CLASS_API Position : std::uint8_t
+    enum position
     {
-        TOP_RIGHT = 0,
-        TOP_LEFT,
-        BOTTOM_RIGHT,
-        BOTTOM_LEFT,
-        CENTERED,
-        CENTERED_TOP,
-        CENTERED_BOTTOM
-    } position {Position::TOP_RIGHT};
+        top_right = 0,
+        top_left,
+        bottom_right,
+        bottom_left,
+        centered,
+        centered_top,
+        centered_bottom
+    } position {position::top_right};
 
     std::string message {};
     std::optional<std::chrono::milliseconds> duration {std::chrono::seconds(3)};
@@ -99,7 +99,7 @@ public:
     /// Defines signals for notifier
     struct SERVICE_CLASS_API signals final
     {
-        using notification_t = core::com::signal<void (Notification)>;
+        using notification_t = core::com::signal<void (notification)>;
         static inline const core::com::signals::key_t NOTIFIED = "notified";
 
         using channel_t = core::com::signal<void (std::string)>;
@@ -111,24 +111,24 @@ protected:
     /// Emits notification signal
     /// @param[in] notification
     /// @{
-    SERVICE_API void notify(Notification _notification) const;
-    inline void notify(Notification::Type _type, std::string _message, std::string _channel = "") const;
-    inline void info(std::string _message, std::string _channel                             = "") const;
-    inline void success(std::string _message, std::string _channel                          = "") const;
-    inline void failure(std::string _message, std::string _channel                          = "") const;
+    SERVICE_API void notify(notification _notification) const;
+    inline void notify(enum notification::type _type, std::string _message, std::string _channel = "") const;
+    inline void info(std::string _message, std::string _channel                                  = "") const;
+    inline void success(std::string _message, std::string _channel                               = "") const;
+    inline void failure(std::string _message, std::string _channel                               = "") const;
     /// @}
 
     /// Emits close channel signal
-    SERVICE_API void closeNotification(std::string _channel) const;
+    SERVICE_API void close_notification(std::string _channel) const;
 
     /// Method to call to configure notification "channels"
     SERVICE_API void initialize(const service::config_t& _config);
 
     /// Signal emitted when notify() is called
-    const signals::notification_t::sptr M_NOTIFIED_SIG {std::make_shared<signals::notification_t>()};
+    const signals::notification_t::sptr m_notified_sig {std::make_shared<signals::notification_t>()};
 
     /// Signal emitted when closeChannel() is called
-    const signals::channel_t::sptr M_NOTIFICATION_CLOSED_SIG {std::make_shared<signals::channel_t>()};
+    const signals::channel_t::sptr m_notification_closed_sig {std::make_shared<signals::channel_t>()};
 
 private:
 
@@ -137,7 +137,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline void notifier::notify(Notification::Type _type, std::string _message, std::string _channel) const
+inline void notifier::notify(enum notification::type _type, std::string _message, std::string _channel) const
 {
     this->notify({.type = std::move(_type), .message = std::move(_message), .channel = std::move(_channel)});
 }
@@ -146,21 +146,21 @@ inline void notifier::notify(Notification::Type _type, std::string _message, std
 
 inline void notifier::info(std::string _message, std::string _channel) const
 {
-    this->notify(Notification::Type::INFO, std::move(_message), std::move(_channel));
+    this->notify(notification::type::info, std::move(_message), std::move(_channel));
 }
 
 //------------------------------------------------------------------------------
 
 inline void notifier::success(std::string _message, std::string _channel) const
 {
-    this->notify(Notification::Type::SUCCESS, std::move(_message), std::move(_channel));
+    this->notify(notification::type::success, std::move(_message), std::move(_channel));
 }
 
 //------------------------------------------------------------------------------
 
 inline void notifier::failure(std::string _message, std::string _channel) const
 {
-    this->notify(Notification::Type::FAILURE, std::move(_message), std::move(_channel));
+    this->notify(notification::type::failure, std::move(_message), std::move(_channel));
 }
 
 } // namespace sight::service

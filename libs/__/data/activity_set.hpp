@@ -32,15 +32,15 @@ class DATA_CLASS_API activity_set final : public data::container<sequenced_set<s
 {
 public:
 
-    SIGHT_DECLARE_CLASS(activity_set, container<activity_set::container_type>);
+    SIGHT_DECLARE_CLASS(activity_set, container<activity_set::container_t>);
 
     /// Destructor / Assignment operators
     /// @{
     DATA_API ~activity_set() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
-    using container<activity_set::container_type>::container;
-    using container<activity_set::container_type>::operator=;
+    using container<activity_set::container_t>::container;
+    using container<activity_set::container_t>::operator=;
     /// @}
 
     /// Equality comparison operators

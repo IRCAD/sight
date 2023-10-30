@@ -55,7 +55,7 @@ void get_series_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void get_series_test::extractsSeriesFromSeriesSet()
+void get_series_test::extracts_series_from_series_set()
 {
     // Set up context before running a test.
     auto series_set = std::make_shared<sight::data::series_set>();
@@ -114,7 +114,7 @@ void get_series_test::extractsSeriesFromSeriesSet()
 
 //------------------------------------------------------------------------------
 
-void get_series_test::invalidSeriesSet()
+void get_series_test::invalid_series_set()
 {
     // Create service
     sight::service::base::sptr get_series = sight::service::add("sight::module::data::get_series");

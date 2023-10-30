@@ -29,7 +29,7 @@ namespace sight::data
 
 std::ostream& operator<<(std::ostream& _os, const data::generic_field_base& _lf)
 {
-    return _lf.toOStream(_os);
+    return _lf.to_o_stream(_os);
 }
 
 } //namespace sight::data

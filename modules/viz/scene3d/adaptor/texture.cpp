@@ -46,31 +46,31 @@ const core::com::signals::key_t texture::TEXTURE_SWAPPED_SIG = "textureSwapped";
 
 texture::texture() noexcept
 {
-    m_sigTextureSwapped = new_signal<texture_swapped_signal_t>(TEXTURE_SWAPPED_SIG);
+    m_sig_texture_swapped = new_signal<texture_swapped_signal_t>(TEXTURE_SWAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 void texture::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_TEXTURE_NAME_CONFIG = s_CONFIG + "textureName";
-    static const std::string s_FILTERING_CONFIG    = s_CONFIG + "filtering";
-    static const std::string s_WRAPPING_CONFIG     = s_CONFIG + "wrapping";
-    static const std::string s_USE_ALPHA_CONFIG    = s_CONFIG + "useAlpha";
-    static const std::string s_DYNAMIC_CONFIG      = s_CONFIG + "dynamic";
+    static const std::string s_TEXTURE_NAME_CONFIG = CONFIG + "textureName";
+    static const std::string s_FILTERING_CONFIG    = CONFIG + "filtering";
+    static const std::string s_WRAPPING_CONFIG     = CONFIG + "wrapping";
+    static const std::string s_USE_ALPHA_CONFIG    = CONFIG + "useAlpha";
+    static const std::string s_DYNAMIC_CONFIG      = CONFIG + "dynamic";
 
     // Choose a default name if not provided, this is very important otherwise
     // the texture may be lost if it is unloaded (which is very likely to happen when playing with techniques)
-    m_textureName = config.get<std::string>(s_TEXTURE_NAME_CONFIG, this->get_id());
+    m_texture_name = config.get<std::string>(s_TEXTURE_NAME_CONFIG, this->get_id());
 
-    m_filtering = config.get<std::string>(s_FILTERING_CONFIG, m_filtering);
-    m_wrapping  = config.get<std::string>(s_WRAPPING_CONFIG, m_wrapping);
-    m_useAlpha  = config.get<bool>(s_USE_ALPHA_CONFIG, m_useAlpha);
-    m_isDynamic = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
+    m_filtering  = config.get<std::string>(s_FILTERING_CONFIG, m_filtering);
+    m_wrapping   = config.get<std::string>(s_WRAPPING_CONFIG, m_wrapping);
+    m_use_alpha  = config.get<bool>(s_USE_ALPHA_CONFIG, m_use_alpha);
+    m_is_dynamic = config.get<bool>(s_DYNAMIC_CONFIG, m_is_dynamic);
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ void texture::starting()
 {
     this->initialize();
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
     // Retrieves associated Sight image
     {
@@ -95,8 +95,8 @@ void texture::starting()
 service::connections_t texture::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_TEXTURE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_TEXTURE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TEXTURE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TEXTURE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -107,13 +107,13 @@ void texture::updating()
     // Retrieves associated Sight image
     const auto image = m_image.lock();
 
-    if(image->getAllocatedSizeInBytes() != 0)
+    if(image->allocated_size_in_bytes() != 0)
     {
         // Loads the new image
-        this->getRenderService()->makeCurrent();
+        this->render_service()->make_current();
         m_texture->update();
 
-        m_sigTextureSwapped->async_emit();
+        m_sig_texture_swapped->async_emit();
     }
 }
 
@@ -121,13 +121,13 @@ void texture::updating()
 
 void texture::stopping()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
     m_texture.reset();
 }
 
 //------------------------------------------------------------------------------
 
-bool texture::isValid() const
+bool texture::is_valid() const
 {
     if(m_texture)
     {

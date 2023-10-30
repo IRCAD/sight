@@ -44,7 +44,7 @@ void matrix::copy_from_cv(const cv::Matx44d& _src, data::matrix4::sptr& _dst)
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Matx44d& _dst)
+void matrix::copy_to_cv(const data::matrix4::csptr& _src, cv::Matx44d& _dst)
 {
     SIGHT_ASSERT("sight::data::matrix4 is null", _src);
 
@@ -74,7 +74,7 @@ void matrix::copy_from_cv(const cv::Matx44f& _src, data::matrix4::sptr& _dst)
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Matx44f& _dst)
+void matrix::copy_to_cv(const data::matrix4::csptr& _src, cv::Matx44f& _dst)
 {
     SIGHT_ASSERT("sight::data::matrix4 is null", _src);
 
@@ -127,7 +127,7 @@ void matrix::copy_from_cv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::matr
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat& _tvec)
+void matrix::copy_to_cv(const data::matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat& _tvec)
 {
     // Check that _src is not null.
     SIGHT_ASSERT("sight::data::matrix4 is null", _src);
@@ -138,7 +138,7 @@ void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat&
     _tvec = cv::Mat(1, 3, CV_64F);
 
     // First convert Sight to OpenCV 4x4 matrix.
-    copyToCv(_src, mat4x4);
+    copy_to_cv(_src, mat4x4);
 
     // Extract translation (_tvec) from mat4x4.
     _tvec = mat4x4(cv::Rect(3, 0, 1, 3));
@@ -174,7 +174,7 @@ void matrix::copy_from_cv(const cv::Mat& _src, data::matrix4::sptr& _dst)
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Mat& _dst)
+void matrix::copy_to_cv(const data::matrix4::csptr& _src, cv::Mat& _dst)
 {
     SIGHT_ASSERT("sight::data::matrix4 is null", _src);
 

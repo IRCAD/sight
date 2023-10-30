@@ -39,7 +39,7 @@ void menu_manager::initialize(const ui::config_t& _configuration)
     {
         if(menu_item.first == "menuItem")
         {
-            ActionInfo info;
+            action_info info;
 
             info.m_name     = menu_item.second.get<std::string>("<xmlattr>.name");
             info.m_shortcut = menu_item.second.get<std::string>("<xmlattr>.shortcut", info.m_shortcut);
@@ -51,8 +51,8 @@ void menu_manager::initialize(const ui::config_t& _configuration)
 
             if(const auto style = menu_item.second.get_optional<std::string>("<xmlattr>.style"); style.has_value())
             {
-                info.m_isCheckable = (*style == "check");
-                info.m_isRadio     = (*style == "radio");
+                info.m_is_checkable = (*style == "check");
+                info.m_is_radio     = (*style == "radio");
             }
 
             if(const auto action =
@@ -65,15 +65,15 @@ void menu_manager::initialize(const ui::config_t& _configuration)
                 }
                 else if(special_action_name == "QUIT")
                 {
-                    info.m_type = QUIT;
+                    info.m_type = quit;
                 }
                 else if(special_action_name == "ABOUT")
                 {
-                    info.m_type = ABOUT;
+                    info.m_type = about;
                 }
                 else if(special_action_name == "HELP")
                 {
-                    info.m_type = HELP;
+                    info.m_type = help;
                 }
                 else if(special_action_name == "NEW")
                 {
@@ -85,41 +85,41 @@ void menu_manager::initialize(const ui::config_t& _configuration)
                 }
             }
 
-            m_actionInfo.push_back(info);
+            m_action_info.push_back(info);
         }
 
         if(menu_item.first == "separator")
         {
-            ActionInfo info;
-            info.m_isSeparator = true;
-            info.m_type        = SEPARATOR;
-            m_actionInfo.push_back(info);
+            action_info info;
+            info.m_is_separator = true;
+            info.m_type         = separator;
+            m_action_info.push_back(info);
         }
 
         if(menu_item.first == "menu")
         {
-            ActionInfo info;
-            info.m_isMenu = true;
-            info.m_name   = menu_item.second.get<std::string>("<xmlattr>.name", "");
+            action_info info;
+            info.m_is_menu = true;
+            info.m_name    = menu_item.second.get<std::string>("<xmlattr>.name", "");
 
-            m_actionInfo.push_back(info);
+            m_action_info.push_back(info);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void menu_manager::destroyActions()
+void menu_manager::destroy_actions()
 {
-    for(const ui::container::menu_item::sptr& menu_item : m_menuItems)
+    for(const ui::container::menu_item::sptr& menu_item : m_menu_items)
     {
-        menu_item->destroyContainer();
+        menu_item->destroy_container();
     }
 
-    m_menuItems.clear();
+    m_menu_items.clear();
     for(const ui::container::menu::sptr& menu : m_menus)
     {
-        menu->destroyContainer();
+        menu->destroy_container();
     }
 
     m_menus.clear();
@@ -127,14 +127,14 @@ void menu_manager::destroyActions()
 
 //-----------------------------------------------------------------------------
 
-std::vector<ui::container::menu_item::sptr> menu_manager::getMenuItems()
+std::vector<ui::container::menu_item::sptr> menu_manager::get_menu_items()
 {
-    return this->m_menuItems;
+    return this->m_menu_items;
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<ui::container::menu::sptr> menu_manager::getMenus()
+std::vector<ui::container::menu::sptr> menu_manager::get_menus()
 {
     return this->m_menus;
 }

@@ -43,63 +43,63 @@ public:
 
     SIGHT_DECLARE_CLASS(buffer_tl, timeline::base);
 
-    typedef core::hires_clock::type timestamp_t;
-    typedef std::map<timestamp_t, SPTR(timeline::buffer)> timeline_t;
-    typedef std::pair<timestamp_t, SPTR(timeline::buffer)> buffer_pair_t;
-    typedef boost::pool<> pool_t;
+    using timestamp_t   = core::hires_clock::type;
+    using timeline_t    = std::map<timestamp_t, std::shared_ptr<timeline::buffer> >;
+    using buffer_pair_t = std::pair<timestamp_t, std::shared_ptr<timeline::buffer> >;
+    using pool_t        = boost::pool<>;
 
     DATA_API buffer_tl();
     DATA_API ~buffer_tl() override;
 
     /// Check if the type of an object is compatible with this timeline
-    DATA_API virtual bool isObjectValid(const CSPTR(timeline::object)& _obj) const = 0;
+    DATA_API virtual bool is_object_valid(const CSPTR(timeline::object)& _obj) const = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param timestamp timestamp used to find the closest object
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    DATA_API CSPTR(timeline::object) getClosestObject(
+    DATA_API CSPTR(timeline::object) get_closest_object(
         core::hires_clock::type _timestamp,
-        timeline::direction_t _direction = timeline::BOTH
+        timeline::direction_t _direction = timeline::both
     ) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
-    DATA_API CSPTR(timeline::object) getObject(core::hires_clock::type _timestamp)
+    DATA_API CSPTR(timeline::object) get_object(core::hires_clock::type _timestamp)
     const override;
 
     /// Clear the timeline
-    DATA_API virtual void clearTimeline();
+    DATA_API virtual void clear_timeline();
 
     /// Push a buffer to the timeline
-    DATA_API void pushObject(const SPTR(timeline::object)& _obj) override;
+    DATA_API void push_object(const SPTR(timeline::object)& _obj) override;
 
     /// Remove a buffer to the timeline
-    DATA_API SPTR(timeline::object) popObject(timestamp_t _timestamp) override;
+    DATA_API SPTR(timeline::object) pop_object(timestamp_t _timestamp) override;
 
     /// Change a buffer timestamp to the timeline
-    DATA_API void modifyTime(timestamp_t _timestamp, timestamp_t _new_timestamp) override;
+    DATA_API void modify_time(timestamp_t _timestamp, timestamp_t _new_timestamp) override;
 
     /// Change a buffer object to the specified timestamp
     DATA_API void set_object(timestamp_t _timestamp, const SPTR(timeline::object)& _obj) override;
 
     /// Return the last object in the timeline
-    DATA_API CSPTR(timeline::object) getNewerObject() const;
+    DATA_API CSPTR(timeline::object) get_newer_object() const;
 
     /// Return the last timestamp in the timeline
-    DATA_API core::hires_clock::type getNewerTimestamp() const;
+    DATA_API core::hires_clock::type get_newer_timestamp() const;
 
     /// Change the maximum size of the timeline
-    void setMaximumSize(std::size_t _maximum_size)
+    void set_maximum_size(std::size_t _maximum_size)
     {
-        m_maximumSize = _maximum_size;
+        m_maximum_size = _maximum_size;
     }
 
     /// Default Timeline Size
-    DATA_API static const std::size_t s_DEFAULT_TIMELINE_MAX_SIZE;
+    DATA_API static const std::size_t DEFAULT_TIMELINE_MAX_SIZE;
 
     /// Return true if the pool is allocated
-    bool isAllocated() const
+    bool is_allocated() const
     {
         return m_pool != nullptr;
     }
@@ -113,7 +113,7 @@ public:
 protected:
 
     /// Allocate the pool buffer.
-    DATA_API void allocPoolSize(std::size_t _size);
+    DATA_API void alloc_pool_size(std::size_t _size);
 
     ///Timeline
     timeline_t m_timeline;
@@ -122,7 +122,7 @@ protected:
     SPTR(pool_t) m_pool;
 
     /// maximum size
-    std::size_t m_maximumSize;
+    std::size_t m_maximum_size;
 }; // class buffer_tl
 
 } // namespace sight::data

@@ -34,14 +34,14 @@
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::ReadCsvTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::read_csv_test);
 
 namespace sight::io::ut
 {
 
 //------------------------------------------------------------------------------
 
-void ReadCsvTest::setUp()
+void read_csv_test::setUp()
 {
     // Set up context before running a test.
     const auto current_path           = boost::dll::program_location().parent_path().parent_path();
@@ -51,37 +51,37 @@ void ReadCsvTest::setUp()
     const auto invalid_file_directory = current_path / "share/sight/io/invalid_file_path.csv";
 
     // Open an existing file
-    m_validCRLFCsvDirectoryPath = valid_crlf_file.string();
-    m_validLFCsvDirectoryPath   = valid_lf_file.string();
-    m_invalidCsvDirectoryPath   = invalid_csv_file.string();
-    m_wrongFilepathDirectory    = invalid_file_directory.string();
+    m_valid_crlf_csv_directory_path = valid_crlf_file.string();
+    m_valid_lf_csv_directory_path   = valid_lf_file.string();
+    m_invalid_csv_directory_path    = invalid_csv_file.string();
+    m_wrong_filepath_directory      = invalid_file_directory.string();
 }
 
 //------------------------------------------------------------------------------
 
-void ReadCsvTest::tearDown()
+void read_csv_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ReadCsvTest::test_inexistenceCsv()
+void read_csv_test::test_inexistence_csv()
 {
-    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_validCRLFCsvDirectoryPath));
-    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_validLFCsvDirectoryPath));
-    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_invalidCsvDirectoryPath));
-    CPPUNIT_ASSERT_THROW(io::reader::csv_reader csv_reader(m_wrongFilepathDirectory), core::exception);
+    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_valid_crlf_csv_directory_path));
+    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_valid_lf_csv_directory_path));
+    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_invalid_csv_directory_path));
+    CPPUNIT_ASSERT_THROW(io::reader::csv_reader csv_reader(m_wrong_filepath_directory), core::exception);
 }
 
 //------------------------------------------------------------------------------
 
-void ReadCsvTest::test_validCRLFCsv()
+void read_csv_test::test_valid_crlf_csv()
 {
     // cspell: disable
-    io::reader::csv_reader csv_reader(m_validCRLFCsvDirectoryPath);
+    io::reader::csv_reader csv_reader(m_valid_crlf_csv_directory_path);
     io::reader::csv_reader::token_container_t token_vec;
 
-    token_vec = csv_reader.getLine();
+    token_vec = csv_reader.get_line();
     CPPUNIT_ASSERT("1" == token_vec[0]);
     CPPUNIT_ASSERT("Eldon Base" == token_vec[1]);
     CPPUNIT_ASSERT("platinum" == token_vec[2]);
@@ -96,7 +96,7 @@ void ReadCsvTest::test_validCRLFCsv()
     CPPUNIT_ASSERT(token_vec[11].empty());
     CPPUNIT_ASSERT(12 == token_vec.size());
 
-    token_vec = csv_reader.getLine();
+    token_vec = csv_reader.get_line();
     CPPUNIT_ASSERT("2" == token_vec[0]);
     CPPUNIT_ASSERT("Eldon Base for stackable storage" == token_vec[1]);
     CPPUNIT_ASSERT("plati" == token_vec[2]);
@@ -110,7 +110,7 @@ void ReadCsvTest::test_validCRLFCsv()
     CPPUNIT_ASSERT(token_vec[10].empty());
     CPPUNIT_ASSERT(11 == token_vec.size());
 
-    token_vec = csv_reader.getLine();
+    token_vec = csv_reader.get_line();
     CPPUNIT_ASSERT("3" == token_vec[0]);
     CPPUNIT_ASSERT("Eldon" == token_vec[1]);
     CPPUNIT_ASSERT("plati" == token_vec[2]);
@@ -125,13 +125,13 @@ void ReadCsvTest::test_validCRLFCsv()
 
 //------------------------------------------------------------------------------
 
-void ReadCsvTest::test_validLFCsv()
+void read_csv_test::test_valid_lf_csv()
 {
     // cspell: disable
-    io::reader::csv_reader csv_reader(m_validLFCsvDirectoryPath);
+    io::reader::csv_reader csv_reader(m_valid_lf_csv_directory_path);
     io::reader::csv_reader::token_container_t token_vec;
 
-    token_vec = csv_reader.getLine();
+    token_vec = csv_reader.get_line();
     CPPUNIT_ASSERT("1" == token_vec[0]);
     CPPUNIT_ASSERT("Eldon Base" == token_vec[1]);
     CPPUNIT_ASSERT("platinum" == token_vec[2]);
@@ -146,7 +146,7 @@ void ReadCsvTest::test_validLFCsv()
     CPPUNIT_ASSERT(token_vec[11].empty());
     CPPUNIT_ASSERT(12 == token_vec.size());
 
-    token_vec = csv_reader.getLine();
+    token_vec = csv_reader.get_line();
     CPPUNIT_ASSERT("2" == token_vec[0]);
     CPPUNIT_ASSERT("Eldon Base for stackable storage" == token_vec[1]);
     CPPUNIT_ASSERT("plati" == token_vec[2]);
@@ -160,7 +160,7 @@ void ReadCsvTest::test_validLFCsv()
     CPPUNIT_ASSERT(token_vec[10].empty());
     CPPUNIT_ASSERT(11 == token_vec.size());
 
-    token_vec = csv_reader.getLine();
+    token_vec = csv_reader.get_line();
     CPPUNIT_ASSERT("3" == token_vec[0]);
     CPPUNIT_ASSERT("Eldon" == token_vec[1]);
     CPPUNIT_ASSERT("plati" == token_vec[2]);
@@ -175,12 +175,12 @@ void ReadCsvTest::test_validLFCsv()
 
 //------------------------------------------------------------------------------
 
-void ReadCsvTest::test_invalidCsv()
+void read_csv_test::test_invalid_csv()
 {
-    io::reader::csv_reader csv_reader(m_invalidCsvDirectoryPath);
-    io::reader::csv_reader::token_container_t tag_vec = csv_reader.getLine();
+    io::reader::csv_reader csv_reader(m_invalid_csv_directory_path);
+    io::reader::csv_reader::token_container_t tag_vec = csv_reader.get_line();
 
-    CPPUNIT_ASSERT(std::filesystem::exists(m_invalidCsvDirectoryPath));
+    CPPUNIT_ASSERT(std::filesystem::exists(m_invalid_csv_directory_path));
     const std::size_t size = tag_vec.size();
     CPPUNIT_ASSERT(size == 0);
 }

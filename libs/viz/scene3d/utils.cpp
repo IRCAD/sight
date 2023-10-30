@@ -63,13 +63,13 @@ static std::list<std::string> s_module_with_resources_names;
 
 static std::set<std::string> s_ogre_plugins;
 
-viz::scene3d::factory::r2vb_renderable* utils::s_R2VBRenderableFactory              = nullptr;
+viz::scene3d::factory::r2vb_renderable* utils::s_r2_vb_renderable_factory           = nullptr;
 viz::scene3d::vr::grid_proxy_geometry_factory* utils::s_grid_proxy_geometry_factory = nullptr;
-viz::scene3d::compositor::material_mgr_listener* utils::s_oitMaterialListener       = nullptr;
+viz::scene3d::compositor::material_mgr_listener* utils::s_oit_material_listener     = nullptr;
 
 //------------------------------------------------------------------------------
 
-void utils::addPlugins(const std::vector<std::string>& _plugins)
+void utils::add_plugins(const std::vector<std::string>& _plugins)
 {
     for(const auto& plugin : _plugins)
     {
@@ -79,7 +79,7 @@ void utils::addPlugins(const std::vector<std::string>& _plugins)
 
 //------------------------------------------------------------------------------
 
-void utils::loadResources()
+void utils::load_resources()
 {
     Ogre::ConfigFile cf;
     Ogre::String resource_group_name;
@@ -118,7 +118,7 @@ void utils::loadResources()
             // Copy the resource file and make paths absolute.
             std::ifstream resource_file(path);
 
-            makePathsAbsolute("FileSystem", resource_file, new_resource_file, path.parent_path());
+            make_paths_absolute("FileSystem", resource_file, new_resource_file, path.parent_path());
             resource_file.close();
             new_resource_file.close();
             cf.load(tmp_file.string());
@@ -155,7 +155,7 @@ void utils::loadResources()
 
 //------------------------------------------------------------------------------
 
-void utils::addResourcesPath(const std::string& _module_name)
+void utils::add_resources_path(const std::string& _module_name)
 {
     SIGHT_ASSERT("Empty resource path", !_module_name.empty());
 
@@ -164,7 +164,7 @@ void utils::addResourcesPath(const std::string& _module_name)
 
 //------------------------------------------------------------------------------
 
-Ogre::Root* utils::getOgreRoot()
+Ogre::Root* utils::get_ogre_root()
 {
     using namespace std::literals::string_literals;
 
@@ -322,19 +322,19 @@ Ogre::Root* utils::getOgreRoot()
 
         root->initialise(false);
 
-        loadResources();
+        load_resources();
 
         // Register factory for R2VB renderables objects
-        s_R2VBRenderableFactory = OGRE_NEW viz::scene3d::factory::r2vb_renderable();
-        Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
+        s_r2_vb_renderable_factory = OGRE_NEW viz::scene3d::factory::r2vb_renderable();
+        Ogre::Root::getSingleton().addMovableObjectFactory(s_r2_vb_renderable_factory);
 
         // Register factory for grid_proxy_geometry objects
         s_grid_proxy_geometry_factory = OGRE_NEW viz::scene3d::vr::grid_proxy_geometry_factory();
         Ogre::Root::getSingleton().addMovableObjectFactory(s_grid_proxy_geometry_factory);
 
         // Add the material manager listener that allows us to generate OIT techniques
-        s_oitMaterialListener = new viz::scene3d::compositor::material_mgr_listener();
-        Ogre::MaterialManager::getSingleton().addListener(s_oitMaterialListener);
+        s_oit_material_listener = new viz::scene3d::compositor::material_mgr_listener();
+        Ogre::MaterialManager::getSingleton().addListener(s_oit_material_listener);
     }
 
     return root;
@@ -342,18 +342,18 @@ Ogre::Root* utils::getOgreRoot()
 
 //------------------------------------------------------------------------------
 
-void utils::destroyOgreRoot()
+void utils::destroy_ogre_root()
 {
-    Ogre::MaterialManager::getSingleton().removeListener(s_oitMaterialListener);
-    delete s_oitMaterialListener;
+    Ogre::MaterialManager::getSingleton().removeListener(s_oit_material_listener);
+    delete s_oit_material_listener;
 
     Ogre::Root::getSingleton().removeMovableObjectFactory(s_grid_proxy_geometry_factory);
     delete s_grid_proxy_geometry_factory;
 
-    Ogre::Root::getSingleton().removeMovableObjectFactory(s_R2VBRenderableFactory);
-    delete s_R2VBRenderableFactory;
+    Ogre::Root::getSingleton().removeMovableObjectFactory(s_r2_vb_renderable_factory);
+    delete s_r2_vb_renderable_factory;
 
-    Ogre::Root* root = viz::scene3d::utils::getOgreRoot();
+    Ogre::Root* root = viz::scene3d::utils::get_ogre_root();
     Ogre::ResourceGroupManager::getSingleton().shutdownAll();
 
     // Processes all dirty and pending deletion passes, needs to be done before the root deletion.
@@ -367,12 +367,12 @@ void utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-void utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::image::sptr _image, bool _flip)
+void utils::convert_from_ogre_texture(Ogre::TexturePtr _texture, const data::image::sptr _image, bool _flip)
 {
     SIGHT_ASSERT("texture is null", _texture);
     SIGHT_ASSERT("image is null", _image);
 
-    data::image::Size image_size = {_texture->getWidth(), 0, 0};
+    data::image::size_t image_size = {_texture->getWidth(), 0, 0};
 
     if(_texture->getHeight() > 1)
     {
@@ -384,12 +384,12 @@ void utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::image:
         }
     }
 
-    auto [type, format] = utils::getPixelFormatFromOgre(_texture->getFormat());
-    data::image::Spacing spacing = {1., 1., 1.};
-    data::image::Origin origin   = {0., 0., 0.};
+    auto [type, format] = utils::get_pixel_format_from_ogre(_texture->getFormat());
+    data::image::spacing_t spacing = {1., 1., 1.};
+    data::image::origin_t origin   = {0., 0., 0.};
 
-    _image->setSpacing(spacing);
-    _image->setOrigin(origin);
+    _image->set_spacing(spacing);
+    _image->set_origin(origin);
     _image->resize(image_size, type, format);
 
     // Get the pixel buffer
@@ -403,7 +403,7 @@ void utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::image:
 
         pixel_buffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY);
         const Ogre::PixelBox& pixel_box           = pixel_buffer->getCurrentLock();
-        const std::size_t pitch                   = pixel_box.rowPitch * _image->numComponents();
+        const std::size_t pitch                   = pixel_box.rowPitch * _image->num_components();
         const std::uint8_t* __restrict src_buffer =
             reinterpret_cast<const std::uint8_t*>(pixel_box.data) + (_flip ? pixel_box.getConsecutiveSize() : 0);
 
@@ -435,10 +435,10 @@ void utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::image:
 
 //------------------------------------------------------------------------------
 
-Ogre::PixelFormat utils::getPixelFormatOgre(const data::image& _image)
+Ogre::PixelFormat utils::get_pixel_format_ogre(const data::image& _image)
 {
-    const core::type pixel_type           = _image.getType();
-    const std::size_t number_of_component = _image.numComponents();
+    const core::type pixel_type           = _image.type();
+    const std::size_t number_of_component = _image.num_components();
 
     if(number_of_component == 1)
     {
@@ -563,9 +563,9 @@ Ogre::PixelFormat utils::getPixelFormatOgre(const data::image& _image)
 
 //------------------------------------------------------------------------------
 
-Ogre::Vector2 utils::getTextureWindow(core::type _format)
+Ogre::Vector2 utils::get_texture_window(core::type _format)
 {
-    static const std::map<core::type, Ogre::Vector2> textureWindow = {
+    static const std::map<core::type, Ogre::Vector2> s_TEXTURE_WINDOW = {
         {core::type::INT8, {std::numeric_limits<std::int8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
         {core::type::UINT8, {std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
         {core::type::INT16, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
@@ -580,8 +580,8 @@ Ogre::Vector2 utils::getTextureWindow(core::type _format)
         _format == core::type::INT64 || _format == core::type::UINT64
     );
 
-    auto it = textureWindow.find(_format);
-    if(it != textureWindow.end())
+    auto it = s_TEXTURE_WINDOW.find(_format);
+    if(it != s_TEXTURE_WINDOW.end())
     {
         return it->second;
     }
@@ -591,9 +591,9 @@ Ogre::Vector2 utils::getTextureWindow(core::type _format)
 
 //------------------------------------------------------------------------------
 
-std::pair<core::type, data::image::PixelFormat> utils::getPixelFormatFromOgre(Ogre::PixelFormat _format)
+std::pair<core::type, enum data::image::pixel_format> utils::get_pixel_format_from_ogre(Ogre::PixelFormat _format)
 {
-    data::image::PixelFormat pixel_format = data::image::PixelFormat::UNDEFINED;
+    enum data::image::pixel_format pixel_format = data::image::pixel_format::undefined;
 
     switch(_format)
     {
@@ -602,7 +602,7 @@ std::pair<core::type, data::image::PixelFormat> utils::getPixelFormatFromOgre(Og
         case Ogre::PF_R16_UINT:
         case Ogre::PF_R32_SINT:
         case Ogre::PF_FLOAT32_R:
-            pixel_format = data::image::PixelFormat::GRAY_SCALE;
+            pixel_format = data::image::pixel_format::gray_scale;
             break;
 
         case Ogre::PF_RG8:
@@ -619,7 +619,7 @@ std::pair<core::type, data::image::PixelFormat> utils::getPixelFormatFromOgre(Og
         case Ogre::PF_R32G32B32_SINT:
         case Ogre::PF_SHORT_RGB:
         case Ogre::PF_FLOAT32_RGB:
-            pixel_format = data::image::PixelFormat::RGB;
+            pixel_format = data::image::pixel_format::rgb;
             break;
 
         case Ogre::PF_BYTE_RGBA:
@@ -635,7 +635,7 @@ std::pair<core::type, data::image::PixelFormat> utils::getPixelFormatFromOgre(Og
         case Ogre::PF_R32G32B32A32_SINT:
         case Ogre::PF_SHORT_RGBA:
         case Ogre::PF_FLOAT32_RGBA:
-            pixel_format = data::image::PixelFormat::RGBA;
+            pixel_format = data::image::pixel_format::rgba;
             break;
 
         default:
@@ -705,7 +705,7 @@ std::pair<core::type, data::image::PixelFormat> utils::getPixelFormatFromOgre(Og
 
 //------------------------------------------------------------------------------
 
-void utils::allocateTexture(
+void utils::allocate_texture(
     Ogre::Texture* _texture,
     std::size_t _width,
     std::size_t _height,
@@ -733,17 +733,17 @@ void utils::allocateTexture(
 
 //------------------------------------------------------------------------------
 
-data::color::sptr utils::convertOgreColorToFwColor(const Ogre::ColourValue& _ogre_color)
+data::color::sptr utils::from_ogre_color(const Ogre::ColourValue& _ogre_color)
 {
     data::color::sptr fw_color = std::make_shared<data::color>();
-    fw_color->setRGBA(_ogre_color.r, _ogre_color.g, _ogre_color.b, _ogre_color.a);
+    fw_color->set_rgba(_ogre_color.r, _ogre_color.g, _ogre_color.b, _ogre_color.a);
 
     return fw_color;
 }
 
 //------------------------------------------------------------------------------
 
-Ogre::Matrix4 utils::convertTM3DToOgreMx(const data::matrix4::csptr& _tm3d)
+Ogre::Matrix4 utils::to_ogre_matrix(const data::matrix4::csptr& _tm3d)
 {
     std::array<Ogre::Real, 16> float_data {};
     std::transform(_tm3d->begin(), _tm3d->end(), float_data.begin(), boost::numeric_cast<float, double>);
@@ -753,7 +753,7 @@ Ogre::Matrix4 utils::convertTM3DToOgreMx(const data::matrix4::csptr& _tm3d)
 
 //------------------------------------------------------------------------------
 
-void utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const data::matrix4::sptr& _tm3d)
+void utils::from_ogre_matrix(const Ogre::Matrix4& _mx, const data::matrix4::sptr& _tm3d)
 {
     for(std::uint8_t l = 0 ; l < 4 ; ++l)
     {
@@ -766,21 +766,21 @@ void utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const data::matrix4::sptr
 
 //------------------------------------------------------------------------------
 
-std::pair<Ogre::Vector3, Ogre::Vector3> utils::convertSpacingAndOrigin(const data::image::csptr& _img)
+std::pair<Ogre::Vector3, Ogre::Vector3> utils::convert_spacing_and_origin(const data::image::csptr& _img)
 {
-    return utils::convertSpacingAndOrigin(*_img);
+    return utils::convert_spacing_and_origin(*_img);
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<Ogre::Vector3, Ogre::Vector3> utils::convertSpacingAndOrigin(const data::image& _img)
+std::pair<Ogre::Vector3, Ogre::Vector3> utils::convert_spacing_and_origin(const data::image& _img)
 {
-    const auto& img_origin = _img.getOrigin();
+    const auto& img_origin = _img.origin();
     const Ogre::Vector3 origin(static_cast<float>(img_origin[0]),
                                static_cast<float>(img_origin[1]),
                                static_cast<float>(img_origin[2]));
 
-    const auto& img_spacing = _img.getSpacing();
+    const auto& img_spacing = _img.spacing();
     const Ogre::Vector3 spacing(static_cast<float>(img_spacing[0]),
                                 static_cast<float>(img_spacing[1]),
                                 static_cast<float>(img_spacing[2]));
@@ -790,9 +790,9 @@ std::pair<Ogre::Vector3, Ogre::Vector3> utils::convertSpacingAndOrigin(const dat
 
 //------------------------------------------------------------------------------
 
-Ogre::Vector3i utils::worldToSlices(const data::image& _image, const Ogre::Vector3& _world)
+Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vector3& _world)
 {
-    const auto [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(_image);
+    const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(_image);
 
     // avoid 0 division
 
@@ -829,15 +829,15 @@ Ogre::Vector3i utils::worldToSlices(const data::image& _image, const Ogre::Vecto
 
 //------------------------------------------------------------------------------
 
-std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pickObject(
+std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_object(
     int _x,
     int _y,
     std::uint32_t _query_mask,
     Ogre::SceneManager& _layer
 )
 {
-    const auto* const camera = _layer.getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
-    const auto vp_pos        = viz::scene3d::helper::camera::convertFromWindowToViewportSpace(*camera, _x, _y);
+    const auto* const camera = _layer.getCamera(viz::scene3d::layer::DEFAULT_CAMERA_NAME);
+    const auto vp_pos        = viz::scene3d::helper::camera::convert_from_window_to_viewport_space(*camera, _x, _y);
     const Ogre::Ray vp_ray   = camera->getCameraToViewportRay(vp_pos.x, vp_pos.y);
 
     viz::scene3d::detail::collision_tools tool(_layer, _query_mask);
@@ -858,7 +858,7 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pickObject
 
 //------------------------------------------------------------------------------
 
-std::string utils::pickImage(
+std::string utils::pick_image(
     const data::image& _image,
     const Ogre::Vector3& _position,
     const Ogre::Vector3& _origin,
@@ -867,7 +867,7 @@ std::string utils::pickImage(
 {
     const auto picked_pos_image_space = (_position - _origin) / _spacing;
     const auto& img_size              = _image.size();
-    data::image::Size picked_voxel;
+    data::image::size_t picked_voxel;
     for(size_t i = 0 ; i < picked_voxel.size() ; ++i)
     {
         picked_voxel[i] = std::clamp(
@@ -877,14 +877,14 @@ std::string utils::pickImage(
         );
     }
 
-    const auto intensity = _image.getPixelAsString(picked_voxel[0], picked_voxel[1], picked_voxel[2]);
+    const auto intensity = _image.get_pixel_as_string(picked_voxel[0], picked_voxel[1], picked_voxel[2]);
     return "(" + std::to_string(picked_voxel[0]) + ", " + std::to_string(picked_voxel[1])
            + ", " + std::to_string(picked_voxel[2]) + "): " + intensity;
 }
 
 //------------------------------------------------------------------------------
 
-bool utils::makePathsAbsolute(
+bool utils::make_paths_absolute(
     const std::string& _key,
     std::istream& _input,
     std::ostream& _output,

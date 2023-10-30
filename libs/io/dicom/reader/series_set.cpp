@@ -34,7 +34,7 @@
 
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/filter.hpp>
-#include <filter/dicom/helper/Filter.hpp>
+#include <filter/dicom/helper/filter.hpp>
 
 #include <io/__/reader/registry/macros.hpp>
 
@@ -51,15 +51,15 @@ namespace sight::io::dicom::reader
 //------------------------------------------------------------------------------
 
 series_set::series_set() :
-    m_isDicomdirActivated(false),
+    m_is_dicomdir_activated(false),
     m_logger(std::make_shared<core::log::logger>()),
     m_job(std::make_shared<core::jobs::aggregator>("DICOM reader")),
-    m_enableBufferRotation(true),
-    m_dicomdirFileLookupJob(std::make_shared<core::jobs::observer>("Extracting information from DICOMDIR")),
-    m_regularFileLookupJob(std::make_shared<core::jobs::observer>("Looking for DICOM files")),
-    m_readerJob(std::make_shared<core::jobs::observer>("Reading DICOM files")),
-    m_completeDicomSeriesJob(std::make_shared<core::jobs::observer>("Completing series")),
-    m_converterJob(std::make_shared<core::jobs::observer>("DICOM data conversion"))
+    m_enable_buffer_rotation(true),
+    m_dicomdir_file_lookup_job(std::make_shared<core::jobs::observer>("Extracting information from DICOMDIR")),
+    m_regular_file_lookup_job(std::make_shared<core::jobs::observer>("Looking for DICOM files")),
+    m_reader_job(std::make_shared<core::jobs::observer>("Reading DICOM files")),
+    m_complete_dicom_series_job(std::make_shared<core::jobs::observer>("Completing series")),
+    m_converter_job(std::make_shared<core::jobs::observer>("DICOM data conversion"))
 {
 }
 
@@ -68,17 +68,17 @@ series_set::series_set() :
 void series_set::read()
 {
     // Clear DicomSeries container
-    m_dicomSeriesContainer.clear();
+    m_dicom_series_container.clear();
 
-    m_job->add(m_dicomdirFileLookupJob);
-    m_job->add(m_regularFileLookupJob);
-    m_job->add(m_readerJob);
-    m_job->add(m_completeDicomSeriesJob);
-    m_job->add(m_converterJob);
+    m_job->add(m_dicomdir_file_lookup_job);
+    m_job->add(m_regular_file_lookup_job);
+    m_job->add(m_reader_job);
+    m_job->add(m_complete_dicom_series_job);
+    m_job->add(m_converter_job);
 
     try
     {
-        this->readDicom();
+        this->read_dicom();
     }
     catch(const std::exception& e)
     {
@@ -86,32 +86,32 @@ void series_set::read()
         m_logger->critical("An error has occurred during the reading process: " + std::string(e.what()));
 
         // Finish jobs
-        m_dicomdirFileLookupJob->finish();
-        m_regularFileLookupJob->finish();
-        m_readerJob->finish();
-        m_completeDicomSeriesJob->finish();
-        m_converterJob->finish();
+        m_dicomdir_file_lookup_job->finish();
+        m_regular_file_lookup_job->finish();
+        m_reader_job->finish();
+        m_complete_dicom_series_job->finish();
+        m_converter_job->finish();
         m_job->run().get();
         return;
     }
 
     // Apply Default filters
-    if(!m_dicomFilterType.empty())
+    if(!m_dicom_filter_type.empty())
     {
-        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(m_dicomFilterType);
-        sight::filter::dicom::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
+        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(m_dicom_filter_type);
+        sight::filter::dicom::helper::filter::apply_filter(m_dicom_series_container, filter, true, m_logger);
     }
 
-    if(m_dicomSeriesContainer.empty())
+    if(m_dicom_series_container.empty())
     {
         m_logger->critical("Unable to retrieve series from the selected folder.");
-        m_converterJob->done();
-        m_converterJob->finish();
+        m_converter_job->done();
+        m_converter_job->finish();
     }
     else
     {
         // Read series
-        this->convertDicomSeries();
+        this->convert_dicom_series();
     }
 
     try
@@ -128,7 +128,7 @@ void series_set::read()
         m_logger->critical("An unknown error has occurred during the reading process.");
     }
 
-    if(m_dicomSeriesContainer.empty())
+    if(m_dicom_series_container.empty())
     {
         m_logger->critical("Unable to retrieve series from the selected folder.");
     }
@@ -136,19 +136,19 @@ void series_set::read()
 
 //------------------------------------------------------------------------------
 
-void series_set::readDicomSeries()
+void series_set::read_dicom_series()
 {
     // Clear DicomSeries container
-    m_dicomSeriesContainer.clear();
+    m_dicom_series_container.clear();
 
-    m_job->add(m_dicomdirFileLookupJob);
-    m_job->add(m_regularFileLookupJob);
-    m_job->add(m_readerJob);
-    m_job->add(m_completeDicomSeriesJob);
+    m_job->add(m_dicomdir_file_lookup_job);
+    m_job->add(m_regular_file_lookup_job);
+    m_job->add(m_reader_job);
+    m_job->add(m_complete_dicom_series_job);
 
     try
     {
-        this->readDicom();
+        this->read_dicom();
     }
     catch(const std::exception& e)
     {
@@ -156,21 +156,21 @@ void series_set::readDicomSeries()
         m_logger->critical("An error has occurred during the reading process: " + std::string(e.what()));
 
         // Finish jobs
-        m_dicomdirFileLookupJob->finish();
-        m_regularFileLookupJob->finish();
-        m_readerJob->finish();
-        m_completeDicomSeriesJob->finish();
+        m_dicomdir_file_lookup_job->finish();
+        m_regular_file_lookup_job->finish();
+        m_reader_job->finish();
+        m_complete_dicom_series_job->finish();
         m_job->run().get();
         return;
     }
 
-    const auto& series_set    = getConcreteObject();
+    const auto& series_set    = get_concrete_object();
     const auto scoped_emitter = series_set->scoped_emit();
 
     // Push Dicom Series
     if(!m_job->cancel_requested())
     {
-        for(const auto& series : m_dicomSeriesContainer)
+        for(const auto& series : m_dicom_series_container)
         {
             series_set->push_back(series);
         }
@@ -190,7 +190,7 @@ void series_set::readDicomSeries()
         m_logger->critical("An unknown error has occurred during the reading process.");
     }
 
-    if(m_dicomSeriesContainer.empty())
+    if(m_dicom_series_container.empty())
     {
         m_logger->critical("Unable to retrieve series from the selected folder.");
     }
@@ -198,101 +198,101 @@ void series_set::readDicomSeries()
 
 //------------------------------------------------------------------------------
 
-void series_set::readDicom()
+void series_set::read_dicom()
 {
     // DICOMDIR
-    auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->get_folder());
-    if(m_isDicomdirActivated && std::filesystem::exists(dicomdir))
+    auto dicomdir = io::dicom::helper::dicom_dir::find_dicom_dir(this->get_folder());
+    if(m_is_dicomdir_activated && std::filesystem::exists(dicomdir))
     {
         // Create Dicom Series
-        io::dicom::helper::DicomDir::retrieveDicomSeries(
+        io::dicom::helper::dicom_dir::retrieve_dicom_series(
             dicomdir,
-            m_dicomSeriesContainer,
+            m_dicom_series_container,
             m_logger,
-            m_readerJob->progress_callback(),
-            m_readerJob->cancel_requested_callback()
+            m_reader_job->progress_callback(),
+            m_reader_job->cancel_requested_callback()
         );
 
         // Fill Dicom Series
-        io::dicom::helper::DicomSeries::complete(m_dicomSeriesContainer, m_completeDicomSeriesJob);
+        io::dicom::helper::dicom_series::complete(m_dicom_series_container, m_complete_dicom_series_job);
     }
 
     // Finish DICOMDIR lookup
-    m_dicomdirFileLookupJob->done();
-    m_dicomdirFileLookupJob->finish();
+    m_dicomdir_file_lookup_job->done();
+    m_dicomdir_file_lookup_job->finish();
 
     // Regular read
-    if(!m_isDicomdirActivated || !std::filesystem::exists(dicomdir) || m_dicomSeriesContainer.empty())
+    if(!m_is_dicomdir_activated || !std::filesystem::exists(dicomdir) || m_dicom_series_container.empty())
     {
-        m_readerJob->done_work(0);
+        m_reader_job->done_work(0);
 
         // Recursively search for dicom files
         std::vector<std::filesystem::path> filenames;
-        io::dicom::helper::DicomSearch::searchRecursively(
+        io::dicom::helper::dicom_search::search_recursively(
             this->get_folder(),
             filenames,
             true,
-            m_regularFileLookupJob
+            m_regular_file_lookup_job
         );
 
         // Read Dicom Series
-        m_dicomSeriesContainer = io::dicom::helper::DicomSeries::read(
+        m_dicom_series_container = io::dicom::helper::dicom_series::read(
             filenames,
-            m_readerJob,
-            m_completeDicomSeriesJob
+            m_reader_job,
+            m_complete_dicom_series_job
         );
     }
 
     // Finish regular lookup
-    m_regularFileLookupJob->done();
-    m_regularFileLookupJob->finish();
+    m_regular_file_lookup_job->done();
+    m_regular_file_lookup_job->finish();
 
     // Finish reading
-    m_readerJob->done();
-    m_readerJob->finish();
+    m_reader_job->done();
+    m_reader_job->finish();
 
     // Finish completing series
-    m_completeDicomSeriesJob->done();
-    m_completeDicomSeriesJob->finish();
+    m_complete_dicom_series_job->done();
+    m_complete_dicom_series_job->finish();
 }
 
 //------------------------------------------------------------------------------
 
-void series_set::readFromDicomSeriesSet(
+void series_set::read_from_dicom_series_set(
     const data::series_set::csptr& _dicom_series_set,
     const service::base::sptr& _notifier
 )
 {
     // Clear DicomSeries container
-    m_dicomSeriesContainer.clear();
+    m_dicom_series_container.clear();
 
-    m_job->add(m_converterJob);
+    m_job->add(m_converter_job);
 
     // Read series
     for(const auto& series : *_dicom_series_set)
     {
         const auto& dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
         SIGHT_ASSERT("Trying to read a series which is not a DicomSeries.", dicom_series);
-        m_dicomSeriesContainer.push_back(dicom_series);
+        m_dicom_series_container.push_back(dicom_series);
     }
 
     // Apply Default filters
-    if(!m_dicomFilterType.empty())
+    if(!m_dicom_filter_type.empty())
     {
-        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(m_dicomFilterType);
-        sight::filter::dicom::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
+        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(m_dicom_filter_type);
+        sight::filter::dicom::helper::filter::apply_filter(m_dicom_series_container, filter, true, m_logger);
     }
 
-    if(m_dicomSeriesContainer.empty())
+    if(m_dicom_series_container.empty())
     {
         m_logger->critical("Unable to retrieve series from the selected folder.");
-        m_converterJob->done();
-        m_converterJob->finish();
+        m_converter_job->done();
+        m_converter_job->finish();
     }
     else
     {
         // Read series
-        this->convertDicomSeries(_notifier);
+        this->convert_dicom_series(_notifier);
     }
 
     try
@@ -312,62 +312,62 @@ void series_set::readFromDicomSeriesSet(
 
 //------------------------------------------------------------------------------
 
-bool series_set::isDicomDirAvailable()
+bool series_set::is_dicom_dir_available()
 {
-    auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->get_folder());
+    auto dicomdir = io::dicom::helper::dicom_dir::find_dicom_dir(this->get_folder());
     return std::filesystem::exists(dicomdir);
 }
 
 //------------------------------------------------------------------------------
 
-void series_set::convertDicomSeries(const service::base::sptr& _notifier)
+void series_set::convert_dicom_series(const service::base::sptr& _notifier)
 {
-    auto series_set = this->getConcreteObject();
+    auto series_set = this->get_concrete_object();
 
     // Sort DicomSeries
-    std::sort(m_dicomSeriesContainer.begin(), m_dicomSeriesContainer.end(), series_set::dicomSeriesComparator);
+    std::sort(m_dicom_series_container.begin(), m_dicom_series_container.end(), series_set::dicom_series_comparator);
 
     // Create reader
     auto series_reader = std::make_shared<io::dicom::reader::series>();
-    series_reader->setBufferRotationEnabled(m_enableBufferRotation);
-    series_reader->setLogger(m_logger);
+    series_reader->set_buffer_rotation_enabled(m_enable_buffer_rotation);
+    series_reader->set_logger(m_logger);
 
-    m_converterJob->set_total_work_units(m_dicomSeriesContainer.size());
+    m_converter_job->set_total_work_units(m_dicom_series_container.size());
 
     // Compute total work units
     // We do not use an aggregator here as the jobs
     // are created after updating the main aggregator.
     std::uint64_t total_work_units = 0;
-    for(const data::dicom_series::sptr& dicom_series : m_dicomSeriesContainer)
+    for(const data::dicom_series::sptr& dicom_series : m_dicom_series_container)
     {
-        total_work_units += dicom_series->getDicomContainer().size();
+        total_work_units += dicom_series->get_dicom_container().size();
     }
 
-    m_converterJob->set_total_work_units(total_work_units);
+    m_converter_job->set_total_work_units(total_work_units);
 
     std::uint64_t completed_progress = 0;
     auto progress_callback = [&](std::uint64_t _progress)
                              {
-                                 m_converterJob->done_work(completed_progress + _progress);
+                                 m_converter_job->done_work(completed_progress + _progress);
                              };
 
     // Read series
-    for(const data::dicom_series::csptr dicom_series : m_dicomSeriesContainer)
+    for(const data::dicom_series::csptr dicom_series : m_dicom_series_container)
     {
-        data::dicom_series::sop_classUIDContainerType sop_class_uid_container = dicom_series->getSOPClassUIDs();
+        data::dicom_series::sop_class_uid_container_t sop_class_uid_container = dicom_series->get_sop_class_ui_ds();
         SIGHT_THROW_IF(
             "The series contains several sop_classUIDs. Try to apply a filter in order to split the series.",
             sop_class_uid_container.size() != 1
         );
         const std::string sop_class_uid = sop_class_uid_container.begin()->c_str();
 
-        const auto& b_it = m_supportedSOPClassContainer.begin();
-        const auto& e_it = m_supportedSOPClassContainer.end();
+        const auto& b_it = m_supported_sop_class_container.begin();
+        const auto& e_it = m_supported_sop_class_container.end();
 
-        if(m_supportedSOPClassContainer.empty() || std::find(b_it, e_it, sop_class_uid) != e_it)
+        if(m_supported_sop_class_container.empty() || std::find(b_it, e_it, sop_class_uid) != e_it)
         {
-            series_reader->setProgressCallback(progress_callback);
-            series_reader->setCancelRequestedCallback(m_converterJob->cancel_requested_callback());
+            series_reader->set_progress_callback(progress_callback);
+            series_reader->set_cancel_requested_callback(m_converter_job->cancel_requested_callback());
             try
             {
                 data::series::sptr series = series_reader->read(dicom_series);
@@ -379,14 +379,16 @@ void series_set::convertDicomSeries(const service::base::sptr& _notifier)
                     series_set->push_back(series);
                 }
             }
-            catch(io::dicom::exception::Failed& e)
+            catch(io::dicom::exception::failed& e)
             {
-                m_logger->critical("Unable to read series '" + dicom_series->getSeriesInstanceUID() + "': " + e.what());
+                m_logger->critical(
+                    "Unable to read series '" + dicom_series->get_series_instance_uid() + "': " + e.what()
+                );
             }
         }
         else
         {
-            const std::string sop_class_name = io::dicom::helper::sop_class::getSOPClassName(sop_class_uid);
+            const std::string sop_class_name = io::dicom::helper::sop_class::get_sop_class_name(sop_class_uid);
             m_logger->critical("DICOM SOP Class \"" + sop_class_name + "\" is not supported by the selected reader.");
         }
 
@@ -395,21 +397,21 @@ void series_set::convertDicomSeries(const service::base::sptr& _notifier)
             break;
         }
 
-        completed_progress = m_converterJob->get_done_work_units();
+        completed_progress = m_converter_job->get_done_work_units();
     }
 
-    m_converterJob->done();
-    m_converterJob->finish();
+    m_converter_job->done();
+    m_converter_job->finish();
 }
 
 //------------------------------------------------------------------------------
 
-bool series_set::dicomSeriesComparator(const SPTR(data::dicom_series)& _a, const SPTR(data::dicom_series)& _b)
+bool series_set::dicom_series_comparator(const SPTR(data::dicom_series)& _a, const SPTR(data::dicom_series)& _b)
 {
-    const data::dicom_series::sop_classUIDContainerType a_sop_class_uid_container = _a->getSOPClassUIDs();
+    const data::dicom_series::sop_class_uid_container_t a_sop_class_uid_container = _a->get_sop_class_ui_ds();
     const std::string a_sop_class_uid                                             =
         *(a_sop_class_uid_container.begin());
-    const data::dicom_series::sop_classUIDContainerType b_sop_class_uid_container = _b->getSOPClassUIDs();
+    const data::dicom_series::sop_class_uid_container_t b_sop_class_uid_container = _b->get_sop_class_ui_ds();
     const std::string b_sop_class_uid                                             =
         *(b_sop_class_uid_container.begin());
 
@@ -439,14 +441,14 @@ bool series_set::dicomSeriesComparator(const SPTR(data::dicom_series)& _a, const
 
 //------------------------------------------------------------------------------
 
-series_set::dicom_series_container_t& series_set::getDicomSeries()
+series_set::dicom_series_container_t& series_set::get_dicom_series()
 {
-    return m_dicomSeriesContainer;
+    return m_dicom_series_container;
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(core::jobs::base) series_set::getJob() const
+SPTR(core::jobs::base) series_set::get_job() const
 {
     return m_job;
 }

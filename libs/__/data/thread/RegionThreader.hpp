@@ -31,17 +31,17 @@
 namespace sight::data::thread
 {
 
-class RegionThreader
+class region_threader
 {
 public:
 
-    RegionThreader() :
-        M_NB_THREAD((std::thread::hardware_concurrency() > 1) ? std::thread::hardware_concurrency() : 1)
+    region_threader() :
+        m_nb_thread((std::thread::hardware_concurrency() > 1) ? std::thread::hardware_concurrency() : 1)
     {
     }
 
-    RegionThreader(std::size_t _nb_thread, bool _capped = true) :
-        M_NB_THREAD(std::min(_capped ? std::thread::hardware_concurrency() : std::numeric_limits<std::size_t>::max(),
+    region_threader(std::size_t _nb_thread, bool _capped = true) :
+        m_nb_thread(std::min(_capped ? std::thread::hardware_concurrency() : std::numeric_limits<std::size_t>::max(),
                              (_nb_thread > 1) ? _nb_thread : 1))
     {
     }
@@ -53,9 +53,9 @@ public:
     {
         std::vector<std::thread> threads;
 
-        const std::ptrdiff_t step = (_data_size / static_cast<std::ptrdiff_t>(M_NB_THREAD)) + 1;
+        const std::ptrdiff_t step = (_data_size / static_cast<std::ptrdiff_t>(m_nb_thread)) + 1;
 
-        if(M_NB_THREAD > 1)
+        if(m_nb_thread > 1)
         {
             std::ptrdiff_t region_begin = 0;
             std::size_t thread_id       = 0;
@@ -86,14 +86,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] std::size_t numberOfThread() const
+    [[nodiscard]] std::size_t number_of_thread() const
     {
-        return M_NB_THREAD;
+        return m_nb_thread;
     }
 
 protected:
 
-    const std::size_t M_NB_THREAD;
+    const std::size_t m_nb_thread;
 };
 
 } // namespace sight::data::thread

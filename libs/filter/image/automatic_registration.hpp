@@ -69,7 +69,7 @@ public:
      * @param[in] _minStep minimum step for used by optimizer for each iteration.
      * @param[in] _maxIterations the maximum number of iterations
      */
-    FILTER_IMAGE_API void registerImage(
+    FILTER_IMAGE_API void register_image(
         const data::image::csptr& _target,
         const data::image::csptr& _reference,
         const data::matrix4::sptr& _trf,
@@ -81,31 +81,31 @@ public:
         iteration_callback_t _callback = nullptr
     );
 
-    FILTER_IMAGE_API void stopRegistration();
+    FILTER_IMAGE_API void stop_registration();
 
     /// Current metric evaluated by the optimizer.
-    [[nodiscard]] FILTER_IMAGE_API real_t getCurrentMetricValue() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t get_current_metric_value() const;
 
     /// Current set of parameters used to evaluate the metric in the optimizer.
-    [[nodiscard]] FILTER_IMAGE_API const optimizer_t::ParametersType& getCurrentParameters() const;
+    [[nodiscard]] FILTER_IMAGE_API const optimizer_t::ParametersType& get_current_parameters() const;
 
     /// Gradient descent relaxation factor.
-    [[nodiscard]] FILTER_IMAGE_API real_t getRelaxationFactor() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t get_relaxation_factor() const;
 
     /// Gradient descent learning rate.
-    [[nodiscard]] FILTER_IMAGE_API real_t getLearningRate() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t get_learning_rate() const;
 
     /// Gradient magnitude tolerance.
-    [[nodiscard]] FILTER_IMAGE_API real_t getGradientMagnitudeTolerance() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t get_gradient_magnitude_tolerance() const;
 
     /// Current optimizer iteration.
-    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType getCurrentIteration() const;
+    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType get_current_iteration() const;
 
     /// Current multi-resolution level.
-    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType getCurrentLevel() const;
+    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType get_current_level() const;
 
     /// Current registration result.
-    FILTER_IMAGE_API void getCurrentMatrix(const data::matrix4::sptr& _trf) const;
+    FILTER_IMAGE_API void get_current_matrix(const data::matrix4::sptr& _trf) const;
 
 private:
 

@@ -33,19 +33,19 @@
 namespace sight::viz::scene3d
 {
 
-const core::com::slots::key_t adaptor::UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const core::com::slots::key_t adaptor::UPDATE_VISIBILITY_SLOT = "update_visibility";
 const core::com::slots::key_t adaptor::TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 const core::com::slots::key_t adaptor::SHOW_SLOT              = "show";
 const core::com::slots::key_t adaptor::HIDE_SLOT              = "hide";
 
-const std::string adaptor::s_CONFIG = "config.<xmlattr>.";
+const std::string adaptor::CONFIG = "config.<xmlattr>.";
 
 //------------------------------------------------------------------------------
 
 adaptor::adaptor() noexcept
 {
-    new_slot(UPDATE_VISIBILITY_SLOT, &adaptor::updateVisibility, this);
-    new_slot(TOGGLE_VISIBILITY_SLOT, &adaptor::toggleVisibility, this);
+    new_slot(UPDATE_VISIBILITY_SLOT, &adaptor::update_visibility, this);
+    new_slot(TOGGLE_VISIBILITY_SLOT, &adaptor::toggle_visibility, this);
     new_slot(SHOW_SLOT, &adaptor::show, this);
     new_slot(HIDE_SLOT, &adaptor::hide, this);
 }
@@ -60,16 +60,16 @@ void adaptor::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void adaptor::configureParams()
+void adaptor::configure_params()
 {
     const config_t config = this->get_config();
-    m_cfgLayerID = config.get<std::string>("config.<xmlattr>.layer", "");
-    m_isVisible  = config.get<bool>("config.<xmlattr>.visible", m_isVisible);
+    m_cfg_layer_id = config.get<std::string>("config.<xmlattr>.layer", "");
+    m_visible      = config.get<bool>("config.<xmlattr>.visible", m_visible);
 
     SIGHT_WARN_IF(
         "In [" + this->get_id() + "] adaptor, specifying a layer is now deprecated. "
                                   "Please place the adaptor in the layer tag in the render scene configuration.",
-        !m_cfgLayerID.empty()
+        !m_cfg_layer_id.empty()
     );
 }
 
@@ -77,7 +77,7 @@ void adaptor::configureParams()
 
 void adaptor::initialize()
 {
-    if(m_renderService.expired())
+    if(m_render_service.expired())
     {
         auto services_vector = sight::service::get_services("sight::viz::scene3d::render");
 
@@ -94,102 +94,102 @@ void adaptor::initialize()
             });
         SIGHT_ASSERT("Can't find '" + layer_cfg.render + "' render service.", result != services_vector.end());
 
-        m_renderService = std::dynamic_pointer_cast<viz::scene3d::render>(*result);
+        m_render_service = std::dynamic_pointer_cast<viz::scene3d::render>(*result);
 
-        m_layerID = layer_cfg.layer.empty() ? m_cfgLayerID : layer_cfg.layer;
+        m_layer_id = layer_cfg.layer.empty() ? m_cfg_layer_id : layer_cfg.layer;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void adaptor::setLayerID(const std::string& _id)
+void adaptor::set_layer_id(const std::string& _id)
 {
-    m_layerID = _id;
+    m_layer_id = _id;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string& adaptor::getLayerID() const
+const std::string& adaptor::layer_id() const
 {
-    return m_layerID;
+    return m_layer_id;
 }
 
 //------------------------------------------------------------------------------
 
-void adaptor::setRenderService(render::sptr _service)
+layer::sptr adaptor::layer() const
+{
+    return this->render_service()->layer(m_layer_id);
+}
+
+//------------------------------------------------------------------------------
+
+void adaptor::set_render_service(render::sptr _service)
 {
     SIGHT_ASSERT("service not instanced", _service);
     SIGHT_ASSERT("The adaptor ('" + this->get_id() + "') is not stopped", this->stopped());
 
-    m_renderService = _service;
+    m_render_service = _service;
 }
 
 //------------------------------------------------------------------------------
 
-render::sptr adaptor::getRenderService() const
+render::sptr adaptor::render_service() const
 {
-    return m_renderService.lock();
+    return m_render_service.lock();
 }
 
 //------------------------------------------------------------------------------
 
-layer::sptr adaptor::getLayer() const
+Ogre::SceneManager* adaptor::get_scene_manager()
 {
-    return this->getRenderService()->getLayer(m_layerID);
+    return m_render_service.lock()->get_scene_manager(m_layer_id);
 }
 
 //------------------------------------------------------------------------------
 
-Ogre::SceneManager* adaptor::getSceneManager()
+void adaptor::request_render()
 {
-    return m_renderService.lock()->getSceneManager(m_layerID);
-}
-
-//------------------------------------------------------------------------------
-
-void adaptor::requestRender()
-{
-    auto render_service = this->getRenderService();
-    if((render_service->status() == service::base::STARTED
-        || render_service->status() == service::base::SWAPPING)
-       && render_service->getRenderMode() == viz::scene3d::render::RenderMode::AUTO)
+    auto render_service = this->render_service();
+    if((render_service->status() == service::base::global_status::started
+        || render_service->status() == service::base::global_status::swapping)
+       && render_service->get_render_mode() == viz::scene3d::render::render_mode::AUTO)
     {
-        render_service->requestRender();
+        render_service->request_render();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void adaptor::updateVisibility(bool _is_visible)
+void adaptor::update_visibility(bool _is_visible)
 {
-    m_isVisible = _is_visible;
-    this->setVisible(m_isVisible);
+    m_visible = _is_visible;
+    this->set_visible(m_visible);
 }
 
 //------------------------------------------------------------------------------
 
-void adaptor::toggleVisibility()
+void adaptor::toggle_visibility()
 {
-    this->updateVisibility(!m_isVisible);
+    this->update_visibility(!m_visible);
 }
 
 //------------------------------------------------------------------------------
 
 void adaptor::show()
 {
-    this->updateVisibility(true);
+    this->update_visibility(true);
 }
 
 //------------------------------------------------------------------------------
 
 void adaptor::hide()
 {
-    this->updateVisibility(false);
+    this->update_visibility(false);
 }
 
 //------------------------------------------------------------------------------
 
-void adaptor::setVisible(bool /*unused*/)
+void adaptor::set_visible(bool /*unused*/)
 {
     SIGHT_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
 }

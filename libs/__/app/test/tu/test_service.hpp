@@ -42,11 +42,11 @@ class test_service : public service::base
 {
 public:
 
-    static unsigned int s_START_COUNTER;
-    static unsigned int s_UPDATE_COUNTER;
-    static const std::string s_OPTION_KEY;
-    static const std::string s_UNCONFIGURED;
-    static const std::string s_NOT_DEFINED;
+    static unsigned int s_start_counter;
+    static unsigned int s_update_counter;
+    static const std::string OPTION_KEY;
+    static const std::string UNCONFIGURED;
+    static const std::string NOT_DEFINED;
 
     SIGHT_DECLARE_SERVICE(test_service, service::base);
     test_service() noexcept =
@@ -61,7 +61,7 @@ public:
     {
         const config_t cfg = this->get_config();
 
-        m_option = cfg.get(s_OPTION_KEY, s_NOT_DEFINED);
+        m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
     }
 
     void starting() override;
@@ -77,72 +77,72 @@ public:
     }
 
     /// return true if the service is updated with update() method
-    bool getIsUpdated() const
+    bool get_is_updated() const
     {
-        return m_isUpdated;
+        return m_is_updated;
     }
 
     /// return true if the service is updated with update() method
-    bool getIsUpdated2() const
+    bool get_is_updated2() const
     {
-        return m_isUpdated2;
+        return m_is_updated2;
     }
 
     /// return true if the service is updated with update(msg) method
-    bool getIsUpdatedMessage() const
+    bool get_is_updated_message() const
     {
-        return m_isUpdatedMessage;
+        return m_is_updated_message;
     }
 
     /// return true if the service is updated with update() method
-    void resetIsUpdated()
+    void reset_is_updated()
     {
-        m_isUpdated = false;
+        m_is_updated = false;
     }
 
     /// return true if the service is updated with update() method
-    void resetIsUpdated2()
+    void reset_is_updated2()
     {
-        m_isUpdated2 = false;
+        m_is_updated2 = false;
     }
 
     //------------------------------------------------------------------------------
 
-    unsigned int getStartOrder() const
+    unsigned int get_start_order() const
     {
-        return m_startOrder;
+        return m_start_order;
     }
 
     //------------------------------------------------------------------------------
 
-    unsigned int getUpdateOrder() const
+    unsigned int get_update_order() const
     {
-        return m_updateOrder;
+        return m_update_order;
     }
 
     //------------------------------------------------------------------------------
 
-    void setRaiseException(bool _raise_exception)
+    void set_raise_exception(bool _raise_exception)
     {
-        m_raiseException = _raise_exception;
+        m_raise_exception = _raise_exception;
     }
 
     //------------------------------------------------------------------------------
 
-    const std::string& getOption() const
+    const std::string& get_option() const
     {
         return m_option;
     }
 
 protected:
 
-    bool m_isUpdated {false};
-    bool m_isUpdated2 {false};
-    bool m_isUpdatedMessage {false};
-    bool m_raiseException {false};
-    unsigned int m_startOrder {0};
-    unsigned int m_updateOrder {0};
-    std::string m_option {s_UNCONFIGURED};
+    bool m_is_updated {false};
+    bool m_is_updated2 {false};
+    bool m_is_updated_message {false};
+    bool m_raise_exception {false};
+    unsigned int m_start_order {0};
+    unsigned int m_update_order {0};
+    std::string m_option {UNCONFIGURED};
 };
 
 /**
@@ -169,7 +169,7 @@ public:
     };
 
     /// Type of signal
-    typedef core::com::signal<void (int)> int_sent_signal_t;
+    using int_sent_signal_t = core::com::signal<void (int)>;
 
     //-------------------------------------------------------------------------
 
@@ -177,7 +177,7 @@ public:
     {
         new_signal<signals::int_sent_t>(signals::SIG_1);
         new_signal<signals::msg_sent_t>(signals::MSG_SENT);
-        new_slot(slots::SLOT_1, &test_srv::receiveSlot, this);
+        new_slot(slots::SLOT_1, &test_srv::receive_slot, this);
         new_slot(slots::UPDATE2, &test_srv::update2, this);
     }
 
@@ -196,25 +196,25 @@ public:
     void updating() final
     {
         test_service::updating();
-        m_isUpdated = true;
+        m_is_updated = true;
     }
 
     //-------------------------------------------------------------------------
-    void receiveSlot()
+    void receive_slot()
     {
         m_received = true;
     }
 
     //-------------------------------------------------------------------------
 
-    void resetReceive()
+    void reset_receive()
     {
         m_received = false;
     }
 
     //-------------------------------------------------------------------------
 
-    bool getReceived() const
+    bool get_received() const
     {
         return m_received;
     }
@@ -222,28 +222,28 @@ public:
     //-------------------------------------------------------------------------
     void update2()
     {
-        m_isUpdated2 = true;
+        m_is_updated2 = true;
     }
 
     //-------------------------------------------------------------------------
     void swapping(std::string_view _key) final
     {
-        m_swappedObjectKey = _key;
-        m_swappedObject    = this->input(_key).lock().get_shared();
+        m_swapped_object_key = _key;
+        m_swapped_object     = this->input(_key).lock().get_shared();
     }
 
     //-------------------------------------------------------------------------
 
-    const std::string& getSwappedObjectKey() const
+    const std::string& get_swapped_object_key() const
     {
-        return m_swappedObjectKey;
+        return m_swapped_object_key;
     }
 
     //-------------------------------------------------------------------------
 
-    data::object::csptr getSwappedObject() const
+    data::object::csptr get_swapped_object() const
     {
-        return m_swappedObject;
+        return m_swapped_object;
     }
 
     //-------------------------------------------------------------------------
@@ -268,63 +268,63 @@ public:
 private:
 
     bool m_received {false};
-    std::string m_swappedObjectKey;
-    data::object::csptr m_swappedObject;
+    std::string m_swapped_object_key;
+    data::object::csptr m_swapped_object;
 };
 
-class STestNoData : public test_srv
+class test_no_data : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STestNoData, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test_no_data, app::ut::test_srv);
 };
 
-class STestNoData2 : public test_srv
+class test_no_data2 : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STestNoData2, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test_no_data2, app::ut::test_srv);
 };
 
-class STest1Input : public test_srv
+class test1_input : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest1Input, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test1_input, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::in> m_input {this, "data1", false};
+    data::ptr<data::object, data::access::in> m_input {this, "data1", false};
 };
 
-class STest1OptInput : public test_srv
+class test1_opt_input : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest1OptInput, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test1_opt_input, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::in> m_input {this, "data1", true, true};
+    data::ptr<data::object, data::access::in> m_input {this, "data1", true, true};
 };
 
-class STest2Inputs : public test_srv
+class test2_inputs : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest2Inputs, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test2_inputs, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::in> m_input1 {this, "data1"};
-    data::ptr<data::object, data::Access::in> m_input2 {this, "data2"};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1"};
+    data::ptr<data::object, data::access::in> m_input2 {this, "data2"};
 };
 
-class STest2InputsV2 : public test_srv
+class test2_inputs_v2 : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest2InputsV2, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test2_inputs_v2, app::ut::test_srv);
 
     //-------------------------------------------------------------------------
 
@@ -338,53 +338,53 @@ public:
 
 private:
 
-    data::ptr<data::object, data::Access::in> m_input1 {this, "data1", true};
-    data::ptr<data::object, data::Access::in> m_input2 {this, "data2", true};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1", true};
+    data::ptr<data::object, data::access::in> m_input2 {this, "data2", true};
 };
 
-class STest4Inputs : public test_srv
+class test4_inputs : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest4Inputs, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test4_inputs, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::in> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::Access::in> m_inout2 {this, "data2", true, true};
-    data::ptr<data::object, data::Access::in> m_inout3 {this, "data3", true, true};
-    data::ptr<data::object, data::Access::in> m_inout4 {this, "data4", true, true};
+    data::ptr<data::object, data::access::in> m_inout1 {this, "data1", true};
+    data::ptr<data::object, data::access::in> m_inout2 {this, "data2", true, true};
+    data::ptr<data::object, data::access::in> m_inout3 {this, "data3", true, true};
+    data::ptr<data::object, data::access::in> m_inout4 {this, "data4", true, true};
 };
 
-class STest1Inout : public test_srv
+class test1_inout : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest1Inout, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test1_inout, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::inout> m_inout {this, "data1", true};
+    data::ptr<data::object, data::access::inout> m_inout {this, "data1", true};
 };
 
-class STest3Inouts : public test_srv
+class test3_inouts : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest3Inouts, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test3_inouts, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::Access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::Access::inout> m_inout3 {this, "data3", true};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
+    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3", true};
 };
 
-class STest3InoutsV2 : public test_srv
+class test3_inouts_v2 : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest3InoutsV2, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test3_inouts_v2, app::ut::test_srv);
 
     //-------------------------------------------------------------------------
 
@@ -399,29 +399,29 @@ public:
 
 private:
 
-    data::ptr<data::object, data::Access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::Access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::Access::inout> m_inout3 {this, "data3", false};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
+    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3", false};
 };
 
-class STest2Inouts1Input : public test_srv
+class test2_inouts1_input : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest2Inouts1Input, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test2_inouts1_input, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::Access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::Access::in> m_input3 {this, "data3", true};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
+    data::ptr<data::object, data::access::in> m_input3 {this, "data3", true};
 };
 
-class STest1Input1OptInput1OptInOut : public test_srv
+class test1_input1_opt_input1_opt_in_out : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest1Input1OptInput1OptInOut, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test1_input1_opt_input1_opt_in_out, app::ut::test_srv);
 
     //-------------------------------------------------------------------------
 
@@ -436,66 +436,66 @@ public:
 
 private:
 
-    data::ptr<data::object, data::Access::in> m_input1 {this, "data1", true};
-    data::ptr<data::object, data::Access::in> m_input2 {this, "data2", true, true};
-    data::ptr<data::object, data::Access::inout> m_inout {this, "data3", false, true};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1", true};
+    data::ptr<data::object, data::access::in> m_input2 {this, "data2", true, true};
+    data::ptr<data::object, data::access::inout> m_inout {this, "data3", false, true};
 };
 
-class STest2InputGroups : public test_srv
+class test2_input_groups : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest2InputGroups, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test2_input_groups, app::ut::test_srv);
 
-    data::ptr_vector<data::object, data::Access::in> m_input1 {this, "dataGroup0", false};
-    data::ptr_vector<data::object, data::Access::in> m_input2 {this, "dataGroup1", false};
+    data::ptr_vector<data::object, data::access::in> m_input1 {this, "dataGroup0", false};
+    data::ptr_vector<data::object, data::access::in> m_input2 {this, "dataGroup1", false};
 };
 
-class STest1Input1InputGroup : public test_srv
+class test1_input1_input_group : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest1Input1InputGroup, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test1_input1_input_group, app::ut::test_srv);
 
-    data::ptr<data::object, data::Access::in> m_input {this, "data1", true, true};
-    data::ptr_vector<data::object, data::Access::in> m_inputGroup {this, "dataGroup", true};
+    data::ptr<data::object, data::access::in> m_input {this, "data1", true, true};
+    data::ptr_vector<data::object, data::access::in> m_input_group {this, "dataGroup", true};
 };
 
-class STest1Input1Output2Inouts : public test_srv
+class test1_input1_output2_inouts : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STest1Input1Output2Inouts, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test1_input1_output2_inouts, app::ut::test_srv);
 
 private:
 
-    data::ptr<data::object, data::Access::in> m_input1 {this, "data1", true};
-    data::ptr<data::object, data::Access::out> m_out2 {this, "data2", true};
-    data::ptr<data::object, data::Access::inout> m_inout3 {this, "data3", true};
-    data::ptr<data::object, data::Access::inout> m_inout4 {this, "data4", true};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1", true};
+    data::ptr<data::object, data::access::out> m_out2 {this, "data2", true};
+    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3", true};
+    data::ptr<data::object, data::access::inout> m_inout4 {this, "data4", true};
 };
 
-class STestOut : public test_srv
+class test_out : public test_srv
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STestOut, app::ut::test_srv);
+    SIGHT_DECLARE_SERVICE(test_out, app::ut::test_srv);
 
-    data::ptr<data::object, data::Access::out> m_out {this, "out"};
-    data::ptr<data::object, data::Access::out> m_out2 {this, "out2"};
-    data::ptr<data::object, data::Access::out> m_out3 {this, "out3"};
-    data::ptr<data::object, data::Access::out> m_out4 {this, "out4"};
-    data::ptr<data::object, data::Access::out> m_out5 {this, "out5"};
-    data::ptr_vector<data::object, data::Access::out> m_outGroup {this, "outGroup"};
+    data::ptr<data::object, data::access::out> m_out {this, "out"};
+    data::ptr<data::object, data::access::out> m_out2 {this, "out2"};
+    data::ptr<data::object, data::access::out> m_out3 {this, "out3"};
+    data::ptr<data::object, data::access::out> m_out4 {this, "out4"};
+    data::ptr<data::object, data::access::out> m_out5 {this, "out5"};
+    data::ptr_vector<data::object, data::access::out> m_out_group {this, "outGroup"};
 };
 
 class test_service_with_data : public service::base
 {
 public:
 
-    static const key_t s_INPUT;
-    static const key_t s_INOUT_GROUP;
-    static const key_t s_OUTPUT;
+    static const key_t INPUT;
+    static const key_t INOUT_GROUP;
+    static const key_t OUTPUT;
 
     SIGHT_DECLARE_SERVICE(test_service_with_data, service::base);
     test_service_with_data() noexcept           = default;
@@ -518,9 +518,9 @@ public:
     void stopping() override;
     void updating() override;
 
-    data::ptr<data::object, data::Access::in> m_input {this, "input", true};
-    data::ptr_vector<data::integer, data::Access::inout> m_inoutGroup {this, "inoutGroup", true};
-    data::ptr<data::object, data::Access::out> m_output {this, "output", false, true};
+    data::ptr<data::object, data::access::in> m_input {this, "input", true};
+    data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, "inoutGroup", true};
+    data::ptr<data::object, data::access::out> m_output {this, "output", false, true};
 };
 
 } // namespace sight::app::ut

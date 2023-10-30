@@ -64,12 +64,12 @@ public:
     MODULE_IO_VISION_API ~calibration_info_reader() noexcept override;
 
     /// Configures the folder path.
-    MODULE_IO_VISION_API void openLocationDialog() override;
+    MODULE_IO_VISION_API void open_location_dialog() override;
 
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::service::path_type_t get_path_type() const override;
 
     /// Configures the output file format and the chessboard preference keys.
     MODULE_IO_VISION_API void configuring() override;
@@ -86,16 +86,16 @@ protected:
 private:
 
     /// SLOT: updates the chessboard size from the preferences.
-    void updateChessboardSize();
+    void update_chessboard_size();
 
     /// Preference key to retrieve the chessboard width.
-    std::string m_widthKey;
+    std::string m_width_key;
 
     /// Preference key to retrieve the chessboard height.
-    std::string m_heightKey;
+    std::string m_height_key;
 
     /// Preference key to retrieve the scaling factor applied to the image before detection.
-    std::string m_scaleKey;
+    std::string m_scale_key;
 
     /// Width of the chessboard we're looking for.
     std::size_t m_width {11};

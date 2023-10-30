@@ -47,21 +47,21 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::vtk::ModelSeriesObjWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::model_series_obj_writer);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-ModelSeriesObjWriter::ModelSeriesObjWriter() :
+model_series_obj_writer::model_series_obj_writer() :
     m_job(std::make_shared<core::jobs::observer>("ModelSeries Writer"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-ModelSeriesObjWriter::~ModelSeriesObjWriter()
+model_series_obj_writer::~model_series_obj_writer()
 = default;
 
 //------------------------------------------------------------------------------
@@ -70,11 +70,11 @@ vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& _p_reco
 {
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 
-    data::mesh::sptr mesh         = _p_reconstruction->getMesh();
-    data::material::sptr material = _p_reconstruction->getMaterial();
+    data::mesh::sptr mesh         = _p_reconstruction->get_mesh();
+    data::material::sptr material = _p_reconstruction->get_material();
 
     vtkSmartPointer<vtkPolyData> poly_data = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(mesh, poly_data);
+    io::vtk::helper::mesh::to_vtk_mesh(mesh, poly_data);
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(poly_data);
     actor->SetMapper(mapper);
@@ -98,7 +98,7 @@ vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& _p_reco
 
 //------------------------------------------------------------------------------
 
-void ModelSeriesObjWriter::write()
+void model_series_obj_writer::write()
 {
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -108,11 +108,11 @@ void ModelSeriesObjWriter::write()
 
     const std::filesystem::path prefix = this->get_folder();
 
-    const data::model_series::csptr model_series = getConcreteObject();
+    const data::model_series::csptr model_series = get_concrete_object();
 
-    m_job->set_total_work_units(model_series->getReconstructionDB().size());
+    m_job->set_total_work_units(model_series->get_reconstruction_db().size());
     std::uint64_t units = 0;
-    for(const data::reconstruction::sptr& rec : model_series->getReconstructionDB())
+    for(const data::reconstruction::sptr& rec : model_series->get_reconstruction_db())
     {
         vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
         vtkSmartPointer<vtkActor> actor       = create_actor(rec);
@@ -121,7 +121,7 @@ void ModelSeriesObjWriter::write()
         vtkSmartPointer<vtkRenderWindow> render_window = vtkSmartPointer<vtkRenderWindow>::New();
         render_window->AddRenderer(renderer);
 
-        const std::string filename = (prefix / (rec->getOrganName() + "_" + rec->get_uuid())).string();
+        const std::string filename = (prefix / (rec->get_organ_name() + "_" + rec->get_uuid())).string();
 
         vtkSmartPointer<vtkOBJExporter> exporter = vtkSmartPointer<vtkOBJExporter>::New();
         exporter->SetRenderWindow(render_window);
@@ -137,14 +137,14 @@ void ModelSeriesObjWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ModelSeriesObjWriter::extension() const
+std::string model_series_obj_writer::extension() const
 {
     return ".obj";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr ModelSeriesObjWriter::getJob() const
+core::jobs::base::sptr model_series_obj_writer::get_job() const
 {
     return m_job;
 }

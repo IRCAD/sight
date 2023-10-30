@@ -29,11 +29,11 @@ namespace sight::data::tools::ut
 class container_notifier_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(container_notifier_test);
-CPPUNIT_TEST(vectorTest);
-CPPUNIT_TEST(compositeTest);
-CPPUNIT_TEST(seriesSetTest);
-CPPUNIT_TEST(activitySetTest);
-CPPUNIT_TEST(cameraSetTest);
+CPPUNIT_TEST(vector_test);
+CPPUNIT_TEST(composite_test);
+CPPUNIT_TEST(series_set_test);
+CPPUNIT_TEST(activity_set_test);
+CPPUNIT_TEST(camera_set_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,11 +41,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void vectorTest();
-    static void compositeTest();
-    static void seriesSetTest();
-    static void activitySetTest();
-    static void cameraSetTest();
+    static void vector_test();
+    static void composite_test();
+    static void series_set_test();
+    static void activity_set_test();
+    static void camera_set_test();
 };
 
 } // namespace sight::data::tools::ut

@@ -40,7 +40,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b add(): add a new mesh at the transformation matrix position.
  * - \b clear(): clear all meshes.
- * - \b updateVisibility(bool): sets whether the mesh is to be seen or not.
+ * - \b update_visibility(bool): sets whether the mesh is to be seen or not.
  * - \b toggleVisibility(): toggle whether the mesh is shown or not.
  * - \b show(): shows the mesh.
  * - \b hide(): hides the mesh.
@@ -110,19 +110,19 @@ protected:
      * @brief Sets the list visibility.
      * @param _visible the visibility status of the list.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
 private:
 
     /// Stores all services and data needed to add a new mesh.
-    struct MeshInstance
+    struct mesh_instance
     {
         data::matrix4::sptr m_matrix;
         data::image::sptr m_image;
         sight::viz::scene3d::adaptor::sptr m_transform;
         sight::viz::scene3d::adaptor::sptr m_mesh;
         sight::viz::scene3d::adaptor::sptr m_texture;
-        bool m_isEnabled {false}; ///< set to true when the instance has been added once
+        bool m_is_enabled {false}; ///< set to true when the instance has been added once
     };
 
     /// Adds a new mesh at the input matrix position.
@@ -132,28 +132,28 @@ private:
     void clear();
 
     /// Stores all registered meshes instances.
-    std::vector<MeshInstance> m_meshes;
+    std::vector<mesh_instance> m_meshes;
 
     /// Defines the current index mesh to update in the mesh vector.
-    unsigned int m_meshCount {0};
+    unsigned int m_mesh_count {0};
 
     /// Defines the maximum capacity of the meshes list.
     unsigned int m_capacity {50};
 
     /// Defines the number of matrices to drop before adding a new adaptor.
-    unsigned int m_dropData {1};
+    unsigned int m_drop_data {1};
 
     /// Counts the number of received signal to add a data, then drop the signal if (m_dropCount%m_dropData != 0).
-    unsigned int m_dropCount {0};
+    unsigned int m_drop_count {0};
 
     /// Generates alpha value for the texture if the image contains only 1 or 3 channels. It may be slower.
-    bool m_generateAlpha {false};
+    bool m_generate_alpha {false};
 
-    static constexpr std::string_view s_TRANSFORM_INPUT = "transform";
+    static constexpr std::string_view TRANSFORM_INPUT = "transform";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_texture {this, "texture"};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
-    sight::data::ptr<sight::data::mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_texture {this, "texture"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT};
+    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, "mesh"};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

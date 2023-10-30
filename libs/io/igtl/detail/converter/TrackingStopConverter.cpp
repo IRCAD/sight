@@ -32,23 +32,23 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string TrackingStopConverter::s_IGTL_TYPE          = "STP_TDATA";
-const std::string TrackingStopConverter::s_FWDATA_OBJECT_TYPE = data::composite::classname();
-const std::string s_statusKey                                 = "Status";
+const std::string tracking_stop_converter::IGTL_TYPE          = "STP_TDATA";
+const std::string tracking_stop_converter::FWDATA_OBJECT_TYPE = data::composite::classname();
+const std::string STATUS_KEY                                  = "Status";
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::TrackingStopConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::tracking_stop_converter);
 
-TrackingStopConverter::TrackingStopConverter()
+tracking_stop_converter::tracking_stop_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-TrackingStopConverter::~TrackingStopConverter()
+tracking_stop_converter::~tracking_stop_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::object::csptr /*src*/) const
+::igtl::MessageBase::Pointer tracking_stop_converter::from_fw_data_object(data::object::csptr /*src*/) const
 {
     ::igtl::StopTrackingDataMessage::Pointer tracking_msg = ::igtl::StopTrackingDataMessage::New();
     return {tracking_msg.GetPointer()};
@@ -56,36 +56,36 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer /*src*/) const
+data::object::sptr tracking_stop_converter::from_igtl_message(const ::igtl::MessageBase::Pointer /*src*/) const
 {
     data::composite::sptr composite = std::make_shared<data::composite>();
     data::boolean::sptr status      = std::make_shared<data::boolean>();
-    (*composite)[s_statusKey] = status;
+    (*composite)[STATUS_KEY] = status;
 
-    status->setValue(false);
+    status->set_value(false);
 
     return composite;
 }
 
 //-----------------------------------------------------------------------------
 
-base::sptr TrackingStopConverter::New()
+base::sptr tracking_stop_converter::New()
 {
-    return std::make_shared<TrackingStopConverter>();
+    return std::make_shared<tracking_stop_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& TrackingStopConverter::get_igtl_type() const
+std::string const& tracking_stop_converter::get_igtl_type() const
 {
-    return TrackingStopConverter::s_IGTL_TYPE;
+    return tracking_stop_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& TrackingStopConverter::getFwDataObjectType() const
+std::string const& tracking_stop_converter::get_fw_data_object_type() const
 {
-    return TrackingStopConverter::s_FWDATA_OBJECT_TYPE;
+    return tracking_stop_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

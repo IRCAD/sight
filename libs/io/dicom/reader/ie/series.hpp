@@ -32,7 +32,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief series Information Entity class
  */
-class IO_DICOM_CLASS_API series : public io::dicom::reader::ie::InformationEntity<data::series>
+class IO_DICOM_CLASS_API series : public io::dicom::reader::ie::information_entity<data::series>
 {
 public:
 
@@ -49,11 +49,11 @@ public:
     IO_DICOM_API series(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::series::sptr& _series,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
@@ -63,7 +63,7 @@ public:
      * @brief Read General series Module tags
      * @see PS 3.3 C.7.3.1
      */
-    IO_DICOM_API virtual void readGeneralSeriesModule();
+    IO_DICOM_API virtual void read_general_series_module();
 };
 
 } // namespace sight::io::dicom::reader::ie

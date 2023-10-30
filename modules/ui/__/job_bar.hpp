@@ -56,7 +56,7 @@ public:
     SIGHT_DECLARE_SERVICE(job_bar, sight::ui::dialog_editor);
 
     /// Type of showJob slot
-    typedef core::com::slot<void (core::jobs::base::sptr)> ShowJobSlot;
+    using show_job_slot = core::com::slot<void (core::jobs::base::sptr)>;
 
     /**
      * @brief Constructor. Do nothing.
@@ -92,16 +92,16 @@ protected:
     /**
      * @brief showJob slot's method
      */
-    MODULE_UI_API virtual void showJob(core::jobs::base::sptr _job);
+    MODULE_UI_API virtual void show_job(core::jobs::base::sptr _job);
 
-    typedef std::set<SPTR(sight::ui::dialog::progress)> ProgressDialogs;
-    ProgressDialogs m_progressDialogs;
+    using progress_dialogs = std::set<std::shared_ptr<sight::ui::dialog::progress> >;
+    progress_dialogs m_progress_dialogs;
 
-    typedef core::com::signal<void ()> started_signal_t;
-    typedef core::com::signal<void ()> ended_signal_t;
+    using started_signal_t = core::com::signal<void ()>;
+    using ended_signal_t   = core::com::signal<void ()>;
 
-    SPTR(started_signal_t) m_sigStarted;
-    SPTR(ended_signal_t) m_sigEnded;
+    SPTR(started_signal_t) m_sig_started;
+    SPTR(ended_signal_t) m_sig_ended;
 };
 
 } // namespace sight::module::ui

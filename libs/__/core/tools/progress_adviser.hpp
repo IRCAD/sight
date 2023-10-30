@@ -48,11 +48,11 @@ class CORE_CLASS_API progress_adviser : public boost::signals2::trackable
 public:
 
     /// define a boost signal signature for the ProgressHandler
-    typedef boost::signals2::signal<void (float, std::string)> progress_signal; // signal for functor or function
+    using progress_signal = boost::signals2::signal<void (float, std::string)>; // signal for functor or function
                                                                                 // returning void
 
     /// define the ProgressHandler type
-    typedef progress_signal::slot_type progress_handler; // signal for functor or function returning void and
+    using progress_handler = progress_signal::slot_type; // signal for functor or function returning void and
                                                          // accepting a float as argument percent
                                                          // string for information
 

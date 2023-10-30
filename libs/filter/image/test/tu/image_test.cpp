@@ -60,23 +60,23 @@ void test_roi_apply(const core::type _image_type, const core::type _roi_type)
     data::image::sptr roi             = std::make_shared<data::image>();
 
     // generate a random image
-    utest_data::generator::image::generateRandomImage(img_roi_applied, _image_type);
-    const data::image::Size size       = img_roi_applied->size();
-    const data::image::Spacing spacing = img_roi_applied->getSpacing();
-    const data::image::Origin origin   = img_roi_applied->getOrigin();
-    utest_data::generator::image::generateImage(
+    utest_data::generator::image::generate_random_image(img_roi_applied, _image_type);
+    const data::image::size_t size       = img_roi_applied->size();
+    const data::image::spacing_t spacing = img_roi_applied->spacing();
+    const data::image::origin_t origin   = img_roi_applied->origin();
+    utest_data::generator::image::generate_image(
         roi,
         size,
         spacing,
         origin,
         _roi_type,
-        data::image::PixelFormat::GRAY_SCALE
+        data::image::pixel_format::gray_scale
     );
 
     image_ref = data::object::copy(img_roi_applied);
 
     // fill roi with random values
-    utest_data::generator::image::randomizeImage(roi);
+    utest_data::generator::image::randomize_image(roi);
 
     const auto dump_lock = roi->dump_lock();
     auto begin           = roi->begin();
@@ -94,7 +94,7 @@ void test_roi_apply(const core::type _image_type, const core::type _roi_type)
 
 //------------------------------------------------------------------------------
 
-void image_test::roiApplyTest()
+void image_test::roi_apply_test()
 {
     test_roi_apply(core::type::INT8, core::type::INT8);
     test_roi_apply(core::type::INT8, core::type::INT16);

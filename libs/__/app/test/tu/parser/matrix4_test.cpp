@@ -34,7 +34,7 @@ namespace sight::app::parser::ut
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::basicTest()
+void matrix4_test::basic_test()
 {
     boost::property_tree::ptree ptree;
     ptree.put("matrix", R"(
@@ -45,8 +45,8 @@ void matrix4_test::basicTest()
     )");
     auto matrix = std::make_shared<data::matrix4>();
     parser::matrix4 matrix_parser;
-    matrix_parser.setObjectConfig(ptree);
-    matrix_parser.createConfig(matrix);
+    matrix_parser.set_object_config(ptree);
+    matrix_parser.create_config(matrix);
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)

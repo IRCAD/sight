@@ -33,7 +33,7 @@ static const core::com::signals::key_t STEREO_ACTIVE_SIG = "stereoActive";
 //------------------------------------------------------------------------------
 
 stereo_toggler::stereo_toggler() :
-    m_stereoActiveSig(new_signal<stereo_active_sig_t>(STEREO_ACTIVE_SIG))
+    m_stereo_active_sig(new_signal<stereo_active_sig_t>(STEREO_ACTIVE_SIG))
 {
 }
 
@@ -50,22 +50,22 @@ void stereo_toggler::configuring()
 
     const config_t config = this->get_config().get_child("config.<xmlattr>");
 
-    m_layerId = config.get<std::string>("layer");
-    SIGHT_ASSERT("Empty layer ID.", !m_layerId.empty());
+    m_layer_id = config.get<std::string>("layer");
+    SIGHT_ASSERT("Empty layer ID.", !m_layer_id.empty());
 
     const std::string stereo_mode = config.get<std::string>("stereoMode", "");
 
     if(stereo_mode == "interlaced")
     {
-        m_stereoMode = stereo_mode_t::STEREO;
+        m_stereo_mode = stereo_mode_t::stereo;
     }
     else if(stereo_mode == "AutoStereo5")
     {
-        m_stereoMode = stereo_mode_t::AUTOSTEREO_5;
+        m_stereo_mode = stereo_mode_t::autostereo_5;
     }
     else if(stereo_mode == "AutoStereo8")
     {
-        m_stereoMode = stereo_mode_t::AUTOSTEREO_8;
+        m_stereo_mode = stereo_mode_t::autostereo_8;
     }
     else
     {
@@ -77,40 +77,40 @@ void stereo_toggler::configuring()
 
 void stereo_toggler::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //------------------------------------------------------------------------------
 
 void stereo_toggler::updating()
 {
-    if(this->confirmAction())
+    if(this->confirm_action())
     {
         const auto renderers = sight::service::get_services("sight::viz::scene3d::render");
 
         const bool enable_stereo = this->checked() && this->enabled();
-        const auto stereo_mode   = enable_stereo ? m_stereoMode : stereo_mode_t::NONE;
+        const auto stereo_mode   = enable_stereo ? m_stereo_mode : stereo_mode_t::none;
 
         for(const auto& srv : renderers)
         {
             auto render_srv = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
-            auto layer_map  = render_srv->getLayers();
+            auto layer_map  = render_srv->get_layers();
 
-            auto layer_it = layer_map.find(m_layerId);
+            auto layer_it = layer_map.find(m_layer_id);
 
             if(layer_it != layer_map.end())
             {
                 auto& layer = layer_it->second;
-                layer->setStereoMode(stereo_mode);
-                layer->requestRender();
+                layer->set_stereo_mode(stereo_mode);
+                layer->request_render();
             }
             else
             {
-                SIGHT_WARN("No layer named '" + m_layerId + "' in render service '" + render_srv->get_id() + "'.");
+                SIGHT_WARN("No layer named '" + m_layer_id + "' in render service '" + render_srv->get_id() + "'.");
             }
         }
 
-        m_stereoActiveSig->async_emit(enable_stereo);
+        m_stereo_active_sig->async_emit(enable_stereo);
     }
 }
 
@@ -118,7 +118,7 @@ void stereo_toggler::updating()
 
 void stereo_toggler::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //------------------------------------------------------------------------------

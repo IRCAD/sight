@@ -33,15 +33,15 @@ class DATA_CLASS_API composite : public data::container<std::map<std::string,
 {
 public:
 
-    SIGHT_DECLARE_CLASS(composite, container<composite::container_type>);
+    SIGHT_DECLARE_CLASS(composite, container<composite::container_t>);
 
     /// Destructor / Assignment operators
     /// @{
     DATA_API ~composite() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
-    using container<composite::container_type>::container;
-    using container<composite::container_type>::operator=;
+    using container<composite::container_t>::container;
+    using container<composite::container_t>::operator=;
     /// @}
 
     /// Equality comparison operators

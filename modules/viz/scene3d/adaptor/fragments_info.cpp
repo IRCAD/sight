@@ -40,9 +40,9 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-struct FragmentsInfoMaterialListener final : public Ogre::MaterialManager::Listener
+struct fragments_info_material_listener final : public Ogre::MaterialManager::Listener
 {
-    ~FragmentsInfoMaterialListener() override
+    ~fragments_info_material_listener() override
     = default;
 
     //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ struct FragmentsInfoMaterialListener final : public Ogre::MaterialManager::Liste
         if(_scheme_name == "PrimitiveID_MS")
         {
             Ogre::Technique* default_tech = _original_material->getTechnique(0);
-            new_tech = sight::viz::scene3d::helper::technique::copyToMaterial(
+            new_tech = sight::viz::scene3d::helper::technique::copy_to_material(
                 default_tech,
                 _scheme_name,
                 _original_material
@@ -80,14 +80,14 @@ struct FragmentsInfoMaterialListener final : public Ogre::MaterialManager::Liste
     }
 };
 
-static std::unique_ptr<FragmentsInfoMaterialListener> s_material_listener = nullptr;
-static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT                 = "resizeViewport";
+static std::unique_ptr<fragments_info_material_listener> s_material_listener = nullptr;
+static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT                    = "resizeViewport";
 
 //-----------------------------------------------------------------------------
 
 fragments_info::fragments_info() noexcept
 {
-    new_slot(RESIZE_VIEWPORT_SLOT, &fragments_info::resizeViewport, this);
+    new_slot(RESIZE_VIEWPORT_SLOT, &fragments_info::resize_viewport, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,17 +95,17 @@ fragments_info::fragments_info() noexcept
 void fragments_info::configuring()
 {
     // adaptor handles the layerID.
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
-    m_width     = config.get<int>(s_CONFIG + "width", m_width);
-    m_height    = config.get<int>(s_CONFIG + "height", m_height);
-    m_flipImage = config.get<bool>(s_CONFIG + "flip", m_flipImage);
+    m_width      = config.get<int>(CONFIG + "width", m_width);
+    m_height     = config.get<int>(CONFIG + "height", m_height);
+    m_flip_image = config.get<bool>(CONFIG + "flip", m_flip_image);
 
     // If Both width & height are found we fix the size.
     if(m_width > 0 && m_height > 0)
     {
-        m_fixedSize = true;
+        m_fixed_size = true;
     }
 }
 
@@ -115,36 +115,36 @@ void fragments_info::starting()
 {
     this->initialize();
 
-    m_compositorName        = this->get_id() + "_Snapshot_C";
-    m_targetName            = this->get_id() + "_global_RTT";
-    m_targetPrimitiveIDName = this->get_id() + "_primitiveID_RTT";
+    m_compositor_name          = this->get_id() + "_Snapshot_C";
+    m_target_name              = this->get_id() + "_global_RTT";
+    m_target_primitive_id_name = this->get_id() + "_primitiveID_RTT";
 
-    const sight::viz::scene3d::layer::sptr layer = this->getLayer();
-    layer->getRenderTarget()->addListener(this);
+    const sight::viz::scene3d::layer::sptr layer = this->layer();
+    layer->get_render_target()->addListener(this);
 
     if(!s_material_listener)
     {
-        s_material_listener = std::make_unique<FragmentsInfoMaterialListener>();
+        s_material_listener = std::make_unique<fragments_info_material_listener>();
         Ogre::MaterialManager::getSingleton().addListener(s_material_listener.get());
     }
 
     // Fixed size.
-    if(m_fixedSize)
+    if(m_fixed_size)
     {
-        this->createCompositor(m_width, m_height);
+        this->create_compositor(m_width, m_height);
     }
     // If not listen to the resize event of the layer.
     else
     {
-        Ogre::Viewport* const viewport = layer->getViewport();
+        Ogre::Viewport* const viewport = layer->get_viewport();
 
         const auto h = viewport->getActualHeight();
         const auto w = viewport->getActualWidth();
 
-        this->createCompositor(w, h);
+        this->create_compositor(w, h);
 
-        m_resizeConnection.connect(
-            this->getLayer(),
+        m_resize_connection.connect(
+            this->layer(),
             sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
             this->get_sptr(),
             RESIZE_VIEWPORT_SLOT
@@ -160,8 +160,8 @@ void fragments_info::updating() noexcept
         const auto image = m_image.lock();
         if(image)
         {
-            const Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
-            sight::viz::scene3d::utils::convertFromOgreTexture(text, image.get_shared(), m_flipImage);
+            const Ogre::TexturePtr text = m_compositor->getTextureInstance(m_target_name, 0);
+            sight::viz::scene3d::utils::convert_from_ogre_texture(text, image.get_shared(), m_flip_image);
 
             const auto sig =
                 image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -173,8 +173,8 @@ void fragments_info::updating() noexcept
         const auto depth = m_depth.lock();
         if(depth)
         {
-            const Ogre::TexturePtr depth_text = m_compositor->getTextureInstance(m_targetName, 1);
-            sight::viz::scene3d::utils::convertFromOgreTexture(depth_text, depth.get_shared(), m_flipImage);
+            const Ogre::TexturePtr depth_text = m_compositor->getTextureInstance(m_target_name, 1);
+            sight::viz::scene3d::utils::convert_from_ogre_texture(depth_text, depth.get_shared(), m_flip_image);
 
             const auto depth_sig =
                 depth->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -186,11 +186,11 @@ void fragments_info::updating() noexcept
         const auto primitive_id = m_primitive.lock();
         if(primitive_id)
         {
-            const Ogre::TexturePtr primitive_id_text = m_compositor->getTextureInstance(m_targetPrimitiveIDName, 0);
-            sight::viz::scene3d::utils::convertFromOgreTexture(
+            const Ogre::TexturePtr primitive_id_text = m_compositor->getTextureInstance(m_target_primitive_id_name, 0);
+            sight::viz::scene3d::utils::convert_from_ogre_texture(
                 primitive_id_text,
                 primitive_id.get_shared(),
-                m_flipImage
+                m_flip_image
             );
 
             const auto primitive_id_sig =
@@ -204,17 +204,17 @@ void fragments_info::updating() noexcept
 
 void fragments_info::stopping()
 {
-    m_resizeConnection.disconnect();
+    m_resize_connection.disconnect();
 
-    this->destroyCompositor();
+    this->destroy_compositor();
 
-    const sight::viz::scene3d::layer::sptr layer = this->getLayer();
-    layer->getRenderTarget()->removeListener(this);
+    const sight::viz::scene3d::layer::sptr layer = this->layer();
+    layer->get_render_target()->removeListener(this);
 }
 
 //-----------------------------------------------------------------------------
 
-void fragments_info::createCompositor(int _width, int _height)
+void fragments_info::create_compositor(int _width, int _height)
 {
     /* Creates the following compositor:
        compositor 'm_compositorName'
@@ -264,14 +264,14 @@ void fragments_info::createCompositor(int _width, int _height)
     Ogre::CompositorManager& cmp_manager = Ogre::CompositorManager::getSingleton();
 
     m_compositor = cmp_manager.create(
-        m_compositorName,
+        m_compositor_name,
         sight::viz::scene3d::RESOURCE_GROUP
     );
 
     Ogre::CompositionTechnique* const technique = m_compositor->createTechnique();
 
     Ogre::CompositionTechnique::TextureDefinition* global_target = nullptr;
-    global_target        = technique->createTextureDefinition(m_targetName);
+    global_target        = technique->createTextureDefinition(m_target_name);
     global_target->scope = Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
     global_target->formatList.push_back(Ogre::PixelFormat::PF_A8B8G8R8);
     global_target->height = static_cast<Ogre::uint32>(_height);
@@ -281,7 +281,7 @@ void fragments_info::createCompositor(int _width, int _height)
     {
         Ogre::CompositionTargetPass* const global_target_pass = technique->createTargetPass();
         {
-            global_target_pass->setOutputName(m_targetName);
+            global_target_pass->setOutputName(m_target_name);
             global_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
         }
     }
@@ -305,7 +305,7 @@ void fragments_info::createCompositor(int _width, int _height)
 
         Ogre::CompositionTargetPass* const global_target_pass = technique->createTargetPass();
         {
-            global_target_pass->setOutputName(m_targetName);
+            global_target_pass->setOutputName(m_target_name);
             global_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
             Ogre::CompositionPass* const target_output_comp_pass = global_target_pass->createPass(
                 Ogre::CompositionPass::PT_RENDERQUAD
@@ -318,7 +318,7 @@ void fragments_info::createCompositor(int _width, int _height)
     if(retrieve_primitive_id)
     {
         Ogre::CompositionTechnique::TextureDefinition* global_target_primitive_id = nullptr;
-        global_target_primitive_id        = technique->createTextureDefinition(m_targetPrimitiveIDName);
+        global_target_primitive_id        = technique->createTextureDefinition(m_target_primitive_id_name);
         global_target_primitive_id->scope = Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
         global_target_primitive_id->formatList.push_back(Ogre::PixelFormat::PF_R32_SINT);
         global_target_primitive_id->height = static_cast<Ogre::uint32>(_height);
@@ -326,7 +326,7 @@ void fragments_info::createCompositor(int _width, int _height)
 
         Ogre::CompositionTargetPass* const global_primitive_target_pass = technique->createTargetPass();
         {
-            global_primitive_target_pass->setOutputName(m_targetPrimitiveIDName);
+            global_primitive_target_pass->setOutputName(m_target_primitive_id_name);
             global_primitive_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
             global_primitive_target_pass->setMaterialScheme("PrimitiveID_MS");
             global_primitive_target_pass->createPass(Ogre::CompositionPass::PT_CLEAR);
@@ -340,40 +340,40 @@ void fragments_info::createCompositor(int _width, int _height)
             Ogre::CompositionPass::PT_RENDERQUAD
         );
         target_output_comp_pass->setMaterialName("Forward_M");
-        target_output_comp_pass->setInput(0, m_targetName, 0);
+        target_output_comp_pass->setInput(0, m_target_name, 0);
     }
 
-    const auto layer = this->getLayer();
-    layer->addAvailableCompositor(m_compositorName);
-    layer->updateCompositorState(m_compositorName, true);
+    const auto layer = this->layer();
+    layer->add_available_compositor(m_compositor_name);
+    layer->update_compositor_state(m_compositor_name, true);
 }
 
 //-----------------------------------------------------------------------------
 
-void fragments_info::destroyCompositor()
+void fragments_info::destroy_compositor()
 {
     Ogre::CompositorManager& cmp_manager = Ogre::CompositorManager::getSingleton();
 
-    const auto layer = this->getLayer();
-    layer->updateCompositorState(m_compositorName, false);
-    cmp_manager.removeCompositor(layer->getViewport(), m_compositorName);
+    const auto layer = this->layer();
+    layer->update_compositor_state(m_compositor_name, false);
+    cmp_manager.removeCompositor(layer->get_viewport(), m_compositor_name);
     cmp_manager.remove(m_compositor);
     m_compositor.reset();
 }
 
 //-----------------------------------------------------------------------------
 
-void fragments_info::resizeViewport()
+void fragments_info::resize_viewport()
 {
-    const auto layer = this->getLayer();
-    auto rect        = layer->getViewport()->getActualDimensions();
+    const auto layer = this->layer();
+    auto rect        = layer->get_viewport()->getActualDimensions();
 
     // Sometimes, the size can be null, we need to avoid resizing since a global texture needs absolute values.
     if(rect.width() != 0 && rect.height() != 0)
     {
-        this->destroyCompositor();
-        this->createCompositor(static_cast<int>(rect.width()), static_cast<int>(rect.height()));
-        layer->getRenderTarget()->addListener(this);
+        this->destroy_compositor();
+        this->create_compositor(static_cast<int>(rect.width()), static_cast<int>(rect.height()));
+        layer->get_render_target()->addListener(this);
     }
 }
 

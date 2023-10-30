@@ -36,10 +36,10 @@ class activity_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(activity_test);
 
-CPPUNIT_TEST(activityConfigIdTest);
-CPPUNIT_TEST(dataTest);
-CPPUNIT_TEST(equalityTest);
-CPPUNIT_TEST(shallow_copyTest);
+CPPUNIT_TEST(activity_config_id_test);
+CPPUNIT_TEST(data_test);
+CPPUNIT_TEST(equality_test);
+CPPUNIT_TEST(shallow_copy_test);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -49,10 +49,10 @@ public:
     void setUp();
     void tearDown();
 
-    void activityConfigIdTest();
-    void dataTest();
-    static void equalityTest();
-    void shallow_copyTest();
+    void activity_config_id_test();
+    void data_test();
+    static void equality_test();
+    void shallow_copy_test();
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,13 +30,13 @@ namespace sight::io::http::ut
 
 /// Unit test of download_file function (io/http/Download.hpp)
 
-class DownloadTest : public CPPUNIT_NS::TestFixture
+class download_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DownloadTest);
-CPPUNIT_TEST(downloadTestSuccess);
-CPPUNIT_TEST(downloadTestFailure);
-CPPUNIT_TEST(downloadTestWrongInputs);
-CPPUNIT_TEST(downloadTestOverwritesFile);
+CPPUNIT_TEST_SUITE(download_test);
+CPPUNIT_TEST(download_test_success);
+CPPUNIT_TEST(download_test_failure);
+CPPUNIT_TEST(download_test_wrong_inputs);
+CPPUNIT_TEST(download_test_overwrites_file);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,13 +47,13 @@ public:
     void tearDown() final;
 
     /// Tests success downloads.
-    static void downloadTestSuccess();
+    static void download_test_success();
     /// Tests failing download. (Exception)
-    static void downloadTestFailure();
+    static void download_test_failure();
     /// Tests input of function. (Exception)
-    static void downloadTestWrongInputs();
+    static void download_test_wrong_inputs();
     /// Test if overwriting existing file. (Exception)
-    static void downloadTestOverwritesFile();
+    static void download_test_overwrites_file();
 };
 
 } // namespace sight::io::http::ut

@@ -37,11 +37,10 @@ class object;
 namespace registry
 {
 
-typedef std::string key_t;
+using key_t = std::string;
+using type  = core::factory_registry<SPTR(data::object)(), key_t>;
 
-typedef core::factory_registry<SPTR(data::object)(), key_t> Type;
-
-DATA_API SPTR(Type) get();
+DATA_API SPTR(type) get();
 
 } // namespace registry
 

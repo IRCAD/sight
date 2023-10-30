@@ -39,7 +39,7 @@
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_SCENE3D_TEXT(sight::module::viz::scene3d_qt::Text, sight::viz::scene3d::text::REGISTRY_KEY);
+SIGHT_REGISTER_SCENE3D_TEXT(sight::module::viz::scene3d_qt::text, sight::viz::scene3d::text::REGISTRY_KEY);
 
 //-----------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ class NodeListener : public Ogre::SceneNode::Listener
 {
 public:
 
-    explicit NodeListener(Text& _text, Ogre::Camera& _camera, Ogre::Node& _node) :
+    explicit NodeListener(text& _text, Ogre::Camera& _camera, Ogre::Node& _node) :
         m_text(_text),
         m_camera(_camera),
         m_node(_node)
@@ -61,24 +61,24 @@ public:
 
     void nodeUpdated(const Ogre::Node* /*unused*/) override
     {
-        m_text.setUnderlyingNodeRect(
-            sight::viz::scene3d::helper::scene::computeBoundingRect(
+        m_text.set_underlying_node_rect(
+            sight::viz::scene3d::helper::scene::compute_bounding_rect(
                 m_camera,
                 &dynamic_cast<Ogre::SceneNode&>(m_node)
             )
         );
     }
 
-    Text& m_text;
+    text& m_text;
     Ogre::Camera& m_camera;
     Ogre::Node& m_node;
 };
 
-class CameraListener : public Ogre::SceneNode::Listener
+class camera_listener : public Ogre::SceneNode::Listener
 {
 public:
 
-    explicit CameraListener(Ogre::Camera& _camera) :
+    explicit camera_listener(Ogre::Camera& _camera) :
         m_camera(_camera)
     {
     }
@@ -93,8 +93,8 @@ public:
             {
                 const auto* scene_node = dynamic_cast<Ogre::SceneNode*>(_p.second);
                 SIGHT_ASSERT("cast from Ogre::Node to Ogre::SceneNode failed", scene_node);
-                _p.first->setUnderlyingNodeRect(
-                    sight::viz::scene3d::helper::scene::computeBoundingRect(
+                _p.first->set_underlying_node_rect(
+                    sight::viz::scene3d::helper::scene::compute_bounding_rect(
                         m_camera,
                         scene_node
                     )
@@ -104,14 +104,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void addText(Text* _text, Ogre::Node* _node)
+    void add_text(text* _text, Ogre::Node* _node)
     {
         m_text.emplace_back(_text, _node);
     }
 
     //------------------------------------------------------------------------------
 
-    void removeText(Text* _text)
+    void remove_text(text* _text)
     {
         std::erase_if(m_text, [&](const auto& _p){return _p.first == _text;});
     }
@@ -125,61 +125,61 @@ public:
 
 private:
 
-    std::vector<std::pair<Text*, Ogre::Node*> > m_text;
+    std::vector<std::pair<text*, Ogre::Node*> > m_text;
     Ogre::Camera& m_camera;
 };
 
-std::map<Ogre::Camera*, CameraListener*> s_camera_listeners;
+std::map<Ogre::Camera*, camera_listener*> s_camera_listeners;
 
 //------------------------------------------------------------------------------
 
-Text::Text(const sight::viz::scene3d::layer::sptr& _layer)
+text::text(const sight::viz::scene3d::layer::sptr& _layer)
 {
-    m_resizeSlot = core::com::new_slot(
+    m_resize_slot = core::com::new_slot(
         [this](int, int)
         {
-            if(m_nodeListener != nullptr)
+            if(m_node_listener != nullptr)
             {
-                m_nodeListener->nodeUpdated({});
+                m_node_listener->nodeUpdated({});
             }
 
-            this->adjustSize();
+            this->adjust_size();
         });
-    m_resizeSlot->set_worker(core::thread::get_default_worker());
+    m_resize_slot->set_worker(core::thread::get_default_worker());
 
-    m_resizeConnection = _layer->signal(sight::viz::scene3d::layer::RESIZE_LAYER_SIG)->connect(m_resizeSlot);
+    m_resize_connection = _layer->signal(sight::viz::scene3d::layer::RESIZE_LAYER_SIG)->connect(m_resize_slot);
 
-    auto interactor    = _layer->getRenderService()->getInteractorManager();
+    auto interactor    = _layer->render_service()->get_interactor_manager();
     auto qt_interactor = std::dynamic_pointer_cast<sight::module::viz::scene3d_qt::window_interactor>(interactor);
 
-    auto* parent_widget = qt_interactor->getQtWidget();
+    auto* parent_widget = qt_interactor->get_qt_widget();
 
     m_text = new QLineEdit("", parent_widget);
     m_text->setReadOnly(true);
     m_text->setAttribute(Qt::WA_TransparentForMouseEvents);
     Qt::Alignment alignment;
-    if(m_horizontalAlignment == "left")
+    if(m_horizontal_alignment == "left")
     {
         alignment |= Qt::AlignLeft;
     }
-    else if(m_horizontalAlignment == "center")
+    else if(m_horizontal_alignment == "center")
     {
         alignment |= Qt::AlignHCenter;
     }
-    else if(m_horizontalAlignment == "right")
+    else if(m_horizontal_alignment == "right")
     {
         alignment |= Qt::AlignRight;
     }
 
-    if(m_verticalAlignment == "top")
+    if(m_vertical_alignment == "top")
     {
         alignment |= Qt::AlignTop;
     }
-    else if(m_verticalAlignment == "center")
+    else if(m_vertical_alignment == "center")
     {
         alignment |= Qt::AlignVCenter;
     }
-    else if(m_verticalAlignment == "bottom")
+    else if(m_vertical_alignment == "bottom")
     {
         alignment |= Qt::AlignBottom;
     }
@@ -190,61 +190,61 @@ Text::Text(const sight::viz::scene3d::layer::sptr& _layer)
         &QLineEdit::textEdited,
         [this](QString _text)
         {
-            signal<text::TextEditedSignal>(text::TEXT_EDITED_SIGNAL)->async_emit(_text.toStdString());
-            adjustSize();
+            signal<text::text_edited_signal_t>(text::TEXT_EDITED_SIGNAL)->async_emit(_text.toStdString());
+            adjust_size();
         });
     QObject::connect(
         m_text,
         &QLineEdit::editingFinished,
         [this]
         {
-            signal<text::EditingFinishedSignal>(text::EDITING_FINISHED_SIGNAL)->async_emit();
+            signal<text::editing_finished_signal_t>(text::EDITING_FINISHED_SIGNAL)->async_emit();
         });
     m_text->show();
 }
 
 //------------------------------------------------------------------------------
 
-Text::~Text()
+text::~text()
 {
-    m_resizeConnection.disconnect();
+    m_resize_connection.disconnect();
 
-    SIGHT_ASSERT("Node should be detached first with detachFromNode()", m_nodeListener == nullptr);
+    SIGHT_ASSERT("Node should be detached first with detachFromNode()", m_node_listener == nullptr);
 
     delete m_text;
 }
 
 //------------------------------------------------------------------------------
 
-void Text::attachToNode(Ogre::SceneNode* _node, Ogre::Camera* _camera)
+void text::attach_to_node(Ogre::SceneNode* _node, Ogre::Camera* _camera)
 {
     SIGHT_ASSERT("Camera is null", _camera);
     SIGHT_ASSERT("Node is null", _node);
 
-    m_nodeListener = new NodeListener(*this, *_camera, *_node);
-    _node->setListener(m_nodeListener);
+    m_node_listener = new NodeListener(*this, *_camera, *_node);
+    _node->setListener(m_node_listener);
 
     auto it_listener = s_camera_listeners.find(_camera);
     if(it_listener == s_camera_listeners.end())
     {
-        s_camera_listeners[_camera] = new CameraListener(*_camera);
+        s_camera_listeners[_camera] = new camera_listener(*_camera);
         _camera->getParentSceneNode()->setListener(s_camera_listeners[_camera]);
     }
 
-    s_camera_listeners[_camera]->addText(this, _node);
+    s_camera_listeners[_camera]->add_text(this, _node);
 }
 
 //------------------------------------------------------------------------------
 
-void Text::detachFromNode()
+void text::detach_from_node()
 {
-    SIGHT_ASSERT("Node is null", m_nodeListener != nullptr);
+    SIGHT_ASSERT("Node is null", m_node_listener != nullptr);
 
-    auto* camera = &m_nodeListener->m_camera;
-    s_camera_listeners[camera]->removeText(this);
-    m_nodeListener->m_node.setListener(nullptr);
-    delete m_nodeListener;
-    m_nodeListener = nullptr;
+    auto* camera = &m_node_listener->m_camera;
+    s_camera_listeners[camera]->remove_text(this);
+    m_node_listener->m_node.setListener(nullptr);
+    delete m_node_listener;
+    m_node_listener = nullptr;
 
     if(s_camera_listeners[camera]->empty())
     {
@@ -254,7 +254,7 @@ void Text::detachFromNode()
 
 //------------------------------------------------------------------------------
 
-void Text::setText(const std::string& _text)
+void text::set_text(const std::string& _text)
 {
     QString q_text = QString::fromStdString(_text);
     if(m_text->text() == q_text)
@@ -274,38 +274,38 @@ void Text::setText(const std::string& _text)
         m_text->setCursorPosition(*cursor_position);
     }
 
-    this->adjustSize();
+    this->adjust_size();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::setPosition(float _x, float _y)
+void text::set_position(float _x, float _y)
 {
     m_position = {Ogre::Vector2(_x, _y), Ogre::Vector2(_x, _y)};
-    this->adjustSize();
+    this->adjust_size();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::setTextColor(const Ogre::ColourValue& _color)
+void text::set_text_color(const Ogre::ColourValue& _color)
 {
     std::stringstream ss;
     ss << "#" << std::hex << std::setfill('0') << std::setw(8) << _color.getAsARGB();
-    m_textColor = QString::fromStdString(ss.str());
-    this->adjustStyle();
+    m_text_color = QString::fromStdString(ss.str());
+    this->adjust_style();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::setTextColor(const std::string& _color)
+void text::set_text_color(const std::string& _color)
 {
-    m_textColor = QString::fromStdString(_color);
-    this->adjustStyle();
+    m_text_color = QString::fromStdString(_color);
+    this->adjust_style();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::setVisible(bool _visible)
+void text::set_visible(bool _visible)
 {
     if(_visible)
     {
@@ -319,32 +319,32 @@ void Text::setVisible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void Text::setTextAlignment(const std::string& _h_align, const std::string& _v_align)
+void text::set_text_alignment(const std::string& _h_align, const std::string& _v_align)
 {
-    m_horizontalAlignment = _h_align;
-    m_verticalAlignment   = _v_align;
-    this->adjustSize();
+    m_horizontal_alignment = _h_align;
+    m_vertical_alignment   = _v_align;
+    this->adjust_size();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::setFont(const std::string& _font_family)
+void text::set_font(const std::string& _font_family)
 {
-    m_fontFamily = QString::fromStdString(_font_family);
-    this->adjustStyle();
+    m_font_family = QString::fromStdString(_font_family);
+    this->adjust_style();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::setFontSize(std::size_t _size)
+void text::set_font_size(std::size_t _size)
 {
-    m_fontSize = _size;
-    this->adjustStyle();
+    m_font_size = _size;
+    this->adjust_style();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::setEditMode(bool _edit_mode)
+void text::set_edit_mode(bool _edit_mode)
 {
     m_text->setReadOnly(!_edit_mode);
     m_text->setAttribute(Qt::WA_TransparentForMouseEvents, !_edit_mode);
@@ -352,23 +352,23 @@ void Text::setEditMode(bool _edit_mode)
 
 //------------------------------------------------------------------------------
 
-void Text::setUnderlyingNodeRect(std::pair<Ogre::Vector2, Ogre::Vector2> _rect)
+void text::set_underlying_node_rect(std::pair<Ogre::Vector2, Ogre::Vector2> _rect)
 {
     m_position = _rect;
-    this->adjustSize();
+    this->adjust_size();
 }
 
 //------------------------------------------------------------------------------
 
-void Text::adjustSize()
+void text::adjust_size()
 {
     QLabel dummy_label(m_text->text());
-    dummy_label.setStyleSheet(computeStyle());
+    dummy_label.setStyleSheet(compute_style());
     dummy_label.adjustSize();
     m_text->resize(dummy_label.size());
 
     QPoint origin;
-    if(m_nodeListener != nullptr)
+    if(m_node_listener != nullptr)
     {
         QRectF position_rect = {QPointF(m_position.first.x, m_position.first.y), QPointF(
                                     m_position.second.x,
@@ -376,7 +376,7 @@ void Text::adjustSize()
         )
         };
         int x {};
-        if(m_horizontalAlignment == "center")
+        if(m_horizontal_alignment == "center")
         {
             x = static_cast<int>(position_rect.center().x() - static_cast<float>(m_text->width()) / 2.F);
         }
@@ -390,28 +390,28 @@ void Text::adjustSize()
     else
     {
         Qt::Alignment alignment;
-        if(m_horizontalAlignment == "left")
+        if(m_horizontal_alignment == "left")
         {
             alignment |= Qt::AlignLeft;
         }
-        else if(m_horizontalAlignment == "center")
+        else if(m_horizontal_alignment == "center")
         {
             alignment |= Qt::AlignHCenter;
         }
-        else if(m_horizontalAlignment == "right")
+        else if(m_horizontal_alignment == "right")
         {
             alignment |= Qt::AlignRight;
         }
 
-        if(m_verticalAlignment == "top")
+        if(m_vertical_alignment == "top")
         {
             alignment |= Qt::AlignTop;
         }
-        else if(m_verticalAlignment == "center")
+        else if(m_vertical_alignment == "center")
         {
             alignment |= Qt::AlignVCenter;
         }
-        else if(m_verticalAlignment == "bottom")
+        else if(m_vertical_alignment == "bottom")
         {
             alignment |= Qt::AlignBottom;
         }
@@ -425,9 +425,9 @@ void Text::adjustSize()
 
 //------------------------------------------------------------------------------
 
-QString Text::computeStyle()
+QString text::compute_style()
 {
-    static const QString s_textCss =
+    static const QString s_TEXT_CSS =
         R"(
         * {
             color: %1;
@@ -440,14 +440,14 @@ QString Text::computeStyle()
             color: black;
             background: white;
         })";
-    return s_textCss.arg(m_textColor).arg(m_fontSize).arg(m_fontFamily);
+    return s_TEXT_CSS.arg(m_text_color).arg(m_font_size).arg(m_font_family);
 }
 
 //------------------------------------------------------------------------------
 
-void Text::adjustStyle()
+void text::adjust_style()
 {
-    m_text->setStyleSheet(computeStyle());
+    m_text->setStyleSheet(compute_style());
 }
 
 //------------------------------------------------------------------------------

@@ -84,23 +84,23 @@ namespace sight::module::sync::ut
 class synchronizer_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(synchronizer_test);
-CPPUNIT_TEST(singleFrameTLPopulation);
-CPPUNIT_TEST(singleMatrixTLPopulation);
-CPPUNIT_TEST(basicSynchronisation);
-CPPUNIT_TEST(timeGapSynchronisation);
-CPPUNIT_TEST(resetTimelineSynchronisation);
-CPPUNIT_TEST(resetAndLoopSynchronisation);
-CPPUNIT_TEST(singleMatrixTLConfigTest);
-CPPUNIT_TEST(mixtMatrixTLConfigTest);
-CPPUNIT_TEST(singleFrameTLConfigTest);
-CPPUNIT_TEST(mixtFrameTLConfigTest);
-CPPUNIT_TEST(fullConfigTest);
-CPPUNIT_TEST(updateConfigTest);
-CPPUNIT_TEST(sendStatusTest);
-CPPUNIT_TEST(delayTest);
-CPPUNIT_TEST(toleranceTest);
-CPPUNIT_TEST(imageSeriesTimeTaggingTest);
-CPPUNIT_TEST(singleImageSeriesTLPopulation);
+CPPUNIT_TEST(single_frame_tl_population);
+CPPUNIT_TEST(single_matrix_tl_population);
+CPPUNIT_TEST(basic_synchronisation);
+CPPUNIT_TEST(time_gap_synchronisation);
+CPPUNIT_TEST(reset_timeline_synchronisation);
+CPPUNIT_TEST(reset_and_loop_synchronisation);
+CPPUNIT_TEST(single_matrix_tl_config_test);
+CPPUNIT_TEST(mixt_matrix_tl_config_test);
+CPPUNIT_TEST(single_frame_tl_config_test);
+CPPUNIT_TEST(mixt_frame_tl_config_test);
+CPPUNIT_TEST(full_config_test);
+CPPUNIT_TEST(update_config_test);
+CPPUNIT_TEST(send_status_test);
+CPPUNIT_TEST(delay_test);
+CPPUNIT_TEST(tolerance_test);
+CPPUNIT_TEST(image_series_time_tagging_test);
+CPPUNIT_TEST(single_image_series_tl_population);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -113,63 +113,63 @@ public:
     /// For this section, the max delay for a successful synchronisation is 5.
 
     /// Give frames to  only one frameTL and check that the out frame is well filled
-    static void singleFrameTLPopulation();
+    static void single_frame_tl_population();
 
     /// Give matrix to  only one matrixTL and check that the out matrix is well filled
-    static void singleMatrixTLPopulation();
+    static void single_matrix_tl_population();
 
     /// Classical synchronisation with variations
-    static void basicSynchronisation();
+    static void basic_synchronisation();
 
     ///Classical synchronisation with time gap
-    static void timeGapSynchronisation();
+    static void time_gap_synchronisation();
 
     /// Classical synchronisation with resets
-    static void resetTimelineSynchronisation();
+    static void reset_timeline_synchronisation();
 
     /// Classical synchronisation with resets and loops
-    static void resetAndLoopSynchronisation();
+    static void reset_and_loop_synchronisation();
 
     ///configuration tests
     //test the following configuration, with simple frame/matrix input output
 
     // single matrixTL without framesTL
-    static void singleMatrixTLConfigTest();
+    static void single_matrix_tl_config_test();
 
     //multi matrixTL Configurations without framesTL
-    static void mixtMatrixTLConfigTest();
+    static void mixt_matrix_tl_config_test();
 
     // single frameTL without matrixTL
-    static void singleFrameTLConfigTest();
+    static void single_frame_tl_config_test();
 
     // Multi framesTL configuration without matrixTL
-    static void mixtFrameTLConfigTest();
+    static void mixt_frame_tl_config_test();
 
     // Multi framesTL and matrixTL configurations
-    static void fullConfigTest();
+    static void full_config_test();
 
     /// Take the classical configuration, and change the association through slot
-    static void updateConfigTest();
+    static void update_config_test();
 
     /// Take the classical configuration, and add send status to Frame 1 and Matrix 1
-    static void sendStatusTest();
+    static void send_status_test();
 
     /// other configuration options Tests
 
     //set a delay of 2 to frameTl and of  1 to matrixTL1
     // use the standard configuration for tests
-    static void delayTest();
+    static void delay_test();
 
     /// The classical tolerance is 5. Make one TL or the other out of range
-    static void toleranceTest();
+    static void tolerance_test();
 
     /// When the output is an ImageSeries object, instead of an image
     /// Checks that we write the acquisition time as a dicom attribute
-    static void imageSeriesTimeTaggingTest();
+    static void image_series_time_tagging_test();
 
     /// Test with an ImageSeries and matrices to ensure timestamp data is written in the ImageSeries
     /// assuming a more complex context
-    static void singleImageSeriesTLPopulation();
+    static void single_image_series_tl_population();
 };
 
 } // namespace sight::module::sync::ut

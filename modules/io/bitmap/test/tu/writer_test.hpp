@@ -32,8 +32,8 @@ namespace sight::module::io::bitmap::ut
 class writer_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(writer_test);
-CPPUNIT_TEST(basicTest);
-CPPUNIT_TEST(configTest);
+CPPUNIT_TEST(basic_test);
+CPPUNIT_TEST(config_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,8 +42,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void basicTest();
-    static void configTest();
+    static void basic_test();
+    static void config_test();
 };
 
 } // namespace sight::module::io::bitmap::ut

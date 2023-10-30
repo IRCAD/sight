@@ -46,14 +46,14 @@ void bresenham_line_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void bresenham_line_test::straightLineTest()
+void bresenham_line_test::straight_line_test()
 {
     {
         const filter::image::bresenham_line::coordinates_t start_point = {{0, 0, 0}};
         const filter::image::bresenham_line::coordinates_t end_point   = {{0, 0, 1024}};
 
         const filter::image::bresenham_line::path_t result =
-            filter::image::bresenham_line::draw(bresenham_line::Orientation::X_AXIS, start_point, end_point);
+            filter::image::bresenham_line::draw(bresenham_line::Orientation::x_axis, start_point, end_point);
 
         CPPUNIT_ASSERT(!result.empty());
         CPPUNIT_ASSERT_EQUAL(std::size_t(end_point[2] - start_point[2] + 1), result.size());
@@ -76,7 +76,7 @@ void bresenham_line_test::straightLineTest()
 
         const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
-                filter::image::bresenham_line::Orientation::Z_AXIS,
+                filter::image::bresenham_line::Orientation::z_axis,
                 start_point,
                 end_point
             );
@@ -102,7 +102,7 @@ void bresenham_line_test::straightLineTest()
 
         const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
-                filter::image::bresenham_line::Orientation::Y_AXIS,
+                filter::image::bresenham_line::Orientation::y_axis,
                 start_point,
                 end_point
             );
@@ -126,7 +126,7 @@ void bresenham_line_test::straightLineTest()
 
         const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
-                filter::image::bresenham_line::Orientation::Y_AXIS,
+                filter::image::bresenham_line::Orientation::y_axis,
                 start_point,
                 start_point
             );
@@ -140,7 +140,7 @@ void bresenham_line_test::straightLineTest()
 
 //------------------------------------------------------------------------------
 
-void bresenham_line_test::obliqueLineTest()
+void bresenham_line_test::oblique_line_test()
 {
     {
         const filter::image::bresenham_line::coordinates_t start_point = {{1, 1, 42}};
@@ -148,7 +148,7 @@ void bresenham_line_test::obliqueLineTest()
 
         const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
-                filter::image::bresenham_line::Orientation::Z_AXIS,
+                filter::image::bresenham_line::Orientation::z_axis,
                 start_point,
                 end_point
             );
@@ -186,7 +186,7 @@ void bresenham_line_test::obliqueLineTest()
 
         const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
-                filter::image::bresenham_line::Orientation::X_AXIS,
+                filter::image::bresenham_line::Orientation::x_axis,
                 start_point,
                 end_point
             );

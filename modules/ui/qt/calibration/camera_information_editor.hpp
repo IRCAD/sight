@@ -66,7 +66,7 @@ public:
     SIGHT_DECLARE_SERVICE(camera_information_editor, sight::ui::editor);
 
     static const core::com::slots::key_t UPDATE_INFOS_SLOT;
-    typedef core::com::slot<void ()> update_infos_slot_t;
+    using update_infos_slot_t = core::com::slot<void ()>;
 
     /**
      * @brief Constructor.
@@ -107,12 +107,12 @@ protected:
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.
      */
-    void updateInformations();
+    void update_informations();
 
     /**
      * @brief Clear all the labels.
      */
-    void clearLabels();
+    void clear_labels();
 
     /**
      * @brief Label that displays the camera description
@@ -122,7 +122,7 @@ protected:
     /**
      * @brief Label that displays if the camera is calibrated.
      */
-    QLabel* m_isCalibrated {};
+    QLabel* m_is_calibrated {};
 
     /**
      * @brief Width of the video.
@@ -184,8 +184,8 @@ protected:
      */
     QLabel* m_skew {};
 
-    static constexpr std::string_view s_CAMERA = "camera";
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA, true};
+    static constexpr std::string_view CAMERA = "camera";
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

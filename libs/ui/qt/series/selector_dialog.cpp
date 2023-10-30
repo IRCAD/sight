@@ -43,7 +43,7 @@ public:
 
     /// Constructor
     inline explicit selector_dialog_impl(selector_dialog* const _selector_dialog) noexcept :
-        M_SELECTOR_DIALOG(_selector_dialog)
+        m_selector_dialog(_selector_dialog)
     {
     }
 
@@ -51,7 +51,7 @@ public:
     inline ~selector_dialog_impl() noexcept = default;
 
     /// Pointer to the public interface
-    selector_dialog* const M_SELECTOR_DIALOG;
+    selector_dialog* const m_selector_dialog;
 
     QPointer<selector> m_selector_widget {nullptr};
 };
@@ -75,7 +75,7 @@ selector_dialog::selector_dialog(
     // Fill the selector
     for(const auto& series : *_series_set)
     {
-        m_pimpl->m_selector_widget->addSeries(series);
+        m_pimpl->m_selector_widget->add_series(series);
     }
 
     // Create the button box
@@ -95,7 +95,7 @@ data::series_set::sptr selector_dialog::get_selection() const
 {
     if(!m_pimpl->m_selector_widget.isNull())
     {
-        const auto& selected_series = m_pimpl->m_selector_widget->getSelectedSeries();
+        const auto& selected_series = m_pimpl->m_selector_widget->get_selected_series();
         auto series_set             = std::make_shared<data::series_set>();
         series_set->insert(series_set->end(), selected_series.cbegin(), selected_series.cend());
 

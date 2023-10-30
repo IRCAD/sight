@@ -54,9 +54,9 @@ class CORE_CLASS_API slots
 {
 public:
 
-    using key_t                   = std::string;
-    using slot_key_type           = key_t;
-    using slot_key_container_type = std::vector<key_t>;
+    using key_t                = std::string;
+    using slot_key_type        = key_t;
+    using slot_key_container_t = std::vector<key_t>;
 
     CORE_API slots()          = default;
     CORE_API virtual ~slots() = default;
@@ -82,7 +82,7 @@ public:
     CORE_API void set_worker(const SPTR(core::thread::worker)& _worker);
 
     /// Returns all key_t registered in m_slots
-    [[nodiscard]] CORE_API slot_key_container_type get_slot_keys() const;
+    [[nodiscard]] CORE_API slot_key_container_t get_slot_keys() const;
 
 protected:
 

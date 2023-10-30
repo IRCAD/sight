@@ -57,7 +57,7 @@ struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
 
     void objectMoved(Ogre::MovableObject* /*unused*/) override
     {
-        m_layer->updateTF3D();
+        m_layer->update_t_f_3d();
     }
 };
 
@@ -65,7 +65,7 @@ struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
 
 camera::camera() noexcept
 {
-    new_slot(UPDATE_TF_SLOT, &camera::updateTF3D, this);
+    new_slot(UPDATE_TF_SLOT, &camera::update_t_f_3d, this);
     new_slot(CALIBRATE_SLOT, &camera::calibrate, this);
 }
 
@@ -78,18 +78,18 @@ camera::~camera() noexcept =
 
 void camera::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config      = this->get_config();
     const auto projection_type = config.get<std::string>("config.<xmlattr>.projection", "perspective");
 
     if(projection_type == "orthographic")
     {
-        m_useOrthographicProjection = true;
+        m_use_orthographic_projection = true;
     }
     else if(projection_type == "perspective")
     {
-        m_useOrthographicProjection = false;
+        m_use_orthographic_projection = false;
     }
     else
     {
@@ -106,26 +106,26 @@ void camera::starting()
 {
     this->initialize();
 
-    m_camera = this->getLayer()->getDefaultCamera();
+    m_camera = this->layer()->get_default_camera();
 
-    if(m_useOrthographicProjection)
+    if(m_use_orthographic_projection)
     {
         m_camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
         // inform layer since some computations are a bit different from perspective.
-        this->getLayer()->setOrthographicCamera(true);
+        this->layer()->set_orthographic_camera(true);
     }
 
-    m_cameraNodeListener = new CameraNodeListener(this);
-    m_camera->setListener(m_cameraNodeListener);
+    m_camera_node_listener = new CameraNodeListener(this);
+    m_camera->setListener(m_camera_node_listener);
 
-    m_layerConnection.connect(
-        this->getLayer(),
+    m_layer_connection.connect(
+        this->layer(),
         sight::viz::scene3d::layer::CAMERA_RANGE_UPDATED_SIG,
         this->get_sptr(),
         CALIBRATE_SLOT
     );
-    m_layerConnection.connect(
-        this->getLayer(),
+    m_layer_connection.connect(
+        this->layer(),
         sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
         this->get_sptr(),
         CALIBRATE_SLOT
@@ -139,11 +139,11 @@ void camera::starting()
 service::connections_t camera::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_CALIBRATION_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(s_CALIBRATION_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
-    connections.push(s_CAMERA_SET_INPUT, data::camera_set::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(s_CAMERA_SET_INPUT, data::camera_set::EXTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
+    connections.push(TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CALIBRATION_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
+    connections.push(CALIBRATION_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
+    connections.push(CAMERA_SET_INPUT, data::camera_set::MODIFIED_SIG, CALIBRATE_SLOT);
+    connections.push(CAMERA_SET_INPUT, data::camera_set::EXTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
 
     return connections;
 }
@@ -152,7 +152,7 @@ service::connections_t camera::auto_connections() const
 
 void camera::updating()
 {
-    if(m_calibrationDone || this->calibrate())
+    if(m_calibration_done || this->calibrate())
     {
         Ogre::Affine3 ogre_matrix;
         {
@@ -180,7 +180,7 @@ void camera::updating()
         orientation = orientation * rotate_z * rotate_y;
 
         // Flag to skip updateTF3D() when called from the camera listener
-        m_skipUpdate = true;
+        m_skip_update = true;
 
         Ogre::Node* parent = m_camera->getParentNode();
 
@@ -192,7 +192,7 @@ void camera::updating()
         parent->rotate(orientation);
         parent->translate(position);
 
-        this->requestRender();
+        this->request_render();
     }
 }
 
@@ -200,24 +200,24 @@ void camera::updating()
 
 void camera::stopping()
 {
-    m_layerConnection.disconnect();
+    m_layer_connection.disconnect();
 
-    if(m_cameraNodeListener != nullptr)
+    if(m_camera_node_listener != nullptr)
     {
         m_camera->setListener(nullptr);
-        delete m_cameraNodeListener;
-        m_cameraNodeListener = nullptr;
+        delete m_camera_node_listener;
+        m_camera_node_listener = nullptr;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void camera::updateTF3D()
+void camera::update_t_f_3d()
 {
-    if(m_skipUpdate)
+    if(m_skip_update)
     {
         // We were called from the listener after update() was called, so skip that
-        m_skipUpdate = false;
+        m_skip_update = false;
         return;
     }
 
@@ -281,7 +281,7 @@ void camera::updateTF3D()
 
 //------------------------------------------------------------------------------
 
-void camera::setNearClipDistance(Ogre::Real _near_clip_distance)
+void camera::set_near_clip_distance(Ogre::Real _near_clip_distance)
 {
     SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
@@ -290,7 +290,7 @@ void camera::setNearClipDistance(Ogre::Real _near_clip_distance)
 
 //------------------------------------------------------------------------------
 
-void camera::setFarClipDistance(Ogre::Real _far_clip_distance)
+void camera::set_far_clip_distance(Ogre::Real _far_clip_distance)
 {
     SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
@@ -299,13 +299,13 @@ void camera::setFarClipDistance(Ogre::Real _far_clip_distance)
 
 //-----------------------------------------------------------------------------
 
-void camera::setAspectRatio(Ogre::Real _ratio)
+void camera::set_aspect_ratio(Ogre::Real _ratio)
 {
     SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
-    m_aspectRatio = _ratio;
+    m_aspect_ratio = _ratio;
     SIGHT_ASSERT("Width and height should be strictly positive", !std::isnan(_ratio));
-    m_camera->setAspectRatio(m_aspectRatio);
+    m_camera->setAspectRatio(m_aspect_ratio);
 }
 
 //-----------------------------------------------------------------------------
@@ -313,21 +313,21 @@ void camera::setAspectRatio(Ogre::Real _ratio)
 bool camera::calibrate()
 {
     const auto camera_set         = m_camera_set.lock();
-    const auto camera_calibration = m_cameraCalibration.lock();
+    const auto camera_calibration = m_camera_calibration.lock();
 
     SIGHT_WARN_IF(
-        "A '" << s_CALIBRATION_INPUT << "' input was set but will not be used because a '"
-        << s_CAMERA_SET_INPUT << "' was defined as well",
+        "A '" << CALIBRATION_INPUT << "' input was set but will not be used because a '"
+        << CAMERA_SET_INPUT << "' was defined as well",
         camera_set && camera_calibration
     );
 
     if(camera_set)
     {
-        this->calibrateCameraSet(*camera_set);
+        this->calibrate_camera_set(*camera_set);
     }
     else if(camera_calibration)
     {
-        this->calibrateMonoCamera(*camera_calibration);
+        this->calibrate_mono_camera(*camera_calibration);
     }
     else
     {
@@ -343,22 +343,22 @@ bool camera::calibrate()
         m_camera->setAspectRatio(aspect_ratio);
     }
 
-    m_calibrationDone = true;
+    m_calibration_done = true;
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-void camera::calibrateMonoCamera(const data::camera& _cam)
+void camera::calibrate_mono_camera(const data::camera& _cam)
 {
     const auto width     = static_cast<float>(m_camera->getViewport()->getActualWidth());
     const auto height    = static_cast<float>(m_camera->getViewport()->getActualHeight());
     const auto near_clip = static_cast<float>(m_camera->getNearClipDistance());
     const auto far_clip  = static_cast<float>(m_camera->getFarClipDistance());
 
-    if(_cam.getIsCalibrated())
+    if(_cam.get_is_calibrated())
     {
-        Ogre::Matrix4 m = sight::viz::scene3d::helper::camera::computeProjectionMatrix(
+        Ogre::Matrix4 m = sight::viz::scene3d::helper::camera::compute_projection_matrix(
             _cam,
             width,
             height,
@@ -374,7 +374,7 @@ void camera::calibrateMonoCamera(const data::camera& _cam)
 
 //------------------------------------------------------------------------------
 
-void camera::calibrateCameraSet(const data::camera_set& _cs)
+void camera::calibrate_camera_set(const data::camera_set& _cs)
 {
     const auto width          = static_cast<float>(m_camera->getViewport()->getActualWidth());
     const auto height         = static_cast<float>(m_camera->getViewport()->getActualHeight());
@@ -383,17 +383,17 @@ void camera::calibrateCameraSet(const data::camera_set& _cs)
     const std::size_t nb_cams = _cs.size();
 
     SIGHT_WARN_IF(
-        "There are no cameras in the '" << s_CAMERA_SET_INPUT << "', the default projection transform"
-                                                                 "will be used.",
+        "There are no cameras in the '" << CAMERA_SET_INPUT << "', the default projection transform"
+                                                               "will be used.",
         nb_cams == 0
     );
 
-    auto layer = this->getLayer();
+    auto layer = this->layer();
 
     // Calibrate only the first camera when stereo is not enabled.
-    if(layer->getStereoMode() == sight::viz::scene3d::compositor::core::stereo_mode_t::NONE && nb_cams > 0)
+    if(layer->get_stereo_mode() == sight::viz::scene3d::compositor::core::stereo_mode_t::none && nb_cams > 0)
     {
-        this->calibrateMonoCamera(*_cs.get_camera(0));
+        this->calibrate_mono_camera(*_cs.get_camera(0));
     }
     else
     {
@@ -404,10 +404,10 @@ void camera::calibrateCameraSet(const data::camera_set& _cs)
         {
             const data::camera::csptr camera = _cs.get_camera(i);
 
-            if(camera->getIsCalibrated())
+            if(camera->get_is_calibrated())
             {
                 const auto intrinsic_proj_mx =
-                    sight::viz::scene3d::helper::camera::computeProjectionMatrix(
+                    sight::viz::scene3d::helper::camera::compute_projection_matrix(
                         *camera,
                         width,
                         height,
@@ -427,13 +427,13 @@ void camera::calibrateCameraSet(const data::camera_set& _cs)
             if(i < nb_cams - 1)
             {
                 const data::matrix4::csptr extrinsic = _cs.get_extrinsic_matrix(i + 1);
-                extrinsic_mx = sight::viz::scene3d::utils::convertTM3DToOgreMx(extrinsic) * extrinsic_mx;
+                extrinsic_mx = sight::viz::scene3d::utils::to_ogre_matrix(extrinsic) * extrinsic_mx;
             }
         }
 
         if(!calibrations.empty())
         {
-            layer->setCameraCalibrations(calibrations);
+            layer->set_camera_calibrations(calibrations);
             this->updating();
         }
     }

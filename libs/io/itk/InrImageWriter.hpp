@@ -34,16 +34,16 @@
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API InrImageWriter : public writer::generic_object_writer<data::image>,
-                                        public core::location::single_file,
-                                        public core::tools::progress_adviser
+class IO_ITK_CLASS_API inr_image_writer : public writer::generic_object_writer<data::image>,
+                                          public core::location::single_file,
+                                          public core::tools::progress_adviser
 {
 public:
 
-    SIGHT_DECLARE_CLASS(InrImageWriter, io::writer::generic_object_writer<data::image>);
+    SIGHT_DECLARE_CLASS(inr_image_writer, io::writer::generic_object_writer<data::image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API ~InrImageWriter() override = default;
+    IO_ITK_API ~inr_image_writer() override = default;
 
     IO_ITK_API void write() override;
 

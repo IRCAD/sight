@@ -42,8 +42,8 @@ class CORE_CLASS_API sig_slot_connection
 {
 public:
 
-    typedef std::pair<core::com::signals::signal_key_type, core::com::slots::key_t> key_connection_t;
-    typedef std::vector<key_connection_t> key_connections_t;
+    using key_connection_t  = std::pair<core::com::signals::signal_key_type, core::com::slots::key_t>;
+    using key_connections_t = std::vector<key_connection_t>;
 
     /// Constructor, do nothing
     CORE_API sig_slot_connection();
@@ -75,8 +75,8 @@ public:
 protected:
 
     /// Connections storage
-    typedef std::list<core::com::connection> connection_container_type;
-    connection_container_type m_connections;
+    using connection_container_t = std::list<core::com::connection>;
+    connection_container_t m_connections;
 };
 
 } // namespace sight::core::com::helper

@@ -43,23 +43,23 @@ namespace sight::io::igtl::detail
  *
  * @brief a OpenIGTLink message which you can store raw data
  */
-class IO_IGTL_CLASS_API RawMessage : public ::igtl::MessageBase
+class IO_IGTL_CLASS_API raw_message : public ::igtl::MessageBase
 {
 public:
 
-    typedef RawMessage Self;
-    typedef ::igtl::MessageBase Superclass;
-    typedef ::igtl::SmartPointer<Self> Pointer;
-    typedef ::igtl::SmartPointer<const Self> ConstPointer;
-    typedef std::vector<char> raw_data_t;
+    using self_t        = raw_message;
+    using superclass    = ::igtl::MessageBase;
+    using Pointer       = ::igtl::SmartPointer<self_t>;
+    using const_pointer = ::igtl::SmartPointer<const self_t>;
+    using raw_data_t    = std::vector<char>;
 
     igtlTypeMacro(RawMessage, ::igtl::MessageBase);
 
     /// Constructor
-    IO_IGTL_API RawMessage(std::string const& _body_type);
+    IO_IGTL_API raw_message(std::string const& _body_type);
 
     /// Destructor
-    IO_IGTL_API ~RawMessage() override;
+    IO_IGTL_API ~raw_message() override;
 
     /**
      * @brief append a string to raw data
@@ -76,21 +76,21 @@ public:
      *
      * @return a immutable byte vector
      */
-    IO_IGTL_API raw_data_t const& getMessage() const;
+    IO_IGTL_API raw_data_t const& get_message() const;
 
     /**
      * @brief get mutable message
      *
      * @return a mutable byte vector
      */
-    IO_IGTL_API raw_data_t& getMessage();
+    IO_IGTL_API raw_data_t& get_message();
 
     /**
      * @brief create a new igtl smart pointer to a raw message
      *
      * @return igtl smart pointer to a raw message
      */
-    IO_IGTL_API static RawMessage::Pointer New(std::string const& _body_type);
+    IO_IGTL_API static raw_message::Pointer New(std::string const& _body_type);
 
 private:
 

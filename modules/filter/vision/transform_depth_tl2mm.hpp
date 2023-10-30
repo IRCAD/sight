@@ -100,15 +100,16 @@ private:
     void compute(core::hires_clock::type _timestamp);
 
     /// timestamp of the last process
-    core::hires_clock::type m_lastTimestamp {0};
+    core::hires_clock::type m_last_timestamp {0};
 
-    static constexpr std::string_view s_CAMERA_SET_INPUT      = "cameraSet";
-    static constexpr std::string_view s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
-    static constexpr std::string_view s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
+    static constexpr std::string_view CAMERA_SET_INPUT      = "cameraSet";
+    static constexpr std::string_view ORIGIN_FRAME_TL_INPUT = "originDepthTL";
+    static constexpr std::string_view SCALED_FRAME_TL_INOUT = "scaledDepthTL";
 
-    sight::data::ptr<sight::data::camera_set, sight::data::Access::in> m_camera_set {this, s_CAMERA_SET_INPUT};
-    sight::data::ptr<sight::data::frame_tl, sight::data::Access::in> m_originFrameTL {this, s_ORIGIN_FRAME_TL_INPUT};
-    sight::data::ptr<sight::data::frame_tl, sight::data::Access::inout> m_scaledDepthTL {this, s_SCALED_FRAME_TL_INOUT};
+    sight::data::ptr<sight::data::camera_set, sight::data::access::in> m_camera_set {this, CAMERA_SET_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_origin_frame_tl {this, ORIGIN_FRAME_TL_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::inout> m_scaled_depth_tl {this, SCALED_FRAME_TL_INOUT
+    };
 };
 
 } // namespace sight::module::filter::vision

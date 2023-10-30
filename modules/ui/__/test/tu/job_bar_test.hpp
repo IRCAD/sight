@@ -31,7 +31,7 @@ namespace sight::module::ui::ut
 class job_bar_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(job_bar_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    service::base::sptr m_jobBar;
+    service::base::sptr m_job_bar;
 };
 
 } // namespace sight::module::ui::ut

@@ -78,20 +78,20 @@ public:
      * @param _configId The identifier of the requested config.
      * @param _replaceFields The associations between the value and the pattern to replace in the config.
      */
-    void setConfig(
+    void set_config(
         const std::string& _config_id,
         const field_adaptor_t& _replace_fields = field_adaptor_t(),
         bool _auto_prefix_id                   = true
     ) override;
 
     /// Get the configuration root.
-    data::object::sptr getConfigRoot() const override;
+    data::object::sptr get_config_root() const override;
 
     /// Calls methods : create, start then update.
     void launch() override;
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
-    void stopAndDestroy() override;
+    void stop_and_destroy() override;
 
     /// Creates objects and services from config.
     void create() override;
@@ -120,12 +120,12 @@ public:
      * @param _obj The object to add.
      * @param _uid The uid of this object.
      */
-    void addExistingDeferredObject(const data::object::sptr& _obj, const std::string& _uid);
+    void add_existing_deferred_object(const data::object::sptr& _obj, const std::string& _uid);
 
 private:
 
-    typedef std::pair<std::string, bool> ConfigAttribute;
-    typedef core::com::helper::proxy_connections proxy_connections;
+    using config_attribute_t  = std::pair<std::string, bool>;
+    using proxy_connections_t = core::com::helper::proxy_connections;
 
     /**
      * @brief Starts the module associated to the config
@@ -134,126 +134,126 @@ private:
      */
     virtual void start_module();
 
-    data::object::sptr findObject(const std::string& _uid, std::string_view _err_msg_tail) const;
+    data::object::sptr find_object(const std::string& _uid, std::string_view _err_msg_tail) const;
 
-    data::object::sptr getNewObject(ConfigAttribute _type, const std::string& _uid) const;
+    data::object::sptr get_new_object(config_attribute_t _type, const std::string& _uid) const;
 
-    static data::object::sptr getNewObject(
-        ConfigAttribute _type,
-        ConfigAttribute _uid = ConfigAttribute("", false)
+    static data::object::sptr get_new_object(
+        config_attribute_t _type,
+        config_attribute_t _uid = config_attribute_t("", false)
     );
 
-    data::object::sptr getObject(ConfigAttribute _type, const std::string& _uid) const;
+    data::object::sptr get_object(config_attribute_t _type, const std::string& _uid) const;
 
-    service::base::sptr getNewService(const std::string& _uid, const std::string& _impl_type) const;
+    service::base::sptr get_new_service(const std::string& _uid, const std::string& _impl_type) const;
 
     /// Destroyes all created services
-    void destroyCreatedServices();
+    void destroy_created_services();
 
-    void processStartItems();
+    void process_start_items();
 
-    void processUpdateItems();
+    void process_update_items();
 
     /// Parses objects section and create objects.
-    void createObjects(const core::runtime::config_t&);
+    void create_objects(const core::runtime::config_t&);
 
     /// Parses services and create all the services that can be instantiated.
-    void createServices(const core::runtime::config_t&);
+    void create_services(const core::runtime::config_t&);
 
     /// Creates a single service from its configuration.
-    service::base::sptr createService(const detail::service_config& _srv_config);
+    service::base::sptr create_service(const detail::service_config& _srv_config);
 
     /// Parses connection sections and creates them.
-    void createConnections();
+    void create_connections();
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
-    std::string msgHead() const;
+    std::string msg_head() const;
 
     /**
      * @brief Adds objects to the configuration.
      * @param _obj The object to add.
      * @param _id The id of the object.
      */
-    void addObjects(data::object::sptr _obj, const std::string& _id);
+    void add_objects(data::object::sptr _obj, const std::string& _id);
 
     /**
      * @brief Removes objects from the configuration.
      * @param _obj The object to remove.
      * @param _id The id of the remove.
      */
-    void removeObjects(data::object::sptr _obj, const std::string& _id);
+    void remove_objects(data::object::sptr _obj, const std::string& _id);
 
-    void connectProxy(const std::string& _channel, const proxy_connections& _connect_cfg);
+    void connect_proxy(const std::string& _channel, const proxy_connections_t& _connect_cfg);
 
-    void destroyProxy(
+    void destroy_proxy(
         const std::string& _channel,
-        const proxy_connections& _proxy_cfg,
+        const proxy_connections_t& _proxy_cfg,
         const std::string& _key       = "",
         data::object::csptr _hint_obj = nullptr
     );
 
-    void destroyProxies();
+    void destroy_proxies();
 
     /// Gets a list of UIDs or WIDs, get a friendly printable message.
-    static std::string getUIDListAsString(const std::vector<std::string>& _uid_list);
+    static std::string get_uid_list_as_string(const std::vector<std::string>& _uid_list);
 
-    typedef std::pair<data::object::sptr, service::object_parser::sptr> created_object_t;
+    using created_object_t = std::pair<data::object::sptr, service::object_parser::sptr>;
 
     /// Map containing the object and its XML parser.
-    std::unordered_map<std::string, created_object_t> m_createdObjects;
+    std::unordered_map<std::string, created_object_t> m_created_objects;
 
     struct deferred_object_t
     {
-        std::vector<detail::service_config> m_servicesCfg;
-        std::unordered_map<std::string, proxy_connections> m_proxyCnt;
+        std::vector<detail::service_config> m_services_cfg;
+        std::unordered_map<std::string, proxy_connections_t> m_proxy_cnt;
 
         /// Copy of the object pointer necessary to access signals/slots when destroying proxy.
         data::object::sptr m_object;
     };
 
     /// Map indexed by the object uid, containing all the service configurations that depend on this object.
-    std::unordered_map<std::string, deferred_object_t> m_deferredObjects;
+    std::unordered_map<std::string, deferred_object_t> m_deferred_objects;
 
     /// All the identifiers of the deferred services.
-    std::unordered_set<std::string> m_deferredServices;
+    std::unordered_set<std::string> m_deferred_services;
 
     /// All proxies of created objects, ordered by channel name.
-    std::unordered_map<std::string, proxy_connections> m_createdObjectsProxies;
+    std::unordered_map<std::string, proxy_connections_t> m_created_objects_proxies;
 
     struct service_proxy_t
     {
-        std::unordered_map<std::string, proxy_connections> m_proxyCnt;
+        std::unordered_map<std::string, proxy_connections_t> m_proxy_cnt;
     };
-    std::unordered_map<std::string, service_proxy_t> m_servicesProxies;
+    std::unordered_map<std::string, service_proxy_t> m_services_proxies;
 
     /// Identifier of this configuration.
-    std::string m_configId;
+    std::string m_config_id;
 
-    typedef std::vector<service::base::wptr> ServiceContainer;
+    using service_container = std::vector<service::base::wptr>;
 
     /// List of services created in this configuration.
-    ServiceContainer m_createdSrv;
+    service_container m_created_srv;
 
     /// List of services started in this configuration.
-    ServiceContainer m_startedSrv;
+    service_container m_started_srv;
 
     /// Start ordered list of deferred services.
-    std::vector<std::string> m_deferredStartSrv;
+    std::vector<std::string> m_deferred_start_srv;
 
     /// Update ordered list of deferred services.
-    std::vector<std::string> m_deferredUpdateSrv;
+    std::vector<std::string> m_deferred_update_srv;
 
     /// List of created workers
-    std::vector<core::thread::worker::sptr> m_createdWorkers;
+    std::vector<core::thread::worker::sptr> m_created_workers;
 
     /// Counter used to generate a unique proxy name.
-    unsigned int m_proxyID {0};
+    unsigned int m_proxy_id {0};
 
     /// Keep the connection between the OSR and `addObjects`.
-    core::com::connection m_addObjectConnection;
+    core::com::connection m_add_object_connection;
 
     /// Keep the connection between the OSR and `removeObjects`.
-    core::com::connection m_removeObjectConnection;
+    core::com::connection m_remove_object_connection;
 
     /// Synchronize start/stop sequences with add/remove objects slots;
     core::mt::mutex m_mutex;
@@ -261,9 +261,9 @@ private:
 
 // ------------------------------------------------------------------------
 
-inline std::string config_manager::msgHead() const
+inline std::string config_manager::msg_head() const
 {
-    return "[" + m_configId + "] ";
+    return "[" + m_config_id + "] ";
 }
 
 } // namespace sight::app::detail

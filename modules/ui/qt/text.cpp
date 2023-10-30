@@ -73,14 +73,14 @@ void text::configuring()
 void text::starting()
 {
     this->create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* const layout = new QHBoxLayout();
     layout->addWidget(m_label);
 
     layout->setAlignment(Qt::AlignCenter);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 }
 
 //------------------------------------------------------------------------------

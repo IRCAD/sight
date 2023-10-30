@@ -38,35 +38,35 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string MeshConverter::s_IGTL_TYPE          = "POLYDATA";
-const std::string MeshConverter::s_FWDATA_OBJECT_TYPE = data::mesh::classname();
+const std::string mesh_converter::IGTL_TYPE          = "POLYDATA";
+const std::string mesh_converter::FWDATA_OBJECT_TYPE = data::mesh::classname();
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::MeshConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::mesh_converter);
 
-MeshConverter::MeshConverter()
+mesh_converter::mesh_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-MeshConverter::~MeshConverter()
+mesh_converter::~mesh_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MeshConverter::fromFwDataObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer mesh_converter::from_fw_data_object(data::object::csptr _src) const
 {
     data::mesh::csptr mesh_src = std::dynamic_pointer_cast<const data::mesh>(_src);
 
     ::igtl::PolyDataMessage::Pointer dest = ::igtl::PolyDataMessage::New();
-    sight::io::igtl::detail::converter::MeshConverter::copyCellsFromFwMesh(mesh_src, dest);
-    sight::io::igtl::detail::converter::MeshConverter::copyPointsFromFwMesh(mesh_src, dest);
-    sight::io::igtl::detail::converter::MeshConverter::copyAttributesFromFwMesh(mesh_src, dest);
+    sight::io::igtl::detail::converter::mesh_converter::copy_cells_from_fw_mesh(mesh_src, dest);
+    sight::io::igtl::detail::converter::mesh_converter::copy_points_from_fw_mesh(mesh_src, dest);
+    sight::io::igtl::detail::converter::mesh_converter::copy_attributes_from_fw_mesh(mesh_src, dest);
     return ::igtl::MessageBase::Pointer(dest); // NOLINT(modernize-return-braced-init-list)
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshConverter::copyCellsFromFwMesh(
+void mesh_converter::copy_cells_from_fw_mesh(
     data::mesh::csptr _mesh_src,
     ::igtl::PolyDataMessage::Pointer _dest
 )
@@ -79,11 +79,11 @@ void MeshConverter::copyCellsFromFwMesh(
 
     std::array<igtlUint32, 5> cell {};
 
-    const data::mesh::cell_type_t cell_type = _mesh_src->get_cell_type();
+    const data::mesh::cell_type_t cell_type = _mesh_src->cell_type();
 
     switch(cell_type)
     {
-        case data::mesh::cell_type_t::LINE:
+        case data::mesh::cell_type_t::line:
 
             for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::line>())
             {
@@ -94,7 +94,7 @@ void MeshConverter::copyCellsFromFwMesh(
 
             break;
 
-        case data::mesh::cell_type_t::TRIANGLE:
+        case data::mesh::cell_type_t::triangle:
             for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::triangle>())
             {
                 cell[0] = cell_itr.pt[0];
@@ -105,7 +105,7 @@ void MeshConverter::copyCellsFromFwMesh(
 
             break;
 
-        case data::mesh::cell_type_t::QUAD:
+        case data::mesh::cell_type_t::quad:
 
             for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::quad>())
             {
@@ -118,7 +118,7 @@ void MeshConverter::copyCellsFromFwMesh(
 
             break;
 
-        case data::mesh::cell_type_t::TETRA:
+        case data::mesh::cell_type_t::tetra:
             for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::tetra>())
             {
                 cell[0] = cell_itr.pt[0];
@@ -137,7 +137,7 @@ void MeshConverter::copyCellsFromFwMesh(
 
 //-----------------------------------------------------------------------------
 
-void MeshConverter::copyPointsFromFwMesh(
+void mesh_converter::copy_points_from_fw_mesh(
     data::mesh::csptr _mesh_src,
     ::igtl::PolyDataMessage::Pointer _dest
 )
@@ -153,20 +153,20 @@ void MeshConverter::copyPointsFromFwMesh(
 
 //-----------------------------------------------------------------------------
 
-void MeshConverter::copyAttributesFromFwMesh(
+void mesh_converter::copy_attributes_from_fw_mesh(
     data::mesh::csptr _mesh_src,
     ::igtl::PolyDataMessage::Pointer _dest
 )
 {
     const auto dump_lock = _mesh_src->dump_lock();
 
-    const std::size_t number_of_points = _mesh_src->numPoints();
-    const std::size_t number_of_cells  = _mesh_src->numCells();
+    const std::size_t number_of_points = _mesh_src->num_points();
+    const std::size_t number_of_cells  = _mesh_src->num_cells();
 
     _dest->ClearAttributes();
 
     // point attributes
-    if(_mesh_src->has<data::mesh::Attributes::POINT_COLORS>())
+    if(_mesh_src->has<data::mesh::attribute::point_colors>())
     {
         auto* igtl_data_point_color = new igtlFloat32[4 * number_of_points];
 
@@ -189,7 +189,7 @@ void MeshConverter::copyAttributesFromFwMesh(
         delete[] igtl_data_point_color;
     }
 
-    if(_mesh_src->has<data::mesh::Attributes::POINT_NORMALS>())
+    if(_mesh_src->has<data::mesh::attribute::point_normals>())
     {
         auto* igtl_data_point_normal = new igtlFloat32[3 * number_of_points];
 
@@ -211,7 +211,7 @@ void MeshConverter::copyAttributesFromFwMesh(
         delete[] igtl_data_point_normal;
     }
 
-    if(_mesh_src->has<data::mesh::Attributes::POINT_TEX_COORDS>())
+    if(_mesh_src->has<data::mesh::attribute::point_tex_coords>())
     {
         auto* igtl_data_point_tex = new igtlFloat32[2 * number_of_points];
 
@@ -233,7 +233,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     }
 
     // cell attributes
-    if(_mesh_src->has<data::mesh::Attributes::CELL_COLORS>())
+    if(_mesh_src->has<data::mesh::attribute::cell_colors>())
     {
         auto* igtl_data_cell_color = new igtlFloat32[4 * number_of_cells];
 
@@ -256,7 +256,7 @@ void MeshConverter::copyAttributesFromFwMesh(
         delete[] igtl_data_cell_color;
     }
 
-    if(_mesh_src->has<data::mesh::Attributes::CELL_NORMALS>())
+    if(_mesh_src->has<data::mesh::attribute::cell_normals>())
     {
         auto* igtl_data_cell_normal = new igtlFloat32[3 * number_of_cells];
 
@@ -278,7 +278,7 @@ void MeshConverter::copyAttributesFromFwMesh(
         delete[] igtl_data_cell_normal;
     }
 
-    if(_mesh_src->has<data::mesh::Attributes::CELL_TEX_COORDS>())
+    if(_mesh_src->has<data::mesh::attribute::cell_tex_coords>())
     {
         auto* igtl_data_cell_tex = new igtlFloat32[2 * number_of_cells];
 
@@ -302,7 +302,7 @@ void MeshConverter::copyAttributesFromFwMesh(
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr mesh_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     std::array<igtlFloat32, 3> point {};
     std::array<igtlUint32, 5> cell {};
@@ -313,34 +313,34 @@ data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
     const int number_of_points = mesh_msg->GetPoints()->GetNumberOfPoints();
 
-    data::mesh::Attributes attributes = data::mesh::Attributes::NONE;
+    data::mesh::attribute attributes = data::mesh::attribute::none;
     for(unsigned int i = 0 ; int(i) < mesh_msg->GetNumberOfAttributes() ; ++i)
     {
         const ::igtl::PolyDataAttribute::Pointer attr = mesh_msg->GetAttribute(i);
         switch(attr->GetType())
         {
             case ::igtl::PolyDataAttribute::POINT_RGBA:
-                attributes = attributes | data::mesh::Attributes::POINT_COLORS;
+                attributes = attributes | data::mesh::attribute::point_colors;
                 break;
 
             case ::igtl::PolyDataAttribute::CELL_RGBA:
-                attributes = attributes | data::mesh::Attributes::CELL_COLORS;
+                attributes = attributes | data::mesh::attribute::cell_colors;
                 break;
 
             case ::igtl::PolyDataAttribute::POINT_NORMAL:
-                attributes = attributes | data::mesh::Attributes::POINT_NORMALS;
+                attributes = attributes | data::mesh::attribute::point_normals;
                 break;
 
             case ::igtl::PolyDataAttribute::CELL_NORMAL:
-                attributes = attributes | data::mesh::Attributes::CELL_NORMALS;
+                attributes = attributes | data::mesh::attribute::cell_normals;
                 break;
 
             case ::igtl::PolyDataAttribute::POINT_VECTOR:
-                attributes = attributes | data::mesh::Attributes::POINT_TEX_COORDS;
+                attributes = attributes | data::mesh::attribute::point_tex_coords;
                 break;
 
             case ::igtl::PolyDataAttribute::CELL_VECTOR:
-                attributes = attributes | data::mesh::Attributes::CELL_TEX_COORDS;
+                attributes = attributes | data::mesh::attribute::cell_tex_coords;
                 break;
 
             default:
@@ -348,21 +348,21 @@ data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
         }
     }
 
-    data::mesh::cell_type_t cell_type = data::mesh::cell_type_t::_SIZE;
+    data::mesh::cell_type_t cell_type = data::mesh::cell_type_t::size;
     igtlUint32 number_of_cells        = 0;
     if(mesh_msg->GetLines()->GetNumberOfCells() > 0)
     {
-        cell_type       = data::mesh::cell_type_t::LINE;
+        cell_type       = data::mesh::cell_type_t::line;
         number_of_cells = mesh_msg->GetLines()->GetNumberOfCells();
     }
     else if(mesh_msg->GetTriangleStrips()->GetNumberOfCells() > 0)
     {
-        cell_type       = data::mesh::cell_type_t::TRIANGLE;
+        cell_type       = data::mesh::cell_type_t::triangle;
         number_of_cells = mesh_msg->GetTriangleStrips()->GetNumberOfCells();
     }
     else if(mesh_msg->GetVertices()->GetNumberOfCells() > 0)
     {
-        cell_type       = data::mesh::cell_type_t::QUAD;
+        cell_type       = data::mesh::cell_type_t::quad;
         number_of_cells = mesh_msg->GetVertices()->GetNumberOfCells();
     }
 
@@ -379,44 +379,44 @@ data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     for(unsigned int i = 0 ; i < nb_points ; ++i)
     {
         points->GetPoint(i, point.data());
-        mesh->pushPoint(point[0], point[1], point[2]);
+        mesh->push_point(point[0], point[1], point[2]);
     }
 
-    if(cell_type == data::mesh::cell_type_t::LINE)
+    if(cell_type == data::mesh::cell_type_t::line)
     {
         for(unsigned int i = 0 ; i < mesh_msg->GetLines()->GetNumberOfCells() ; ++i)
         {
             mesh_msg->GetLines()->GetCell(i, cell.data());
-            mesh->pushCell(cell[0], cell[1]);
+            mesh->push_cell(cell[0], cell[1]);
         }
     }
-    else if(cell_type == data::mesh::cell_type_t::TRIANGLE)
+    else if(cell_type == data::mesh::cell_type_t::triangle)
     {
         for(unsigned int i = 0 ; i < mesh_msg->GetTriangleStrips()->GetNumberOfCells() ; ++i)
         {
             mesh_msg->GetTriangleStrips()->GetCell(i, cell.data());
-            mesh->pushCell(cell[0], cell[1], cell[2]);
+            mesh->push_cell(cell[0], cell[1], cell[2]);
         }
     }
-    else if(cell_type == data::mesh::cell_type_t::QUAD)
+    else if(cell_type == data::mesh::cell_type_t::quad)
     {
         for(unsigned int i = 0 ; i < mesh_msg->GetVertices()->GetNumberOfCells() ; ++i)
         {
             mesh_msg->GetVertices()->GetCell(i, cell.data());
-            mesh->pushCell(cell[0], cell[1], cell[2], cell[3]);
+            mesh->push_cell(cell[0], cell[1], cell[2], cell[3]);
         }
     }
 
-    mesh->shrinkToFit();
+    mesh->shrink_to_fit();
 
-    sight::io::igtl::detail::converter::MeshConverter::copyAttributeFromPolyData(mesh_msg, mesh);
+    sight::io::igtl::detail::converter::mesh_converter::copy_attribute_from_poly_data(mesh_msg, mesh);
 
     return mesh;
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshConverter::copyAttributeFromPolyData(
+void mesh_converter::copy_attribute_from_poly_data(
     ::igtl::PolyDataMessage::Pointer _src,
     data::mesh::sptr _dest
 )
@@ -436,7 +436,7 @@ void MeshConverter::copyAttributeFromPolyData(
                 std::size_t k = 0;
                 for(unsigned int j = 0 ; j < attr->GetSize() ; ++j)
                 {
-                    _dest->setPointColor(
+                    _dest->set_point_color(
                         j,
                         static_cast<data::mesh::color_t>(data[k] * 255.F),
                         static_cast<data::mesh::color_t>(data[k + 1] * 255.F),
@@ -459,7 +459,7 @@ void MeshConverter::copyAttributeFromPolyData(
                 std::size_t k = 0;
                 for(unsigned int j = 0 ; j < attr->GetSize() ; ++j)
                 {
-                    _dest->setCellColor(
+                    _dest->set_cell_color(
                         j,
                         static_cast<data::mesh::color_t>(data[k] * 255.F),
                         static_cast<data::mesh::color_t>(data[k + 1] * 255.F),
@@ -478,9 +478,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < _dest->numPoints() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->num_points() ; ++j)
                 {
-                    _dest->setPointNormal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
+                    _dest->set_point_normal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
                 }
 
                 attr->Clear();
@@ -492,9 +492,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < _dest->numCells() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->num_cells() ; ++j)
                 {
-                    _dest->setCellNormal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
+                    _dest->set_cell_normal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
                 }
 
                 attr->Clear();
@@ -506,9 +506,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < _dest->numPoints() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->num_points() ; ++j)
                 {
-                    _dest->setPointTexCoord(j, data[j * 2LL], data[j * 2 + 1]);
+                    _dest->set_point_tex_coord(j, data[j * 2LL], data[j * 2 + 1]);
                 }
 
                 attr->Clear();
@@ -520,9 +520,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < _dest->numCells() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->num_cells() ; ++j)
                 {
-                    _dest->setCellTexCoord(j, data[j * 2LL], data[j * 2 + 1]);
+                    _dest->set_cell_tex_coord(j, data[j * 2LL], data[j * 2 + 1]);
                 }
 
                 attr->Clear();
@@ -538,23 +538,23 @@ void MeshConverter::copyAttributeFromPolyData(
 
 //-----------------------------------------------------------------------------
 
-base::sptr MeshConverter::New()
+base::sptr mesh_converter::New()
 {
-    return std::make_shared<MeshConverter>();
+    return std::make_shared<mesh_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& MeshConverter::get_igtl_type() const
+std::string const& mesh_converter::get_igtl_type() const
 {
-    return MeshConverter::s_IGTL_TYPE;
+    return mesh_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& MeshConverter::getFwDataObjectType() const
+std::string const& mesh_converter::get_fw_data_object_type() const
 {
-    return MeshConverter::s_FWDATA_OBJECT_TYPE;
+    return mesh_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

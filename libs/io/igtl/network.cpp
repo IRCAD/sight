@@ -50,7 +50,7 @@ namespace sight::io::igtl
 
 network::network() :
 
-    m_deviceNameOut("Sight")
+    m_device_name_out("Sight")
 {
 }
 
@@ -61,39 +61,39 @@ network::~network()
 
 //------------------------------------------------------------------------------
 
-bool network::sendObject(const data::object::csptr& _obj)
+bool network::send_object(const data::object::csptr& _obj)
 {
     ::igtl::MessageBase::Pointer msg;
 
-    detail::DataConverter::sptr converter = detail::DataConverter::getInstance();
-    msg = converter->fromFwObject(_obj);
-    msg->SetDeviceName(m_deviceNameOut.c_str());
+    detail::data_converter::sptr converter = detail::data_converter::get_instance();
+    msg = converter->from_fw_object(_obj);
+    msg->SetDeviceName(m_device_name_out.c_str());
     msg->Pack();
     return m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1;
 }
 
 //------------------------------------------------------------------------------
 
-bool network::sendMsg(::igtl::MessageBase::Pointer _msg)
+bool network::send_msg(::igtl::MessageBase::Pointer _msg)
 {
-    _msg->SetDeviceName(m_deviceNameOut.c_str());
+    _msg->SetDeviceName(m_device_name_out.c_str());
     _msg->Pack();
     return m_socket->Send(_msg->GetPackPointer(), _msg->GetPackSize()) == 1;
 }
 
 //------------------------------------------------------------------------------
 
-data::object::sptr network::receiveObject(std::string& _device_name)
+data::object::sptr network::receive_object(std::string& _device_name)
 {
     data::object::sptr obj;
-    ::igtl::MessageHeader::Pointer header_msg = this->receiveHeader();
+    ::igtl::MessageHeader::Pointer header_msg = this->receive_header();
     if(header_msg.IsNotNull())
     {
-        ::igtl::MessageBase::Pointer msg = this->receiveBody(header_msg);
+        ::igtl::MessageBase::Pointer msg = this->receive_body(header_msg);
         if(msg.IsNotNull())
         {
-            detail::DataConverter::sptr converter = detail::DataConverter::getInstance();
-            obj          = converter->fromIgtlMessage(msg);
+            detail::data_converter::sptr converter = detail::data_converter::get_instance();
+            obj          = converter->from_igtl_message(msg);
             _device_name = header_msg->GetDeviceName();
         }
     }
@@ -103,13 +103,13 @@ data::object::sptr network::receiveObject(std::string& _device_name)
 
 //------------------------------------------------------------------------------
 
-data::object::sptr network::receiveObject(std::string& _device_name, double& _timestamp)
+data::object::sptr network::receive_object(std::string& _device_name, double& _timestamp)
 {
     data::object::sptr obj;
-    ::igtl::MessageHeader::Pointer header_msg = this->receiveHeader();
+    ::igtl::MessageHeader::Pointer header_msg = this->receive_header();
     if(header_msg.IsNotNull())
     {
-        ::igtl::MessageBase::Pointer msg = this->receiveBody(header_msg);
+        ::igtl::MessageBase::Pointer msg = this->receive_body(header_msg);
         if(msg.IsNotNull())
         {
             // get message timestamp
@@ -126,8 +126,8 @@ data::object::sptr network::receiveObject(std::string& _device_name, double& _ti
             sec_d     *= 1000.;
             _timestamp = frac_d + sec_d;
 
-            detail::DataConverter::sptr converter = detail::DataConverter::getInstance();
-            obj          = converter->fromIgtlMessage(msg);
+            detail::data_converter::sptr converter = detail::data_converter::get_instance();
+            obj          = converter->from_igtl_message(msg);
             _device_name = header_msg->GetDeviceName();
         }
     }
@@ -137,7 +137,7 @@ data::object::sptr network::receiveObject(std::string& _device_name, double& _ti
 
 //------------------------------------------------------------------------------
 
-::igtl::MessageHeader::Pointer network::receiveHeader()
+::igtl::MessageHeader::Pointer network::receive_header()
 {
     ::igtl::MessageHeader::Pointer header_msg = ::igtl::MessageHeader::New();
     header_msg->InitPack();
@@ -146,28 +146,28 @@ data::object::sptr network::receiveObject(std::string& _device_name, double& _ti
     if(size_receive == -1)
     {
         // Case 1: Timeout
-        throw sight::io::igtl::Exception("Network timeout");
+        throw sight::io::igtl::exception("Network timeout");
     }
 
     if(size_receive == 0)
     {
         // Case 2: Error
-        throw sight::io::igtl::Exception("Network Error");
+        throw sight::io::igtl::exception("Network Error");
     }
 
     if(size_receive != header_msg->GetPackSize())
     {
         // Case 3: mismatch of size
-        throw sight::io::igtl::Exception("Received size error");
+        throw sight::io::igtl::exception("Received size error");
     }
 
     if(header_msg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
     {
         const std::string device_name = header_msg->GetDeviceName();
 
-        if(m_filteringByDeviceName)
+        if(m_filtering_by_device_name)
         {
-            if(m_deviceNamesIn.find(device_name) != m_deviceNamesIn.end())
+            if(m_device_names_in.find(device_name) != m_device_names_in.end())
             {
                 return header_msg;
             }
@@ -183,7 +183,7 @@ data::object::sptr network::receiveObject(std::string& _device_name, double& _ti
 
 //------------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer network::receiveBody(::igtl::MessageHeader::Pointer const _header_msg)
+::igtl::MessageBase::Pointer network::receive_body(::igtl::MessageHeader::Pointer const _header_msg)
 {
     int unpack_result = 0;
     int result        = 0;
@@ -191,28 +191,28 @@ data::object::sptr network::receiveObject(std::string& _device_name, double& _ti
 
     if(_header_msg == nullptr)
     {
-        throw sight::io::igtl::Exception("Invalid header message");
+        throw sight::io::igtl::exception("Invalid header message");
     }
 
-    msg = io::igtl::detail::MessageFactory::create(_header_msg->GetDeviceType());
+    msg = io::igtl::detail::message_factory::create(_header_msg->GetDeviceType());
     msg->SetMessageHeader(_header_msg);
     msg->AllocatePack();
     result = m_socket->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
     if(result == -1) // Timeout
     {
-        throw sight::io::igtl::Exception("Network timeout");
+        throw sight::io::igtl::exception("Network timeout");
     }
 
     if(result == 0) // Error
     {
-        throw sight::io::igtl::Exception("Network Error");
+        throw sight::io::igtl::exception("Network Error");
     }
 
     unpack_result = msg->Unpack();
     if(unpack_result == ::igtl::MessageHeader::UNPACK_UNDEF)
     {
-        throw sight::io::igtl::Exception("Network Error");
+        throw sight::io::igtl::exception("Network Error");
     }
 
     if(unpack_result == ::igtl::MessageHeader::UNPACK_BODY)
@@ -220,66 +220,66 @@ data::object::sptr network::receiveObject(std::string& _device_name, double& _ti
         return msg;
     }
 
-    throw Exception("Body pack is not valid");
+    throw exception("Body pack is not valid");
 }
 
 //------------------------------------------------------------------------------
 
-::igtl::Socket::Pointer network::getSocket() const
+::igtl::Socket::Pointer network::get_socket() const
 {
     return m_socket;
 }
 
 //------------------------------------------------------------------------------
 
-void network::addAuthorizedDevice(const std::string& _device_name)
+void network::add_authorized_device(const std::string& _device_name)
 {
-    auto it = m_deviceNamesIn.find(_device_name);
+    auto it = m_device_names_in.find(_device_name);
 
-    if(it == m_deviceNamesIn.end())
+    if(it == m_device_names_in.end())
     {
-        m_deviceNamesIn.insert(_device_name);
+        m_device_names_in.insert(_device_name);
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool network::getFilteringByDeviceName() const
+bool network::get_filtering_by_device_name() const
 {
-    return m_filteringByDeviceName;
+    return m_filtering_by_device_name;
 }
 
 //------------------------------------------------------------------------------
 
-void network::setFilteringByDeviceName(bool _filtering)
+void network::set_filtering_by_device_name(bool _filtering)
 {
-    if(m_deviceNamesIn.empty())
+    if(m_device_names_in.empty())
     {
-        m_filteringByDeviceName = false;
+        m_filtering_by_device_name = false;
     }
     else
     {
-        m_filteringByDeviceName = _filtering;
+        m_filtering_by_device_name = _filtering;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void network::setDeviceNameOut(const std::string& _device_name)
+void network::set_device_name_out(const std::string& _device_name)
 {
-    m_deviceNameOut = _device_name;
+    m_device_name_out = _device_name;
 }
 
 //------------------------------------------------------------------------------
 
-std::string network::getDeviceNameOut() const
+std::string network::get_device_name_out() const
 {
-    return m_deviceNameOut;
+    return m_device_name_out;
 }
 
 //------------------------------------------------------------------------------
 
-void network::closeSocket(int _socket_descriptor)
+void network::close_socket(int _socket_descriptor)
 {
     // NOTE: Patched version of original CloseSocket() from igtlSocket.h, adding close() after shutdown() on Linux.
     // This can be removed on recent version of IGTL (Debian version is pretty old).
@@ -300,7 +300,7 @@ void network::closeSocket(int _socket_descriptor)
 
 //------------------------------------------------------------------------------
 
-int network::createSocket()
+int network::create_socket()
 {
 #if defined(_WIN32)
     // Declare variables
@@ -336,7 +336,7 @@ int network::createSocket()
 
 //------------------------------------------------------------------------------
 
-int network::listenSocket(int _socket_descriptor)
+int network::listen_socket(int _socket_descriptor)
 {
     if(_socket_descriptor < 0)
     {
@@ -348,7 +348,7 @@ int network::listenSocket(int _socket_descriptor)
 
 //------------------------------------------------------------------------------
 
-int network::bindSocket(int _socket_descriptor, std::uint16_t _port)
+int network::bind_socket(int _socket_descriptor, std::uint16_t _port)
 {
     struct sockaddr_in server {};
 

@@ -24,15 +24,15 @@
 namespace sight::module::io::bitmap::ut
 {
 
-struct Initializer
+struct initializer
 {
-    Initializer()
+    initializer()
     {
         sight::core::runtime::init();
         sight::core::runtime::load_module("sight::module::io::bitmap");
     }
 };
 
-static const Initializer init;
+static const initializer INIT;
 
 } // namespace sight::module::io::bitmap::ut

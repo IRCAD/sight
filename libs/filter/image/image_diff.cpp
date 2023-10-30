@@ -28,17 +28,17 @@ namespace sight::filter::image
 //-----------------------------------------------------------------------------
 
 image_diff::image_diff(const std::size_t _image_element_size, const std::size_t _reserved_elements) :
-    m_imgEltSize(_image_element_size),
-    m_eltSize(_image_element_size * 2 + sizeof(data::image::index_t))
+    m_img_elt_size(_image_element_size),
+    m_elt_size(_image_element_size * 2 + sizeof(data::image::index_t))
 {
     m_buffer.reserve(_reserved_elements);
 }
 
 //------------------------------------------------------------------------------
 
-void image_diff::addDiff(const image_diff& _diff)
+void image_diff::add_diff(const image_diff& _diff)
 {
-    SIGHT_ASSERT("Diff elements must be the same size.", m_eltSize == _diff.m_eltSize);
+    SIGHT_ASSERT("Diff elements must be the same size.", m_elt_size == _diff.m_elt_size);
 
     const std::size_t old_size = this->size();
     const std::size_t new_size = old_size + _diff.size();
@@ -49,42 +49,42 @@ void image_diff::addDiff(const image_diff& _diff)
 
 //-----------------------------------------------------------------------------
 
-void image_diff::addDiff(
+void image_diff::add_diff(
     data::image::index_t _index,
     const data::image::buffer_t* _old_value,
     const data::image::buffer_t* _new_value
 )
 {
     const std::size_t old_size = this->size();
-    const std::size_t new_size = old_size + m_eltSize;
+    const std::size_t new_size = old_size + m_elt_size;
 
     m_buffer.reserve(new_size);
     std::copy_n(reinterpret_cast<std::uint8_t*>(&_index), sizeof(data::image::index_t), std::back_inserter(m_buffer));
-    std::copy_n(_old_value, m_imgEltSize, std::back_inserter(m_buffer));
-    std::copy_n(_new_value, m_imgEltSize, std::back_inserter(m_buffer));
+    std::copy_n(_old_value, m_img_elt_size, std::back_inserter(m_buffer));
+    std::copy_n(_new_value, m_img_elt_size, std::back_inserter(m_buffer));
 }
 
 //------------------------------------------------------------------------------
 
-void image_diff::applyDiff(const data::image::sptr& _img) const
+void image_diff::apply_diff(const data::image::sptr& _img) const
 {
     const auto dump_lock = _img->dump_lock();
 
-    for(std::size_t i = 0 ; i < numElements() ; ++i)
+    for(std::size_t i = 0 ; i < num_elements() ; ++i)
     {
-        applyDiffElt(_img, i);
+        apply_diff_elt(_img, i);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void image_diff::revertDiff(const data::image::sptr& _img) const
+void image_diff::revert_diff(const data::image::sptr& _img) const
 {
     const auto dump_lock = _img->dump_lock();
 
-    for(std::size_t i = 0 ; i < numElements() ; ++i)
+    for(std::size_t i = 0 ; i < num_elements() ; ++i)
     {
-        revertDiffElt(_img, i);
+        revert_diff_elt(_img, i);
     }
 }
 
@@ -97,9 +97,9 @@ std::size_t image_diff::size() const
 
 //------------------------------------------------------------------------------
 
-std::size_t image_diff::numElements() const
+std::size_t image_diff::num_elements() const
 {
-    return size() / m_eltSize;
+    return size() / m_elt_size;
 }
 
 //------------------------------------------------------------------------------
@@ -118,32 +118,32 @@ void image_diff::shrink()
 
 //------------------------------------------------------------------------------
 
-image_diff::element_t image_diff::getElement(std::size_t _index) const
+image_diff::element_t image_diff::get_element(std::size_t _index) const
 {
     element_t elt {};
 
-    elt.m_index = *reinterpret_cast<const data::image::index_t*>(&m_buffer[_index * m_eltSize]);
+    elt.m_index = *reinterpret_cast<const data::image::index_t*>(&m_buffer[_index * m_elt_size]);
 
-    elt.m_oldValue = &m_buffer[_index * m_eltSize + sizeof(data::image::index_t)];
-    elt.m_newValue = &m_buffer[_index * m_eltSize + sizeof(data::image::index_t) + m_imgEltSize];
+    elt.m_old_value = &m_buffer[_index * m_elt_size + sizeof(data::image::index_t)];
+    elt.m_new_value = &m_buffer[_index * m_elt_size + sizeof(data::image::index_t) + m_img_elt_size];
 
     return elt;
 }
 
 //------------------------------------------------------------------------------
 
-void image_diff::applyDiffElt(const data::image::sptr& _img, std::size_t _elt_index) const
+void image_diff::apply_diff_elt(const data::image::sptr& _img, std::size_t _elt_index) const
 {
-    element_t elt = getElement(_elt_index);
-    _img->setPixel(elt.m_index, elt.m_newValue);
+    element_t elt = get_element(_elt_index);
+    _img->set_pixel(elt.m_index, elt.m_new_value);
 }
 
 //------------------------------------------------------------------------------
 
-void image_diff::revertDiffElt(const data::image::sptr& _img, std::size_t _elt_index) const
+void image_diff::revert_diff_elt(const data::image::sptr& _img, std::size_t _elt_index) const
 {
-    element_t elt = getElement(_elt_index);
-    _img->setPixel(elt.m_index, elt.m_oldValue);
+    element_t elt = get_element(_elt_index);
+    _img->set_pixel(elt.m_index, elt.m_old_value);
 }
 
 } // namespace sight::filter::image

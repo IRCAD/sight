@@ -34,7 +34,7 @@ namespace sight::viz::qt3d
  * @brief Interface providing behavior of Qt3D adaptor services.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): sets whether the adaptor is shown or not.
+ * - \b update_visibility(bool): sets whether the adaptor is shown or not.
  * - \b toggleVisibility(): toggle whether the adaptor is shown or not.
  * - \b show(): shows the adaptor.
  * - \b hide(): hides the hide.
@@ -56,7 +56,7 @@ public:
     SIGHT_DECLARE_CLASS(adaptor, sight::service::base);
 
     /// Gets the render service using this adaptor.
-    VIZ_QT3D_API render::sptr getRenderService() const;
+    VIZ_QT3D_API render::sptr render_service() const;
 
 protected:
 
@@ -72,7 +72,7 @@ protected:
     VIZ_QT3D_API ~adaptor() override;
 
     /// Parses common adaptor parameters.
-    VIZ_QT3D_API void configureParams();
+    VIZ_QT3D_API void configure_params();
 
     /// Registers the adaptor into its render service.
     VIZ_QT3D_API void initialize();
@@ -82,10 +82,10 @@ protected:
      * @param _isVisible the visibility status.
      * @see setVisible(bool)
      */
-    VIZ_QT3D_API void updateVisibility(bool _is_visible);
+    VIZ_QT3D_API void update_visibility(bool _is_visible);
 
     /// SLOT: toggles the visibility of the adaptor.
-    VIZ_QT3D_API void toggleVisibility();
+    VIZ_QT3D_API void toggle_visibility();
 
     /// SLOT: shows the adaptor.
     VIZ_QT3D_API void show();
@@ -94,13 +94,13 @@ protected:
     VIZ_QT3D_API void hide();
 
     /// Sets the visibility of the adaptor.
-    VIZ_QT3D_API virtual void setVisible(bool _visible);
+    VIZ_QT3D_API virtual void set_visible(bool _visible);
 
     /// Contains the render service this adaptor is attached to.
-    viz::qt3d::render::wptr m_renderService;
+    viz::qt3d::render::wptr m_render_service;
 
     /// Enables the adaptor visibility.
-    bool m_isVisible {true};
+    bool m_visible {true};
 };
 
 } // namespace sight::viz::qt3d.

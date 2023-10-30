@@ -174,7 +174,7 @@ std::size_t barrier_dump::dump(std::size_t _nb_of_bytes)
 
         buffer_vector_type buffers;
 
-        for(const core::memory::buffer_manager::buffer_info_map_t::value_type& elt : buffer_infos)
+        for(const auto& elt : buffer_infos)
         {
             const core::memory::buffer_info& info = elt.second;
             if(!(info.size == 0 || info.lock_count() > 0 || !info.loaded))
@@ -249,8 +249,8 @@ bool barrier_dump::set_param(const std::string& _name, const std::string& _value
 
 const core::memory::policy::base::param_names_type& barrier_dump::get_param_names() const
 {
-    static const core::memory::policy::base::param_names_type params = {{"barrier"}};
-    return params;
+    static const core::memory::policy::base::param_names_type s_PARAMS = {{"barrier"}};
+    return s_PARAMS;
 }
 
 //------------------------------------------------------------------------------

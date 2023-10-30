@@ -43,52 +43,52 @@ mesh_picker_interactor::~mesh_picker_interactor() noexcept =
 
 //------------------------------------------------------------------------------
 
-void mesh_picker_interactor::setPointClickedSig(const point_clicked_sig_t::sptr& _sig)
+void mesh_picker_interactor::set_point_clicked_sig(const point_clicked_sig_t::sptr& _sig)
 {
-    m_pointClickedSig = _sig;
+    m_point_clicked_sig = _sig;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_picker_interactor::setQueryMask(std::uint32_t _query_mask)
+void mesh_picker_interactor::set_query_mask(std::uint32_t _query_mask)
 {
-    m_queryMask = _query_mask;
+    m_query_mask = _query_mask;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_picker_interactor::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed)
+void mesh_picker_interactor::pick(mouse_button _button, modifier _mod, int _x, int _y, bool _pressed)
 {
     if(auto layer = m_layer.lock())
     {
-        if(!isInLayer(_x, _y, layer, m_layerOrderDependant))
+        if(!is_in_layer(_x, _y, layer, m_layer_order_dependant))
         {
             return;
         }
 
-        if(auto result = viz::scene3d::utils::pickObject(_x, _y, m_queryMask, *layer->getSceneManager());
+        if(auto result = viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *layer->get_scene_manager());
            result != std::nullopt)
         {
             Ogre::Vector3 click = result->second;
 
             data::tools::picking_info info;
-            info.m_worldPos[0] = static_cast<double>(click.x);
-            info.m_worldPos[1] = static_cast<double>(click.y);
-            info.m_worldPos[2] = static_cast<double>(click.z);
+            info.m_world_pos[0] = static_cast<double>(click.x);
+            info.m_world_pos[1] = static_cast<double>(click.y);
+            info.m_world_pos[2] = static_cast<double>(click.z);
 
-            using picking_event_t = data::tools::picking_info::Event;
+            using picking_event_t = data::tools::picking_info::event;
             switch(_button)
             {
-                case MouseButton::LEFT:
-                    info.m_eventId = _pressed ? picking_event_t::MOUSE_LEFT_DOWN : picking_event_t::MOUSE_LEFT_UP;
+                case mouse_button::left:
+                    info.m_event_id = _pressed ? picking_event_t::mouse_left_down : picking_event_t::mouse_left_up;
                     break;
 
-                case MouseButton::RIGHT:
-                    info.m_eventId = _pressed ? picking_event_t::MOUSE_RIGHT_DOWN : picking_event_t::MOUSE_RIGHT_UP;
+                case mouse_button::right:
+                    info.m_event_id = _pressed ? picking_event_t::mouse_right_down : picking_event_t::mouse_right_up;
                     break;
 
-                case MouseButton::MIDDLE:
-                    info.m_eventId = _pressed ? picking_event_t::MOUSE_MIDDLE_DOWN : picking_event_t::MOUSE_MIDDLE_UP;
+                case mouse_button::middle:
+                    info.m_event_id = _pressed ? picking_event_t::mouse_middle_down : picking_event_t::mouse_middle_up;
                     break;
 
                 default:
@@ -96,19 +96,19 @@ void mesh_picker_interactor::pick(MouseButton _button, Modifier _mod, int _x, in
                     break;
             }
 
-            if(static_cast<bool>(_mod & Modifier::CONTROL))
+            if(static_cast<bool>(_mod & modifier::control))
             {
-                info.m_modifierMask |= data::tools::picking_info::CTRL;
+                info.m_modifier_mask |= data::tools::picking_info::ctrl;
             }
 
-            if(static_cast<bool>(_mod & Modifier::SHIFT))
+            if(static_cast<bool>(_mod & modifier::shift))
             {
-                info.m_modifierMask |= data::tools::picking_info::SHIFT;
+                info.m_modifier_mask |= data::tools::picking_info::shift;
             }
 
-            if(m_pointClickedSig)
+            if(m_point_clicked_sig)
             {
-                m_pointClickedSig->async_emit(info);
+                m_point_clicked_sig->async_emit(info);
             }
             else
             {
@@ -123,14 +123,14 @@ void mesh_picker_interactor::pick(MouseButton _button, Modifier _mod, int _x, in
 
 //------------------------------------------------------------------------------
 
-void mesh_picker_interactor::buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y)
+void mesh_picker_interactor::button_press_event(mouse_button _button, modifier _mod, int _x, int _y)
 {
     this->pick(_button, _mod, _x, _y, true);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_picker_interactor::buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y)
+void mesh_picker_interactor::button_release_event(mouse_button _button, modifier _mod, int _x, int _y)
 {
     this->pick(_button, _mod, _x, _y, false);
 }

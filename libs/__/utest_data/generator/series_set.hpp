@@ -62,25 +62,25 @@ public:
      * @param nbActivity  number of Activity to add in series_set
      * @return The created series_set
      */
-    UTEST_DATA_API static SPTR(data::series_set) createSeriesSet(
+    UTEST_DATA_API static SPTR(data::series_set) create_series_set(
         const unsigned char _nb_img_series,
         const unsigned char _nb_model_series
     );
 
     /// Generates dummy informations for the series
-    UTEST_DATA_API static void generateSeriesInformation(SPTR(data::series) _series);
+    UTEST_DATA_API static void generate_series_information(SPTR(data::series) _series);
 
     /// Returns an ImageSeries with a randomized image
-    UTEST_DATA_API static SPTR(data::image_series) createImageSeries();
+    UTEST_DATA_API static SPTR(data::image_series) create_image_series();
 
     /**
      * @brief Returns a ModelSeries containing random Reconstructions
      * @param nbReconstruction number of Reconstrutions to add in the ModelSeries
      */
-    UTEST_DATA_API static SPTR(data::model_series) createModelSeries(unsigned char _nb_reconstruction);
+    UTEST_DATA_API static SPTR(data::model_series) create_model_series(unsigned char _nb_reconstruction);
 
     /// Returns an Activity with dummy data
-    UTEST_DATA_API static SPTR(data::activity) createActivity();
+    UTEST_DATA_API static SPTR(data::activity) create_activity();
 
     /**
      * @brief Generate a reconstruction.
@@ -90,7 +90,7 @@ public:
      * this can be helpful in tests to ensure that readers will load reconstruction in the same order than the
      * reconstructionDB.
      */
-    UTEST_DATA_API static void generateReconstruction(SPTR(data::reconstruction) _rec, int _index = -1);
+    UTEST_DATA_API static void generate_reconstruction(SPTR(data::reconstruction) _rec, int _index = -1);
 };
 
 } // namespace generator

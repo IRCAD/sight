@@ -65,7 +65,7 @@ namespace sight::module::io::dicom
        <service uid="..." type="sight::module::io::dicom::series_set_reader" >
            <inout key="data" uid="..." />
            <config>
-               <filterType>::filter::dicom::custom::NoFilter<filterType/>
+               <filterType>::filter::dicom::custom::no_filter<filterType/>
                <enableBufferRotation>yes</enableBufferRotation>
                <showLogDialog>yes</showLogDialog>
                <dicomdirSupport>user_selection</dicomdirSupport>
@@ -100,8 +100,8 @@ namespace sight::module::io::dicom
         <desc>"Open" action's filter selector config</desc>
         <config>
             <selection mode="include" />
-            <addSelection filter="sight::filter::dicom::custom::DefaultDicomFilter" />
-            <addSelection filter="sight::filter::dicom::custom::NoFilter" />
+            <addSelection filter="sight::filter::dicom::custom::default_dicom_filter" />
+            <addSelection filter="sight::filter::dicom::custom::no_filter" />
         </config>
     </extension>
    @endcode
@@ -125,7 +125,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief   constructor
@@ -140,13 +140,13 @@ public:
 
 protected:
 
-    typedef std::vector<std::string> supportedSOPClassContainerType;
+    using supported_sop_class_container_t = std::vector<std::string>;
 
-    enum DicomDirSupport
+    enum dicom_dir_support
     {
-        ALWAYS = 0,
-        NEVER,
-        USER_SELECTION
+        always = 0,
+        never,
+        user_selection
     };
 
     /// Configuring method. This method is used to configure the service.
@@ -165,13 +165,13 @@ protected:
     MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
 
     /// Override
-    MODULE_IO_DICOM_API std::string getSelectorDialogTitle() override;
+    MODULE_IO_DICOM_API std::string get_selector_dialog_title() override;
 
     /// Configure using GUI.
-    MODULE_IO_DICOM_API void openLocationDialog() override;
+    MODULE_IO_DICOM_API void open_location_dialog() override;
 
     /// Return managed file type, here FOLDER
-    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override;
 
 private:
 
@@ -179,28 +179,28 @@ private:
      * @brief Create a series_set and fill it using the data of the DICOM files
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(data::series_set) createSeriesSet(const std::filesystem::path& _dicom_dir);
+    SPTR(data::series_set) create_series_set(const std::filesystem::path& _dicom_dir);
 
     /// Selector config used to select a filter to apply
-    std::string m_filterConfig;
+    std::string m_filter_config;
 
     /// Selected filter key
-    std::string m_filterType;
+    std::string m_filter_type;
 
     /// Supported SOP Class selection
-    supportedSOPClassContainerType m_supportedSOPClassSelection;
+    supported_sop_class_container_t m_supported_sop_class_selection;
 
     /// Signal emitted when a job is created
-    SPTR(JobCreatedSignal) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 
     /// Show log dialog
-    bool m_showLogDialog;
+    bool m_show_log_dialog;
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation;
+    bool m_enable_buffer_rotation;
 
     /// Specify how to use dicomdir files
-    DicomDirSupport m_dicomDirSupport;
+    dicom_dir_support m_dicom_dir_support;
 };
 
 } // namespace sight::module::io::dicom

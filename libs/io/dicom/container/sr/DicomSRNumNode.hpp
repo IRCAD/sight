@@ -34,20 +34,20 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a NUM node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRNumNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_sr_num_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRNumNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_sr_num_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
         double _num_value,
-        DicomCodedAttribute _measurement_units
+        dicom_coded_attribute _measurement_units
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRNumNode() override;
+    IO_DICOM_API ~dicom_sr_num_node() override;
 
     /**
      * @brief Write the SR node in the dataset
@@ -56,27 +56,27 @@ public:
     IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get Numeric value
-    [[nodiscard]] const double& getNumValue() const
+    [[nodiscard]] const double& get_num_value() const
     {
-        return m_numValue;
+        return m_num_value;
     }
 
     ///Set Numeric value
-    void setNumValue(const double& _num_value)
+    void set_num_value(const double& _num_value)
     {
-        m_numValue = _num_value;
+        m_num_value = _num_value;
     }
 
     /// Get Measurement units
-    [[nodiscard]] const DicomCodedAttribute& getMeasurementUnits() const
+    [[nodiscard]] const dicom_coded_attribute& get_measurement_units() const
     {
-        return m_measurementUnits;
+        return m_measurement_units;
     }
 
     ///Set Measurement units
-    void setMeasurementUnits(const DicomCodedAttribute& _measurement_units)
+    void set_measurement_units(const dicom_coded_attribute& _measurement_units)
     {
-        m_measurementUnits = _measurement_units;
+        m_measurement_units = _measurement_units;
     }
 
 protected:
@@ -89,13 +89,13 @@ protected:
      * @see PS 3.3  Table C.18.1
      * @param[in] dataset Destination dataset
      */
-    void writeMeasuredValueSequence(gdcm::DataSet& _dataset) const;
+    void write_measured_value_sequence(gdcm::DataSet& _dataset) const;
 
     /// Numeric Value
-    double m_numValue;
+    double m_num_value;
 
     /// Measurement Units
-    DicomCodedAttribute m_measurementUnits;
+    dicom_coded_attribute m_measurement_units;
 };
 
 } // namespace sight::io::dicom::container::sr

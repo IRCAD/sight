@@ -39,17 +39,17 @@
 namespace sight::data::helper::medical_image
 {
 
-typedef enum
+enum orientation_t
 {
     /// Directions.
-    X_AXIS = 0,
-    Y_AXIS,
-    Z_AXIS,
+    x_axis = 0,
+    y_axis,
+    z_axis,
     /// Planar definitions.
-    SAGITTAL = X_AXIS,
-    FRONTAL  = Y_AXIS,
-    AXIAL    = Z_AXIS
-} orientation_t;
+    sagittal = x_axis,
+    frontal  = y_axis,
+    axial    = z_axis
+};
 
 /**
  * @brief       Check if the image is valid.
@@ -234,30 +234,30 @@ DATA_API void set_label(data::image& _image, const std::string& _label);
 // ------------------------------------------------------------------------------
 
 template<typename VALUE>
-class PixelCastAndSetFunctor
+class pixel_cast_and_set_functor
 {
 public:
 
-    class Param
+    class param
     {
     public:
 
-        typedef VALUE value_t;
-        typedef SPTR(data::image::buffer_t) BufferTypeSptr;
+        using value_t          = VALUE;
+        using buffer_type_sptr = std::shared_ptr<data::image::buffer_t>;
 
-        Param(value_t& _v) :
+        param(value_t& _v) :
             value(_v)
         {
         }
 
         const value_t& value;
-        BufferTypeSptr res;
+        buffer_type_sptr res;
     };
 
     // ------------------------------------------------------------------------------
 
     template<typename IMAGE>
-    void operator()(Param& _param)
+    void operator()(param& _param)
     {
         unsigned char image_type_size = sizeof(IMAGE);
 
@@ -274,18 +274,18 @@ public:
 // ------------------------------------------------------------------------------
 
 template<typename VALUE, typename INT_INDEX>
-class CastAndSetFunctor
+class cast_and_set_functor
 {
 public:
 
-    class Param
+    class param
     {
     public:
 
-        typedef VALUE value_t;
-        typedef INT_INDEX point_t;
+        using value_t = VALUE;
+        using point_t = INT_INDEX;
 
-        Param(point_t& _p, value_t& _v) :
+        param(point_t& _p, value_t& _v) :
             value(_v),
             point(_p)
         {
@@ -299,14 +299,14 @@ public:
     // ------------------------------------------------------------------------------
 
     template<typename IMAGE>
-    void operator()(Param& _param)
+    void operator()(param& _param)
     {
-        auto* buffer                  = static_cast<IMAGE*>(_param.image->buffer());
-        const INT_INDEX& p            = _param.point;
-        const data::image::Size& size = _param.image->size();
-        const int& sx                 = size[0];
-        const int& sy                 = size[1];
-        const int& offset             = p[0] + sx * p[1] + p[2] * sx * sy;
+        auto* buffer                    = static_cast<IMAGE*>(_param.image->buffer());
+        const INT_INDEX& p              = _param.point;
+        const data::image::size_t& size = _param.image->size();
+        const int& sx                   = size[0];
+        const int& sy                   = size[1];
+        const int& offset               = p[0] + sx * p[1] + p[2] * sx * sy;
         *(buffer + offset) = core::tools::numeric_round_cast<IMAGE>(_param.value);
     }
 };
@@ -319,25 +319,28 @@ SPTR(data::image::buffer_t) get_pixel_in_image_space(
     T & _value
 )
 {
-    typename PixelCastAndSetFunctor<T>::Param param(_value);
+    typename pixel_cast_and_set_functor<T>::param param(_value);
 
-    core::type type = _image->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, PixelCastAndSetFunctor<T> >::invoke(type, param);
+    core::type type = _image->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, pixel_cast_and_set_functor<T> >::invoke(
+        type,
+        param
+    );
     return param.res;
 }
 
 // ------------------------------------------------------------------------------
 
 template<typename T>
-class MinMaxFunctor
+class min_max_functor
 {
 public:
 
-    class Param
+    class param
     {
     public:
 
-        Param(data::image::csptr _img, T& _min, T& _max) :
+        param(data::image::csptr _img, T& _min, T& _max) :
             image(_img),
             min(_min),
             max(_max)
@@ -398,7 +401,7 @@ public:
     // ------------------------------------------------------------------------------
 
     template<typename IMAGE>
-    void operator()(Param& _param)
+    void operator()(param& _param)
     {
         const data::image::csptr image = _param.image;
         const auto dump_lock           = image->dump_lock();
@@ -406,14 +409,14 @@ public:
         result_vector_t min_result;
         result_vector_t max_result;
 
-        sight::data::thread::RegionThreader rt;
-        min_result.resize(rt.numberOfThread());
-        max_result.resize(rt.numberOfThread());
+        sight::data::thread::region_threader rt;
+        min_result.resize(rt.number_of_thread());
+        max_result.resize(rt.number_of_thread());
         rt(
             [capture0 = image->cbegin<IMAGE>(), &min_result, &max_result](std::ptrdiff_t _p_h1, std::ptrdiff_t _p_h2,
                                                                           std::size_t _p_h3, auto&& ...)
             {
-                return MinMaxFunctor::get_min_max<IMAGE>(
+                return min_max_functor::get_min_max<IMAGE>(
                     capture0,
                     min_result,
                     max_result,
@@ -435,10 +438,10 @@ public:
 template<typename MINMAXTYPE>
 void get_min_max(const data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
 {
-    typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
+    typename min_max_functor<MINMAXTYPE>::param param(_img, _min, _max);
 
-    core::type type = _img->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, MinMaxFunctor<MINMAXTYPE> >::invoke(type, param);
+    core::type type = _img->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, min_max_functor<MINMAXTYPE> >::invoke(type, param);
 }
 
 } // namespace sight::data::helper::medical_image

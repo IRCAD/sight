@@ -30,14 +30,14 @@
 namespace sight::io::session::detail::point
 {
 
-constexpr static auto s_X {"X"};
-constexpr static auto s_Y {"Y"};
-constexpr static auto s_Z {"Z"};
+constexpr static auto X {"X"};
+constexpr static auto Y {"Y"};
+constexpr static auto Z {"Z"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -49,16 +49,16 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::point>(_tree, 1);
 
-    const auto& coordinate = point->getCoord();
-    _tree.put(s_X, coordinate[0]);
-    _tree.put(s_Y, coordinate[1]);
-    _tree.put(s_Z, coordinate[2]);
+    const auto& coordinate = point->get_coord();
+    _tree.put(X, coordinate[0]);
+    _tree.put(Y, coordinate[1]);
+    _tree.put(Z, coordinate[2]);
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::point::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -72,12 +72,12 @@ inline static data::point::sptr read(
     helper::read_version<data::point>(_tree, 0, 1);
 
     const std::array<double, 3> coordinates = {
-        _tree.get<double>(s_X),
-        _tree.get<double>(s_Y),
-        _tree.get<double>(s_Z)
+        _tree.get<double>(X),
+        _tree.get<double>(Y),
+        _tree.get<double>(Z)
     };
 
-    point->setCoord(coordinates);
+    point->set_coord(coordinates);
 
     return point;
 }

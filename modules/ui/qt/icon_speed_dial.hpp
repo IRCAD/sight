@@ -98,17 +98,17 @@ public:
 
 private:
 
-    void updateActions();
+    void update_actions();
 
-    sight::ui::qt::widget::speed_dial::Direction m_direction = sight::ui::qt::widget::speed_dial::Direction::UP;
-    int m_spacing                                            = -1;
+    enum sight::ui::qt::widget::speed_dial::direction m_direction = sight::ui::qt::widget::speed_dial::direction::up;
+    int m_spacing                                                 = -1;
     std::string m_icon;
-    std::string m_unfoldedIcon;
-    int m_animationDuration = -1;
+    std::string m_unfolded_icon;
+    int m_animation_duration = -1;
     std::vector<action> m_actions;
     std::vector<QWidget*> m_widgets;
 
-    sight::ui::qt::widget::speed_dial* m_speedDial = nullptr;
+    sight::ui::qt::widget::speed_dial* m_speed_dial = nullptr;
     std::vector<QShortcut*> m_shortcuts;
 };
 

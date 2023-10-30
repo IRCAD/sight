@@ -117,7 +117,7 @@ public:
     MODULE_UI_QT_API ~camera() noexcept override = default;
 
     // Key saved in the preference file
-    static const std::string s_RESOLUTION_PREF_KEY;
+    static const std::string RESOLUTION_PREF_KEY;
 
 protected Q_SLOTS:
 
@@ -125,21 +125,21 @@ protected Q_SLOTS:
      * @brief Calls when user select another device.
      * @param _index the index of the selected device.
      */
-    void onApply(int _index);
+    void on_apply(int _index);
 
     /**
      * @brief Calls when user select another device.
      * @param _index the index of the selected device.
      */
-    void onActivated(int _index);
+    void on_activated(int _index);
 
     /// Allows setting the camera resolution preference.
-    void setPreference();
+    void set_preference();
 
 private:
 
     /// Type of the 'configured' signal.
-    typedef core::com::signal<void ()> configured_signal_t;
+    using configured_signal_t = core::com::signal<void ()>;
 
     /// Configures the service.
     void configuring() final;
@@ -154,31 +154,31 @@ private:
     void updating() final;
 
     /// Calls when user select a file.
-    void onChooseFile();
+    void on_choose_file();
 
     /// Calls when user select a stream.
-    void onChooseStream();
+    void on_choose_stream();
 
     /// Calls when user select a device.
-    void onChooseDevice();
+    void on_choose_device();
 
     /// Retrieves camera objects according to the XML configuration.
-    std::vector<data::camera::sptr> getCameras() const;
+    std::vector<data::camera::sptr> get_cameras() const;
 
     /// Combobox for camera selection.
-    QPointer<QComboBox> m_devicesComboBox;
+    QPointer<QComboBox> m_devices_combo_box;
 
     /// Offer the possibility to select a video file.
-    bool m_bVideoSupport {false};
+    bool m_b_video_support {false};
 
     /// Number of cameras to create when using a camera series as input.
-    std::size_t m_numCreateCameras {0};
+    std::size_t m_num_create_cameras {0};
 
     // Sets the file path as absolute ones
-    bool m_useAbsolutePath {false};
+    bool m_use_absolute_path {false};
 
     /// Signal emitted when the cameraSet has been configured.
-    configured_signal_t::sptr m_sigConfiguredCameras;
+    configured_signal_t::sptr m_sig_configured_cameras;
 
     /// Label of the selector.
     std::string m_label {"Video source: "};
@@ -187,17 +187,17 @@ private:
     std::string m_resolution;
 
     /// Value extracted from the preferences
-    std::string m_cameraResolutionPreference;
+    std::string m_camera_resolution_preference;
 
-    bool m_preferenceMode {false};
+    bool m_preference_mode {false};
 
-    static constexpr std::string_view s_CAMERA     = "camera";
-    static constexpr std::string_view s_CAMERA_SET = "cameraSet";
+    static constexpr std::string_view CAMERA     = "camera";
+    static constexpr std::string_view CAMERA_SET = "cameraSet";
 
-    data::ptr<data::camera, data::Access::inout> m_camera {this, s_CAMERA, false, true};
-    data::ptr<data::camera_set, data::Access::inout> m_camera_set {this, s_CAMERA_SET, false, true};
+    data::ptr<data::camera, data::access::inout> m_camera {this, CAMERA, false, true};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, CAMERA_SET, false, true};
 
-    int oldIndex {};
+    int m_old_index {};
 };
 
 } // namespace sight::module::ui::qt::video

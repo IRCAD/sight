@@ -46,19 +46,19 @@ static std::pair<data::frame_tl::sptr, SPTR(data::frame_tl::buffer_t)> gen_frame
     const core::type type = core::type::get<T>();
 
     data::frame_tl::sptr frame_tl = std::make_shared<data::frame_tl>();
-    frame_tl->initPoolSize(
+    frame_tl->init_pool_size(
         _w,
         _h,
         type,
         _num_channels == 1
-        ? data::frame_tl::PixelFormat::GRAY_SCALE
+        ? data::frame_tl::pixel_format::gray_scale
         : _num_channels == 3
-        ? data::frame_tl::PixelFormat::RGB
+        ? data::frame_tl::pixel_format::rgb
         : _num_channels == 4
-        ? data::frame_tl::PixelFormat::RGBA
-        : data::frame_tl::PixelFormat::UNDEFINED
+        ? data::frame_tl::pixel_format::rgba
+        : data::frame_tl::pixel_format::undefined
     );
-    auto buffer = frame_tl->createBuffer(core::hires_clock::get_time_in_milli_sec());
+    auto buffer = frame_tl->create_buffer(core::hires_clock::get_time_in_milli_sec());
 
     return std::make_pair(frame_tl, buffer);
 }
@@ -109,7 +109,7 @@ static void test_move_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_ch
     SPTR(data::frame_tl::buffer_t) buffer;
 
     std::tie(frame_tl, buffer) = gen_frame_tl<T>(_w, _h, _num_channels);
-    auto* elt_buffer = buffer->addElement(0);
+    auto* elt_buffer = buffer->add_element(0);
     std::copy(image_buffer.begin(), image_buffer.end(), elt_buffer);
 
     {
@@ -144,7 +144,7 @@ static void test_copy_from_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_
     SPTR(data::frame_tl::buffer_t) buffer;
 
     std::tie(frame_tl, buffer) = gen_frame_tl<T>(_w, _h, _num_channels);
-    auto* elt_buffer = buffer->addElement(0);
+    auto* elt_buffer = buffer->add_element(0);
 
     io::opencv::frame_tl::copy_from_cv(frame_tl, elt_buffer, cv_image);
 
@@ -165,11 +165,11 @@ static void test_copy_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_ch
     SPTR(data::frame_tl::buffer_t) buffer;
 
     std::tie(frame_tl, buffer) = gen_frame_tl<T>(_w, _h, _num_channels);
-    auto* elt_buffer = buffer->addElement(0);
+    auto* elt_buffer = buffer->add_element(0);
     std::copy(image_buffer.begin(), image_buffer.end(), elt_buffer);
 
     cv::Mat cv_image;
-    io::opencv::frame_tl::copyToCv(frame_tl, elt_buffer, cv_image);
+    io::opencv::frame_tl::copy_to_cv(frame_tl, elt_buffer, cv_image);
 
     // Since we copy the buffer, ensure the pointers are different
     CPPUNIT_ASSERT(static_cast<void*>(elt_buffer) != static_cast<void*>(cv_image.data));
@@ -210,7 +210,7 @@ void frame_tl_test::copy_from_cv()
 
 //------------------------------------------------------------------------------
 
-void frame_tl_test::copyToCv()
+void frame_tl_test::copy_to_cv()
 {
     test_copy_to_cv<std::uint8_t>(10, 2, 1);
     test_copy_to_cv<std::uint8_t>(6, 12, 3);

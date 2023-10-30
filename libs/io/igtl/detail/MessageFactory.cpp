@@ -35,40 +35,40 @@
 namespace sight::io::igtl::detail
 {
 
-MessageFactory::CreatorContainer MessageFactory::s_creators = MessageFactory::initFactory();
+message_factory::creator_container_t message_factory::s_creators = message_factory::init_factory();
 
 //------------------------------------------------------------------------------
 
-MessageFactory::CreatorContainer MessageFactory::initFactory()
+message_factory::creator_container_t message_factory::init_factory()
 {
-    MessageFactory::CreatorContainer container;
+    creator_container_t container;
 
     // Create messages without parameters.
-    container["TRANSFORM"] = &MessageMaker< ::igtl::TransformMessage, false>::createMessage;
-    container["IMAGE"]     = &MessageMaker< ::igtl::ImageMessage, false>::createMessage;
-    container["POINT"]     = &MessageMaker< ::igtl::PointMessage, false>::createMessage;
-    container["STRING"]    = &MessageMaker< ::igtl::StringMessage, false>::createMessage;
-    container["POSITION"]  = &MessageMaker< ::igtl::PositionMessage, false>::createMessage;
-    container["POLYDATA"]  = &MessageMaker< ::igtl::PolyDataMessage, false>::createMessage;
-    container["TDATA"]     = &MessageMaker< ::igtl::TrackingDataMessage, false>::createMessage;
-    container["STT_TDATA"] = &MessageMaker< ::igtl::StartTrackingDataMessage, false>::createMessage;
-    container["STP_TDATA"] = &MessageMaker< ::igtl::StopTrackingDataMessage, false>::createMessage;
+    container["TRANSFORM"] = &MessageMaker< ::igtl::TransformMessage, false>::create_message;
+    container["IMAGE"]     = &MessageMaker< ::igtl::ImageMessage, false>::create_message;
+    container["POINT"]     = &MessageMaker< ::igtl::PointMessage, false>::create_message;
+    container["STRING"]    = &MessageMaker< ::igtl::StringMessage, false>::create_message;
+    container["POSITION"]  = &MessageMaker< ::igtl::PositionMessage, false>::create_message;
+    container["POLYDATA"]  = &MessageMaker< ::igtl::PolyDataMessage, false>::create_message;
+    container["TDATA"]     = &MessageMaker< ::igtl::TrackingDataMessage, false>::create_message;
+    container["STT_TDATA"] = &MessageMaker< ::igtl::StartTrackingDataMessage, false>::create_message;
+    container["STP_TDATA"] = &MessageMaker< ::igtl::StopTrackingDataMessage, false>::create_message;
 
     return container;
 }
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MessageFactory::create(const std::string& _type)
+::igtl::MessageBase::Pointer message_factory::create(const std::string& _type)
 {
-    CreatorContainer::const_iterator it;
+    creator_container_t::const_iterator it;
 
-    if((it = MessageFactory::s_creators.find(_type)) != MessageFactory::s_creators.end())
+    if((it = message_factory::s_creators.find(_type)) != message_factory::s_creators.end())
     {
         return it->second();
     }
 
-    throw io::igtl::detail::exception::Conversion("Cannot find a creator for type " + _type);
+    throw io::igtl::detail::exception::conversion("Cannot find a creator for type " + _type);
 }
 
 } //namespace sight::io::igtl::detail

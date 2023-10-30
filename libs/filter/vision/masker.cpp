@@ -28,21 +28,21 @@ namespace sight::filter::vision
 {
 
 // Define the morphological element used
-const cv::Mat masker::s_MORPHELEMENT =
+const cv::Mat masker::MORPHELEMENT =
     cv::getStructuringElement(
-        masker::s_MORPHTYPE,
+        masker::MORPHTYPE,
         cv::Size(
-            2 * masker::s_MORPHSIZE + 1,
-            2 * masker::s_MORPHSIZE + 1
+            2 * masker::MORPHSIZE + 1,
+            2 * masker::MORPHSIZE + 1
         ),
-        cv::Point(masker::s_MORPHSIZE, masker::s_MORPHSIZE)
+        cv::Point(masker::MORPHSIZE, masker::MORPHSIZE)
     );
 
 //------------------------------------------------------------------------------
 
-masker::masker(const ColSpace& _c, const DetectionMode& _d) :
-    M_COLORSPACE(_c),
-    M_DETECTIONMODE(_d)
+masker::masker(const col_space& _c, const detection_mode& _d) :
+    m_colorspace(_c),
+    m_detectionmode(_d)
 {
 }
 
@@ -53,7 +53,7 @@ masker::~masker()
 
 //------------------------------------------------------------------------------
 
-void masker::trainForegroundModel(
+void masker::train_foreground_model(
     const cv::Mat& _rgb_img,
     const cv::Mat& _selection_mask,
     const unsigned int _num_clusters,
@@ -69,31 +69,31 @@ void masker::trainForegroundModel(
     cv::randn(gaussian_noise, 0, _noise);
     cv::addWeighted(rgb_img_copy, 1.0, gaussian_noise, 1.0, 0.0, rgb_img_copy);
 
-    const cv::Mat s = sight::filter::vision::masker::makeTrainingSamples(
+    const cv::Mat s = sight::filter::vision::masker::make_training_samples(
         rgb_img_copy,
         _selection_mask,
-        this->M_COLORSPACE
+        this->m_colorspace
     );
-    this->m_foregroundModel = sight::filter::vision::masker::trainModelFromSamples(s, _num_clusters);
+    this->m_foreground_model = sight::filter::vision::masker::train_model_from_samples(s, _num_clusters);
 }
 
 //------------------------------------------------------------------------------
 
-void masker::trainBackgroundModel(
+void masker::train_background_model(
     const cv::Mat& _rgb_img,
     const cv::Mat& _selection_mask,
     const unsigned int _num_clusters
 )
 {
-    const cv::Mat s = sight::filter::vision::masker::makeTrainingSamples(_rgb_img, _selection_mask, M_COLORSPACE);
-    m_backgroundModel = sight::filter::vision::masker::trainModelFromSamples(s, _num_clusters);
+    const cv::Mat s = sight::filter::vision::masker::make_training_samples(_rgb_img, _selection_mask, m_colorspace);
+    m_background_model = sight::filter::vision::masker::train_model_from_samples(s, _num_clusters);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat masker::makeMask(const cv::Mat& _test_img, const cv::Size& _down_size, cv::InputArray _test_img_mask) const
+cv::Mat masker::make_mask(const cv::Mat& _test_img, const cv::Size& _down_size, cv::InputArray _test_img_mask) const
 {
-    SIGHT_ASSERT("Threshold is not set", m_hasSetThreshold);
+    SIGHT_ASSERT("Threshold is not set", m_has_set_threshold);
 
     cv::Mat t2;
     cv::Mat test_img_mask2;
@@ -106,28 +106,28 @@ cv::Mat masker::makeMask(const cv::Mat& _test_img, const cv::Size& _down_size, c
         cv::resize(_test_img_mask.getMat(), test_img_mask2, _down_size);
     }
 
-    const cv::Mat i = convertColourSpace(t2, M_COLORSPACE);
+    const cv::Mat i = convert_colour_space(t2, m_colorspace);
 
-    switch(M_DETECTIONMODE)
+    switch(m_detectionmode)
     {
-        case fgLL:
+        case fg_ll:
         {
-            cv::Mat fg_response = makeResponseImage(i, m_foregroundModel, test_img_mask2);
+            cv::Mat fg_response = make_response_image(i, m_foreground_model, test_img_mask2);
             cv::threshold(fg_response, m, m_threshold, 255, cv::THRESH_BINARY);
             break;
         }
 
-        case bgLL:
+        case bg_ll:
         {
-            cv::Mat bg_response = makeResponseImage(i, m_backgroundModel, test_img_mask2);
+            cv::Mat bg_response = make_response_image(i, m_background_model, test_img_mask2);
             cv::threshold(bg_response, m, m_threshold, 255, cv::THRESH_BINARY_INV);
             break;
         }
 
-        case LLRatio:
+        case ll_ratio:
         {
-            cv::Mat fg_response = makeResponseImage(i, m_foregroundModel, test_img_mask2);
-            cv::Mat bg_response = makeResponseImage(i, m_backgroundModel, test_img_mask2);
+            cv::Mat fg_response = make_response_image(i, m_foreground_model, test_img_mask2);
+            cv::Mat bg_response = make_response_image(i, m_background_model, test_img_mask2);
             cv::threshold(fg_response - bg_response, m, m_threshold, 255, cv::THRESH_BINARY);
             break;
         }
@@ -140,39 +140,39 @@ cv::Mat masker::makeMask(const cv::Mat& _test_img, const cv::Size& _down_size, c
     cv::threshold(m, m, 125, 255, cv::THRESH_BINARY);
 
     //eliminate mask holes with erosion/dilation
-    cv::Mat filtered_mask1 = removeMaskHoles(m, 2, _test_img_mask);
+    cv::Mat filtered_mask1 = remove_mask_holes(m, 2, _test_img_mask);
 
     return filtered_mask1;
 }
 
 //------------------------------------------------------------------------------
 
-void masker::setThreshold(double _t)
+void masker::set_threshold(double _t)
 {
-    m_threshold       = _t;
-    m_hasSetThreshold = true;
+    m_threshold         = _t;
+    m_has_set_threshold = true;
 }
 
 //------------------------------------------------------------------------------
 
-bool masker::isModelLearned()
+bool masker::is_model_learned()
 {
-    switch(M_DETECTIONMODE)
+    switch(m_detectionmode)
     {
-        case fgLL:
-            return !m_foregroundModel.empty();
+        case fg_ll:
+            return !m_foreground_model.empty();
 
-        case bgLL:
-            return !m_backgroundModel.empty();
+        case bg_ll:
+            return !m_background_model.empty();
 
         default: // LLRatio
-            return !m_foregroundModel.empty() && !m_backgroundModel.empty();
+            return !m_foreground_model.empty() && !m_background_model.empty();
     }
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat masker::makeResponseImage(
+cv::Mat masker::make_response_image(
     const cv::Mat& _i,
     const cv::Ptr<cv::ml::EM> _model,
     cv::Mat& _in_img_mask
@@ -218,16 +218,16 @@ cv::Mat masker::makeResponseImage(
 
 //------------------------------------------------------------------------------
 
-cv::Mat masker::convertColourSpace(const cv::Mat& _src, const ColSpace& _c)
+cv::Mat masker::convert_colour_space(const cv::Mat& _src, const col_space& _c)
 {
     cv::Mat output;
     switch(_c)
     {
-        case BGR:
+        case bgr:
             _src.copyTo(output);
             break;
 
-        case HSv:
+        case h_sv:
         {
             cv::cvtColor(_src, output, cv::COLOR_BGR2HSV);
             std::array<cv::Mat, 3> s; //destination array
@@ -241,7 +241,7 @@ cv::Mat masker::convertColourSpace(const cv::Mat& _src, const ColSpace& _c)
             break;
         }
 
-        case lAB:
+        case l_ab:
         {
             cv::cvtColor(_src, output, cv::COLOR_BGR2Lab);
             std::array<cv::Mat, 3> s; //destination array
@@ -254,7 +254,7 @@ cv::Mat masker::convertColourSpace(const cv::Mat& _src, const ColSpace& _c)
             break;
         }
 
-        case yCrCb:
+        case y_cr_cb:
         {
             cv::cvtColor(_src, output, cv::COLOR_BGR2YCrCb);
             std::array<cv::Mat, 3> s; //destination array
@@ -273,7 +273,7 @@ cv::Mat masker::convertColourSpace(const cv::Mat& _src, const ColSpace& _c)
 
 //------------------------------------------------------------------------------
 
-cv::Ptr<cv::ml::EM> masker::trainModelFromSamples(const cv::Mat& _samples, const unsigned int _num_clusters)
+cv::Ptr<cv::ml::EM> masker::train_model_from_samples(const cv::Mat& _samples, const unsigned int _num_clusters)
 {
     cv::Ptr<cv::ml::EM> m = cv::ml::EM::create();
     m->setClustersNumber(static_cast<int>(_num_clusters));
@@ -285,9 +285,9 @@ cv::Ptr<cv::ml::EM> masker::trainModelFromSamples(const cv::Mat& _samples, const
 
 //------------------------------------------------------------------------------
 
-cv::Mat masker::makeTrainingSamples(const cv::Mat& _t, const cv::Mat& _mask, const ColSpace& _c)
+cv::Mat masker::make_training_samples(const cv::Mat& _t, const cv::Mat& _mask, const col_space& _c)
 {
-    cv::Mat train_img = masker::convertColourSpace(_t, _c);
+    cv::Mat train_img = masker::convert_colour_space(_t, _c);
 
     const int cn = train_img.channels();
 
@@ -320,12 +320,12 @@ cv::Mat masker::makeTrainingSamples(const cv::Mat& _t, const cv::Mat& _mask, con
 
 //------------------------------------------------------------------------------
 
-cv::Mat masker::removeMaskHoles(const cv::Mat& _m, std::size_t _n, cv::InputArray _inside_mask)
+cv::Mat masker::remove_mask_holes(const cv::Mat& _m, std::size_t _n, cv::InputArray _inside_mask)
 {
     cv::Mat mask;
     _m.copyTo(mask);
 
-    cv::Mat k = s_MORPHELEMENT.clone();
+    cv::Mat k = MORPHELEMENT.clone();
     k.setTo(1);
 
     // Perform some erosion/dilatation to remove small areas
@@ -340,8 +340,8 @@ cv::Mat masker::removeMaskHoles(const cv::Mat& _m, std::size_t _n, cv::InputArra
     }
 
     // Perform a last opening to smooth the edge of the final mask
-    cv::morphologyEx(mask, mask, cv::MORPH_OPEN, s_MORPHELEMENT);
-    cv::dilate(mask, mask, s_MORPHELEMENT);
+    cv::morphologyEx(mask, mask, cv::MORPH_OPEN, MORPHELEMENT);
+    cv::dilate(mask, mask, MORPHELEMENT);
 
     // Get connected components from the mask and label them
     cv::Mat labels;

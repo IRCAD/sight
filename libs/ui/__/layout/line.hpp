@@ -42,37 +42,37 @@ public:
     SIGHT_DECLARE_CLASS(line, ui::layout::view);
 
     /// Defines all possible orientation for a LineLayout
-    typedef enum
+    enum orientation
     {
-        VERTICAL,
-        HORIZONTAL
-    } Orientation;
+        vertical,
+        horizontal
+    };
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
-    class ViewInfo
+    class view_info
     {
     public:
 
         int m_proportion {1};
         int m_border {0};
-        int m_leftBorder {0};
-        int m_topBorder {0};
-        int m_rightBorder {0};
-        int m_bottomBorder {0};
+        int m_left_border {0};
+        int m_top_border {0};
+        int m_right_border {0};
+        int m_bottom_border {0};
         int m_spacing {-1};
-        std::pair<int, int> m_minSize {-1, -1};
-        std::pair<int, int> m_maxSize {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()};
+        std::pair<int, int> m_min_size {-1, -1};
+        std::pair<int, int> m_max_size {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()};
         std::pair<bool, std::string> m_caption {false, ""};
         bool m_visible {true};
-        bool m_isSpacer {false};
-        bool m_useScrollBar {false};
-        std::string m_toolTip;
+        bool m_is_spacer {false};
+        bool m_use_scroll_bar {false};
+        std::string m_tool_tip;
 
         /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
-        std::string m_backgroundColor;
+        std::string m_background_color;
         /// Defines a qss key to apply style
-        std::string m_qssKey;
+        std::string m_qss_key;
     };
 
     /// Constructor. Do nothing.
@@ -128,7 +128,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    Orientation getOrientation()
+    orientation get_orientation()
     {
         return m_orientation;
     }
@@ -137,7 +137,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    std::list<ViewInfo> getViewsInfo()
+    std::list<view_info> get_views_info()
     {
         return m_views;
     }
@@ -145,9 +145,9 @@ protected:
 private:
 
     /// Save layout configuration definition
-    std::list<ViewInfo> m_views;
+    std::list<view_info> m_views;
 
-    Orientation m_orientation {VERTICAL};
+    orientation m_orientation {vertical};
 };
 
 } // namespace sight::ui::layout

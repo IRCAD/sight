@@ -3,20 +3,20 @@
 
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::editor</type>
-         <service>sight::module::ui::debug::DumpEditor</service>
+         <service>sight::module::ui::debug::dump_editor</service>
          <desc>Editor to dump or restore selected buffer.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::action</type>
-         <service>sight::module::ui::debug::action::ClassFactoryRegistryInfo</service>
+         <service>sight::module::ui::debug::action::class_factory_registry_info</service>
          <object>sight::data::object</object>
          <desc>Implements an action to show services registered in factory</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::action</type>
-         <service>sight::module::ui::debug::action::ComponentsTree</service>
+         <service>sight::module::ui::debug::action::components_tree</service>
          <object>sight::data::object</object>
          <desc>Implements an action that show module information.</desc>
     </extension>

@@ -44,24 +44,24 @@ namespace sight::io::igtl::detail::converter
  * @brief class to manage conversion between data::integer of Float and igtl::RawMessage
  */
 template<typename ScalarType, typename fw_data_object_t>
-class IO_IGTL_CLASS_API ScalarConverter : public base
+class IO_IGTL_CLASS_API scalar_converter : public base
 {
 public:
 
     /// Constructor
-    ScalarConverter()
+    scalar_converter()
     {
         static_assert(std::is_base_of<data::object, fw_data_object_t>::value);
     }
 
-    ScalarConverter(std::string _a) :
-        M_IGTL_TYPE(std::move(_a))
+    scalar_converter(std::string _a) :
+        m_igtl_type(std::move(_a))
     {
         static_assert(std::is_base_of<data::object, fw_data_object_t>::value);
     }
 
     /// Destructor
-    ~ScalarConverter() override
+    ~scalar_converter() override
     = default;
 
     /**
@@ -69,13 +69,13 @@ public:
      *
      * @return an data::integer converted from an igtl::RawMessage
      */
-    [[nodiscard]] data::object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const override
+    [[nodiscard]] data::object::sptr from_igtl_message(const ::igtl::MessageBase::Pointer _src) const override
     {
         auto obj = std::make_shared<fw_data_object_t>();
 
-        RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast<RawMessage*>(_src.GetPointer()));
-        const ScalarType scalar = helper::ScalarToBytes<ScalarType>::fromBytes(msg->getMessage().data());
-        obj->setValue(scalar);
+        raw_message::Pointer msg = raw_message::Pointer(dynamic_cast<raw_message*>(_src.GetPointer()));
+        const ScalarType scalar  = helper::scalar_to_bytes<ScalarType>::from_bytes(msg->get_message().data());
+        obj->set_value(scalar);
 
         return obj;
     }
@@ -85,13 +85,13 @@ public:
      *
      * @return an  igtl::RawMessage converted from an data::integer
      */
-    [[nodiscard]] ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const override
+    [[nodiscard]] ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src) const override
     {
-        RawMessage::Pointer msg;
+        raw_message::Pointer msg;
         typename fw_data_object_t::csptr obj = std::dynamic_pointer_cast<const fw_data_object_t>(_src);
 
-        msg = RawMessage::New(M_IGTL_TYPE);
-        RawMessage::raw_data_t content = helper::ScalarToBytes<ScalarType>::toBytes(ScalarType(obj->getValue()));
+        msg = raw_message::New(m_igtl_type);
+        raw_message::raw_data_t content = helper::scalar_to_bytes<ScalarType>::to_bytes(ScalarType(obj->get_value()));
         msg->append(content);
         return ::igtl::MessageBase::Pointer(msg); // NOLINT(modernize-return-braced-init-list)
     }
@@ -103,7 +103,7 @@ public:
      */
     static base::sptr New(std::string const& _igtl_scalar_type)
     {
-        return std::make_shared<ScalarConverter<ScalarType, fw_data_object_t> >(_igtl_scalar_type);
+        return std::make_shared<scalar_converter<ScalarType, fw_data_object_t> >(_igtl_scalar_type);
     }
 
     /**
@@ -113,7 +113,7 @@ public:
      */
     [[nodiscard]] const std::string& get_igtl_type() const override
     {
-        return M_IGTL_TYPE;
+        return m_igtl_type;
     }
 
     /**
@@ -121,7 +121,7 @@ public:
      *
      * @return the fwData Object type supported for conversion
      */
-    [[nodiscard]] const std::string& getFwDataObjectType() const override
+    [[nodiscard]] const std::string& get_fw_data_object_type() const override
     {
         return fw_data_object_t::classname();
     }
@@ -129,23 +129,23 @@ public:
 protected:
 
     /// igtl type supported for conversion
-    const std::string M_IGTL_TYPE;
+    const std::string m_igtl_type;
 };
 
-class IO_IGTL_CLASS_API IntConverter : public ScalarConverter<int,
-                                                              data::integer>
+class IO_IGTL_CLASS_API int_converter : public scalar_converter<int,
+                                                                data::integer>
 {
 public:
 
-    typedef ScalarConverter<int, data::integer> Superclass;
+    using superclass = scalar_converter<int, data::integer>;
     /// Constructor
-    IntConverter() :
-        Superclass("INTEGER")
+    int_converter() :
+        superclass("INTEGER")
     {
     }
 
     /// Destructor
-    ~IntConverter() override
+    ~int_converter() override
     = default;
 
     /**
@@ -155,24 +155,24 @@ public:
      */
     static base::sptr New()
     {
-        return std::make_shared<IntConverter>();
+        return std::make_shared<int_converter>();
     }
 };
 
-class IO_IGTL_CLASS_API FloatConverter : public ScalarConverter<float,
-                                                                data::real>
+class IO_IGTL_CLASS_API float_converter : public scalar_converter<float,
+                                                                  data::real>
 {
 public:
 
-    typedef ScalarConverter<float, data::real> Superclass;
+    using superclass = scalar_converter<float, data::real>;
     /// Constructor
-    FloatConverter() :
-        Superclass("FLOAT")
+    float_converter() :
+        superclass("FLOAT")
     {
     }
 
     /// Destructor
-    ~FloatConverter() override
+    ~float_converter() override
     = default;
 
     /**
@@ -182,7 +182,7 @@ public:
      */
     static base::sptr New()
     {
-        return std::make_shared<FloatConverter>();
+        return std::make_shared<float_converter>();
     }
 };
 

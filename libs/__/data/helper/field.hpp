@@ -97,7 +97,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void addOrSwap(const data::object::field_name_t& _name, data::object::sptr _obj);
+    DATA_API void add_or_swap(const data::object::field_name_t& _name, data::object::sptr _obj);
 
     /**
      * @brief Remove a field from the object.
@@ -121,7 +121,7 @@ public:
 
 protected:
 
-    DATA_API void buildMessage(
+    DATA_API void build_message(
         const data::object::field_map_t& _old_fields,
         const data::object::field_map_t& _new_fields
     );
@@ -129,9 +129,9 @@ protected:
     /// Map of added objects, send on notify
     data::object::fields_container_t m_addedfields;
     /// Map of new changed objects, send on notify
-    data::object::fields_container_t m_newChangedfields;
+    data::object::fields_container_t m_new_changedfields;
     /// Map of old changed objects, send on notify
-    data::object::fields_container_t m_oldChangedfields;
+    data::object::fields_container_t m_old_changedfields;
     /// Map of removed objects, send on notify
     data::object::fields_container_t m_removedfields;
     /// Composite to add/remove/change objects

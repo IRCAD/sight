@@ -31,8 +31,8 @@ namespace sight::module::ui::com::ut
 class timestamp_signal_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(timestamp_signal_test);
-CPPUNIT_TEST(systemClockTest);
-CPPUNIT_TEST(highResClockTest);
+CPPUNIT_TEST(system_clock_test);
+CPPUNIT_TEST(high_res_clock_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,12 +42,12 @@ public:
 
     void test(bool _use_system_clock);
 
-    void systemClockTest();
-    void highResClockTest();
+    void system_clock_test();
+    void high_res_clock_test();
 
 private:
 
-    service::base::sptr m_timestampSignal;
+    service::base::sptr m_timestamp_signal;
     core::thread::worker::sptr m_worker;
 };
 

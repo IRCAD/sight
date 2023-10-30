@@ -36,8 +36,8 @@
                 </colors>
             </object>
 
-            <object uid="viewport" type="sight::viz::scene2d::data::Viewport" />
-            <object uid="viewportShutter" type="sight::viz::scene2d::data::Viewport" />
+            <object uid="viewport" type="sight::viz::scene2d::data::viewport" />
+            <object uid="viewportShutter" type="sight::viz::scene2d::data::viewport" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -48,17 +48,17 @@
                         <icon>ExRealSense/app.ico</icon>
                         <minSize width="1280" height="820" />
                     </frame>
-                    <menuBar />
-                    <toolBar />
+                    <menubar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
-                    <toolBar sid="toolbarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="containerView" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -99,7 +99,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <editor />
@@ -685,7 +685,7 @@
                 <signal>enableSpacialFilterParamsSrv/parameterChanged</signal>
                 <signal>enableTemporalFilterParamsSrv/parameterChanged</signal>
                 <signal>enableHoleFillingFilterParamsSrv/parameterChanged</signal>
-                 <slot>videoGrabberSrv/setParameter</slot>
+                 <slot>videoGrabberSrv/set_parameter</slot>
             </connect>
 
             <connect>
@@ -705,7 +705,7 @@
 
             <connect>
                 <signal>videoGrabberSrv/distanceComputed</signal>
-                <slot>distanceSrv/setDoubleParameter</slot>
+                <slot>distanceSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
@@ -728,20 +728,20 @@
 
             <connect>
                 <signal>syncGenericSceneSrv/allReceived</signal>
-                <slot>videoRenderSrv/requestRender</slot>
-                <slot>distanceMapRenderSrv/requestRender</slot>
-                <slot>reconstructionRenderSrv/requestRender</slot>
+                <slot>videoRenderSrv/request_render</slot>
+                <slot>distanceMapRenderSrv/request_render</slot>
+                <slot>reconstructionRenderSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 
             <connect>
                 <signal>showPCDepthAct/isChecked</signal>
-                <slot>DMPointAdp/updateVisibility</slot>
+                <slot>DMPointAdp/update_visibility</slot>
             </connect>
 
             <connect>
                 <signal>showPCColorAct/isChecked</signal>
-                <slot>VPointAdp/updateVisibility</slot>
+                <slot>VPointAdp/update_visibility</slot>
             </connect>
 
             <connect>

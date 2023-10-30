@@ -39,22 +39,22 @@
 namespace sight::io::session::detail::image
 {
 
-constexpr static auto s_uuid {"uuid"};
-constexpr static auto s_WindowCenters {"WindowCenters"};
-constexpr static auto s_WindowWidths {"WindowWidths"};
-constexpr static auto s_WindowCenter {"WindowCenter"};
-constexpr static auto s_WindowWidth {"WindowWidth"};
-constexpr static auto s_Type {"Type"};
-constexpr static auto s_PixelFormat {"PixelFormat"};
-constexpr static auto s_Spacing {"Spacing"};
-constexpr static auto s_Origin {"Origin"};
-constexpr static auto s_Size {"Size"};
-constexpr static auto s_X {"X"};
-constexpr static auto s_Y {"Y"};
-constexpr static auto s_Z {"Z"};
-constexpr static auto s_Width {"Width"};
-constexpr static auto s_Height {"Height"};
-constexpr static auto s_Depth {"Depth"};
+constexpr static auto UUID {"uuid"};
+constexpr static auto WINDOW_CENTERS {"WindowCenters"};
+constexpr static auto WINDOW_WIDTHS {"WindowWidths"};
+constexpr static auto WINDOW_CENTER {"WindowCenter"};
+constexpr static auto WINDOW_WIDTH {"WindowWidth"};
+constexpr static auto TYPE {"Type"};
+constexpr static auto PIXEL_FORMAT {"PixelFormat"};
+constexpr static auto SPACING {"Spacing"};
+constexpr static auto ORIGIN {"Origin"};
+constexpr static auto SIZE {"Size"};
+constexpr static auto X {"X"};
+constexpr static auto Y {"Y"};
+constexpr static auto Z {"Z"};
+constexpr static auto WIDTH {"Width"};
+constexpr static auto HEIGHT {"Height"};
+constexpr static auto DEPTH {"Depth"};
 
 //------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ inline static std::filesystem::path get_file_path(const std::string& _uuid)
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& _archive,
+    zip::archive_writer& _archive,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -87,54 +87,54 @@ inline static void write(
     // Serialize image
     const auto& size = image->size();
     boost::property_tree::ptree size_tree;
-    size_tree.add(s_Width, size[0]);
-    size_tree.add(s_Height, size[1]);
-    size_tree.add(s_Depth, size[2]);
-    _tree.add_child(s_Size, size_tree);
+    size_tree.add(WIDTH, size[0]);
+    size_tree.add(HEIGHT, size[1]);
+    size_tree.add(DEPTH, size[2]);
+    _tree.add_child(SIZE, size_tree);
 
-    const auto& type = image->getType();
-    _tree.put(s_Type, type.name());
+    const auto& type = image->type();
+    _tree.put(TYPE, type.name());
 
-    const auto& format = image->getPixelFormat();
-    _tree.put(s_PixelFormat, format);
+    const auto& format = image->pixel_format();
+    _tree.put(PIXEL_FORMAT, format);
 
     // Write image metadata
-    const auto& spacing = image->getSpacing();
+    const auto& spacing = image->spacing();
     boost::property_tree::ptree spacing_tree;
-    spacing_tree.add(s_X, spacing[0]);
-    spacing_tree.add(s_Y, spacing[1]);
-    spacing_tree.add(s_Z, spacing[2]);
-    _tree.add_child(s_Spacing, spacing_tree);
+    spacing_tree.add(X, spacing[0]);
+    spacing_tree.add(Y, spacing[1]);
+    spacing_tree.add(Z, spacing[2]);
+    _tree.add_child(SPACING, spacing_tree);
 
-    const auto& origin = image->getOrigin();
+    const auto& origin = image->origin();
     boost::property_tree::ptree origin_tree;
-    origin_tree.add(s_X, origin[0]);
-    origin_tree.add(s_Y, origin[1]);
-    origin_tree.add(s_Z, origin[2]);
-    _tree.add_child(s_Origin, origin_tree);
+    origin_tree.add(X, origin[0]);
+    origin_tree.add(Y, origin[1]);
+    origin_tree.add(Z, origin[2]);
+    _tree.add_child(ORIGIN, origin_tree);
 
     boost::property_tree::ptree window_centers_tree;
-    for(std::size_t index = 0 ; const auto& window_center : image->getWindowCenter())
+    for(std::size_t index = 0 ; const auto& window_center : image->window_center())
     {
-        window_centers_tree.put(s_WindowCenter + std::to_string(index++), window_center);
+        window_centers_tree.put(WINDOW_CENTER + std::to_string(index++), window_center);
     }
 
-    _tree.add_child(s_WindowCenters, window_centers_tree);
+    _tree.add_child(WINDOW_CENTERS, window_centers_tree);
 
     boost::property_tree::ptree window_widths_tree;
-    for(std::size_t index = 0 ; const auto& window_width : image->getWindowWidth())
+    for(std::size_t index = 0 ; const auto& window_width : image->window_width())
     {
-        window_widths_tree.put(s_WindowWidth + std::to_string(index++), window_width);
+        window_widths_tree.put(WINDOW_WIDTH + std::to_string(index++), window_width);
     }
 
-    _tree.add_child(s_WindowWidths, window_widths_tree);
+    _tree.add_child(WINDOW_WIDTHS, window_widths_tree);
 
     // Create the output file inside the archive
-    const auto& ostream = _archive.openFile(
+    const auto& ostream = _archive.open_file(
         get_file_path(image->get_uuid()),
         _password,
-        sight::io::zip::Method::DEFAULT,
-        sight::io::zip::Level::BEST
+        sight::io::zip::method::DEFAULT,
+        sight::io::zip::level::best
     );
 
 #if defined(USE_VTK)
@@ -158,14 +158,14 @@ inline static void write(
     (*ostream) << vtk_writer->GetOutputString();
 #else
     // Write the image data as raw bytes
-    ostream->write(reinterpret_cast<const char*>(image->buffer()), std::streamsize(image->getSizeInBytes()));
+    ostream->write(reinterpret_cast<const char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
 #endif
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::image::sptr read(
-    zip::ArchiveReader& _archive,
+    zip::archive_reader& _archive,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -180,61 +180,61 @@ inline static data::image::sptr read(
     helper::read_version<data::image>(_tree, 0, 1);
 
     // Deserialize image
-    const auto& size_tree        = _tree.get_child(s_Size);
-    const data::image::Size size = {
-        size_tree.get<size_t>(s_Width),
-        size_tree.get<size_t>(s_Height),
-        size_tree.get<size_t>(s_Depth)
+    const auto& size_tree          = _tree.get_child(SIZE);
+    const data::image::size_t size = {
+        size_tree.get<size_t>(WIDTH),
+        size_tree.get<size_t>(HEIGHT),
+        size_tree.get<size_t>(DEPTH)
     };
 
-    core::type type(_tree.get<std::string>(s_Type));
+    core::type type(_tree.get<std::string>(TYPE));
 
-    const auto format = static_cast<data::image::PixelFormat>(_tree.get<int>(s_PixelFormat));
+    const auto format = static_cast<enum data::image::pixel_format>(_tree.get<int>(PIXEL_FORMAT));
 
     ///@note This is not saved in VTK files.
     std::vector<double> window_centers;
-    for(const auto& value : _tree.get_child(s_WindowCenters))
+    for(const auto& value : _tree.get_child(WINDOW_CENTERS))
     {
         window_centers.push_back(value.second.get_value<double>());
     }
 
-    image->setWindowCenter(window_centers);
+    image->set_window_center(window_centers);
 
     std::vector<double> window_widths;
-    for(const auto& value : _tree.get_child(s_WindowWidths))
+    for(const auto& value : _tree.get_child(WINDOW_WIDTHS))
     {
         window_widths.push_back(value.second.get_value<double>());
     }
 
-    image->setWindowWidth(window_widths);
+    image->set_window_width(window_widths);
 
-    const auto& spacing_tree = _tree.get_child(s_Spacing);
-    image->setSpacing(
+    const auto& spacing_tree = _tree.get_child(SPACING);
+    image->set_spacing(
         {
-            spacing_tree.get<double>(s_X),
-            spacing_tree.get<double>(s_Y),
-            spacing_tree.get<double>(s_Z)
+            spacing_tree.get<double>(X),
+            spacing_tree.get<double>(Y),
+            spacing_tree.get<double>(Z)
         });
 
-    const auto& origin_tree = _tree.get_child(s_Origin);
-    image->setOrigin(
+    const auto& origin_tree = _tree.get_child(ORIGIN);
+    image->set_origin(
         {
-            origin_tree.get<double>(s_X),
-            origin_tree.get<double>(s_Y),
-            origin_tree.get<double>(s_Z)
+            origin_tree.get<double>(X),
+            origin_tree.get<double>(Y),
+            origin_tree.get<double>(Z)
         });
 
     // If pixelFormart == UNDEFINED it is ALWAYS an empty image, so early return here.
-    if(format == data::image::PixelFormat::UNDEFINED)
+    if(format == data::image::pixel_format::undefined)
     {
         return image;
     }
 
-    const auto& serialized_uuid = _tree.get<std::string>(s_uuid);
+    const auto& serialized_uuid = _tree.get<std::string>(UUID);
 
     // Read the image data
     // Create the istream from the input file inside the archive
-    const auto& istream = _archive.openFile(
+    const auto& istream = _archive.open_file(
         get_file_path(serialized_uuid),
         _password
     );
@@ -261,7 +261,7 @@ inline static data::image::sptr read(
 
 #if !defined(USE_VTK)
     // Read the image data as raw bytes
-    istream->read(reinterpret_cast<char*>(image->buffer()), std::streamsize(image->getSizeInBytes()));
+    istream->read(reinterpret_cast<char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
 #endif
 
     return image;

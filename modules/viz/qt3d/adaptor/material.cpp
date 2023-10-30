@@ -36,7 +36,7 @@ namespace sight::module::viz::qt3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
+static const std::string MATERIAL_NAME_CONFIG = "materialName";
 
 //-----------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ void material::configuring()
 
     if(config)
     {
-        m_materialName = config->get<std::string>(s_MATERIAL_NAME_CONFIG, m_materialName);
+        m_material_name = config->get<std::string>(MATERIAL_NAME_CONFIG, m_material_name);
     }
 }
 
@@ -82,7 +82,7 @@ void material::starting()
 service::connections_t material::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_MATERIAL_INOUT, data::material::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATERIAL_INOUT, data::material::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -91,12 +91,12 @@ service::connections_t material::auto_connections() const
 void material::updating()
 {
     // Reads the material from the input as sight data.
-    auto material = m_materialInOut.lock();
+    auto material = m_material_in_out.lock();
 
-    m_material->updatePolygonMode(material->getRepresentationMode());
-    m_material->updateOptionsMode(material->getOptionsMode());
-    m_material->updateShadingMode(material->getShadingMode());
-    m_material->updateRGBAMode(material.get_shared());
+    m_material->update_polygon_mode(material->get_representation_mode());
+    m_material->update_options_mode(material->get_options_mode());
+    m_material->update_shading_mode(static_cast<int>(material->get_shading_mode()));
+    m_material->update_rgba_mode(material.get_shared());
 }
 
 //-----------------------------------------------------------------------------
@@ -107,23 +107,23 @@ void material::stopping()
 
 //-----------------------------------------------------------------------------
 
-void material::setMaterial(sight::viz::qt3d::data::material* _material)
+void material::set_material(sight::viz::qt3d::data::material* _material)
 {
     m_material = _material;
 }
 
 //------------------------------------------------------------------------------
 
-sight::viz::qt3d::data::material* material::getMaterial()
+sight::viz::qt3d::data::material* material::get_material()
 {
     return m_material;
 }
 
 //------------------------------------------------------------------------------
 
-std::string material::getMaterialName()
+std::string material::get_material_name()
 {
-    return m_materialName;
+    return m_material_name;
 }
 
 } // namespace sight::module::viz::qt3d::adaptor.

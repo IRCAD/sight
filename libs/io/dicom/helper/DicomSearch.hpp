@@ -43,7 +43,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers to search dicom files on filesystem.
  */
-class IO_DICOM_CLASS_API DicomSearch
+class IO_DICOM_CLASS_API dicom_search
 {
 public:
 
@@ -55,7 +55,7 @@ public:
      * it is a DICOM file
      * @param[in] fileLookupObserver lookup observer
      */
-    IO_DICOM_API static void searchRecursively(
+    IO_DICOM_API static void search_recursively(
         const std::filesystem::path& _dir_path,
         std::vector<std::filesystem::path>& _dicom_files,
         bool _check_is_dicom,
@@ -70,7 +70,7 @@ protected:
      * @param[out] dicomFiles Dicom files
      * @param[in] fileLookupObserver lookup observer
      */
-    static void checkFilenameExtension(
+    static void check_filename_extension(
         const std::filesystem::path& _dir_path,
         std::vector<std::filesystem::path>& _dicom_files,
         const SPTR(core::jobs::observer)& _file_lookup_observer = nullptr

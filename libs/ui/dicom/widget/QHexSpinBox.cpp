@@ -27,7 +27,7 @@ namespace sight::ui::dicom::widget
 
 //-----------------------------------------------------------------------------
 
-QHexSpinBox::QHexSpinBox(QWidget* _parent) :
+q_hex_spin_box::q_hex_spin_box(QWidget* _parent) :
     QSpinBox(_parent)
 {
     this->setRange(0, 0xFFFF);
@@ -36,14 +36,14 @@ QHexSpinBox::QHexSpinBox(QWidget* _parent) :
 
 //-----------------------------------------------------------------------------
 
-QValidator::State QHexSpinBox::validate(QString& _text, int& _pos) const
+QValidator::State q_hex_spin_box::validate(QString& _text, int& _pos) const
 {
     return m_validator->validate(_text, _pos);
 }
 
 //-----------------------------------------------------------------------------
 
-int QHexSpinBox::valueFromText(const QString& _text) const
+int q_hex_spin_box::valueFromText(const QString& _text) const
 {
     bool ok = false;
     return _text.toInt(&ok, 16);
@@ -51,7 +51,7 @@ int QHexSpinBox::valueFromText(const QString& _text) const
 
 //-----------------------------------------------------------------------------
 
-QString QHexSpinBox::textFromValue(int _value) const
+QString q_hex_spin_box::textFromValue(int _value) const
 {
     QString res = QString::number(_value, 16).toUpper();
     for(int i = res.size() ; i < 4 ; ++i)

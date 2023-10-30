@@ -31,62 +31,62 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string StringConverter::s_IGTL_TYPE          = "STRING";
-const std::string StringConverter::s_FWDATA_OBJECT_TYPE = data::string::classname();
+const std::string string_converter::IGTL_TYPE          = "STRING";
+const std::string string_converter::FWDATA_OBJECT_TYPE = data::string::classname();
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::StringConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::string_converter);
 
-StringConverter::StringConverter()
+string_converter::string_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-StringConverter::~StringConverter()
+string_converter::~string_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer string_converter::from_fw_data_object(data::object::csptr _src) const
 {
     data::string::csptr src_str = std::dynamic_pointer_cast<const data::string>(_src);
 
     ::igtl::StringMessage::Pointer dest = ::igtl::StringMessage::New();
-    dest->SetString(src_str->getValue().c_str());
+    dest->SetString(src_str->get_value().c_str());
     return {dest.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr string_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     data::string::sptr dest = std::make_shared<data::string>();
 
     auto* msg                              = dynamic_cast< ::igtl::StringMessage*>(_src.GetPointer());
     ::igtl::StringMessage::Pointer src_str = ::igtl::StringMessage::Pointer(msg);
-    dest->setValue(std::string(src_str->GetString()));
+    dest->set_value(std::string(src_str->GetString()));
 
     return dest;
 }
 
 //-----------------------------------------------------------------------------
 
-base::sptr StringConverter::New()
+base::sptr string_converter::New()
 {
-    return std::make_shared<StringConverter>();
+    return std::make_shared<string_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& StringConverter::get_igtl_type() const
+std::string const& string_converter::get_igtl_type() const
 {
-    return StringConverter::s_IGTL_TYPE;
+    return string_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& StringConverter::getFwDataObjectType() const
+std::string const& string_converter::get_fw_data_object_type() const
 {
-    return StringConverter::s_FWDATA_OBJECT_TYPE;
+    return string_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

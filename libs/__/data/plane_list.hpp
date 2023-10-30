@@ -45,7 +45,7 @@ public:
 
     SIGHT_DECLARE_CLASS(plane_list, object);
 
-    typedef std::vector<plane::sptr> PlaneListContainer;
+    using plane_list_t = std::vector<plane::sptr>;
 
     /**
      * @brief Constructor
@@ -59,9 +59,9 @@ public:
     /** @{
      *  @brief get/set container of all planes
      */
-    PlaneListContainer& getPlanes();
-    const PlaneListContainer& getPlanes() const;
-    void setPlanes(const PlaneListContainer& _v_planes);
+    plane_list_t& get_planes();
+    const plane_list_t& get_planes() const;
+    void set_planes(const plane_list_t& _v_planes);
     /// @}
 
     /**
@@ -69,15 +69,15 @@ public:
      * @{
      */
     /// Signal emitted when a plane is added
-    typedef core::com::signal<void (plane::sptr)> plane_added_signal_t;
+    using plane_added_signal_t = core::com::signal<void (plane::sptr)>;
     DATA_API static const core::com::signals::key_t PLANE_ADDED_SIG;
 
     /// Signal emitted when a plane is removed
-    typedef core::com::signal<void (plane::sptr)> plane_removed_signal_t;
+    using plane_removed_signal_t = core::com::signal<void (plane::sptr)>;
     DATA_API static const core::com::signals::key_t PLANE_REMOVED_SIG;
 
     /// Signal emitted when the visibility changed
-    typedef core::com::signal<void (bool)> visibility_modified_signal_t;
+    using visibility_modified_signal_t = core::com::signal<void (bool)>;
     DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
 /**
  * @}
@@ -106,28 +106,28 @@ public:
 protected:
 
     //! Planes container
-    PlaneListContainer m_vPlanes;
+    plane_list_t m_v_planes;
 }; // end class plane_list
 
 //-----------------------------------------------------------------------------
 
-inline plane_list::PlaneListContainer& plane_list::getPlanes()
+inline plane_list::plane_list_t& plane_list::get_planes()
 {
-    return this->m_vPlanes;
+    return this->m_v_planes;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const plane_list::PlaneListContainer& plane_list::getPlanes() const
+inline const plane_list::plane_list_t& plane_list::get_planes() const
 {
-    return this->m_vPlanes;
+    return this->m_v_planes;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void plane_list::setPlanes(const plane_list::PlaneListContainer& _v_planes)
+inline void plane_list::set_planes(const plane_list::plane_list_t& _v_planes)
 {
-    this->m_vPlanes = _v_planes;
+    this->m_v_planes = _v_planes;
 }
 
 //-----------------------------------------------------------------------------

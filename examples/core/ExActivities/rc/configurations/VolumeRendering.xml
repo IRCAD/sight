@@ -29,11 +29,11 @@
                 <parent wid="${WID_PARENT}" />
                 <view sid="imageScene" />
                 <view sid="tfm" />
-                <toolBar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" start="true" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::tool_bar">
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />

@@ -26,11 +26,11 @@
 namespace sight::io::dicom::codec
 {
 
-class NvJpeg2K : public gdcm::JPEG2000Codec
+class nv_jpeg2_k : public gdcm::JPEG2000Codec
 {
 public:
 
-    ~NvJpeg2K() override = default;
+    ~nv_jpeg2_k() override = default;
 
     bool Code(gdcm::DataElement const& _in, gdcm::DataElement& _out) override;
 

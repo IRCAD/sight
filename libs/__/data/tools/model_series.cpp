@@ -30,7 +30,7 @@ namespace sight::data::tools
 
 //------------------------------------------------------------------------------
 
-void model_series::addMesh(
+void model_series::add_mesh(
     const data::model_series::sptr& _model_series,
     const data::mesh::sptr& _mesh,
     const std::string& _organ_name,
@@ -42,9 +42,9 @@ void model_series::addMesh(
 {
     //reconstruction creation
     data::reconstruction::sptr reconstruction_quad_mesh =
-        createReconstructionFromMesh(_mesh, _organ_name, _structure_type, _colour, _mode, _visible);
+        create_reconstruction_from_mesh(_mesh, _organ_name, _structure_type, _colour, _mode, _visible);
 
-    addReconstruction(_model_series, reconstruction_quad_mesh);
+    add_reconstruction(_model_series, reconstruction_quad_mesh);
 
     auto sig = _model_series->signal<data::model_series::reconstructions_added_signal_t>(
         data::model_series::RECONSTRUCTIONS_ADDED_SIG
@@ -57,7 +57,7 @@ void model_series::addMesh(
 
 //------------------------------------------------------------------------------
 
-data::reconstruction::sptr model_series::createReconstructionFromMesh(
+data::reconstruction::sptr model_series::create_reconstruction_from_mesh(
     const data::mesh::sptr& _mesh,
     const std::string& _organ_name,
     const std::string& _structure_type,
@@ -67,29 +67,29 @@ data::reconstruction::sptr model_series::createReconstructionFromMesh(
 )
 {
     data::color::sptr diffuse = std::make_shared<data::color>();
-    diffuse->setRGBA(_color->red(), _color->green(), _color->blue(), _color->alpha());
+    diffuse->set_rgba(_color->red(), _color->green(), _color->blue(), _color->alpha());
     data::material::sptr p_material = std::make_shared<data::material>();
-    p_material->setDiffuse(diffuse);
-    p_material->setRepresentationMode(_mode);
+    p_material->set_diffuse(diffuse);
+    p_material->set_representation_mode(_mode);
 
     data::reconstruction::sptr reconstruction = std::make_shared<data::reconstruction>();
-    reconstruction->setMesh(_mesh);
-    reconstruction->setIsVisible(_visible);
-    reconstruction->setOrganName(_organ_name);
+    reconstruction->set_mesh(_mesh);
+    reconstruction->set_is_visible(_visible);
+    reconstruction->set_organ_name(_organ_name);
     reconstruction->set_structure_type(_structure_type);
-    reconstruction->setMaterial(p_material);
+    reconstruction->set_material(p_material);
 
     return reconstruction;
 }
 
 //------------------------------------------------------------------------------
 
-void model_series::addReconstruction(
+void model_series::add_reconstruction(
     const data::model_series::sptr& _model_series,
     const data::reconstruction::sptr& _rec
 )
 {
-    data::model_series::reconstruction_vector_t rec_db = _model_series->getReconstructionDB();
+    data::model_series::reconstruction_vector_t rec_db = _model_series->get_reconstruction_db();
 
     SIGHT_THROW_IF("Reconstruction is invalid.", _rec == nullptr);
     SIGHT_THROW_IF(
@@ -98,7 +98,7 @@ void model_series::addReconstruction(
     );
 
     rec_db.push_back(_rec);
-    _model_series->setReconstructionDB(rec_db);
+    _model_series->set_reconstruction_db(rec_db);
 }
 
 //------------------------------------------------------------------------------

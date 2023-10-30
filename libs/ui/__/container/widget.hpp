@@ -38,12 +38,12 @@ public:
 
     SIGHT_DECLARE_CLASS(widget, ui::object);
 
-    UI_API virtual void clean()            = 0;
-    UI_API virtual void destroyContainer() = 0;
-    UI_API virtual bool isShownOnScreen()  = 0;
+    UI_API virtual void clean()              = 0;
+    UI_API virtual void destroy_container()  = 0;
+    UI_API virtual bool is_shown_on_screen() = 0;
 
-    UI_API virtual void setVisible(bool _is_visible) = 0;
-    UI_API virtual void setEnabled(bool _is_enabled) = 0;
+    UI_API virtual void set_visible(bool _is_visible) = 0;
+    UI_API virtual void set_enabled(bool _is_enabled) = 0;
 };
 
 } // namespace sight::ui::container

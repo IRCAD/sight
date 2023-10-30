@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,19 +29,19 @@
 namespace sight::io::bitmap::ut
 {
 
-class WriterTest : public CPPUNIT_NS::TestFixture
+class writer_test : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    CPPUNIT_TEST_SUITE(WriterTest);
-    CPPUNIT_TEST(basicTest);
-    CPPUNIT_TEST(extensionsTest);
-    CPPUNIT_TEST(wildcardTest);
-    CPPUNIT_TEST(conformanceTest);
-    CPPUNIT_TEST(emptyImageTest);
-    CPPUNIT_TEST(wrongPathTest);
-    CPPUNIT_TEST(fromDicomTest);
-    CPPUNIT_TEST(profilingTest);
+    CPPUNIT_TEST_SUITE(writer_test);
+    CPPUNIT_TEST(basic_test);
+    CPPUNIT_TEST(extensions_test);
+    CPPUNIT_TEST(wildcard_test);
+    CPPUNIT_TEST(conformance_test);
+    CPPUNIT_TEST(empty_image_test);
+    CPPUNIT_TEST(wrong_path_test);
+    CPPUNIT_TEST(from_dicom_test);
+    CPPUNIT_TEST(profiling_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,14 +49,14 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void basicTest();
-    static void extensionsTest();
-    static void wildcardTest();
-    static void conformanceTest();
-    static void emptyImageTest();
-    static void wrongPathTest();
-    static void fromDicomTest();
-    static void profilingTest();
+    static void basic_test();
+    static void extensions_test();
+    static void wildcard_test();
+    static void conformance_test();
+    static void empty_image_test();
+    static void wrong_path_test();
+    static void from_dicom_test();
+    static void profiling_test();
 };
 
 } // namespace sight::io::bitmap::ut

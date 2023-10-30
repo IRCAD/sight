@@ -41,8 +41,8 @@ namespace sight::ui
 
 toolbar::toolbar()
 {
-    new_slot(slots::SET_VISIBLE_SLOT, &toolbar::setVisible, this);
-    new_slot(slots::SET_VISIBLE_BY_PARAM_SLOT, &toolbar::setVisibleByParameter, this);
+    new_slot(slots::SET_VISIBLE_SLOT, &toolbar::set_visible, this);
+    new_slot(slots::SET_VISIBLE_BY_PARAM_SLOT, &toolbar::set_visible_by_parameter, this);
     new_slot(slots::SHOW_SLOT, &toolbar::show, this);
     new_slot(slots::HIDE_SLOT, &toolbar::hide, this);
 }
@@ -51,7 +51,7 @@ toolbar::toolbar()
 
 void toolbar::initialize()
 {
-    m_registry = ui::detail::registry::tool_bar::make(this->get_id());
+    m_registry = ui::detail::registry::toolbar::make(this->get_id());
 
     const auto& config = this->get_config();
 
@@ -64,9 +64,9 @@ void toolbar::initialize()
     // find layout configuration
     if(const auto layout_config = config.get_child_optional("gui.layout"); layout_config.has_value())
     {
-        this->initializeLayoutManager(layout_config.value());
+        this->initialize_layout_manager(layout_config.value());
 
-        m_hideActions = layout_config->get<bool>("hideActions", m_hideActions);
+        m_hide_actions = layout_config->get<bool>("hideActions", m_hide_actions);
     }
 }
 
@@ -74,11 +74,11 @@ void toolbar::initialize()
 
 void toolbar::create()
 {
-    ui::container::toolbar::sptr tool_bar               = m_registry->getParent();
-    std::vector<ui::menu_item_callback::sptr> callbacks = m_registry->getCallbacks();
+    ui::container::toolbar::sptr tool_bar               = m_registry->get_parent();
+    std::vector<ui::menu_item_callback::sptr> callbacks = m_registry->get_callbacks();
 
-    SIGHT_ASSERT("Parent toolBar is unknown.", tool_bar);
-    m_layoutManager->setCallbacks(callbacks);
+    SIGHT_ASSERT("Parent toolbar is unknown.", tool_bar);
+    m_layout_manager->set_callbacks(callbacks);
 
     const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
 
@@ -86,13 +86,13 @@ void toolbar::create()
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(tool_bar, service_id);
+            m_layout_manager->create_layout(tool_bar, service_id);
         })
     ).wait();
 
-    m_registry->manage(m_layoutManager->getMenuItems());
-    m_registry->manage(m_layoutManager->getMenus());
-    m_registry->manage(m_layoutManager->getContainers());
+    m_registry->manage(m_layout_manager->get_menu_items());
+    m_registry->manage(m_layout_manager->get_menus());
+    m_registry->manage(m_layout_manager->get_containers());
 }
 
 //-----------------------------------------------------------------------------
@@ -105,27 +105,27 @@ void toolbar::destroy()
         std::function<void()>(
             [&]
         {
-            m_layoutManager->destroyLayout();
+            m_layout_manager->destroy_layout();
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::actionServiceStopping(std::string _action_srv_sid)
+void toolbar::action_service_stopping(std::string _action_srv_sid)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
-    if(m_hideActions)
+    if(m_hide_actions)
     {
         core::thread::get_default_worker()->post_task<void>(
             std::function<void()>(
                 [&]
             {
-                m_layoutManager->menuItemSetVisible(menu_item, false);
+                m_layout_manager->menu_item_set_visible(menu_item, false);
             })
         ).wait();
     }
@@ -135,7 +135,7 @@ void toolbar::actionServiceStopping(std::string _action_srv_sid)
             std::function<void()>(
                 [&]
             {
-                m_layoutManager->menuItemSetEnabled(menu_item, false);
+                m_layout_manager->menu_item_set_enabled(menu_item, false);
             })
         ).wait();
     }
@@ -143,11 +143,11 @@ void toolbar::actionServiceStopping(std::string _action_srv_sid)
 
 //-----------------------------------------------------------------------------
 
-void toolbar::actionServiceStarting(std::string _action_srv_sid)
+void toolbar::action_service_starting(std::string _action_srv_sid)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
     const service::base::csptr service = service::get(_action_srv_sid);
@@ -157,22 +157,22 @@ void toolbar::actionServiceStarting(std::string _action_srv_sid)
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetEnabled(menu_item, action_srv->enabled());
+            m_layout_manager->menu_item_set_enabled(menu_item, action_srv->enabled());
             const bool inverted   = action_srv->inverted();
             const bool is_checked = action_srv->checked();
-            m_layoutManager->menuItemSetChecked(menu_item, inverted ? !is_checked : is_checked);
-            m_layoutManager->menuItemSetVisible(menu_item, action_srv->visible());
+            m_layout_manager->menu_item_set_checked(menu_item, inverted ? !is_checked : is_checked);
+            m_layout_manager->menu_item_set_visible(menu_item, action_srv->visible());
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::actionServiceSetChecked(std::string _action_srv_sid, bool _is_checked)
+void toolbar::action_service_set_checked(std::string _action_srv_sid, bool _is_checked)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
     const service::base::csptr service = service::get(_action_srv_sid);
@@ -183,78 +183,78 @@ void toolbar::actionServiceSetChecked(std::string _action_srv_sid, bool _is_chec
             [&]
         {
             const bool inverted = action_srv->inverted();
-            m_layoutManager->menuItemSetChecked(menu_item, inverted ? !_is_checked : _is_checked);
+            m_layout_manager->menu_item_set_checked(menu_item, inverted ? !_is_checked : _is_checked);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::actionServiceSetEnabled(std::string _action_srv_sid, bool _is_enabled)
+void toolbar::action_service_set_enabled(std::string _action_srv_sid, bool _is_enabled)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetEnabled(menu_item, _is_enabled);
+            m_layout_manager->menu_item_set_enabled(menu_item, _is_enabled);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::actionServiceSetVisible(std::string _action_srv_sid, bool _is_visible)
+void toolbar::action_service_set_visible(std::string _action_srv_sid, bool _is_visible)
 {
     ui::container::menu_item::sptr menu_item = m_registry->get_menu_item(
         _action_srv_sid,
-        m_layoutManager->getMenuItems()
+        m_layout_manager->get_menu_items()
     );
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetVisible(menu_item, _is_visible);
+            m_layout_manager->menu_item_set_visible(menu_item, _is_visible);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::initializeLayoutManager(const ui::config_t& _layout_config)
+void toolbar::initialize_layout_manager(const ui::config_t& _layout_config)
 {
     ui::object::sptr gui_obj = ui::factory::make(
         ui::layout::toolbar_manager::REGISTRY_KEY
     );
-    m_layoutManager = std::dynamic_pointer_cast<ui::layout::toolbar_manager>(gui_obj);
+    m_layout_manager = std::dynamic_pointer_cast<ui::layout::toolbar_manager>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::layout::toolbar_manager::REGISTRY_KEY,
-        m_layoutManager
+        m_layout_manager
     );
 
-    m_layoutManager->initialize(_layout_config);
+    m_layout_manager->initialize(_layout_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::setVisible(bool _is_visible)
+void toolbar::set_visible(bool _is_visible)
 {
-    m_layoutManager->setVisible(_is_visible);
+    m_layout_manager->set_visible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::setVisibleByParameter(ui::parameter_t _is_visible)
+void toolbar::set_visible_by_parameter(ui::parameter_t _is_visible)
 {
     // Only consider boolean alternative, skip all other type of the variant.
     if(std::holds_alternative<bool>(_is_visible))
     {
-        this->setVisible(std::get<bool>(_is_visible));
+        this->set_visible(std::get<bool>(_is_visible));
     }
 }
 
@@ -262,14 +262,14 @@ void toolbar::setVisibleByParameter(ui::parameter_t _is_visible)
 
 void toolbar::show()
 {
-    this->setVisible(true);
+    this->set_visible(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void toolbar::hide()
 {
-    this->setVisible(false);
+    this->set_visible(false);
 }
 
 } // namespace sight::ui

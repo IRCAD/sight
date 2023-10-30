@@ -40,32 +40,32 @@ non_linear_slider::non_linear_slider(QWidget* _parent) :
         &QAbstractSlider::valueChanged,
         [this](int _v)
         {
-            Q_EMIT valueChanged(m_values[std::size_t(_v)]);
+            Q_EMIT value_changed(m_values[std::size_t(_v)]);
         });
 }
 
 //------------------------------------------------------------------------------
 
-void non_linear_slider::setOrientation(Qt::Orientation _orientation)
+void non_linear_slider::set_orientation(Qt::Orientation _orientation)
 {
     m_slider->setOrientation(_orientation);
 }
 
 //------------------------------------------------------------------------------
 
-void non_linear_slider::setValues(const std::vector<int>& _values)
+void non_linear_slider::set_values(const std::vector<int>& _values)
 {
     SIGHT_ASSERT("The values list should be sorted", std::ranges::is_sorted(_values));
     m_values = _values;
     m_slider->setRange(0, static_cast<int>(_values.size() - 1));
     m_slider->setValue(0);
-    Q_EMIT rangeChanged(_values.front(), _values.back());
-    Q_EMIT valueChanged(value());
+    Q_EMIT range_changed(_values.front(), _values.back());
+    Q_EMIT value_changed(value());
 }
 
 //------------------------------------------------------------------------------
 
-void non_linear_slider::setValue(int _value)
+void non_linear_slider::set_value(int _value)
 {
     auto it = std::ranges::find(m_values, _value);
     SIGHT_ASSERT("The value should exist in the list of possible values", it != m_values.end());
@@ -74,7 +74,7 @@ void non_linear_slider::setValue(int _value)
 
 //------------------------------------------------------------------------------
 
-void non_linear_slider::setTracking(bool _tracking)
+void non_linear_slider::set_tracking(bool _tracking)
 {
     m_slider->setTracking(_tracking);
 }

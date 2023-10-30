@@ -77,11 +77,11 @@ void logger_test::simple_logger_test()
     std::size_t expected = 9;
     CPPUNIT_ASSERT_EQUAL(expected, logger->count());
     expected = 3;
-    CPPUNIT_ASSERT_EQUAL(expected, logger->count(core::log::log::INFORMATION));
+    CPPUNIT_ASSERT_EQUAL(expected, logger->count(core::log::log::information));
     expected = 2;
-    CPPUNIT_ASSERT_EQUAL(expected, logger->count(core::log::log::WARNING));
+    CPPUNIT_ASSERT_EQUAL(expected, logger->count(core::log::log::warning));
     expected = 4;
-    CPPUNIT_ASSERT_EQUAL(expected, logger->count(core::log::log::CRITICAL));
+    CPPUNIT_ASSERT_EQUAL(expected, logger->count(core::log::log::critical));
 
     // Check message values
     CPPUNIT_ASSERT_EQUAL(info1, logger->get_log(0).get_message());
@@ -96,30 +96,30 @@ void logger_test::simple_logger_test()
 
     // Check level types
     auto it = logger->begin();
-    CPPUNIT_ASSERT_EQUAL(core::log::log::INFORMATION, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::WARNING, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::INFORMATION, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::INFORMATION, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::WARNING, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::information, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::warning, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::information, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::information, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::warning, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
 
     // Sort logs
     logger->sort();
 
     // Check level types
     it = logger->begin();
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::CRITICAL, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::WARNING, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::WARNING, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::INFORMATION, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::INFORMATION, (it++)->get_level());
-    CPPUNIT_ASSERT_EQUAL(core::log::log::INFORMATION, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::critical, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::warning, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::warning, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::information, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::information, (it++)->get_level());
+    CPPUNIT_ASSERT_EQUAL(core::log::log::information, (it++)->get_level());
 
     // Clear logs
     logger->clear();

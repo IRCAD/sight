@@ -67,10 +67,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_pusher, sight::service::controller);
 
-    typedef std::vector<CSPTR(data::series)> dicom_series_container_t;
+    using dicom_series_container_t = std::vector<std::shared_ptr<const data::series> >;
 
     MODULE_IO_DICOMWEB_API static const core::com::slots::key_t DISPLAY_SLOT;
-    typedef core::com::slot<void (const std::string&, bool)> display_message_slot_t;
+    using display_message_slot_t = core::com::slot<void (const std::string&, bool)>;
 
     /**
      * @brief Constructor
@@ -99,34 +99,34 @@ protected:
 private:
 
     /// Push Series
-    void pushSeries();
+    void push_series();
 
     /**
      * @brief Display a message
      * @param[in] message Message to display
      * @param[in] error True if the message is an error messsage
      */
-    static void displayMessage(const std::string& _message, bool _error);
+    static void display_message(const std::string& _message, bool _error);
 
     /// Http Qt Client
-    sight::io::http::ClientQt m_clientQt;
+    sight::io::http::client_qt m_client_qt;
 
     /// Set to true when pushing series
-    bool m_isPushing {false};
+    bool m_is_pushing {false};
 
     /// Server hostname preference key
-    std::string m_serverHostnameKey;
+    std::string m_server_hostname_key;
 
     /// Server port preference key
-    std::string m_serverPortKey;
+    std::string m_server_port_key;
 
     /// Server hostname
-    std::string m_serverHostname {"localhost"};
+    std::string m_server_hostname {"localhost"};
 
     /// Server port
-    int m_serverPort {4242};
+    int m_server_port {4242};
 
-    sight::data::ptr<sight::data::vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
+    sight::data::ptr<sight::data::vector, sight::data::access::in> m_selected_series {this, "selectedSeries"};
 };
 
 } // namespace sight::module::io::dicomweb

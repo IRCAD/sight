@@ -30,12 +30,12 @@
 namespace sight::io::itk::ut
 {
 
-class ImageConversionTest : public CPPUNIT_NS::TestFixture
+class image_conversion_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ImageConversionTest);
-CPPUNIT_TEST(testConversion);
-CPPUNIT_TEST(stressTest);
-CPPUNIT_TEST(testConversion2D);
+CPPUNIT_TEST_SUITE(image_conversion_test);
+CPPUNIT_TEST(test_conversion);
+CPPUNIT_TEST(stress_test);
+CPPUNIT_TEST(test_conversion_2d);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,14 +43,14 @@ public:
     // interface
     void setUp() override;
     void tearDown() override;
-    static void testConversion();
-    void stressTest();
-    static void testConversion2D();
+    static void test_conversion();
+    void stress_test();
+    static void test_conversion_2d();
 
-    static void roundSpacing(data::image::sptr _image);
+    static void round_spacing(data::image::sptr _image);
 
     template<class TYPE>
-    void stressTestForAType();
+    void stress_test_for_a_type();
 };
 
 } // namespace sight::io::itk::ut

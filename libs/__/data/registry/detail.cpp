@@ -27,11 +27,11 @@
 namespace sight::data::registry
 {
 
-struct FwDataRegistryInstantiatorTag {};
+struct data_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwDataRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, data_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

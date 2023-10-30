@@ -55,7 +55,7 @@ protected:
 
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="ui::menu_bar" impl="sight::module::ui::menuBar"
+       <service uid="menubar" type="ui::menubar" impl="sight::module::ui::menubar"
      * auto_connect="false"
      *>
           <gui>
@@ -80,7 +80,7 @@ protected:
      *   For example: the menu named "My menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see sight::ui::menu_bar::initialize(),
+     *  @see sight::ui::menubar::initialize(),
      * sight::ui::layout::menu_manager::initialize()
      */
     MODULE_UI_API void configuring() override;
@@ -92,7 +92,7 @@ protected:
     MODULE_UI_API void starting() override;
 
     /**
-     * @brief Stop all actions and separator of this menu and remove menu to menuBar
+     * @brief Stop all actions and separator of this menu and remove menu to menubar
      * @see sight::ui::menu::destroy()
      */
     MODULE_UI_API void stopping() override;

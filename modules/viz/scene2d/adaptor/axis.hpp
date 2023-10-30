@@ -42,7 +42,7 @@ namespace sight::module::viz::scene2d::adaptor
    @endcode
  *
  * @subsection In In
- * - \b viewport [sight::viz::scene2d::data::Viewport]: object listened to update axis.
+ * - \b viewport [sight::viz::scene2d::data::viewport]: object listened to update axis.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -74,29 +74,29 @@ protected:
     void configuring() override;
 
     /// Manage the given events
-    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     MODULE_VIZ_SCENE2D_API connections_t auto_connections() const override;
 
 private:
 
     /// Builds axis graphic items.
-    void buildAxis();
+    void build_axis();
 
     /// Builds labels graphic items.
-    void buildLabels();
+    void build_labels();
 
     ///
-    double getStartVal() const;
+    double get_start_val() const;
 
     ///
-    double getEndVal() const;
+    double get_end_val() const;
 
     /// Displays axis graphic items.
-    void updateAxis();
+    void update_axis();
 
     /// Displays labels graphic items.
-    void updateLabels();
+    void update_labels();
 
     // Specify where the axis must be aligned: left, right, top or bottom.
     // Left and right side axis are aligned/floating relatively to the view.
@@ -113,10 +113,11 @@ private:
 
     /// The required interval between two consecutive values of the axis.
     double m_interval {1.};
-    struct Line
+
+    struct line_t
     {
         /// Size of a tick.
-        double tickSize {1.0};
+        double tick_size {1.0};
 
         /// Color.
         QPen color {Qt::white};
@@ -127,18 +128,18 @@ private:
         /// The graphic items that refer to ticks of the axis.
         std::vector<QGraphicsLineItem*> ticks;
     };
-    Line m_line;
+    line_t m_line;
 
-    struct Labels
+    struct labels
     {
         /// The unit of this values as text.
         QGraphicsSimpleTextItem* unit {nullptr};
 
         /// Tells if the unit of the axis must be displayed.
-        bool showUnit {true};
+        bool show_unit {true};
 
         /// The unit  of the axis (as text) that will be displayed.
-        std::string displayedUnit;
+        std::string displayed_unit;
 
         /// Specify where the axis must be aligned: left, right, top or bottom.
         /// Left and right side axis are aligned/floating relatively to the view.
@@ -161,16 +162,16 @@ private:
         int step {1};
 
         /// Size of the font used for rendering grid values.
-        int fontSize {8};
+        int font_size {8};
 
         /// Extra scale factor to force a minimum size of the font - platform dependent (set in the constructor)
-        double extraScale {10.};
+        double extra_scale {10.};
     };
 
-    Labels m_labels;
+    labels m_labels;
 
-    static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
-    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
+    static constexpr std::string_view VIEWPORT_INPUT = "viewport";
+    data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::in> m_viewport {this, VIEWPORT_INPUT};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

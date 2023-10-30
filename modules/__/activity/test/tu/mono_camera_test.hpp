@@ -31,7 +31,7 @@ namespace sight::module::activity::validator::ut
 class mono_camera_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(mono_camera_test);
-CPPUNIT_TEST(testValidator);
+CPPUNIT_TEST(test_validator);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,7 +40,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testValidator();
+    static void test_validator();
 };
 
 } // namespace sight::module::activity::validator::ut

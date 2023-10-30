@@ -25,14 +25,14 @@
 namespace sight::io::dimse::exceptions
 {
 
-Base::Base(const std::string& _message) :
+base::base(const std::string& _message) :
     core::exception(_message)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-Base::~Base() noexcept =
+base::~base() noexcept =
     default;
 
 } // namespace sight::io::dimse::exceptions

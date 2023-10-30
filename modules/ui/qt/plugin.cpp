@@ -90,7 +90,7 @@ void plugin::start()
     auto worker_qt = sight::ui::qt::get_qt_worker(argc, argv, callback, profile->name(), profile->get_version());
     core::thread::set_default_worker(worker_qt);
 
-    worker_qt->post([this](auto&& ...){loadStyleSheet();});
+    worker_qt->post([this](auto&& ...){load_style_sheet();});
 
     core::runtime::get_current_profile()->set_run_callback(run);
 }
@@ -116,7 +116,7 @@ int plugin::run() noexcept
 
 //-----------------------------------------------------------------------------
 
-void plugin::loadStyleSheet()
+void plugin::load_style_sheet()
 {
     if(QCoreApplication::instance() != nullptr)
     {

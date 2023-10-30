@@ -72,13 +72,13 @@ inline static void warning_handler(const char* _module, const char* _fmt, va_lis
     SIGHT_WARN(msg);
 }
 
-static const struct HandlerRegistry final
+static const struct handler_registry final
 {
-    inline HandlerRegistry() noexcept
+    inline handler_registry() noexcept
     {
         TIFFSetErrorHandler(&error_handler);
         TIFFSetWarningHandler(&warning_handler);
     }
-} registry;
+} REGISTRY;
 
 } // namespace sight::io::bitmap::detail::tiff

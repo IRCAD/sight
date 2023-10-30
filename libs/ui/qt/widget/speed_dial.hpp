@@ -36,55 +36,55 @@ namespace sight::ui::qt::widget
 class UI_QT_CLASS_API_QT speed_dial : public QPushButton
 {
 Q_OBJECT
-Q_PROPERTY(int spacing MEMBER m_spacing READ spacing WRITE setSpacing)
-Q_PROPERTY(int animationDuration MEMBER m_animationDuration READ animationDuration WRITE setAnimationDuration)
+Q_PROPERTY(int spacing MEMBER m_spacing READ spacing WRITE set_spacing)
+Q_PROPERTY(int animation_duration MEMBER m_animation_duration READ animation_duration WRITE set_animation_duration)
 
 public:
 
-    enum class Direction
+    enum class direction
     {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT
+        up,
+        right,
+        down,
+        left
     };
 
-    static inline constexpr int s_DEFAULT_SPACING            = 10;
-    static inline constexpr int s_DEFAULT_ANIMATION_DURATION = 250;
+    static inline constexpr int DEFAULT_SPACING            = 10;
+    static inline constexpr int DEFAULT_ANIMATION_DURATION = 250;
 
     UI_QT_API_QT explicit speed_dial(
-        Direction _direction    = Direction::DOWN,
-        int _spacing            = s_DEFAULT_SPACING,
-        int _animation_duration = s_DEFAULT_ANIMATION_DURATION,
+        direction _direction    = direction::down,
+        int _spacing            = DEFAULT_SPACING,
+        int _animation_duration = DEFAULT_ANIMATION_DURATION,
         QWidget* _parent        = nullptr
     );
     UI_QT_API_QT ~speed_dial() override = default;
 
-    UI_QT_API_QT void setDirection(Direction _direction);
-    [[nodiscard]] UI_QT_API_QT Direction direction() const;
-    UI_QT_API_QT void setSpacing(int _spacing);
+    UI_QT_API_QT void set_direction(direction _direction);
+    [[nodiscard]] UI_QT_API_QT direction direction() const;
+    UI_QT_API_QT void set_spacing(int _spacing);
     [[nodiscard]] UI_QT_API_QT int spacing() const;
-    UI_QT_API_QT void setAnimationDuration(int _duration);
+    UI_QT_API_QT void set_animation_duration(int _duration);
     //------------------------------------------------------------------------------
 
     template<typename R, typename P>
-    void setAnimationDuration(std::chrono::duration<R, P> _animation_duration)
+    void set_animation_duration(std::chrono::duration<R, P> _animation_duration)
     {
-        setAnimationDuration(std::chrono::milliseconds(_animation_duration).count());
+        set_animation_duration(std::chrono::milliseconds(_animation_duration).count());
     }
 
-    [[nodiscard]] UI_QT_API_QT int animationDuration() const;
+    [[nodiscard]] UI_QT_API_QT int animation_duration() const;
 
     /// Make the button invisible
     UI_QT_API_QT void fold();
     /// Make the button visible
     UI_QT_API_QT void unfold();
     /// Make the button invisible if they are visible or visible if they are not
-    UI_QT_API_QT void toggleFold();
-    [[nodiscard]] UI_QT_API_QT bool isFolded() const;
+    UI_QT_API_QT void toggle_fold();
+    [[nodiscard]] UI_QT_API_QT bool is_folded() const;
 
     /// Provide a new list of actions to be managed by the speed dial.
-    UI_QT_API_QT void updateActions(std::vector<QWidget*> _actions);
+    UI_QT_API_QT void update_actions(std::vector<QWidget*> _actions);
     /// Get the list of the actions managed by the speed dial.
     [[nodiscard]] UI_QT_API_QT const std::vector<QWidget*>& actions() const;
 
@@ -110,26 +110,26 @@ private:
     /// A struct which contains the positions and sizes of the container and the positions of the actions during the
     /// animation. The first element in the pairs contains the initial value and the second element contains the final
     /// value.
-    struct Animations
+    struct animations
     {
-        std::pair<QRect, QRect> containerRect;                    /// Rects of the container of actions
-        std::vector<std::pair<QPoint, QPoint> > actionsPositions; /// Positions for each actions
+        std::pair<QRect, QRect> container_rect;                    /// Rects of the container of actions
+        std::vector<std::pair<QPoint, QPoint> > actions_positions; /// Positions for each actions
     };
 
     /// Recursively "infect" the parent of the speed dial and its ancestors with the eventFilter. @see eventFilter.
     void infect(QObject* _parent);
     /// Compute the new positions of the actions and then modify their associated animations
-    void updateActionsPositions();
+    void update_actions_positions();
     /// Compute the new positions of the actions
-    [[nodiscard]] Animations computePositions() const;
+    [[nodiscard]] animations compute_positions() const;
 
-    Direction m_direction   = Direction::DOWN;
-    int m_spacing           = s_DEFAULT_SPACING;
-    int m_animationDuration = s_DEFAULT_ANIMATION_DURATION;
-    bool m_folded           = true;
+    enum direction m_direction = direction::down;
+    int m_spacing              = DEFAULT_SPACING;
+    int m_animation_duration   = DEFAULT_ANIMATION_DURATION;
+    bool m_folded              = true;
     std::vector<QWidget*> m_actions;
-    QPointer<QWidget> m_actionsContainer = new QWidget;
-    QAnimationGroup* m_animationGroup;
+    QPointer<QWidget> m_actions_container = new QWidget;
+    QAnimationGroup* m_animation_group;
 };
 
 } // namespace sight::ui::qt::widget

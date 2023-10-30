@@ -51,15 +51,15 @@ namespace sight::io::dicom::helper
  * - Anatomic Region
  * - Anatomic Region Modifiers
  */
-class IO_DICOM_CLASS_API SegmentedPropertyRegistry
+class IO_DICOM_CLASS_API segmented_property_registry
 {
 public:
 
     /// Entry containing the 5 attributes of a structure type
-    typedef std::array<std::string, 5> entry_t;
+    using entry_t = std::array<std::string, 5>;
 
     /// Constructor
-    IO_DICOM_API SegmentedPropertyRegistry();
+    IO_DICOM_API segmented_property_registry();
 
     /**
      * @brief Read an extract registry values from a CSV file
@@ -75,7 +75,7 @@ public:
      * @param[in] omitFirstLine If set to 'true', the first line of the file is omitted
      * @param[in] logger Logger used to display errors
      */
-    IO_DICOM_API bool readSegmentedPropertyRegistryFile(
+    IO_DICOM_API bool read_segmented_property_registry_file(
         const std::filesystem::path& _filepath,
         bool _omit_first_line                  = false,
         const SPTR(core::log::logger)& _logger = nullptr
@@ -95,7 +95,7 @@ public:
      * @param[in] omitFirstLine If set to 'true', the first line of the file is omitted
      * @param[in] logger Logger used to display errors
      */
-    IO_DICOM_API bool readSegmentedPropertyRegistryFile(
+    IO_DICOM_API bool read_segmented_property_registry_file(
         std::istream& _csv_stream,
         bool _omit_first_line                  = false,
         const SPTR(core::log::logger)& _logger = nullptr
@@ -114,23 +114,23 @@ public:
      * @brief Check if there is an entry for the corresponding structure type
      * @param[in] structureType Structure type
      */
-    [[nodiscard]] IO_DICOM_API bool hasEntry(const std::string& _structure_type) const;
+    [[nodiscard]] IO_DICOM_API bool has_entry(const std::string& _structure_type) const;
 
     /**
      * @brief Returns matching entry for the corresponding structure type
      * @param[in] structureType Structure type
      */
-    [[nodiscard]] IO_DICOM_API entry_t getEntry(const std::string& _structure_type) const;
+    [[nodiscard]] IO_DICOM_API entry_t get_entry(const std::string& _structure_type) const;
 
     /**
      * @brief Getters for entry's attributes
      * @param[in] structureType Structure type
      * @{ */
     [[nodiscard]] IO_DICOM_API std::string get_property_type(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string getPropertyCategory(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string getPropertyTypeModifiers(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string getAnatomicRegion(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string getAnatomicRegionModifiers(const std::string& _structure_type) const;
+    [[nodiscard]] IO_DICOM_API std::string get_property_category(const std::string& _structure_type) const;
+    [[nodiscard]] IO_DICOM_API std::string get_property_type_modifiers(const std::string& _structure_type) const;
+    [[nodiscard]] IO_DICOM_API std::string get_anatomic_region(const std::string& _structure_type) const;
+    [[nodiscard]] IO_DICOM_API std::string get_anatomic_region_modifiers(const std::string& _structure_type) const;
     /**  @} */
 
     /**
@@ -152,13 +152,13 @@ public:
 
 private:
 
-    std::string getEntryValue(std::size_t _index, const std::string& _structure_type) const;
+    std::string get_entry_value(std::size_t _index, const std::string& _structure_type) const;
 
     /// Entry registry type
-    typedef std::map<std::string, entry_t> entry_registry_t;
+    using entry_registry_t = std::map<std::string, entry_t>;
 
     /// Default entry value
-    static const entry_t s_DEFAULT_ENTRY_VALUE;
+    static const entry_t DEFAULT_ENTRY_VALUE;
 
     /// Segmented Property Registry
     entry_registry_t m_registry;

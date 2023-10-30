@@ -30,8 +30,8 @@ namespace sight::filter::image::ut
 class bresenham_line_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(bresenham_line_test);
-CPPUNIT_TEST(straightLineTest);
-CPPUNIT_TEST(obliqueLineTest);
+CPPUNIT_TEST(straight_line_test);
+CPPUNIT_TEST(oblique_line_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,8 +40,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void straightLineTest();
-    static void obliqueLineTest();
+    static void straight_line_test();
+    static void oblique_line_test();
 };
 
 } // namespace sight::filter::image::ut

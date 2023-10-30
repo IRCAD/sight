@@ -51,12 +51,12 @@ void plugin::start()
         std::string mode = this->get_module()->get_parameter_value(mode_key);
         if(mode == "lazy")
         {
-            manager->set_loading_mode(core::memory::buffer_manager::LAZY);
+            manager->set_loading_mode(core::memory::buffer_manager::lazy);
             SIGHT_INFO("Enabled lazy loading mode");
         }
         else if(mode == "direct")
         {
-            manager->set_loading_mode(core::memory::buffer_manager::DIRECT);
+            manager->set_loading_mode(core::memory::buffer_manager::direct);
             SIGHT_INFO("Enabled direct loading mode");
         }
         else

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 
 #include <gdcmDataSet.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::DicomSRContainerNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::dicom_sr_container_node_test);
 
 #define CONTINUITY 0x0040, 0xa050
 #define TYPE 0x0040, 0xa040
@@ -37,15 +37,15 @@ namespace sight::io::dicom::container::sr::ut
 
 //------------------------------------------------------------------------------
 
-void DicomSRContainerNodeTest::basicTest()
+void dicom_sr_container_node_test::basic_test()
 {
     using namespace std::literals::string_literals;
 
     gdcm::DataSet dataset;
-    DicomSRContainerNode({}, "friend").write(dataset);
-    CPPUNIT_ASSERT_EQUAL("CONTAINER"s, (io::dicom::helper::DicomDataReader::getTagValue<TYPE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::DicomDataReader::getTagValue<RELATIONSHIP>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("SEPARATE"s, (io::dicom::helper::DicomDataReader::getTagValue<CONTINUITY>(dataset)));
+    dicom_sr_container_node({}, "friend").write(dataset);
+    CPPUNIT_ASSERT_EQUAL("CONTAINER"s, (io::dicom::helper::dicom_data_reader::get_tag_value<TYPE>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::dicom_data_reader::get_tag_value<RELATIONSHIP>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("SEPARATE"s, (io::dicom::helper::dicom_data_reader::get_tag_value<CONTINUITY>(dataset)));
 }
 
 } // namespace sight::io::dicom::container::sr::ut

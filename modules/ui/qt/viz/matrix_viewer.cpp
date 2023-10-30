@@ -62,7 +62,7 @@ void matrix_viewer::configuring()
 void matrix_viewer::starting()
 {
     sight::ui::service::create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     auto* main_layout = new QBoxLayout(QBoxLayout::TopToBottom);
     main_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -78,16 +78,16 @@ void matrix_viewer::starting()
         for(int j = 0 ; j < 4 ; ++j)
         {
             auto* label = new QLabel("");
-            m_matrixLabels.push_back(label);
+            m_matrix_labels.push_back(label);
             grid_layout->addWidget(label, i, j);
         }
     }
 
     main_layout->addLayout(grid_layout);
 
-    qt_container->setLayout(main_layout);
+    qt_container->set_layout(main_layout);
 
-    this->updateFromMatrix();
+    this->update_from_matrix();
 }
 
 // ------------------------------------------------------------------------------
@@ -101,32 +101,32 @@ void matrix_viewer::stopping()
 
 void matrix_viewer::updating()
 {
-    this->updateFromMatrix();
+    this->update_from_matrix();
 }
 
 // ------------------------------------------------------------------------------
 
-void matrix_viewer::updateFromMatrix()
+void matrix_viewer::update_from_matrix()
 {
     const auto matrix = m_matrix.lock();
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[int(i * 4 + j)]->setText(QString("%1").arg((*matrix)(i, j), 0, 'f', 2));
+            m_matrix_labels[int(i * 4 + j)]->setText(QString("%1").arg((*matrix)(i, j), 0, 'f', 2));
         }
     }
 }
 
 // ------------------------------------------------------------------------------
 
-void matrix_viewer::clearLabels()
+void matrix_viewer::clear_labels()
 {
     for(int i = 0 ; i < 4 ; ++i)
     {
         for(int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i * 4 + j]->setText(QString(""));
+            m_matrix_labels[i * 4 + j]->setText(QString(""));
         }
     }
 }
@@ -136,7 +136,7 @@ void matrix_viewer::clearLabels()
 service::connections_t matrix_viewer::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_MATRIX, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATRIX, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

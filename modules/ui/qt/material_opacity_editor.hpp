@@ -81,13 +81,13 @@ private:
     /// Destroys the connections and cleans the container.
     void stopping() override;
 
-    QPointer<QSlider> m_opacitySlider;
-    QPointer<QLabel> m_opacityValue;
+    QPointer<QSlider> m_opacity_slider;
+    QPointer<QLabel> m_opacity_value;
 
     /// Name that appears next to the slider.
     std::string m_label {"Material opacity : "};
 
-    data::ptr<data::material, data::Access::inout> m_material {this, "material", true};
+    data::ptr<data::material, data::access::inout> m_material {this, "material", true};
 
 private Q_SLOTS:
 
@@ -95,7 +95,7 @@ private Q_SLOTS:
      * @brief Slot: called when the opacity slider changed.
      * @param _value The new opacity value.
      */
-    void onOpacitySlider(int _value);
+    void on_opacity_slider(int _value);
 };
 
 } // namespace sight::module::ui::qt

@@ -28,68 +28,65 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-enum class Access : std::uint8_t
+enum class access : std::uint8_t
 {
-    in     = 0,
-    INPUT  = in,
-    out    = 1,
-    OUTPUT = out,
-    inout  = 2,
-    INOUT  = inout,
+    in    = 0,
+    out   = 1,
+    inout = 2
 };
 
 //------------------------------------------------------------------------------
 
-// Traits that provides the const or not-const pointer depending on Access
-template<class DATATYPE, data::Access access>
+// Traits that provides the const or not-const pointer depending on access
+template<class DATATYPE, data::access access>
 struct access_type_traits;
 
 template<class DATATYPE>
-struct access_type_traits<DATATYPE, data::Access::in>
+struct access_type_traits<DATATYPE, data::access::in>
 {
     using value  = CSPTR(DATATYPE);
     using object = const DATATYPE;
-    static constexpr bool optional = false;
+    static constexpr bool OPTIONAL_DEFAULT = false;
 };
 
 template<class DATATYPE>
-struct access_type_traits<DATATYPE, data::Access::inout>
+struct access_type_traits<DATATYPE, data::access::inout>
 {
     using value  = SPTR(DATATYPE);
     using object = DATATYPE;
-    static constexpr bool optional = false;
+    static constexpr bool OPTIONAL_DEFAULT = false;
 };
 
 template<class DATATYPE>
-struct access_type_traits<DATATYPE, data::Access::out>
+struct access_type_traits<DATATYPE, data::access::out>
 {
     using value  = SPTR(DATATYPE);
     using object = DATATYPE;
-    static constexpr bool optional = true;
+    static constexpr bool OPTIONAL_DEFAULT = true;
 };
 
-template<data::Access access>
+template<data::access access>
 struct assignable_traits;
 
 template<>
-struct assignable_traits<data::Access::in>
+struct assignable_traits<data::access::in>
 {
-    static constexpr bool value = false;
+    static constexpr bool VALUE = false;
 };
 
 template<>
-struct assignable_traits<data::Access::inout>
+struct assignable_traits<data::access::inout>
 {
-    static constexpr bool value = false;
+    static constexpr bool VALUE = false;
 };
 
 template<>
-struct assignable_traits<data::Access::out>
+struct assignable_traits<data::access::out>
 {
-    static constexpr bool value = true;
+    static constexpr bool VALUE = true;
 };
 
-template<data::Access access>
+template<data::access access>
 using access_traits = access_type_traits<sight::data::object, access>;
 
 } // namespace sight::data

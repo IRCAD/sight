@@ -28,8 +28,8 @@
 
 #include <data/container.hxx>
 
-#include <viz/scene2d/data/InitQtPen.hpp>
-#include <viz/scene2d/Scene2DGraphicsView.hpp>
+#include <viz/scene2d/data/init_qt_pen.hpp>
+#include <viz/scene2d/graphics_view.hpp>
 
 #include <glm/common.hpp>
 
@@ -49,36 +49,36 @@ static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTF";
 //-----------------------------------------------------------------------------
 
 transfer_function::transfer_function() noexcept :
-    m_eventFilter(new QTimer())
+    m_event_filter(new QTimer())
 {
-    new_slot(UPDATE_TF_SLOT, &transfer_function::updateTF, this);
+    new_slot(UPDATE_TF_SLOT, &transfer_function::update_tf, this);
 }
 
 //-----------------------------------------------------------------------------
 
 transfer_function::~transfer_function() noexcept
 {
-    delete m_eventFilter;
+    delete m_event_filter;
 }
 
 //-----------------------------------------------------------------------------
 
 void transfer_function::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t tree = this->get_config();
     const auto config   = tree.get_child("config.<xmlattr>");
 
     const std::string polygon_color = config.get("lineColor", "#FFFFFF");
-    sight::viz::scene2d::data::InitQtPen::setPenColor(m_polygonsPen, polygon_color);
+    sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_polygons_pen, polygon_color);
 
     const std::string point_color = config.get("pointColor", "#FFFFFF");
-    sight::viz::scene2d::data::InitQtPen::setPenColor(m_pointsPen, point_color);
+    sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_points_pen, point_color);
 
-    m_secondOpacity = config.get<float>("secondOpacity", m_secondOpacity);
-    m_pointSize     = config.get<float>("pointSize", m_pointSize);
-    m_interactive   = config.get<bool>("interactive", m_interactive);
+    m_second_opacity = config.get<float>("secondOpacity", m_second_opacity);
+    m_point_size     = config.get<float>("pointSize", m_point_size);
+    m_interactive    = config.get<bool>("interactive", m_interactive);
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ void transfer_function::starting()
         const auto tf = m_tf.const_lock();
         if(tf && !tf->pieces().empty())
         {
-            m_currentTF = tf->pieces().front();
+            m_current_tf = tf->pieces().front();
         }
         else
         {
@@ -101,13 +101,13 @@ void transfer_function::starting()
 
     // Adds the layer item to the scene.
     m_layer = new QGraphicsItemGroup();
-    this->getScene2DRender()->getScene()->addItem(m_layer);
+    this->get_scene_2d_render()->get_scene()->addItem(m_layer);
 
-    m_pointsPen.setCosmetic(true);
-    m_pointsPen.setWidthF(0);
+    m_points_pen.setCosmetic(true);
+    m_points_pen.setWidthF(0);
 
-    m_polygonsPen.setCosmetic(true);
-    m_polygonsPen.setWidthF(0);
+    m_polygons_pen.setCosmetic(true);
+    m_polygons_pen.setWidthF(0);
 
     // Creates all entities.
     this->updating();
@@ -118,10 +118,10 @@ void transfer_function::starting()
 service::connections_t transfer_function::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_CURRENT_TF_INOUT, data::object::MODIFIED_SIG, UPDATE_TF_SLOT);
-    connections.push(s_CURRENT_TF_INOUT, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_CURRENT_TF_INOUT, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(VIEWPORT_INPUT, sight::viz::scene2d::data::viewport::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CURRENT_TF_INOUT, data::object::MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(CURRENT_TF_INOUT, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CURRENT_TF_INOUT, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -130,44 +130,44 @@ service::connections_t transfer_function::auto_connections() const
 void transfer_function::updating()
 {
     // Clears old data.
-    this->destroyTFPolygons();
-    this->destroyTFPoints();
-    this->releaseTFData();
+    this->destroy_tf_polygons();
+    this->destroy_tf_points();
+    this->release_tf_data();
 
     // Creates all TF.
-    this->createTFPoints();
-    this->createTFPolygons();
+    this->create_tf_points();
+    this->create_tf_polygons();
 
     // Builds the layer.
-    this->buildLayer();
+    this->build_layer();
 }
 
 //-----------------------------------------------------------------------------
 
 void transfer_function::stopping()
 {
-    this->destroyTFPolygons();
-    this->destroyTFPoints();
-    this->releaseTFData();
+    this->destroy_tf_polygons();
+    this->destroy_tf_points();
+    this->release_tf_data();
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::releaseTFData()
+void transfer_function::release_tf_data()
 {
-    for(PieceView* const piece_view : m_pieceView)
+    for(piece_view* const piece_view : m_piece_view)
     {
         delete piece_view;
     }
 
-    m_pieceView.clear();
+    m_piece_view.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::createTFPoints()
+void transfer_function::create_tf_points()
 {
-    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_current_tf);
 
     // Iterates over each TF to create pieceView.
     const auto tf = m_tf.const_lock();
@@ -178,11 +178,11 @@ void transfer_function::createTFPoints()
         for(const auto& tf_data : tf->pieces())
         {
             // Sets the z-index of the current TF over all others.
-            const bool is_current = m_currentTF == tf_data;
+            const bool is_current = m_current_tf == tf_data;
             int index             = is_current ? static_cast<int>(tf->pieces().size()) : z_index;
 
             // Pushs the pieceView to the vector.
-            m_pieceView.push_back(this->createPieceView(tf_data, index));
+            m_piece_view.push_back(this->create_piece_view(tf_data, index));
             ++z_index;
         }
     }
@@ -190,38 +190,38 @@ void transfer_function::createTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::destroyTFPoints()
+void transfer_function::destroy_tf_points()
 {
     // Removes TF point items from the scene and clear the TF point vector of each pieceView.
-    for(PieceView* const piece_view : m_pieceView)
+    for(piece_view* const piece_view : m_piece_view)
     {
-        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tf_point : piece_view->m_TFPoints)
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tf_point : piece_view->m_tf_points)
         {
-            this->getScene2DRender()->getScene()->removeItem(tf_point.second);
+            this->get_scene_2d_render()->get_scene()->removeItem(tf_point.second);
             delete tf_point.second;
         }
 
-        piece_view->m_TFPoints.clear();
+        piece_view->m_tf_points.clear();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-transfer_function::PieceView* transfer_function::createPieceView(
+transfer_function::piece_view* transfer_function::create_piece_view(
     const data::transfer_function_piece::sptr _tf,
     int _z_index
 )
 {
     auto viewport = m_viewport.lock();
 
-    const double scene_width  = this->getScene2DRender()->getView()->width();
-    const double scene_height = this->getScene2DRender()->getView()->height();
+    const double scene_width  = this->get_scene_2d_render()->get_view()->width();
+    const double scene_height = this->get_scene_2d_render()->get_view()->height();
 
     // Computes point size in screen space and keep the smallest size (relatively to width or height).
-    double point_size = scene_width * m_pointSize;
-    if(point_size > scene_height * m_pointSize)
+    double point_size = scene_width * m_point_size;
+    if(point_size > scene_height * m_point_size)
     {
-        point_size = scene_height * m_pointSize;
+        point_size = scene_height * m_point_size;
     }
 
     const double viewport_width  = viewport->width();
@@ -232,20 +232,20 @@ transfer_function::PieceView* transfer_function::createPieceView(
     const double point_height = (viewport_height * point_size) / scene_height;
 
     // Creates the pieceView and fill basic informations.
-    auto* piece_view = new PieceView();
-    piece_view->m_tf     = _tf;
-    piece_view->m_zIndex = _z_index;
+    auto* piece_view = new struct piece_view () ;
+        piece_view->m_tf = _tf;
+    piece_view->m_z_index = _z_index;
 
     // Fills pieceView point with color points.
-    for(const data::transfer_function::data_t::value_type& elt : *_tf)
+    for(const auto& elt : *_tf)
     {
         // Computes TF value from TF space to window/level space.
-        const data::transfer_function::value_t value = _tf->mapValueToWindow(elt.first);
+        const data::transfer_function::value_t value = _tf->map_value_to_window(elt.first);
 
         // Creates the color.
         const data::transfer_function::color_t color_t = elt.second;
         const vec2d_t val_color(value, std::min(color_t.a, 1.));
-        vec2d_t coord = this->mapAdaptorToScene(val_color);
+        vec2d_t coord = this->map_adaptor_to_scene(val_color);
 
         // Builds a point item, set its color, pen and zIndex.
         auto* point = new QGraphicsEllipseItem(
@@ -258,18 +258,18 @@ transfer_function::PieceView* transfer_function::createPieceView(
                      static_cast<int>(color_t.g * 255),
                      static_cast<int>(color_t.b * 255));
         point->setBrush(QBrush(color));
-        point->setPen(m_pointsPen);
-        point->setZValue(piece_view->m_zIndex * 2 + 1);
+        point->setPen(m_points_pen);
+        point->setZValue(piece_view->m_z_index * 2 + 1);
 
         // Pushs it back into the point vector
         if(_tf->window() > 0)
         {
-            piece_view->m_TFPoints.emplace_back(coord, point);
+            piece_view->m_tf_points.emplace_back(coord, point);
         }
         // If the window is negative, the TF is reversed and point must be sort in reverse.
         else
         {
-            piece_view->m_TFPoints.insert(piece_view->m_TFPoints.begin(), std::make_pair(coord, point));
+            piece_view->m_tf_points.insert(piece_view->m_tf_points.begin(), std::make_pair(coord, point));
         }
     }
 
@@ -278,18 +278,18 @@ transfer_function::PieceView* transfer_function::createPieceView(
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::createTFPolygons()
+void transfer_function::create_tf_polygons()
 {
     // Iterates over all pieceView to create polygons.
-    for(PieceView* const piece_view : m_pieceView)
+    for(piece_view* const piece_view : m_piece_view)
     {
-        this->createTFPolygon(piece_view);
+        this->create_tf_polygon(piece_view);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::createTFPolygon(PieceView* const _piece_view)
+void transfer_function::create_tf_polygon(piece_view* const _piece_view)
 {
     if(m_interactive)
     {
@@ -298,8 +298,8 @@ void transfer_function::createTFPolygon(PieceView* const _piece_view)
         QVector<QPointF> position;
         QLinearGradient grad;
 
-        const std::pair<vec2d_t, QGraphicsEllipseItem*>& first_tf_point = _piece_view->m_TFPoints.front();
-        const std::pair<vec2d_t, QGraphicsEllipseItem*>& last_tf_point  = _piece_view->m_TFPoints.back();
+        const std::pair<vec2d_t, QGraphicsEllipseItem*>& first_tf_point = _piece_view->m_tf_points.front();
+        const std::pair<vec2d_t, QGraphicsEllipseItem*>& last_tf_point  = _piece_view->m_tf_points.back();
 
         const QGraphicsEllipseItem* const first_point = first_tf_point.second;
 
@@ -337,9 +337,9 @@ void transfer_function::createTFPolygon(PieceView* const _piece_view)
         const double distance_max = x_end - x_begin;
 
         // Iterates on TF points vector to add line and polygon items to the polygons vector.
-        if(_piece_view->m_tf->interpolationMode() == data::transfer_function::InterpolationMode::LINEAR)
+        if(_piece_view->m_tf->get_interpolation_mode() == data::transfer_function::interpolation_mode::linear)
         {
-            sight::module::viz::scene2d::adaptor::transfer_function::buildLinearPolygons(
+            sight::module::viz::scene2d::adaptor::transfer_function::build_linear_polygons(
                 _piece_view,
                 position,
                 grad,
@@ -348,7 +348,7 @@ void transfer_function::createTFPolygon(PieceView* const _piece_view)
         }
         else
         {
-            sight::module::viz::scene2d::adaptor::transfer_function::buildNearestPolygons(
+            sight::module::viz::scene2d::adaptor::transfer_function::build_nearest_polygons(
                 _piece_view,
                 position,
                 grad,
@@ -373,27 +373,27 @@ void transfer_function::createTFPolygon(PieceView* const _piece_view)
         auto* const poly = new QGraphicsPolygonItem(QPolygonF(position));
         // Sets gradient, opacity and pen to the polygon
         poly->setBrush(QBrush(grad));
-        poly->setPen(m_polygonsPen);
-        poly->setZValue(_piece_view->m_zIndex * 2);
+        poly->setPen(m_polygons_pen);
+        poly->setZValue(_piece_view->m_z_index * 2);
 
         // If the z-index is the highest, it's the current one.
-        if(static_cast<std::size_t>(_piece_view->m_zIndex) == m_pieceView.size())
+        if(static_cast<std::size_t>(_piece_view->m_z_index) == m_piece_view.size())
         {
             poly->setOpacity(m_opacity);
         }
         else
         {
-            poly->setOpacity(m_secondOpacity);
+            poly->setOpacity(m_second_opacity);
         }
 
         // Pushs the polygon back into the polygons vector
-        _piece_view->m_TFPolygons.push_back(poly);
+        _piece_view->m_tf_polygons.push_back(poly);
     }
     else
     {
         const auto viewport = m_viewport.lock();
 
-        auto* const view            = this->getScene2DRender()->getView();
+        auto* const view            = this->get_scene_2d_render()->get_view();
         const double viewport_width = viewport->width();
         const double step           = viewport_width / view->width();
         const uint size             = static_cast<uint>(viewport_width / step);
@@ -403,7 +403,7 @@ void transfer_function::createTFPolygon(PieceView* const _piece_view)
         {
             const auto color = _piece_view->m_tf->sample(f);
 
-            vec2d_t pt = this->mapAdaptorToScene({f, color.a});
+            vec2d_t pt = this->map_adaptor_to_scene({f, color.a});
 
             QColor q_color;
             q_color.setRgbF(color.r, color.g, color.b, 1.0);
@@ -413,7 +413,7 @@ void transfer_function::createTFPolygon(PieceView* const _piece_view)
             rect->setBrush(brush);
             rect->setPen(Qt::NoPen);
 
-            _piece_view->m_TFPolygons.push_back(rect);
+            _piece_view->m_tf_polygons.push_back(rect);
 
             f += step;
         }
@@ -422,39 +422,39 @@ void transfer_function::createTFPolygon(PieceView* const _piece_view)
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::destroyTFPolygons()
+void transfer_function::destroy_tf_polygons()
 {
     // Removes polygon items from the scene and clear the polygon vector.
-    for(PieceView* const piece_view : m_pieceView)
+    for(piece_view* const piece_view : m_piece_view)
     {
-        this->destroyTFPolygon(piece_view);
+        this->destroy_tf_polygon(piece_view);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::destroyTFPolygon(PieceView* _piece_view)
+void transfer_function::destroy_tf_polygon(piece_view* _piece_view)
 {
-    for(auto& poly : _piece_view->m_TFPolygons)
+    for(auto& poly : _piece_view->m_tf_polygons)
     {
-        this->getScene2DRender()->getScene()->removeItem(poly);
+        this->get_scene_2d_render()->get_scene()->removeItem(poly);
         delete poly;
     }
 
     // Removes polygon items from the scene and clear the polygon vector.
-    _piece_view->m_TFPolygons.clear();
+    _piece_view->m_tf_polygons.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::buildLinearPolygons(
-    PieceView* const _piece_view,
+void transfer_function::build_linear_polygons(
+    piece_view* const _piece_view,
     QVector<QPointF>& _position,
     QLinearGradient& _grad,
     double _distance_max
 )
 {
-    const std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> >& tf_points = _piece_view->m_TFPoints;
+    const std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> >& tf_points = _piece_view->m_tf_points;
     for(auto tf_point_it = tf_points.cbegin() ; tf_point_it != tf_points.cend() - 1 ; ++tf_point_it)
     {
         const QPointF p1(tf_point_it->first.x, tf_point_it->first.y);
@@ -470,14 +470,14 @@ void transfer_function::buildLinearPolygons(
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::buildNearestPolygons(
-    PieceView* const _piece_view,
+void transfer_function::build_nearest_polygons(
+    piece_view* const _piece_view,
     QVector<QPointF>& _position,
     QLinearGradient& _grad,
     double _distance_max
 )
 {
-    const std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> >& tf_points = _piece_view->m_TFPoints;
+    const std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> >& tf_points = _piece_view->m_tf_points;
     for(auto tf_point_it = tf_points.cbegin() ; tf_point_it != tf_points.cend() - 1 ; ++tf_point_it)
     {
         const QPointF p1(tf_point_it->first.x, tf_point_it->first.y);
@@ -508,86 +508,86 @@ void transfer_function::buildNearestPolygons(
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::buildLayer()
+void transfer_function::build_layer()
 {
     // Adds graphics items vectors to the layer.
-    for(PieceView* const piece_view : m_pieceView)
+    for(piece_view* const piece_view : m_piece_view)
     {
-        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tf_point : piece_view->m_TFPoints)
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tf_point : piece_view->m_tf_points)
         {
             m_layer->addToGroup(tf_point.second);
         }
 
-        for(auto& poly : piece_view->m_TFPolygons)
+        for(auto& poly : piece_view->m_tf_polygons)
         {
             m_layer->addToGroup(poly);
         }
     }
 
     // Adjusts the layer's position and zValue depending on the associated axis.
-    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-    m_layer->setZValue(m_zValue);
+    m_layer->setPos(m_x_axis->origin(), m_y_axis->origin());
+    m_layer->setZValue(m_z_value);
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::setCurrentTF(PieceView* const _piece_view)
+void transfer_function::set_current_tf(piece_view* const _piece_view)
 {
     // Sets the new current TF.
-    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_current_tf);
 
     // Find the old pieceView.
-    PieceView* const current_piece_view = *(std::find_if(
-                                                m_pieceView.begin(),
-                                                m_pieceView.end(),
-                                                [&](const PieceView* _piece_view)
+    piece_view* const current_piece_view = *(std::find_if(
+                                                 m_piece_view.begin(),
+                                                 m_piece_view.end(),
+                                                 [&](const piece_view* _piece_view)
         {
-            return _piece_view->m_tf == m_currentTF;
+            return _piece_view->m_tf == m_current_tf;
         }));
 
     // Changes the current pieceView.
-    m_currentTF = _piece_view->m_tf;
+    m_current_tf = _piece_view->m_tf;
 
     // Recomputes z-index and set the z-index of the selected TF over all others.
     int z_index = 0;
-    for(PieceView* piece_view : m_pieceView)
+    for(piece_view* piece_view : m_piece_view)
     {
-        piece_view->m_zIndex = piece_view->m_tf == m_currentTF ? static_cast<int>(m_pieceView.size()) : z_index;
-        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& point : piece_view->m_TFPoints)
+        piece_view->m_z_index = piece_view->m_tf == m_current_tf ? static_cast<int>(m_piece_view.size()) : z_index;
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& point : piece_view->m_tf_points)
         {
-            point.second->setZValue(piece_view->m_zIndex * 2 + 1);
+            point.second->setZValue(piece_view->m_z_index * 2 + 1);
         }
 
         ++z_index;
     }
 
     // Re-draw polygons since the current TF as changed.
-    this->destroyTFPolygon(current_piece_view);
-    this->createTFPolygon(current_piece_view);
-    this->destroyTFPolygon(_piece_view);
-    this->createTFPolygon(_piece_view);
-    this->buildLayer();
+    this->destroy_tf_polygon(current_piece_view);
+    this->create_tf_polygon(current_piece_view);
+    this->destroy_tf_polygon(_piece_view);
+    this->create_tf_polygon(_piece_view);
+    this->build_layer();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<transfer_function::PieceView*> transfer_function::getMatchingPieceView(
-    const sight::viz::scene2d::data::Event& _event
+std::vector<transfer_function::piece_view*> transfer_function::get_matching_piece_view(
+    const sight::viz::scene2d::data::event& _event
 ) const
 {
     // Finds all pieceView that match the clicked coord.
-    std::vector<PieceView*> matching_piece_view;
+    std::vector<piece_view*> matching_piece_view;
     const QPoint scene_pos = QPoint(
-        static_cast<int>(_event.getCoord().x),
-        static_cast<int>(_event.getCoord().y)
+        static_cast<int>(_event.get_coord().x),
+        static_cast<int>(_event.get_coord().y)
     );
-    QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scene_pos);
+    QList<QGraphicsItem*> items = this->get_scene_2d_render()->get_view()->items(scene_pos);
 
     // Fills the pieceView vector with clicked ones.
-    for(PieceView* const piece_view : m_pieceView)
+    for(piece_view* const piece_view : m_piece_view)
     {
         // Checks if a polygon is clicked.
-        if(items.indexOf(piece_view->m_TFPolygons.front()) >= 0)
+        if(items.indexOf(piece_view->m_tf_polygons.front()) >= 0)
         {
             matching_piece_view.push_back(piece_view);
         }
@@ -598,106 +598,106 @@ std::vector<transfer_function::PieceView*> transfer_function::getMatchingPieceVi
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::processInteraction(sight::viz::scene2d::data::Event& _event)
+void transfer_function::process_interaction(sight::viz::scene2d::data::event& _event)
 {
     if(!m_interactive)
     {
         return;
     }
 
-    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_current_tf);
 
     // If it's a resize event, all the scene must be recomputed.
-    if(_event.getType() == sight::viz::scene2d::data::Event::Resize)
+    if(_event.type() == sight::viz::scene2d::data::event::resize)
     {
         this->updating();
-        _event.setAccepted(true);
+        _event.set_accepted(true);
         return;
     }
 
     // If a point as already been captured.
-    if(m_capturedTFPoint != nullptr)
+    if(m_captured_tf_point != nullptr)
     {
-        if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
-           && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        if(_event.get_button() == sight::viz::scene2d::data::event::left_button
+           && _event.type() == sight::viz::scene2d::data::event::mouse_button_release)
         {
             // Releases capture point.
-            this->leftButtonReleaseEvent();
-            _event.setAccepted(true);
+            this->left_button_release_event();
+            _event.set_accepted(true);
             return;
         }
     }
 
     // If a pieceView as already been captured.
-    if(m_capturedTF.first)
+    if(m_captured_tf.first)
     {
-        if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
+        if(_event.type() == sight::viz::scene2d::data::event::mouse_move)
         {
             // Changes the pieceView level.
-            this->mouseMoveOnPieceViewEvent(_event);
-            _event.setAccepted(true);
+            this->mouse_move_on_piece_view_event(_event);
+            _event.set_accepted(true);
             return;
         }
 
-        if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
-           && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        if(_event.get_button() == sight::viz::scene2d::data::event::mid_button
+           && _event.type() == sight::viz::scene2d::data::event::mouse_button_release)
         {
             // Releases capture pieceView.
-            this->midButtonReleaseEvent();
-            _event.setAccepted(true);
+            this->mid_button_release_event();
+            _event.set_accepted(true);
             return;
         }
     }
 
     const QPoint scene_pos = QPoint(
-        static_cast<int>(_event.getCoord().x),
-        static_cast<int>(_event.getCoord().y)
+        static_cast<int>(_event.get_coord().x),
+        static_cast<int>(_event.get_coord().y)
     );
-    QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scene_pos);
+    QList<QGraphicsItem*> items = this->get_scene_2d_render()->get_view()->items(scene_pos);
 
     // Checks if a point is clicked.
-    for(PieceView* const piece_view : m_pieceView)
+    for(piece_view* const piece_view : m_piece_view)
     {
-        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tf_point : piece_view->m_TFPoints)
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tf_point : piece_view->m_tf_points)
         {
             // If a point has already been captured.
-            if(m_capturedTFPoint == &tf_point)
+            if(m_captured_tf_point == &tf_point)
             {
-                if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
+                if(_event.type() == sight::viz::scene2d::data::event::mouse_move)
                 {
                     // Moves the captured point.
-                    this->mouseMoveOnPointEvent(piece_view, _event);
-                    _event.setAccepted(true);
+                    this->mouse_move_on_point_event(piece_view, _event);
+                    _event.set_accepted(true);
                     return;
                 }
             }
             else if(items.indexOf(tf_point.second) >= 0)
             {
                 // If there is a double click on a point, open a color dialog.
-                if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
-                   && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
+                if(_event.get_button() == sight::viz::scene2d::data::event::left_button
+                   && _event.type() == sight::viz::scene2d::data::event::mouse_button_double_click)
                 {
-                    this->leftButtonDoubleClickOnPointEvent(piece_view, tf_point);
-                    _event.setAccepted(true);
+                    this->left_button_double_click_on_point_event(piece_view, tf_point);
+                    _event.set_accepted(true);
                     return;
                 }
 
                 // If left button is pressed on a point, set the TF as current.
-                if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
-                   && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+                if(_event.get_button() == sight::viz::scene2d::data::event::left_button
+                   && _event.type() == sight::viz::scene2d::data::event::mouse_button_press)
                 {
-                    this->leftButtonClickOnPointEvent(piece_view, tf_point);
-                    _event.setAccepted(true);
+                    this->left_button_click_on_point_event(piece_view, tf_point);
+                    _event.set_accepted(true);
                     return;
                 }
 
                 // If right button is pressed on a point, remove it.
-                if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton
-                   && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
-                   && piece_view->m_tf == m_currentTF && piece_view->m_TFPoints.size() > 2)
+                if(_event.get_button() == sight::viz::scene2d::data::event::right_button
+                   && _event.type() == sight::viz::scene2d::data::event::mouse_button_press
+                   && piece_view->m_tf == m_current_tf && piece_view->m_tf_points.size() > 2)
                 {
-                    this->rightButtonClickOnPointEvent(piece_view, tf_point);
-                    _event.setAccepted(true);
+                    this->right_button_click_on_point_event(piece_view, tf_point);
+                    _event.set_accepted(true);
                     return;
                 }
             }
@@ -705,82 +705,82 @@ void transfer_function::processInteraction(sight::viz::scene2d::data::Event& _ev
     }
 
     // Adds a new TF point.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
-       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
+    if(_event.get_button() == sight::viz::scene2d::data::event::left_button
+       && _event.type() == sight::viz::scene2d::data::event::mouse_button_double_click)
     {
         // Cancel the previous single click interaction.
-        m_eventFilter->stop();
-        this->leftButtonDoubleClickEvent(_event);
-        _event.setAccepted(true);
+        m_event_filter->stop();
+        this->left_button_double_click_event(_event);
+        _event.set_accepted(true);
         return;
     }
 
     // If left button is pressed, set the nearest TF as current.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
-       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.get_button() == sight::viz::scene2d::data::event::left_button
+       && _event.type() == sight::viz::scene2d::data::event::mouse_button_press)
     {
         // Cancel the previous event if it's needed.
-        m_eventFilter->stop();
-        delete m_eventFilter;
+        m_event_filter->stop();
+        delete m_event_filter;
 
         // Validates the event in 250ms, this allow to the double click event to cancel the interaction.
-        m_eventFilter = new QTimer();
+        m_event_filter = new QTimer();
         QTimer::connect(
-            m_eventFilter,
+            m_event_filter,
             &QTimer::timeout,
             this,
             [_event, this]()
             {
-                this->leftButtonClickEvent(_event);
+                this->left_button_click_event(_event);
             });
-        m_eventFilter->setSingleShot(true);
-        m_eventFilter->start(250);
+        m_event_filter->setSingleShot(true);
+        m_event_filter->start(250);
         // _event.setAccepted(true);
         return;
     }
 
     // If middle button is pressed, select the current TF to adjust the window/level.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
-       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.get_button() == sight::viz::scene2d::data::event::mid_button
+       && _event.type() == sight::viz::scene2d::data::event::mouse_button_press)
     {
-        this->midButtonClickEvent(_event);
+        this->mid_button_click_event(_event);
         return;
     }
 
     // If right button is pressed, open a context menu to manage multiple actions.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton
-       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.get_button() == sight::viz::scene2d::data::event::right_button
+       && _event.type() == sight::viz::scene2d::data::event::mouse_button_press)
     {
-        this->rightButtonCLickEvent(_event);
-        _event.setAccepted(true);
+        this->right_button_c_lick_event(_event);
+        _event.set_accepted(true);
         return;
     }
 
     // If the middle button wheel moves, change the whole pieceView opacity.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::NoButton
-       && (_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown
-           || _event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp))
+    if(_event.get_button() == sight::viz::scene2d::data::event::no_button
+       && (_event.type() == sight::viz::scene2d::data::event::mouse_wheel_down
+           || _event.type() == sight::viz::scene2d::data::event::mouse_wheel_up))
     {
-        this->midButtonWheelMoveEvent(_event);
+        this->mid_button_wheel_move_event(_event);
         return;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::leftButtonClickEvent(const sight::viz::scene2d::data::Event& _event)
+void transfer_function::left_button_click_event(const sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
-    std::vector<PieceView*> matching_piece_view = this->getMatchingPieceView(_event);
+    std::vector<piece_view*> matching_piece_view = this->get_matching_piece_view(_event);
 
     if(!matching_piece_view.empty())
     {
         if(matching_piece_view.size() == 1)
         {
-            if(matching_piece_view[0]->m_tf != m_currentTF)
+            if(matching_piece_view[0]->m_tf != m_current_tf)
             {
-                this->setCurrentTF(matching_piece_view[0]);
+                this->set_current_tf(matching_piece_view[0]);
             }
         }
         // Finds the closest one.
@@ -788,16 +788,16 @@ void transfer_function::leftButtonClickEvent(const sight::viz::scene2d::data::Ev
         {
             const auto tf = m_tf.lock();
 
-            sight::viz::scene2d::vec2d_t click_coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+            sight::viz::scene2d::vec2d_t click_coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
 
-            float closest_distance            = std::numeric_limits<float>::max();
-            PieceView* new_current_piece_view = nullptr;
-            for(PieceView* piece_view : matching_piece_view)
+            float closest_distance             = std::numeric_limits<float>::max();
+            piece_view* new_current_piece_view = nullptr;
+            for(piece_view* piece_view : matching_piece_view)
             {
                 // Finds nearest position of the iterate pieceView.
-                float local_closest_distance            = std::numeric_limits<float>::max();
-                PieceView* local_new_current_piece_view = nullptr;
-                for(std::size_t i = 0 ; i <= piece_view->m_TFPoints.size() ; ++i)
+                float local_closest_distance                    = std::numeric_limits<float>::max();
+                struct piece_view* local_new_current_piece_view = nullptr;
+                for(std::size_t i = 0 ; i <= piece_view->m_tf_points.size() ; ++i)
                 {
                     vec2d_t tf_point1;
                     vec2d_t tf_point2;
@@ -805,7 +805,7 @@ void transfer_function::leftButtonClickEvent(const sight::viz::scene2d::data::Ev
                     // Creates the first fictional TF point.
                     if(i == 0)
                     {
-                        tf_point2 = piece_view->m_TFPoints[i].first;
+                        tf_point2 = piece_view->m_tf_points[i].first;
                         if(piece_view->m_tf->clamped())
                         {
                             // The first point is the same a the real first but with a zero alpha channel.
@@ -820,9 +820,9 @@ void transfer_function::leftButtonClickEvent(const sight::viz::scene2d::data::Ev
                         }
                     }
                     // Creates the last fictional TF point.
-                    else if(i == piece_view->m_TFPoints.size())
+                    else if(i == piece_view->m_tf_points.size())
                     {
-                        tf_point1 = piece_view->m_TFPoints[i - 1].first;
+                        tf_point1 = piece_view->m_tf_points[i - 1].first;
                         if(piece_view->m_tf->clamped())
                         {
                             // The last point is the same a the real last but with a zero alpha channel.
@@ -838,8 +838,8 @@ void transfer_function::leftButtonClickEvent(const sight::viz::scene2d::data::Ev
                     // Retrieves two TF points.
                     else
                     {
-                        tf_point1 = piece_view->m_TFPoints[i - 1].first;
-                        tf_point2 = piece_view->m_TFPoints[i].first;
+                        tf_point1 = piece_view->m_tf_points[i - 1].first;
+                        tf_point2 = piece_view->m_tf_points[i].first;
                     }
 
                     // Gets a line/point projection.
@@ -896,9 +896,9 @@ void transfer_function::leftButtonClickEvent(const sight::viz::scene2d::data::Ev
             SIGHT_ASSERT("newCurrentPieceView is null", new_current_piece_view != nullptr);
 
             // Sets the new current TF.
-            if(new_current_piece_view->m_tf != m_currentTF)
+            if(new_current_piece_view->m_tf != m_current_tf)
             {
-                this->setCurrentTF(new_current_piece_view);
+                this->set_current_tf(new_current_piece_view);
             }
         }
     }
@@ -906,8 +906,8 @@ void transfer_function::leftButtonClickEvent(const sight::viz::scene2d::data::Ev
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::leftButtonClickOnPointEvent(
-    PieceView* const _piece_view,
+void transfer_function::left_button_click_on_point_event(
+    piece_view* const _piece_view,
     std::pair<vec2d_t,
               QGraphicsEllipseItem*>& _tf_point
 )
@@ -915,7 +915,7 @@ void transfer_function::leftButtonClickOnPointEvent(
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Stores the captured TF point in case it's moved.
-    m_capturedTFPoint = &_tf_point;
+    m_captured_tf_point = &_tf_point;
 
     // Sets the selected point pen to lighter to get a visual feedback that the selected point is selected.
     const QColor color = _tf_point.second->brush().color();
@@ -924,17 +924,17 @@ void transfer_function::leftButtonClickOnPointEvent(
     _tf_point.second->setPen(tf_point_pen);
 
     // Sets the new current TF.
-    if(_piece_view->m_tf != m_currentTF)
+    if(_piece_view->m_tf != m_current_tf)
     {
-        this->setCurrentTF(_piece_view);
+        this->set_current_tf(_piece_view);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::mouseMoveOnPointEvent(
-    PieceView* const _piece_view,
-    const sight::viz::scene2d::data::Event& _event
+void transfer_function::mouse_move_on_point_event(
+    piece_view* const _piece_view,
+    const sight::viz::scene2d::data::event& _event
 )
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
@@ -943,21 +943,25 @@ void transfer_function::mouseMoveOnPointEvent(
 
     // m_capturedTFPoint must be previously sets by
     // leftButtonClickOnPointEvent(PieceView* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
-    SIGHT_ASSERT("The captured TF point must exist", m_capturedTFPoint);
+    SIGHT_ASSERT("The captured TF point must exist", m_captured_tf_point);
 
-    const auto point_it = std::find(_piece_view->m_TFPoints.begin(), _piece_view->m_TFPoints.end(), *m_capturedTFPoint);
-    SIGHT_ASSERT("The captured point is not found", point_it != _piece_view->m_TFPoints.end());
+    const auto point_it = std::find(
+        _piece_view->m_tf_points.begin(),
+        _piece_view->m_tf_points.end(),
+        *m_captured_tf_point
+    );
+    SIGHT_ASSERT("The captured point is not found", point_it != _piece_view->m_tf_points.end());
 
     // Gets the previous point of the TF.
     auto previous_point = point_it;
-    if(*m_capturedTFPoint != _piece_view->m_TFPoints.front())
+    if(*m_captured_tf_point != _piece_view->m_tf_points.front())
     {
         --previous_point;
     }
 
     // Gets the next point of the TF.
     auto next_point = point_it;
-    if(*m_capturedTFPoint != _piece_view->m_TFPoints.back())
+    if(*m_captured_tf_point != _piece_view->m_tf_points.back())
     {
         ++next_point;
     }
@@ -967,7 +971,7 @@ void transfer_function::mouseMoveOnPointEvent(
     const double next_point_x_coord     = next_point->first.x;
 
     // Gets the actual mouse point coordinates.
-    sight::viz::scene2d::vec2d_t new_coord = this->getScene2DRender()->mapToScene(_event.getCoord(), true);
+    sight::viz::scene2d::vec2d_t new_coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord(), true);
 
     // Clamps new y coord between -1 and 0.
     new_coord.y = std::clamp(new_coord.y, -1., 0.);
@@ -984,14 +988,14 @@ void transfer_function::mouseMoveOnPointEvent(
 
     // Clamps new x coord between the previous and the next one.
     const double delta = 1.;
-    if(*m_capturedTFPoint == _piece_view->m_TFPoints.front())
+    if(*m_captured_tf_point == _piece_view->m_tf_points.front())
     {
         if(new_coord.x >= next_point_x_coord)
         {
             new_coord.x = next_point_x_coord - delta;
         }
     }
-    else if(*m_capturedTFPoint == _piece_view->m_TFPoints.back())
+    else if(*m_captured_tf_point == _piece_view->m_tf_points.back())
     {
         if(new_coord.x <= previous_point_x_coord)
         {
@@ -1011,27 +1015,27 @@ void transfer_function::mouseMoveOnPointEvent(
     }
 
     // Moves the selected TF point by the difference between the old coordinates and the new ones.
-    m_capturedTFPoint->second->moveBy(
-        new_coord.x - m_capturedTFPoint->first.x,
-        new_coord.y - m_capturedTFPoint->first.y
+    m_captured_tf_point->second->moveBy(
+        new_coord.x - m_captured_tf_point->first.x,
+        new_coord.y - m_captured_tf_point->first.y
     );
 
     // Stores new coordinates to the captured one.
-    m_capturedTFPoint->first.x = new_coord.x;
-    m_capturedTFPoint->first.y = new_coord.y;
+    m_captured_tf_point->first.x = new_coord.x;
+    m_captured_tf_point->first.y = new_coord.y;
 
     // Re-draw the current polygons.
-    this->destroyTFPolygon(_piece_view);
-    this->createTFPolygon(_piece_view);
-    this->buildLayer();
+    this->destroy_tf_polygon(_piece_view);
+    this->create_tf_polygon(_piece_view);
+    this->build_layer();
 
     // Updates the TF with the new point position.
-    std::size_t point_index = std::size_t(point_it - _piece_view->m_TFPoints.begin());
+    std::size_t point_index = std::size_t(point_it - _piece_view->m_tf_points.begin());
 
     // If the window is negative, the TF point list is reversed compared to the TF data.
     if(_piece_view->m_tf->window() < 0)
     {
-        point_index = _piece_view->m_TFPoints.size() - 1 - point_index;
+        point_index = _piece_view->m_tf_points.size() - 1 - point_index;
     }
 
     const data::transfer_function_piece::sptr tf_piece = _piece_view->m_tf;
@@ -1048,11 +1052,11 @@ void transfer_function::mouseMoveOnPointEvent(
     data::transfer_function::color_t color        = tf_data_it->second;
 
     // Gets new window/level min max value in the window/level space.
-    const double min = _piece_view->m_TFPoints.begin()->first.x;
-    const double max = _piece_view->m_TFPoints.rbegin()->first.x;
+    const double min = _piece_view->m_tf_points.begin()->first.x;
+    const double max = _piece_view->m_tf_points.rbegin()->first.x;
 
     // Computes TF value from window/level space to TF space.
-    const data::transfer_function::value_t new_tf_value = tf_piece->mapValueFromWindow(new_coord.x);
+    const data::transfer_function::value_t new_tf_value = tf_piece->map_value_from_window(new_coord.x);
 
     // Removes the old TF point.
     tf_piece->erase(old_tf_value);
@@ -1066,33 +1070,33 @@ void transfer_function::mouseMoveOnPointEvent(
     // Updates the window/level.
     if(tf_piece->window() > 0)
     {
-        tf_piece->setWindowMinMax(data::transfer_function::min_max_t(min, max));
+        tf_piece->set_window_min_max(data::transfer_function::min_max_t(min, max));
     }
     else
     {
-        tf_piece->setWindowMinMax(data::transfer_function::min_max_t(max, min));
+        tf_piece->set_window_min_max(data::transfer_function::min_max_t(max, min));
     }
 
-    tf->fitWindow();
+    tf->fit_window();
 
-    pointsModified(*tf);
+    points_modified(*tf);
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::leftButtonReleaseEvent()
+void transfer_function::left_button_release_event()
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Removes the hightlighting of the captured point.
-    m_capturedTFPoint->second->setPen(m_pointsPen);
-    m_capturedTFPoint = nullptr;
+    m_captured_tf_point->second->setPen(m_points_pen);
+    m_captured_tf_point = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::rightButtonClickOnPointEvent(
-    PieceView* const _piece_view,
+void transfer_function::right_button_click_on_point_event(
+    piece_view* const _piece_view,
     std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point
 )
 {
@@ -1101,9 +1105,9 @@ void transfer_function::rightButtonClickOnPointEvent(
     const auto tf = m_tf.lock();
 
     // Updates the TF.
-    auto point_it = std::find(_piece_view->m_TFPoints.begin(), _piece_view->m_TFPoints.end(), _tf_point);
-    SIGHT_ASSERT("The captured point is not found", point_it != _piece_view->m_TFPoints.end());
-    std::size_t point_index = std::size_t(point_it - _piece_view->m_TFPoints.begin());
+    auto point_it = std::find(_piece_view->m_tf_points.begin(), _piece_view->m_tf_points.end(), _tf_point);
+    SIGHT_ASSERT("The captured point is not found", point_it != _piece_view->m_tf_points.end());
+    std::size_t point_index = std::size_t(point_it - _piece_view->m_tf_points.begin());
 
     const data::transfer_function_piece::sptr tf_piece = _piece_view->m_tf;
     {
@@ -1111,7 +1115,7 @@ void transfer_function::rightButtonClickOnPointEvent(
         const double window = tf_piece->window();
         if(window <= 0)
         {
-            point_index = _piece_view->m_TFPoints.size() - 1 - point_index;
+            point_index = _piece_view->m_tf_points.size() - 1 - point_index;
         }
 
         // Retrieves the TF point.
@@ -1126,48 +1130,48 @@ void transfer_function::rightButtonClickOnPointEvent(
         tf_piece->erase(tf_value);
 
         // Gets new window/level min max value in the window/level space.
-        double min = _piece_view->m_TFPoints.begin()->first.x;
-        double max = _piece_view->m_TFPoints.rbegin()->first.x;
+        double min = _piece_view->m_tf_points.begin()->first.x;
+        double max = _piece_view->m_tf_points.rbegin()->first.x;
 
         // If the removed point is the last or the first, the min max is wrong and need to be updated.
-        if((point_index == 0 && window >= 0) || (point_index == _piece_view->m_TFPoints.size() - 1 && window < 0))
+        if((point_index == 0 && window >= 0) || (point_index == _piece_view->m_tf_points.size() - 1 && window < 0))
         {
-            min = (_piece_view->m_TFPoints.begin() + 1)->first.x;
+            min = (_piece_view->m_tf_points.begin() + 1)->first.x;
         }
-        else if((point_index == _piece_view->m_TFPoints.size() - 1 && window >= 0) || (point_index == 0 && window < 0))
+        else if((point_index == _piece_view->m_tf_points.size() - 1 && window >= 0) || (point_index == 0 && window < 0))
         {
-            max = (_piece_view->m_TFPoints.rbegin() + 1)->first.x;
+            max = (_piece_view->m_tf_points.rbegin() + 1)->first.x;
         }
 
         // Updates the window/level.
         if(window > 0)
         {
-            tf_piece->setWindowMinMax(data::transfer_function::min_max_t(min, max));
+            tf_piece->set_window_min_max(data::transfer_function::min_max_t(min, max));
         }
         else
         {
-            tf_piece->setWindowMinMax(data::transfer_function::min_max_t(max, min));
+            tf_piece->set_window_min_max(data::transfer_function::min_max_t(max, min));
         }
     }
 
-    tf->fitWindow();
+    tf->fit_window();
 
-    pointsModified(*tf);
+    points_modified(*tf);
 
-    this->getScene2DRender()->getScene()->removeItem(point_it->second);
+    this->get_scene_2d_render()->get_scene()->removeItem(point_it->second);
     delete point_it->second;
-    _piece_view->m_TFPoints.erase(point_it);
+    _piece_view->m_tf_points.erase(point_it);
 
     // Re-draw the current polygons.
-    this->destroyTFPolygon(_piece_view);
-    this->createTFPolygon(_piece_view);
-    this->buildLayer();
+    this->destroy_tf_polygon(_piece_view);
+    this->create_tf_polygon(_piece_view);
+    this->build_layer();
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::leftButtonDoubleClickOnPointEvent(
-    PieceView* const _piece_view,
+void transfer_function::left_button_double_click_on_point_event(
+    piece_view* const _piece_view,
     std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point
 )
 {
@@ -1181,7 +1185,7 @@ void transfer_function::leftButtonDoubleClickOnPointEvent(
 
     QColor new_color = QColorDialog::getColor(
         old_color,
-        this->getScene2DRender()->getView(),
+        this->get_scene_2d_render()->get_view(),
         QString("Choose the point color"),
         QColorDialog::ShowAlphaChannel
     );
@@ -1190,16 +1194,16 @@ void transfer_function::leftButtonDoubleClickOnPointEvent(
     {
         // Updates the TF.
         auto point_it =
-            std::find(_piece_view->m_TFPoints.begin(), _piece_view->m_TFPoints.end(), _tf_point);
-        SIGHT_ASSERT("The captured point is not found", point_it != _piece_view->m_TFPoints.end());
-        std::size_t point_index = std::size_t(point_it - _piece_view->m_TFPoints.begin());
+            std::find(_piece_view->m_tf_points.begin(), _piece_view->m_tf_points.end(), _tf_point);
+        SIGHT_ASSERT("The captured point is not found", point_it != _piece_view->m_tf_points.end());
+        std::size_t point_index = std::size_t(point_it - _piece_view->m_tf_points.begin());
 
         const auto tf_piece = _piece_view->m_tf;
         {
             // If the window is negative, the TF point list is reversed compared to the TF data.
             if(tf_piece->window() < 0)
             {
-                point_index = _piece_view->m_TFPoints.size() - 1 - point_index;
+                point_index = _piece_view->m_tf_points.size() - 1 - point_index;
             }
 
             // Retrieves the TF point.
@@ -1221,50 +1225,50 @@ void transfer_function::leftButtonDoubleClickOnPointEvent(
             tf_piece->insert({tf_value, color_t});
         }
 
-        tf->fitWindow();
+        tf->fit_window();
 
-        pointsModified(*tf);
+        points_modified(*tf);
 
         // Updates the displayed TF point.
         new_color.setAlpha(255);
         _tf_point.second->setBrush(QBrush(new_color));
 
         // Re-draw the current polygons.
-        this->destroyTFPolygon(_piece_view);
-        this->createTFPolygon(_piece_view);
-        this->buildLayer();
+        this->destroy_tf_polygon(_piece_view);
+        this->create_tf_polygon(_piece_view);
+        this->build_layer();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Event& _event)
+void transfer_function::left_button_double_click_event(const sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
-    sight::viz::scene2d::vec2d_t new_coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t new_coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
 
     new_coord.y = std::clamp(new_coord.y, -1., 0.);
     {
         const auto tf = m_tf.lock();
 
         // Finds the current pieceView.
-        SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
-        PieceView* const current_piece_view = *(std::find_if(
-                                                    m_pieceView.begin(),
-                                                    m_pieceView.end(),
-                                                    [&](const PieceView* _piece_view)
+        SIGHT_ASSERT("The current TF mustn't be null", m_current_tf);
+        piece_view* const current_piece_view = *(std::find_if(
+                                                     m_piece_view.begin(),
+                                                     m_piece_view.end(),
+                                                     [&](const piece_view* _piece_view)
             {
-                return _piece_view->m_tf == m_currentTF;
+                return _piece_view->m_tf == m_current_tf;
             }));
         const auto tf_piece = current_piece_view->m_tf;
         {
             data::transfer_function::color_t new_color;
 
             // The new coord becomes the new first TF point, get the current first color in the list.
-            if(new_coord.x < current_piece_view->m_TFPoints.front().first.x)
+            if(new_coord.x < current_piece_view->m_tf_points.front().first.x)
             {
-                const QColor first_color = current_piece_view->m_TFPoints.front().second->brush().color();
+                const QColor first_color = current_piece_view->m_tf_points.front().second->brush().color();
                 new_color = data::transfer_function::color_t(
                     first_color.red() / 255.,
                     first_color.green() / 255.,
@@ -1273,9 +1277,9 @@ void transfer_function::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
                 );
             }
             // The new coord becomes the new last TF point, get the current last color in the list.
-            else if(new_coord.x > current_piece_view->m_TFPoints.back().first.x)
+            else if(new_coord.x > current_piece_view->m_tf_points.back().first.x)
             {
-                const QColor first_color = current_piece_view->m_TFPoints.back().second->brush().color();
+                const QColor first_color = current_piece_view->m_tf_points.back().second->brush().color();
                 new_color = data::transfer_function::color_t(
                     first_color.red() / 255.,
                     first_color.green() / 255.,
@@ -1291,27 +1295,27 @@ void transfer_function::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
             }
 
             // Adds the new TF point.
-            const data::transfer_function::value_t tf_value = tf_piece->mapValueFromWindow(new_coord.x);
+            const data::transfer_function::value_t tf_value = tf_piece->map_value_from_window(new_coord.x);
             tf_piece->insert({tf_value, new_color});
 
             // Gets new window/level min max value in the window/level space.
-            const double min = std::min(current_piece_view->m_TFPoints.begin()->first.x, new_coord.x);
-            const double max = std::max(current_piece_view->m_TFPoints.rbegin()->first.x, new_coord.x);
+            const double min = std::min(current_piece_view->m_tf_points.begin()->first.x, new_coord.x);
+            const double max = std::max(current_piece_view->m_tf_points.rbegin()->first.x, new_coord.x);
 
             // Updates the window/level.
             if(tf_piece->window() > 0)
             {
-                tf_piece->setWindowMinMax(data::transfer_function::min_max_t(min, max));
+                tf_piece->set_window_min_max(data::transfer_function::min_max_t(min, max));
             }
             else
             {
-                tf_piece->setWindowMinMax(data::transfer_function::min_max_t(max, min));
+                tf_piece->set_window_min_max(data::transfer_function::min_max_t(max, min));
             }
         }
 
-        tf->fitWindow();
+        tf->fit_window();
 
-        pointsModified(*tf);
+        points_modified(*tf);
     }
 
     // Re-draw all the scene.
@@ -1320,50 +1324,50 @@ void transfer_function::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::midButtonClickEvent(sight::viz::scene2d::data::Event& _event)
+void transfer_function::mid_button_click_event(sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     const auto tf = m_tf.lock();
 
     // Finds all pieceView that match the clicked coord.
-    std::vector<PieceView*> matching_piece_view = this->getMatchingPieceView(_event);
+    std::vector<piece_view*> matching_piece_view = this->get_matching_piece_view(_event);
 
     // Checks if the current tf is in the matching list.
     const auto matching_it = std::find_if(
         matching_piece_view.begin(),
         matching_piece_view.end(),
-        [&](const PieceView* _piece_view)
+        [&](const piece_view* _piece_view)
         {
-            return _piece_view->m_tf == m_currentTF;
+            return _piece_view->m_tf == m_current_tf;
         });
 
     // Moves the window/level only if the mouse if over the current TF.
     if(matching_it != matching_piece_view.end())
     {
-        this->getScene2DRender()->getView()->setCursor(Qt::ClosedHandCursor);
-        sight::viz::scene2d::vec2d_t window_level_coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+        this->get_scene_2d_render()->get_view()->setCursor(Qt::ClosedHandCursor);
+        sight::viz::scene2d::vec2d_t window_level_coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
         // Stores the level in window/level space and the window in screen space.
-        m_capturedTF = std::make_pair(
+        m_captured_tf = std::make_pair(
             (*matching_it)->m_tf,
-            sight::viz::scene2d::vec2d_t(window_level_coord.x, _event.getCoord().y)
+            sight::viz::scene2d::vec2d_t(window_level_coord.x, _event.get_coord().y)
         );
-        _event.setAccepted(true);
+        _event.set_accepted(true);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::mouseMoveOnPieceViewEvent(const sight::viz::scene2d::data::Event& _event)
+void transfer_function::mouse_move_on_piece_view_event(const sight::viz::scene2d::data::event& _event)
 {
     // m_capturedTF must be previously sets by midButtonClickEvent(const sight::viz::scene2d::data::Event& _event)
-    SIGHT_ASSERT("The captured pieceView must exist", m_capturedTF.first);
+    SIGHT_ASSERT("The captured pieceView must exist", m_captured_tf.first);
 
-    sight::viz::scene2d::vec2d_t window_level_coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t window_level_coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
 
-    const auto min_max = m_capturedTF.first->minMax();
-    const auto min     = m_capturedTF.first->mapValueToWindow(min_max.first);
-    const auto max     = m_capturedTF.first->mapValueToWindow(min_max.second);
+    const auto min_max = m_captured_tf.first->min_max();
+    const auto min     = m_captured_tf.first->map_value_to_window(min_max.first);
+    const auto max     = m_captured_tf.first->map_value_to_window(min_max.second);
 
     // Prevent the whole curve to move outside the viewport.
     {
@@ -1371,26 +1375,26 @@ void transfer_function::mouseMoveOnPieceViewEvent(const sight::viz::scene2d::dat
 
         window_level_coord = glm::clamp(
             window_level_coord,
-            glm::dvec2(viewport->left() + (m_capturedTF.second.x - min), viewport->top()),
-            glm::dvec2(viewport->right() - (max - m_capturedTF.second.x), viewport->bottom())
+            glm::dvec2(viewport->left() + (m_captured_tf.second.x - min), viewport->top()),
+            glm::dvec2(viewport->right() - (max - m_captured_tf.second.x), viewport->bottom())
         );
     }
 
     // The level delta is in window/level space.
-    const double level_delta = window_level_coord.x - m_capturedTF.second.x;
+    const double level_delta = window_level_coord.x - m_captured_tf.second.x;
 
     // The window delta is in screen space.
-    const double window_delta = _event.getCoord().y - m_capturedTF.second.y;
+    const double window_delta = _event.get_coord().y - m_captured_tf.second.y;
 
     // Updates the TF.
-    const data::transfer_function_piece::sptr tf_piece = m_capturedTF.first;
+    const data::transfer_function_piece::sptr tf_piece = m_captured_tf.first;
     {
         const auto tf = m_tf.lock();
 
-        tf_piece->setWindow(tf_piece->window() - window_delta);
-        tf_piece->setLevel(tf_piece->level() + level_delta);
+        tf_piece->set_window(tf_piece->window() - window_delta);
+        tf_piece->set_level(tf_piece->level() + level_delta);
 
-        tf->fitWindow();
+        tf->fit_window();
 
         // Sends the signal.
         const auto sig = tf->signal<data::transfer_function::windowing_modified_signal_t>(
@@ -1403,7 +1407,7 @@ void transfer_function::mouseMoveOnPieceViewEvent(const sight::viz::scene2d::dat
     }
 
     // Stores the level in window/level space and the window in screen space.
-    m_capturedTF.second = sight::viz::scene2d::vec2d_t(window_level_coord.x, _event.getCoord().y);
+    m_captured_tf.second = sight::viz::scene2d::vec2d_t(window_level_coord.x, _event.get_coord().y);
 
     // Re-draw all the scene.
     this->updating();
@@ -1411,22 +1415,22 @@ void transfer_function::mouseMoveOnPieceViewEvent(const sight::viz::scene2d::dat
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::midButtonReleaseEvent()
+void transfer_function::mid_button_release_event()
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
-    this->getScene2DRender()->getView()->setCursor(Qt::ArrowCursor);
-    m_capturedTF.first = nullptr;
+    this->get_scene_2d_render()->get_view()->setCursor(Qt::ArrowCursor);
+    m_captured_tf.first = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& _event)
+void transfer_function::right_button_c_lick_event(const sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Finds all pieceView that match the clicked coord.
-    std::vector<PieceView*> matching_piece_view = this->getMatchingPieceView(_event);
+    std::vector<piece_view*> matching_piece_view = this->get_matching_piece_view(_event);
 
     // Creates the menu.
     auto* const trapeze_action = new QAction("Add trapeze");
@@ -1436,7 +1440,7 @@ void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         this,
         [_event, this]()
         {
-            this->addTrapeze(_event);
+            this->add_trapeze(_event);
         });
     auto* const left_ramp_action = new QAction("Add left ramp");
     QObject::connect(
@@ -1445,7 +1449,7 @@ void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         this,
         [_event, this]()
         {
-            this->addLeftRamp(_event);
+            this->add_left_ramp(_event);
         });
     auto* const right_ramp_action = new QAction("Add right ramp");
     QObject::connect(
@@ -1454,7 +1458,7 @@ void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         this,
         [_event, this]()
         {
-            this->addRightRamp(_event);
+            this->add_right_ramp(_event);
         });
 
     auto* const context_menu = new QMenu();
@@ -1463,9 +1467,9 @@ void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         const auto matching_it = std::find_if(
             matching_piece_view.begin(),
             matching_piece_view.end(),
-            [&](const PieceView* _piece_view)
+            [&](const piece_view* _piece_view)
             {
-                return _piece_view->m_tf == m_currentTF;
+                return _piece_view->m_tf == m_current_tf;
             });
 
         // Adds the delete action if the current TF is clicked.
@@ -1481,7 +1485,7 @@ void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::E
                         delete_action,
                         &QAction::triggered,
                         this,
-                        &transfer_function::removeCurrentTF
+                        &transfer_function::remove_current_tf
                     );
                     context_menu->addAction(delete_action);
                 }
@@ -1490,17 +1494,17 @@ void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::E
             // Adds the clamp action.
             auto* const clamp_action = new QAction("Clamp");
             clamp_action->setCheckable(true);
-            clamp_action->setChecked(m_currentTF->clamped());
-            QObject::connect(clamp_action, &QAction::triggered, this, &transfer_function::clampCurrentTF);
+            clamp_action->setChecked(m_current_tf->clamped());
+            QObject::connect(clamp_action, &QAction::triggered, this, &transfer_function::clamp_current_tf);
             context_menu->addAction(clamp_action);
 
             // Adds the interpolation mode action.
             auto* const linear_action = new QAction("Linear");
             linear_action->setCheckable(true);
             linear_action->setChecked(
-                m_currentTF->interpolationMode() == data::transfer_function::InterpolationMode::LINEAR
+                m_current_tf->get_interpolation_mode() == data::transfer_function::interpolation_mode::linear
             );
-            QObject::connect(linear_action, &QAction::triggered, this, &transfer_function::toggleLinearCurrentTF);
+            QObject::connect(linear_action, &QAction::triggered, this, &transfer_function::toggle_linear_current_tf);
             context_menu->addAction(linear_action);
         }
     }
@@ -1517,20 +1521,20 @@ void transfer_function::rightButtonCLickEvent(const sight::viz::scene2d::data::E
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _event)
+void transfer_function::mid_button_wheel_move_event(sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Finds all pieceView that match the current coord.
-    std::vector<PieceView*> matching_piece_view = this->getMatchingPieceView(_event);
+    std::vector<piece_view*> matching_piece_view = this->get_matching_piece_view(_event);
 
     // Checks if the current tf is in the matching list.
     const auto matching_it = std::find_if(
         matching_piece_view.begin(),
         matching_piece_view.end(),
-        [&](const PieceView* _piece_view)
+        [&](const piece_view* _piece_view)
         {
-            return _piece_view->m_tf == m_currentTF;
+            return _piece_view->m_tf == m_current_tf;
         });
 
     // Change the opacity only if the mouse if over the current TF.
@@ -1542,16 +1546,16 @@ void transfer_function::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
             const auto& pieces = tf->pieces();
 
             SIGHT_ASSERT(
-                "inout '" + std::string(s_CURRENT_TF_INOUT) + "' must have at least on TF inside.",
+                "inout '" + std::string(CURRENT_TF_INOUT) + "' must have at least on TF inside.",
                 !tf->pieces().empty()
             );
 
             // Finds the tf
-            SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
-            tf_piece = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_currentTF;});
+            SIGHT_ASSERT("The current TF mustn't be null", m_current_tf);
+            tf_piece = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_current_tf;});
 
             // Updates the current TF.
-            const double scale = _event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown ? 0.9 : 1.1;
+            const double scale = _event.type() == sight::viz::scene2d::data::event::mouse_wheel_down ? 0.9 : 1.1;
 
             // Scale data
             for(auto& data : *tf_piece)
@@ -1559,36 +1563,36 @@ void transfer_function::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
                 data.second.a = data.second.a * scale;
             }
 
-            tf->fitWindow();
+            tf->fit_window();
 
-            pointsModified(*tf);
+            points_modified(*tf);
         }
 
         // Re-draw all the scene.
         this->updating();
 
-        _event.setAccepted(true);
+        _event.set_accepted(true);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::removeCurrentTF()
+void transfer_function::remove_current_tf()
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
     {
-        SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
+        SIGHT_ASSERT("The current TF mustn't be null", m_current_tf);
 
         const auto tf = m_tf.lock();
         SIGHT_ASSERT("Transfer function is not set.", tf);
         SIGHT_ASSERT("Transfer function must have more than one TF piece inside.", tf->pieces().size() > 1);
 
         auto& pieces = tf->pieces();
-        std::erase_if(pieces, [&](const auto& _piece){return _piece == m_currentTF;});
+        std::erase_if(pieces, [&](const auto& _piece){return _piece == m_current_tf;});
 
         // Sets the new current TF.
-        m_currentTF = pieces.front();
-        tf->fitWindow();
+        m_current_tf = pieces.front();
+        tf->fit_window();
         // Block notifier
         auto sig = tf->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -1603,7 +1607,7 @@ void transfer_function::removeCurrentTF()
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::clampCurrentTF(bool _clamp)
+void transfer_function::clamp_current_tf(bool _clamp)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
@@ -1611,30 +1615,30 @@ void transfer_function::clampCurrentTF(bool _clamp)
     SIGHT_ASSERT("Transfer function is not set.", tf);
 
     const auto& pieces = tf->pieces();
-    auto tf_piece      = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_currentTF;});
+    auto tf_piece      = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_current_tf;});
 
-    tf_piece->setClamped(_clamp);
-    tf->fitWindow();
+    tf_piece->set_clamped(_clamp);
+    tf->fit_window();
 
-    pointsModified(*tf);
+    points_modified(*tf);
 
-    PieceView* current_piece_view = *(std::find_if(
-                                          m_pieceView.begin(),
-                                          m_pieceView.end(),
-                                          [&](const PieceView* _piece_view)
+    piece_view* current_piece_view = *(std::find_if(
+                                           m_piece_view.begin(),
+                                           m_piece_view.end(),
+                                           [&](const piece_view* _piece_view)
         {
-            return _piece_view->m_tf == m_currentTF;
+            return _piece_view->m_tf == m_current_tf;
         }));
 
     // Re-draw the current polygons.
-    this->destroyTFPolygon(current_piece_view);
-    this->createTFPolygon(current_piece_view);
-    this->buildLayer();
+    this->destroy_tf_polygon(current_piece_view);
+    this->create_tf_polygon(current_piece_view);
+    this->build_layer();
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::toggleLinearCurrentTF(bool _linear)
+void transfer_function::toggle_linear_current_tf(bool _linear)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
@@ -1642,41 +1646,41 @@ void transfer_function::toggleLinearCurrentTF(bool _linear)
     SIGHT_ASSERT("Transfer function is not set.", tf);
 
     const auto& pieces = tf->pieces();
-    auto tf_piece      = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_currentTF;});
+    auto tf_piece      = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_current_tf;});
 
-    tf_piece->setInterpolationMode(
-        _linear ? data::transfer_function::InterpolationMode::LINEAR : data::transfer_function::InterpolationMode::NEAREST
+    tf_piece->set_interpolation_mode(
+        _linear ? data::transfer_function::interpolation_mode::linear : data::transfer_function::interpolation_mode::nearest
     );
-    tf->fitWindow();
-    pointsModified(*tf);
+    tf->fit_window();
+    points_modified(*tf);
 
-    PieceView* current_piece_view = *(std::find_if(
-                                          m_pieceView.begin(),
-                                          m_pieceView.end(),
-                                          [&](const PieceView* _piece_view)
+    piece_view* current_piece_view = *(std::find_if(
+                                           m_piece_view.begin(),
+                                           m_piece_view.end(),
+                                           [&](const piece_view* _piece_view)
         {
-            return _piece_view->m_tf == m_currentTF;
+            return _piece_view->m_tf == m_current_tf;
         }));
 
     // Re-draw the current polygons.
-    this->destroyTFPolygon(current_piece_view);
-    this->createTFPolygon(current_piece_view);
-    this->buildLayer();
+    this->destroy_tf_polygon(current_piece_view);
+    this->create_tf_polygon(current_piece_view);
+    this->build_layer();
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::addNewTF(const data::transfer_function_piece::sptr _tf)
+void transfer_function::add_new_tf(const data::transfer_function_piece::sptr _tf)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     {
         const auto tf = m_tf.lock();
-        SIGHT_ASSERT("inout '" + std::string(s_CURRENT_TF_INOUT) + "' does not exist.", tf);
+        SIGHT_ASSERT("inout '" + std::string(CURRENT_TF_INOUT) + "' does not exist.", tf);
 
         // Adds the new TF.
         tf->pieces().push_back(_tf);
-        tf->fitWindow();
+        tf->fit_window();
         // Block notifier
         auto sig = tf->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -1686,44 +1690,44 @@ void transfer_function::addNewTF(const data::transfer_function_piece::sptr _tf)
     }
 
     // Creates the new PieceView.
-    PieceView* new_piece_view = this->createPieceView(_tf, 0);
+    piece_view* new_piece_view = this->create_piece_view(_tf, 0);
 
     // Pushs the pieceView to the vector.
-    m_pieceView.push_back(new_piece_view);
+    m_piece_view.push_back(new_piece_view);
 
-    this->createTFPolygon(new_piece_view);
-    this->buildLayer();
+    this->create_tf_polygon(new_piece_view);
+    this->build_layer();
 
     // Updates the current TF.
-    this->setCurrentTF(new_piece_view);
+    this->set_current_tf(new_piece_view);
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::addLeftRamp(const sight::viz::scene2d::data::Event& _event)
+void transfer_function::add_left_ramp(const sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     const auto left_ramp = std::make_shared<data::transfer_function_piece>();
     left_ramp->insert({0.0, data::transfer_function::color_t(1.0, 1.0, 1.0, 1.0)});
     left_ramp->insert({1.0, data::transfer_function::color_t()});
-    left_ramp->setClamped(false);
-    left_ramp->setWindow(500.);
-    left_ramp->setLevel(50.);
+    left_ramp->set_clamped(false);
+    left_ramp->set_window(500.);
+    left_ramp->set_level(50.);
 
     // Updates the window/level.
-    sight::viz::scene2d::vec2d_t new_coord        = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t new_coord        = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
     const data::transfer_function::value_t window = left_ramp->window();
     data::transfer_function::value_t min          = new_coord.x - window / 2.;
     data::transfer_function::value_t max          = min + window;
-    left_ramp->setWindowMinMax(data::transfer_function::min_max_t(min, max));
+    left_ramp->set_window_min_max(data::transfer_function::min_max_t(min, max));
 
-    this->addNewTF(left_ramp);
+    this->add_new_tf(left_ramp);
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::addRightRamp(const sight::viz::scene2d::data::Event& _event)
+void transfer_function::add_right_ramp(const sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
@@ -1731,23 +1735,23 @@ void transfer_function::addRightRamp(const sight::viz::scene2d::data::Event& _ev
     const auto right_ramp = std::make_shared<data::transfer_function_piece>();
     right_ramp->insert({0.0, data::transfer_function::color_t()});
     right_ramp->insert({1.0, data::transfer_function::color_t(1.0, 1.0, 1.0, 1.0)});
-    right_ramp->setClamped(false);
-    right_ramp->setWindow(500.);
-    right_ramp->setLevel(50.);
+    right_ramp->set_clamped(false);
+    right_ramp->set_window(500.);
+    right_ramp->set_level(50.);
 
     // Updates the window/level.
-    sight::viz::scene2d::vec2d_t new_coord        = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t new_coord        = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
     const data::transfer_function::value_t window = right_ramp->window();
     data::transfer_function::value_t min          = new_coord.x - window / 2.;
     data::transfer_function::value_t max          = min + window;
-    right_ramp->setWindowMinMax(data::transfer_function::min_max_t(min, max));
+    right_ramp->set_window_min_max(data::transfer_function::min_max_t(min, max));
 
-    this->addNewTF(right_ramp);
+    this->add_new_tf(right_ramp);
 }
 
 //-----------------------------------------------------------------------------
 
-void transfer_function::addTrapeze(const sight::viz::scene2d::data::Event& _event)
+void transfer_function::add_trapeze(const sight::viz::scene2d::data::event& _event)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
@@ -1757,23 +1761,23 @@ void transfer_function::addTrapeze(const sight::viz::scene2d::data::Event& _even
     trapeze->insert({1. / 3., data::transfer_function::color_t(1.0, 1.0, 1.0, 1.0)});
     trapeze->insert({2. / 3., data::transfer_function::color_t(1.0, 1.0, 1.0, 1.0)});
     trapeze->insert({1.0, data::transfer_function::color_t()});
-    trapeze->setClamped(true);
-    trapeze->setWindow(500.);
-    trapeze->setLevel(50.);
+    trapeze->set_clamped(true);
+    trapeze->set_window(500.);
+    trapeze->set_level(50.);
 
     // Updates the window/level.
-    sight::viz::scene2d::vec2d_t new_coord        = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t new_coord        = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
     const data::transfer_function::value_t window = trapeze->window();
     data::transfer_function::value_t min          = new_coord.x - window / 2.;
     data::transfer_function::value_t max          = min + window;
-    trapeze->setWindowMinMax(data::transfer_function::min_max_t(min, max));
+    trapeze->set_window_min_max(data::transfer_function::min_max_t(min, max));
 
-    this->addNewTF(trapeze);
+    this->add_new_tf(trapeze);
 }
 
 //------------------------------------------------------------------------------
 
-void transfer_function::updateTF()
+void transfer_function::update_tf()
 {
     // Sets the current TF.
     {
@@ -1781,7 +1785,7 @@ void transfer_function::updateTF()
         const auto tf = m_tf.const_lock();
         if(tf && !tf->pieces().empty())
         {
-            m_currentTF = tf->pieces().front();
+            m_current_tf = tf->pieces().front();
         }
         else
         {
@@ -1794,7 +1798,7 @@ void transfer_function::updateTF()
 
 //------------------------------------------------------------------------------
 
-void transfer_function::pointsModified(const sight::data::transfer_function& _tf) const
+void transfer_function::points_modified(const sight::data::transfer_function& _tf) const
 {
     // Sends the modification signal.
     const auto sig_tf = _tf.signal<data::transfer_function::points_modified_signal_t>(

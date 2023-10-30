@@ -31,22 +31,22 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string MatrixConverter::s_IGTL_TYPE          = "TRANSFORM";
-const std::string MatrixConverter::s_FWDATA_OBJECT_TYPE = data::matrix4::classname();
+const std::string matrix_converter::IGTL_TYPE          = "TRANSFORM";
+const std::string matrix_converter::FWDATA_OBJECT_TYPE = data::matrix4::classname();
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::MatrixConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::matrix_converter);
 
-MatrixConverter::MatrixConverter()
+matrix_converter::matrix_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-MatrixConverter::~MatrixConverter()
+matrix_converter::~matrix_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MatrixConverter::fromFwDataObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer matrix_converter::from_fw_data_object(data::object::csptr _src) const
 {
     data::matrix4::csptr src_matrix = std::dynamic_pointer_cast<const data::matrix4>(_src);
     ::igtl::TransformMessage::Pointer msg;
@@ -68,7 +68,7 @@ MatrixConverter::~MatrixConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr matrix_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     ::igtl::Matrix4x4 matrix;
     auto* msg                                       = dynamic_cast< ::igtl::TransformMessage*>(_src.GetPointer());
@@ -88,23 +88,23 @@ data::object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::P
 
 //-----------------------------------------------------------------------------
 
-base::sptr MatrixConverter::New()
+base::sptr matrix_converter::New()
 {
-    return std::make_shared<MatrixConverter>();
+    return std::make_shared<matrix_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& MatrixConverter::get_igtl_type() const
+std::string const& matrix_converter::get_igtl_type() const
 {
-    return MatrixConverter::s_IGTL_TYPE;
+    return matrix_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& MatrixConverter::getFwDataObjectType() const
+std::string const& matrix_converter::get_fw_data_object_type() const
 {
-    return MatrixConverter::s_FWDATA_OBJECT_TYPE;
+    return matrix_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

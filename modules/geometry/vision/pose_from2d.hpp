@@ -84,7 +84,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(pose_from2d, service::registerer);
 
-    typedef std::vector<std::string> vect_key_t;
+    using vect_key_t = std::vector<std::string>;
 
     MODULE_GEOMETRY_VISION_API pose_from2d() noexcept;
     MODULE_GEOMETRY_VISION_API ~pose_from2d() noexcept override = default;
@@ -115,7 +115,7 @@ protected:
     MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Register matrix slot
-    void computeRegistration(core::hires_clock::type _timestamp) override;
+    void compute_registration(core::hires_clock::type _timestamp) override;
 
 private:
 
@@ -123,9 +123,9 @@ private:
      * @brief The Marker struct:
      * to handle marker object, with 4 corners 2D, and optionally a centroid
      */
-    struct Marker
+    struct marker
     {
-        std::vector<cv::Point2f> corners2D;
+        std::vector<cv::Point2f> corners_2d;
         cv::Point3f centroid;
     };
 
@@ -134,18 +134,18 @@ private:
      */
     struct camera
     {
-        cv::Size imageSize;
-        cv::Mat intrinsicMat;
-        cv::Mat distCoef;
+        cv::Size image_size;
+        cv::Mat intrinsic_mat;
+        cv::Mat dist_coef;
     };
     /**
      * @brief The Extrinsic struct : to handle several format of extrinsic matrix
      */
-    struct Extrinsic
+    struct extrinsic
     {
         cv::Mat rotation;
         cv::Mat translation;
-        cv::Mat Matrix4x4;
+        cv::Mat matrix4x4;
     };
 
     /// Initialize cameras
@@ -156,42 +156,42 @@ private:
      * @param : Marker points in each view
      *
      **/
-    cv::Matx44f cameraPoseFromStereo(const Marker& _marker_cam1, const Marker& _marker_cam2) const;
+    cv::Matx44f camera_pose_from_stereo(const marker& _marker_cam1, const marker& _marker_cam2) const;
 
     /**
      * @brief :Compute the camera position from a marker detected in one view
      **/
-    cv::Matx44f cameraPoseFromMono(const Marker& _marker_cam1) const;
+    cv::Matx44f camera_pose_from_mono(const marker& _marker_cam1) const;
 
     /// Last timestamp
-    core::hires_clock::type m_lastTimestamp {0};
+    core::hires_clock::type m_last_timestamp {0};
 
     /// Marker pattern width.
-    double m_patternWidth {80};
+    double m_pattern_width {80};
 
     /// 3d model
-    std::vector<cv::Point3f> m_3dModel;
+    std::vector<cv::Point3f> m_3d_model;
 
     /// std::vector of cameras
     std::vector<camera> m_cameras;
 
     /// Extrinsic matrix
-    Extrinsic m_extrinsicMat;
+    extrinsic m_extrinsic_mat;
 
     /// List of tags associated with each inout matrix
-    std::vector<data::marker_map::key_t> m_matricesTag;
+    std::vector<data::marker_map::key_t> m_matrices_tag;
 
-    static constexpr std::string_view s_MARKERMAP_INPUT = "markerMap";
-    static constexpr std::string_view s_CAMERA_INPUT    = "camera";
-    static constexpr std::string_view s_EXTRINSIC_INPUT = "extrinsic";
-    static constexpr std::string_view s_MATRIX_INOUT    = "matrix";
-    static constexpr std::string_view s_POINTLIST_INOUT = "pointList";
+    static constexpr std::string_view MARKERMAP_INPUT = "markerMap";
+    static constexpr std::string_view CAMERA_INPUT    = "camera";
+    static constexpr std::string_view EXTRINSIC_INPUT = "extrinsic";
+    static constexpr std::string_view MATRIX_INOUT    = "matrix";
+    static constexpr std::string_view POINTLIST_INOUT = "pointList";
 
-    data::ptr_vector<data::marker_map, data::Access::in> m_markerMap {this, s_MARKERMAP_INPUT, true};
-    data::ptr_vector<data::camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, true};
-    data::ptr<data::matrix4, data::Access::in> m_extrinsic {this, s_EXTRINSIC_INPUT};
-    data::ptr_vector<data::matrix4, data::Access::inout> m_matrix {this, s_MATRIX_INOUT};
-    data::ptr<data::point_list, data::Access::inout> m_pointList {this, s_POINTLIST_INOUT, false, true};
+    data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, MARKERMAP_INPUT, true};
+    data::ptr_vector<data::camera, data::access::in> m_camera {this, CAMERA_INPUT, true};
+    data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
+    data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, MATRIX_INOUT};
+    data::ptr<data::point_list, data::access::inout> m_point_list {this, POINTLIST_INOUT, false, true};
 };
 
 } // namespace sight::module::geometry::vision

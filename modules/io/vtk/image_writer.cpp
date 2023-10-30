@@ -55,40 +55,40 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 image_writer::image_writer() noexcept
 {
-    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
+    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType image_writer::getIOPathType() const
+sight::io::service::path_type_t image_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
 
-void image_writer::openLocationDialog()
+void image_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("Vtk", "*.vtk");
-    dialog_file.addFilter("Vti", "*.vti");
-    dialog_file.addFilter("MetaImage", "*.mhd");
-    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a file to save an image" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("Vtk", "*.vtk");
+    dialog_file.add_filter("Vti", "*.vti");
+    dialog_file.add_filter("MetaImage", "*.mhd");
+    dialog_file.set_option(ui::dialog::location::write);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         this->set_file(result->get_file());
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -120,7 +120,7 @@ void image_writer::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-bool image_writer::saveImage(
+bool image_writer::save_image(
     const std::filesystem::path& _img_file,
     const CSPTR(data::image)& _image,
     const SPTR(job_created_signal_t)& _sig_job_created
@@ -135,7 +135,7 @@ bool image_writer::saveImage(
 
     if(ext == ".vtk")
     {
-        auto vtk_writer = std::make_shared<sight::io::vtk::ImageWriter>();
+        auto vtk_writer = std::make_shared<sight::io::vtk::image_writer>();
 
         // Set the file system path
         vtk_writer->set_file(_img_file);
@@ -143,13 +143,13 @@ bool image_writer::saveImage(
     }
     else if(ext == ".vti")
     {
-        auto vti_writer = std::make_shared<sight::io::vtk::VtiImageWriter>();
+        auto vti_writer = std::make_shared<sight::io::vtk::vti_image_writer>();
         vti_writer->set_file(_img_file);
         my_writer = vti_writer;
     }
     else if(ext == ".mhd")
     {
-        auto mhd_writer = std::make_shared<sight::io::vtk::MetaImageWriter>();
+        auto mhd_writer = std::make_shared<sight::io::vtk::meta_image_writer>();
         mhd_writer->set_file(_img_file);
         my_writer = mhd_writer;
     }
@@ -166,7 +166,7 @@ bool image_writer::saveImage(
     data::mt::locked_ptr<const data::image> locked(_image);
     my_writer->set_object(_image);
 
-    _sig_job_created->emit(my_writer->getJob());
+    _sig_job_created->emit(my_writer->get_job());
 
     try
     {
@@ -181,7 +181,7 @@ bool image_writer::saveImage(
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         b_value = false;
     }
@@ -190,7 +190,7 @@ bool image_writer::saveImage(
         sight::ui::dialog::message::show(
             "Warning",
             "Warning during saving.",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         b_value = false;
     }
@@ -201,28 +201,28 @@ bool image_writer::saveImage(
 
 void image_writer::updating()
 {
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         const auto data    = m_data.lock();
         const auto p_image = std::dynamic_pointer_cast<const data::image>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.", p_image);
+        SIGHT_ASSERT("The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.", p_image);
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
         try
         {
-            this->saveImage(this->get_file(), p_image, m_sigJobCreated);
+            this->save_image(this->get_file(), p_image, m_sig_job_created);
         }
         catch(core::tools::failed& e)
         {
             SIGHT_THROW_EXCEPTION(e);
         }
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
     else
     {
-        m_writeFailed = true;
+        m_write_failed = true;
     }
 }
 

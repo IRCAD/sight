@@ -38,31 +38,31 @@
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::WriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::writer_test);
 
 namespace sight::io::ut
 {
 
 //------------------------------------------------------------------------------
 
-void WriterTest::setUp()
+void writer_test::setUp()
 {
     // Set the profile name (needed for the preferences to work)
     sight::core::runtime::init();
-    const std::string& profile_name = sight::core::tools::UUID::generate();
+    const std::string& profile_name = sight::core::tools::uuid::generate();
     sight::core::runtime::get_current_profile()->set_name(profile_name);
 
     // Enables the preferences
     sight::ui::preferences::set_enabled(true);
 
-    m_rootPath = core::os::temp_dir::shared_directory();
+    m_root_path = core::os::temp_dir::shared_directory();
 }
 
 //------------------------------------------------------------------------------
 
-void WriterTest::tearDown()
+void writer_test::tearDown()
 {
-    m_rootPath = "";
+    m_root_path = "";
 
     ui::preferences preferences;
 
@@ -74,15 +74,15 @@ void WriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void WriterTest::test_typeOK()
+void writer_test::test_type_ok()
 {
     // Test using the wrong method for accessing a file
     {
         // Test adding service
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
 
         sight::service::config_t config;
-        config.add("file", (m_rootPath / m_file).string());
+        config.add("file", (m_root_path / m_file).string());
         srv->set_config(config);
         srv->configure();
         srv->start();
@@ -94,10 +94,10 @@ void WriterTest::test_typeOK()
     // Test using the wrong method for accessing a folder
     {
         // Test adding service
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FOLDER);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::folder);
 
         sight::service::config_t config;
-        config.add("folder", m_rootPath);
+        config.add("folder", m_root_path);
         srv->set_config(config);
         srv->configure();
         srv->start();
@@ -109,21 +109,21 @@ void WriterTest::test_typeOK()
 
 //------------------------------------------------------------------------------
 
-void WriterTest::test_hasLocationDefined()
+void writer_test::test_has_location_defined()
 {
     // No location defined
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
 
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(!srv->hasLocationDefined());
+        CPPUNIT_ASSERT(!srv->has_location_defined());
     }
 
     // No absolute location defined
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
 
         sight::service::config_t config;
         config.add("file", m_file);
@@ -131,137 +131,137 @@ void WriterTest::test_hasLocationDefined()
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(!srv->hasLocationDefined());
+        CPPUNIT_ASSERT(!srv->has_location_defined());
     }
 
     // Absolute location defined
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
         sight::service::config_t config;
-        config.add("file", (m_rootPath / m_file).string());
+        config.add("file", (m_root_path / m_file).string());
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->hasLocationDefined());
+        CPPUNIT_ASSERT(srv->has_location_defined());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void WriterTest::test_hasLocationDefinedWithBaseFolder()
+void writer_test::test_has_location_defined_with_base_folder()
 {
     // Base location defined but no file in FILE mode
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
 
         sight::service::config_t config;
-        config.add("baseFolder", m_rootPath.string());
+        config.add("baseFolder", m_root_path.string());
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(!srv->hasLocationDefined());
+        CPPUNIT_ASSERT(!srv->has_location_defined());
     }
 
     // Base location defined and a file in FILE mode
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
 
         sight::service::config_t config;
-        config.add("baseFolder", m_rootPath.string());
+        config.add("baseFolder", m_root_path.string());
         config.add("file", m_file);
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->hasLocationDefined());
+        CPPUNIT_ASSERT(srv->has_location_defined());
     }
 
     // Base location defined and in FOLDER mode
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FOLDER);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::folder);
 
         sight::service::config_t config;
-        config.add("baseFolder", m_rootPath.string());
+        config.add("baseFolder", m_root_path.string());
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->hasLocationDefined());
+        CPPUNIT_ASSERT(srv->has_location_defined());
     }
 
     // Base location defined and in FOLDER mode with an additional folder
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FOLDER);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::folder);
 
         sight::service::config_t config;
-        config.add("baseFolder", m_rootPath.string());
+        config.add("baseFolder", m_root_path.string());
         config.add("folder", m_folder);
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->hasLocationDefined());
+        CPPUNIT_ASSERT(srv->has_location_defined());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void WriterTest::test_outputPaths()
+void writer_test::test_output_paths()
 {
     // Test folder access
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FOLDER);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::folder);
 
         sight::service::config_t config;
-        config.add("folder", (m_rootPath / m_folder).string());
+        config.add("folder", (m_root_path / m_folder).string());
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->get_folder() == (m_rootPath / m_folder).string());
+        CPPUNIT_ASSERT(srv->get_folder() == (m_root_path / m_folder).string());
     }
 
     // Test file access
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
 
         sight::service::config_t config;
-        config.add("file", (m_rootPath / m_file).string());
+        config.add("file", (m_root_path / m_file).string());
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->get_file() == (m_rootPath / m_file).string());
+        CPPUNIT_ASSERT(srv->get_file() == (m_root_path / m_file).string());
     }
 
     // Test base folder with file
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::file);
 
         sight::service::config_t config;
-        config.add("baseFolder", m_rootPath.string());
+        config.add("baseFolder", m_root_path.string());
         config.add("file", m_file);
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->get_file() == (m_rootPath / m_file).string());
+        CPPUNIT_ASSERT(srv->get_file() == (m_root_path / m_file).string());
     }
 
     // Test base folder with folder
     {
-        auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FOLDER);
+        auto srv = std::make_shared<sight::io::ut::s_test_writer>(sight::io::service::folder);
 
         sight::service::config_t config;
-        config.add("baseFolder", m_rootPath.string());
+        config.add("baseFolder", m_root_path.string());
         config.add("folder", m_folder);
         srv->set_config(config);
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT(srv->get_folder() == (m_rootPath / m_folder).string());
+        CPPUNIT_ASSERT(srv->get_folder() == (m_root_path / m_folder).string());
     }
 }
 

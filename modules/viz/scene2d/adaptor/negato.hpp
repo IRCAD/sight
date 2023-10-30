@@ -42,7 +42,7 @@ namespace sight::module::viz::scene2d::adaptor
  * - \b updateSliceIndex() : update image slice index
  * - \b updateSliceType() : update image slice type
  * - \b updateBuffer() : update image buffer
- * - \b updateVisibility() : update image visibility
+ * - \b update_visibility() : update image visibility
  *
  * @section XML XML Configuration
  *
@@ -99,10 +99,10 @@ protected:
 
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /// Slot: updates the TF
-    MODULE_VIZ_SCENE2D_API void updateTF();
+    MODULE_VIZ_SCENE2D_API void update_tf();
 
 private:
 
@@ -112,62 +112,62 @@ private:
      */
 
     /// Slot: update image slice index
-    void updateSliceIndex(int _axial, int _frontal, int _sagittal);
+    void update_slice_index(int _axial, int _frontal, int _sagittal);
 
     /// Slot: update image slice type
-    void updateSliceType(int _from, int _to);
+    void update_slice_type(int _from, int _to);
 
     /// Slot: update image buffer
-    void updateBuffer();
+    void update_buffer();
 
     /// Slot: update image visibility
-    void updateVisibility(bool _is_visible);
+    void update_visibility(bool _is_visible);
     /**
      * @}
      */
 
-    QImage* createQImage();
+    QImage* create_q_image();
 
-    void updateBufferFromImage(QImage* _img);
+    void update_buffer_from_image(QImage* _img);
 
-    void changeImageMinMaxFromCoord(
+    void change_image_min_max_from_coord(
         sight::viz::scene2d::vec2d_t& _old_coord,
         sight::viz::scene2d::vec2d_t& _new_coord
     );
 
-    static QRgb getQImageVal(std::int16_t _value, const data::transfer_function& _tf);
+    static QRgb get_q_image_val(std::int16_t _value, const data::transfer_function& _tf);
 
-    QImage* m_qImg {nullptr};
+    QImage* m_q_img {nullptr};
 
-    QGraphicsPixmapItem* m_pixmapItem {nullptr};
+    QGraphicsPixmapItem* m_pixmap_item {nullptr};
 
     QGraphicsItemGroup* m_layer {nullptr};
 
     using orientation_t = data::helper::medical_image::orientation_t;
 
     /// The current orientation of the negato
-    orientation_t m_orientation {orientation_t::Z_AXIS};
+    orientation_t m_orientation {orientation_t::z_axis};
 
     /// Used during negato interaction to manage window/level
-    bool m_pointIsCaptured {false};
+    bool m_point_is_captured {false};
 
     /// Ref. position when changing image window/level
-    sight::viz::scene2d::vec2d_t m_oldCoord {};
+    sight::viz::scene2d::vec2d_t m_old_coord {};
 
     /// Specify if the negato allow slice type events
-    bool m_changeSliceTypeAllowed {true};
+    bool m_change_slice_type_allowed {true};
 
-    static constexpr std::string_view s_IMAGE_IN = "image";
-    static constexpr std::string_view s_TF_INOUT = "tf";
+    static constexpr std::string_view IMAGE_IN = "image";
+    static constexpr std::string_view TF_INOUT = "tf";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_IN, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::Access::inout> m_tf {this, s_TF_INOUT, true};
-    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, "viewport"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN, true};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, TF_INOUT, true};
+    sight::data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::inout> m_viewport {this, "viewport"};
 
     /// Stores current slice index on each orientation.
-    std::int64_t m_axialIndex {-1};
-    std::int64_t m_frontalIndex {-1};
-    std::int64_t m_sagittalIndex {-1};
+    std::int64_t m_axial_index {-1};
+    std::int64_t m_frontal_index {-1};
+    std::int64_t m_sagittal_index {-1};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

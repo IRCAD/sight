@@ -47,17 +47,17 @@ public:
     UI_QT_API ~menubar() override = default;
 
     /**
-     * @brief Instantiate layout with parent menuBar.
+     * @brief Instantiate layout with parent menubar.
      * @pre layout must be initialized before.
-     * @pre parent menuBar must be instanced.
+     * @pre parent menubar must be instanced.
      */
-    UI_QT_API void createMenuBar(ui::container::widget::sptr _parent) override;
+    UI_QT_API void create_menu_bar(ui::container::widget::sptr _parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroyMenuBar() override;
+    UI_QT_API void destroy_menu_bar() override;
 
 protected:
 

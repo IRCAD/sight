@@ -44,117 +44,117 @@ using core::tools::random::safe_rand;
 
 //------------------------------------------------------------------------------
 
-data::structure_traits_dictionary::sptr object::createStructureTraitsDictionary()
+data::structure_traits_dictionary::sptr object::create_structure_traits_dictionary()
 {
     data::structure_traits_dictionary::sptr struct_dico = std::make_shared<data::structure_traits_dictionary>();
     data::structure_traits::sptr skin                   = std::make_shared<data::structure_traits>();
     std::string skin_type                               = "Skin";
-    skin->setType(skin_type);
-    skin->setClass(data::structure_traits::ENVIRONMENT);
+    skin->set_type(skin_type);
+    skin->set_class(data::structure_traits::environment);
     auto skin_color = std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
-    skin->setColor(skin_color);
-    data::structure_traits::CategoryContainer skin_cat(1);
-    skin_cat[0] = data::structure_traits::BODY;
-    skin->setCategories(skin_cat);
-    struct_dico->addStructure(skin);
+    skin->set_color(skin_color);
+    data::structure_traits::category_container_t skin_cat(1);
+    skin_cat[0] = data::structure_traits::body;
+    skin->set_categories(skin_cat);
+    struct_dico->add_structure(skin);
 
     data::structure_traits::sptr liver = std::make_shared<data::structure_traits>();
-    liver->setType("Liver");
-    liver->setClass(data::structure_traits::ORGAN);
-    liver->setColor(std::make_shared<data::color>(204.0F / 255.0F, 51.0F / 255.0F, 51.0F / 255.0F, 1.0F));
-    data::structure_traits::CategoryContainer liver_cat(1);
-    liver_cat[0] = data::structure_traits::ABDOMEN;
-    liver->setCategories(liver_cat);
+    liver->set_type("Liver");
+    liver->set_class(data::structure_traits::organ);
+    liver->set_color(std::make_shared<data::color>(204.0F / 255.0F, 51.0F / 255.0F, 51.0F / 255.0F, 1.0F));
+    data::structure_traits::category_container_t liver_cat(1);
+    liver_cat[0] = data::structure_traits::abdomen;
+    liver->set_categories(liver_cat);
     std::string native_exp = "inter(world(type(Skin)),not(class(Organ)))";
-    liver->setNativeExp(native_exp);
-    struct_dico->addStructure(liver);
+    liver->set_native_exp(native_exp);
+    struct_dico->add_structure(liver);
 
     data::structure_traits::sptr liver_tumor = std::make_shared<data::structure_traits>();
-    liver_tumor->setType("Liver_Tumor");
-    liver_tumor->setClass(data::structure_traits::LESION);
-    liver_tumor->setColor(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
-    data::structure_traits::CategoryContainer liver_tumor_cat(1);
-    liver_tumor_cat[0] = data::structure_traits::ABDOMEN;
-    liver_tumor->setCategories(liver_tumor_cat);
+    liver_tumor->set_type("Liver_Tumor");
+    liver_tumor->set_class(data::structure_traits::lesion);
+    liver_tumor->set_color(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
+    data::structure_traits::category_container_t liver_tumor_cat(1);
+    liver_tumor_cat[0] = data::structure_traits::abdomen;
+    liver_tumor->set_categories(liver_tumor_cat);
     liver_tumor->set_attachment_type("Liver");
-    struct_dico->addStructure(liver_tumor);
+    struct_dico->add_structure(liver_tumor);
 
     data::structure_traits::sptr tumor = std::make_shared<data::structure_traits>();
-    tumor->setType("Tumor");
-    tumor->setClass(data::structure_traits::LESION);
-    tumor->setColor(std::make_shared<data::color>(0.0F, 0.0F, 1.0F, 1.0F));
-    data::structure_traits::CategoryContainer tumor_cat(8);
-    tumor_cat[0] = data::structure_traits::BODY;
-    tumor_cat[1] = data::structure_traits::HEAD;
-    tumor_cat[2] = data::structure_traits::NECK;
-    tumor_cat[3] = data::structure_traits::THORAX;
-    tumor_cat[4] = data::structure_traits::ABDOMEN;
-    tumor_cat[5] = data::structure_traits::PELVIS;
-    tumor_cat[6] = data::structure_traits::ARM;
-    tumor_cat[7] = data::structure_traits::LEG;
-    tumor->setCategories(tumor_cat);
+    tumor->set_type("Tumor");
+    tumor->set_class(data::structure_traits::lesion);
+    tumor->set_color(std::make_shared<data::color>(0.0F, 0.0F, 1.0F, 1.0F));
+    data::structure_traits::category_container_t tumor_cat(8);
+    tumor_cat[0] = data::structure_traits::body;
+    tumor_cat[1] = data::structure_traits::head;
+    tumor_cat[2] = data::structure_traits::neck;
+    tumor_cat[3] = data::structure_traits::thorax;
+    tumor_cat[4] = data::structure_traits::abdomen;
+    tumor_cat[5] = data::structure_traits::pelvis;
+    tumor_cat[6] = data::structure_traits::arm;
+    tumor_cat[7] = data::structure_traits::leg;
+    tumor->set_categories(tumor_cat);
 
     data::structure_traits::sptr colon = std::make_shared<data::structure_traits>();
-    colon->setType("Colon");
-    colon->setClass(data::structure_traits::ORGAN);
-    colon->setColor(std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 128.0F / 255.0F, 1.0F));
-    data::structure_traits::CategoryContainer colon_cat(1);
-    colon_cat[0] = data::structure_traits::ABDOMEN;
-    colon->setCategories(colon_cat);
-    struct_dico->addStructure(colon);
+    colon->set_type("Colon");
+    colon->set_class(data::structure_traits::organ);
+    colon->set_color(std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 128.0F / 255.0F, 1.0F));
+    data::structure_traits::category_container_t colon_cat(1);
+    colon_cat[0] = data::structure_traits::abdomen;
+    colon->set_categories(colon_cat);
+    struct_dico->add_structure(colon);
 
     data::structure_traits::sptr caecum = std::make_shared<data::structure_traits>();
-    caecum->setType("Caecum");
-    caecum->setClass(data::structure_traits::FUNCTIONAL);
-    caecum->setColor(std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 128.0F / 255.0F, 1.0F));
-    data::structure_traits::CategoryContainer caecum_cat(1);
-    caecum_cat[0] = data::structure_traits::ABDOMEN;
-    caecum->setCategories(caecum_cat);
+    caecum->set_type("Caecum");
+    caecum->set_class(data::structure_traits::functional);
+    caecum->set_color(std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 128.0F / 255.0F, 1.0F));
+    data::structure_traits::category_container_t caecum_cat(1);
+    caecum_cat[0] = data::structure_traits::abdomen;
+    caecum->set_categories(caecum_cat);
     caecum->set_attachment_type("Colon");
-    struct_dico->addStructure(caecum);
+    struct_dico->add_structure(caecum);
 
     return struct_dico;
 }
 
 //------------------------------------------------------------------------------
 
-data::structure_traits::sptr object::createStructureTraits()
+data::structure_traits::sptr object::create_structure_traits()
 {
     data::structure_traits::sptr p_structure_traits = std::make_shared<data::structure_traits>();
 
-    const std::string type                                     = "Liver";
-    const data::structure_traits::StructureClass struct_class  = data::structure_traits::ORGAN;
-    const data::structure_traits::ROIExpression native_exp     = "inter(world(type(Skin)),not(class(Organ)))";
-    const data::structure_traits::ROIExpression native_geo_exp = "halfSpace(world(Left_lung),Z+,true)";
+    const std::string type                                        = "Liver";
+    const data::structure_traits::structure_class struct_class    = data::structure_traits::organ;
+    const data::structure_traits::roi_expression_t native_exp     = "inter(world(type(Skin)),not(class(Organ)))";
+    const data::structure_traits::roi_expression_t native_geo_exp = "halfSpace(world(Left_lung),Z+,true)";
 
-    p_structure_traits->setType(type);
-    p_structure_traits->setClass(struct_class);
-    p_structure_traits->setNativeExp(native_exp);
-    p_structure_traits->setNativeGeometricExp(native_geo_exp);
+    p_structure_traits->set_type(type);
+    p_structure_traits->set_class(struct_class);
+    p_structure_traits->set_native_exp(native_exp);
+    p_structure_traits->set_native_geometric_exp(native_geo_exp);
 
     data::color::sptr color = std::make_shared<data::color>();
-    color->setRGBA(
+    color->set_rgba(
         static_cast<float>(safe_rand() % 100) / 100.F,
         static_cast<float>(safe_rand() % 100) / 100.F,
         static_cast<float>(safe_rand() % 100) / 100.F,
         static_cast<float>(safe_rand() % 100) / 100.F
     );
-    p_structure_traits->setColor(color);
+    p_structure_traits->set_color(color);
 
-    data::structure_traits::CategoryContainer categories(2);
-    categories[0] = data::structure_traits::ABDOMEN;
-    categories[1] = data::structure_traits::BODY;
-    p_structure_traits->setCategories(categories);
+    data::structure_traits::category_container_t categories(2);
+    categories[0] = data::structure_traits::abdomen;
+    categories[1] = data::structure_traits::body;
+    p_structure_traits->set_categories(categories);
 
     return p_structure_traits;
 }
 
 //------------------------------------------------------------------------------
 
-data::color::sptr object::randomizeColor()
+data::color::sptr object::randomize_color()
 {
     data::color::sptr col = std::make_shared<data::color>();
-    col->setRGBA(
+    col->set_rgba(
         static_cast<float>(safe_rand() % 100) / 100.F,
         static_cast<float>(safe_rand() % 100) / 100.F,
         static_cast<float>(safe_rand() % 100) / 100.F,
@@ -165,7 +165,7 @@ data::color::sptr object::randomizeColor()
 
 //------------------------------------------------------------------------------
 
-data::transfer_function::sptr object::createTFColor(
+data::transfer_function::sptr object::create_tf_color(
     const unsigned char _nb_points,
     const double _window,
     const double _level
@@ -173,8 +173,8 @@ data::transfer_function::sptr object::createTFColor(
 {
     data::transfer_function::sptr tf = std::make_shared<data::transfer_function>();
 
-    tf->setName("color_t");
-    tf->setBackgroundColor(
+    tf->set_name("color_t");
+    tf->set_background_color(
         data::transfer_function::color_t(
             static_cast<float>(safe_rand() % 100) / 100.F,
             static_cast<float>(safe_rand() % 100) / 100.F,
@@ -188,10 +188,10 @@ data::transfer_function::sptr object::createTFColor(
     auto& pieces = tf->pieces();
     pieces.push_back(tf_data);
 
-    tf_data->setLevel(_level);
-    tf_data->setWindow(_window);
-    tf_data->setInterpolationMode(data::transfer_function::InterpolationMode::NEAREST);
-    tf_data->setClamped(false);
+    tf_data->set_level(_level);
+    tf_data->set_window(_window);
+    tf_data->set_interpolation_mode(data::transfer_function::interpolation_mode::nearest);
+    tf_data->set_clamped(false);
 
     for(unsigned char nb = 0 ; nb < _nb_points ; ++nb)
     {
@@ -212,22 +212,22 @@ data::transfer_function::sptr object::createTFColor(
 
 //------------------------------------------------------------------------------
 
-data::transfer_function::sptr object::createTFColor()
+data::transfer_function::sptr object::create_tf_color()
 {
     data::transfer_function::sptr tf = std::make_shared<data::transfer_function>();
 
-    tf->setBackgroundColor(data::transfer_function::color_t(1.0F, 0.3F, 0.6F, 0.1F));
-    tf->setName("color_t");
+    tf->set_background_color(data::transfer_function::color_t(1.0F, 0.3F, 0.6F, 0.1F));
+    tf->set_name("color_t");
 
     auto tf_data = std::make_shared<data::transfer_function_piece>();
 
     auto& pieces = tf->pieces();
     pieces.push_back(tf_data);
 
-    tf_data->setInterpolationMode(data::transfer_function::InterpolationMode::NEAREST);
-    tf_data->setClamped(false);
-    tf_data->setLevel(900.6);
-    tf_data->setWindow(-200.02);
+    tf_data->set_interpolation_mode(data::transfer_function::interpolation_mode::nearest);
+    tf_data->set_clamped(false);
+    tf_data->set_level(900.6);
+    tf_data->set_window(-200.02);
 
     tf_data->insert({-40.33, data::transfer_function::color_t(0.9F, 0.2F, 0.3F, 0.4F)});
     tf_data->insert({3, data::transfer_function::color_t(0.1F, 0.2F, 0.9F, 0.4F)}); // Invert point 3 <=> -0.2,
@@ -243,85 +243,85 @@ data::transfer_function::sptr object::createTFColor()
 
 //------------------------------------------------------------------------------
 
-data::material::sptr object::createMaterial()
+data::material::sptr object::create_material()
 {
     // use the default value PHONG,SURFACE, STANDARD
 
     data::color::sptr ambient = std::make_shared<data::color>();
-    ambient->setRGBA(0.5F, 0.5F, 0.5F, 0.5F);
+    ambient->set_rgba(0.5F, 0.5F, 0.5F, 0.5F);
 
     data::color::sptr diffuse = std::make_shared<data::color>();
-    diffuse->setRGBA(0.8F, 0.2F, 0.5F, 0.4F);
+    diffuse->set_rgba(0.8F, 0.2F, 0.5F, 0.4F);
 
     data::material::sptr material = std::make_shared<data::material>();
 
-    material->setAmbient(data::object::copy(ambient));
-    material->setDiffuse(data::object::copy(diffuse));
+    material->set_ambient(data::object::copy(ambient));
+    material->set_diffuse(data::object::copy(diffuse));
 
     return material;
 }
 
 //------------------------------------------------------------------------------
 
-data::point::sptr object::generatePoint()
+data::point::sptr object::generate_point()
 {
     std::array<double, 3> coord = {static_cast<double>(safe_rand() % 300),
                                    static_cast<double>(safe_rand() % 300),
                                    static_cast<double>(safe_rand() % 300)
     };
     data::point::sptr point = std::make_shared<data::point>();
-    point->setCoord(coord);
+    point->set_coord(coord);
     return point;
 }
 
 //------------------------------------------------------------------------------
 
-data::plane::sptr object::generatePlane()
+data::plane::sptr object::generate_plane()
 {
     data::plane::sptr plane = std::make_shared<data::plane>();
-    plane->setValue(generatePoint(), generatePoint(), generatePoint());
-    plane->setIsIntersection(((safe_rand() % 2) != 0));
+    plane->set_value(generate_point(), generate_point(), generate_point());
+    plane->set_is_intersection(((safe_rand() % 2) != 0));
     return plane;
 }
 
 //------------------------------------------------------------------------------
 
-data::resection::sptr object::generateResection()
+data::resection::sptr object::generate_resection()
 {
     data::resection::sptr resection = std::make_shared<data::resection>();
 
-    resection->setName("Resection1");
-    resection->setIsSafePart(((safe_rand() % 2) != 0));
-    resection->setIsValid(((safe_rand() % 2) != 0));
-    resection->setIsVisible(((safe_rand() % 2) != 0));
+    resection->set_name("Resection1");
+    resection->set_is_safe_part(((safe_rand() % 2) != 0));
+    resection->set_is_valid(((safe_rand() % 2) != 0));
+    resection->set_is_visible(((safe_rand() % 2) != 0));
     data::reconstruction::sptr rec_input = std::make_shared<data::reconstruction>();
 
-    utest_data::generator::series_set::generateReconstruction(rec_input);
-    data::resection::ResectionInputs inputs;
+    utest_data::generator::series_set::generate_reconstruction(rec_input);
+    data::resection::resection_inputs inputs;
     inputs.push_back(rec_input);
-    resection->SetInputs(inputs);
+    resection->set_inputs(inputs);
 
     data::reconstruction::sptr rec_output = std::make_shared<data::reconstruction>();
-    utest_data::generator::series_set::generateReconstruction(rec_output);
-    data::resection::ResectionOutputs outputs;
+    utest_data::generator::series_set::generate_reconstruction(rec_output);
+    data::resection::resection_outputs outputs;
     outputs.push_back(rec_output);
-    resection->setOutputs(outputs);
+    resection->set_outputs(outputs);
 
-    data::plane_list::PlaneListContainer planes;
-    planes.push_back(generatePlane());
-    planes.push_back(generatePlane());
+    data::plane_list::plane_list_t planes;
+    planes.push_back(generate_plane());
+    planes.push_back(generate_plane());
     data::plane_list::sptr plane_list = std::make_shared<data::plane_list>();
-    plane_list->setPlanes(planes);
+    plane_list->set_planes(planes);
 
     return resection;
 }
 
 //------------------------------------------------------------------------------
 
-data::resection_db::sptr object::generateResectionDB()
+data::resection_db::sptr object::generate_resection_db()
 {
     data::resection_db::sptr resection_db = std::make_shared<data::resection_db>();
-    resection_db->addResection(generateResection());
+    resection_db->add_resection(generate_resection());
     return resection_db;
 }
 

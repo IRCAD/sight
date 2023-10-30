@@ -34,7 +34,7 @@ namespace sight::io::dicom::reader::tid
  * @brief Measurement Report TID - This a root template
  * @see TID t1tt1 FIXME: Set the final TID
  */
-class IO_DICOM_CLASS_API MeasurementReport : public io::dicom::reader::tid::TemplateID<data::image>
+class IO_DICOM_CLASS_API measurement_report : public io::dicom::reader::tid::template_id<data::image>
 {
 public:
 
@@ -46,22 +46,22 @@ public:
      * @param[in] image Sight data object
      * @param[in] logger Logger
      */
-    IO_DICOM_API MeasurementReport(
+    IO_DICOM_API measurement_report(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::sptr& _image,
         const core::log::logger::sptr& _logger
     );
 
     /// Destructor
-    IO_DICOM_API ~MeasurementReport() override;
+    IO_DICOM_API ~measurement_report() override;
 
     /**
      * @brief Create Measurement Report template root node
      * @param[in] root Root node
      */
-    IO_DICOM_API virtual void readSR(const SPTR(io::dicom::container::sr::DicomSRNode)& _root);
+    IO_DICOM_API virtual void read_sr(const SPTR(io::dicom::container::sr::dicom_sr_node)& _root);
 };
 
 } // namespace sight::io::dicom::reader::tid

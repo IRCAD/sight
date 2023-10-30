@@ -51,7 +51,7 @@ public:
     ~generic_field() override
     = default;
 
-    APP_API void createConfig(core::tools::object::sptr _obj) override;
+    APP_API void create_config(core::tools::object::sptr _obj) override;
 
 protected:
 

@@ -37,7 +37,7 @@ namespace sight::geometry::data
  *  @param [in]  _ray1 ray (origin,direction). Direction vector is assumed be normalized.
  *  @param [in]  _ray2 ray (origin,direction). Direction vector is assumed be normalized.
  *  @param [out] _pointOnThis intersection point.
- *  @param [out] _pointOnfwLine barycenter of the triangle defined by the three points of the place.
+ *  @param [out] _pointOnfw_line barycenter of the triangle defined by the three points of the place.
  * Return FALSE if the lines are parallel, TRUE otherwise.
  * @verbatim
    p1 + t1 * d1
@@ -54,10 +54,10 @@ namespace sight::geometry::data
    @endverbatim
  */
 GEOMETRY_DATA_API bool get_closest_points(
-    const fwLine& _ray1,
-    const fwLine& _ray2,
-    fwVec3d& _point_on_this,
-    fwVec3d& _point_onfw_line
+    const fw_line& _ray1,
+    const fw_line& _ray2,
+    fw_vec3d& _point_on_this,
+    fw_vec3d& _point_onfw_line
 );
 
 /**
@@ -66,7 +66,7 @@ GEOMETRY_DATA_API bool get_closest_points(
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API fwVec3d get_closest_point(const fwLine& _ray, const fwVec3d& _point);
+GEOMETRY_DATA_API fw_vec3d get_closest_point(const fw_line& _ray, const fw_vec3d& _point);
 
 /**
  * @brief Compute the projection of a point in a given direction and test if this intersection is inside a given radius.
@@ -75,7 +75,7 @@ GEOMETRY_DATA_API fwVec3d get_closest_point(const fwLine& _ray, const fwVec3d& _
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _point);
+GEOMETRY_DATA_API bool intersect(const fw_line& _ray, double _radius, const fw_vec3d& _point);
 
 /**
  * @brief Compute the closest points between two rays and test these points lie inside a sphere of a given radius.
@@ -87,11 +87,11 @@ GEOMETRY_DATA_API bool intersect(const fwLine& _ray, double _radius, const fwVec
  *  @return closest point of the line if an intersection is found.
  */
 GEOMETRY_DATA_API bool intersect(
-    const fwLine& _line,
+    const fw_line& _line,
     double _radius,
-    const fwVec3d& _origin,
-    const fwVec3d& _direction,
-    fwVec3d& _point
+    const fw_vec3d& _origin,
+    const fw_vec3d& _direction,
+    fw_vec3d& _point
 );
 
 /**
@@ -107,12 +107,12 @@ GEOMETRY_DATA_API bool intersect(
  *  @return true if an intersection is found.
  */
 GEOMETRY_DATA_API bool intersect(
-    const fwLine& _line,
-    const fwVec3d& _v1,
-    const fwVec3d& _v2,
-    const fwVec3d& _v3,
-    fwVec3d& _point,
-    fwVec3d& _barycentric,
+    const fw_line& _line,
+    const fw_vec3d& _v1,
+    const fw_vec3d& _v2,
+    const fw_vec3d& _v3,
+    fw_vec3d& _point,
+    fw_vec3d& _barycentric,
     bool& _front
 );
 

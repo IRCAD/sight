@@ -144,9 +144,9 @@ void factory_registry_test::pointer_test()
             return std::make_shared<derived_object_test>();
         });
 
-    factory_type::key_vector_type keys = {"object_test", "DerivedObjectTest"};
+    factory_type::key_vector_t keys = {"object_test", "DerivedObjectTest"};
     std::sort(keys.begin(), keys.end());
-    factory_type::key_vector_type vect_keys = object_test_factory.get_factory_keys();
+    factory_type::key_vector_t vect_keys = object_test_factory.get_factory_keys();
     std::sort(vect_keys.begin(), vect_keys.end());
     CPPUNIT_ASSERT(keys == vect_keys);
 
@@ -274,7 +274,7 @@ struct use_factory_thread
     void run()
     {
         int duration = 20;
-        for(int i = 0 ; i < s_nb_objects ; ++i)
+        for(int i = 0 ; i < NB_OBJECTS ; ++i)
         {
             SIGHT_WARN("building 1 " << m_object_type << "... ");
             m_objects.push_back(m_factory.create(m_object_type, duration));
@@ -285,10 +285,10 @@ struct use_factory_thread
     const thread_safety_test_factory_type& m_factory;
     object_vector_type m_objects;
     std::string m_object_type;
-    static const int s_nb_objects;
+    static const int NB_OBJECTS;
 };
 
-const int use_factory_thread::s_nb_objects = 10;
+const int use_factory_thread::NB_OBJECTS = 10;
 
 struct populate_registry_thread
 {
@@ -304,7 +304,7 @@ struct populate_registry_thread
 
     void run()
     {
-        for(int i = 0 ; i < s_nb_registry_items ; ++i)
+        for(int i = 0 ; i < NB_REGISTRY_ITEMS ; ++i)
         {
             std::stringstream ss;
             ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() << "-" << i;
@@ -322,10 +322,10 @@ struct populate_registry_thread
     }
 
     thread_safety_test_factory_type& m_factory;
-    static const int s_nb_registry_items;
+    static const int NB_REGISTRY_ITEMS;
 };
 
-const int populate_registry_thread::s_nb_registry_items = 1000;
+const int populate_registry_thread::NB_REGISTRY_ITEMS = 1000;
 
 //------------------------------------------------------------------------------
 
@@ -379,14 +379,14 @@ void factory_registry_test::thread_safety_test()
         t.join();
     }
 
-    for(const use_factory_thread_vector::value_type& uft : objects)
+    for(const auto& uft : objects)
     {
-        CPPUNIT_ASSERT_EQUAL(std::size_t(use_factory_thread::s_nb_objects), uft->m_objects.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(use_factory_thread::NB_OBJECTS), uft->m_objects.size());
     }
 
-    CPPUNIT_ASSERT_EQUAL(nb_thread * use_factory_thread::s_nb_objects* 2, object_test::s_counter);
+    CPPUNIT_ASSERT_EQUAL(nb_thread * use_factory_thread::NB_OBJECTS* 2, object_test::s_counter);
     CPPUNIT_ASSERT_EQUAL(
-        std::size_t(nb_thread * populate_registry_thread::s_nb_registry_items + 2),
+        std::size_t(nb_thread * populate_registry_thread::NB_REGISTRY_ITEMS + 2),
         object_test_factory.get_factory_keys().size()
     );
     object_test::s_counter = 0;

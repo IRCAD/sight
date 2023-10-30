@@ -30,9 +30,9 @@ namespace sight::filter::image::ut
 class min_max_propagation_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(min_max_propagation_test);
-CPPUNIT_TEST(minPropagTest);
-CPPUNIT_TEST(maxPropagTest);
-CPPUNIT_TEST(radiusTest);
+CPPUNIT_TEST(min_propag_test);
+CPPUNIT_TEST(max_propag_test);
+CPPUNIT_TEST(radius_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,9 +41,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void minPropagTest();
-    static void maxPropagTest();
-    static void radiusTest();
+    static void min_propag_test();
+    static void max_propag_test();
+    static void radius_test();
 };
 
 } // namespace sight::filter::image::ut

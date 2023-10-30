@@ -52,7 +52,7 @@ void parameters_test::setUp()
     core::runtime::load_module("parameters_test");
 
     app::extension::parameters::sptr app_config_param;
-    app_config_param = app::extension::parameters::getDefault();
+    app_config_param = app::extension::parameters::get_default();
     app_config_param->clear_registry();
     app_config_param->parse_plugin_infos();
 }
@@ -65,28 +65,28 @@ void parameters_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void parameters_test::appConfigParametersTest()
+void parameters_test::app_config_parameters_test()
 {
     app::extension::parameters::sptr app_config_param;
-    app_config_param = app::extension::parameters::getDefault();
+    app_config_param = app::extension::parameters::get_default();
 
-    app::field_adaptor_t parameters = app_config_param->getParameters("id1");
+    app::field_adaptor_t parameters = app_config_param->get_parameters("id1");
     CPPUNIT_ASSERT(!parameters.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), parameters["param1"]);
 
-    app::field_adaptor_t parameters2 = app_config_param->getParameters("id2");
+    app::field_adaptor_t parameters2 = app_config_param->get_parameters("id2");
     CPPUNIT_ASSERT(!parameters2.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value3"), parameters2["param3"]);
 }
 
 //------------------------------------------------------------------------------
 
-void parameters_test::concurentAccessToparameters_test()
+void parameters_test::concurent_access_toparameters_test()
 {
     std::vector<std::future<void> > futures;
     for(unsigned int i = 0 ; i < 20 ; ++i)
     {
-        futures.push_back(std::async(std::launch::async, appConfigParametersTest));
+        futures.push_back(std::async(std::launch::async, app_config_parameters_test));
     }
 
     for(auto& future : futures)

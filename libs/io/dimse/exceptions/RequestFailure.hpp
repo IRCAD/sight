@@ -29,9 +29,9 @@ namespace sight::io::dimse::exceptions
 {
 
 /**
- * @brief RequestFailure Exceptions
+ * @brief RequestFailure exceptions
  */
-class IO_DIMSE_CLASS_API RequestFailure : public sight::io::dimse::exceptions::Base
+class IO_DIMSE_CLASS_API request_failure : public sight::io::dimse::exceptions::base
 {
 public:
 
@@ -39,10 +39,10 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DIMSE_API RequestFailure(const std::string& _message);
+    IO_DIMSE_API request_failure(const std::string& _message);
 
     /// Destructor
-    IO_DIMSE_API ~RequestFailure() noexcept override;
+    IO_DIMSE_API ~request_failure() noexcept override;
 };
 
 } // namespace sight::io::dimse::exceptions

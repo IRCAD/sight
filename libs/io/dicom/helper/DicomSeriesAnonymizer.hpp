@@ -43,17 +43,17 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers to anonymize DicomSeries
  */
-class IO_DICOM_CLASS_API DicomSeriesAnonymizer
+class IO_DICOM_CLASS_API dicom_series_anonymizer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DicomSeriesAnonymizer);
+    SIGHT_DECLARE_CLASS(dicom_series_anonymizer);
 
     /// Constructor
-    IO_DICOM_API DicomSeriesAnonymizer();
+    IO_DICOM_API dicom_series_anonymizer();
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomSeriesAnonymizer();
+    IO_DICOM_API virtual ~dicom_series_anonymizer();
 
     /// Anonymize the DicomSeries (modify the current object)
     IO_DICOM_API void anonymize(const data::dicom_series::sptr& _source);
@@ -65,15 +65,15 @@ public:
     );
 
     /// Get job observer
-    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::aggregator) getJob() const;
+    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::aggregator) get_job() const;
 
 protected:
 
     /// Dicom writer
-    io::dicom::helper::DicomSeriesWriter::sptr m_writer;
+    io::dicom::helper::dicom_series_writer::sptr m_writer;
 
     /// Dicom anonymizer
-    io::dicom::helper::DicomAnonymizer m_anonymizer;
+    io::dicom::helper::dicom_anonymizer m_anonymizer;
 
     /// Dicom Reader
     io::dicom::reader::series_set::sptr m_reader;

@@ -31,12 +31,12 @@
 namespace sight::module::viz::scene2d::adaptor
 {
 
-const core::com::slots::key_t square::SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+const core::com::slots::key_t square::SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
 //-----------------------------------------------------------------------------
 
 square::square() noexcept
 {
-    new_slot(SET_DOUBLE_PARAMETER_SLOT, &square::setDoubleParameter, this);
+    new_slot(SET_DOUBLE_PARAMETER_SLOT, &square::set_double_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ square::~square() noexcept =
 
 void square::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config().get_child("config.<xmlattr>");
 
@@ -56,15 +56,15 @@ void square::configuring()
     SIGHT_ASSERT("Attribute 'y' is missing", config.count("y"));
     SIGHT_ASSERT("Attribute 'size' is missing", config.count("size"));
 
-    m_coord.x     = config.get<double>("x");
-    m_coord.y     = config.get<double>("y");
-    m_size        = config.get<std::uint32_t>("size");
-    m_autoRefresh = config.get<bool>("autoRefresh", m_autoRefresh);
-    m_interaction = config.get<bool>("interaction", m_interaction);
+    m_coord.x      = config.get<double>("x");
+    m_coord.y      = config.get<double>("y");
+    m_size         = config.get<std::uint32_t>("size");
+    m_auto_refresh = config.get<bool>("autoRefresh", m_auto_refresh);
+    m_interaction  = config.get<bool>("interaction", m_interaction);
 
     if(config.count("color") != 0U)
     {
-        this->setColor(config.get<std::string>("color"));
+        this->set_color(config.get<std::string>("color"));
     }
 }
 
@@ -82,9 +82,9 @@ void square::starting()
     m_layer->addToGroup(m_rec);
     m_layer->setOpacity(0.8);
 
-    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-    m_layer->setZValue(m_zValue);
-    this->getScene2DRender()->getScene()->addItem(m_layer);
+    m_layer->setPos(m_x_axis->origin(), m_y_axis->origin());
+    m_layer->setZValue(m_z_value);
+    this->get_scene_2d_render()->get_scene()->addItem(m_layer);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,12 +98,12 @@ void square::updating()
 
 void square::stopping()
 {
-    this->getScene2DRender()->getScene()->removeItem(m_layer);
+    this->get_scene_2d_render()->get_scene()->removeItem(m_layer);
 }
 
 //-----------------------------------------------------------------------------
 
-void square::setColor(const std::string& _color)
+void square::set_color(const std::string& _color)
 {
     m_color = QColor(QString::fromStdString(_color));
     if(!m_color.isValid())
@@ -116,42 +116,42 @@ void square::setColor(const std::string& _color)
 
 //-----------------------------------------------------------------------------
 
-void square::processInteraction(sight::viz::scene2d::data::Event& _event)
+void square::process_interaction(sight::viz::scene2d::data::event& _event)
 {
     if(m_interaction)
     {
-        if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
-           && _event.getButton() == sight::viz::scene2d::data::Event::LeftButton)
+        if(_event.type() == sight::viz::scene2d::data::event::mouse_button_press
+           && _event.get_button() == sight::viz::scene2d::data::event::left_button)
         {
-            if(this->coordViewIsInItem(_event.getCoord(), m_rec))
+            if(this->coord_view_is_in_item(_event.get_coord(), m_rec))
             {
-                m_pointIsCaptured = true;
-                m_oldCoord        = this->coordViewToCoordItem(_event.getCoord(), m_rec);
+                m_point_is_captured = true;
+                m_old_coord         = this->coord_view_to_coord_item(_event.get_coord(), m_rec);
                 m_rec->setBrush(Qt::yellow);
-                _event.setAccepted(true);
+                _event.set_accepted(true);
             }
         }
-        else if(m_pointIsCaptured && _event.getType() == sight::viz::scene2d::data::Event::MouseMove)
+        else if(m_point_is_captured && _event.type() == sight::viz::scene2d::data::event::mouse_move)
         {
-            sight::viz::scene2d::vec2d_t new_coord = this->coordViewToCoordItem(_event.getCoord(), m_rec);
-            m_rec->moveBy(new_coord.x - m_oldCoord.x, new_coord.y - m_oldCoord.y);
-            m_oldCoord = new_coord;
-            _event.setAccepted(true);
+            sight::viz::scene2d::vec2d_t new_coord = this->coord_view_to_coord_item(_event.get_coord(), m_rec);
+            m_rec->moveBy(new_coord.x - m_old_coord.x, new_coord.y - m_old_coord.y);
+            m_old_coord = new_coord;
+            _event.set_accepted(true);
         }
-        else if(m_pointIsCaptured && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        else if(m_point_is_captured && _event.type() == sight::viz::scene2d::data::event::mouse_button_release)
         {
             m_rec->setBrush(m_color);
-            m_pointIsCaptured = false;
-            _event.setAccepted(true);
+            m_point_is_captured = false;
+            _event.set_accepted(true);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool square::coordViewIsInItem(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item)
+bool square::coord_view_is_in_item(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item)
 {
-    sight::viz::scene2d::vec2d_t scene_point = this->getScene2DRender()->mapToScene(_coord);
+    sight::viz::scene2d::vec2d_t scene_point = this->get_scene_2d_render()->map_to_scene(_coord);
     QPointF sp(scene_point.x, scene_point.y);
     QPointF ip = _item->mapFromScene(sp);
     return _item->contains(ip);
@@ -159,13 +159,13 @@ bool square::coordViewIsInItem(const sight::viz::scene2d::vec2d_t& _coord, QGrap
 
 //-----------------------------------------------------------------------------
 
-sight::viz::scene2d::vec2d_t square::coordViewToCoordItem(
+sight::viz::scene2d::vec2d_t square::coord_view_to_coord_item(
     const sight::viz::scene2d::vec2d_t& _coord,
     QGraphicsItem*
     /*unused*/
 )
 {
-    sight::viz::scene2d::vec2d_t scene_point = this->getScene2DRender()->mapToScene(_coord);
+    sight::viz::scene2d::vec2d_t scene_point = this->get_scene_2d_render()->map_to_scene(_coord);
     //QPointF sp ( scenePoint.x, scenePoint.getY() );
     //QPointF ip = item->mapFromScene( sp );
     //return sight::viz::scene2d::vec2d_t( ip.x(), ip.y() );
@@ -174,9 +174,9 @@ sight::viz::scene2d::vec2d_t square::coordViewToCoordItem(
 
 //-----------------------------------------------------------------------------
 
-void square::setDoubleParameter(const double _val, std::string _key)
+void square::set_double_parameter(const double _val, std::string _key)
 {
-    this->configureParams();
+    this->configure_params();
     if(_key == "X")
     {
         m_coord.x = _val;
@@ -190,7 +190,7 @@ void square::setDoubleParameter(const double _val, std::string _key)
         SIGHT_ERROR("The slot key : '" + _key + "' is not handled");
     }
 
-    if(m_autoRefresh)
+    if(m_auto_refresh)
     {
         this->updating();
     }

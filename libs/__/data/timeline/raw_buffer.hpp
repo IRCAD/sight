@@ -47,7 +47,7 @@ public:
     DATA_API ~raw_buffer() override;
 
     /// Set buffer values
-    DATA_API void setBufferValues(buffer_data_t _values);
+    DATA_API void set_buffer_values(buffer_data_t _values);
 
     /// Return buffer
     [[nodiscard]] buffer_data_t buffer() const

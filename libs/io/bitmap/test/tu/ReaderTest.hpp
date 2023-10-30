@@ -28,21 +28,21 @@
 namespace sight::io::bitmap::ut
 {
 
-class ReaderTest : public CPPUNIT_NS::TestFixture
+class reader_test : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    CPPUNIT_TEST_SUITE(ReaderTest);
-    CPPUNIT_TEST(basicTest);
-    CPPUNIT_TEST(extensionsTest);
-    CPPUNIT_TEST(wildcardTest);
-    CPPUNIT_TEST(nvJPEGTest);
-    CPPUNIT_TEST(nvJPEG2KTest);
-    CPPUNIT_TEST(libPNGTest);
-    CPPUNIT_TEST(libJPEGTest);
-    CPPUNIT_TEST(openJPEGTest);
-    CPPUNIT_TEST(libTIFFTest);
-    CPPUNIT_TEST(profilingTest);
+    CPPUNIT_TEST_SUITE(reader_test);
+    CPPUNIT_TEST(basic_test);
+    CPPUNIT_TEST(extensions_test);
+    CPPUNIT_TEST(wildcard_test);
+    CPPUNIT_TEST(nv_jpeg_test);
+    CPPUNIT_TEST(nv_jpe_g2_k_test);
+    CPPUNIT_TEST(lib_png_test);
+    CPPUNIT_TEST(lib_jpeg_test);
+    CPPUNIT_TEST(open_jpeg_test);
+    CPPUNIT_TEST(lib_tiff_test);
+    CPPUNIT_TEST(profiling_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,18 +50,18 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void basicTest();
-    static void extensionsTest();
-    static void wildcardTest();
+    static void basic_test();
+    static void extensions_test();
+    static void wildcard_test();
 
-    static void nvJPEGTest();
-    static void nvJPEG2KTest();
-    static void libPNGTest();
-    static void libJPEGTest();
-    static void openJPEGTest();
-    static void libTIFFTest();
+    static void nv_jpeg_test();
+    static void nv_jpe_g2_k_test();
+    static void lib_png_test();
+    static void lib_jpeg_test();
+    static void open_jpeg_test();
+    static void lib_tiff_test();
 
-    static void profilingTest();
+    static void profiling_test();
 };
 
 } // namespace sight::io::bitmap::ut

@@ -92,15 +92,15 @@ protected:
 
 private:
 
-    static const constexpr std::string_view s_IMAGE_IN     = "imageIn";
-    static const constexpr std::string_view s_IMAGE_INOUT  = "imageOut";
-    static const constexpr std::string_view s_TARGET_IN    = "target";
-    static const constexpr std::string_view s_TRANSFORM_IN = "transform";
+    static constexpr std::string_view IMAGE_IN     = "imageIn";
+    static constexpr std::string_view IMAGE_INOUT  = "imageOut";
+    static constexpr std::string_view TARGET_IN    = "target";
+    static constexpr std::string_view TRANSFORM_IN = "transform";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_imageIn {this, s_IMAGE_IN};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_imageOut {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_targetIn {this, s_TARGET_IN, false, true};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_transformIn {this, s_TRANSFORM_IN};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_out {this, IMAGE_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_target_in {this, TARGET_IN, false, true};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform_in {this, TRANSFORM_IN};
 };
 
 } // namespace sight::module::filter::image

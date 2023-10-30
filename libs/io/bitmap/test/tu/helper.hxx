@@ -37,7 +37,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-using sight::core::tools::UUID;
+using sight::core::tools::uuid;
 
 namespace sight::io::bitmap::ut
 {
@@ -45,12 +45,12 @@ namespace sight::io::bitmap::ut
 //------------------------------------------------------------------------------
 
 inline static data::image::sptr get_synthetic_image(
-    std::optional<std::uint32_t> _seed = std::nullopt,
-    core::type _type                   = core::type::UINT8,
-    data::image::PixelFormat _format   = data::image::RGB
+    std::optional<std::uint32_t> _seed     = std::nullopt,
+    core::type _type                       = core::type::UINT8,
+    enum data::image::pixel_format _format = data::image::rgb
 )
 {
-    using key_t = std::tuple<std::optional<std::uint32_t>, core::type, data::image::PixelFormat>;
+    using key_t = std::tuple<std::optional<std::uint32_t>, core::type, enum data::image::pixel_format>;
     static std::map<key_t, data::image::sptr> s_generated;
 
     const key_t key = std::make_tuple(_seed, _type, _format);
@@ -60,7 +60,7 @@ inline static data::image::sptr get_synthetic_image(
         auto image           = std::make_shared<data::image>();
         const auto dump_lock = image->dump_lock();
 
-        utest_data::generator::image::generateImage(
+        utest_data::generator::image::generate_image(
             image,
             {256, 256, 0},
             {0, 0, 0},
@@ -106,7 +106,7 @@ inline static cv::Mat image_to_mat(const data::image::sptr& _image, bool _clone 
     const auto& sizes    = _image->size();
     auto mat             = cv::Mat(
         std::vector<int> {int(sizes[1]), int(sizes[0])},
-        io::opencv::type::toCv(_image->getType(), _image->numComponents()),
+        io::opencv::type::to_cv(_image->type(), _image->num_components()),
         _image->buffer()
     );
 
@@ -115,13 +115,13 @@ inline static cv::Mat image_to_mat(const data::image::sptr& _image, bool _clone 
         mat = mat.clone();
     }
 
-    switch(_image->getPixelFormat())
+    switch(_image->pixel_format())
     {
-        case data::image::PixelFormat::RGB:
+        case data::image::pixel_format::rgb:
             cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
             break;
 
-        case data::image::PixelFormat::RGBA:
+        case data::image::pixel_format::rgba:
             cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
             break;
 
@@ -143,7 +143,7 @@ inline static data::image::sptr mat_to_image(cv::Mat& _mat, bool _clone = true)
     cv::Mat mat_copy;
     cv::Mat& mat_ref = _clone ? (mat_copy = _mat.clone()) : _mat;
 
-    const auto cv_type = io::opencv::type::fromCv(mat_ref.type());
+    const auto cv_type = io::opencv::type::from_cv(mat_ref.type());
 
     switch(cv_type.second)
     {
@@ -195,21 +195,21 @@ inline static double compute_psnr(const data::image::sptr& _expected, const data
     cv::subtract(expected_mat, actual_mat, compute_mat);
     cv::multiply(compute_mat, compute_mat, compute_mat);
 
-    const double max_value = std::pow(2, _expected->getType().size() * 8) - 1;
+    const double max_value = std::pow(2, _expected->type().size() * 8) - 1;
 
     return 10.0 * log10(max_value * max_value / cv::mean(compute_mat).val[0]);
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string mode_to_string(const Writer::Mode& _mode)
+inline static std::string mode_to_string(const writer::mode& _mode)
 {
     switch(_mode)
     {
-        case Writer::Mode::BEST:
+        case writer::mode::best:
             return "BEST";
 
-        case Writer::Mode::FAST:
+        case writer::mode::fast:
             return "FAST";
 
         default:
@@ -219,26 +219,26 @@ inline static std::string mode_to_string(const Writer::Mode& _mode)
 
 //------------------------------------------------------------------------------
 
-inline static std::string pixel_format_to_string(const data::image::PixelFormat& _format)
+inline static std::string pixel_format_to_string(const enum data::image::pixel_format& _format)
 {
     switch(_format)
     {
-        case data::image::PixelFormat::RGB:
+        case data::image::pixel_format::rgb:
             return "RGB";
 
-        case data::image::PixelFormat::RGBA:
+        case data::image::pixel_format::rgba:
             return "RGBA";
 
-        case data::image::PixelFormat::BGR:
+        case data::image::pixel_format::bgr:
             return "BGR";
 
-        case data::image::PixelFormat::BGRA:
+        case data::image::pixel_format::bgra:
             return "BGRA";
 
-        case data::image::PixelFormat::GRAY_SCALE:
+        case data::image::pixel_format::gray_scale:
             return "GRAY_SCALE";
 
-        case data::image::PixelFormat::RG:
+        case data::image::pixel_format::rg:
             return "RG";
 
         default:
@@ -248,24 +248,24 @@ inline static std::string pixel_format_to_string(const data::image::PixelFormat&
 
 //------------------------------------------------------------------------------
 
-inline static std::pair<std::string, std::string> backend_to_string(const Backend& _backend)
+inline static std::pair<std::string, std::string> backend_to_string(const backend& _backend)
 {
     auto backend_string =
-        _backend == Backend::LIBJPEG
+        _backend == backend::libjpeg
         ? std::make_pair(std::string("LIBJPEG"), std::string(".jpg"))
-        : _backend == Backend::LIBTIFF
+        : _backend == backend::libtiff
         ? std::make_pair(std::string("LIBTIFF"), std::string(".tiff"))
-        : _backend == Backend::LIBPNG
+        : _backend == backend::libpng
         ? std::make_pair(std::string("LIBPNG"), std::string(".png"))
-        : _backend == Backend::OPENJPEG
+        : _backend == backend::openjpeg
         ? std::make_pair(std::string("OPENJPEG"), std::string(".jp2"))
-        : _backend == Backend::OPENJPEG_J2K
+        : _backend == backend::openjpeg_j2_k
         ? std::make_pair(std::string("OPENJPEG"), std::string(".j2k"))
-        : _backend == Backend::NVJPEG
+        : _backend == backend::nvjpeg
         ? std::make_pair(std::string("NVJPEG"), std::string(".jpg"))
-        : _backend == Backend::NVJPEG2K
+        : _backend == backend::nvjpeg2k
         ? std::make_pair(std::string("NVJPEG2K"), std::string(".jp2"))
-        : _backend == Backend::NVJPEG2K_J2K
+        : _backend == backend::nvjpeg2k_j2k
         ? std::make_pair(std::string("NVJPEG2K"), std::string(".j2k"))
         : std::make_pair(std::string("DEFAULT"), std::string(".tiff"));
 
@@ -274,7 +274,7 @@ inline static std::pair<std::string, std::string> backend_to_string(const Backen
 
 //------------------------------------------------------------------------------
 
-inline static std::string file_suffix(const Backend& _backend, const Writer::Mode& _mode)
+inline static std::string file_suffix(const backend& _backend, const writer::mode& _mode)
 {
     const auto [backend_string, ext_string] = backend_to_string(_backend);
     const std::string mode_string = mode_to_string(_mode);

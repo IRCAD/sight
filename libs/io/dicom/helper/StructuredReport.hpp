@@ -35,7 +35,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers for DICOM Structured Reporting (SR).
  */
-class IO_DICOM_CLASS_API StructuredReport
+class IO_DICOM_CLASS_API structured_report
 {
 public:
 
@@ -43,16 +43,16 @@ public:
      * @brief Read a Structured Report
      * @param[in] dataset Dataset from which the SR must be created
      */
-    IO_DICOM_API static SPTR(io::dicom::container::sr::DicomSRContainerNode)
-    readSR(const gdcm::DataSet& _dataset);
+    IO_DICOM_API static SPTR(io::dicom::container::sr::dicom_sr_container_node)
+    read_sr(const gdcm::DataSet& _dataset);
 
     /**
      * @brief Dump the SR in graphviz format
      * @param[in] root Root node
      * @param[in] out Destination stream
      */
-    IO_DICOM_API static void dumpSR(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& _root,
+    IO_DICOM_API static void dump_sr(
+        const SPTR(io::dicom::container::sr::dicom_sr_node)& _root,
         std::ostream& _out = std::cout
     );
 
@@ -63,16 +63,16 @@ protected:
      * @param[in] dataset Dataset from which the sub nodes must been read
      * @param[in] parent Parent node
      */
-    static void readSubNodeContainer(const gdcm::DataSet& _dataset,
-                                     SPTR(io::dicom::container::sr::DicomSRNode) _parent);
+    static void read_sub_node_container(const gdcm::DataSet& _dataset,
+                                        SPTR(io::dicom::container::sr::dicom_sr_node) _parent);
 
     /**
      * @brief Read a sub node and add it as a child to the parent node
      * @param[in] dataset Dataset from which the sub node must been read
      * @param[in] parent Parent node
      */
-    static void readSubNode(const gdcm::DataSet& _dataset,
-                            SPTR(io::dicom::container::sr::DicomSRNode) _parent);
+    static void read_sub_node(const gdcm::DataSet& _dataset,
+                              SPTR(io::dicom::container::sr::dicom_sr_node) _parent);
 
     /**
      * @brief Dump an SR node in graphviz format
@@ -80,8 +80,8 @@ protected:
      * @param[in] out Destination stream
      * @param[in] index Node index
      */
-    IO_DICOM_API static void dumpSRNode(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& _node,
+    IO_DICOM_API static void dump_sr_node(
+        const SPTR(io::dicom::container::sr::dicom_sr_node)& _node,
         std::ostream& _out,
         int& _index
     );
@@ -94,9 +94,9 @@ protected:
      * @tparam ELEMENT Element group of the code sequence.
      */
     template<uint16_t GROUP, uint16_t ELEMENT>
-    static io::dicom::container::DicomCodedAttribute readCodeSequence(const gdcm::DataSet& _dataset)
+    static io::dicom::container::dicom_coded_attribute read_code_sequence(const gdcm::DataSet& _dataset)
     {
-        io::dicom::container::DicomCodedAttribute coded_attributes;
+        io::dicom::container::dicom_coded_attribute coded_attributes;
 
         if(!_dataset.FindDataElement(gdcm::Tag(GROUP, ELEMENT)))
         {
@@ -115,16 +115,17 @@ protected:
         const gdcm::DataSet& item_dataset = sequence->GetItem(1).GetNestedDataSet();
 
         // Code value - Type 1
-        auto code_value = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0100>(item_dataset);
+        auto code_value = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0100>(item_dataset);
 
         // Coding Scheme Designator - Type 1
-        auto coding_scheme_designator = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0102>(item_dataset);
+        auto coding_scheme_designator =
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0102>(item_dataset);
 
         // Coding Scheme Version - Type 1C
-        auto coding_scheme_version = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0103>(item_dataset);
+        auto coding_scheme_version = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0103>(item_dataset);
 
         // Code Meaning - Type 1
-        auto code_meaning = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0104>(item_dataset);
+        auto code_meaning = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0104>(item_dataset);
 
         return {code_value, coding_scheme_designator, code_meaning, coding_scheme_version};
     }

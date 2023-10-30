@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Tester.hpp"
+#include "tester.hpp"
 
 #include "ui/testCore/config.hpp"
 
@@ -45,13 +45,13 @@ protected:
 
     GUITEST_API void start(
         const std::string& _test_name,
-        std::function<void(Tester&)> _test,
+        std::function<void(tester&)> _test,
         bool _verbose_mode = false
     );
 
-    GUITEST_API virtual std::filesystem::path getProfilePath() = 0;
+    GUITEST_API virtual std::filesystem::path get_profile_path() = 0;
 
-    GUITEST_API static void compareImages(const std::filesystem::path& _a, const std::filesystem::path& _b);
+    GUITEST_API static void compare_images(const std::filesystem::path& _a, const std::filesystem::path& _b);
 
 private:
 

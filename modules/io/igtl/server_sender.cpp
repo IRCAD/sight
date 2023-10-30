@@ -39,7 +39,7 @@ namespace sight::module::io::igtl
 //-----------------------------------------------------------------------------
 
 server_sender::server_sender() :
-    m_server(std::make_shared<sight::io::igtl::Server>())
+    m_server(std::make_shared<sight::io::igtl::server>())
 {
 }
 
@@ -54,7 +54,7 @@ void server_sender::configuring()
 {
     service::config_t config = this->get_config();
 
-    m_portConfig = config.get("port", "4242");
+    m_port_config = config.get("port", "4242");
 
     const config_t config_in = config.get_child("in");
 
@@ -68,7 +68,7 @@ void server_sender::configuring()
     {
         const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
         const std::string device_name = attr.get("deviceName", "Sight");
-        m_deviceNames.push_back(device_name);
+        m_device_names.push_back(device_name);
     }
 }
 
@@ -79,12 +79,12 @@ void server_sender::starting()
     try
     {
         ui::preferences preferences;
-        const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
+        const auto port = preferences.delimited_get<std::uint16_t>(m_port_config);
 
         m_server->start(port);
 
-        m_serverFuture = std::async(std::launch::async, [this](auto&& ...){m_server->runServer();});
-        m_sigConnected->async_emit();
+        m_server_future = std::async(std::launch::async, [this](auto&& ...){m_server->run_server();});
+        m_sig_connected->async_emit();
     }
     catch(core::exception& e)
     {
@@ -92,7 +92,7 @@ void server_sender::starting()
             "Error",
             "Cannot start the server: "
             + std::string(e.what()),
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SIGHT_ERROR(e.what());
@@ -111,8 +111,8 @@ void server_sender::stopping()
             m_server->stop();
         }
 
-        m_serverFuture.wait();
-        m_sigDisconnected->async_emit();
+        m_server_future.wait();
+        m_sig_disconnected->async_emit();
     }
     catch(core::exception& e)
     {
@@ -126,11 +126,11 @@ void server_sender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void server_sender::sendObject(const data::object::csptr& _obj, const std::size_t _index)
+void server_sender::send_object(const data::object::csptr& _obj, const std::size_t _index)
 {
-    if(!m_deviceNames[_index].empty())
+    if(!m_device_names[_index].empty())
     {
-        m_server->setMessageDeviceName(m_deviceNames[_index]);
+        m_server->set_message_device_name(m_device_names[_index]);
     }
 
     m_server->broadcast(_obj);

@@ -35,14 +35,14 @@ class matrix_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(matrix_test);
-    CPPUNIT_TEST(copy_from_cvFloat);
-    CPPUNIT_TEST(copyToCvFloat);
-    CPPUNIT_TEST(copy_from_cvDouble);
-    CPPUNIT_TEST(copyToCvDouble);
-    CPPUNIT_TEST(copy_from_cvMat);
-    CPPUNIT_TEST(copyToCvMat);
-    CPPUNIT_TEST(copyFromRvecTvec);
-    CPPUNIT_TEST(copyToRvecTvec);
+    CPPUNIT_TEST(copy_from_cv_float);
+    CPPUNIT_TEST(copy_to_cv_float);
+    CPPUNIT_TEST(copy_from_cv_double);
+    CPPUNIT_TEST(copy_to_cv_double);
+    CPPUNIT_TEST(copy_from_cv_mat);
+    CPPUNIT_TEST(copy_to_cv_mat);
+    CPPUNIT_TEST(copy_from_rvec_tvec);
+    CPPUNIT_TEST(copy_to_rvec_tvec);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,17 +52,17 @@ public:
     void tearDown() override;
 
     ///Tests the copy from/to cv::Matx44f (float)
-    static void copy_from_cvFloat();
-    static void copyToCvFloat();
+    static void copy_from_cv_float();
+    static void copy_to_cv_float();
     ///Tests the copy from/to cv::Matx44d (double)
-    static void copy_from_cvDouble();
-    static void copyToCvDouble();
+    static void copy_from_cv_double();
+    static void copy_to_cv_double();
     ///Tests the copy from/to cv::Mat
-    static void copy_from_cvMat();
-    static void copyToCvMat();
+    static void copy_from_cv_mat();
+    static void copy_to_cv_mat();
     ///Tests the copy from/to cv::Mat rvec tvec
-    static void copyFromRvecTvec();
-    static void copyToRvecTvec();
+    static void copy_from_rvec_tvec();
+    static void copy_to_rvec_tvec();
 };
 
 } // namespace sight::io::opencv::ut

@@ -59,16 +59,16 @@ struct has_alpha : std::false_type {};
 template<typename T>
 struct has_alpha<T, decltype((void) T::a, 0)>: std::true_type {};
 
-class OpenJPEGReader final
+class open_jpeg_reader final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    OpenJPEGReader(const OpenJPEGReader&)            = delete;
-    OpenJPEGReader& operator=(const OpenJPEGReader&) = delete;
+    open_jpeg_reader(const open_jpeg_reader&)            = delete;
+    open_jpeg_reader& operator=(const open_jpeg_reader&) = delete;
 
     /// Constructor
-    inline OpenJPEGReader() noexcept
+    inline open_jpeg_reader() noexcept
     {
         // Set the default decoding parameters
         opj_set_default_decoder_parameters(&m_parameters);
@@ -77,17 +77,17 @@ public:
     }
 
     /// Destructor
-    inline ~OpenJPEGReader() noexcept = default;
+    inline ~open_jpeg_reader() noexcept = default;
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, Flag _flag)
+    inline void read(data::image& _image, std::istream& _istream, flag _flag)
     {
         // Create an RAII to be sure everything is cleaned at exit
-        struct Keeper final
+        struct keeper final
         {
-            inline Keeper() noexcept = default;
+            inline keeper() noexcept = default;
 
-            inline ~Keeper()
+            inline ~keeper()
             {
                 // Cleanup
                 if(m_image)
@@ -116,14 +116,14 @@ public:
 
         CHECK_OPJ(
             keeper.m_codec = opj_create_decompress(
-                _flag == Flag::J2K_STREAM ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
+                _flag == flag::j2_k_stream ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
             )
         );
 
         // Install info, warning, error handlers
-        CHECK_OPJ(opj_set_info_handler(keeper.m_codec, infoCallback, nullptr));
-        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, warningCallback, nullptr));
-        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, errorCallback, nullptr));
+        CHECK_OPJ(opj_set_info_handler(keeper.m_codec, info_callback, nullptr));
+        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, warning_callback, nullptr));
+        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, error_callback, nullptr));
 
         // Create output stream (1MB buffer by default)
         CHECK_OPJ(keeper.m_stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE, OPJ_TRUE));
@@ -134,16 +134,16 @@ public:
         _istream.seekg(0, std::ios::beg);
 
         // Setup OPJ user stream
-        opj_stream_set_user_data(keeper.m_stream, &_istream, freeCallback);
+        opj_stream_set_user_data(keeper.m_stream, &_istream, free_callback);
         opj_stream_set_user_data_length(keeper.m_stream, OPJ_UINT64(stream_size));
 
         // Setup stream callback
-        opj_stream_set_read_function(keeper.m_stream, readCallback);
-        opj_stream_set_skip_function(keeper.m_stream, skipCallback);
-        opj_stream_set_seek_function(keeper.m_stream, seekCallback);
+        opj_stream_set_read_function(keeper.m_stream, read_callback);
+        opj_stream_set_skip_function(keeper.m_stream, skip_callback);
+        opj_stream_set_seek_function(keeper.m_stream, seek_callback);
 
         // Format can .jp2 or .j2k
-        m_parameters.decod_format = _flag == Flag::J2K_STREAM ? 0 : 1;
+        m_parameters.decod_format = _flag == flag::j2_k_stream ? 0 : 1;
 
         // Setup the decoder
         CHECK_OPJ(opj_setup_decoder(keeper.m_codec, &m_parameters));
@@ -203,11 +203,11 @@ public:
                     case OPJ_CLRSPC_GRAY:
                     {
                         SIGHT_THROW_IF(
-                            "data::image::PixelFormat::GRAY_SCALE must have exactly one component.",
+                            "data::image::pixel_format::gray_scale must have exactly one component.",
                             keeper.m_image->numcomps != 1
                         );
 
-                        return data::image::PixelFormat::GRAY_SCALE;
+                        return data::image::pixel_format::gray_scale;
                     }
 
                     case OPJ_CLRSPC_SRGB:
@@ -215,10 +215,10 @@ public:
                         switch(keeper.m_image->numcomps)
                         {
                             case 3:
-                                return data::image::PixelFormat::RGB;
+                                return data::image::pixel_format::rgb;
 
                             case 4:
-                                return data::image::PixelFormat::RGBA;
+                                return data::image::pixel_format::rgba;
 
                             default:
                                 SIGHT_THROW(
@@ -233,13 +233,13 @@ public:
                         switch(keeper.m_image->numcomps)
                         {
                             case 1:
-                                return data::image::PixelFormat::GRAY_SCALE;
+                                return data::image::pixel_format::gray_scale;
 
                             case 3:
-                                return data::image::PixelFormat::RGB;
+                                return data::image::pixel_format::rgb;
 
                             case 4:
-                                return data::image::PixelFormat::RGBA;
+                                return data::image::pixel_format::rgba;
 
                             default:
                                 SIGHT_THROW(
@@ -264,27 +264,27 @@ public:
         switch(type)
         {
             case core::type::INT8:
-                toSight<std::int8_t>(*keeper.m_image, _image);
+                to_sight<std::int8_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::UINT8:
-                toSight<std::uint8_t>(*keeper.m_image, _image);
+                to_sight<std::uint8_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::INT16:
-                toSight<std::int16_t>(*keeper.m_image, _image);
+                to_sight<std::int16_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::UINT16:
-                toSight<std::uint16_t>(*keeper.m_image, _image);
+                to_sight<std::uint16_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::INT32:
-                toSight<std::int32_t>(*keeper.m_image, _image);
+                to_sight<std::int32_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::UINT32:
-                toSight<std::uint32_t>(*keeper.m_image, _image);
+                to_sight<std::uint32_t>(*keeper.m_image, _image);
                 break;
 
             default:
@@ -296,7 +296,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void infoCallback(const char*, void*)
+    inline static void info_callback(const char*, void*)
     {
         // Too much noise for regular "info"
         // SIGHT_DEBUG(msg);
@@ -304,21 +304,21 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(const char* _msg, void*)
+    inline static void warning_callback(const char* _msg, void*)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(const char* _msg, void*)
+    inline static void error_callback(const char* _msg, void*)
     {
         SIGHT_THROW(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_SIZE_T readCallback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
+    inline static OPJ_SIZE_T read_callback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data == nullptr || _p_nb_bytes == 0)
         {
@@ -342,7 +342,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_OFF_T skipCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    inline static OPJ_OFF_T skip_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data == nullptr)
         {
@@ -362,7 +362,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_BOOL seekCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    inline static OPJ_BOOL seek_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data == nullptr)
         {
@@ -382,7 +382,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void freeCallback(void* /*p_user_data*/)
+    inline static void free_callback(void* /*p_user_data*/)
     {
         // Nothing to do, istream comes from the outside
     }
@@ -390,37 +390,37 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void toSight(const opj_image_t& _opj_image, data::image& _image)
+    inline static void to_sight(const opj_image_t& _opj_image, data::image& _image)
     {
-        switch(_image.getPixelFormat())
+        switch(_image.pixel_format())
         {
-            case data::image::GRAY_SCALE:
+            case data::image::gray_scale:
             {
-                struct Pixel
+                struct pixel
                 {
                     T a;
                 };
 
-                toSightPixels<Pixel>(_opj_image, _image);
+                to_sight_pixels<pixel>(_opj_image, _image);
                 break;
             }
 
-            case data::image::RGB:
+            case data::image::rgb:
             {
-                struct Pixel
+                struct pixel
                 {
                     T r;
                     T g;
                     T b;
                 };
 
-                toSightPixels<Pixel>(_opj_image, _image);
+                to_sight_pixels<pixel>(_opj_image, _image);
                 break;
             }
 
-            case data::image::RGBA:
+            case data::image::rgba:
             {
-                struct Pixel
+                struct pixel
                 {
                     T r;
                     T g;
@@ -428,26 +428,26 @@ private:
                     T a;
                 };
 
-                toSightPixels<Pixel>(_opj_image, _image);
+                to_sight_pixels<pixel>(_opj_image, _image);
                 break;
             }
 
-            case data::image::BGR:
+            case data::image::bgr:
             {
-                struct Pixel
+                struct pixel
                 {
                     T b;
                     T g;
                     T r;
                 };
 
-                toSightPixels<Pixel>(_opj_image, _image);
+                to_sight_pixels<pixel>(_opj_image, _image);
                 break;
             }
 
-            case data::image::BGRA:
+            case data::image::bgra:
             {
-                struct Pixel
+                struct pixel
                 {
                     T b;
                     T g;
@@ -455,7 +455,7 @@ private:
                     T a;
                 };
 
-                toSightPixels<Pixel>(_opj_image, _image);
+                to_sight_pixels<pixel>(_opj_image, _image);
                 break;
             }
 
@@ -467,7 +467,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void toSightPixels(const opj_image_t& _opj_image, data::image& _image)
+    inline static void to_sight_pixels(const opj_image_t& _opj_image, data::image& _image)
     {
         const auto& sizes = _image.size();
 

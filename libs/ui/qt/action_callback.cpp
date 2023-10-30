@@ -32,14 +32,14 @@ namespace sight::ui::qt
 //-----------------------------------------------------------------------------
 
 // if action is checkable, executeQt is executed after checkQt
-void action_callback::executeQt(bool /*unused*/)
+void action_callback::execute_qt(bool /*unused*/)
 {
     this->execute();
 }
 
 //-----------------------------------------------------------------------------
 
-void action_callback::checkQt(bool _checked)
+void action_callback::check_qt(bool _checked)
 {
     this->check(_checked);
 }

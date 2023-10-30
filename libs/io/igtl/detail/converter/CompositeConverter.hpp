@@ -32,24 +32,24 @@ namespace sight::io::igtl::detail::converter
  *
  * @brief class to manage conversion between data::composite and igtl::TrackingDataMessage
  */
-class IO_IGTL_CLASS_API CompositeConverter : public base
+class IO_IGTL_CLASS_API composite_converter : public base
 {
 public:
 
     /// Constructor
-    IO_IGTL_API CompositeConverter();
+    IO_IGTL_API composite_converter();
 
     /// Destructor
-    IO_IGTL_API ~CompositeConverter() override;
+    IO_IGTL_API ~composite_converter() override;
 
     /// convert a ::igtl::MessageBase to a data::object
-    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer _src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr from_igtl_message(::igtl::MessageBase::Pointer _src) const override;
 
     /**
      * @brief convert a data::composite to a igtl::TrackingDataMessage
      * @return an igtl::TrackingDataMessage converted from an data::composite
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src) const override;
 
     /**
      * @brief create new CompositeConverter
@@ -67,15 +67,15 @@ public:
      * @brief get the fwData object type supported for conversion
      * @return the fwData Object type supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API std::string const& getFwDataObjectType() const override;
+    [[nodiscard]] IO_IGTL_API std::string const& get_fw_data_object_type() const override;
 
 private:
 
     /// igtl type supported for conversion
-    static const std::string s_IGTL_TYPE;
+    static const std::string IGTL_TYPE;
 
     /// fwData type supported for conversion
-    static const std::string s_FWDATA_OBJECT_TYPE;
+    static const std::string FWDATA_OBJECT_TYPE;
 };
 
 } // namespace sight::io::igtl::detail::converter

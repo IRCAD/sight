@@ -49,25 +49,25 @@ namespace sight::io::http::helper
 /**
  * @brief Series Helper
  */
-class IO_HTTP_CLASS_API Series
+class IO_HTTP_CLASS_API series
 {
 public:
 
-    typedef data::series_set::container_type DicomSeriesContainer;
-    typedef std::vector<std::string> InstanceUIDContainer;
-    typedef std::map<std::string, unsigned int> InstanceCountMap;
+    using DicomSeriesContainer = data::series_set::container_t;
+    using InstanceUIDContainer = std::vector<std::string>;
+    using instance_count_map   = std::map<std::string, unsigned int>;
 
     /**
      * @brief Convert HTTP series response to data::dicom_series
      * @param[in] answer HTTP responses from the PACS that must be converted
      */
-    IO_HTTP_API static DicomSeriesContainer toFwMedData(const QJsonObject& _answer);
+    IO_HTTP_API static DicomSeriesContainer to_fw_med_data(const QJsonObject& _answer);
 
     /**
      * @brief Convert std::vector< data::dicom_series > to series instance uid container
      * @param[in] series Series vector used to extract the series instance uids
      */
-    IO_HTTP_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer _series);
+    IO_HTTP_API static InstanceUIDContainer to_series_instance_uid_container(DicomSeriesContainer _series);
 };
 
 } // namespace sight::io::http::helper

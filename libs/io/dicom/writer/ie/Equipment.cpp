@@ -31,37 +31,37 @@ namespace sight::io::dicom::writer::ie
 
 //------------------------------------------------------------------------------
 
-Equipment::Equipment(
+equipment::equipment(
     const SPTR(gdcm::Writer)& _writer,
-    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const SPTR(io::dicom::container::dicom_instance)& _instance,
     const data::series::csptr& _series,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::series>(_writer, _instance, _series,
-                                                           _logger, _progress, _cancel)
+    io::dicom::writer::ie::information_entity<data::series>(_writer, _instance, _series,
+                                                            _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Equipment::~Equipment()
+equipment::~equipment()
 = default;
 
 //------------------------------------------------------------------------------
 
-void Equipment::writeGeneralEquipmentModule()
+void equipment::write_general_equipment_module()
 {
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Manufacturer - Type 2 (Type 1 for EnhancedGeneralEquipmentModule)
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0070>("Sight", dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0070>("Sight", dataset);
 
     // Institution Name - Type 3
-    const std::string& institut_name = m_object->getInstitutionName();
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0080>(institut_name, dataset);
+    const std::string& institut_name = m_object->get_institution_name();
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0080>(institut_name, dataset);
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
     const auto profile                 = core::runtime::get_current_profile();
@@ -76,17 +76,17 @@ void Equipment::writeGeneralEquipmentModule()
 
 //------------------------------------------------------------------------------
 
-void Equipment::writeEnhancedGeneralEquipmentModule()
+void equipment::write_enhanced_general_equipment_module()
 {
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Manufacturer's Model Name - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1090>("Sight_FWGDCMIO", dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x1090>("Sight_FWGDCMIO", dataset);
 
     // Device Serial Number - Type 1
     std::string device_serial_number = std::string("0.1");
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1000>(device_serial_number, dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0018, 0x1000>(device_serial_number, dataset);
 }
 
 //------------------------------------------------------------------------------

@@ -56,15 +56,15 @@
                         <name>Tuto17SimpleAR</name>
                         <icon>Tuto17SimpleAR/app.ico</icon>
                     </frame>
-                    <toolBar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="cameraView" start="true" />
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -449,12 +449,12 @@
 
             <connect>
                 <signal>showMeshAct/isChecked</signal>
-                <slot>cubeAdp/updateVisibility</slot>
+                <slot>cubeAdp/update_visibility</slot>
             </connect>
 
             <connect>
                 <signal>hideAxisSrv/isChecked</signal>
-                <slot>axisAdp/updateVisibility</slot>
+                <slot>axisAdp/update_visibility</slot>
             </connect>
 
             <connect>
@@ -486,17 +486,17 @@
             <!-- signal/slot connection -->
             <connect>
                 <signal>reprojectionParamametersSrv/parameterChanged</signal>
-                <slot>errorSrv/setParameter</slot>
+                <slot>errorSrv/set_parameter</slot>
             </connect>
 
             <connect>
                 <signal>errorSrv/errorComputed</signal>
-                <slot>errorLabelSrv/setDoubleParameter</slot>
+                <slot>errorLabelSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
                 <signal>arucoParametersSrv/parameterChanged</signal>
-                <slot>trackerSrv/setParameter</slot>
+                <slot>trackerSrv/set_parameter</slot>
             </connect>
 
             <connect>
@@ -507,14 +507,14 @@
 
             <connect>
                 <signal>trackerSrv/markerDetected</signal>
-                <slot>axisAdp/updateVisibility</slot>
+                <slot>axisAdp/update_visibility</slot>
             </connect>
 
             <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
             <!-- then process a new frame -->
             <connect>
                 <signal>syncGenericSceneSrv/allReceived</signal>
-                <slot>genericSceneSrv/requestRender</slot>
+                <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

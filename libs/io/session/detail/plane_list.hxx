@@ -34,7 +34,7 @@ namespace sight::io::session::detail::plane_list
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -48,7 +48,7 @@ inline static void write(
 
     // Add points to children list
     std::size_t index = 0;
-    for(const auto& plane : plane_list->getPlanes())
+    for(const auto& plane : plane_list->get_planes())
     {
         _children[data::plane::classname() + std::to_string(index++)] = plane;
     }
@@ -57,7 +57,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::plane_list::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -71,7 +71,7 @@ inline static data::plane_list::sptr read(
     helper::read_version<data::plane_list>(_tree, 0, 1);
 
     // Deserialize planes
-    auto& planes = plane_list->getPlanes();
+    auto& planes = plane_list->get_planes();
 
     // Clearing is required in case the object is reused
     planes.clear();

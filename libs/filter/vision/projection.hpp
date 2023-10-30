@@ -31,11 +31,6 @@
 namespace sight::filter::vision
 {
 
-/// Contains helpers to project/reproject 3D/2D points on images
-class FILTER_VISION_CLASS_API projection
-{
-public:
-
 /**
  * @brief Computes the 3D reprojection of a pixel according to a depth map, given the camera calibration data.
  *
@@ -51,19 +46,19 @@ public:
  * @param[out] y Output Y coordinate.
  * @param[out] z Output Z coordinate.
  */
-    template<class T>
-    static void projectPixel(
-        std::size_t _px,
-        std::size_t _py,
-        T _depth,
-        T _cx,
-        T _cy,
-        T _fx,
-        T _fy,
-        T& _x,
-        T& _y,
-        T& _z
-    );
+template<class T>
+void project_pixel(
+    std::size_t _px,
+    std::size_t _py,
+    T _depth,
+    T _cx,
+    T _cy,
+    T _fx,
+    T _fy,
+    T& _x,
+    T& _y,
+    T& _z
+);
 
 /**
  * @brief compute the projection of a point in a 2D image
@@ -82,37 +77,25 @@ public:
  * @param[out] py output y pixel coordinate
  * @return true if the point can be projected on the image
  */
-    template<class T>
-    static bool projectPoint(
-        T _x,
-        T _y,
-        T _z,
-        T _cx,
-        T _cy,
-        T _fx,
-        T _fy,
-        std::size_t _width,
-        std::size_t _height,
-        std::size_t& _px,
-        std::size_t& _py
-    );
-};
-
-//------------------------------------------------------------------------------
-
 template<class T>
-void projection::projectPixel(
-    std::size_t _px,
-    std::size_t _py,
-    T _depth,
+bool project_point(
+    T _x,
+    T _y,
+    T _z,
     T _cx,
     T _cy,
     T _fx,
     T _fy,
-    T& _x,
-    T& _y,
-    T& _z
-)
+    std::size_t _width,
+    std::size_t _height,
+    std::size_t& _px,
+    std::size_t& _py
+);
+
+//------------------------------------------------------------------------------
+
+template<class T>
+void project_pixel(std::size_t _px, std::size_t _py, T _depth, T _cx, T _cy, T _fx, T _fy, T& _x, T& _y, T& _z)
 {
     static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
     _x = (static_cast<T>(_px) - _cx) / _fx * _depth;
@@ -123,7 +106,7 @@ void projection::projectPixel(
 //------------------------------------------------------------------------------
 
 template<class T>
-bool projection::projectPoint(
+bool project_point(
     T _x,
     T _y,
     T _z,

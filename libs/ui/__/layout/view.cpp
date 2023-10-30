@@ -27,26 +27,26 @@ namespace sight::ui::layout
 
 //-----------------------------------------------------------------------------
 
-void view::destroySubViews()
+void view::destroy_sub_views()
 {
-    for(const ui::container::widget::sptr& container : m_subViews)
+    for(const ui::container::widget::sptr& container : m_sub_views)
     {
-        container->destroyContainer();
+        container->destroy_container();
     }
 
-    m_subViews.clear();
+    m_sub_views.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<ui::container::widget::sptr> view::getSubViews()
+std::vector<ui::container::widget::sptr> view::get_sub_views()
 {
-    return this->m_subViews;
+    return this->m_sub_views;
 }
 
 //------------------------------------------------------------------------------
 
-void view::modifyLayout(const ui::parameter_t& /*parameter*/, const std::string& _key)
+void view::modify_layout(const ui::parameter_t& /*parameter*/, const std::string& _key)
 {
     SIGHT_THROW(
         "'" + std::string(__func__) + "' is not implemented for this layout manager with the key '" + _key + "'."

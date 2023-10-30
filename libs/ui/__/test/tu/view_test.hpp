@@ -33,7 +33,7 @@ namespace sight::ui::ut
 class view_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(view_test);
-CPPUNIT_TEST(configuringTest);
+CPPUNIT_TEST(configuring_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,7 +42,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void configuringTest();
+    static void configuring_test();
     void cleanup();
 };
 

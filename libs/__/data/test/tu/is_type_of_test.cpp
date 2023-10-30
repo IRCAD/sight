@@ -53,7 +53,7 @@ void is_type_of_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void is_type_of_test::checkType()
+void is_type_of_test::check_type()
 {
     data::composite::sptr data_composite  = std::make_shared<data::composite>();
     data::boolean::sptr data_boolean      = std::make_shared<data::boolean>();

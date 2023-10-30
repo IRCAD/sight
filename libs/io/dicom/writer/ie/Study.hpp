@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Study Information Entity class
  */
-class IO_DICOM_CLASS_API Study : public io::dicom::writer::ie::InformationEntity<data::series>
+class IO_DICOM_CLASS_API study : public io::dicom::writer::ie::information_entity<data::series>
 {
 public:
 
@@ -45,29 +45,29 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Study(
+    IO_DICOM_API study(
         const SPTR(gdcm::Writer)& _writer,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::series::csptr& _series,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~Study() override;
+    IO_DICOM_API ~study() override;
 
     /**
      * @brief Write General Study Module tags
      * @see PS 3.3 C.7.2.1
      */
-    IO_DICOM_API virtual void writeGeneralStudyModule();
+    IO_DICOM_API virtual void write_general_study_module();
 
     /**
      * @brief Write Patient Study Module tags
      * @see PS 3.3 C.7.2.2
      */
-    IO_DICOM_API virtual void writePatientStudyModule();
+    IO_DICOM_API virtual void write_patient_study_module();
 };
 
 } // namespace sight::io::dicom::writer::ie

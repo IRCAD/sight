@@ -33,7 +33,7 @@ namespace sight::data::tools::ut
 class field_helper_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(field_helper_test);
-CPPUNIT_TEST(testHelper);
+CPPUNIT_TEST(test_helper);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,7 +42,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testHelper();
+    static void test_helper();
 };
 
 } // namespace sight::data::tools::ut

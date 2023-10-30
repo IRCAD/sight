@@ -42,12 +42,12 @@ class factory_registry_base
 {
 public:
 
-    typedef FACTORY_SIGNATURE factory_signature_type;
-    typedef KEY_TYPE key_type;
+    using factory_signature_t = FACTORY_SIGNATURE;
+    using key_t               = KEY_TYPE;
 
-    typedef FACTORY_HOLDER factory_type;
-    typedef std::map<key_type, factory_type> registry_type;
-    typedef std::vector<key_type> key_vector_type;
+    using factory_t    = FACTORY_HOLDER;
+    using registry_t   = std::map<key_t, factory_t>;
+    using key_vector_t = std::vector<key_t>;
 
     factory_registry_base()
     = default;
@@ -58,7 +58,7 @@ public:
     /**
      * @brief Add a factory to the registry.
      */
-    void add_factory(const key_type& _name, factory_type _factory)
+    void add_factory(const key_t& _name, factory_t _factory)
     {
         // get exclusive access
         core::mt::write_lock lock(m_mutex);
@@ -68,12 +68,12 @@ public:
     /**
      * @brief returns the factory associated with the key.
      */
-    virtual factory_type get_factory(const key_type& _key) const
+    virtual factory_t get_factory(const key_t& _key) const
     {
         // get shared access
         core::mt::read_lock lock(m_mutex);
         auto iter = m_registry.find(_key);
-        factory_type factory;
+        factory_t factory;
         if(iter != m_registry.end())
         {
             factory = iter->second;
@@ -85,10 +85,10 @@ public:
     /**
      * @brief returns the registered factory keys.
      */
-    virtual key_vector_type get_factory_keys() const
+    virtual key_vector_t get_factory_keys() const
     {
         core::mt::read_lock lock(m_mutex);
-        key_vector_type vect_keys;
+        key_vector_t vect_keys;
         std::transform(
             m_registry.begin(),
             m_registry.end(),
@@ -99,7 +99,7 @@ public:
 
 protected:
 
-    registry_type m_registry;
+    registry_t m_registry;
     mutable core::mt::read_write_mutex m_mutex;
 };
 
@@ -114,10 +114,10 @@ class factory_registry<RETURN_TYPE(), KEY_TYPE, FACTORY_HOLDER>:
     public factory_registry_base<RETURN_TYPE(),
                                  KEY_TYPE>
 {
-typedef RETURN_TYPE (factory_signature_type)();
-typedef FACTORY_HOLDER factory_type;
-typedef RETURN_TYPE return_type;
-typedef KEY_TYPE key_type;
+using factory_signature_t = RETURN_TYPE();
+using factory_t           = FACTORY_HOLDER;
+using return_t            = RETURN_TYPE;
+using key_t               = KEY_TYPE;
 
 public:
 
@@ -125,13 +125,13 @@ public:
      * @brief Instantiates an object with the factory associated with the specified key.
      * @return Created instance.
      */
-    return_type create(const key_type& _key) const
+    return_t create(const key_t& _key) const
     {
-        factory_type factory = this->get_factory(_key);
+        factory_t factory = this->get_factory(_key);
 
         if(!factory)
         {
-            return_type obj;
+            return_t obj;
             return obj;
         }
 
@@ -144,11 +144,11 @@ class factory_registry<RETURN_TYPE(ARG1_TYPE), KEY_TYPE, FACTORY_HOLDER>:
     public factory_registry_base<RETURN_TYPE(ARG1_TYPE),
                                  KEY_TYPE>
 {
-typedef RETURN_TYPE (factory_signature_type)(ARG1_TYPE);
-typedef FACTORY_HOLDER factory_type;
-typedef RETURN_TYPE return_type;
-typedef ARG1_TYPE arg1type;
-typedef KEY_TYPE key_type;
+using factory_signature_t = RETURN_TYPE(ARG1_TYPE);
+using factory_t           = FACTORY_HOLDER;
+using return_t            = RETURN_TYPE;
+using arg1type            = ARG1_TYPE;
+using key_t               = KEY_TYPE;
 
 public:
 
@@ -156,10 +156,10 @@ public:
      * @brief Instantiates an object with the factory associated with the specified key, passing arg1 to the factory.
      * @return Created instance.
      */
-    return_type create(const key_type& _key, arg1type& _arg1) const
+    return_t create(const key_t& _key, arg1type& _arg1) const
     {
-        factory_type factory = this->get_factory(_key);
-        return_type obj;
+        factory_t factory = this->get_factory(_key);
+        return_t obj;
         if(factory)
         {
             obj = factory(_arg1);

@@ -33,9 +33,9 @@ namespace sight::module::data::ut
 class series_signal_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(series_signal_test);
-CPPUNIT_TEST(basicTest);
-CPPUNIT_TEST(includeTest);
-CPPUNIT_TEST(excludeTest);
+CPPUNIT_TEST(basic_test);
+CPPUNIT_TEST(include_test);
+CPPUNIT_TEST(exclude_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,13 +43,13 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
-    void includeTest();
-    void excludeTest();
+    void basic_test();
+    void include_test();
+    void exclude_test();
 
 private:
 
-    service::base::sptr m_seriesSignal;
+    service::base::sptr m_series_signal;
     core::thread::worker::sptr m_worker;
 };
 

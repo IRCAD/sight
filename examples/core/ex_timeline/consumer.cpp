@@ -54,8 +54,8 @@ void consumer::configuring()
 {
     sight::service::config_t config = this->get_config();
 
-    m_receiverId = config.get<unsigned int>("id");
-    m_period     = config.get<unsigned int>("period", 0);
+    m_receiver_id = config.get<unsigned int>("id");
+    m_period      = config.get<unsigned int>("period", 0);
 }
 
 //------------------------------------------------------------------------------
@@ -85,14 +85,14 @@ void consumer::updating()
     const auto timeline = m_timeline.lock();
 
     const auto timestamp = sight::core::hires_clock::get_time_in_milli_sec();
-    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->getClosestBuffer(timestamp);
+    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->get_closest_buffer(timestamp);
 
     if(buffer)
     {
-        const ::ex_timeline::MsgData& element = buffer->getElement(0);
+        const ::ex_timeline::msg_data& element = buffer->get_element(0);
 
-        std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender
-        << " MESSAGE: \"" << element.szMsg.data() << "\"" << std::endl;
+        std::cout << "Message received (timer): CONSUMER: " << m_receiver_id << " SENDER: " << element.uid_sender
+        << " MESSAGE: \"" << element.sz_msg.data() << "\"" << std::endl;
     }
 }
 
@@ -102,14 +102,14 @@ void consumer::consume(sight::core::hires_clock::type _timestamp)
 {
     const auto timeline = m_timeline.lock();
 
-    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->getClosestBuffer(_timestamp);
+    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->get_closest_buffer(_timestamp);
 
     if(buffer)
     {
-        const ::ex_timeline::MsgData& element = buffer->getElement(0);
+        const ::ex_timeline::msg_data& element = buffer->get_element(0);
 
-        std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender
-        << " MESSAGE: \"" << element.szMsg.data() << "\"" << std::endl;
+        std::cout << "Message received (slot) : CONSUMER: " << m_receiver_id << " SENDER: " << element.uid_sender
+        << " MESSAGE: \"" << element.sz_msg.data() << "\"" << std::endl;
     }
 }
 

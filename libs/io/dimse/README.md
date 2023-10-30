@@ -16,12 +16,12 @@ the retriever will receive the Series.
 
 ### exceptions
 
-- **Base**: defines Base Exceptions.
-- **NegociateAssociationFailure**: defines association failure Exceptions.
-- **NetworkInitializationFailure**: defines network initialization failure Exceptions.
-- **PresentationContextMissing**: defines presentation context missing Exceptions.
-- **RequestFailure**: defines request failure Exceptions.
-- **RequestFailure**: defines tag missing Exceptions.
+- **Base**: defines Base exceptions.
+- **NegociateAssociationFailure**: defines association failure exceptions.
+- **NetworkInitializationFailure**: defines network initialization failure exceptions.
+- **PresentationContextMissing**: defines presentation context missing exceptions.
+- **RequestFailure**: defines request failure exceptions.
+- **RequestFailure**: defines tag missing exceptions.
 
 ### helper
 - **Series**: helps converting DICOM series into other formats. 

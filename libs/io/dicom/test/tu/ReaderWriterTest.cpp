@@ -28,10 +28,10 @@
 
 #include <data/image_series.hpp>
 
-#include <io/dicom/Reader.hpp>
-#include <io/dicom/Writer.hpp>
+#include <io/dicom/reader/file.hpp>
+#include <io/dicom/writer/file.hpp>
 
-#include <utest/Filter.hpp>
+#include <utest/filter.hpp>
 
 #include <utest_data/Data.hpp>
 #include <utest_data/generator/image.hpp>
@@ -41,7 +41,7 @@
 #include <chrono>
 #include <ctime>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::ReaderWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::reader_writer_test);
 
 namespace sight::io::dicom::ut
 {
@@ -57,7 +57,7 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
 
     auto series_set = std::make_shared<data::series_set>();
 
-    auto reader = std::make_shared<io::dicom::Reader>();
+    auto reader = std::make_shared<io::dicom::reader::file>();
     reader->set_object(series_set);
     reader->set_folder(_path);
 
@@ -65,7 +65,7 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
 
     for(const auto& series : *series_set)
     {
-        series->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+        series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
     }
 
     return series_set;
@@ -75,7 +75,7 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
 
 inline static std::filesystem::path create_temp_folder()
 {
-    auto tmp_folder = core::tools::system::get_temporary_folder() / core::tools::UUID::generate();
+    auto tmp_folder = core::tools::system::get_temporary_folder() / core::tools::uuid::generate();
     std::filesystem::remove_all(tmp_folder);
     std::filesystem::create_directories(tmp_folder);
 
@@ -93,7 +93,7 @@ inline static void compare_enhanced_us_volume(
     CPPUNIT_ASSERT(_actual);
 
     // SOP Class UID
-    CPPUNIT_ASSERT_EQUAL(_expected->getSOPKeyword(), _actual->getSOPKeyword());
+    CPPUNIT_ASSERT_EQUAL(_expected->get_sop_keyword(), _actual->get_sop_keyword());
 
     // Sizes
     const auto& expected_sizes = _expected->size();
@@ -106,14 +106,14 @@ inline static void compare_enhanced_us_volume(
     }
 
     // Type
-    CPPUNIT_ASSERT_EQUAL(_expected->getType(), _actual->getType());
+    CPPUNIT_ASSERT_EQUAL(_expected->type(), _actual->type());
 
     // Pixel format
-    CPPUNIT_ASSERT_EQUAL(_expected->getPixelFormat(), _actual->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(_expected->pixel_format(), _actual->pixel_format());
 
     // Spacings
-    const auto& expected_spacing = _expected->getSpacing();
-    const auto& actual_spacing   = _actual->getSpacing();
+    const auto& expected_spacing = _expected->spacing();
+    const auto& actual_spacing   = _actual->spacing();
     CPPUNIT_ASSERT_EQUAL(expected_spacing.size(), actual_spacing.size());
 
     for(std::size_t i = 0 ; i < expected_spacing.size() ; ++i)
@@ -122,8 +122,8 @@ inline static void compare_enhanced_us_volume(
     }
 
     // Origins
-    const auto& expected_origin = _expected->getOrigin();
-    const auto& actual_origin   = _actual->getOrigin();
+    const auto& expected_origin = _expected->origin();
+    const auto& actual_origin   = _actual->origin();
     CPPUNIT_ASSERT_EQUAL(expected_origin.size(), actual_origin.size());
 
     for(std::size_t i = 0 ; i < expected_origin.size() ; ++i)
@@ -135,8 +135,8 @@ inline static void compare_enhanced_us_volume(
     for(std::size_t frame_index = 0 ; frame_index < actual_sizes[2] ; ++frame_index)
     {
         // Image Position Patient
-        const auto& expected_position = _expected->getImagePositionPatient(frame_index);
-        const auto& actual_position   = _actual->getImagePositionPatient(frame_index);
+        const auto& expected_position = _expected->get_image_position_patient(frame_index);
+        const auto& actual_position   = _actual->get_image_position_patient(frame_index);
         CPPUNIT_ASSERT_EQUAL(expected_position.size(), actual_position.size());
 
         for(std::size_t i = 0 ; i < expected_position.size() ; ++i)
@@ -145,8 +145,8 @@ inline static void compare_enhanced_us_volume(
         }
 
         // Image Orientation Patient
-        const auto& expected_orientation = _expected->getImageOrientationPatient(frame_index);
-        const auto& actual_orientation   = _actual->getImageOrientationPatient(frame_index);
+        const auto& expected_orientation = _expected->get_image_orientation_patient(frame_index);
+        const auto& actual_orientation   = _actual->get_image_orientation_patient(frame_index);
         CPPUNIT_ASSERT_EQUAL(expected_orientation.size(), actual_orientation.size());
 
         for(std::size_t i = 0 ; i < expected_orientation.size() ; ++i)
@@ -157,14 +157,14 @@ inline static void compare_enhanced_us_volume(
 
     // Ensure that getting value outside the frame range returns std::nullopts
     CPPUNIT_ASSERT(
-        !_expected->getFrameAcquisitionDateTime(actual_sizes[2])
-        && !_actual->getFrameAcquisitionDateTime(actual_sizes[2])
+        !_expected->get_frame_acquisition_date_time(actual_sizes[2])
+        && !_actual->get_frame_acquisition_date_time(actual_sizes[2])
     );
 
     // Compare buffer
     const auto expected_locked = _expected->dump_lock();
     const auto actual_locked   = _actual->dump_lock();
-    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(_expected->buffer(), _actual->buffer(), _expected->getSizeInBytes()));
+    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(_expected->buffer(), _actual->buffer(), _expected->size_in_bytes()));
 }
 
 //------------------------------------------------------------------------------
@@ -185,10 +185,10 @@ inline static void compare_enhanced_us_volume(
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::setUp()
+void reader_writer_test::setUp()
 {
     // Set up context before running a test.
-    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::direct);
 }
 
 //------------------------------------------------------------------------------
@@ -196,15 +196,15 @@ void ReaderWriterTest::setUp()
 static void test_image(const std::string& _name)
 {
     const auto& folder   = create_temp_folder();
-    const auto& expected = read(utest_data::Data::dir() / _name);
+    const auto& expected = read(utest_data::dir() / _name);
 
-    auto writer = std::make_shared<io::dicom::Writer>();
+    auto writer = std::make_shared<io::dicom::writer::file>();
     writer->set_object(expected);
     writer->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     auto actual = std::make_shared<data::series_set>();
-    auto reader = std::make_shared<io::dicom::Reader>();
+    auto reader = std::make_shared<io::dicom::reader::file>();
     reader->set_object(actual);
     reader->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -214,9 +214,9 @@ static void test_image(const std::string& _name)
 
 //------------------------------------------------------------------------------
 
-void ReaderWriterTest::basicTest()
+void reader_writer_test::basic_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }

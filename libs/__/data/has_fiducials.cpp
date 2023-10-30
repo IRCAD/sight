@@ -26,16 +26,16 @@ namespace sight::data
 
 has_fiducials::has_fiducials(core::com::signals& _signals)
 {
-    _signals(signals::GROUP_ADDED, M_GROUP_ADDED);
-    _signals(signals::GROUP_REMOVED, M_GROUP_REMOVED);
-    _signals(signals::POINT_ADDED, M_POINT_ADDED);
-    _signals(signals::POINT_REMOVED, M_POINT_REMOVED);
-    _signals(signals::POINT_INSERTED, M_POINT_INSERTED);
-    _signals(signals::POINT_MODIFIED, M_POINT_MODIFIED);
-    _signals(signals::GROUP_MODIFIED, M_GROUP_MODIFIED);
-    _signals(signals::GROUP_RENAMED, M_GROUP_RENAMED);
-    _signals(signals::POINT_SELECTED, M_POINT_SELECTED);
-    _signals(signals::POINT_DESELECTED, M_POINT_DESELECTED);
+    _signals(signals::GROUP_ADDED, m_group_added);
+    _signals(signals::GROUP_REMOVED, m_group_removed);
+    _signals(signals::POINT_ADDED, m_point_added);
+    _signals(signals::POINT_REMOVED, m_point_removed);
+    _signals(signals::POINT_INSERTED, m_point_inserted);
+    _signals(signals::POINT_MODIFIED, m_point_modified);
+    _signals(signals::GROUP_MODIFIED, m_group_modified);
+    _signals(signals::GROUP_RENAMED, m_group_renamed);
+    _signals(signals::POINT_SELECTED, m_point_selected);
+    _signals(signals::POINT_DESELECTED, m_point_deselected);
 }
 
 } // namespace sight::data

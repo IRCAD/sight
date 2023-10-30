@@ -41,7 +41,7 @@ void gz_buffer_image_writer::write()
 {
     SIGHT_ASSERT("File path is empty.", get_file().empty() == false);
 
-    data::image::csptr image = getConcreteObject();
+    data::image::csptr image = get_concrete_object();
 
     /// test if can open archive
     gzFile raw_file = gzopen(get_file().string().c_str(), "wb1");
@@ -57,7 +57,7 @@ void gz_buffer_image_writer::write()
     const auto dump_lock = image->dump_lock();
 
     // file is OK : process now
-    const std::size_t image_size_in_bytes = image->getSizeInBytes();
+    const std::size_t image_size_in_bytes = image->size_in_bytes();
 
     const char* ptr           = static_cast<const char*>(image->buffer());
     std::size_t written_bytes = 0;

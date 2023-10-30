@@ -49,38 +49,38 @@ class object
 public:
 
     /// Creates a color with random values
-    UTEST_DATA_API static data::color::sptr randomizeColor();
+    UTEST_DATA_API static data::color::sptr randomize_color();
 
     /// Creates a TransferFunction with random values and specified nbPoints, window and level
-    UTEST_DATA_API static data::transfer_function::sptr createTFColor(
+    UTEST_DATA_API static data::transfer_function::sptr create_tf_color(
         unsigned char _nb_points,
         double _window,
         double _level
     );
 
     /// Creates a TransferFunction with few values
-    UTEST_DATA_API static data::transfer_function::sptr createTFColor();
+    UTEST_DATA_API static data::transfer_function::sptr create_tf_color();
 
     /// Creates a StructureTraitsDictionary with many organs
-    UTEST_DATA_API static data::structure_traits_dictionary::sptr createStructureTraitsDictionary();
+    UTEST_DATA_API static data::structure_traits_dictionary::sptr create_structure_traits_dictionary();
 
     /// Creates a structure_traits representing the liver
-    UTEST_DATA_API static data::structure_traits::sptr createStructureTraits();
+    UTEST_DATA_API static data::structure_traits::sptr create_structure_traits();
 
     /// Creates a Material with ambient and diffuse color.
-    UTEST_DATA_API static data::material::sptr createMaterial();
+    UTEST_DATA_API static data::material::sptr create_material();
 
     /// Creates a ResectionDB containing one Resection.
-    UTEST_DATA_API static data::resection_db::sptr generateResectionDB();
+    UTEST_DATA_API static data::resection_db::sptr generate_resection_db();
 
     /// Creates a Resection with 2 planes, 1 input Reconstruction and 1 output Reconstruction.
-    UTEST_DATA_API static data::resection::sptr generateResection();
+    UTEST_DATA_API static data::resection::sptr generate_resection();
 
     /// Creates a Point with random coordinates.
-    UTEST_DATA_API static data::point::sptr generatePoint();
+    UTEST_DATA_API static data::point::sptr generate_point();
 
     /// Creates a Plane with random points.
-    UTEST_DATA_API static data::plane::sptr generatePlane();
+    UTEST_DATA_API static data::plane::sptr generate_plane();
 };
 
 } // namespace sight::utest_data::generator

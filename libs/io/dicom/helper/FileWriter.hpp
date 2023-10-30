@@ -37,7 +37,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief Helper used to write a DICOM file.
  */
-class IO_DICOM_CLASS_API FileWriter
+class IO_DICOM_CLASS_API file_writer
 {
 public:
 

@@ -112,32 +112,32 @@ protected:
 
 private:
 
-    typedef std::map<std::string, std::string> replace_values_map_t;
+    using replace_values_map_t = std::map<std::string, std::string>;
 
     /// Stucture to register configuration informations.
-    struct SeriesConfigInfo
+    struct series_config_info
     {
         /// Id of the configuration to launch.
-        std::string configId;
+        std::string config_id;
 
         /// Stores the parameters to pass to config.
         replace_values_map_t parameters;
     };
 
-    typedef std::map<std::string, SeriesConfigInfo> series_config_map_t;
+    using series_config_map_t = std::map<std::string, series_config_info>;
 
     /// config manager
-    app::config_manager::sptr m_configTemplateManager;
+    app::config_manager::sptr m_config_template_manager;
 
     /// Stores the wid of the view where the config will install its windows.
-    std::string m_parentView;
+    std::string m_parent_view;
 
     /// Stores the association between data type and associated configuration.
-    series_config_map_t m_seriesConfigs;
+    series_config_map_t m_series_configs;
 
-    static constexpr std::string_view s_SERIES = "series";
+    static constexpr std::string_view SERIES = "series";
 
-    data::ptr<data::vector, data::Access::in> m_series {this, s_SERIES, true};
+    data::ptr<data::vector, data::access::in> m_series {this, SERIES, true};
 };
 
 } // namespace sight::module::ui::qt::series

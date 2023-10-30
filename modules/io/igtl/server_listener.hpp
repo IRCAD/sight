@@ -85,24 +85,24 @@ private:
      * @brief method contain the receive loop
      * this method run in a thread
      */
-    void receiveObject();
+    void receive_object();
 
     /// Server instance
-    sight::io::igtl::Server::sptr m_server;
+    sight::io::igtl::server::sptr m_server;
 
     /// Future used to wait for the server
-    std::future<void> m_serverFuture;
+    std::future<void> m_server_future;
 
     /// Future used to wait for message
-    std::future<void> m_receiveFuture;
+    std::future<void> m_receive_future;
 
     /// port preference key
-    std::string m_portConfig;
+    std::string m_port_config;
 
     /// Vector of device name if the group configuration exists.
-    std::vector<std::string> m_deviceNames;
+    std::vector<std::string> m_device_names;
 
-    data::ptr_vector<data::object, sight::data::Access::inout> m_objects {this, "objects"};
+    data::ptr_vector<data::object, sight::data::access::inout> m_objects {this, "objects"};
 };
 
 } // namespace sight::module::io::igtl

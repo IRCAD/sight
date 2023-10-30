@@ -44,23 +44,23 @@ static auto enum_registered =
 
 //------------------------------------------------------------------------------
 
-void input::setTitle(const std::string& _title)
+void input::set_title(const std::string& _title)
 {
     m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
-void input::setMessage(const std::string& _msg)
+void input::set_message(const std::string& _msg)
 {
     m_message = QString::fromStdString(_msg);
 }
 
 //------------------------------------------------------------------------------
 
-void input::setEchoMode(input::EchoMode _echo_mode)
+void input::set_echo_mode(input::echo_mode _echo_mode)
 {
-    m_echoMode = _echo_mode;
+    m_echo_mode = _echo_mode;
 }
 
 //------------------------------------------------------------------------------
@@ -72,26 +72,26 @@ void input::set_input(const std::string& _text)
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, bool> input::getInput()
+std::pair<std::string, bool> input::get_input()
 {
     // get the qml engine QmlApplicationEngine
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
+    SPTR(ui::qml::qml_engine) engine = ui::qml::qml_engine::get_default();
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialog_path =
         core::runtime::get_library_resource_file_path("ui_qml/dialog/input.qml");
 
     // set the context for the new component
-    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->get_root_context()));
     context->setContextProperty("input", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialog_path, context);
+    QObject* window = engine->create_component(dialog_path, context);
     SIGHT_ASSERT("The Qml File input is not found or not loaded", window);
     // keep window to destroy it
 
     window->setProperty("title", m_title);
-    Q_EMIT titleChanged();
-    Q_EMIT messageChanged();
-    Q_EMIT inputChanged();
+    Q_EMIT title_changed();
+    Q_EMIT message_changed();
+    Q_EMIT input_changed();
     auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
     m_input = "";
@@ -111,7 +111,7 @@ std::pair<std::string, bool> input::getInput()
 
 //------------------------------------------------------------------------------
 
-void input::resultDialog(const QVariant& _msg, bool _is_ok)
+void input::result_dialog(const QVariant& _msg, bool _is_ok)
 {
     if(_is_ok)
     {

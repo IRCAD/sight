@@ -85,59 +85,59 @@ private:
      * @brief Gets the current light node.
      * @return The node where the current light is attached.
      */
-    Ogre::Node* getLightNode() const;
+    Ogre::Node* get_light_node() const;
 
     /**
      * @brief SLOT: sets the current light adaptor to edit.
      * @param _lightAdaptor The light adaptor to edit.
      */
-    void editLight(sight::viz::scene3d::light_adaptor::sptr _light_adaptor);
+    void edit_light(sight::viz::scene3d::light_adaptor::sptr _light_adaptor);
 
     /**
      * @brief Opens a QColorDialog to pick a new color that is returned.
      * @param _currentColor the curent light color.
      * @param _title the title of the dialog.
      */
-    Ogre::ColourValue editColor(const Ogre::ColourValue& _current_color, const std::string& _title);
+    Ogre::ColourValue edit_color(const Ogre::ColourValue& _current_color, const std::string& _title);
 
     /// Contains the name of the light.
-    QPointer<QLabel> m_lightNameLabel;
+    QPointer<QLabel> m_light_name_label;
 
     /// Contains a list of each possible light type.
-    QPointer<QComboBox> m_lightTypeBox;
+    QPointer<QComboBox> m_light_type_box;
 
     /// Contains a button to show or hide the visual feedback of the light.
-    QPointer<QPushButton> m_visualFeedback;
+    QPointer<QPushButton> m_visual_feedback;
 
     /// Contains a button that manage the light diffuse color.
-    QPointer<QPushButton> m_diffuseColorBtn;
+    QPointer<QPushButton> m_diffuse_color_btn;
 
     /// Contains a button that manage the light specular color.
-    QPointer<QPushButton> m_specularColorBtn;
+    QPointer<QPushButton> m_specular_color_btn;
 
     /// Contains a slider used to edit the theta value of directional lights.
-    QPointer<QSlider> m_thetaSlider;
+    QPointer<QSlider> m_theta_slider;
 
     /// Contains a slider used to edit the phi value of directional lights.
-    QPointer<QSlider> m_phiSlider;
+    QPointer<QSlider> m_phi_slider;
 
     /// Contains a slider used to edit the X translation value of directional lights.
-    QPointer<QSlider> m_xTranslation;
-    QPointer<QLineEdit> m_xLabel;
-    QPointer<QPushButton> m_xReset;
+    QPointer<QSlider> m_x_translation;
+    QPointer<QLineEdit> m_x_label;
+    QPointer<QPushButton> m_x_reset;
 
     /// Contains a slider used to edit the Y translation value of directional lights.
-    QPointer<QSlider> m_yTranslation;
-    QPointer<QLineEdit> m_yLabel;
-    QPointer<QPushButton> m_yReset;
+    QPointer<QSlider> m_y_translation;
+    QPointer<QLineEdit> m_y_label;
+    QPointer<QPushButton> m_y_reset;
 
     /// Contains a slider used to edit the Z translation value of directional lights.
-    QPointer<QSlider> m_zTranslation;
-    QPointer<QLineEdit> m_zLabel;
-    QPointer<QPushButton> m_zReset;
+    QPointer<QSlider> m_z_translation;
+    QPointer<QLineEdit> m_z_label;
+    QPointer<QPushButton> m_z_reset;
 
     /// Contains the current selected light.
-    sight::viz::scene3d::light_adaptor::sptr m_currentLight;
+    sight::viz::scene3d::light_adaptor::sptr m_current_light;
 
 private Q_SLOTS:
 
@@ -145,80 +145,80 @@ private Q_SLOTS:
      * @brief Opens a color picker and lets the user choose a new diffuse color.
      * @see m_diffuseColorBtn.
      */
-    void onEditDiffuseColor(bool /*unused*/);
+    void on_edit_diffuse_color(bool /*unused*/);
 
     /**
      * @brief Opens a color picker and lets the user choose a new specular color.
      * @see m_specularColorBtn.
      */
-    void onEditSpecularColor(bool /*unused*/);
+    void on_edit_specular_color(bool /*unused*/);
 
     /**
      * @brief Sets the new theta offset value on the light adaptor accurately.
      * @param _value value of the current theta offset.
      * @see m_thetaSlider.
      */
-    void onEditThetaOffset(int _value);
+    void on_edit_theta_offset(int _value);
 
     /**
      * @brief the new phi offset value on the light adaptor accurately.
      * @param _value value of the current phi offset.
      * @see m_phiSlider.
      */
-    void onEditPhiOffset(int _value);
+    void on_edit_phi_offset(int _value);
 
     /**
      * @brief Sets the new type on the light adaptor accurately.
      * @param _value value of the current type.
      * @see m_lightTypeBox
      */
-    void onEditType(const QString& _type);
+    void on_edit_type(const QString& _type);
 
     /**
      * @brief Toggles the visual feedback of the light.
      * @param _enable value of the pressed button.
      * @see m_visualFeedback
      */
-    void onToggleFeedback(bool _enable);
+    void on_toggle_feedback(bool _enable);
 
     /**
      * @brief Sets the new position on the light adaptor accurately.
      * @param _value value of the x translation type.
      * @see m_xTranslation
      */
-    void onEditXTranslation(int _value);
+    void on_edit_x_translation(int _value);
 
     /**
      * @brief Sets the new position on the light adaptor accurately.
      * @param _value value of the y translation type.
      * @see m_yTranslation
      */
-    void onEditYTranslation(int _value);
+    void on_edit_y_translation(int _value);
 
     /**
      * @brief Sets the new position on the light adaptor accurately.
      * @param _value value of the z translation type.
      * @see m_zTranslation
      */
-    void onEditZTranslation(int _value);
+    void on_edit_z_translation(int _value);
 
     /**
      * @brief Reset the X translation of the light.
      * @see m_xReset.
      */
-    void onResetXTranslation(bool /*unused*/);
+    void on_reset_x_translation(bool /*unused*/);
 
     /**
      * @brief Reset the Y translation of the light.
      * @see m_yReset.
      */
-    void onResetYTranslation(bool /*unused*/);
+    void on_reset_y_translation(bool /*unused*/);
 
     /**
      * @brief Reset the Z translation of the light.
      * @see m_zReset.
      */
-    void onResetZTranslation(bool /*unused*/);
+    void on_reset_z_translation(bool /*unused*/);
 };
 
 } // namespace sight::module::ui::viz

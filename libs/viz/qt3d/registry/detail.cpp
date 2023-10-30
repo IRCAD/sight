@@ -27,11 +27,11 @@
 namespace sight::viz::qt3d::registry
 {
 
-struct FwRenderQt3DRegistryInstantiatorTag {};
+struct render_qt3_d_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwRenderQt3DRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, render_qt3_d_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

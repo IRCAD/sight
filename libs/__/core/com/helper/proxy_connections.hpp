@@ -38,9 +38,9 @@ struct proxy_connections
     using signal_info_t         = std::pair<std::string, core::com::signals::key_t>;
     using slot_info_t           = std::pair<std::string, core::com::slots::key_t>;
     using slot_info_container_t = std::vector<slot_info_t>;
-    using UIDType               = std::string;
+    using uid_t                 = std::string;
     using key_t                 = std::string;
-    using proxy_elt_t           = std::pair<UIDType, key_t>;
+    using proxy_elt_t           = std::pair<uid_t, key_t>;
     using proxy_elt_vect_t      = std::vector<proxy_elt_t>;
 
     std::string m_channel;
@@ -62,28 +62,28 @@ struct proxy_connections
 
     //------------------------------------------------------------------------------
 
-    void addSignalConnection(const UIDType& _uid, const key_t& _key)
+    void add_signal_connection(const uid_t& _uid, const key_t& _key)
     {
         m_signals.push_back(std::make_pair(_uid, _key));
     }
 
     //------------------------------------------------------------------------------
 
-    void addSignalConnection(const signal_info_t& _pair)
+    void add_signal_connection(const signal_info_t& _pair)
     {
         m_signals.push_back(_pair);
     }
 
     //------------------------------------------------------------------------------
 
-    void addSlotConnection(const UIDType& _uid, const key_t& _key)
+    void add_slot_connection(const uid_t& _uid, const key_t& _key)
     {
         m_slots.push_back(std::make_pair(_uid, _key));
     }
 
     //------------------------------------------------------------------------------
 
-    void addSlotConnection(const slot_info_t& _pair)
+    void add_slot_connection(const slot_info_t& _pair)
     {
         m_slots.push_back(_pair);
     }

@@ -79,11 +79,11 @@ public:
 
 private:
 
-    typedef std::map<std::string, std::string> parameter_container;
-    typedef std::vector<std::string> disable_extension_point_container;
-    typedef std::vector<std::string> disable_extension_container;
+    using parameter_container               = std::map<std::string, std::string>;
+    using disable_extension_point_container = std::vector<std::string>;
+    using disable_extension_container       = std::vector<std::string>;
 
-    const std::string M_IDENTIFIER; ///< a module identifier
+    const std::string m_identifier; ///< a module identifier
 
     parameter_container m_parameters;                             ///< all parameters
     disable_extension_point_container m_disable_extension_points; ///< all disable extension points

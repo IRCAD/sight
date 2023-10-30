@@ -32,10 +32,10 @@ class frame_tl_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(frame_tl_test);
-    CPPUNIT_TEST(initTest);
-    CPPUNIT_TEST(pushTest);
-    CPPUNIT_TEST(copyTest);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(init_test);
+    CPPUNIT_TEST(push_test);
+    CPPUNIT_TEST(copy_test);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,10 +44,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void initTest();
-    static void pushTest();
-    static void copyTest();
-    static void equalityTest();
+    static void init_test();
+    static void push_test();
+    static void copy_test();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

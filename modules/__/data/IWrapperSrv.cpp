@@ -27,12 +27,12 @@ namespace sight::module::data
 
 //-----------------------------------------------------------------------------
 
-IWrapperSrv::IWrapperSrv()
+i_wrapper_srv::i_wrapper_srv()
 = default;
 
 //-----------------------------------------------------------------------------
 
-IWrapperSrv::~IWrapperSrv()
+i_wrapper_srv::~i_wrapper_srv()
 = default;
 
 //-----------------------------------------------------------------------------

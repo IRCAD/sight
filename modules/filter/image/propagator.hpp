@@ -49,10 +49,10 @@ namespace sight::module::filter::image
  * - \b drawn(ui::history::command::sptr) : Signal emitted after propagation, sends an ImageDiffCommand.
  *
  * @section Slots Slots
- * - \b setIntParameter(int, std::string) : set the value to write in the image, the key passed must be "value".
- * - \b setBoolParameter(bool, std::string) : set the overwrite mode, the key passed must be "overwrite".
- * - \b setDoubleParameter(double, std::string) : set the radius, the passed key must be "radius".
- * - \b setEnumParameter(std::string, std::string) : set the propagation mode, the passed key must be "mode".
+ * - \b set_int_parameter(int, std::string) : set the value to write in the image, the key passed must be "value".
+ * - \b set_bool_parameter(bool, std::string) : set the overwrite mode, the key passed must be "overwrite".
+ * - \b set_double_parameter(double, std::string) : set the radius, the passed key must be "radius".
+ * - \b set_enum_parameter(std::string, std::string) : set the propagation mode, the passed key must be "mode".
  * - \b draw(data::tools::picking_info) : draw a line between the last and current picked voxels.
  * The coordinates must be in image space (by using an ::visuVTKAdaptor::ImagePickerInteractor for example).
  * - \b resetDrawing() : reset drawing, this can be called when the current slice is changed in the image.
@@ -121,48 +121,48 @@ protected:
     MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
 
     /// Sets overwrite mode. Key must be 'overwrite'.
-    MODULE_FILTER_IMAGE_API void setBoolParameter(bool _val, std::string _key) override;
+    MODULE_FILTER_IMAGE_API void set_bool_parameter(bool _val, std::string _key) override;
 
     /// Sets value. Key must be 'value'.
-    MODULE_FILTER_IMAGE_API void setIntParameter(int _val, std::string _key) override;
+    MODULE_FILTER_IMAGE_API void set_int_parameter(int _val, std::string _key) override;
 
     /// Sets radius. Key must be 'radius'.
-    MODULE_FILTER_IMAGE_API void setDoubleParameter(double _val, std::string _key) override;
+    MODULE_FILTER_IMAGE_API void set_double_parameter(double _val, std::string _key) override;
 
     /// Sets propagation mode. Key must be 'mode'.
-    MODULE_FILTER_IMAGE_API void setEnumParameter(std::string _val, std::string _key) override;
+    MODULE_FILTER_IMAGE_API void set_enum_parameter(std::string _val, std::string _key) override;
 
 private:
 
-    typedef sight::filter::image::min_max_propagation::coordinates_t coordinates_t;
+    using coordinates_t = sight::filter::image::min_max_propagation::coordinates_t;
 
-    typedef sight::filter::image::min_max_propagation::orientation_t orientation_t;
+    using orientation_t = sight::filter::image::min_max_propagation::orientation_t;
 
-    typedef core::com::signal<void (ui::history::command::sptr)> drawn_signal_t;
+    using drawn_signal_t = core::com::signal<void (ui::history::command::sptr)>;
 
     /// Swaps orientation.
-    void setOrientation(int _from, int _to);
+    void set_orientation(int _from, int _to);
 
     /// Sets drawing to false.
-    void resetDrawing();
+    void reset_drawing();
 
     /// Draws seeds while the left button is pressed, propagate on release.
     void draw(data::tools::picking_info _picking_info);
 
     /// Appends diff to member diff.
-    bool appendDiff(const sight::filter::image::image_diff& _diff);
+    bool append_diff(const sight::filter::image::image_diff& _diff);
 
     /// Gets seeds from the diff list.
-    sight::filter::image::min_max_propagation::seeds_t convertDiffToSeeds() const;
+    sight::filter::image::min_max_propagation::seeds_t convert_diff_to_seeds() const;
 
     /// Line drawer.
-    UPTR(sight::filter::image::line_drawer) m_lineDrawer;
+    UPTR(sight::filter::image::line_drawer) m_line_drawer;
 
     /// Propagator.
     UPTR(sight::filter::image::min_max_propagation) m_propagator;
 
     /// Memorizes the last cursor position.
-    coordinates_t m_oldPoint {};
+    coordinates_t m_old_point {};
 
     /// Current slice orientation.
     orientation_t m_orientation {};
@@ -171,7 +171,7 @@ private:
     sight::filter::image::image_diff m_diff;
 
     /// Signal sent when the pencil is released and the image has been modified.
-    drawn_signal_t::sptr m_sigDrawn;
+    drawn_signal_t::sptr m_sig_drawn;
 
     /// Value to be written inside the image.
     int m_value {1};
@@ -180,7 +180,7 @@ private:
     double m_radius {};
 
     /// Propagation mode (min, max or minmax).
-    sight::filter::image::min_max_propagation::Mode m_mode {sight::filter::image::min_max_propagation::Mode::MINMAX};
+    sight::filter::image::min_max_propagation::mode m_mode {sight::filter::image::min_max_propagation::mode::minmax};
 
     /// Overwrite mode.
     bool m_overwrite {true};
@@ -188,11 +188,11 @@ private:
     /// Set to 'true' if we currently drawing in the image.
     bool m_drawing {false};
 
-    static constexpr std::string_view s_IMAGE_IN    = "imageIn";
-    static constexpr std::string_view s_IMAGE_INOUT = "imageOut";
+    static constexpr std::string_view IMAGE_IN    = "imageIn";
+    static constexpr std::string_view IMAGE_INOUT = "imageOut";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_imageIn {this, s_IMAGE_IN};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_imageOut {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_out {this, IMAGE_INOUT};
 };
 
 } // namespace sight::module::filter::image.

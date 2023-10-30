@@ -47,7 +47,7 @@ void object_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void object_test::fieldTest()
+void object_test::field_test()
 {
     const std::string field_i_d1 = "FIELD_ID1";
     const std::string field_i_d2 = "FIELD_ID2";
@@ -111,38 +111,38 @@ void object_test::fieldTest()
 
 //------------------------------------------------------------------------------
 
-void object_test::lastModifyTest()
+void object_test::last_modify_test()
 {
     data::object::sptr object = std::make_shared<data::real>();
 
-    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), object->lastModified());
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), object->last_modified());
 
     {
         data::mt::locked_ptr lock(object);
-        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), object->lastModified());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), object->last_modified());
     }
 
     for(std::uint32_t i = 0 ; i < 199 ; ++i)
     {
         data::mt::locked_ptr lock(object);
-        CPPUNIT_ASSERT_EQUAL(std::uint64_t(i + 2), object->lastModified());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(i + 2), object->last_modified());
     }
 
-    CPPUNIT_ASSERT_EQUAL(std::uint64_t(200), object->lastModified());
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(200), object->last_modified());
 }
 
 //------------------------------------------------------------------------------
 
-void object_test::equalityTest()
+void object_test::equality_test()
 {
     auto object1 = std::make_shared<data::real>();
     auto object2 = std::make_shared<data::real>();
 
     CPPUNIT_ASSERT(*object1 == *object2 && !(*object1 != *object2));
 
-    object1->setDescription("1");
+    object1->set_description("1");
     CPPUNIT_ASSERT(*object1 != *object2 && !(*object1 == *object2));
-    object2->setDescription(object1->getDescription());
+    object2->set_description(object1->get_description());
     CPPUNIT_ASSERT(*object1 == *object2 && !(*object1 != *object2));
 }
 

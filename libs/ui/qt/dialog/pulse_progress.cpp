@@ -55,14 +55,14 @@ pulse_progress::~pulse_progress()
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setTitle(const std::string& _title)
+void pulse_progress::set_title(const std::string& _title)
 {
     m_dialog->setWindowTitle(QString::fromStdString(_title));
 }
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setMessage(const std::string& _msg)
+void pulse_progress::set_message(const std::string& _msg)
 {
     m_dialog->setLabelText(QString::fromStdString(_msg));
 }

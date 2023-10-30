@@ -38,12 +38,12 @@ namespace sight::ui::layout
 const cardinal::registry_key_t cardinal::REGISTRY_KEY = "sight::ui::layout::cardinal";
 //-----------------------------------------------------------------------------
 
-const std::map<std::string, cardinal::Align> cardinal::STRING_TO_ALIGN = {
-    {"center", CENTER},
-    {"right", RIGHT},
-    {"left", LEFT},
-    {"bottom", BOTTOM},
-    {"top", TOP},
+const std::map<std::string, cardinal::align> cardinal::STRING_TO_ALIGN = {
+    {"center", center},
+    {"right", right},
+    {"left", left},
+    {"bottom", bottom},
+    {"top", top},
 };
 
 //-----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ void cardinal::initialize(const ui::config_t& _configuration)
     const auto views_cfg = _configuration.equal_range("view");
     for(const auto& view : boost::make_iterator_range(views_cfg))
     {
-        ViewInfo vi;
+        view_info vi;
         if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
         {
             if(const auto align = view_cfg->get_optional<std::string>("align"); align.has_value())
@@ -64,18 +64,18 @@ void cardinal::initialize(const ui::config_t& _configuration)
                 vi.m_align = STRING_TO_ALIGN.find(*align)->second;
             }
 
-            vi.m_minSize.first  = view_cfg->get<int>("minWidth", vi.m_minSize.first);
-            vi.m_minSize.second = view_cfg->get<int>("minHeight", vi.m_minSize.second);
-            vi.m_maxSize.first  = view_cfg->get<int>("maxWidth", vi.m_maxSize.first);
-            vi.m_maxSize.second = view_cfg->get<int>("maxHeight", vi.m_maxSize.second);
+            vi.m_min_size.first  = view_cfg->get<int>("minWidth", vi.m_min_size.first);
+            vi.m_min_size.second = view_cfg->get<int>("minHeight", vi.m_min_size.second);
+            vi.m_max_size.first  = view_cfg->get<int>("maxWidth", vi.m_max_size.first);
+            vi.m_max_size.second = view_cfg->get<int>("maxHeight", vi.m_max_size.second);
 
-            vi.m_isResizable  = view_cfg->get<bool>("resizable", vi.m_isResizable);
-            vi.m_position     = view_cfg->get<int>("position", vi.m_position);
-            vi.m_layer        = view_cfg->get<int>("layer", vi.m_layer);
-            vi.m_row          = view_cfg->get<int>("row", vi.m_row);
-            vi.m_visible      = view_cfg->get<bool>("visible", vi.m_visible);
-            vi.m_useScrollBar = view_cfg->get<bool>("useScrollBar", vi.m_useScrollBar);
-            vi.m_toolTip      = view_cfg->get<std::string>("toolTip", vi.m_toolTip);
+            vi.m_is_resizable   = view_cfg->get<bool>("resizable", vi.m_is_resizable);
+            vi.m_position       = view_cfg->get<int>("position", vi.m_position);
+            vi.m_layer          = view_cfg->get<int>("layer", vi.m_layer);
+            vi.m_row            = view_cfg->get<int>("row", vi.m_row);
+            vi.m_visible        = view_cfg->get<bool>("visible", vi.m_visible);
+            vi.m_use_scroll_bar = view_cfg->get<bool>("useScrollBar", vi.m_use_scroll_bar);
+            vi.m_tool_tip       = view_cfg->get<std::string>("toolTip", vi.m_tool_tip);
 
             if(auto caption = view_cfg->get_optional<std::string>("caption"); caption.has_value())
             {
@@ -91,7 +91,7 @@ void cardinal::initialize(const ui::config_t& _configuration)
                     hexa_color[0] == '#'
                     && (hexa_color.length() == 7 || hexa_color.length() == 9)
                 );
-                vi.m_backgroundColor = hexa_color;
+                vi.m_background_color = hexa_color;
             }
         }
 

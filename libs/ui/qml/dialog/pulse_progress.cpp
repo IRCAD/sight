@@ -45,14 +45,14 @@ namespace sight::ui::qml::dialog
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setTitle(const std::string& _title)
+void pulse_progress::set_title(const std::string& _title)
 {
     m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setMessage(const std::string& _msg)
+void pulse_progress::set_message(const std::string& _msg)
 {
     m_message = QString::fromStdString(_msg);
 }
@@ -62,16 +62,16 @@ void pulse_progress::setMessage(const std::string& _msg)
 void pulse_progress::show()
 {
     // get the qml engine QmlApplicationEngine
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
+    SPTR(ui::qml::qml_engine) engine = ui::qml::qml_engine::get_default();
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialog_path =
         core::runtime::get_library_resource_file_path("ui_qml/dialog/pulse_progress.qml");
     // set the context for the new component
-    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->get_root_context()));
     context->setContextProperty("pulseProgressDialog", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialog_path, context);
+    QObject* window = engine->create_component(dialog_path, context);
     SIGHT_ASSERT("The Qml File pulse_progress is not found or not loaded", window);
     // keep window to destroy it
 
@@ -81,7 +81,7 @@ void pulse_progress::show()
     window->setProperty("title", m_title);
     auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
-    Q_EMIT messageChanged();
+    Q_EMIT message_changed();
     // Start the computation.
 
     QEventLoop loop;

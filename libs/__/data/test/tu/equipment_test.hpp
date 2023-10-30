@@ -32,8 +32,8 @@ namespace sight::data::ut
 class equipment_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(equipment_test);
-CPPUNIT_TEST(institutionNameTest);
-CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST(institution_name_test);
+CPPUNIT_TEST(equality_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,8 +42,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void institutionNameTest();
-    static void equalityTest();
+    void institution_name_test();
+    static void equality_test();
 
 private:
 

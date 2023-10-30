@@ -43,7 +43,7 @@ void point_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void point_test::copyTest()
+void point_test::copy_test()
 {
     // shallow copy
     {
@@ -51,9 +51,9 @@ void point_test::copyTest()
         data::point::sptr p2 = std::make_shared<data::point>();
 
         CPPUNIT_ASSERT_NO_THROW(p2->shallow_copy(p1));
-        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[0], p2->getCoord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[1], p2->getCoord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[2], p2->getCoord()[2]);
+        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[0], p2->get_coord()[0]);
+        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[1], p2->get_coord()[1]);
+        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[2], p2->get_coord()[2]);
     }
 
     // Deep copy
@@ -62,21 +62,21 @@ void point_test::copyTest()
         data::point::sptr p2 = std::make_shared<data::point>();
 
         CPPUNIT_ASSERT_NO_THROW(p2->deep_copy(p1));
-        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[0], p2->getCoord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[1], p2->getCoord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[2], p2->getCoord()[2]);
+        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[0], p2->get_coord()[0]);
+        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[1], p2->get_coord()[1]);
+        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[2], p2->get_coord()[2]);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void point_test::getterTest()
+void point_test::getter_test()
 {
     data::point::sptr p1 = std::make_shared<data::point>();
 
-    p1->setCoord({0., 1., 10.});
+    p1->set_coord({0., 1., 10.});
 
-    const auto coords = p1->getCoord();
+    const auto coords = p1->get_coord();
 
     CPPUNIT_ASSERT_EQUAL(0., coords[0]);
     CPPUNIT_ASSERT_EQUAL(1., coords[1]);
@@ -85,14 +85,14 @@ void point_test::getterTest()
 
 //------------------------------------------------------------------------------
 
-void point_test::setterTest()
+void point_test::setter_test()
 {
     data::point::sptr p1 = std::make_shared<data::point>();
 
     data::point::point_coord_array_t expected = {0.1, 0.2, 0.3};
 
-    p1->setCoord(expected);
-    const auto actual = p1->getCoord();
+    p1->set_coord(expected);
+    const auto actual = p1->get_coord();
 
     CPPUNIT_ASSERT_EQUAL(expected[0], actual[0]);
     CPPUNIT_ASSERT_EQUAL(expected[1], actual[1]);
@@ -101,20 +101,20 @@ void point_test::setterTest()
 
 //------------------------------------------------------------------------------
 
-void point_test::labelTest()
+void point_test::label_test()
 {
     data::point::sptr p     = std::make_shared<data::point>(1., 2., 3.);
     const std::string label = "TestPoint";
-    p->setLabel(label);
+    p->set_label(label);
 
-    const auto actual_label = p->getLabel();
+    const auto actual_label = p->get_label();
 
     CPPUNIT_ASSERT_EQUAL(label, actual_label);
 }
 
 //------------------------------------------------------------------------------
 
-void point_test::equalityTest()
+void point_test::equality_test()
 {
     auto point1 = std::make_shared<data::point>();
     auto point2 = std::make_shared<data::point>();
@@ -134,10 +134,10 @@ void point_test::equalityTest()
         *point1 == *point2 && !(*point1 != *point2) \
     );
 
-    TEST(setCoord({1, 0, 0}));
-    TEST(setCoord({0, 1, 0}));
-    TEST(setCoord({0, 0, 1}));
-    TEST(setLabel("1"));
+    TEST(set_coord({1, 0, 0}));
+    TEST(set_coord({0, 1, 0}));
+    TEST(set_coord({0, 0, 1}));
+    TEST(set_label("1"));
 
     #undef TEST
 }

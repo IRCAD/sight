@@ -34,11 +34,11 @@ class point_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(point_test);
-    CPPUNIT_TEST(copyTest);
-    CPPUNIT_TEST(getterTest);
-    CPPUNIT_TEST(setterTest);
-    CPPUNIT_TEST(labelTest);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(copy_test);
+    CPPUNIT_TEST(getter_test);
+    CPPUNIT_TEST(setter_test);
+    CPPUNIT_TEST(label_test);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,15 +48,15 @@ public:
     void tearDown() override;
 
     /// Tests copies
-    static void copyTest();
+    static void copy_test();
     /// Tests getter
-    static void getterTest();
+    static void getter_test();
     ///Tests setter
-    static void setterTest();
+    static void setter_test();
     /// Tests labels of data::point
-    static void labelTest();
+    static void label_test();
 
-    static void equalityTest();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

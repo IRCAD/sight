@@ -68,7 +68,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b removeDistance(): removes distances contained in the image from the scene manager.
  * - \b updateVisibilityFromField(): updates the visibility of distances from the field status.
- * - \b updateVisibility(bool): sets whether distances are shown or not.
+ * - \b update_visibility(bool): sets whether distances are shown or not.
  * - \b updateModifiedDistance(data::point_list::sptr): renders distances in other negato2d and negato3d adaptors.
  * - \b toggleVisibility(): toggles whether distances are shown or not.
  * - \b show(): shows distance.
@@ -108,16 +108,16 @@ public:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) override;
 
     /**
      * @brief Moves a distance stored in m_pickedData.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
-        MouseButton /*_button*/,
-        Modifier _mod,
+    MODULE_VIZ_SCENE3D_API void mouse_move_event(
+        mouse_button /*_button*/,
+        modifier _mod,
         int _x,
         int _y,
         int /*_dx*/,
@@ -125,21 +125,21 @@ public:
     ) override;
 
     /// Resets m_pickedData.
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(
-        MouseButton _button,
-        Modifier _mod,
+    MODULE_VIZ_SCENE3D_API void button_release_event(
+        mouse_button _button,
+        modifier _mod,
         int _x,
         int _y
     ) override;
 
     /// catch escape to go out of add distance mode
-    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
+    MODULE_VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
 
     /// catch the mouse leaving the widget
-    MODULE_VIZ_SCENE3D_API void leaveEvent() final;
+    MODULE_VIZ_SCENE3D_API void leave_event() final;
 
     /// catch the mouse entering the widget
-    MODULE_VIZ_SCENE3D_API void enterEvent() final;
+    MODULE_VIZ_SCENE3D_API void enter_event() final;
 
 protected:
 
@@ -168,7 +168,7 @@ protected:
      * @brief Sets distances visibility.
      * @param _visible the visibility status of distances.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
 private:
 
@@ -177,35 +177,35 @@ private:
     /// one line rendered with the depth check and a dashed line rendered without depth check.
     /// The point list is used to update each points when the interactor move a distance sphere,
     /// it's retrieve from the image via a field.
-    struct DistanceData
+    struct distance_data
     {
-        data::point_list::sptr m_pointList;
+        data::point_list::sptr m_point_list;
         Ogre::SceneNode* m_node1 {};
         Ogre::ManualObject* m_sphere1 {};
         Ogre::SceneNode* m_node2 {};
         Ogre::ManualObject* m_sphere2 {};
         Ogre::ManualObject* m_line {};
-        Ogre::ManualObject* m_dashedLine {};
-        Ogre::SceneNode* m_labelNode {};
+        Ogre::ManualObject* m_dashed_line {};
+        Ogre::SceneNode* m_label_node {};
         sight::viz::scene3d::text::sptr m_label;
     };
 
     /// Stores picking information.
-    struct PickedData
+    struct picked_data
     {
-        DistanceData* m_data;
+        distance_data* m_data;
         bool m_first;
     };
 
     /// Map each distances to there related list ID.
-    using DistanceMap = std::map<core::tools::id::type, DistanceData>;
+    using distance_map = std::map<core::tools::id::type, distance_data>;
 
     /**
      * @brief Generates a color from a distance ID.
      * @param _id ID of the distance.
      * @return The generated color.
      */
-    Ogre::ColourValue generateColor();
+    Ogre::ColourValue generate_color();
 
     /**
      * @brief Generates a dashed line in a Ogre::ManualObject.
@@ -214,7 +214,7 @@ private:
      * @param _end End position of the line.
      * @param _thickness Thickness of dash.
      */
-    static void generateDashedLine(
+    static void generate_dashed_line(
         Ogre::ManualObject* _object,
         const Ogre::Vector3& _begin,
         const Ogre::Vector3& _end,
@@ -225,25 +225,25 @@ private:
      * @brief Gets the formatted string used to display the length of a distance.
      * @return The formatted string.
      */
-    static std::string getLength(const Ogre::Vector3& /*_begin*/, const Ogre::Vector3& /*_end*/);
+    static std::string get_length(const Ogre::Vector3& /*_begin*/, const Ogre::Vector3& /*_end*/);
 
     /**
      * @brief Gets the normalized camera direction vector.
      * @return A vector representing the camera direction
      */
-    static Ogre::Vector3 getCamDirection(const Ogre::Camera* /*_cam*/);
+    static Ogre::Vector3 get_cam_direction(const Ogre::Camera* /*_cam*/);
 
     /// Saves the created distances to image's field
-    void updateImageDistanceField(data::point_list::sptr _pl);
+    void update_image_distance_field(data::point_list::sptr _pl);
 
     /// Retrieves distances from the image and remove them from the scene.
-    void removeDistances();
+    void remove_distances();
 
     /// Updates distances visibility from the image field.
-    void updateVisibilityFromField();
+    void update_visibility_from_field();
 
     /// Activates the distance tool by changing the cursor and updating a boolean
-    void activateDistanceTool(bool _activate);
+    void activate_distance_tool(bool _activate);
 
     /**
      * @brief Gets the nearest picked position if there is one.
@@ -251,13 +251,13 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional<Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
+    std::optional<Ogre::Vector3> get_nearest_picked_position(int _x, int _y);
 
     /**
      * @brief Creates a distance and add it into m_distances.
      * @param _pl The point list used to create the distance.
      */
-    void createDistance(data::point_list::sptr& _pl);
+    void create_distance(data::point_list::sptr& _pl);
 
     /**
      * @brief Updates a distance.
@@ -265,75 +265,75 @@ private:
      * @param _begin New begin position.
      * @param _end New end position
      */
-    void updateDistance(const DistanceData* _data, Ogre::Vector3 _begin, Ogre::Vector3 _end);
+    void update_distance(const distance_data* _data, Ogre::Vector3 _begin, Ogre::Vector3 _end);
 
     /**
      * @brief Destroys a distance from its ID and remove it from m_distances.
      * @param _id ID of the distance.
      */
-    void destroyDistance(core::tools::id::type _id);
+    void destroy_distance(core::tools::id::type _id);
 
     /// Slot: Allows visualizing the creation and/or modification of distances field of an image in multiple
     /// adaptors(Negato2d/Negato3d) by displaying the distances synchronously.
-    void updateModifiedDistance(data::point_list::sptr _pl);
+    void update_modified_distance(data::point_list::sptr _pl);
 
     /// Defines the radius of distances spheres.
-    float m_distanceSphereRadius {3.5F};
+    float m_distance_sphere_radius {3.5F};
 
     /// Defines the font size in points.
-    std::size_t m_fontSize {12};
+    std::size_t m_font_size {12};
 
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive {true};
 
     /// Defines whether to start using the distance creation tool or not.
-    bool m_toolActivated {false};
+    bool m_tool_activated {false};
 
     /// Defines whether a distance is in creation or not.
-    bool m_creationMode {false};
+    bool m_creation_mode {false};
 
     /// @brief  indicates if is over a distance
-    bool m_isOverDistance {false};
+    bool m_is_over_distance {false};
 
     /// Defines the priority of the interactor.
     int m_priority {2};
 
     /// Counter to swap color at each new distance
-    int m_colorIndex {0};
+    int m_color_index {0};
 
     /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
-    PickedData m_pickedData {nullptr, true};
+    picked_data m_picked_data {nullptr, true};
 
     /// Defines the mask used to filter out entities when the distance is auto snapped.
-    std::uint32_t m_queryMask {0xFFFFFFFF};
+    std::uint32_t m_query_mask {0xFFFFFFFF};
 
     /// Defines the mask used to filter distances, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_distanceQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_distance_query_flag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines the material name with no depth check for spheres.
-    std::string m_sphereMaterialName;
+    std::string m_sphere_material_name;
 
     /// Defines the material name with depth check for lines.
-    std::string m_lineMaterialName;
+    std::string m_line_material_name;
 
     /// Defines the material name with no depth check for dashed lines.
-    std::string m_dashedLineMaterialName;
+    std::string m_dashed_line_material_name;
 
     /// Contains the material with no depth check for spheres.
-    sight::viz::scene3d::material::uptr m_sphereMaterial {nullptr};
+    sight::viz::scene3d::material::uptr m_sphere_material {nullptr};
 
     /// Contains the material with depth check for lines.
-    sight::viz::scene3d::material::uptr m_lineMaterial {nullptr};
+    sight::viz::scene3d::material::uptr m_line_material {nullptr};
 
     /// Contains the material with no depth check for dashed lines.
-    sight::viz::scene3d::material::uptr m_dashedLineMaterial {nullptr};
+    sight::viz::scene3d::material::uptr m_dashed_line_material {nullptr};
 
     /// Stores all generated distances.
-    DistanceMap m_distances;
+    distance_map m_distances;
     std::vector<data::point::sptr> m_points;
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+    static constexpr std::string_view IMAGE_INOUT = "image";
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -40,7 +40,7 @@ void array_reader::read()
 {
     std::filesystem::path file = this->get_file();
 
-    data::array::sptr array = this->getConcreteObject();
+    data::array::sptr array = this->get_concrete_object();
 
     const auto dump_lock = array->dump_lock();
 

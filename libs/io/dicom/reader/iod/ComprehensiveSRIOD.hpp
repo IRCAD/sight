@@ -30,7 +30,7 @@ namespace sight::io::dicom::reader::iod
 /**
  * @brief ComprehensiveSRIOD class used to read landmarks and distances stored in Enhanced Structured Report IODs
  */
-class IO_DICOM_CLASS_API ComprehensiveSRIOD : public io::dicom::reader::iod::InformationObjectDefinition
+class IO_DICOM_CLASS_API comprehensive_sriod : public io::dicom::reader::iod::information_object_definition
 {
 public:
 
@@ -42,16 +42,16 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API ComprehensiveSRIOD(
+    IO_DICOM_API comprehensive_sriod(
         const data::dicom_series::csptr& _dicom_series,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~ComprehensiveSRIOD() override;
+    IO_DICOM_API ~comprehensive_sriod() override;
 
     /** Read DICOM file
      * @throw io::dicom::exception::Failed

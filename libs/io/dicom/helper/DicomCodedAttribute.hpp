@@ -33,26 +33,26 @@ namespace sight::io::dicom::helper
 /**
  * @brief Helper class to manage DICOM coded attributes
  */
-class IO_DICOM_CLASS_API DicomCodedAttribute
+class IO_DICOM_CLASS_API dicom_coded_attribute
 {
 public:
 
     /// DicomCodedAttribute container type
-    typedef std::vector<io::dicom::container::DicomCodedAttribute> DicomCodedAttributeVectorType;
+    using DicomCodedAttributeVectorType = std::vector<io::dicom::container::dicom_coded_attribute>;
 
     /**
      * @brief Convert an entry of the form '(AAA;BBB;CCC)' into a list of DicomCodedAttributes.
      * Several DicomCodedAttributes can be detected in a single entry.
      * @param[in] entry Entry containing one or several coded attributes.
      */
-    IO_DICOM_API static DicomCodedAttributeVectorType convertEntryToCodedAttribute(const std::string& _entry);
+    IO_DICOM_API static DicomCodedAttributeVectorType convert_entry_to_coded_attribute(const std::string& _entry);
 
     /**
      * @brief Convert an entry of the form '(AAA;BBB;CCC)' into GDCM's BasicCodedEntryVector.
      * Several DicomCodedAttributes can be detected in a single entry.
      * @param[in] entry Entry containing one or several coded attributes.
      */
-    IO_DICOM_API static gdcm::Segment::BasicCodedEntryVector convertEntryToGDCMCodedAttribute(
+    IO_DICOM_API static gdcm::Segment::BasicCodedEntryVector convert_entry_to_gdcm_coded_attribute(
         const std::string& _entry
     );
 
@@ -63,7 +63,7 @@ public:
      * @param[in,out] entry Value that shall be verified and formatted
      * @param[in] multipleValue If set to 'false', check the uniqueness of the value
      */
-    IO_DICOM_API static bool checkAndFormatEntry(std::string& _entry, bool _multiple_value = false);
+    IO_DICOM_API static bool check_and_format_entry(std::string& _entry, bool _multiple_value = false);
 };
 
 } // namespace sight::io::dicom::helper

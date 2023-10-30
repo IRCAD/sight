@@ -35,11 +35,11 @@ generic_object_base::generic_object_base(
     deleter_t _d
 ) :
     timeline::buffer(_timestamp, _buffer, _size, _d),
-    m_maxElementNum(_max_element_num)
+    m_max_element_num(_max_element_num)
 {
     SIGHT_ASSERT(
         "m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
-        m_maxElementNum < sizeof(uint64_t) * 8
+        m_max_element_num < sizeof(uint64_t) * 8
     );
 }
 
@@ -50,37 +50,37 @@ generic_object_base::~generic_object_base()
 
 //-----------------------------------------------------------------------------
 
-unsigned int generic_object_base::getPresentElementNum() const
+unsigned int generic_object_base::get_present_element_num() const
 {
-    return m_numPresent;
+    return m_num_present;
 }
 
 //-----------------------------------------------------------------------------
 
-bool generic_object_base::isPresent(unsigned int _index) const
+bool generic_object_base::is_present(unsigned int _index) const
 {
-    return (m_presenceMask & (uint64_t(1) << _index)) != 0U;
+    return (m_presence_mask & (uint64_t(1) << _index)) != 0U;
 }
 
 //-----------------------------------------------------------------------------
 
-uint64_t generic_object_base::getMask() const
+uint64_t generic_object_base::get_mask() const
 {
-    return m_presenceMask;
+    return m_presence_mask;
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int generic_object_base::getMaxElementNum() const
+unsigned int generic_object_base::get_max_element_num() const
 {
-    return m_maxElementNum;
+    return m_max_element_num;
 }
 
 //-----------------------------------------------------------------------------
 
-std::size_t generic_object_base::getElementSize() const
+std::size_t generic_object_base::get_element_size() const
 {
-    return m_size / m_maxElementNum;
+    return m_size / m_max_element_num;
 }
 
 //-----------------------------------------------------------------------------
@@ -90,9 +90,9 @@ void generic_object_base::deep_copy(const data::timeline::object& _other)
     buffer::deep_copy(_other);
 
     const auto& other_object = static_cast<const generic_object_base&>(_other);
-    m_numPresent    = other_object.m_numPresent;
-    m_presenceMask  = other_object.m_presenceMask;
-    m_maxElementNum = other_object.m_maxElementNum;
+    m_num_present     = other_object.m_num_present;
+    m_presence_mask   = other_object.m_presence_mask;
+    m_max_element_num = other_object.m_max_element_num;
 }
 
 //-----------------------------------------------------------------------------

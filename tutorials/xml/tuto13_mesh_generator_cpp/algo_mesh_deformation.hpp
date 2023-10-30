@@ -43,7 +43,7 @@ public:
     TUTO13_MESH_GENERATOR_CPP_API ~algo_mesh_deformation() noexcept;
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.
-    TUTO13_MESH_GENERATOR_CPP_API void computeDeformation(
+    TUTO13_MESH_GENERATOR_CPP_API void compute_deformation(
         sight::data::mesh::sptr _mesh,
         unsigned int _nb_step,
         unsigned int _amplitude
@@ -57,20 +57,20 @@ private:
      * @param _nbStep the number of simulated acquisitions to compute between inspiration and expiration.
      * @param _amplitude
      */
-    void setParam(
+    void set_param(
         sight::data::mesh::sptr _mesh,
         unsigned int _nb_step,
         unsigned int _amplitude
     );
 
     /// Initializes the simulated acquisition.
-    void initSimu();
+    void init_simu();
 
     /// Computes the simulated acquisition for the given step between inspiration and expiration.
-    void computeSimu();
+    void compute_simu();
 
     /// Defines the number of simulated acquisitions to compute between inspiration and expiration.
-    unsigned int m_nbStep {0};
+    unsigned int m_nb_step {0};
 
     unsigned int m_amplitude {40};
 
@@ -78,15 +78,15 @@ private:
 
     int m_direction {1};
 
-    std::size_t m_nbPoints {0};
+    std::size_t m_nb_points {0};
 
-    std::size_t m_nbCells {0};
+    std::size_t m_nb_cells {0};
 
-    float m_yCenter {0};
+    float m_y_center {0};
 
     sight::data::mesh::wptr m_mesh;
 
-    sight::data::mesh::sptr m_originMesh;
+    sight::data::mesh::sptr m_origin_mesh;
 };
 
 } // namespace tuto13_mesh_generator_cpp.

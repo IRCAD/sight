@@ -52,9 +52,9 @@ private:
     /// Allows to postpone the launch of the application of the main worker
     void run();
 
-    std::string m_configurationName;
-    std::string m_parametersName;
-    sight::app::config_manager::sptr m_appConfigMng;
+    std::string m_configuration_name;
+    std::string m_parameters_name;
+    sight::app::config_manager::sptr m_app_config_mng;
 };
 
 } // namespace sight::module::app

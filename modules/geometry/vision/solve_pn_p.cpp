@@ -34,45 +34,45 @@ namespace sight::module::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-void solve_pn_p::computeRegistration(core::hires_clock::type /*timestamp*/)
+void solve_pn_p::compute_registration(core::hires_clock::type /*timestamp*/)
 {
     const auto camera = m_calibration.lock();
 
-    if(!camera->getIsCalibrated())
+    if(!camera->get_is_calibrated())
     {
         return;
     }
 
-    Camera cv_camera;
-    std::tie(cv_camera.intrinsicMat, cv_camera.imageSize, cv_camera.distCoef) =
-        io::opencv::camera::copyToCv(camera.get_shared());
+    struct camera cv_camera;
+    std::tie(cv_camera.intrinsic_mat, cv_camera.image_size, cv_camera.dist_coef) =
+        io::opencv::camera::copy_to_cv(camera.get_shared());
 
     //get points
     std::vector<cv::Point2f> points2d;
     std::vector<cv::Point3f> points3d;
 
-    const auto fw_points2d = m_pointList2d.lock();
-    const auto fw_points3d = m_pointList3d.lock();
+    const auto fw_points2d = m_point_list2d.lock();
+    const auto fw_points3d = m_point_list3d.lock();
 
     auto fw_matrix = m_matrix.lock();
 
     //points list should have same number of points
-    if(fw_points2d->getPoints().size() != fw_points3d->getPoints().size())
+    if(fw_points2d->get_points().size() != fw_points3d->get_points().size())
     {
         SIGHT_ERROR("The 2d and 3d point lists should have the same number of points");
 
         return;
     }
 
-    const std::size_t number_of_points = fw_points2d->getPoints().size();
+    const std::size_t number_of_points = fw_points2d->get_points().size();
 
     float shift_x = 0.F;
     float shift_y = 0.F;
     // Shift back 2d points to compensate "shifted" camera in a 3dScene.
-    if(m_shiftPoints)
+    if(m_shift_points)
     {
-        shift_x = static_cast<float>(camera->getWidth()) / 2.F - static_cast<float>(camera->getCx());
-        shift_y = static_cast<float>(camera->getHeight()) / 2.F - static_cast<float>(camera->getCy());
+        shift_x = static_cast<float>(camera->get_width()) / 2.F - static_cast<float>(camera->get_cx());
+        shift_y = static_cast<float>(camera->get_height()) / 2.F - static_cast<float>(camera->get_cy());
     }
 
     points2d.resize(number_of_points);
@@ -81,21 +81,21 @@ void solve_pn_p::computeRegistration(core::hires_clock::type /*timestamp*/)
     for(std::size_t i = 0 ; i < number_of_points ; ++i)
     {
         // 2d
-        data::point::csptr p2d = fw_points2d->getPoints()[i];
+        data::point::csptr p2d = fw_points2d->get_points()[i];
         cv::Point2f cv_p2d;
 
-        cv_p2d.x = static_cast<float>(p2d->getCoord()[0]) - shift_x;
-        cv_p2d.y = static_cast<float>(p2d->getCoord()[1]) - shift_y;
+        cv_p2d.x = static_cast<float>(p2d->get_coord()[0]) - shift_x;
+        cv_p2d.y = static_cast<float>(p2d->get_coord()[1]) - shift_y;
 
         points2d[i] = cv_p2d;
 
         // 3d
-        data::point::csptr p3d = fw_points3d->getPoints()[i];
+        data::point::csptr p3d = fw_points3d->get_points()[i];
         cv::Point3f cv_p3d;
 
-        cv_p3d.x = static_cast<float>(p3d->getCoord()[0]);
-        cv_p3d.y = static_cast<float>(p3d->getCoord()[1]);
-        cv_p3d.z = static_cast<float>(p3d->getCoord()[2]);
+        cv_p3d.x = static_cast<float>(p3d->get_coord()[0]);
+        cv_p3d.y = static_cast<float>(p3d->get_coord()[1]);
+        cv_p3d.z = static_cast<float>(p3d->get_coord()[2]);
 
         points3d[i] = cv_p3d;
     }
@@ -104,11 +104,11 @@ void solve_pn_p::computeRegistration(core::hires_clock::type /*timestamp*/)
     cv::Matx44f cv_mat = sight::geometry::vision::helper::camera_pose_monocular(
         points3d,
         points2d,
-        cv_camera.intrinsicMat,
-        cv_camera.distCoef
+        cv_camera.intrinsic_mat,
+        cv_camera.dist_coef
     );
     // object pose
-    if(m_reverseMatrix)
+    if(m_reverse_matrix)
     {
         cv_mat = cv_mat.inv();
     }
@@ -128,8 +128,8 @@ void solve_pn_p::configuring()
 {
     const config_t config = this->get_config().get_child("config.<xmlattr>");
 
-    m_reverseMatrix = config.get<bool>("inverse", m_reverseMatrix);
-    m_shiftPoints   = config.get<bool>("shift", m_shiftPoints);
+    m_reverse_matrix = config.get<bool>("inverse", m_reverse_matrix);
+    m_shift_points   = config.get<bool>("shift", m_shift_points);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,7 +149,7 @@ void solve_pn_p::stopping()
 void solve_pn_p::updating()
 {
     // call computeRegistration slot with fake timestamp (timestamp is not used)
-    this->computeRegistration(0.);
+    this->compute_registration(0.);
 }
 
 //-----------------------------------------------------------------------------

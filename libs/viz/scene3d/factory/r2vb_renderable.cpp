@@ -28,13 +28,13 @@ namespace sight::viz::scene3d::factory
 
 //-----------------------------------------------------------------------------
 
-Ogre::String r2vb_renderable::FACTORY_TYPE_NAME = "r2vb_renderable";
+Ogre::String r2vb_renderable::s_factory_type_name = "r2vb_renderable";
 
 //-----------------------------------------------------------------------------
 
 const Ogre::String& r2vb_renderable::getType() const
 {
-    return FACTORY_TYPE_NAME;
+    return s_factory_type_name;
 }
 
 //-----------------------------------------------------------------------------

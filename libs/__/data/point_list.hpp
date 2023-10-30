@@ -45,7 +45,7 @@ public:
 
     SIGHT_DECLARE_CLASS(point_list, object);
 
-    using PointListContainer = std::vector<point::sptr>;
+    using container_t = std::vector<point::sptr>;
 
     DATA_API point_list();
     DATA_API ~point_list() noexcept override = default;
@@ -54,22 +54,22 @@ public:
      * @brief Gets point vector
      * @return the vector of points
      */
-    PointListContainer& getPoints();
+    container_t& get_points();
     /**
      * @brief Gets point vector
      * @return the vector of points
      */
-    const PointListContainer& getPoints() const;
+    const container_t& get_points() const;
     /**
      * @brief Sets point vector
      * @param[in] _vPoints The vector of points to set
      */
-    void setPoints(const PointListContainer& _v_points);
+    void set_points(const container_t& _v_points);
     /**
      * @brief Adds a Point in the pointlist
      * @param[in] _p The point to push
      */
-    void pushBack(const point::sptr& _p);
+    void push_back(const point::sptr& _p);
     /**
      * @brief: Deletes a point at the specified index
      * @param[in] _index Index of point to delete
@@ -87,12 +87,12 @@ public:
     /**
      * @brief Signal emitted when a Point is added
      */
-    typedef core::com::signal<void (point::sptr)> point_added_signal_t;
+    using point_added_signal_t = core::com::signal<void (point::sptr)>;
     DATA_API static const core::com::signals::key_t POINT_ADDED_SIG;
     /**
      * @brief Signal emitted when a Point is removed
      */
-    typedef core::com::signal<void (point::sptr)> point_removed_signal_t;
+    using point_removed_signal_t = core::com::signal<void (point::sptr)>;
     DATA_API static const core::com::signals::key_t POINT_REMOVED_SIG;
 /**
  * @}
@@ -123,50 +123,50 @@ protected:
     /**
      * @brief Points container
      */
-    PointListContainer m_vPoints;
+    container_t m_v_points;
 }; // end class point_list
 
 //-----------------------------------------------------------------------------
 
-inline point_list::PointListContainer& point_list::getPoints()
+inline point_list::container_t& point_list::get_points()
 {
-    return this->m_vPoints;
+    return this->m_v_points;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const point_list::PointListContainer& point_list::getPoints() const
+inline const point_list::container_t& point_list::get_points() const
 {
-    return this->m_vPoints;
+    return this->m_v_points;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void point_list::setPoints(const point_list::PointListContainer& _v_points)
+inline void point_list::set_points(const point_list::container_t& _v_points)
 {
-    this->m_vPoints = _v_points;
+    this->m_v_points = _v_points;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void point_list::pushBack(const point::sptr& _p)
+inline void point_list::push_back(const point::sptr& _p)
 {
-    this->m_vPoints.push_back(_p);
+    this->m_v_points.push_back(_p);
 }
 
 //-----------------------------------------------------------------------------
 
 inline void point_list::remove(std::size_t _index)
 {
-    const auto it = m_vPoints.begin() + static_cast<ptrdiff_t>(_index);
-    this->m_vPoints.erase(it);
+    const auto it = m_v_points.begin() + static_cast<ptrdiff_t>(_index);
+    this->m_v_points.erase(it);
 }
 
 //-----------------------------------------------------------------------------
 
 inline void point_list::clear()
 {
-    this->m_vPoints.clear();
+    this->m_v_points.clear();
 }
 
 DATA_API std::ostream& operator<<(std::ostream& _out, const point_list& _pl);

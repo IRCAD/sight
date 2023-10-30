@@ -139,16 +139,16 @@ protected:
 private:
 
     /// Updates reconstructions.
-    void updateReconstructions();
+    void update_reconstructions();
 
     /// Fills the editor tree.
-    void fillTree(const data::mt::locked_ptr<data::model_series>& _model_series);
+    void fill_tree(const data::mt::locked_ptr<data::model_series>& _model_series);
 
     /// SLOT: Shows (or hide) reconstructions.
-    void showReconstructions(bool _show);
+    void show_reconstructions(bool _show);
 
     /// Refreshes reconstructions visibility on the editor.
-    void refreshVisibility();
+    void refresh_visibility();
 
     /**
      * @brief Checks or unchecks reconstructions.
@@ -156,74 +156,74 @@ private:
      * @see onCheckAllCheckBox().
      * @see onUnCheckAllCheckBox().
      */
-    void onCheckAllBoxes(bool _visible);
+    void on_check_all_boxes(bool _visible);
 
 private Q_SLOTS:
 
     /// Changes the current item, called when new current item is setted in m_organChoice.
-    void onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem* /*unused*/);
+    void on_current_item_changed(QTreeWidgetItem* _current, QTreeWidgetItem* /*unused*/);
 
     /// Changes the current item, called when new current item is setted in m_organChoice.
-    static void onCurrentItemChanged(QTreeWidgetItem* _current, int _column);
+    static void on_current_item_changed(QTreeWidgetItem* _current, int _column);
 
     /// Shows reconstructions, called when m_showCheckBox is clicked.
-    void onShowReconstructions(int _state);
+    void on_show_reconstructions(int _state);
 
     /// Shows a reconstruction, called when new current item is setted in m_organChoice.
-    static void onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*unused*/);
+    static void on_organ_choice_visibility(QTreeWidgetItem* _item, int /*unused*/);
 
     /// Shows reconstructions, called when m_checkAllButton is clicked.
-    void onCheckAllCheckBox();
+    void on_check_all_check_box();
 
     /// Shows reconstructions, called when m_unCheckAllButton is clicked.
-    void onUnCheckAllCheckBox();
+    void on_un_check_all_check_box();
 
     /// Deletes all reconstructions, called when m_deleteAllButton is clicked.
-    void onDeleteAllCheckBox();
+    void on_delete_all_check_box();
 
     /// Opens a context menu to deletes a specific reconstruction.
-    void onCustomContextMenuRequested(const QPoint& _pos);
+    void on_custom_context_menu_requested(const QPoint& _pos);
 
 private:
 
     /// Contains the button to check all reconstructions.
-    QPointer<QPushButton> m_checkAllButton;
+    QPointer<QPushButton> m_check_all_button;
 
     /// Contains the button to uncheck all reconstructions.
-    QPointer<QPushButton> m_unCheckAllButton;
+    QPointer<QPushButton> m_un_check_all_button;
 
     /// Contains the button to delete all reconstructions.
-    QPointer<QPushButton> m_deleteAllButton;
+    QPointer<QPushButton> m_delete_all_button;
 
     /// Contains the button to hide or show all reconstructions.
-    QPointer<QCheckBox> m_showCheckBox;
+    QPointer<QCheckBox> m_show_check_box;
 
     /// Contains the reconstructions tree:
     QPointer<QTreeWidget> m_tree;
 
     /// Enables m_showCheckBox.
-    bool m_enableHideAll {true};
+    bool m_enable_hide_all {true};
 
     /// Enables m_deleteAllButton.
-    bool m_enableDelete {false};
+    bool m_enable_delete {false};
 
     /// Defines the header of the tree.
     QStringList m_headers;
 
     /// Contains the signal emitted when a reconstruction is selected.
-    typedef core::com::signal<void (data::object::sptr)> reconstruction_selected_signal_t;
-    reconstruction_selected_signal_t::sptr m_sigReconstructionSelected;
+    using reconstruction_selected_signal_t = core::com::signal<void (data::object::sptr)>;
+    reconstruction_selected_signal_t::sptr m_sig_reconstruction_selected;
 
     /// Contains the signal emitted when we clean the list.
-    typedef core::com::signal<void ()> emptied_selection_signal_t;
-    emptied_selection_signal_t::sptr m_sigEmptiedSelection;
+    using emptied_selection_signal_t = core::com::signal<void ()>;
+    emptied_selection_signal_t::sptr m_sig_emptied_selection;
 
     /// Contains the slot to show (or hide) reconstructions.
-    typedef core::com::slot<void (bool)> show_reconstructions_slot_t;
-    show_reconstructions_slot_t::sptr m_slotShowReconstructions;
+    using show_reconstructions_slot_t = core::com::slot<void (bool)>;
+    show_reconstructions_slot_t::sptr m_slot_show_reconstructions;
 
-    static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
-    data::ptr<data::model_series, data::Access::inout> m_modelSeries {this, "modelSeries", true};
+    static constexpr std::string_view MODEL_SERIES = "modelSeries";
+    data::ptr<data::model_series, data::access::inout> m_model_series {this, "modelSeries", true};
 };
 
 } // namespace sight::module::ui::qt::model

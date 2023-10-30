@@ -47,17 +47,17 @@ public:
     UI_QT_API ~toolbar() override = default;
 
     /**
-     * @brief Instantiate layout with parent toolBar.
+     * @brief Instantiate layout with parent toolbar.
      * @pre layout must be initialized before.
-     * @pre parent toolBar must be instanced.
+     * @pre parent toolbar must be instanced.
      */
-    UI_QT_API void createToolBar(ui::container::widget::sptr _parent) override;
+    UI_QT_API void create_tool_bar(ui::container::widget::sptr _parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroyToolBar() override;
+    UI_QT_API void destroy_tool_bar() override;
 
 protected:
 

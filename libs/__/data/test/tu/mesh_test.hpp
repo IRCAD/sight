@@ -36,11 +36,11 @@ private:
     CPPUNIT_TEST_SUITE(mesh_test);
     CPPUNIT_TEST(insertion);
     CPPUNIT_TEST(copy);
-    CPPUNIT_TEST(allocationTest);
-    CPPUNIT_TEST(iteratorTest);
-    CPPUNIT_TEST(iteratorCopyTest);
-    CPPUNIT_TEST(benchmarkIterator);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(allocation_test);
+    CPPUNIT_TEST(iterator_test);
+    CPPUNIT_TEST(iterator_copy_test);
+    CPPUNIT_TEST(benchmark_iterator);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
     static constexpr float EPSILON = std::numeric_limits<float>::epsilon();
@@ -53,11 +53,11 @@ public:
 
     static void insertion();
     static void copy();
-    static void allocationTest();
-    static void iteratorTest();
-    static void iteratorCopyTest();
-    static void benchmarkIterator();
-    static void equalityTest();
+    static void allocation_test();
+    static void iterator_test();
+    static void iterator_copy_test();
+    static void benchmark_iterator();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

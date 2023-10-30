@@ -39,7 +39,7 @@ public:
 
     SIGHT_DECLARE_CLASS(menubar, ui::object);
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
     UI_API const static registry_key_t REGISTRY_KEY;
 
@@ -52,7 +52,7 @@ public:
     /**
      * @brief Returns the builded menu bar.
      */
-    UI_API virtual ui::container::menubar::sptr getMenuBar();
+    UI_API virtual ui::container::menubar::sptr get_menu_bar();
 
     /**
      * @brief Configure the layout before creation.
@@ -60,25 +60,25 @@ public:
     UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
-     * @brief Instantiate layout with parent menuBar.
+     * @brief Instantiate layout with parent menubar.
      * @pre layout must be initialized before.
-     * @pre parent menuBar must be instanced.
+     * @pre parent menubar must be instanced.
      */
-    UI_API virtual void createMenuBar(ui::container::widget::sptr _parent) = 0;
+    UI_API virtual void create_menu_bar(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_API virtual void destroyMenuBar() = 0;
+    UI_API virtual void destroy_menu_bar() = 0;
 
 protected:
 
     /// menu_bar.
-    ui::container::menubar::sptr m_menuBar;
+    ui::container::menubar::sptr m_menu_bar;
 
     /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
-    std::string m_backgroundColor;
+    std::string m_background_color;
 };
 
 } // namespace sight::ui::builder

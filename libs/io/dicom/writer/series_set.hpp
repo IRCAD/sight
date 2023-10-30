@@ -72,21 +72,21 @@ public:
     IO_DICOM_API std::string extension() const override;
 
     /// Get Fiducials Export Mode
-    const io::dicom::writer::series::FiducialsExportMode& getFiducialsExportMode() const
+    const io::dicom::writer::series::fiducials_export_mode& get_fiducials_export_mode() const
     {
-        return m_fiducialsExportMode;
+        return m_fiducials_export_mode;
     }
 
     /// Set Fiducials Export Mode
-    void setFiducialsExportMode(const io::dicom::writer::series::FiducialsExportMode& _fiducials_export_mode)
+    void set_fiducials_export_mode(const io::dicom::writer::series::fiducials_export_mode& _fiducials_export_mode)
     {
-        m_fiducialsExportMode = _fiducials_export_mode;
+        m_fiducials_export_mode = _fiducials_export_mode;
     }
 
 protected:
 
     /// Fiducials Export Mode
-    io::dicom::writer::series::FiducialsExportMode m_fiducialsExportMode;
+    io::dicom::writer::series::fiducials_export_mode m_fiducials_export_mode;
 };
 
 } // namespace writer

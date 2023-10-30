@@ -55,16 +55,16 @@ namespace sight::io::bitmap::detail
         SIGHT_ERROR(e.what()); \
     }
 
-class NvJPEGReader final
+class nv_jpeg_reader final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    NvJPEGReader(const NvJPEGReader&)            = delete;
-    NvJPEGReader& operator=(const NvJPEGReader&) = delete;
+    nv_jpeg_reader(const nv_jpeg_reader&)            = delete;
+    nv_jpeg_reader& operator=(const nv_jpeg_reader&) = delete;
 
     /// Constructor
-    inline NvJPEGReader() noexcept
+    inline nv_jpeg_reader() noexcept
     {
         try
         {
@@ -86,18 +86,18 @@ public:
     }
 
     /// Destructor
-    inline ~NvJPEGReader() noexcept
+    inline ~nv_jpeg_reader() noexcept
     {
         free();
     }
 
     /// Reading
-    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
     {
         // Get input size
-        istream.seekg(0, std::ios::end);
-        const auto stream_size = istream.tellg();
-        istream.seekg(0, std::ios::beg);
+        _istream.seekg(0, std::ios::end);
+        const auto stream_size = _istream.tellg();
+        _istream.seekg(0, std::ios::beg);
 
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
@@ -109,7 +109,7 @@ public:
         }
 
         // Read input data..
-        istream.read(reinterpret_cast<char*>(m_input_buffer.data()), stream_size);
+        _istream.read(reinterpret_cast<char*>(m_input_buffer.data()), stream_size);
 
         // Decode JPEG metadata
         const auto& [num_components, subsampling, width, height] =
@@ -175,10 +175,10 @@ public:
         );
 
         // Allocate destination image
-        image.resize(
+        _image.resize(
             {width, height, 0},
             core::type::UINT8,
-            data::image::PixelFormat::RGB
+            data::image::pixel_format::rgb
         );
 
         // Synchronize CUDA streams
@@ -187,7 +187,7 @@ public:
         // Copy GPU memory so we can convert to planar there
         CHECK_CUDA(
             cudaMemcpy(
-                image.buffer(),
+                _image.buffer(),
                 m_gpu_buffer,
                 size_in_bytes,
                 cudaMemcpyDeviceToHost

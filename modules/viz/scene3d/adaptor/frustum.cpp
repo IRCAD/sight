@@ -55,20 +55,20 @@ frustum::~frustum() noexcept =
 
 void frustum::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    this->setTransformId(
+    this->set_transform_id(
         config.get<std::string>(
-            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
             this->get_id() + "_transform"
         )
     );
 
-    static const std::string s_NEAR_CONFIG  = s_CONFIG + "near";
-    static const std::string s_FAR_CONFIG   = s_CONFIG + "far";
-    static const std::string s_COLOR_CONFIG = s_CONFIG + "color";
+    static const std::string s_NEAR_CONFIG  = CONFIG + "near";
+    static const std::string s_FAR_CONFIG   = CONFIG + "far";
+    static const std::string s_COLOR_CONFIG = CONFIG + "color";
 
     m_near  = config.get<float>(s_NEAR_CONFIG, m_near);
     m_far   = config.get<float>(s_FAR_CONFIG, m_far);
@@ -82,27 +82,27 @@ void frustum::starting()
     this->initialize();
 
     // Create camera
-    m_ogreCamera = this->getSceneManager()->createCamera(Ogre::String(this->get_id() + std::string(s_CAMERA_INPUT)));
-    m_ogreCamera->setVisible(m_isVisible);
+    m_ogre_camera = this->get_scene_manager()->createCamera(Ogre::String(this->get_id() + std::string(CAMERA_INPUT)));
+    m_ogre_camera->setVisible(m_visible);
 
     // Clipping
     if(m_near != 0.F)
     {
-        m_ogreCamera->setNearClipDistance(m_near);
+        m_ogre_camera->setNearClipDistance(m_near);
     }
 
     if(m_far != 0.F)
     {
-        m_ogreCamera->setFarClipDistance(m_far);
+        m_ogre_camera->setFarClipDistance(m_far);
     }
 
     // Set data to camera
-    this->setOgreCamFromData();
+    this->set_ogre_cam_from_data();
 
     // Add camera to ogre scene
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
-    trans_node->attachObject(m_ogreCamera);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
+    trans_node->attachObject(m_ogre_camera);
 
     // Set position
     trans_node->setPosition(Ogre::Vector3(0, 0, 0));
@@ -110,32 +110,32 @@ void frustum::starting()
 
     // Create material for the frustum
     m_material = std::make_shared<data::material>();
-    m_material->diffuse()->setRGBA(m_color);
+    m_material->diffuse()->set_rgba(m_color);
 
     module::viz::scene3d::adaptor::material::sptr material_adaptor =
-        this->registerService<module::viz::scene3d::adaptor::material>(
+        this->register_service<module::viz::scene3d::adaptor::material>(
             "sight::module::viz::scene3d::adaptor::material"
         );
-    material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
+    material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
     material_adaptor->configure(
         this->get_id() + material_adaptor->get_id(),
         this->get_id() + material_adaptor->get_id(),
-        this->getRenderService(),
-        m_layerID,
+        this->render_service(),
+        m_layer_id,
         "ambient"
     );
     material_adaptor->start();
     material_adaptor->update();
 
-    m_frustum = this->getSceneManager()->createManualObject(this->get_id() + "_frustum");
-    sight::viz::scene3d::helper::manual_object::createFrustum(
+    m_frustum = this->get_scene_manager()->createManualObject(this->get_id() + "_frustum");
+    sight::viz::scene3d::helper::manual_object::create_frustum(
         m_frustum,
-        material_adaptor->getMaterialName(),
-        *m_ogreCamera
+        material_adaptor->get_material_name(),
+        *m_ogre_camera
     );
     trans_node->attachObject(m_frustum);
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -143,8 +143,8 @@ void frustum::starting()
 service::connections_t frustum::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
+    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -153,54 +153,54 @@ service::connections_t frustum::auto_connections() const
 
 void frustum::updating()
 {
-    this->setOgreCamFromData();
-    m_frustum->setVisible(m_isVisible);
-    this->requestRender();
+    this->set_ogre_cam_from_data();
+    m_frustum->setVisible(m_visible);
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
 void frustum::stopping()
 {
-    this->unregisterServices();
+    this->unregister_services();
 
     m_frustum->detachFromParent();
-    m_ogreCamera->detachFromParent();
-    this->getSceneManager()->destroyManualObject(m_frustum);
-    this->getSceneManager()->destroyCamera(m_ogreCamera);
+    m_ogre_camera->detachFromParent();
+    this->get_scene_manager()->destroyManualObject(m_frustum);
+    this->get_scene_manager()->destroyCamera(m_ogre_camera);
 
-    m_ogreCamera = nullptr;
-    m_material   = nullptr;
+    m_ogre_camera = nullptr;
+    m_material    = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void frustum::setOgreCamFromData()
+void frustum::set_ogre_cam_from_data()
 {
     const auto camera = m_camera.lock();
 
-    if(camera->getIsCalibrated())
+    if(camera->get_is_calibrated())
     {
-        const auto width  = static_cast<float>(camera->getWidth());
-        const auto height = static_cast<float>(camera->getHeight());
+        const auto width  = static_cast<float>(camera->get_width());
+        const auto height = static_cast<float>(camera->get_height());
 
         Ogre::Matrix4 m =
-            sight::viz::scene3d::helper::camera::computeProjectionMatrix(*camera, width, height, m_near, m_far);
+            sight::viz::scene3d::helper::camera::compute_projection_matrix(*camera, width, height, m_near, m_far);
 
-        m_ogreCamera->setCustomProjectionMatrix(true, m);
+        m_ogre_camera->setCustomProjectionMatrix(true, m);
     }
     else
     {
-        SIGHT_WARN("The camera '" + std::string(s_CAMERA_INPUT) + "' is not calibrated");
+        SIGHT_WARN("The camera '" + std::string(CAMERA_INPUT) + "' is not calibrated");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void frustum::setVisible(bool _is_visible)
+void frustum::set_visible(bool _is_visible)
 {
     m_frustum->setVisible(_is_visible);
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------

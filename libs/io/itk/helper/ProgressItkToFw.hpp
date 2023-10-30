@@ -32,47 +32,47 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-class ProgressorBase
+class progressor_base
 {
 public:
 
-    typedef SPTR(ProgressorBase) sptr;
+    using sptr = std::shared_ptr<progressor_base>;
 };
 
 //------------------------------------------------------------------------------
 
 template<typename OBSERVEE>
-class ProgressItkToFw : public ProgressorBase
+class progress_itk_to_fw : public progressor_base
 {
 public:
 
-    ProgressItkToFw(OBSERVEE observee, SPTR(core::tools::progress_adviser)observer, std::string msg);
+    progress_itk_to_fw(OBSERVEE observee, SPTR(core::tools::progress_adviser)observer, std::string msg);
 
-    virtual ~ProgressItkToFw();
+    virtual ~progress_itk_to_fw();
 
 protected:
 
     OBSERVEE m_observee;
     // observertag used by itk
-    std::uint64_t m_obsTag;
+    std::uint64_t m_obs_tag;
     bool m_initialized {false};
 };
 
 //------------------------------------------------------------------------------
 
-class Progressor
+class progressor
 {
 public:
 
-    typedef SPTR(Progressor) sptr;
+    using sptr = std::shared_ptr<progressor>;
 
     template<typename OBS>
-    Progressor(OBS _filter, SPTR(core::tools::progress_adviser)_observer, std::string _message) :
-        m_progressor(ProgressorBase::sptr(new ProgressItkToFw<OBS>(_filter, _observer, _message)))
+    progressor(OBS _filter, SPTR(core::tools::progress_adviser)_observer, std::string _message) :
+        m_progressor(progressor_base::sptr(new progress_itk_to_fw<OBS>(_filter, _observer, _message)))
     {
     }
 
-    ProgressorBase::sptr m_progressor;
+    progressor_base::sptr m_progressor;
 };
 
 } // namespace sight::io::itk

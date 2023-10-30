@@ -83,8 +83,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(db_merger, sight::ui::action);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
-    typedef core::com::slot<void (SPTR(core::jobs::base))> forward_job_slot_t;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
+    using forward_job_slot_t   = core::com::slot<void (std::shared_ptr<core::jobs::base>)>;
 
     MODULE_UI_API db_merger() noexcept;
 
@@ -116,16 +116,16 @@ protected:
 
 private:
 
-    void forwardJob(SPTR(core::jobs::base) _job);
+    void forward_job(SPTR(core::jobs::base) _job);
 
-    std::string m_ioSelectorSrvConfig;
+    std::string m_io_selector_srv_config;
 
-    SPTR(job_created_signal_t) m_sigJobCreated;
-    SPTR(forward_job_slot_t) m_slotForwardJob;
+    SPTR(job_created_signal_t) m_sig_job_created;
+    SPTR(forward_job_slot_t) m_slot_forward_job;
 
-    static constexpr std::string_view s_SERIES_SET = "seriesSet";
+    static constexpr std::string_view SERIES_SET = "seriesSet";
 
-    data::ptr<data::series_set, data::Access::inout> m_series_set {this, s_SERIES_SET};
+    data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};
 };
 
 } // namespace sight::module::ui::series

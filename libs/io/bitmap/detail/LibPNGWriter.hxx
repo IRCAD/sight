@@ -30,22 +30,22 @@
 namespace sight::io::bitmap::detail
 {
 
-class LibPNGWriter final
+class lib_png_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibPNGWriter(const LibPNGWriter&)            = delete;
-    LibPNGWriter& operator=(const LibPNGWriter&) = delete;
+    lib_png_writer(const lib_png_writer&)            = delete;
+    lib_png_writer& operator=(const lib_png_writer&) = delete;
 
     /// Constructor
-    inline LibPNGWriter() noexcept
+    inline lib_png_writer() noexcept
     {
         m_valid = true;
     }
 
     /// Destructor
-    inline ~LibPNGWriter() noexcept = default;
+    inline ~lib_png_writer() noexcept = default;
 
     /// Writing
     template<
@@ -61,11 +61,11 @@ public:
     inline std::size_t write(
         const data::image& _image,
         O& _output,
-        Writer::Mode _mode,
-        Flag = Flag::NONE
+        writer::mode _mode,
+        flag = flag::none
 )
     {
-        const auto& type = _image.getType();
+        const auto& type = _image.type();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << type,
             type != core::type::UINT8
@@ -76,21 +76,21 @@ public:
 
         // png_create_write_struct() must be called for each png_write_png() calls
         // Create an RAII to be sure everything is cleaned at exit
-        struct Keeper final
+        struct keeper final
         {
-            Keeper()
+            keeper()
             {
                 m_png = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
                 SIGHT_THROW_IF("png_create_write_struct() failed.", m_png == nullptr);
 
                 // Set error/warning callback because C style setjmp/longjmp error management is dangerous in C++
-                png_set_error_fn(m_png, nullptr, errorCallback, warningCallback);
+                png_set_error_fn(m_png, nullptr, error_callback, warning_callback);
 
                 m_png_info = png_create_info_struct(m_png);
                 SIGHT_THROW_IF("png_create_info_struct() failed.", m_png_info == nullptr);
             }
 
-            ~Keeper()
+            ~keeper()
             {
                 // Cleanup
                 png_destroy_write_struct(&m_png, &m_png_info);
@@ -102,21 +102,21 @@ public:
             png_infop m_png_info {nullptr};
         } keeper;
 
-        const auto& pixel_format = _image.getPixelFormat();
+        const auto& pixel_format = _image.pixel_format();
         const int png_format     =
             [&]
             {
                 switch(pixel_format)
                 {
-                    case data::image::PixelFormat::RGB:
-                    case data::image::PixelFormat::BGR:
+                    case data::image::pixel_format::rgb:
+                    case data::image::pixel_format::bgr:
                         return PNG_COLOR_TYPE_RGB;
 
-                    case data::image::PixelFormat::RGBA:
-                    case data::image::PixelFormat::BGRA:
+                    case data::image::pixel_format::rgba:
+                    case data::image::pixel_format::bgra:
                         return PNG_COLOR_TYPE_RGB_ALPHA;
 
-                    case data::image::PixelFormat::GRAY_SCALE:
+                    case data::image::pixel_format::gray_scale:
                         return PNG_COLOR_TYPE_GRAY;
 
                     default:
@@ -145,7 +145,7 @@ public:
 
         switch(_mode)
         {
-            case Writer::Mode::BEST:
+            case writer::mode::best:
             {
                 // Best compression
                 png_set_compression_level(keeper.m_png, 9);
@@ -176,7 +176,7 @@ public:
         for(std::size_t row = 0 ; row < image_height ; ++row)
         {
             // scanlines should only be read, so the const_cast should be ok..
-            m_rows[row] = reinterpret_cast<std::uint8_t*>(const_cast<void*>(_image.getPixel(row * image_width)));
+            m_rows[row] = reinterpret_cast<std::uint8_t*>(const_cast<void*>(_image.get_pixel(row * image_width)));
         }
 
         // Use the row pointers vector
@@ -184,7 +184,7 @@ public:
 
         int transform = PNG_TRANSFORM_IDENTITY;
 
-        if(pixel_format == data::image::PixelFormat::BGR || pixel_format == data::image::PixelFormat::BGRA)
+        if(pixel_format == data::image::pixel_format::bgr || pixel_format == data::image::pixel_format::bgra)
         {
             transform |= PNG_TRANSFORM_BGR;
         }
@@ -197,7 +197,7 @@ public:
 
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            png_set_write_fn(keeper.m_png, &_output, writeCallback, 0);
+            png_set_write_fn(keeper.m_png, &_output, write_callback, 0);
             png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
         }
         else if constexpr(std::is_same_v<std::uint8_t*, O>
@@ -246,7 +246,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void writeCallback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
+    inline static void write_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
         auto* ostream = reinterpret_cast<std::ostream*>(png_get_io_ptr(_png_ptr));
         ostream->write(reinterpret_cast<char*>(_data), std::streamsize(_length));
@@ -254,14 +254,14 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(png_structp, png_const_charp _msg)
+    inline static void warning_callback(png_structp, png_const_charp _msg)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(png_structp, png_const_charp _msg)
+    inline static void error_callback(png_structp, png_const_charp _msg)
     {
         SIGHT_THROW(_msg);
     }

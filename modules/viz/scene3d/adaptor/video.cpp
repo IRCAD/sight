@@ -50,17 +50,17 @@ static const core::com::slots::key_t UPDATE_PL_SLOT     = "updatePL";
 static const core::com::slots::key_t SET_FILTERING_SLOT = "setFiltering";
 static const core::com::slots::key_t SCALE_SLOT         = "scale";
 
-static const std::string s_VIDEO_MATERIAL_NAME             = "Video";
-static const std::string s_VIDEO_WITH_TF_MATERIAL_NAME     = "VideoWithTF";
-static const std::string s_VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
+static const std::string VIDEO_MATERIAL_NAME             = "Video";
+static const std::string VIDEO_WITH_TF_MATERIAL_NAME     = "VideoWithTF";
+static const std::string VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 //------------------------------------------------------------------------------
 
 video::video() noexcept
 {
-    new_slot(UPDATE_TF_SLOT, &video::updateTF, this);
-    new_slot(UPDATE_PL_SLOT, &video::updatePL, this);
-    new_slot(SET_FILTERING_SLOT, &video::setFiltering, this);
+    new_slot(UPDATE_TF_SLOT, &video::update_tf, this);
+    new_slot(UPDATE_PL_SLOT, &video::update_pl, this);
+    new_slot(SET_FILTERING_SLOT, &video::set_filtering, this);
     new_slot(SCALE_SLOT, &video::scale, this);
 }
 
@@ -68,25 +68,25 @@ video::video() noexcept
 
 void video::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    const bool visible = config.get<bool>(config::s_VISIBLE, m_isVisible);
-    this->updateVisibility(visible);
+    const bool visible = config.get<bool>(config::VISIBLE, m_visible);
+    this->update_visibility(visible);
 
-    m_materialTemplateName = config.get<std::string>(config::s_MATERIAL_TEMPLATE, m_materialTemplateName);
-    m_textureName          = config.get<std::string>(config::s_TEXTURE_NAME, m_textureName);
-    m_filtering            = config.get<bool>(config::s_FILTERING, m_filtering);
-    m_scaling              = config.get<bool>(config::s_SCALING, m_scaling);
-    m_radius               = config.get<std::string>(config::s_RADIUS, m_radius);
-    m_displayLabel         = config.get<std::string>(config::s_DISPLAY_LABEL, m_displayLabel);
-    m_labelColor           = config.get<std::string>(config::s_LABEL_COLOR, m_labelColor);
-    m_color                = config.get<std::string>(config::s_COLOR, m_color);
-    m_fixedSize            = config.get<std::string>(config::s_FIXED_SIZE, m_fixedSize);
-    m_queryFlags           = config.get<std::string>(config::s_QUERY, m_queryFlags);
-    m_fontSource           = config.get<std::string>(config::s_FONT_SOURCE, m_fontSource);
-    m_fontSize             = config.get<std::string>(config::s_FONT_SIZE, m_fontSize);
+    m_material_template_name = config.get<std::string>(config::MATERIAL_TEMPLATE, m_material_template_name);
+    m_texture_name           = config.get<std::string>(config::TEXTURE_NAME, m_texture_name);
+    m_filtering              = config.get<bool>(config::FILTERING, m_filtering);
+    m_scaling                = config.get<bool>(config::SCALING, m_scaling);
+    m_radius                 = config.get<std::string>(config::RADIUS, m_radius);
+    m_display_label          = config.get<std::string>(config::DISPLAY_LABEL, m_display_label);
+    m_label_color            = config.get<std::string>(config::LABEL_COLOR, m_label_color);
+    m_color                  = config.get<std::string>(config::COLOR, m_color);
+    m_fixed_size             = config.get<std::string>(config::FIXED_SIZE, m_fixed_size);
+    m_query_flags            = config.get<std::string>(config::QUERY, m_query_flags);
+    m_font_source            = config.get<std::string>(config::FONT_SOURCE, m_font_source);
+    m_font_size              = config.get<std::string>(config::FONT_SIZE, m_font_size);
 }
 
 //------------------------------------------------------------------------------
@@ -99,77 +99,77 @@ void video::starting()
 
     if(pl_w)
     {
-        m_pointList = std::make_shared<data::point_list>();
+        m_point_list = std::make_shared<data::point_list>();
 
-        updatePL();
+        update_pl();
 
-        m_pointListAdaptor = this->registerService<sight::viz::scene3d::adaptor>(
+        m_point_list_adaptor = this->register_service<sight::viz::scene3d::adaptor>(
             "sight::module::viz::scene3d::adaptor::point_list"
         );
 
-        m_pointListAdaptor->set_input(m_pointList, s_PL_INPUT, true);
+        m_point_list_adaptor->set_input(m_point_list, PL_INPUT, true);
 
         service::config_t config;
-        config.add(s_CONFIG + "layer", this->getLayerID());
-        config.add(s_CONFIG + "autoresetcamera", "false");
-        if(!m_materialTemplateName.empty())
+        config.add(CONFIG + "layer", this->layer_id());
+        config.add(CONFIG + "autoresetcamera", "false");
+        if(!m_material_template_name.empty())
         {
-            config.add(config::s_MATERIAL_TEMPLATE, m_materialTemplateName);
+            config.add(config::MATERIAL_TEMPLATE, m_material_template_name);
         }
 
-        if(!m_textureName.empty())
+        if(!m_texture_name.empty())
         {
-            config.add(config::s_TEXTURE_NAME, m_textureName);
+            config.add(config::TEXTURE_NAME, m_texture_name);
         }
 
         if(!m_radius.empty())
         {
-            config.add(config::s_RADIUS, m_radius);
+            config.add(config::RADIUS, m_radius);
         }
 
-        if(!m_displayLabel.empty())
+        if(!m_display_label.empty())
         {
-            config.add(config::s_DISPLAY_LABEL, m_displayLabel);
+            config.add(config::DISPLAY_LABEL, m_display_label);
         }
 
-        if(!m_labelColor.empty())
+        if(!m_label_color.empty())
         {
-            config.add(config::s_LABEL_COLOR, m_labelColor);
+            config.add(config::LABEL_COLOR, m_label_color);
         }
 
         if(!m_color.empty())
         {
-            config.add(config::s_COLOR, m_color);
+            config.add(config::COLOR, m_color);
         }
 
-        if(!m_fixedSize.empty())
+        if(!m_fixed_size.empty())
         {
-            config.add(config::s_FIXED_SIZE, m_fixedSize);
+            config.add(config::FIXED_SIZE, m_fixed_size);
         }
 
-        if(!m_queryFlags.empty())
+        if(!m_query_flags.empty())
         {
-            config.add(config::s_QUERY, m_queryFlags);
+            config.add(config::QUERY, m_query_flags);
         }
 
-        if(!m_fontSource.empty())
+        if(!m_font_source.empty())
         {
-            config.add(config::s_FONT_SOURCE, m_fontSource);
+            config.add(config::FONT_SOURCE, m_font_source);
         }
 
-        if(!m_fontSize.empty())
+        if(!m_font_size.empty())
         {
-            config.add(config::s_FONT_SIZE, m_fontSize);
+            config.add(config::FONT_SIZE, m_font_size);
         }
 
-        m_pointListAdaptor->set_config(config);
+        m_point_list_adaptor->set_config(config);
 
-        m_pointListAdaptor->setRenderService(this->getRenderService());
+        m_point_list_adaptor->set_render_service(this->render_service());
 
-        m_pointListAdaptor->configure();
-        m_pointListAdaptor->start();
+        m_point_list_adaptor->configure();
+        m_point_list_adaptor->start();
 
-        SIGHT_ASSERT("point_list is not started", m_pointListAdaptor->started());
+        SIGHT_ASSERT("point_list is not started", m_point_list_adaptor->started());
     }
 
     {
@@ -183,16 +183,16 @@ void video::starting()
 service::connections_t video::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
 
-    connections.push(s_TF_INPUT, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT);
-    connections.push(s_TF_INPUT, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT);
-    connections.push(s_TF_INPUT, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(TF_INPUT, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(TF_INPUT, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(TF_INPUT, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT);
 
-    connections.push(s_PL_INPUT, data::point_list::MODIFIED_SIG, UPDATE_PL_SLOT);
-    connections.push(s_PL_INPUT, data::point_list::POINT_ADDED_SIG, UPDATE_PL_SLOT);
-    connections.push(s_PL_INPUT, data::point_list::POINT_REMOVED_SIG, UPDATE_PL_SLOT);
+    connections.push(PL_INPUT, data::point_list::MODIFIED_SIG, UPDATE_PL_SLOT);
+    connections.push(PL_INPUT, data::point_list::POINT_ADDED_SIG, UPDATE_PL_SLOT);
+    connections.push(PL_INPUT, data::point_list::POINT_REMOVED_SIG, UPDATE_PL_SLOT);
 
     return connections;
 }
@@ -201,12 +201,12 @@ service::connections_t video::auto_connections() const
 
 void video::updating()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
     const auto&& type_and_size = [this]
                                  {
                                      const auto image = m_image.lock();
-                                     return std::make_pair(image->getType(), image->size());
+                                     return std::make_pair(image->type(), image->size());
                                  }();
     const auto type = type_and_size.first;
     const auto size = type_and_size.second;
@@ -215,7 +215,7 @@ void video::updating()
         return;
     }
 
-    if(!m_isTextureInit || type != m_previousType)
+    if(!m_is_texture_init || type != m_previous_type)
     {
         auto& mtl_mgr = Ogre::MaterialManager::getSingleton();
         const auto tf = m_tf.lock();
@@ -225,16 +225,16 @@ void video::updating()
         {
             if(type == core::type::FLOAT || type == core::type::DOUBLE)
             {
-                default_mat = mtl_mgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                default_mat = mtl_mgr.getByName(VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
             else
             {
-                default_mat = mtl_mgr.getByName(s_VIDEO_WITH_TF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                default_mat = mtl_mgr.getByName(VIDEO_WITH_TF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
         }
         else
         {
-            default_mat = mtl_mgr.getByName(s_VIDEO_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+            default_mat = mtl_mgr.getByName(VIDEO_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
         }
 
         // Duplicate the template material to create our own material
@@ -248,36 +248,36 @@ void video::updating()
         default_mat->copyDetailsTo(m_material);
 
         // Set the texture to the main material pass
-        this->updateTextureFiltering();
+        this->update_texture_filtering();
 
         if(tf)
         {
             // TF texture initialization
-            m_gpuTF = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
-            this->updateTF();
+            m_gpu_tf = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
+            this->update_tf();
         }
 
-        m_previousType = type;
+        m_previous_type = type;
     }
 
     m_texture->update();
 
-    const auto layer                     = this->getLayer();
-    const Ogre::Viewport* const viewport = layer->getViewport();
+    const auto layer                     = this->layer();
+    const Ogre::Viewport* const viewport = layer->get_viewport();
     SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
 
-    if(!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight
+    if(!m_is_texture_init || size[0] != m_previous_width || size[1] != m_previous_height
        // If scaling is disabled and one of the viewport coordinate is modified
        // Then we need to trigger an update of the viewport displaying the texture
        || (!m_scaling
-           && (viewport->getActualWidth() != m_previousViewportWidth
-               || viewport->getActualHeight() != m_previousViewportHeight))
-       || m_forcePlaneUpdate)
+           && (viewport->getActualWidth() != m_previous_viewport_width
+               || viewport->getActualHeight() != m_previous_viewport_height))
+       || m_force_plane_update)
     {
         Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
         m_texture->bind(pass, "image");
 
-        this->clearEntity();
+        this->clear_entity();
 
         // /////////////////////////////////////////////////////////////////////
         // Create the plane entity
@@ -299,7 +299,7 @@ void video::updating()
             static_cast<Ogre::Real>(size[1])
         );
 
-        Ogre::SceneManager* scene_manager = this->getSceneManager();
+        Ogre::SceneManager* scene_manager = this->get_scene_manager();
         SIGHT_ASSERT("The current scene manager cannot be retrieved.", scene_manager);
 
         // Create Ogre Entity
@@ -307,14 +307,14 @@ void video::updating()
         m_entity->setMaterial(m_material);
 
         // Add the entity to the scene
-        m_sceneNode = scene_manager->getRootSceneNode()->createChildSceneNode(node_name);
-        m_sceneNode->attachObject(m_entity);
+        m_scene_node = scene_manager->getRootSceneNode()->createChildSceneNode(node_name);
+        m_scene_node->attachObject(m_entity);
 
         // Slightly offset the plane in Z to allow some space for other entities, thus they can be rendered on top
-        m_sceneNode->setPosition(0, 0, -1);
-        m_sceneNode->setVisible(m_isVisible);
+        m_scene_node->setPosition(0, 0, -1);
+        m_scene_node->setVisible(m_visible);
 
-        Ogre::Camera* cam = layer->getDefaultCamera();
+        Ogre::Camera* cam = layer->get_default_camera();
         SIGHT_ASSERT("Default camera not found", cam);
         cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
@@ -329,83 +329,83 @@ void video::updating()
         }
 
         // Make sure no further scaling request is required
-        m_forcePlaneUpdate = false;
+        m_force_plane_update = false;
 
-        m_isTextureInit = true;
+        m_is_texture_init = true;
     }
 
-    m_previousWidth  = size[0];
-    m_previousHeight = size[1];
+    m_previous_width  = size[0];
+    m_previous_height = size[1];
 
-    m_previousViewportWidth  = viewport->getActualWidth();
-    m_previousViewportHeight = viewport->getActualHeight();
+    m_previous_viewport_width  = viewport->getActualWidth();
+    m_previous_viewport_height = viewport->getActualHeight();
 
-    this->requestRender();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
 void video::stopping()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    if(m_pointListAdaptor)
+    if(m_point_list_adaptor)
     {
-        this->unregisterService(m_pointListAdaptor);
-        m_pointList.reset();
+        this->unregister_service(m_point_list_adaptor);
+        m_point_list.reset();
     }
 
-    this->clearEntity();
+    this->clear_entity();
 
     m_texture.reset();
     m_material.reset();
-    m_gpuTF.reset();
+    m_gpu_tf.reset();
 
-    m_isTextureInit = false;
+    m_is_texture_init = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void video::setVisible(bool _visible)
+void video::set_visible(bool _visible)
 {
     if(m_entity != nullptr)
     {
         m_entity->setVisible(_visible);
 
-        this->requestRender();
+        this->request_render();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void video::updateTF()
+void video::update_tf()
 {
-    if(m_gpuTF)
+    if(m_gpu_tf)
     {
-        m_gpuTF->update();
+        m_gpu_tf->update();
 
         Ogre::Pass* ogre_pass = m_material->getTechnique(0)->getPass(0);
-        m_gpuTF->bind(ogre_pass, "tf", ogre_pass->getFragmentProgramParameters());
+        m_gpu_tf->bind(ogre_pass, "tf", ogre_pass->getFragmentProgramParameters());
 
-        this->requestRender();
+        this->request_render();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void video::updatePL()
+void video::update_pl()
 {
     const auto image = m_image.lock();
     const auto pl    = m_pl.lock();
 
-    const data::point_list::PointListContainer& in_points = pl->getPoints();
+    const data::point_list::container_t& in_points = pl->get_points();
 
-    data::point_list::PointListContainer& out_points = m_pointList->getPoints();
+    data::point_list::container_t& out_points = m_point_list->get_points();
     out_points.clear();
 
     for(const auto& in_point : in_points)
     {
-        const data::point::point_coord_array_t& point = in_point->getCoord();
+        const data::point::point_coord_array_t& point = in_point->get_coord();
         out_points.push_back(
             std::make_shared<data::point>(
                 point[0] - static_cast<double>(image->size()[0]) * 0.5,
@@ -416,7 +416,7 @@ void video::updatePL()
     }
 
     // Send the signal:
-    auto modified_sig = m_pointList->signal<data::point_list::modified_signal_t>(
+    auto modified_sig = m_point_list->signal<data::point_list::modified_signal_t>(
         data::point_list::MODIFIED_SIG
     );
     modified_sig->async_emit();
@@ -424,20 +424,20 @@ void video::updatePL()
 
 //------------------------------------------------------------------------------
 
-void video::clearEntity()
+void video::clear_entity()
 {
     if(m_entity != nullptr)
     {
         m_entity->detachFromParent();
-        this->getSceneManager()->destroyEntity(m_entity);
+        this->get_scene_manager()->destroyEntity(m_entity);
         m_entity = nullptr;
     }
 
-    if(m_sceneNode != nullptr)
+    if(m_scene_node != nullptr)
     {
-        m_sceneNode->removeAndDestroyAllChildren();
-        this->getSceneManager()->destroySceneNode(m_sceneNode);
-        m_sceneNode = nullptr;
+        m_scene_node->removeAndDestroyAllChildren();
+        this->get_scene_manager()->destroySceneNode(m_scene_node);
+        m_scene_node = nullptr;
     }
 
     if(m_mesh)
@@ -450,22 +450,22 @@ void video::clearEntity()
 
 //------------------------------------------------------------------------------
 
-void video::setFiltering(bool _filtering)
+void video::set_filtering(bool _filtering)
 {
     m_filtering = _filtering;
 
     // Only allow updating when the texture has been initialized
     // Otherwise, we might end up in cases where the slot is called before the
     // initialization, thus crashing the app
-    if(m_isTextureInit)
+    if(m_is_texture_init)
     {
-        this->updateTextureFiltering();
+        this->update_texture_filtering();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void video::updateTextureFiltering()
+void video::update_texture_filtering()
 {
     Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
     SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
@@ -480,13 +480,13 @@ void video::updateTextureFiltering()
 
 void video::scale(bool _value)
 {
-    m_scaling          = _value;
-    m_forcePlaneUpdate = true;
+    m_scaling            = _value;
+    m_force_plane_update = true;
 
     // Only allow updating when the texture has been initialized
     // Otherwise, we might end up in cases where the slot is called before the
     // initialization, thus crashing the app
-    if(m_isTextureInit)
+    if(m_is_texture_init)
     {
         this->updating();
     }

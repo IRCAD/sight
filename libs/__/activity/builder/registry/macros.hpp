@@ -31,7 +31,7 @@ namespace sight::activity::builder::registry
 {
 
 #define SIGHT_REGISTER_ACTIVITY_BUILDER(BuilderClassname, BuilderFunctorKey) \
-    static activity::builder::base::Registry<BuilderClassname> \
+    static sight::activity::builder::base::registry<BuilderClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BuilderFunctorKey);
 
 } // namespace sight::activity::builder::registry

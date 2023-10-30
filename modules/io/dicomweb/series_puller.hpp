@@ -77,10 +77,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_puller, sight::service::controller);
 
-    typedef data::series_set::container_type dicom_series_container_t;
-    typedef std::vector<std::string> InstanceUIDContainerType;
-    typedef std::map<std::string, unsigned int> instance_count_map_t;
-    typedef std::map<std::string, WPTR(data::dicom_series)> dicom_series_map_t;
+    using dicom_series_container_t = data::series_set::container_t;
+    using instance_uid_container_t = std::vector<std::string>;
+    using instance_count_map_t     = std::map<std::string, unsigned int>;
+    using dicom_series_map_t       = std::map<std::string, std::weak_ptr<data::dicom_series> >;
 
     /**
      * @brief Constructor
@@ -109,67 +109,67 @@ protected:
 private:
 
     /// Pull the Series from the Pacs.
-    void pullSeries();
+    void pull_series();
 
     /**
      * @brief Read local series.
      * @param[in] selectedSeries Series to read
      */
-    void readLocalSeries(dicom_series_container_t _selected_series);
+    void read_local_series(dicom_series_container_t _selected_series);
 
     /**
      * @brief Display an error message.
      * @param[in] message Error message to display
      */
-    static void displayErrorMessage(const std::string& _message);
+    static void display_error_message(const std::string& _message);
 
     /// Http Qt Client
-    sight::io::http::ClientQt m_clientQt;
+    sight::io::http::client_qt m_client_qt;
 
     /// Reader
-    sight::io::service::reader::sptr m_dicomReader;
+    sight::io::service::reader::sptr m_dicom_reader;
 
     /// Reader config
-    std::string m_dicomReaderSrvConfig;
+    std::string m_dicom_reader_srv_config;
 
     /// DicomWeb Reader
-    std::string m_dicomReaderType;
+    std::string m_dicom_reader_type;
 
     /// Temporary series_set
     data::series_set::sptr m_tmp_series_set;
 
     /// Local Series
-    InstanceUIDContainerType m_localSeries;
+    instance_uid_container_t m_local_series;
 
     /// Is pulling is set to true when we are pulling series
-    bool m_isPulling {false};
+    bool m_is_pulling {false};
 
     /// Index of the series being downloaded
-    unsigned int m_seriesIndex {0};
+    unsigned int m_series_index {0};
 
     /// Total number of instances that must be downloaded
-    std::size_t m_instanceCount {};
+    std::size_t m_instance_count {};
 
     /// Map of Dicom series being pulled
-    dicom_series_map_t m_pullingDicomSeriesMap;
+    dicom_series_map_t m_pulling_dicom_series_map;
 
     /// Server hostname preference key
-    std::string m_serverHostnameKey;
+    std::string m_server_hostname_key;
 
     /// Server port preference key
-    std::string m_serverPortKey;
+    std::string m_server_port_key;
 
     /// Server hostname
-    std::string m_serverHostname {"localhost"};
+    std::string m_server_hostname {"localhost"};
 
     /// Server port
-    int m_serverPort {4242};
+    int m_server_port {4242};
 
     /// DICOM Folder path
     std::filesystem::path m_path;
 
-    sight::data::ptr<sight::data::vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
-    sight::data::ptr<sight::data::series_set, sight::data::Access::inout> m_series_set {this, "seriesSet"};
+    sight::data::ptr<sight::data::vector, sight::data::access::in> m_selected_series {this, "selectedSeries"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "seriesSet"};
 };
 
 } // namespace sight::module::io::dicomweb

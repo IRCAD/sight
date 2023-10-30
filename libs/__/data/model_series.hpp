@@ -62,27 +62,27 @@ public:
     DATA_API ~model_series() noexcept override = default;
 
     /// Gets the reconstruction container use to store mesh, material and image mask.
-    const reconstruction_vector_t& getReconstructionDB() const;
+    const reconstruction_vector_t& get_reconstruction_db() const;
 
     /// Sets the reconstruction container use to store mesh, material and image mask.
-    void setReconstructionDB(const reconstruction_vector_t& _val);
+    void set_reconstruction_db(const reconstruction_vector_t& _val);
 
     /// Gets the DICOM reference use to generate valid DICOM Segmentation Surface.
-    dicom_series::csptr getDicomReference() const;
+    dicom_series::csptr get_dicom_reference() const;
 
     /// Sets the DICOM reference use to generate valid DICOM Segmentation Surface.
-    void setDicomReference(const dicom_series::csptr& _reference);
+    void set_dicom_reference(const dicom_series::csptr& _reference);
 
     /**
      * @name Signals
      * @{
      */
     /// Defines the type of signal sent when a reconstruction is added.
-    typedef core::com::signal<void (reconstruction_vector_t)> reconstructions_added_signal_t;
+    using reconstructions_added_signal_t = core::com::signal<void (reconstruction_vector_t)>;
     DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_ADDED_SIG;
 
     /// Defines the type of signal sent when a reconstruction is removed.
-    typedef core::com::signal<void (reconstruction_vector_t)> reconstructions_removed_signal_t;
+    using reconstructions_removed_signal_t = core::com::signal<void (reconstruction_vector_t)>;
     DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_REMOVED_SIG;
 /**
  * @}
@@ -108,56 +108,55 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-    DATA_API fiducials_series::csptr getFiducials() const;
-    DATA_API fiducials_series::sptr getFiducials();
-    DATA_API bool hasFiducials() const;
+    DATA_API fiducials_series::csptr get_fiducials() const;
+    DATA_API fiducials_series::sptr get_fiducials();
 
 protected:
 
     /// Stores models.
-    reconstruction_vector_t m_reconstructionDB;
+    reconstruction_vector_t m_reconstruction_db;
 
     /// Stores the DICOM reference used to generate a valid DICOM Segmentation Surface.
-    dicom_series::sptr m_dicomReference;
+    dicom_series::sptr m_dicom_reference;
 
 private:
 
     /// Contains the associated Spatial Fiducials file
-    fiducials_series::sptr m_fiducialsSeries {std::make_shared<data::fiducials_series>()};
+    fiducials_series::sptr m_fiducials_series {std::make_shared<data::fiducials_series>()};
 
     /// Stores the signal emitted when reconstructions are added.
-    reconstructions_added_signal_t::sptr m_sigReconstructionsAdded;
+    reconstructions_added_signal_t::sptr m_sig_reconstructions_added;
 
     /// Stores the signal emitted when reconstructions are removed.
-    reconstructions_removed_signal_t ::sptr m_sigReconstructionsRemoved;
+    reconstructions_removed_signal_t ::sptr m_sig_reconstructions_removed;
 };
 
 //-----------------------------------------------------------------------------
 
-inline const model_series::reconstruction_vector_t& model_series::getReconstructionDB() const
+inline const model_series::reconstruction_vector_t& model_series::get_reconstruction_db() const
 {
-    return m_reconstructionDB;
+    return m_reconstruction_db;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void model_series::setReconstructionDB(const model_series::reconstruction_vector_t& _val)
+inline void model_series::set_reconstruction_db(const model_series::reconstruction_vector_t& _val)
 {
-    m_reconstructionDB = _val;
+    m_reconstruction_db = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline dicom_series::csptr model_series::getDicomReference() const
+inline dicom_series::csptr model_series::get_dicom_reference() const
 {
-    return m_dicomReference;
+    return m_dicom_reference;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void model_series::setDicomReference(const dicom_series::csptr& _reference)
+inline void model_series::set_dicom_reference(const dicom_series::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast<dicom_series>(_reference);
+    m_dicom_reference = std::const_pointer_cast<dicom_series>(_reference);
 }
 
 //-----------------------------------------------------------------------------

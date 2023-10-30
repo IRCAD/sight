@@ -132,7 +132,7 @@ public:
     /// Destructor. Do nothing.
     MODULE_UI_QT_API ~sequencer() noexcept override = default;
 
-    struct MODULE_UI_QT_CLASS_API Slots final
+    struct MODULE_UI_QT_CLASS_API slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
@@ -144,7 +144,7 @@ public:
         inline static const key_t SEND_INFO     = "sendInfo";
     };
 
-    struct MODULE_UI_QT_CLASS_API Signals final
+    struct MODULE_UI_QT_CLASS_API signals final
     {
         using key_t = sight::core::com::signals::key_t;
 
@@ -164,10 +164,10 @@ public:
     };
 
     /// Slot: Check if the next activities can be enabled
-    MODULE_UI_QT_API void checkNext();
+    MODULE_UI_QT_API void check_next();
 
     /// Slot: Validate the next activities without enabling it. Emits nextValidated(true/false), next(In)Valid signals
-    MODULE_UI_QT_API void validateNext();
+    MODULE_UI_QT_API void validate_next();
 
     /// Slot: Create the next activity, emit 'dataRequired' signal if the activity require additional data
     MODULE_UI_QT_API void next();
@@ -176,12 +176,12 @@ public:
     MODULE_UI_QT_API void previous();
 
     /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
-    MODULE_UI_QT_API void sendInfo() const;
+    MODULE_UI_QT_API void send_info() const;
 
 public Q_SLOTS:
 
     /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
-    MODULE_UI_QT_API void goTo(int _index);
+    MODULE_UI_QT_API void go_to(int _index);
 
 protected:
 
@@ -209,18 +209,18 @@ protected:
 private:
 
     /// Invoke 'enableActivity' method in Qml file
-    void enableActivity(int _index);
+    void enable_activity(int _index);
 
     /// Invokes 'disableActivity' method in Qml file
-    void disableActivity(int _index);
+    void disable_activity(int _index);
 
     /// List of the activities
-    std::vector<std::string> m_activityNames;
+    std::vector<std::string> m_activity_names;
 
     QPointer<QQuickWidget> m_widget;
 
     /// Defines if the activities should be cleared when going backward
-    bool m_clearActivities {false};
+    bool m_clear_activities {false};
 
     /// Colors used to customize sequencer
     std::string m_theme;
@@ -230,43 +230,43 @@ private:
     std::string m_background;
     std::string m_primary;
     std::string m_elevation;
-    std::string m_buttonWidth {"200"};
-    double m_fontSize {12.0};
+    std::string m_button_width {"200"};
+    double m_font_size {12.0};
 
-    const Signals::activity_signal_t::sptr M_ACTIVITY_CREATED {
-        new_signal<Signals::activity_signal_t>(Signals::ACTIVITY_CREATED)
+    const signals::activity_signal_t::sptr m_activity_created {
+        new_signal<signals::activity_signal_t>(signals::ACTIVITY_CREATED)
     };
 
-    const Signals::activity_signal_t::sptr M_DATA_REQUIRED {
-        new_signal<Signals::activity_signal_t>(Signals::DATA_REQUIRED)
+    const signals::activity_signal_t::sptr m_data_required {
+        new_signal<signals::activity_signal_t>(signals::DATA_REQUIRED)
     };
 
-    const Signals::bool_signal_t::sptr M_HAS_PREVIOUS {
-        new_signal<Signals::bool_signal_t>(Signals::HAS_PREVIOUS)
+    const signals::bool_signal_t::sptr m_has_previous {
+        new_signal<signals::bool_signal_t>(signals::HAS_PREVIOUS)
     };
 
-    const Signals::bool_signal_t::sptr M_HAS_NEXT {
-        new_signal<Signals::bool_signal_t>(Signals::HAS_NEXT)
+    const signals::bool_signal_t::sptr m_has_next {
+        new_signal<signals::bool_signal_t>(signals::HAS_NEXT)
     };
 
-    const Signals::bool_signal_t::sptr M_NEXT_ENABLED {
-        new_signal<Signals::bool_signal_t>(Signals::NEXT_ENABLED)
+    const signals::bool_signal_t::sptr m_next_enabled {
+        new_signal<signals::bool_signal_t>(signals::NEXT_ENABLED)
     };
 
-    const Signals::bool_signal_t::sptr M_NEXT_VALIDATED {
-        new_signal<Signals::bool_signal_t>(Signals::NEXT_VALIDATED)
+    const signals::bool_signal_t::sptr m_next_validated {
+        new_signal<signals::bool_signal_t>(signals::NEXT_VALIDATED)
     };
 
-    const Signals::void_signal_t::sptr M_NEXT_VALID {
-        new_signal<Signals::void_signal_t>(Signals::NEXT_VALID)
+    const signals::void_signal_t::sptr m_next_valid {
+        new_signal<signals::void_signal_t>(signals::NEXT_VALID)
     };
 
-    const Signals::void_signal_t::sptr M_NEXT_INVALID {
-        new_signal<Signals::void_signal_t>(Signals::NEXT_INVALID)
+    const signals::void_signal_t::sptr m_next_invalid {
+        new_signal<signals::void_signal_t>(signals::NEXT_INVALID)
     };
 
-    static constexpr std::string_view s_ACTIVITY_SET_INOUT = "activitySet";
-    data::ptr<data::activity_set, data::Access::inout> m_activity_set {this, s_ACTIVITY_SET_INOUT, true};
+    static constexpr std::string_view ACTIVITY_SET_INOUT = "activitySet";
+    data::ptr<data::activity_set, data::access::inout> m_activity_set {this, ACTIVITY_SET_INOUT, true};
 };
 
 } // namespace sight::module::ui::qt::activity

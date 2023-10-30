@@ -51,7 +51,7 @@ public:
     UI_QT_API void set_choices_preset(choices_preset_t _selections) override;
 
     /// Sets the selector title.
-    UI_QT_API void setTitle(std::string _title) override;
+    UI_QT_API void set_title(std::string _title) override;
 
     /// Allows multiple selections (default = false).
     UI_QT_API void set_multiple(bool _multiple) override;
@@ -60,10 +60,10 @@ public:
     UI_QT_API selections_t show() override;
 
     /// Set the message
-    UI_QT_API void setMessage(const std::string& _msg) override;
+    UI_QT_API void set_message(const std::string& _msg) override;
 
     /// Add a custom button to this dialog
-    UI_QT_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
+    UI_QT_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 private:
 
@@ -75,7 +75,7 @@ private:
     bool m_multiple {false};
 
     /// Stores custom buttons
-    QVector<QPushButton*> m_customButtons;
+    QVector<QPushButton*> m_custom_buttons;
 };
 
 } // namespace sight::ui::qt::dialog

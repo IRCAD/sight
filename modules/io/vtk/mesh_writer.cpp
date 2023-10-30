@@ -54,43 +54,43 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 mesh_writer::mesh_writer() noexcept
 {
-    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
+    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType mesh_writer::getIOPathType() const
+sight::io::service::path_type_t mesh_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_writer::openLocationDialog()
+void mesh_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("OBJ File(.obj)", "*.obj");
-    dialog_file.addFilter("PLY File(.ply)", "*.ply");
-    dialog_file.addFilter("STL File(.stl)", "*.stl");
-    dialog_file.addFilter("VTK Legacy File(.vtk)", "*.vtk");
-    dialog_file.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a vtk file to save Mesh" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("OBJ File(.obj)", "*.obj");
+    dialog_file.add_filter("PLY File(.ply)", "*.ply");
+    dialog_file.add_filter("STL File(.stl)", "*.stl");
+    dialog_file.add_filter("VTK Legacy File(.vtk)", "*.vtk");
+    dialog_file.add_filter("VTK Polydata File(.vtp)", "*.vtp");
+    dialog_file.set_option(ui::dialog::location::write);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
-        m_selectedExtension = dialog_file.getSelectedExtensions().front();
+        m_selected_extension = dialog_file.get_selected_extensions().front();
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -134,9 +134,9 @@ typename WRITER::sptr configure_writer(const std::filesystem::path& _file)
 
 void mesh_writer::updating()
 {
-    m_writeFailed = true;
+    m_write_failed = true;
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         // Retrieve dataStruct associated with this service
         const auto locked = m_data.lock();
@@ -146,13 +146,13 @@ void mesh_writer::updating()
             "The object is not a '"
             + data::mesh::classname()
             + "' or '"
-            + sight::io::service::s_DATA_KEY
+            + sight::io::service::DATA_KEY
             + "' is not correctly set.",
             mesh
         );
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
         std::filesystem::path file_to_write  = this->get_file();
         const std::string provided_extension = file_to_write.extension().string();
@@ -162,7 +162,7 @@ void mesh_writer::updating()
         if(provided_extension.empty())
         {
             // No extension provided, add extension of selected filter.
-            extension_to_use = m_selectedExtension;
+            extension_to_use = m_selected_extension;
             file_to_write   += extension_to_use;
         }
         else
@@ -174,23 +174,23 @@ void mesh_writer::updating()
 
         if(extension_to_use == ".vtk")
         {
-            mesh_writer = configure_writer<sight::io::vtk::MeshWriter>(file_to_write);
+            mesh_writer = configure_writer<sight::io::vtk::mesh_writer>(file_to_write);
         }
         else if(extension_to_use == ".vtp")
         {
-            mesh_writer = configure_writer<sight::io::vtk::VtpMeshWriter>(file_to_write);
+            mesh_writer = configure_writer<sight::io::vtk::vtp_mesh_writer>(file_to_write);
         }
         else if(extension_to_use == ".stl")
         {
-            mesh_writer = configure_writer<sight::io::vtk::StlMeshWriter>(file_to_write);
+            mesh_writer = configure_writer<sight::io::vtk::stl_mesh_writer>(file_to_write);
         }
         else if(extension_to_use == ".ply")
         {
-            mesh_writer = configure_writer<sight::io::vtk::PlyMeshWriter>(file_to_write);
+            mesh_writer = configure_writer<sight::io::vtk::ply_mesh_writer>(file_to_write);
         }
         else if(extension_to_use == ".obj")
         {
-            mesh_writer = configure_writer<sight::io::vtk::ObjMeshWriter>(file_to_write);
+            mesh_writer = configure_writer<sight::io::vtk::obj_mesh_writer>(file_to_write);
         }
         else
         {
@@ -202,25 +202,25 @@ void mesh_writer::updating()
             );
         }
 
-        m_sigJobCreated->emit(mesh_writer->getJob());
+        m_sig_job_created->emit(mesh_writer->get_job());
 
         mesh_writer->set_object(mesh);
 
         try
         {
             mesh_writer->write();
-            m_writeFailed = false;
+            m_write_failed = false;
         }
         catch(core::tools::failed& e)
         {
-            m_writeFailed = true;
+            m_write_failed = true;
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
             sight::ui::dialog::message::show(
                 "Warning",
                 ss.str(),
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
 
             // Raise exception  for superior level
@@ -228,27 +228,27 @@ void mesh_writer::updating()
         }
         catch(const std::exception& e)
         {
-            m_writeFailed = true;
+            m_write_failed = true;
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
             sight::ui::dialog::message::show(
                 "Warning",
                 ss.str(),
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
         catch(...)
         {
-            m_writeFailed = true;
+            m_write_failed = true;
             sight::ui::dialog::message::show(
                 "Warning",
                 "Warning during saving",
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
 
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
 }
 

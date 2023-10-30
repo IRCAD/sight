@@ -40,7 +40,7 @@ class UI_QML_CLASS_API pulse_progress : public QObject,
                                         public ui::dialog::pulse_progress_base
 {
 Q_OBJECT
-Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY message_changed)
 
 public:
 
@@ -53,17 +53,17 @@ public:
     UI_QML_API ~pulse_progress() override = default;
 
     /// override
-    UI_QML_API void setTitle(const std::string& _title) override;
+    UI_QML_API void set_title(const std::string& _title) override;
 
     /// override
-    UI_QML_API void setMessage(const std::string& _message) override;
+    UI_QML_API void set_message(const std::string& _message) override;
 
     UI_QML_API void show() override;
 
 Q_SIGNALS:
 
     /// notify the qml of property change
-    void messageChanged();
+    void message_changed();
 
 private:
 

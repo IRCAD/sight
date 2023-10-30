@@ -104,7 +104,7 @@ public:
 
 Q_SIGNALS:
 
-    void materialChanged(int _representation_mode, int _shading_mode, int _option_mode);
+    void material_changed(int _representation_mode, int _shading_mode, int _option_mode);
 
 protected:
 
@@ -129,23 +129,23 @@ protected:
     connections_t auto_connections() const override;
 
     /// Notify the changes
-    void notifyMaterial();
+    void notify_material();
 
 protected Q_SLOTS:
 
     /// Called when the organ representation changed, it will update the reconstruction Material
-    void onChangeRepresentation(int _id);
+    void on_change_representation(int _id);
     /// Called when the organ shading changed, it will update the reconstruction Material
-    void onChangeShading(int _id);
+    void on_change_shading(int _id);
     /// Called when the organ normal option changed, it will update the reconstruction Material
-    void onShowNormals(int _state);
+    void on_show_normals(int _state);
 
 private:
 
     data::material::sptr m_material;
 
-    static constexpr std::string_view s_RECONSTRUCTION_INOUT = "reconstruction";
-    data::ptr<data::reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
+    static constexpr std::string_view RECONSTRUCTION_INOUT = "reconstruction";
+    data::ptr<data::reconstruction, data::access::inout> m_rec {this, RECONSTRUCTION_INOUT, true};
 };
 
 } // namespace sight::module::ui::qml::reconstruction

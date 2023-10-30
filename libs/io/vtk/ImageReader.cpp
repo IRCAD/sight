@@ -22,7 +22,7 @@
 
 #include "io/vtk/ImageReader.hpp"
 
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
@@ -35,40 +35,40 @@
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER(sight::io::vtk::ImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::image_reader);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader() :
+image_reader::image_reader() :
     m_job(std::make_shared<core::jobs::observer>("VTK image reader"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-ImageReader::~ImageReader()
+image_reader::~image_reader()
 = default;
 
 //------------------------------------------------------------------------------
 
-void ImageReader::read()
+void image_reader::read()
 {
-    using helper::vtkLambdaCommand;
+    using helper::vtk_lambda_command;
 
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::sptr p_image = getConcreteObject();
+    data::image::sptr p_image = get_concrete_object();
 
     vtkSmartPointer<vtkGenericDataObjectReader> reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
 
-    vtkSmartPointer<vtkLambdaCommand> progress_callback;
-    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progress_callback->SetCallback(
+    vtkSmartPointer<vtk_lambda_command> progress_callback;
+    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
+    progress_callback->set_callback(
         [this](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
@@ -104,14 +104,14 @@ void ImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string ImageReader::extension() const
+std::string image_reader::extension() const
 {
     return ".vtk";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr ImageReader::getJob() const
+core::jobs::base::sptr image_reader::get_job() const
 {
     return m_job;
 }

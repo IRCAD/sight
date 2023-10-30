@@ -109,30 +109,30 @@ protected:
 
 private:
 
-    typedef core::com::signal<void (float)> length_changed_signal_t;
-    typedef core::com::signal<void (std::string)> LengthStrChangedSignalType;
-    typedef core::com::signal<void (std::string)> same_slice_signal_t;
+    using length_changed_signal_t     = core::com::signal<void (float)>;
+    using length_str_changed_signal_t = core::com::signal<void (std::string)>;
+    using same_slice_signal_t         = core::com::signal<void (std::string)>;
 
     /// landmarks group's label for the origin of the vector.
-    std::string m_originLabel;
+    std::string m_origin_label;
 
     /// landmarks group's label for the end of the vector.
-    std::string m_endLabel;
+    std::string m_end_label;
 
     /// Computed landmark group name.
-    std::string m_groupLabel;
+    std::string m_group_label;
 
     /// Tolerance in mm when checking if the two landmarks are on the same axial slice.
     double m_tolerance {0.001};
 
     /// Label to prefix the message sent in the sameSlice signal.
-    std::string m_sameSliceLabel {"Same axial slice"};
+    std::string m_same_slice_label {"Same axial slice"};
 
-    static constexpr std::string_view s_LANDMARK_INPUT = "landmark";
-    data::ptr<data::landmarks, sight::data::Access::in> m_landmark {this, s_LANDMARK_INPUT, true};
-    data::ptr<data::matrix4, sight::data::Access::inout> m_transform {this, "transform"};
-    data::ptr<data::landmarks, sight::data::Access::inout> m_computedLandmark {this, "computedLandmark"};
-    data::ptr<data::matrix4, sight::data::Access::inout> m_translationMatrix {this, "translationMatrix"};
+    static constexpr std::string_view LANDMARK_INPUT = "landmark";
+    data::ptr<data::landmarks, sight::data::access::in> m_landmark {this, LANDMARK_INPUT, true};
+    data::ptr<data::matrix4, sight::data::access::inout> m_transform {this, "transform"};
+    data::ptr<data::landmarks, sight::data::access::inout> m_computed_landmark {this, "computedLandmark"};
+    data::ptr<data::matrix4, sight::data::access::inout> m_translation_matrix {this, "translationMatrix"};
 };
 
 } // namespace sight::module::geometry

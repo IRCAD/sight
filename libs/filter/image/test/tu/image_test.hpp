@@ -35,7 +35,7 @@ namespace sight::filter::image::ut
 class image_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(image_test);
-CPPUNIT_TEST(roiApplyTest);
+CPPUNIT_TEST(roi_apply_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,7 +44,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void roiApplyTest();
+    static void roi_apply_test();
 };
 
 } // namespace sight::filter::image::ut

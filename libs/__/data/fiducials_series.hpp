@@ -53,13 +53,13 @@ namespace sight::data
  * The second one is to use the methods that return struct that represents the DICOM data, such as FiducialSet and
  * Fiducial. For example:
  * @code{.cpp}
-   auto fiducialSets = fiducialsSeries->getFiducialSets();
+   auto fiducialSets = fiducialsSeries->get_fiducial_sets();
    fiducialsSets[0].fiducials[1].shapeType = fiducials_series::shape_t::POINT;
    fiducialsSeries->setFiducialSets(fiducialSets);
  * @endcode
  * or:
  * @code{.cpp}
-   auto fiducials = fiducialsSeries->getFiducials(0);
+   auto fiducials = fiducialsSeries->get_fiducials(0);
    fiducials[1].shapeType = fiducials_series::shape_t::POINT;
    fiducialsSeries->setFiducials(0, fiducials);
  * @endcode
@@ -69,101 +69,101 @@ class DATA_CLASS_API fiducials_series : public series
 public:
 
     /// Struct which represents an element in the GraphicData (0070,0022) data element.
-    struct Point2
+    struct point2
     {
         double x {0};
         double y {0};
 
-        DATA_API bool operator==(Point2 _other) const;
+        DATA_API bool operator==(point2 _other) const;
     };
 
     /// Struct which represents an element in the ContourData (3006,0050) data element.
-    struct Point3
+    struct point3
     {
         double x {0};
         double y {0};
         double z {0};
 
-        DATA_API bool operator==(Point3 _other) const;
+        DATA_API bool operator==(point3 _other) const;
     };
 
     /// Enum which represents the value contained in shape_t (0070,0306).
-    enum class Shape
+    enum class shape
     {
         /// Not defined by DICOM; used if the file doesn't contain a valid enumeration value
-        INVALID,
-        POINT,
-        LINE,
-        PLANE,
-        SURFACE,
-        RULER,
-        L_SHAPE,
-        T_SHAPE,
-        SHAPE
+        invalid,
+        point,
+        line,
+        plane,
+        surface,
+        ruler,
+        l_shape,
+        t_shape,
+        shape
     };
 
-    enum class PrivateShape
+    enum class private_shape
     {
-        SPHERE,
-        CUBE
+        sphere,
+        cube
     };
 
     /// Struct which represents an element in the ReferencedImageSequence (0008,1140) data element.
-    struct ReferencedImage
+    struct referenced_image
     {
-        std::string referencedSOPClassUID;                  /// ReferencedSOPClassUID (0008,1150)
-        std::string referencedSOPInstanceUID;               /// ReferencedSOPInstanceUID (0008,1155)
-        std::vector<std::int32_t> referencedFrameNumber;    /// ReferencedFrameNumber (0008,1160)
-        std::vector<std::uint16_t> referencedSegmentNumber; /// ReferencedSegmentNumber (0062,000B)
+        std::string referenced_sop_class_uid;                 /// ReferencedSOPClassUID (0008,1150)
+        std::string referenced_sop_instance_uid;              /// ReferencedSOPInstanceUID (0008,1155)
+        std::vector<std::int32_t> referenced_frame_number;    /// ReferencedFrameNumber (0008,1160)
+        std::vector<std::uint16_t> referenced_segment_number; /// ReferencedSegmentNumber (0062,000B)
 
-        DATA_API bool operator==(const ReferencedImage& _other) const;
-        DATA_API bool operator!=(const ReferencedImage& _other) const;
+        DATA_API bool operator==(const referenced_image& _other) const;
+        DATA_API bool operator!=(const referenced_image& _other) const;
     };
 
     /// Struct which represents an element in the GraphicCoordinatesDataSequence (0070,0318) data element.
-    struct GraphicCoordinatesData
+    struct graphic_coordinates_data
     {
-        ReferencedImage referencedImageSequence; /// ReferencedImageSequence (0008,1140)
-        std::vector<Point2> graphicData;         /// GraphicData (0070,0022)
+        referenced_image referenced_image_sequence; /// ReferencedImageSequence (0008,1140)
+        std::vector<point2> graphic_data;           /// GraphicData (0070,0022)
 
-        DATA_API bool operator==(const GraphicCoordinatesData& _other) const;
-        DATA_API bool operator!=(const GraphicCoordinatesData& _other) const;
+        DATA_API bool operator==(const graphic_coordinates_data& _other) const;
+        DATA_API bool operator!=(const graphic_coordinates_data& _other) const;
     };
 
     /// Struct which represents an element in the FiducialSequence (0070,031E) data element.
-    struct Fiducial
+    struct fiducial
     {
-        Shape shapeType;                                                                    /// shape_t (0070,0306)
-        std::string fiducialDescription;                                                    /// FiducialDescription
-                                                                                            /// (0070,030F)
-        std::string fiducialIdentifier;                                                     /// FiducialIdentifier
-                                                                                            /// (0070,0310)
-        std::optional<std::vector<GraphicCoordinatesData> > graphicCoordinatesDataSequence; // GraphicCoordinatesDataSequence
-                                                                                            // (0070,0318)
-        std::optional<std::string> fiducialUID;                                             /// FiducialUID (0070,031A)
-        std::vector<Point3> contourData;                                                    /// ContourData (3006,0050)
-                                                                                            /// (NumberOfContourPoints
-                                                                                            /// (3006,0046) included
-                                                                                            /// inside)
+        shape shape_type;                                                                        /// shape_t (0070,0306)
+        std::string fiducial_description;                                                        /// FiducialDescription
+                                                                                                 /// (0070,030F)
+        std::string fiducial_identifier;                                                         /// FiducialIdentifier
+                                                                                                 /// (0070,0310)
+        std::optional<std::vector<graphic_coordinates_data> > graphic_coordinates_data_sequence; // GraphicCoordinatesDataSequence
+        // (0070,0318)
+        std::optional<std::string> fiducial_uid; /// FiducialUID (0070,031A)
+        std::vector<point3> contour_data;        /// ContourData (3006,0050)
+                                                 /// (NumberOfContourPoints
+                                                 /// (3006,0046) included
+                                                 /// inside)
 
-        DATA_API bool operator==(const Fiducial& _other) const;
-        DATA_API bool operator!=(const Fiducial& _other) const;
+        DATA_API bool operator==(const fiducial& _other) const;
+        DATA_API bool operator!=(const fiducial& _other) const;
     };
 
     /// Struct which represents an element in the FiducialSetSequence (0070,031C) data element.
-    struct FiducialSet
+    struct fiducial_set
     {
-        std::optional<std::vector<ReferencedImage> > referencedImageSequence; /// ReferencedImageSequence (0008,1140)
-        std::optional<std::string> frameOfReferenceUID;                       /// FrameOfReference (0020,0052)
-        std::vector<Fiducial> fiducialSequence;                               /// FiducialSequence (0070,031E)
-        std::optional<std::string> groupName;                                 /// Private tag
-        std::optional<std::array<float, 4> > color;                           /// Private tag
-        std::optional<float> size;                                            /// Private tag
-        std::optional<PrivateShape> shape;                                    /// Private tag
-        std::optional<bool> visibility;                                       /// Private tag
+        std::optional<std::vector<referenced_image> > referenced_image_sequence; /// ReferencedImageSequence (0008,1140)
+        std::optional<std::string> frame_of_reference_uid;                       /// FrameOfReference (0020,0052)
+        std::vector<fiducial> fiducial_sequence;                                 /// FiducialSequence (0070,031E)
+        std::optional<std::string> group_name;                                   /// Private tag
+        std::optional<std::array<float, 4> > color;                              /// Private tag
+        std::optional<float> size;                                               /// Private tag
+        std::optional<private_shape> shape;                                      /// Private tag
+        std::optional<bool> visibility;                                          /// Private tag
 
-        DATA_API bool operator==(const FiducialSet& _other) const;
-        DATA_API bool operator!=(const FiducialSet& _other) const;
+        DATA_API bool operator==(const fiducial_set& _other) const;
+        DATA_API bool operator!=(const fiducial_set& _other) const;
     };
 
     SIGHT_DECLARE_CLASS(fiducials_series, series);
@@ -192,65 +192,65 @@ public:
      * Getter/Setter for the ContentDate (0008,0023) data element.
      * @{
      */
-    DATA_API std::string getContentDate() const noexcept;
-    DATA_API void setContentDate(const std::string& _content_date);
+    DATA_API std::string get_content_date() const noexcept;
+    DATA_API void set_content_date(const std::string& _content_date);
     /// @}
 
     /**
      * Getter/Setter for the ContentLabel (0070,0080) data element.
      * @{
      */
-    DATA_API std::string getContentLabel() const noexcept;
-    DATA_API void setContentLabel(const std::string& _content_label);
+    DATA_API std::string get_content_label() const noexcept;
+    DATA_API void set_content_label(const std::string& _content_label);
     /// @}
 
     /**
      * Getter/Setter for the ContentDescription (0070,0081) data element.
      * @{
      */
-    DATA_API std::string getContentDescription() const noexcept;
-    DATA_API void setContentDescription(const std::string& _content_description);
+    DATA_API std::string get_content_description() const noexcept;
+    DATA_API void set_content_description(const std::string& _content_description);
     /// @}
 
     /**
      * Getter/Setter for the ContentCreatorName (0070,0084) data element.
      * @{
      */
-    DATA_API std::string getContentCreatorName() const noexcept;
-    DATA_API void setContentCreatorName(const std::string& _content_creator_name);
+    DATA_API std::string get_content_creator_name() const noexcept;
+    DATA_API void set_content_creator_name(const std::string& _content_creator_name);
     /// @}
 
     /**
      * Getter for the FiducialSetSequence (0070,031C) data element.
      * @return The fiducial set sequence as a vector of FiducialSet struct.
      */
-    DATA_API std::vector<FiducialSet> getFiducialSets() const noexcept;
+    DATA_API std::vector<fiducial_set> get_fiducial_sets() const noexcept;
     /**
      * Setter for the FiducialSetSequence (0070,031C) data element. Replaces the existing content with the provided
      * vector of fiducial sets.
      * @param fiducialSets The vector of fiducial sets which will replace the existing content.
      */
-    DATA_API void setFiducialSets(const std::vector<FiducialSet>& _fiducial_sets);
+    DATA_API void set_fiducial_sets(const std::vector<fiducial_set>& _fiducial_sets);
     /**
      * Setter for the FiducialSetSequence (0070,031C) data element. Replaces the element at index fiducialSetNumber with
      * the provided fiducial set. If the element or the previous elements don't exist, they are created first.
      * @param fiducialSetNumber The 0-indexed index of the sequence to be replaced.
      * @param fiducialSet The fiducial set which will replace the existing one.
      */
-    DATA_API void setFiducialSet(std::size_t _fiducial_set_number, FiducialSet _fiducial_set);
+    DATA_API void set_fiducial_set(std::size_t _fiducial_set_number, fiducial_set _fiducial_set);
     /**
      * Setter for the FiducialSetSequence (0070,031C) data element. Appends the provided fiducial set at the end of the
      * sequence.
      * @param fiducialSet The fiducialSet to be appended to the sequence.
      */
-    DATA_API void appendFiducialSet(FiducialSet _fiducial_set);
+    DATA_API void append_fiducial_set(fiducial_set _fiducial_set);
 
     /**
      * Getter for the ReferencedImageSequence (0008,1140) data element at fiducial set level.
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be fetched.
      * @return The referenced image sequence as a vector of ReferencedImage struct; or nullopt if it isn't defined.
      */
-    DATA_API std::optional<std::vector<ReferencedImage> > getReferencedImages(std::size_t _fiducial_set_number) const
+    DATA_API std::optional<std::vector<referenced_image> > get_referenced_images(std::size_t _fiducial_set_number) const
     noexcept;
     /**
      * Setter for the ReferencedImageSequence (0008,1140) data element at fiducial set level. Replaces the existing
@@ -258,9 +258,9 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be modified
      * @param referencedImages The referenced image sequence which will replace the existing one.
      */
-    DATA_API void setReferencedImages(
+    DATA_API void set_referenced_images(
         std::size_t _fiducial_set_number,
-        const std::optional<std::vector<ReferencedImage> >& _referenced_images
+        const std::optional<std::vector<referenced_image> >& _referenced_images
     );
     /**
      * Setter for the ReferencedImageSequence (0008,1140) data element at fiducial set level. Replaces the element at
@@ -270,10 +270,10 @@ public:
      * @param referencedImageNumber The 0-indexed index of the sequence to be replaced.
      * @param referencedImage The referenced image which will replace the existing one.
      */
-    DATA_API void setReferencedImage(
+    DATA_API void set_referenced_image(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number,
-        ReferencedImage _referenced_image
+        referenced_image _referenced_image
     );
     /**
      * Setter for the ReferencedImageSequence (0008,1140) data element at fiducial set level. Appends the provided
@@ -281,7 +281,7 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be modified
      * @param referencedImage The referenced image to be appended to the sequence.
      */
-    DATA_API void appendReferencedImage(std::size_t _fiducial_set_number, ReferencedImage _referenced_image);
+    DATA_API void append_referenced_image(std::size_t _fiducial_set_number, referenced_image _referenced_image);
 
     /**
      * Getter/Setter for the ReferencedSOPClassUID (0008,1150) data element at fiducial set level.
@@ -289,11 +289,11 @@ public:
      * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
      * @{
      */
-    DATA_API std::optional<std::string> getReferencedSOPClassUID(
+    DATA_API std::optional<std::string> get_referenced_sop_class_uid(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number
     ) const noexcept;
-    DATA_API void setReferencedSOPClassUID(
+    DATA_API void set_referenced_sop_class_uid(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number,
         const std::string& _referenced_sop_class_uid
@@ -306,11 +306,11 @@ public:
      * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
      * @{
      */
-    DATA_API std::optional<std::string> getReferencedSOPInstanceUID(
+    DATA_API std::optional<std::string> get_referenced_sop_instance_uid(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number
     ) const noexcept;
-    DATA_API void setReferencedSOPInstanceUID(
+    DATA_API void set_referenced_sop_instance_uid(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number,
         const std::string& _referenced_sop_instance_uid
@@ -323,11 +323,11 @@ public:
      * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
      * @{
      */
-    DATA_API std::vector<std::int32_t> getReferencedFrameNumber(
+    DATA_API std::vector<std::int32_t> get_referenced_frame_number(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number
     ) const noexcept;
-    DATA_API void setReferencedFrameNumber(
+    DATA_API void set_referenced_frame_number(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number,
         std::vector<std::int32_t> _referenced_frame_number
@@ -340,11 +340,11 @@ public:
      * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
      * @{
      */
-    DATA_API std::vector<std::uint16_t> getReferencedSegmentNumber(
+    DATA_API std::vector<std::uint16_t> get_referenced_segment_number(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number
     ) const noexcept;
-    DATA_API void setReferencedSegmentNumber(
+    DATA_API void set_referenced_segment_number(
         std::size_t _fiducial_set_number,
         std::size_t _referenced_image_number,
         std::vector<std::uint16_t> _referenced_segment_number
@@ -356,8 +356,8 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
-    DATA_API std::optional<std::string> getFrameOfReferenceUID(std::size_t _fiducial_set_number) const noexcept;
-    DATA_API void setFrameOfReferenceUID(
+    DATA_API std::optional<std::string> get_frame_of_reference_uid(std::size_t _fiducial_set_number) const noexcept;
+    DATA_API void set_frame_of_reference_uid(
         std::size_t _fiducial_set_number,
         const std::optional<std::string>& _frame_of_reference_uid
     );
@@ -368,14 +368,14 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be fetched.
      * @return The fiducial sequence as a vector of Fiducial struct.
      */
-    DATA_API std::vector<Fiducial> getFiducials(std::size_t _fiducial_set_number) const noexcept;
+    DATA_API std::vector<fiducial> get_fiducials(std::size_t _fiducial_set_number) const noexcept;
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Replaces the existing content with the provided vector
      * of fiducials.
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
      * @param fiducials The fiducial sequence which will replace the existing one.
      */
-    DATA_API void setFiducials(std::size_t _fiducial_set_number, const std::vector<Fiducial>& _fiducials);
+    DATA_API void set_fiducials(std::size_t _fiducial_set_number, const std::vector<fiducial>& _fiducials);
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Replaces the element at index fiducialNumber with the
      * provided fiducial. If the element or the previous elements don't exist, they are created first.
@@ -383,14 +383,14 @@ public:
      * @param fiducialNumber The 0-indexed index of the sequence to be replaced.
      * @param fiducial The fiducial which will replace the existing one.
      */
-    DATA_API void setFiducial(std::size_t _fiducial_set_number, std::size_t _fiducial_number, Fiducial _fiducial);
+    DATA_API void set_fiducial(std::size_t _fiducial_set_number, std::size_t _fiducial_number, fiducial _fiducial);
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Appends the provided fiducial at the end of the
      * sequence.
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
      * @param fiducial The fiducial to be appended to the sequence.
      */
-    DATA_API void appendFiducial(std::size_t _fiducial_set_number, Fiducial _fiducial);
+    DATA_API void append_fiducial(std::size_t _fiducial_set_number, fiducial _fiducial);
 
     /**
      * Getter/Setter for the shape_t (0070,0306) data element.
@@ -398,8 +398,8 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
-    DATA_API Shape get_shape_type(std::size_t _fiducial_set_number, std::size_t _fiducial_number) const noexcept;
-    DATA_API void set_shape_type(std::size_t _fiducial_set_number, std::size_t _fiducial_number, Shape _shape_type);
+    DATA_API shape get_shape_type(std::size_t _fiducial_set_number, std::size_t _fiducial_number) const noexcept;
+    DATA_API void set_shape_type(std::size_t _fiducial_set_number, std::size_t _fiducial_number, shape _shape_type);
     /// @}
 
     /**
@@ -408,11 +408,11 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
-    DATA_API std::string getFiducialDescription(
+    DATA_API std::string get_fiducial_description(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number
     ) const noexcept;
-    DATA_API void setFiducialDescription(
+    DATA_API void set_fiducial_description(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         const std::string& _fiducial_description
@@ -425,11 +425,11 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
-    DATA_API std::string getFiducialIdentifier(
+    DATA_API std::string get_fiducial_identifier(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number
     ) const noexcept;
-    DATA_API void setFiducialIdentifier(
+    DATA_API void set_fiducial_identifier(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         const std::string& _fiducial_identifier
@@ -442,7 +442,7 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinates data must be fetched.
      * @return The graphic coordinates data sequence as a vector for GraphicCoordinatesData struct.
      */
-    DATA_API std::optional<std::vector<GraphicCoordinatesData> > getGraphicCoordinatesDataSequence(
+    DATA_API std::optional<std::vector<graphic_coordinates_data> > get_graphic_coordinates_data_sequence(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number
     ) const noexcept;
@@ -453,10 +453,10 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinate data sequence must be modified
      * @param graphicCoordinatesDataSequence The graphic coordinates data sequence which will replace the existing one.
      */
-    DATA_API void setGraphicCoordinatesDataSequence(
+    DATA_API void set_graphic_coordinates_data_sequence(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
-        const std::optional<std::vector<GraphicCoordinatesData> >& _graphic_coordinates_data_sequence
+        const std::optional<std::vector<graphic_coordinates_data> >& _graphic_coordinates_data_sequence
     );
     /**
      * Setter for the GraphicCoordinatesDataSequence (0070,0318) data element. Replaces the element at index
@@ -467,11 +467,11 @@ public:
      * @param graphicCoordinatesDataNumber The 0-indexed index of the sequence to be replaced.
      * @param graphicCoordinatesData The graphic coordinates data which will replace the existing one.
      */
-    DATA_API void setGraphicCoordinatesData(
+    DATA_API void set_graphic_coordinates_data(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number,
-        GraphicCoordinatesData _graphic_coordinates_data
+        graphic_coordinates_data _graphic_coordinates_data
     );
     /**
      * Setter for the GraphicCoordinatesDataSequence (0070,0318) data element. Appends the provided graphic coordinates
@@ -480,10 +480,10 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinate data sequence must be modified
      * @param graphicCoordinatesData The graphic coordinates data to be appended to the sequence.
      */
-    DATA_API void appendGraphicCoordinatesData(
+    DATA_API void append_graphic_coordinates_data(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
-        GraphicCoordinatesData _graphic_coordinates_data
+        graphic_coordinates_data _graphic_coordinates_data
     );
 
     /**
@@ -493,16 +493,16 @@ public:
      * @param graphicCoordinatesData The graphic coordinates data to be appended to the sequence.
      * @{
      */
-    DATA_API ReferencedImage getReferencedImage(
+    DATA_API referenced_image get_referenced_image(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number
     ) const noexcept;
-    DATA_API void setReferencedImage(
+    DATA_API void set_referenced_image(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number,
-        ReferencedImage _referenced_image
+        referenced_image _referenced_image
     );
     /// @}
 
@@ -513,12 +513,12 @@ public:
      * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
      * @{
      */
-    DATA_API std::string getReferencedSOPClassUID(
+    DATA_API std::string get_referenced_sop_class_uid(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number
     ) const noexcept;
-    DATA_API void setReferencedSOPClassUID(
+    DATA_API void set_referenced_sop_class_uid(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number,
@@ -533,12 +533,12 @@ public:
      * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
      * @{
      */
-    DATA_API std::string getReferencedSOPInstanceUID(
+    DATA_API std::string get_referenced_sop_instance_uid(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number
     ) const noexcept;
-    DATA_API void setReferencedSOPInstanceUID(
+    DATA_API void set_referenced_sop_instance_uid(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number,
@@ -553,12 +553,12 @@ public:
      * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
      * @{
      */
-    DATA_API std::vector<std::int32_t> getReferencedFrameNumber(
+    DATA_API std::vector<std::int32_t> get_referenced_frame_number(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number
     ) const noexcept;
-    DATA_API void setReferencedFrameNumber(
+    DATA_API void set_referenced_frame_number(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number,
@@ -573,12 +573,12 @@ public:
      * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
      * @{
      */
-    DATA_API std::vector<std::uint16_t> getReferencedSegmentNumber(
+    DATA_API std::vector<std::uint16_t> get_referenced_segment_number(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number
     ) const noexcept;
-    DATA_API void setReferencedSegmentNumber(
+    DATA_API void set_referenced_segment_number(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number,
@@ -593,16 +593,16 @@ public:
      * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
      * @{
      */
-    DATA_API std::vector<Point2> getGraphicData(
+    DATA_API std::vector<point2> get_graphic_data(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number
     ) const noexcept;
-    DATA_API void setGraphicData(
+    DATA_API void set_graphic_data(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         std::size_t _graphic_coordinates_data_number,
-        const std::vector<Point2>& _graphic_data
+        const std::vector<point2>& _graphic_data
     );
     /// @}
 
@@ -612,11 +612,11 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
-    DATA_API std::optional<std::string> getFiducialUID(
+    DATA_API std::optional<std::string> get_fiducial_uid(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number
     ) const noexcept;
-    DATA_API void setFiducialUID(
+    DATA_API void set_fiducial_uid(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
         const std::optional<std::string>& _fiducial_uid
@@ -629,14 +629,14 @@ public:
      * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
-    DATA_API std::vector<Point3> getContourData(
+    DATA_API std::vector<point3> get_contour_data(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number
     ) const noexcept;
-    DATA_API void setContourData(
+    DATA_API void set_contour_data(
         std::size_t _fiducial_set_number,
         std::size_t _fiducial_number,
-        const std::vector<Point3>& _contour_data
+        const std::vector<point3>& _contour_data
     );
     /// @}
 
@@ -644,8 +644,8 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
-    DATA_API std::optional<std::string> getGroupName(std::size_t _fiducial_set_number) const noexcept;
-    DATA_API void setGroupName(std::size_t _fiducial_set_number, const std::string& _group_name);
+    DATA_API std::optional<std::string> get_group_name(std::size_t _fiducial_set_number) const noexcept;
+    DATA_API void set_group_name(std::size_t _fiducial_set_number, const std::string& _group_name);
     /// @}
 
     /**
@@ -653,8 +653,8 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
-    DATA_API std::optional<std::array<float, 4> > getColor(std::size_t _fiducial_set_number) const noexcept;
-    DATA_API void setColor(std::size_t _fiducial_set_number, const std::array<float, 4>& _color);
+    DATA_API std::optional<std::array<float, 4> > get_color(std::size_t _fiducial_set_number) const noexcept;
+    DATA_API void set_color(std::size_t _fiducial_set_number, const std::array<float, 4>& _color);
     /// @}
 
     /**
@@ -662,8 +662,8 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
-    DATA_API std::optional<float> getSize(std::size_t _fiducial_set_number) const noexcept;
-    DATA_API void setSize(std::size_t _fiducial_set_number, float _size);
+    DATA_API std::optional<float> get_size(std::size_t _fiducial_set_number) const noexcept;
+    DATA_API void set_size(std::size_t _fiducial_set_number, float _size);
     /// @}
 
     /**
@@ -671,8 +671,8 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
-    DATA_API std::optional<PrivateShape> getShape(std::size_t _fiducial_set_number) const noexcept;
-    DATA_API void setShape(std::size_t _fiducial_set_number, PrivateShape _shape);
+    DATA_API std::optional<private_shape> get_shape(std::size_t _fiducial_set_number) const noexcept;
+    DATA_API void set_shape(std::size_t _fiducial_set_number, private_shape _shape);
     /// @}
 
     /**
@@ -680,8 +680,8 @@ public:
      * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
-    DATA_API std::optional<bool> getVisibility(std::size_t _fiducial_set_number) const noexcept;
-    DATA_API void setVisibility(std::size_t _fiducial_set_number, bool _visibility);
+    DATA_API std::optional<bool> get_visibility(std::size_t _fiducial_set_number) const noexcept;
+    DATA_API void set_visibility(std::size_t _fiducial_set_number, bool _visibility);
     /// @}
 
     // Helper methods
@@ -689,20 +689,20 @@ public:
     /**
      * Set group names for fiducial sets which contains point fiducials which doesn't have group names
      */
-    DATA_API void setGroupNamesForPointFiducials();
+    DATA_API void set_group_names_for_point_fiducials();
 
     /**
      * Get the list of group names for fiducial sets which contains point fiducials
      * @return The list of group names
      */
-    [[nodiscard]] DATA_API std::vector<std::string> getPointFiducialsGroupNames() const;
+    [[nodiscard]] DATA_API std::vector<std::string> get_point_fiducials_group_names() const;
 
     /**
      * Get the fiducial set which has the name in parameter and its index
      * @param groupName The name of the group to fetch
      * @return A pair with the fiducial set and its index, or std::nullopt if the group name doesn't exist
      */
-    [[nodiscard]] DATA_API std::optional<std::pair<FiducialSet, std::size_t> > getFiducialSetAndIndex(
+    [[nodiscard]] DATA_API std::optional<std::pair<fiducial_set, std::size_t> > get_fiducial_set_and_index(
         const std::string& _group_name
     ) const;
 
@@ -711,7 +711,8 @@ public:
      * @param groupName The name of the group to fetch
      * @return The number of points in the group, or std::nullopt if the group name doesn't exist
      */
-    [[nodiscard]] DATA_API std::optional<std::size_t> getNumberOfPointsInGroup(const std::string& _group_name) const;
+    [[nodiscard]] DATA_API std::optional<std::size_t> get_number_of_points_in_group(const std::string& _group_name)
+    const;
 
     /**
      * Returns the 3D position of the point fiducial using Contour Data.
@@ -719,7 +720,7 @@ public:
      * @return The 3D position of the fiducial, or std::nullopt if it has no Contour Data (getting 3D position using
      * Graphic Coordinates Data Sequence isn't supported) or if its shape type isn't point.
      */
-    [[nodiscard]] DATA_API static std::optional<std::array<double, 3> > getPoint(const Fiducial& _fiducial);
+    [[nodiscard]] DATA_API static std::optional<std::array<double, 3> > get_point(const fiducial& _fiducial);
 
     /**
      * Returns the 3D position of the point INDEX in group GROUP_NAME
@@ -728,7 +729,7 @@ public:
      * @return The 3D position of the fiducial, or std::nullopt if the group doesn't exist or if it has no Contour Data
      * (getting 3D position using Graphic Coordinates Data Sequence isn't supported) or if its shape type isn't point.
      */
-    [[nodiscard]] DATA_API std::optional<std::array<double, 3> > getPoint(
+    [[nodiscard]] DATA_API std::optional<std::array<double, 3> > get_point(
         const std::string& _group_name,
         std::size_t _index
     ) const;
@@ -738,27 +739,27 @@ public:
      * @param fiducialSet The fiducial set whose fiducials must be filtered
      * @return The list of fiducial whose shape type is point
      */
-    [[nodiscard]] DATA_API static std::vector<Fiducial> getPointFiducials(const FiducialSet& _fiducial_set);
+    [[nodiscard]] DATA_API static std::vector<fiducial> get_point_fiducials(const fiducial_set& _fiducial_set);
 
     /**
      * Get a fiducial set as a structure compatible with data::landmarks
      * @param groupName The name of the group to fetch
      * @return The fiducial set as a structure compatible with data::landmarks
      */
-    [[nodiscard]] DATA_API std::optional<landmarks::LandmarksGroup> getGroup(const std::string& _group_name) const;
+    [[nodiscard]] DATA_API std::optional<landmarks::landmarks_group> get_group(const std::string& _group_name) const;
 
     /**
      * Remove the point INDEX in group GROUP_NAME
      * @param groupName The name of the group of the point
      * @param index The index of the point in its group
      */
-    DATA_API void removePoint(const std::string& _group_name, std::size_t _index);
+    DATA_API void remove_point(const std::string& _group_name, std::size_t _index);
 
     /**
      * Remove the group GROUP_NAME
      * @param groupName The name of the group to be removed
      */
-    DATA_API void removeGroup(const std::string& _group);
+    DATA_API void remove_group(const std::string& _group);
 
     /**
      * Add a new fiducial set with the given parameters
@@ -766,40 +767,40 @@ public:
      * @param color The color of the new fiducial set
      * @param size The size of the points in the new fiducial set
      */
-    DATA_API void addGroup(const std::string& _group_name, const std::array<float, 4>& _color, float _size);
+    DATA_API void add_group(const std::string& _group_name, const std::array<float, 4>& _color, float _size);
 
     /**
      * Add a point fiducial in a fiducial set
      * @param groupName The name of the group of the point
      * @param point The 3D position of the new point
      */
-    DATA_API void addPoint(const std::string& _group_name, const std::array<double, 3>& _pos);
+    DATA_API void add_point(const std::string& _group_name, const std::array<double, 3>& _pos);
 
 private:
 
-    static Shape stringToShape(const std::optional<std::string>& _string);
-    static std::optional<std::array<float, 4> > stringToColor(const std::optional<std::string>& _string);
-    static std::optional<PrivateShape> stringToPrivateShape(const std::optional<std::string>& _string);
+    static shape string_to_shape(const std::optional<std::string>& _string);
+    static std::optional<std::array<float, 4> > string_to_color(const std::optional<std::string>& _string);
+    static std::optional<private_shape> string_to_private_shape(const std::optional<std::string>& _string);
 
     template<typename T>
     T to(const gdcm::DataSet& _data_set) const;
 
-    FiducialSet toFiducialSet(const gdcm::DataSet& _data_set) const;
-    ReferencedImage toReferencedImage(const gdcm::DataSet& _data_set) const;
-    Fiducial toFiducial(const gdcm::DataSet& _data_set) const;
-    GraphicCoordinatesData toGraphicCoordinatesData(const gdcm::DataSet& _data_set) const;
+    fiducial_set to_fiducial_set(const gdcm::DataSet& _data_set) const;
+    referenced_image to_referenced_image(const gdcm::DataSet& _data_set) const;
+    fiducial to_fiducial(const gdcm::DataSet& _data_set) const;
+    graphic_coordinates_data to_graphic_coordinates_data(const gdcm::DataSet& _data_set) const;
 
-    static std::vector<Point2> toPoint2(const std::vector<float>& _floats);
+    static std::vector<point2> to_point2(const std::vector<float>& _floats);
 
-    static std::vector<Point3> toPoint3(const std::vector<double>& _floats);
-
-    template<typename T>
-    std::optional<std::vector<T> > toVector(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence) const;
+    static std::vector<point3> to_point3(const std::vector<double>& _floats);
 
     template<typename T>
-    gdcm::SmartPointer<gdcm::SequenceOfItems> toSequence(const std::optional<std::vector<T> >& _vector) const;
+    std::optional<std::vector<T> > to_vector(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence) const;
+
     template<typename T>
-    gdcm::SmartPointer<gdcm::SequenceOfItems> toSequence(const std::vector<T>& _vector) const;
+    gdcm::SmartPointer<gdcm::SequenceOfItems> to_sequence(const std::optional<std::vector<T> >& _vector) const;
+    template<typename T>
+    gdcm::SmartPointer<gdcm::SequenceOfItems> to_sequence(const std::vector<T>& _vector) const;
 };
 
 } // namespace sight::data

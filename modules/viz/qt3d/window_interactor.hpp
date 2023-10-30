@@ -68,17 +68,17 @@ public:
      * @param _renderOnDemand if true, the rendering will be done only when it's requested.
      * @param _fullscreen enable the fullscreen.
      */
-    MODULE_VIZ_QT3D_API void createContainer(ui::container::widget::sptr _parent) final;
+    MODULE_VIZ_QT3D_API void create_container(ui::container::widget::sptr _parent) final;
 
-    MODULE_VIZ_QT3D_API void set3DView(Qt3DExtras::Qt3DWindow* _3d_view) final;
+    MODULE_VIZ_QT3D_API void set_3d_view(Qt3DExtras::Qt3DWindow* _3d_view) final;
 
 private:
 
     /// Contains the parent of the widget.
-    SPTR(ui::qt::container::widget) m_parentContainer;
+    SPTR(ui::qt::container::widget) m_parent_container;
 
     /// Contains the window container.
-    QPointer<QWidget> m_windowContainer;
+    QPointer<QWidget> m_window_container;
 };
 
 } // namespace sight::module::viz::qt3d.

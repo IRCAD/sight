@@ -54,26 +54,26 @@ public:
     VIZ_SCENE3D_API ~summed_area_table();
 
     /// Computes the SAT sequentially on the CPU based on the given image and TF.
-    VIZ_SCENE3D_API void computeSequential(data::image::sptr _image, data::transfer_function::sptr _tf);
+    VIZ_SCENE3D_API void compute_sequential(data::image::sptr _image, data::transfer_function::sptr _tf);
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
-    VIZ_SCENE3D_API void computeParallel(
+    VIZ_SCENE3D_API void compute_parallel(
         const texture::sptr& _img_texture,
         const viz::scene3d::transfer_function::sptr& _gpu_tf,
         float _sample_distance
     );
 
     /// Returns the texture holding the SAT.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr get_texture() const;
 
     /// Returns the texture used as a ping-pong buffer during SAT computation allowing it to be repurposed.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr getSpareTexture() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr get_spare_texture() const;
 
     /// Updates the current size of the image according to the passed texture and updates the SAT
-    VIZ_SCENE3D_API void updateSatFromTexture(const texture::sptr& _img_texture);
+    VIZ_SCENE3D_API void update_sat_from_texture(const texture::sptr& _img_texture);
 
     /// Updates the SAT size ratio and updates the SAT.
-    VIZ_SCENE3D_API void updateSatFromRatio(float _size_ratio);
+    VIZ_SCENE3D_API void update_sat_from_ratio(float _size_ratio);
 
 private:
 
@@ -91,50 +91,50 @@ private:
     };
 
     /// Creates the buffers and initializes the SAT.
-    void updateBuffers();
+    void update_buffers();
 
     listeners_t m_listeners {};
 
     /// SAT size ratio used to computes its resolution.
-    float m_satSizeRatio;
+    float m_sat_size_ratio;
 
     /// SAT resolution. It's computed thanks to the configured ratio and the associated image size.
-    data::image::Size m_satSize;
+    data::image::size_t m_sat_size;
 
     /// Current image size used to resize the SAT in case of a ratio change.
-    data::image::Size m_currentImageSize;
+    data::image::size_t m_current_image_size;
 
     /// texture used as source during SAT GPU computation, holds the result at the end.
-    Ogre::TexturePtr m_sourceBuffer {nullptr};
+    Ogre::TexturePtr m_source_buffer {nullptr};
 
     /// texture used as target during SAT GPU computation.
-    Ogre::TexturePtr m_targetBuffer {nullptr};
+    Ogre::TexturePtr m_target_buffer {nullptr};
 
     /// Prefix used to name the buffers.
-    std::string m_parentId;
+    std::string m_parent_id;
 
     /// scene manager.
-    Ogre::SceneManager* m_sceneManager;
+    Ogre::SceneManager* m_scene_manager;
 
     /// Camera used as a viewport for each slice of the SAT buffers.
-    Ogre::Camera* m_dummyCamera {nullptr};
+    Ogre::Camera* m_dummy_camera {nullptr};
 
     /// The pass orientation, horizontal = 0, vertical = 1, z-wise = 2.
-    int m_passOrientation {};
+    int m_pass_orientation {};
 
     /// The index of the slice to which we currently render.
-    std::size_t m_sliceIndex {};
+    std::size_t m_slice_index {};
 
     /// The read offset based on the number of reads per fragment shader (r) and the pass index (i) : m_readOffset =
     /// r^i.
-    int m_readOffset {};
+    int m_read_offset {};
 
     /// The depth of the current slice.
-    float m_currentSliceDepth {};
+    float m_current_slice_depth {};
 
     /// Number of texture reads per pass. A higher number will result in fewer passes.
     /// /!\ This number must be the same as the one used in the fragment shader.
-    static constexpr int s_nbTextReads = 32;
+    static constexpr int NB_TEXT_READS = 32;
 
     /// Resource name of the source buffer.
     static inline const std::string SOURCE_BUFFER_NAME = "__GPU_summed_area_table_Ping";
@@ -145,16 +145,16 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline Ogre::TexturePtr summed_area_table::getTexture() const
+inline Ogre::TexturePtr summed_area_table::get_texture() const
 {
-    return m_sourceBuffer;
+    return m_source_buffer;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Ogre::TexturePtr summed_area_table::getSpareTexture() const
+inline Ogre::TexturePtr summed_area_table::get_spare_texture() const
 {
-    return m_targetBuffer;
+    return m_target_buffer;
 }
 
 //-----------------------------------------------------------------------------

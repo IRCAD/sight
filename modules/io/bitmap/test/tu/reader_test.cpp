@@ -65,7 +65,7 @@ inline static void runreader(
     // Check the result...
     CPPUNIT_ASSERT_EQUAL(
         _should_fail,
-        std::dynamic_pointer_cast<sight::io::service::reader>(sreader)->hasFailed()
+        std::dynamic_pointer_cast<sight::io::service::reader>(sreader)->has_failed()
     );
 }
 
@@ -73,14 +73,14 @@ inline static void runreader(
 
 inline static void test_enable(
     data::image::sptr _actual_image,
-    const std::vector<sight::io::bitmap::Backend>& _backends,
+    const std::vector<sight::io::bitmap::backend>& _backends,
     const std::string _enabled
 )
 {
     for(const auto& backend : _backends)
     {
         const auto& filename = "wild" + sight::io::bitmap::extensions(backend).front();
-        const auto& filepath = utest_data::Data::dir() / "sight" / "image" / "bitmap" / filename;
+        const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
 
         // Add file
         service::config_t config;
@@ -115,10 +115,10 @@ void reader_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void reader_test::basicTest()
+void reader_test::basic_test()
 {
-    const auto& filename = "wild" + sight::io::bitmap::extensions(sight::io::bitmap::Backend::LIBTIFF).front();
-    const auto& filepath = utest_data::Data::dir() / "sight" / "image" / "bitmap" / filename;
+    const auto& filename = "wild" + sight::io::bitmap::extensions(sight::io::bitmap::backend::libtiff).front();
+    const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
 
     service::config_t config;
     config.add("file", filepath.string());
@@ -135,27 +135,27 @@ void reader_test::basicTest()
 
 //------------------------------------------------------------------------------
 
-void reader_test::configTest()
+void reader_test::config_test()
 {
     // Build backend list
     std::vector backends {
-        sight::io::bitmap::Backend::LIBPNG,
-        sight::io::bitmap::Backend::LIBTIFF
+        sight::io::bitmap::backend::libpng,
+        sight::io::bitmap::backend::libtiff
     };
 
     if(sight::io::bitmap::nv_jpeg())
     {
-        backends.push_back(sight::io::bitmap::Backend::NVJPEG);
+        backends.push_back(sight::io::bitmap::backend::nvjpeg);
     }
 
-    backends.push_back(sight::io::bitmap::Backend::LIBJPEG);
+    backends.push_back(sight::io::bitmap::backend::libjpeg);
 
     if(sight::io::bitmap::nv_jpeg_2k())
     {
-        backends.push_back(sight::io::bitmap::Backend::NVJPEG2K);
+        backends.push_back(sight::io::bitmap::backend::nvjpeg2k);
     }
 
-    backends.push_back(sight::io::bitmap::Backend::OPENJPEG);
+    backends.push_back(sight::io::bitmap::backend::openjpeg);
 
     // Test enable="all"
     {
@@ -175,16 +175,16 @@ void reader_test::configTest()
     if(sight::io::bitmap::nv_jpeg()
        || sight::io::bitmap::nv_jpeg_2k())
     {
-        std::vector<sight::io::bitmap::Backend> gpu_backend;
+        std::vector<sight::io::bitmap::backend> gpu_backend;
 
         if(sight::io::bitmap::nv_jpeg())
         {
-            gpu_backend.push_back(sight::io::bitmap::Backend::NVJPEG);
+            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg);
         }
 
         if(sight::io::bitmap::nv_jpeg_2k())
         {
-            gpu_backend.push_back(sight::io::bitmap::Backend::NVJPEG2K);
+            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg2k);
         }
 
         // For each backend and each mode ("cpu" means ".jpeg, .jp2")

@@ -50,8 +50,8 @@ static data::image::sptr gen_image(
 
     SIGHT_ASSERT("Width should be at least 1", _w >= 1);
 
-    const core::type image_type  = core::type::get<T>();
-    data::image::Size image_size = {0, 0, 0};
+    const core::type image_type    = core::type::get<T>();
+    data::image::size_t image_size = {0, 0, 0};
     image_size[0] = _w;
     if(_h > 0)
     {
@@ -63,23 +63,23 @@ static data::image::sptr gen_image(
         image_size[2] = _d;
     }
 
-    data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
+    enum data::image::pixel_format format = data::image::pixel_format::gray_scale;
     switch(_num_channels)
     {
         case 1:
-            format = data::image::PixelFormat::GRAY_SCALE;
+            format = data::image::pixel_format::gray_scale;
             break;
 
         case 2:
-            format = data::image::PixelFormat::RG;
+            format = data::image::pixel_format::rg;
             break;
 
         case 3:
-            format = data::image::PixelFormat::RGB;
+            format = data::image::pixel_format::rgb;
             break;
 
         case 4:
-            format = data::image::PixelFormat::RGBA;
+            format = data::image::pixel_format::rgba;
             break;
 
         default:
@@ -90,7 +90,7 @@ static data::image::sptr gen_image(
 
     auto dst_buffer        = image->begin<std::uint8_t>();
     const auto* src_buffer = reinterpret_cast<const std::uint8_t*>(_image_buffer.data());
-    std::copy(src_buffer, src_buffer + image->getSizeInBytes(), dst_buffer);
+    std::copy(src_buffer, src_buffer + image->size_in_bytes(), dst_buffer);
 
     return image;
 }
@@ -115,7 +115,7 @@ static void compare_images(
 
     if(_d > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cv_image.dims));
+        CPPUNIT_ASSERT_EQUAL(_image->num_dimensions(), static_cast<std::size_t>(_cv_image.dims));
         CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cv_image.size[2]));
         CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cv_image.size[1]));
         CPPUNIT_ASSERT_EQUAL(_d, static_cast<std::size_t>(_cv_image.size[0]));
@@ -141,7 +141,7 @@ static void compare_images(
     }
     else if(_h > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cv_image.dims));
+        CPPUNIT_ASSERT_EQUAL(_image->num_dimensions(), static_cast<std::size_t>(_cv_image.dims));
         CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cv_image.size[1]));
         CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cv_image.size[0]));
 
@@ -219,7 +219,7 @@ static void test_copy_to_cv(std::size_t _w, std::size_t _h, std::size_t _d, std:
     const std::vector<T> image_buffer = gen_image_buffer<T>(_w, _h, _d, _num_channels);
     data::image::csptr image          = gen_image<T>(image_buffer, _w, _h, _d, _num_channels);
 
-    cv::Mat cv_image = io::opencv::image::copyToCv(image);
+    cv::Mat cv_image = io::opencv::image::copy_to_cv(image);
 
     // Since we copy the buffer, ensure the pointers are different
     const auto dump_lock = image->dump_lock();
@@ -324,7 +324,7 @@ void image_test::copy_from_cv()
 
 //------------------------------------------------------------------------------
 
-void image_test::copyToCv()
+void image_test::copy_to_cv()
 {
     test_copy_to_cv<std::uint8_t>(10, 2, 30, 1);
     test_copy_to_cv<std::uint8_t>(1, 20, 5, 2);

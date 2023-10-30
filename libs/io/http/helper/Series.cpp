@@ -33,7 +33,7 @@ namespace sight::io::http::helper
 
 // ----------------------------------------------------------------------------
 
-Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& _series_json)
+series::DicomSeriesContainer series::to_fw_med_data(const QJsonObject& _series_json)
 {
     DicomSeriesContainer series_container;
 
@@ -44,38 +44,38 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& _series_json
     // Series
     // ==================================
 
-    series->setSeriesInstanceUID(_series_json["SeriesInstanceUID"].toString().toStdString());
-    series->setModality(_series_json["Modality"].toString().toStdString());
-    series->setSeriesDate(_series_json["SeriesDate"].toString().toStdString());
-    series->setSeriesTime(_series_json["SeriesTime"].toString().toStdString());
-    series->setSeriesDescription(_series_json["SeriesDescription"].toString().toStdString());
+    series->set_series_instance_uid(_series_json["SeriesInstanceUID"].toString().toStdString());
+    series->set_modality(_series_json["Modality"].toString().toStdString());
+    series->set_series_date(_series_json["SeriesDate"].toString().toStdString());
+    series->set_series_time(_series_json["SeriesTime"].toString().toStdString());
+    series->set_series_description(_series_json["SeriesDescription"].toString().toStdString());
 
     // ==================================
     // Patient
     // ==================================
-    series->setPatientName(_series_json["PatientName"].toString().toStdString());
-    series->setPatientID(_series_json["PatientID"].toString().toStdString());
-    series->setPatientBirthDate(_series_json["PatientBirthDate"].toString().toStdString());
-    series->setPatientSex(_series_json["PatientSex"].toString().toStdString());
+    series->set_patient_name(_series_json["PatientName"].toString().toStdString());
+    series->set_patient_id(_series_json["PatientID"].toString().toStdString());
+    series->set_patient_birth_date(_series_json["PatientBirthDate"].toString().toStdString());
+    series->set_patient_sex(_series_json["PatientSex"].toString().toStdString());
 
     // ==================================
     // Study
     // ==================================
-    series->setStudyInstanceUID(_series_json["StudyInstanceUID"].toString().toStdString());
-    series->setStudyDate(_series_json["StudyDate"].toString().toStdString());
-    series->setStudyTime(_series_json["StudyTime"].toString().toStdString());
-    series->setStudyDescription(_series_json["StudyDescription"].toString().toStdString());
-    series->setPatientAge(_series_json["PatientAge"].toString().toStdString());
+    series->set_study_instance_uid(_series_json["StudyInstanceUID"].toString().toStdString());
+    series->set_study_date(_series_json["StudyDate"].toString().toStdString());
+    series->set_study_time(_series_json["StudyTime"].toString().toStdString());
+    series->set_study_description(_series_json["StudyDescription"].toString().toStdString());
+    series->set_patient_age(_series_json["PatientAge"].toString().toStdString());
 
     // ==================================
     // Equipment
     // ==================================
-    series->setInstitutionName(_series_json["InstitutionName"].toString().toStdString());
+    series->set_institution_name(_series_json["InstitutionName"].toString().toStdString());
 
     // ==================================
     // Number of instances
     // ==================================
-    series->setNumberOfInstances(static_cast<std::size_t>(_series_json["NumberOfSeriesRelatedInstances"].toInt()));
+    series->set_number_of_instances(static_cast<std::size_t>(_series_json["NumberOfSeriesRelatedInstances"].toInt()));
 
     // Add series to container
     series_container.push_back(series);
@@ -85,13 +85,13 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& _series_json
 
 // ----------------------------------------------------------------------------
 
-Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesContainer _series)
+series::InstanceUIDContainer series::to_series_instance_uid_container(DicomSeriesContainer _series)
 {
     InstanceUIDContainer result;
 
     for(const data::series::sptr& s : _series)
     {
-        result.push_back(s->getSeriesInstanceUID());
+        result.push_back(s->get_series_instance_uid());
     }
 
     return result;

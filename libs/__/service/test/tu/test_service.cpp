@@ -28,46 +28,46 @@
 
 #include <service/macros.hpp>
 
-SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::STestNoData);
-SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::STestNoData2);
-SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::STest1Input);
-SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::STest1Inout);
-SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::STest2Inouts1Input);
-SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::STest1Input1OptInput1OptInOut);
-SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::STest3InoutsV2);
+SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test_no_data);
+SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test_no_data2);
+SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test1_input);
+SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test1_inout);
+SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test2_inouts1_input);
+SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test1_input1_opt_input1_opt_in_out);
+SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test3_inouts_v2);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_service_with_data);
 
 namespace sight::service::ut
 {
 
-unsigned int test_service::s_START_COUNTER  = 0;
-unsigned int test_service::s_UPDATE_COUNTER = 0;
+unsigned int test_service::s_start_counter  = 0;
+unsigned int test_service::s_update_counter = 0;
 
-const std::string test_service::s_OPTION_KEY   = "option";
-const std::string test_service::s_UNCONFIGURED = "UNCONFIGURED";
-const std::string test_service::s_NOT_DEFINED  = "NOT_DEFINED";
+const std::string test_service::OPTION_KEY   = "option";
+const std::string test_service::UNCONFIGURED = "UNCONFIGURED";
+const std::string test_service::NOT_DEFINED  = "NOT_DEFINED";
 
-const service::base::key_t test_service_with_data::s_INPUT       = "input";
-const service::base::key_t test_service_with_data::s_INOUT_GROUP = "inoutGroup";
-const service::base::key_t test_service_with_data::s_OUTPUT      = "output";
+const service::base::key_t test_service_with_data::INPUT       = "input";
+const service::base::key_t test_service_with_data::INOUT_GROUP = "inoutGroup";
+const service::base::key_t test_service_with_data::OUTPUT      = "output";
 
 //------------------------------------------------------------------------------
 
 void test_service::starting()
 {
-    if(m_raiseException)
+    if(m_raise_exception)
     {
         throw core::exception("start error");
     }
 
-    m_startOrder = s_START_COUNTER++;
+    m_start_order = s_start_counter++;
 }
 
 //------------------------------------------------------------------------------
 
 void test_service::stopping()
 {
-    if(m_raiseException)
+    if(m_raise_exception)
     {
         throw core::exception("stop error");
     }
@@ -77,12 +77,12 @@ void test_service::stopping()
 
 void test_service::updating()
 {
-    if(m_raiseException)
+    if(m_raise_exception)
     {
         throw core::exception("update error");
     }
 
-    m_updateOrder = s_UPDATE_COUNTER++;
+    m_update_order = s_update_counter++;
 }
 
 //------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ void test_service_with_data::updating()
     auto lock                 = m_input.lock();
     data::object::csptr input = lock.get_shared();
 
-    data::object::sptr output = data::object::copy(input);
+    auto output = data::object::copy(input);
     m_output = output;
 }
 

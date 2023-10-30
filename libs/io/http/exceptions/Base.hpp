@@ -32,7 +32,7 @@ namespace sight::io::http::exceptions
 /**
  * @brief Base class of fwNetworkIO Exception
  */
-class IO_HTTP_CLASS_API Base : public core::exception
+class IO_HTTP_CLASS_API base : public core::exception
 {
 public:
 
@@ -40,10 +40,10 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_HTTP_API Base(const std::string& _message);
+    IO_HTTP_API base(const std::string& _message);
 
     /// Destructor
-    ~Base() noexcept override;
+    ~base() noexcept override;
 };
 
 } // namespace sight::io::http::exceptions

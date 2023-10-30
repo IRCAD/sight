@@ -27,11 +27,11 @@
 namespace sight::filter::dicom::registry
 {
 
-struct FwDicomIOFilterRegistryInstantiatorTag {};
+struct dicom_io_filter_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwDicomIOFilterRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, dicom_io_filter_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

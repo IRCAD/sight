@@ -43,36 +43,36 @@ public:
     SIGHT_DECLARE_CLASS(cardinal, ui::layout::view);
 
     /// Defines all possible positions for a CardinalLayout
-    typedef enum
+    enum align
     {
-        CENTER,
-        RIGHT,
-        LEFT,
-        BOTTOM,
-        TOP
-    } Align;
+        center,
+        right,
+        left,
+        bottom,
+        top
+    };
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
-    class ViewInfo
+    class view_info
     {
     public:
 
-        Align m_align {CENTER};
-        std::pair<int, int> m_minSize {-1, -1};
-        std::pair<int, int> m_maxSize {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()};
+        align m_align {center};
+        std::pair<int, int> m_min_size {-1, -1};
+        std::pair<int, int> m_max_size {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()};
         bool m_visible {true};
-        bool m_isResizable {true};
+        bool m_is_resizable {true};
         int m_position {0};
         int m_layer {0};
         int m_row {0};
         std::pair<bool, std::string> m_caption {false, ""};
-        bool m_useScrollBar {false};
-        std::string m_toolTip;
+        bool m_use_scroll_bar {false};
+        std::string m_tool_tip;
 
         /// Background color. When given an empty string, a default background is used. To use another color, set an
         /// hexadecimal value (it has to start with "#").
-        std::string m_backgroundColor;
+        std::string m_background_color;
     };
 
     UI_API cardinal()           = default;
@@ -123,17 +123,17 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    std::list<ViewInfo> getViewsInfo()
+    std::list<view_info> get_views_info()
     {
         return m_views;
     }
 
 private:
 
-    static const std::map<std::string, Align> STRING_TO_ALIGN;
+    static const std::map<std::string, align> STRING_TO_ALIGN;
 
     /// Saves layout configuration definition
-    std::list<ViewInfo> m_views;
+    std::list<view_info> m_views;
 };
 
 } // namespace sight::ui::layout

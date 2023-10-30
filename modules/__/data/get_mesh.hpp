@@ -97,31 +97,31 @@ private:
     /// structure which contains the element of an index configuration:
     /// inputIndex: index of the mesh in the modelSeries
     /// outputIndex: index of the output variable
-    struct indexConfig
+    struct index_config
     {
-        std::size_t inputIndex;
-        std::size_t outputIndex;
+        std::size_t input_index;
+        std::size_t output_index;
     };
 
     /// structure which contains the element of a type configuration:
     /// type: the mesh type requested
     /// matching: regex for the mesh name
     /// outputIndex: index of the output variable
-    struct typeConfig
+    struct type_config
     {
         std::string type;
         std::string matching;
-        std::size_t outputIndex;
+        std::size_t output_index;
     };
 
     /// The list of index oriented configurations.
-    std::vector<indexConfig> m_indexConfigurations;
+    std::vector<index_config> m_index_configurations;
     /// The list of type-name configurations.
-    std::vector<typeConfig> m_typeConfiguration;
+    std::vector<type_config> m_type_configuration;
 
     /// The in/out variables
-    sight::data::ptr<sight::data::model_series, sight::data::Access::in> m_modelSeries {this, "modelSeries"};
-    sight::data::ptr_vector<sight::data::mesh, sight::data::Access::out> m_mesh {this, "mesh"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::in> m_model_series {this, "modelSeries"};
+    sight::data::ptr_vector<sight::data::mesh, sight::data::access::out> m_mesh {this, "mesh"};
 };
 
 } // namespace sight::module::data

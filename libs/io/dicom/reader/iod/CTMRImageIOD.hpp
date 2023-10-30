@@ -30,7 +30,7 @@ namespace sight::io::dicom::reader::iod
 /**
  * @brief CTMRImageIOD class used to read CT & MR Image IODs
  */
-class IO_DICOM_CLASS_API CTMRImageIOD : public io::dicom::reader::iod::InformationObjectDefinition
+class IO_DICOM_CLASS_API ctmr_image_iod : public io::dicom::reader::iod::information_object_definition
 {
 public:
 
@@ -42,16 +42,16 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API CTMRImageIOD(
+    IO_DICOM_API ctmr_image_iod(
         const data::dicom_series::csptr& _dicom_series,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~CTMRImageIOD() override;
+    IO_DICOM_API ~ctmr_image_iod() override;
 
     /**
      * @brief Read a DICOM File
@@ -61,15 +61,15 @@ public:
     IO_DICOM_API void read(data::series::sptr _series) override;
 
     /// Enable buffer rotation
-    void setBufferRotationEnabled(bool _enabled)
+    void set_buffer_rotation_enabled(bool _enabled)
     {
-        m_enableBufferRotation = _enabled;
+        m_enable_buffer_rotation = _enabled;
     }
 
 protected:
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation {true};
+    bool m_enable_buffer_rotation {true};
 };
 
 } // namespace sight::io::dicom::reader::iod

@@ -32,15 +32,15 @@ class DATA_CLASS_API set final : public data::container<sequenced_set<std::share
 {
 public:
 
-    SIGHT_DECLARE_CLASS(set, container<set::container_type>);
+    SIGHT_DECLARE_CLASS(set, container<set::container_t>);
 
     /// Destructor / Assignment operators
     /// @{
     DATA_API ~set() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
-    using container<set::container_type>::container;
-    using container<set::container_type>::operator=;
+    using container<set::container_t>::container;
+    using container<set::container_t>::operator=;
     /// @}
 
     /// Equality comparison operators

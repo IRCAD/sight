@@ -84,11 +84,11 @@ protected:
 
 private:
 
-    std::vector<size_t> m_indexNumbers;
-    static constexpr std::string_view s_SERIES_SET_INPUT = "seriesSet";
-    static constexpr std::string_view s_SERIES_GROUP_OUT = "series";
-    sight::data::ptr<sight::data::series_set, sight::data::Access::in> m_series_set {this, s_SERIES_SET_INPUT};
-    sight::data::ptr_vector<sight::data::series, sight::data::Access::out> m_series {this, s_SERIES_GROUP_OUT};
+    std::vector<size_t> m_index_numbers;
+    static constexpr std::string_view SERIES_SET_INPUT = "seriesSet";
+    static constexpr std::string_view SERIES_GROUP_OUT = "series";
+    sight::data::ptr<sight::data::series_set, sight::data::access::in> m_series_set {this, SERIES_SET_INPUT};
+    sight::data::ptr_vector<sight::data::series, sight::data::access::out> m_series {this, SERIES_GROUP_OUT};
 };
 
 } // namespace sight::module::data

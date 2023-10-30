@@ -54,23 +54,23 @@ namespace sight::io::dicom::helper
  * @brief This class contains helpers to anonymize dicom files on filesystem.
  *        Anonymization is performed according to the DICOM standard - Part 15 - Annex E - Basic Profile
  */
-class IO_DICOM_CLASS_API DicomAnonymizer
+class IO_DICOM_CLASS_API dicom_anonymizer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DicomAnonymizer);
+    SIGHT_DECLARE_CLASS(dicom_anonymizer);
 
     /// Constructor
-    IO_DICOM_API DicomAnonymizer();
+    IO_DICOM_API dicom_anonymizer();
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomAnonymizer();
+    IO_DICOM_API virtual ~dicom_anonymizer();
 
     /// Map used to maintain UID consistency
-    typedef std::map<std::string, std::string> UIDMap;
+    using uid_map = std::map<std::string, std::string>;
 
     /// Map used to store exception value
-    typedef std::map<gdcm::Tag, std::string> exception_tag_map_t;
+    using exception_tag_map_t = std::map<gdcm::Tag, std::string>;
 
     /// Anonymize a folder containing Dicom files
     IO_DICOM_API void anonymize(const std::filesystem::path& _dir_path);
@@ -78,32 +78,32 @@ public:
     IO_DICOM_API void anonymize(std::istream& _input_stream, std::ostream& _output_stream);
 
     /// Add an exceptional value for a tag
-    IO_DICOM_API void addExceptionTag(uint16_t _group, uint16_t _element, const std::string& _value = "");
+    IO_DICOM_API void add_exception_tag(uint16_t _group, uint16_t _element, const std::string& _value = "");
 
     /**
      * @brief Copy a directory recursively.
      * @param input Input file
      * @param output Output file
      */
-    IO_DICOM_API static void copyDirectory(
+    IO_DICOM_API static void copy_directory(
         const std::filesystem::path& _input,
         const std::filesystem::path& _output
     );
 
     /// Get job observer
-    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::base) getJob() const;
+    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::base) get_job() const;
 
     /// Return next file index
-    IO_DICOM_API unsigned int getNextIndex();
+    IO_DICOM_API unsigned int get_next_index();
 
     /// Reset file index to 0
-    IO_DICOM_API void resetIndex();
+    IO_DICOM_API void reset_index();
 
     /// The removed tag will not be process by anonymization tag
-    IO_DICOM_API void removeAnonymizeTag(const gdcm::Tag& _tag);
+    IO_DICOM_API void remove_anonymize_tag(const gdcm::Tag& _tag);
 
     /// Set Reference date for shifting
-    IO_DICOM_API void setReferenceDate(const boost::gregorian::date& _reference_date);
+    IO_DICOM_API void set_reference_date(const boost::gregorian::date& _reference_date);
 
     /**
      * @brief Add a date tag that must be shifted.
@@ -112,33 +112,33 @@ public:
      *
      * @note The shift is done from Jan 1, 1900.
      */
-    IO_DICOM_API void addShiftDateTag(const gdcm::Tag& _tag);
+    IO_DICOM_API void add_shift_date_tag(const gdcm::Tag& _tag);
 
     /**
      * @brief Tells the anonymizer to do not anonymize the given private tag.
      *
      * @param tag private tag to be preserved from anonymisation
      */
-    IO_DICOM_API void preservePrivateTag(const gdcm::Tag& _tag);
+    IO_DICOM_API void preserve_private_tag(const gdcm::Tag& _tag);
 
     /**
      * @name Access tags according to their associated action code
      * @{ */
-    typedef std::set<gdcm::Tag> tag_container_t;
-    IO_DICOM_API const tag_container_t& getActionCodeDTags();
-    IO_DICOM_API const tag_container_t& getActionCodeZTags();
-    IO_DICOM_API const tag_container_t& getActionCodeXTags();
-    IO_DICOM_API const tag_container_t& getActionCodeKTags();
-    IO_DICOM_API const tag_container_t& getActionCodeCTags();
-    IO_DICOM_API const tag_container_t& getActionCodeUTags();
+    using tag_container_t = std::set<gdcm::Tag>;
+    IO_DICOM_API const tag_container_t& get_action_code_d_tags();
+    IO_DICOM_API const tag_container_t& get_action_code_z_tags();
+    IO_DICOM_API const tag_container_t& get_action_code_x_tags();
+    IO_DICOM_API const tag_container_t& get_action_code_k_tags();
+    IO_DICOM_API const tag_container_t& get_action_code_c_tags();
+    IO_DICOM_API const tag_container_t& get_action_code_u_tags();
 /**  @} */
 
 private:
 
-    void anonymizationProcess(const std::filesystem::path& _dir_path);
+    void anonymization_process(const std::filesystem::path& _dir_path);
 
     ///D: replace with a non-zero length value that may be a dummy value and consistent with the VR
-    void applyActionCodeD(const gdcm::Tag& _tag);
+    void apply_action_code_d(const gdcm::Tag& _tag);
 
     /**
      * Z: replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with
@@ -148,7 +148,7 @@ private:
      *
      * @note This method applies action code D only.
      */
-    void applyActionCodeZ(const gdcm::Tag& _tag);
+    void apply_action_code_z(const gdcm::Tag& _tag);
 
     /**
      * X: remove tag
@@ -161,48 +161,48 @@ private:
      *
      * @note This method applies action code X only.
      */
-    void applyActionCodeX(const gdcm::Tag& _tag);
+    void apply_action_code_x(const gdcm::Tag& _tag);
 
     /// K: keep (unchanged for non-sequence attributes, cleaned for sequences)
-    void applyActionCodeK(const gdcm::Tag& _tag);
+    void apply_action_code_k(const gdcm::Tag& _tag);
 
     /**
      * C: clean, that is replace with values of similar meaning known not to contain identifying information and
      * consistent with the VR
      */
-    static void applyActionCodeC(const gdcm::Tag& _tag);
+    static void apply_action_code_c(const gdcm::Tag& _tag);
 
     /// U: if UID is not empty, replace with a non-zero length UID
     /// that is internally consistent within a set of Instances
-    void applyActionCodeU(const gdcm::Tag& _tag);
+    void apply_action_code_u(const gdcm::Tag& _tag);
 
     /**
      * Shift date according to the interval between the date and the reference date.
      *
      * @note The shift is done from Jan 1, 1900.
      */
-    void applyActionShiftDate(const gdcm::Tag& _tag);
+    void apply_action_shift_date(const gdcm::Tag& _tag);
 
     /// Generate a value consistent with the VR
-    void generateDummyValue(const gdcm::Tag& _tag);
+    void generate_dummy_value(const gdcm::Tag& _tag);
 
     /// Anonymizer
     gdcm::Anonymizer m_anonymizer;
 
     /// String filter used to convert DataElement to String
-    gdcm::StringFilter m_stringFilter;
+    gdcm::StringFilter m_string_filter;
 
     /// Public Dicom Dictionary
-    const gdcm::Dict& m_publicDictionary;
+    const gdcm::Dict& m_public_dictionary;
 
     /// UID Map
-    UIDMap m_uidMap;
+    uid_map m_uid_map;
 
     /// Exception tag map
-    exception_tag_map_t m_exceptionTagMap;
+    exception_tag_map_t m_exception_tag_map;
 
     /// Number of Tags processed (Without Curve Data, Overlay Comments, Overlay Data and Private attributes)
-    static const unsigned int s_NUMBER_OF_TAGS;
+    static const unsigned int NUMBER_OF_TAGS;
 
     /// Job observer
     SPTR(core::jobs::observer) m_observer;
@@ -211,29 +211,29 @@ private:
     bool m_archiving {false};
 
     /// Index of anonymizer
-    unsigned int m_fileIndex {0};
+    unsigned int m_file_index {0};
 
     /// Reference date for shifting
-    boost::gregorian::date m_referenceDate;
+    boost::gregorian::date m_reference_date;
 
     /**
      * @name Tags to be processed with associated action code.
      * Exception tags added through addExceptionTag will be removed.
      * @see addExceptionTag
      * @{ */
-    tag_container_t m_actionCodeDTags;
-    tag_container_t m_actionCodeZTags;
-    tag_container_t m_actionCodeXTags;
-    tag_container_t m_actionCodeKTags;
-    tag_container_t m_actionCodeCTags;
-    tag_container_t m_actionCodeUTags;
+    tag_container_t m_action_code_d_tags;
+    tag_container_t m_action_code_z_tags;
+    tag_container_t m_action_code_x_tags;
+    tag_container_t m_action_code_k_tags;
+    tag_container_t m_action_code_c_tags;
+    tag_container_t m_action_code_u_tags;
     /**  @} */
 
     /// List of date tags that must be shifted
-    tag_container_t m_actionShiftDateTags;
+    tag_container_t m_action_shift_date_tags;
 
     /// List of private tags to be preserved from anonymisation
-    io::dicom::helper::private_tag_vec_t m_privateTags;
+    io::dicom::helper::private_tag_vec_t m_private_tags;
 };
 
 } // namespace sight::io::dicom::helper

@@ -38,7 +38,7 @@ void generic_field::updating()
 
 //------------------------------------------------------------------------------
 
-void generic_field::createConfig(core::tools::object::sptr _obj)
+void generic_field::create_config(core::tools::object::sptr _obj)
 {
     const auto input = m_cfg.get_optional<std::string>("value");
 
@@ -46,7 +46,7 @@ void generic_field::createConfig(core::tools::object::sptr _obj)
     {
         const auto field = std::dynamic_pointer_cast<data::generic_field_base>(_obj);
         SIGHT_ASSERT("generic_field not instanced", field);
-        field->fromString(input.value());
+        field->from_string(input.value());
     }
 }
 

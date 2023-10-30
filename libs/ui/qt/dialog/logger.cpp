@@ -42,21 +42,21 @@ namespace sight::ui::qt::dialog
 
 //------------------------------------------------------------------------------
 
-void logger::setTitle(const std::string& _title)
+void logger::set_title(const std::string& _title)
 {
     m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setMessage(const std::string& _message)
+void logger::set_message(const std::string& _message)
 {
     m_message = _message;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setLogger(const core::log::logger::sptr& _logger)
+void logger::set_logger(const core::log::logger::sptr& _logger)
 {
     m_logger = _logger;
 }
@@ -90,12 +90,12 @@ bool logger::show()
 
     // Create icon
     auto* icon_label = new QLabel();
-    if(m_logger->count(core::log::log::CRITICAL) > 0)
+    if(m_logger->count(core::log::log::critical) > 0)
     {
         const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/critical.png");
         icon_label->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
-    else if(m_logger->count(core::log::log::WARNING) > 0)
+    else if(m_logger->count(core::log::log::warning) > 0)
     {
         const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/warning.png");
         icon_label->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
@@ -111,9 +111,9 @@ bool logger::show()
     // Create message
     std::stringstream ss;
     ss << m_message
-    << "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::log::CRITICAL) << " critical, "
-    << m_logger->count(core::log::log::WARNING) << " warning and "
-    << m_logger->count(core::log::log::INFORMATION) << " information messages.";
+    << "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::log::critical) << " critical, "
+    << m_logger->count(core::log::log::warning) << " warning and "
+    << m_logger->count(core::log::log::information) << " information messages.";
 
     auto* message_label = new QLabel(ss.str().c_str());
     message_layout->addWidget(message_label);
@@ -149,11 +149,11 @@ bool logger::show()
     checkbox->setStyleSheet(QString::fromStdString(style_sheet));
 
     // Create log table
-    m_logTableWidget = new QTableWidget(static_cast<int>(m_logger->count()), 2);
-    m_logTableWidget->setHorizontalHeaderItem(0, new QTableWidgetItem("Level"));
-    m_logTableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem("Message"));
-    m_logTableWidget->setColumnWidth(0, 120);
-    m_logTableWidget->horizontalHeader()->setStretchLastSection(true);
+    m_log_table_widget = new QTableWidget(static_cast<int>(m_logger->count()), 2);
+    m_log_table_widget->setHorizontalHeaderItem(0, new QTableWidgetItem("Level"));
+    m_log_table_widget->setHorizontalHeaderItem(1, new QTableWidgetItem("Message"));
+    m_log_table_widget->setColumnWidth(0, 120);
+    m_log_table_widget->horizontalHeader()->setStretchLastSection(true);
 
     // Fill log table
     auto it = m_logger->begin();
@@ -162,20 +162,20 @@ bool logger::show()
     {
         std::string level_string = "Unknown";
         QIcon level_icon;
-        core::log::log::level_type level = it->get_level();
-        if(level == core::log::log::INFORMATION)
+        core::log::log::level_t level = it->get_level();
+        if(level == core::log::log::information)
         {
             level_string = "Information";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/information.png");
             level_icon = QIcon(QString::fromStdString(path.string()));
         }
-        else if(level == core::log::log::WARNING)
+        else if(level == core::log::log::warning)
         {
             level_string = "Warning";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/warning.png");
             level_icon = QIcon(QString::fromStdString(path.string()));
         }
-        else if(level == core::log::log::CRITICAL)
+        else if(level == core::log::log::critical)
         {
             level_string = "Critical";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/critical.png");
@@ -184,49 +184,49 @@ bool logger::show()
 
         auto* level_item = new QTableWidgetItem(level_icon, level_string.c_str());
         level_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        m_logTableWidget->setItem(row, 0, level_item);
+        m_log_table_widget->setItem(row, 0, level_item);
 
         auto* message_item = new QTableWidgetItem(it->get_message().c_str());
         message_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        m_logTableWidget->setItem(row, 1, message_item);
+        m_log_table_widget->setItem(row, 1, message_item);
     }
 
     // Add widget to dialog
     main_layout->addWidget(message_widget, 0, Qt::AlignLeft);
     main_layout->addWidget(checkbox);
-    main_layout->addWidget(m_logTableWidget);
+    main_layout->addWidget(m_log_table_widget);
     main_layout->addWidget(button_widget, 0, Qt::AlignRight);
 
     // Hide log table
-    m_logTableWidget->hide();
+    m_log_table_widget->hide();
 
     // Connect buttons
     QObject::connect(ok_button, SIGNAL(clicked()), m_dialog, SLOT(accept()));
     QObject::connect(cancel_button, SIGNAL(clicked()), m_dialog, SLOT(reject()));
-    QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(displayLogs(int)));
+    QObject::connect(checkbox, &QCheckBox::stateChanged, this, &logger::display_logs);
 
     // Show dialog and return result
     bool result = m_dialog->exec() != 0;
 
     // Disconnect buttons
-    QObject::disconnect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(displayLogs(int)));
+    QObject::disconnect(checkbox, &QCheckBox::stateChanged, this, &logger::display_logs);
 
     return result;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::displayLogs(int _state)
+void logger::display_logs(int _state)
 {
     int width = m_dialog->size().width();
 
     if(_state != 0)
     {
-        m_logTableWidget->show();
+        m_log_table_widget->show();
     }
     else
     {
-        m_logTableWidget->hide();
+        m_log_table_widget->hide();
     }
 
     m_dialog->adjustSize();

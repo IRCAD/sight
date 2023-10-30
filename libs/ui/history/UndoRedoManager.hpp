@@ -34,7 +34,7 @@ namespace sight::ui::history
 /**
  * @brief Keep track of commands, undo/redo them.
  */
-class UI_HISTORY_CLASS_API UndoRedoManager
+class UI_HISTORY_CLASS_API undo_redo_manager
 {
 public:
 
@@ -44,7 +44,7 @@ public:
      * @param[in] maxMemory the maximum amount of memory used by the manager (commands are dumped beyond this point)
      * @param[in] maxUndo the maximum number of commands stored by the manager (commands are dumped beyond this point)
      */
-    UI_HISTORY_API UndoRedoManager(
+    UI_HISTORY_API undo_redo_manager(
         std::size_t _max_memory   = std::numeric_limits<std::size_t>::max(),
         std::size_t _max_commands = std::numeric_limits<std::size_t>::max()
     );
@@ -73,47 +73,47 @@ public:
     UI_HISTORY_API bool undo();
 
     /// Return true if we can undo.
-    [[nodiscard]] UI_HISTORY_API bool canUndo() const;
+    [[nodiscard]] UI_HISTORY_API bool can_undo() const;
 
     /// Return true if we can redo.
-    [[nodiscard]] UI_HISTORY_API bool canRedo() const;
+    [[nodiscard]] UI_HISTORY_API bool can_redo() const;
 
     /// Remove all commands in history.
     UI_HISTORY_API void clear();
 
     /// Get the number of enqueued commands.
-    [[nodiscard]] UI_HISTORY_API std::size_t getCommandCount() const;
+    [[nodiscard]] UI_HISTORY_API std::size_t get_command_count() const;
 
     /// Set the maximum number of enqueued commands.
-    UI_HISTORY_API void setCommandCount(std::size_t _cmd_count);
+    UI_HISTORY_API void set_command_count(std::size_t _cmd_count);
 
     /// Returns the amount of memory used by the history.
-    [[nodiscard]] UI_HISTORY_API std::size_t getHistorySize() const;
+    [[nodiscard]] UI_HISTORY_API std::size_t get_history_size() const;
 
     /// Set the maximum amount of memory used by the history.
-    UI_HISTORY_API void setHistorySize(std::size_t _hist_size);
+    UI_HISTORY_API void set_history_size(std::size_t _hist_size);
 
 private:
 
-    typedef std::deque<command::sptr> command_history_t;
+    using command_history_t = std::deque<command::sptr>;
 
     /// Maximum amount of memory (in bytes) that can be used by the manager.
-    std::size_t m_maxMemory;
+    std::size_t m_max_memory;
 
     /// Maximum number of commands stored in the history.
-    std::size_t m_maxCommands;
+    std::size_t m_max_commands;
 
     /// Amount of memory currently in use by the command history.
-    std::size_t m_usedMemory {0};
+    std::size_t m_used_memory {0};
 
     /// Double-ended queue of commands.
-    command_history_t m_commandQueue;
+    command_history_t m_command_queue;
 
     /// Pointer to the last command.
-    std::int64_t m_commandIndex {-1};
+    std::int64_t m_command_index {-1};
 
     /// Removes the oldest command from the history.
-    void popFront();
+    void pop_front();
 };
 
 } // namespace sight::ui::history

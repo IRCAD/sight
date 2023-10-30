@@ -42,27 +42,27 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-static const std::string s_CLEAR_ACTIVITIES_CONFIG = "clearActivities";
-static const std::string s_THEME_CONFIG            = "theme";
-static const std::string s_CLEAR_CONFIG            = "clear";
-static const std::string s_ACCENT_CONFIG           = "accent";
-static const std::string s_FOREGROUND_CONFIG       = "foreground";
-static const std::string s_BACKGROUND_CONFIG       = "background";
-static const std::string s_PRIMARY_CONFIG          = "primary";
-static const std::string s_ELEVATION_CONFIG        = "elevation";
-static const std::string s_BUTTON_WIDTH            = "buttonWidth";
-static const std::string s_FONT_SIZE               = "fontSize";
+static const std::string CLEAR_ACTIVITIES_CONFIG = "clearActivities";
+static const std::string THEME_CONFIG            = "theme";
+static const std::string CLEAR_CONFIG            = "clear";
+static const std::string ACCENT_CONFIG           = "accent";
+static const std::string FOREGROUND_CONFIG       = "foreground";
+static const std::string BACKGROUND_CONFIG       = "background";
+static const std::string PRIMARY_CONFIG          = "primary";
+static const std::string ELEVATION_CONFIG        = "elevation";
+static const std::string BUTTON_WIDTH            = "buttonWidth";
+static const std::string FONT_SIZE               = "fontSize";
 
 //------------------------------------------------------------------------------
 
 sequencer::sequencer() noexcept
 {
-    new_slot(Slots::GO_TO, &sequencer::goTo, this);
-    new_slot(Slots::CHECK_NEXT, &sequencer::checkNext, this);
-    new_slot(Slots::VALIDATE_NEXT, &sequencer::validateNext, this);
-    new_slot(Slots::NEXT, &sequencer::next, this);
-    new_slot(Slots::PREVIOUS, &sequencer::previous, this);
-    new_slot(Slots::SEND_INFO, &sequencer::sendInfo, this);
+    new_slot(slots::GO_TO, &sequencer::go_to, this);
+    new_slot(slots::CHECK_NEXT, &sequencer::check_next, this);
+    new_slot(slots::VALIDATE_NEXT, &sequencer::validate_next, this);
+    new_slot(slots::NEXT, &sequencer::next, this);
+    new_slot(slots::PREVIOUS, &sequencer::previous, this);
+    new_slot(slots::SEND_INFO, &sequencer::send_info, this);
 }
 
 //------------------------------------------------------------------------------
@@ -77,21 +77,21 @@ void sequencer::configuring()
     auto it   = pair.first;
     for( ; it != pair.second ; ++it)
     {
-        m_activityIds.push_back(it->second.get<std::string>("<xmlattr>.id"));
-        m_activityNames.push_back(it->second.get<std::string>("<xmlattr>.name", ""));
+        m_activity_ids.push_back(it->second.get<std::string>("<xmlattr>.id"));
+        m_activity_names.push_back(it->second.get<std::string>("<xmlattr>.name", ""));
     }
 
-    m_clearActivities = config.get<bool>(s_CLEAR_ACTIVITIES_CONFIG, m_clearActivities);
+    m_clear_activities = config.get<bool>(CLEAR_ACTIVITIES_CONFIG, m_clear_activities);
 
-    m_theme       = config.get<std::string>(s_THEME_CONFIG, m_theme);
-    m_clear       = config.get<std::string>(s_CLEAR_CONFIG, m_clear);
-    m_accent      = config.get<std::string>(s_ACCENT_CONFIG, m_accent);
-    m_foreground  = config.get<std::string>(s_FOREGROUND_CONFIG, m_foreground);
-    m_background  = config.get<std::string>(s_BACKGROUND_CONFIG, m_background);
-    m_primary     = config.get<std::string>(s_PRIMARY_CONFIG, m_primary);
-    m_elevation   = config.get<std::string>(s_ELEVATION_CONFIG, m_elevation);
-    m_buttonWidth = config.get<std::string>(s_BUTTON_WIDTH, m_buttonWidth);
-    m_fontSize    = config.get<double>(s_FONT_SIZE, m_fontSize);
+    m_theme        = config.get<std::string>(THEME_CONFIG, m_theme);
+    m_clear        = config.get<std::string>(CLEAR_CONFIG, m_clear);
+    m_accent       = config.get<std::string>(ACCENT_CONFIG, m_accent);
+    m_foreground   = config.get<std::string>(FOREGROUND_CONFIG, m_foreground);
+    m_background   = config.get<std::string>(BACKGROUND_CONFIG, m_background);
+    m_primary      = config.get<std::string>(PRIMARY_CONFIG, m_primary);
+    m_elevation    = config.get<std::string>(ELEVATION_CONFIG, m_elevation);
+    m_button_width = config.get<std::string>(BUTTON_WIDTH, m_button_width);
+    m_font_size    = config.get<double>(FONT_SIZE, m_font_size);
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ void sequencer::starting()
 {
     this->sight::ui::service::create();
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     auto* main_layout = new QVBoxLayout();
     main_layout->setContentsMargins(0, 0, 0, 0);
@@ -110,7 +110,7 @@ void sequencer::starting()
 
     const auto path =
         core::runtime::get_module_resource_file_path("sight::module::ui::qt", "ActivitySequencer.qml");
-    QWidget* parent = qt_container->getQtContainer();
+    QWidget* parent = qt_container->get_qt_container();
     auto* engine    = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
@@ -170,13 +170,13 @@ void sequencer::starting()
 
     QStringList activities_name;
 
-    auto activity_reg = sight::activity::extension::activity::getDefault();
-    for(std::size_t i = 0 ; i < m_activityIds.size() ; ++i)
+    auto activity_reg = sight::activity::extension::activity::get_default();
+    for(std::size_t i = 0 ; i < m_activity_ids.size() ; ++i)
     {
-        std::string name = m_activityNames[i];
+        std::string name = m_activity_names[i];
         if(name.empty())
         {
-            const auto info = activity_reg->getInfo(m_activityIds[i]);
+            const auto info = activity_reg->get_info(m_activity_ids[i]);
             name = info.title;
         }
 
@@ -185,40 +185,40 @@ void sequencer::starting()
 
     engine->rootContext()->setContextProperty("activityNameList", activities_name);
     engine->rootContext()->setContextProperty("widgetWidth", m_widget->width());
-    engine->rootContext()->setContextProperty(QString::fromStdString(s_THEME_CONFIG), theme);
+    engine->rootContext()->setContextProperty(QString::fromStdString(THEME_CONFIG), theme);
     engine->rootContext()->setContextProperty(
-        QString::fromStdString(s_ACCENT_CONFIG),
+        QString::fromStdString(ACCENT_CONFIG),
         QString::fromStdString(m_accent)
     );
     engine->rootContext()->setContextProperty(
-        QString::fromStdString(s_FOREGROUND_CONFIG),
+        QString::fromStdString(FOREGROUND_CONFIG),
         QString::fromStdString(m_foreground)
     );
     engine->rootContext()->setContextProperty(
-        QString::fromStdString(s_BACKGROUND_CONFIG),
+        QString::fromStdString(BACKGROUND_CONFIG),
         QString::fromStdString(m_background)
     );
     engine->rootContext()->setContextProperty(
-        QString::fromStdString(s_PRIMARY_CONFIG),
+        QString::fromStdString(PRIMARY_CONFIG),
         QString::fromStdString(
             m_primary
         )
     );
     engine->rootContext()->setContextProperty(
-        QString::fromStdString(s_ELEVATION_CONFIG),
+        QString::fromStdString(ELEVATION_CONFIG),
         QString::fromStdString(m_elevation)
     );
     engine->rootContext()->setContextProperty(
-        QString::fromStdString(s_BUTTON_WIDTH),
-        QString::fromStdString(m_buttonWidth)
+        QString::fromStdString(BUTTON_WIDTH),
+        QString::fromStdString(m_button_width)
     );
-    engine->rootContext()->setContextProperty(QString::fromStdString(s_FONT_SIZE), m_fontSize);
+    engine->rootContext()->setContextProperty(QString::fromStdString(FONT_SIZE), m_font_size);
 
     m_widget->setSource(QUrl::fromLocalFile(QString::fromStdString(path.string())));
 
-    QObject::connect(m_widget->rootObject(), SIGNAL(activitySelected(int)), this, SLOT(goTo(int)));
+    QObject::connect(m_widget->rootObject(), SIGNAL(activitySelected(int)), this, SLOT(go_to(int)));
 
-    qt_container->setLayout(main_layout);
+    qt_container->set_layout(main_layout);
 }
 
 //------------------------------------------------------------------------------
@@ -234,53 +234,53 @@ void sequencer::updating()
 {
     {
         auto activity_set = m_activity_set.lock();
-        SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+        SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
-        m_currentActivity = this->parseActivities(*activity_set);
+        m_current_activity = this->parse_activities(*activity_set);
     }
-    if(m_currentActivity >= 0)
+    if(m_current_activity >= 0)
     {
-        for(int i = 0 ; i <= m_currentActivity ; ++i)
+        for(int i = 0 ; i <= m_current_activity ; ++i)
         {
-            this->enableActivity(i);
+            this->enable_activity(i);
         }
 
         // launch the last activity
-        this->goTo(m_currentActivity);
+        this->go_to(m_current_activity);
     }
     else
     {
         // launch the first activity
-        this->enableActivity(0);
-        this->goTo(0);
+        this->enable_activity(0);
+        this->go_to(0);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::goTo(int _index)
+void sequencer::go_to(int _index)
 {
-    if(_index < 0 || _index >= static_cast<int>(m_activityIds.size()))
+    if(_index < 0 || _index >= static_cast<int>(m_activity_ids.size()))
     {
         SIGHT_ERROR("no activity to launch at index " << _index)
         return;
     }
 
     auto activity_set = m_activity_set.lock();
-    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+    SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Clear activities if go backward.
-    if(m_clearActivities && m_currentActivity > _index)
+    if(m_clear_activities && m_current_activity > _index)
     {
         auto dialog = sight::ui::dialog::message(
             "Sequencer",
             "The data will be deleted! \nDo you want to continue?",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
-        dialog.addButton(sight::ui::dialog::message::YES_NO);
+        dialog.add_button(sight::ui::dialog::message::yes_no);
         const auto button = dialog.show();
 
-        if((button == sight::ui::dialog::message::NO))
+        if((button == sight::ui::dialog::message::no))
         {
             return;
         }
@@ -288,31 +288,31 @@ void sequencer::goTo(int _index)
         // Disable all next activities (including current)
         for(int i = _index + 1, end = int(activity_set->size()) ; i < end ; ++i)
         {
-            this->disableActivity(i);
+            this->disable_activity(i);
         }
 
         // Remove all last activities.
-        this->removeLastActivities(*activity_set, std::size_t(_index));
+        this->remove_last_activities(*activity_set, std::size_t(_index));
     }
     // Store data otherwise.
-    else if(m_currentActivity >= 0)
+    else if(m_current_activity >= 0)
     {
-        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
+        this->store_activity_data(*activity_set, std::size_t(m_current_activity));
     }
 
     const auto new_idx = static_cast<std::size_t>(_index);
 
-    data::activity::sptr activity = this->getActivity(*activity_set, new_idx, slot(service::slots::UPDATE));
+    data::activity::sptr activity = this->get_activity(*activity_set, new_idx, slot(service::slots::UPDATE));
 
     bool ok = true;
     std::string error_msg;
 
-    std::tie(ok, error_msg) = sight::module::ui::qt::activity::sequencer::validateActivity(activity);
+    std::tie(ok, error_msg) = sight::module::ui::qt::activity::sequencer::validate_activity(activity);
     if(ok)
     {
-        M_ACTIVITY_CREATED->async_emit(activity);
+        m_activity_created->async_emit(activity);
 
-        m_currentActivity = _index;
+        m_current_activity = _index;
         QObject* object = m_widget->rootObject();
         QMetaObject::invokeMethod(object, "setCurrentActivity", Q_ARG(QVariant, _index));
         QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
@@ -320,43 +320,43 @@ void sequencer::goTo(int _index)
     else
     {
         sight::ui::dialog::message::show("Activity not valid", error_msg);
-        M_DATA_REQUIRED->async_emit(activity);
+        m_data_required->async_emit(activity);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::checkNext()
+void sequencer::check_next()
 {
     auto activity_set = m_activity_set.lock();
-    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+    SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.
-    if(m_currentActivity >= 0)
+    if(m_current_activity >= 0)
     {
-        storeActivityData(*activity_set, std::size_t(m_currentActivity));
+        store_activity_data(*activity_set, std::size_t(m_current_activity));
     }
 
     // Check if the next activity is valid (creates the activity if needed)
     // NOLINTNEXTLINE(bugprone-misplaced-widening-cast)
-    const auto next_index = std::size_t(m_currentActivity + 1);
-    if(next_index < m_activityIds.size())
+    const auto next_index = std::size_t(m_current_activity + 1);
+    if(next_index < m_activity_ids.size())
     {
-        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(service::slots::UPDATE));
-        const auto& [ok, error] = sequencer::validateActivity(next_activity);
+        const auto& next_activity = this->get_activity(*activity_set, next_index, slot(service::slots::UPDATE));
+        const auto& [ok, error] = sequencer::validate_activity(next_activity);
 
         if(ok)
         {
-            enableActivity(int(next_index));
+            enable_activity(int(next_index));
         }
         else
         {
-            disableActivity(int(next_index));
+            disable_activity(int(next_index));
             SIGHT_DEBUG(error);
         }
 
-        M_NEXT_ENABLED->async_emit(ok);
+        m_next_enabled->async_emit(ok);
 
         // Refresh next activities validity
         std::size_t last_valid = next_index;
@@ -367,15 +367,15 @@ void sequencer::checkNext()
             while(++last_valid < activity_set->size())
             {
                 const auto& activity = activity_set->at(last_valid);
-                const auto& [next_ok, next_error] = sequencer::validateActivity(activity);
+                const auto& [next_ok, next_error] = sequencer::validate_activity(activity);
 
                 if(next_ok)
                 {
-                    enableActivity(int(last_valid));
+                    enable_activity(int(last_valid));
                 }
                 else
                 {
-                    disableActivity(int(last_valid));
+                    disable_activity(int(last_valid));
                     SIGHT_DEBUG(next_error);
 
                     break;
@@ -386,46 +386,46 @@ void sequencer::checkNext()
         // Disable all next activities
         while(++last_valid < activity_set->size())
         {
-            disableActivity(int(last_valid));
+            disable_activity(int(last_valid));
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::validateNext()
+void sequencer::validate_next()
 {
     auto activity_set = m_activity_set.lock();
-    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+    SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.
-    if(m_currentActivity >= 0)
+    if(m_current_activity >= 0)
     {
-        storeActivityData(*activity_set, std::size_t(m_currentActivity));
+        store_activity_data(*activity_set, std::size_t(m_current_activity));
     }
 
     // Check if the next activity is valid (creates the activity if needed)
     // NOLINTNEXTLINE(bugprone-misplaced-widening-cast)
-    const auto next_index = std::size_t(m_currentActivity + 1);
-    if(next_index < m_activityIds.size())
+    const auto next_index = std::size_t(m_current_activity + 1);
+    if(next_index < m_activity_ids.size())
     {
-        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(service::slots::UPDATE));
-        const auto& [ok, error] = sight::module::ui::qt::activity::sequencer::validateActivity(next_activity);
+        const auto& next_activity = this->get_activity(*activity_set, next_index, slot(service::slots::UPDATE));
+        const auto& [ok, error] = sight::module::ui::qt::activity::sequencer::validate_activity(next_activity);
 
         if(ok)
         {
-            M_NEXT_VALID->async_emit();
+            m_next_valid->async_emit();
         }
         else
         {
-            disableActivity(int(next_index));
+            disable_activity(int(next_index));
             SIGHT_DEBUG(error);
 
-            M_NEXT_INVALID->async_emit();
+            m_next_invalid->async_emit();
         }
 
-        M_NEXT_VALIDATED->async_emit(ok);
+        m_next_validated->async_emit(ok);
 
         // Refresh next activities validity
         std::size_t last_valid = next_index;
@@ -436,11 +436,11 @@ void sequencer::validateNext()
             while(++last_valid < activity_set->size())
             {
                 const auto& activity = activity_set->at(last_valid);
-                const auto& [next_ok, next_error] = sequencer::validateActivity(activity);
+                const auto& [next_ok, next_error] = sequencer::validate_activity(activity);
 
                 if(!next_ok)
                 {
-                    disableActivity(int(last_valid));
+                    disable_activity(int(last_valid));
                     SIGHT_DEBUG(next_error);
 
                     break;
@@ -451,7 +451,7 @@ void sequencer::validateNext()
         // Disable all next activities
         while(++last_valid < activity_set->size())
         {
-            disableActivity(int(last_valid));
+            disable_activity(int(last_valid));
         }
     }
 }
@@ -460,35 +460,35 @@ void sequencer::validateNext()
 
 void sequencer::next()
 {
-    const auto next_index = m_currentActivity + 1;
+    const auto next_index = m_current_activity + 1;
 
     // Reset requirements created by next activities
-    cleanRequirements(std::size_t(next_index));
+    clean_requirements(std::size_t(next_index));
 
-    goTo(next_index);
+    go_to(next_index);
 }
 
 //------------------------------------------------------------------------------
 
 void sequencer::previous()
 {
-    this->goTo(m_currentActivity - 1);
+    this->go_to(m_current_activity - 1);
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::sendInfo() const
+void sequencer::send_info() const
 {
-    const bool previous_enabled = (m_currentActivity > 0);
-    M_HAS_PREVIOUS->async_emit(previous_enabled);
+    const bool previous_enabled = (m_current_activity > 0);
+    m_has_previous->async_emit(previous_enabled);
 
-    const bool next_enabled = (m_currentActivity < static_cast<int>(m_activityIds.size()) - 1);
-    M_HAS_NEXT->async_emit(next_enabled);
+    const bool next_enabled = (m_current_activity < static_cast<int>(m_activity_ids.size()) - 1);
+    m_has_next->async_emit(next_enabled);
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::enableActivity(int _index)
+void sequencer::enable_activity(int _index)
 {
     QObject* object = m_widget->rootObject();
     QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
@@ -496,7 +496,7 @@ void sequencer::enableActivity(int _index)
 
 //------------------------------------------------------------------------------
 
-void sequencer::disableActivity(int _index)
+void sequencer::disable_activity(int _index)
 {
     QObject* object = m_widget->rootObject();
     QMetaObject::invokeMethod(object, "disableActivity", Q_ARG(QVariant, _index));
@@ -507,8 +507,8 @@ void sequencer::disableActivity(int _index)
 service::connections_t sequencer::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_ACTIVITY_SET_INOUT, data::activity_set::ADDED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(s_ACTIVITY_SET_INOUT, data::activity_set::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(ACTIVITY_SET_INOUT, data::activity_set::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(ACTIVITY_SET_INOUT, data::activity_set::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

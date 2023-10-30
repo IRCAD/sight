@@ -34,13 +34,13 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines an IMAGE node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRImageNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_sr_image_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRImageNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_sr_image_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
         std::string _sop_class_uid,
         std::string _sop_instance_uid,
@@ -48,7 +48,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRImageNode() override;
+    IO_DICOM_API ~dicom_sr_image_node() override;
 
     /**
      * @brief Write the SR node in the dataset
@@ -57,39 +57,39 @@ public:
     IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get SOP Class UID
-    [[nodiscard]] const std::string& getSOPClassUID() const
+    [[nodiscard]] const std::string& get_sop_class_uid() const
     {
-        return m_sopClassUID;
+        return m_sop_class_uid;
     }
 
     /// Set SOP Class UID
-    void setSOPClassUID(const std::string& _sop_class_uid)
+    void set_sop_class_uid(const std::string& _sop_class_uid)
     {
-        m_sopClassUID = _sop_class_uid;
+        m_sop_class_uid = _sop_class_uid;
     }
 
     /// Get SOP Instance UID
-    [[nodiscard]] const std::string& getSOPInstanceUID() const
+    [[nodiscard]] const std::string& get_sop_instance_uid() const
     {
-        return m_sopInstanceUID;
+        return m_sop_instance_uid;
     }
 
     /// Set SOP Instance UID
-    void setSOPInstanceUID(const std::string& _sop_instance_uid)
+    void set_sop_instance_uid(const std::string& _sop_instance_uid)
     {
-        m_sopInstanceUID = _sop_instance_uid;
+        m_sop_instance_uid = _sop_instance_uid;
     }
 
     /// Get Frame number
-    [[nodiscard]] const int& getFrameNumber() const
+    [[nodiscard]] const int& get_frame_number() const
     {
-        return m_frameNumber;
+        return m_frame_number;
     }
 
     /// Set Frame number
-    void setFrameNumber(const int& _frame_number)
+    void set_frame_number(const int& _frame_number)
     {
-        m_frameNumber = _frame_number;
+        m_frame_number = _frame_number;
     }
 
 protected:
@@ -102,16 +102,16 @@ protected:
      * @see PS 3.3  Table C.18.3
      * @param[in] dataset Destination dataset
      */
-    void writeReferencedSOPSequence(gdcm::DataSet& _dataset) const;
+    void write_referenced_sop_sequence(gdcm::DataSet& _dataset) const;
 
     /// Referenced SOP Class UID (0008,1150)
-    std::string m_sopClassUID;
+    std::string m_sop_class_uid;
 
     /// Referenced SOP Instance UID (0008,1155)
-    std::string m_sopInstanceUID;
+    std::string m_sop_instance_uid;
 
     /// Referenced Frame Number (0008,1199)
-    int m_frameNumber;
+    int m_frame_number;
 };
 
 } // namespace sight::io::dicom::container::sr

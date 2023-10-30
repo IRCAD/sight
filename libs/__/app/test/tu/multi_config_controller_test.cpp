@@ -81,7 +81,7 @@ void multi_config_controller_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void multi_config_controller_test::multiConfigTest()
+void multi_config_controller_test::multi_config_test()
 {
     // Initialise the testing service
 
@@ -183,7 +183,7 @@ void multi_config_controller_test::multiConfigTest()
 
 //------------------------------------------------------------------------------
 
-void multi_config_controller_test::setConfigKeyTest()
+void multi_config_controller_test::set_config_key_test()
 {
     // Initialise the testing service
 
@@ -262,7 +262,7 @@ void multi_config_controller_test::setConfigKeyTest()
 
 //------------------------------------------------------------------------------
 
-void multi_config_controller_test::defaultLoadingTest()
+void multi_config_controller_test::default_loading_test()
 {
     std::stringstream config_string;
     config_string << " <appConfig key=\"myKey\" default=\"config1\">"

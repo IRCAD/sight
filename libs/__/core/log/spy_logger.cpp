@@ -116,7 +116,7 @@ public:
 
     // Constructor
     inline explicit spy_logger_impl(spy_logger* const _logger) noexcept :
-        M_LOGGER(_logger)
+        m_logger(_logger)
     {
     }
 
@@ -205,7 +205,7 @@ public:
     // Launch the remote logger, either in raw mode or in encrypted mode
     inline void start_logger(
         const std::filesystem::path& _log_archive,
-        level_type _level,
+        level_t _level,
         const core::crypto::secure_string& _password = core::crypto::secure_string(),
         bool _ask_password                           = false
 )
@@ -356,12 +356,12 @@ public:
         m_log_archive_index = 0;
         m_original_log_archive.clear();
         m_log_archives.clear();
-        m_level = SL_TRACE;
+        m_level = sl_trace;
         m_raw   = true;
     }
 
     // Pointer to the public interface
-    spy_logger* const M_LOGGER;
+    spy_logger* const m_logger;
 
     int m_remote_pid {0};
 
@@ -388,7 +388,7 @@ public:
     std::vector<std::string> m_log_archives;
 
     // The asked level of logging
-    level_type m_level {SL_TRACE};
+    level_t m_level {sl_trace};
 
     // False if encrypted
     bool m_raw {true};
@@ -413,7 +413,7 @@ std::filesystem::path spy_logger::get_logger_path()
     std::unique_lock lock(s_mutex);
 
     // Find the logger binary
-    static const std::filesystem::path logger_path =
+    static const std::filesystem::path s_LOGGER_PATH =
         []
         {
             decltype(boost::this_process::path()) bin_paths;
@@ -440,7 +440,7 @@ std::filesystem::path spy_logger::get_logger_path()
             return result;
         }();
 
-    return logger_path;
+    return s_LOGGER_PATH;
 }
 
 spy_logger::spy_logger() :
@@ -458,7 +458,7 @@ spy_logger::~spy_logger() = default;
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::add_console_log(std::ostream& _os, level_type _level)
+void spy_logger::add_console_log(std::ostream& _os, level_t _level)
 {
     // Just in case..
     std::unique_lock lock(s_mutex);
@@ -474,7 +474,7 @@ void spy_logger::add_console_log(std::ostream& _os, level_type _level)
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::add_file_log(const std::filesystem::path& _log_file, level_type _level)
+void spy_logger::add_file_log(const std::filesystem::path& _log_file, level_t _level)
 {
     // Just in case..
     std::unique_lock lock(s_mutex);
@@ -498,7 +498,7 @@ void spy_logger::add_file_log(const std::filesystem::path& _log_file, level_type
 
 void spy_logger::start_encrypted_logger(
     const std::filesystem::path& _log_archive,
-    level_type _level,
+    level_t _level,
     const core::crypto::secure_string& _password,
     bool _ask_password
 )
@@ -511,7 +511,7 @@ void spy_logger::start_encrypted_logger(
 
 void spy_logger::start_logger(
     const std::filesystem::path& _log_archive,
-    level_type _level
+    level_t _level
 )
 {
     std::unique_lock lock(m_pimpl->m_mutex);

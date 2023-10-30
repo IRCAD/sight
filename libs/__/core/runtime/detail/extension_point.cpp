@@ -41,8 +41,8 @@ extension_point::extension_point(
     std::filesystem::path _schema
 ) :
     module_element(_module),
-    M_ID(filter_id(_id)),
-    M_SCHEMA(std::move(_schema))
+    m_id(filter_id(_id)),
+    m_schema(std::move(_schema))
 {
 }
 
@@ -50,23 +50,23 @@ extension_point::extension_point(
 
 const std::string& extension_point::identifier() const
 {
-    return M_ID;
+    return m_id;
 }
 
 //------------------------------------------------------------------------------
 
 std::shared_ptr<io::validator> extension_point::get_extension_validator() const
 {
-    if(!M_SCHEMA.empty() && !m_validator)
+    if(!m_schema.empty() && !m_validator)
     {
         try
         {
-            std::filesystem::path schema_path = get_module()->get_resources_location() / M_SCHEMA;
-            SIGHT_DEBUG("Use this schema : " << schema_path << " for this id : " << M_ID);
+            std::filesystem::path schema_path = get_module()->get_resources_location() / m_schema;
+            SIGHT_DEBUG("Use this schema : " << schema_path << " for this id : " << m_id);
             if(!std::filesystem::exists(schema_path))
             {
                 // Allow to specify a schema defined elsewhere than this module
-                schema_path = core::runtime::get_resource_file_path(M_SCHEMA);
+                schema_path = core::runtime::get_resource_file_path(m_schema);
             }
 
             m_validator = std::make_shared<io::validator>(schema_path);

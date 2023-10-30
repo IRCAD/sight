@@ -150,7 +150,7 @@ private:
     /// Mutex to protect concurrent access for m_imageToRead
     mutable core::mt::mutex m_mutex;
 
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT};
 };
 
 } // namespace sight::module::io::video

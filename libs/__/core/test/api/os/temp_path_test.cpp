@@ -151,8 +151,8 @@ void temp_path_test::temp_file_test()
             core::os::temp_file tmp_file(std::ios_base::out | std::ios_base::trunc);
 
             // Use the file...
-            static const std::string CONTENT = "Hello world!";
-            tmp_file << CONTENT;
+            static const std::string s_CONTENT = "Hello world!";
+            tmp_file << s_CONTENT;
             tmp_file.stream().close();
 
             // Check that the directory has been created and is at the right place
@@ -167,7 +167,7 @@ void temp_path_test::temp_file_test()
             std::stringstream ss;
             ss << ifs.rdbuf();
 
-            CPPUNIT_ASSERT_EQUAL(CONTENT, ss.str());
+            CPPUNIT_ASSERT_EQUAL(s_CONTENT, ss.str());
 
             file_about_to_be_deleted = tmp_file.path();
         }

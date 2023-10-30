@@ -63,13 +63,13 @@ accordion_menu::accordion_menu(QWidget* _parent, Qt::Orientation _orientation) :
     setProperty("folded", true);
     setProperty("class", "accordion_menu");
     QObject::connect(
-        m_animationGroup,
+        m_animation_group,
         &QAnimationGroup::finished,
         [this]
         {
             if(m_folded)
             {
-                std::vector<QWidget*> widgets = childrenWidgets();
+                std::vector<QWidget*> widgets = children_widgets();
                 // Hide all widgets except the first one
                 std::for_each(widgets.begin() + 1, widgets.end(), std::mem_fn(&QWidget::hide));
                 setProperty("folded", true);
@@ -94,8 +94,8 @@ void accordion_menu::fold()
     }
 
     m_folded = true;
-    m_animationGroup->setDirection(QAbstractAnimation::Backward);
-    m_animationGroup->start();
+    m_animation_group->setDirection(QAbstractAnimation::Backward);
+    m_animation_group->start();
 }
 
 //------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ void accordion_menu::unfold()
         return;
     }
 
-    if(childrenWidgets().size() < 2)
+    if(children_widgets().size() < 2)
     {
         return;
     }
@@ -116,14 +116,14 @@ void accordion_menu::unfold()
     setProperty("folded", false);
     qApp->style()->unpolish(this);
     qApp->style()->polish(this);
-    std::ranges::for_each(childrenWidgets(), &QWidget::show);
-    m_animationGroup->setDirection(QAbstractAnimation::Forward);
-    m_animationGroup->start();
+    std::ranges::for_each(children_widgets(), &QWidget::show);
+    m_animation_group->setDirection(QAbstractAnimation::Forward);
+    m_animation_group->start();
 }
 
 //------------------------------------------------------------------------------
 
-void accordion_menu::setFolded(bool _folded)
+void accordion_menu::set_folded(bool _folded)
 {
     if(_folded)
     {
@@ -137,28 +137,28 @@ void accordion_menu::setFolded(bool _folded)
 
 //------------------------------------------------------------------------------
 
-void accordion_menu::setUnfolded(bool _unfolded)
+void accordion_menu::set_unfolded(bool _unfolded)
 {
-    setFolded(!_unfolded);
+    set_folded(!_unfolded);
 }
 
 //------------------------------------------------------------------------------
 
-void accordion_menu::toggleFold()
+void accordion_menu::toggle_fold()
 {
-    setFolded(!m_folded);
+    set_folded(!m_folded);
 }
 
 //------------------------------------------------------------------------------
 
-bool accordion_menu::isFolded() const
+bool accordion_menu::is_folded() const
 {
     return m_folded;
 }
 
 //------------------------------------------------------------------------------
 
-void accordion_menu::addWidget(QWidget* _w)
+void accordion_menu::add_widget(QWidget* _w)
 {
     _w->setParent(this);
 }
@@ -167,11 +167,11 @@ void accordion_menu::addWidget(QWidget* _w)
 
 void accordion_menu::update()
 {
-    QObject::disconnect(m_firstButtonConnection);
-    int current_time = m_animationGroup->currentTime();
-    m_animationGroup->clear();
-    m_animationGroup->setCurrentTime(current_time);
-    std::vector<QWidget*> widgets = childrenWidgets();
+    QObject::disconnect(m_first_button_connection);
+    int current_time = m_animation_group->currentTime();
+    m_animation_group->clear();
+    m_animation_group->setCurrentTime(current_time);
+    std::vector<QWidget*> widgets = children_widgets();
     if(widgets.empty())
     {
         return;
@@ -194,8 +194,8 @@ void accordion_menu::update()
     first_button->show();
     // Show/hide all widgets except the first one
     std::for_each(widgets.begin() + 1, widgets.end(), [this](QWidget* _w){_w->setVisible(!m_folded);});
-    m_firstButtonConnection =
-        QObject::connect(first_button, &QAbstractButton::toggled, this, &accordion_menu::setUnfolded);
+    m_first_button_connection =
+        QObject::connect(first_button, &QAbstractButton::toggled, this, &accordion_menu::set_unfolded);
 
     std::for_each(
         widgets.begin() + 1,
@@ -230,7 +230,7 @@ void accordion_menu::update()
             total_size += m_orientation == Qt::Horizontal ? _w->width() : _w->height();
         });
     min_accordion_size_anim->setEndValue(total_size);
-    m_animationGroup->addAnimation(min_accordion_size_anim);
+    m_animation_group->addAnimation(min_accordion_size_anim);
     if(m_orientation == Qt::Horizontal)
     {
         setMinimumWidth(min_accordion_size_anim->currentValue().toInt());
@@ -255,7 +255,7 @@ void accordion_menu::update()
             == Qt::Horizontal ? QPoint(offset, margin_to_center) : QPoint(margin_to_center, offset)
         );
         offset += m_orientation == Qt::Horizontal ? widgets[i]->width() : widgets[i]->height();
-        m_animationGroup->addAnimation(anim);
+        m_animation_group->addAnimation(anim);
         widgets[i]->move(anim->currentValue().toPoint());
     }
 
@@ -287,7 +287,7 @@ void accordion_menu::update()
         {
             m_bracket->setIcon(rotate(m_pixmap, _rotation.toDouble()));
         });
-    m_animationGroup->addAnimation(bracket_anim);
+    m_animation_group->addAnimation(bracket_anim);
 }
 
 //------------------------------------------------------------------------------
@@ -325,7 +325,7 @@ void accordion_menu::childEvent(QChildEvent* _e)
 
 //------------------------------------------------------------------------------
 
-std::vector<QWidget*> accordion_menu::childrenWidgets() const
+std::vector<QWidget*> accordion_menu::children_widgets() const
 {
     std::vector<QWidget*> res;
     std::ranges::for_each(

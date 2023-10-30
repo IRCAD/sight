@@ -35,15 +35,17 @@
 #include <QPushButton>
 #include <QTest>
 
-const QEvent::Type ModelViewSelect         = static_cast<QEvent::Type>(QEvent::registerEventType());
-const QEvent::Type NumberInputModification = static_cast<QEvent::Type>(QEvent::registerEventType());
+//------------------------------------------------------------------------------
+
+const QEvent::Type MODEL_VIEW_SELECT_TYPE         = static_cast<QEvent::Type>(QEvent::registerEventType());
+const QEvent::Type NUMBER_INPUT_MODIFICATION_TYPE = static_cast<QEvent::Type>(QEvent::registerEventType());
 
 //------------------------------------------------------------------------------
 
 QString modifiers_to_string(Qt::KeyboardModifiers _modifiers)
 {
     QString res;
-    static const std::map<QString, Qt::KeyboardModifier> modifiersList {
+    static const std::map<QString, Qt::KeyboardModifier> s_MODIFIERS_LIST {
         {"Shift", Qt::KeyboardModifier::ShiftModifier},
         {"Control", Qt::KeyboardModifier::ControlModifier},
         {"Alt", Qt::KeyboardModifier::AltModifier},
@@ -57,7 +59,7 @@ QString modifiers_to_string(Qt::KeyboardModifiers _modifiers)
     }
     else
     {
-        for(const auto& [name, value] : modifiersList)
+        for(const auto& [name, value] : s_MODIFIERS_LIST)
         {
             if((_modifiers & value) != 0U)
             {
@@ -76,61 +78,61 @@ QString modifiers_to_string(Qt::KeyboardModifiers _modifiers)
 
 //------------------------------------------------------------------------------
 
-MacroInteraction::MacroInteraction(
+macro_interaction::macro_interaction(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers
 ) :
-    receiverId(_receiver_id),
-    howToFindReceiver(_how_to_find_receiver),
+    receiver_id(_receiver_id),
+    how_to_find_receiver(_how_to_find_receiver),
     modifiers(_modifiers)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PreInteraction::PreInteraction(
+pre_interaction::pre_interaction(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     QEvent::Type _type
 ) :
-    MacroInteraction(_receiver_id, _how_to_find_receiver, _modifiers),
+    macro_interaction(_receiver_id, _how_to_find_receiver, _modifiers),
     type(_type)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PostInteraction::PostInteraction(
+post_interaction::post_interaction(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     interaction_t _type
 ) :
-    MacroInteraction(_receiver_id, _how_to_find_receiver, _modifiers),
+    macro_interaction(_receiver_id, _how_to_find_receiver, _modifiers),
     type(_type)
 {
 }
 
 //------------------------------------------------------------------------------
 
-InteractionMouse::InteractionMouse(QPoint _from, QPoint _to, Qt::MouseButton _button) :
+interaction_mouse::interaction_mouse(QPoint _from, QPoint _to, Qt::MouseButton _button) :
     from(_from),
     to(_to),
     button(_button)
 {
 }
 
-InteractionMouseWheel::InteractionMouseWheel(QPoint _angle_delta, QPoint _pos) :
-    angleDelta(_angle_delta),
+interaction_mouse_wheel::interaction_mouse_wheel(QPoint _angle_delta, QPoint _pos) :
+    angle_delta(_angle_delta),
     pos(_pos)
 {
 }
 
 //------------------------------------------------------------------------------
 
-InteractionKeyboard::InteractionKeyboard(Qt::Key _key, QString _sequence) :
+interaction_keyboard::interaction_keyboard(Qt::Key _key, QString _sequence) :
     key(_key),
     sequence(std::move(_sequence))
 {
@@ -138,189 +140,189 @@ InteractionKeyboard::InteractionKeyboard(Qt::Key _key, QString _sequence) :
 
 //------------------------------------------------------------------------------
 
-bool InteractionKeyboard::isPrintable() const
+bool interaction_keyboard::is_printable() const
 {
     return !sequence.isEmpty() && sequence[0].isPrint();
 }
 
 //------------------------------------------------------------------------------
 
-InteractionModelViewSelect::InteractionModelViewSelect(QString _name) :
+interaction_model_view_select::interaction_model_view_select(QString _name) :
     name(std::move(_name))
 {
 }
 
-NumberInputModification::NumberInputModification(modification_t _type, double _number) :
-    modifType(_type),
-    modifNumber(_number)
+number_input_modification::number_input_modification(modification_t _type, double _number) :
+    modif_type(_type),
+    modif_number(_number)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PreInteractionMouse::PreInteractionMouse(
+pre_interaction_mouse::pre_interaction_mouse(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     QEvent::Type _type,
     QPoint _from,
     QPoint _to,
     Qt::MouseButton _button
 ) :
-    PreInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionMouse(_from, _to, _button)
+    pre_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_mouse(_from, _to, _button)
 {
 }
 
-PreInteractionMouseWheel::PreInteractionMouseWheel(
+pre_interaction_mouse_wheel::pre_interaction_mouse_wheel(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     QEvent::Type _type,
     QPoint _angle_delta,
     QPoint _pos
 ) :
-    PreInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionMouseWheel(_angle_delta, _pos)
+    pre_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_mouse_wheel(_angle_delta, _pos)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PreInteractionKeyboard::PreInteractionKeyboard(
+pre_interaction_keyboard::pre_interaction_keyboard(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     QEvent::Type _type,
     Qt::Key _key,
     const QString& _sequence
 ) :
-    PreInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionKeyboard(_key, _sequence)
+    pre_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_keyboard(_key, _sequence)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PreInteractionModelViewSelect::PreInteractionModelViewSelect(
+pre_interaction_model_view_select::pre_interaction_model_view_select(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     QEvent::Type _type,
     const QString& _name
 ) :
-    PreInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionModelViewSelect(_name)
+    pre_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_model_view_select(_name)
 {
 }
 
-PreInteractionNumberInputModification::PreInteractionNumberInputModification(
+pre_interaction_number_input_modification::pre_interaction_number_input_modification(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     QEvent::Type _type,
     modification_t _modif_type,
     double _modif_number
 ) :
-    PreInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    NumberInputModification(_modif_type, _modif_number)
+    pre_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    number_input_modification(_modif_type, _modif_number)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PostInteractionMouse::PostInteractionMouse(
+post_interaction_mouse::post_interaction_mouse(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     interaction_t _type,
     QPoint _from,
     QPoint _to,
     Qt::MouseButton _button
 ) :
-    PostInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionMouse(_from, _to, _button)
+    post_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_mouse(_from, _to, _button)
 {
 }
 
-PostInteractionMouseWheel::PostInteractionMouseWheel(
+post_interaction_mouse_wheel::post_interaction_mouse_wheel(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     interaction_t _type,
     QPoint _angle_delta,
     QPoint _pos
 ) :
-    PostInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionMouseWheel(_angle_delta, _pos)
+    post_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_mouse_wheel(_angle_delta, _pos)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PostInteractionKeyboard::PostInteractionKeyboard(
+post_interaction_keyboard::post_interaction_keyboard(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     interaction_t _type,
     Qt::Key _key,
     const QString& _sequence
 ) :
-    PostInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionKeyboard(_key, _sequence)
+    post_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_keyboard(_key, _sequence)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PostInteractionModelViewSelect::PostInteractionModelViewSelect(
+post_interaction_model_view_select::post_interaction_model_view_select(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     interaction_t _type,
     const QString& _name
 ) :
-    PostInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    InteractionModelViewSelect(_name)
+    post_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    interaction_model_view_select(_name)
 {
 }
 
-PostInteractionNumberInputModification::PostInteractionNumberInputModification(
+post_interaction_number_input_modification::post_interaction_number_input_modification(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     Qt::KeyboardModifiers _modifiers,
     interaction_t _type,
     modification_t _modif_type,
     double _modif_number
 ) :
-    PostInteraction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
-    NumberInputModification(_modif_type, _modif_number)
+    post_interaction(_receiver_id, _how_to_find_receiver, _modifiers, _type),
+    number_input_modification(_modif_type, _modif_number)
 {
 }
 
-InteractionHelperAPI::InteractionHelperAPI(
+interaction_helper_api::interaction_helper_api(
     intptr_t _receiver_id,
-    const QVector<FindStrategy>& _how_to_find_receiver,
+    const QVector<find_strategy>& _how_to_find_receiver,
     QString _method_name,
-    std::optional<sight::ui::test_core::helper::Select> _select,
+    std::optional<sight::ui::test_core::helper::selector> _select,
     QStringList _args
 ) :
-    PostInteraction(_receiver_id, _how_to_find_receiver, {}, HELPER_API), methodName(std::move(_method_name)),
+    post_interaction(_receiver_id, _how_to_find_receiver, {}, helper_api), method_name(std::move(_method_name)),
     select(std::move(_select)), args(std::move(_args))
 {
 }
 
 //------------------------------------------------------------------------------
 
-bool MacroSaver::eventFilter(QObject* _target, QEvent* _e)
+bool macro_saver::eventFilter(QObject* _target, QEvent* _e)
 {
     if(_e->type() == QEvent::ChildAdded)
     {
         auto* ce = dynamic_cast<QChildEvent*>(_e);
         infect(ce->child());
-        if(m_mainWindow == nullptr)
+        if(m_main_window == nullptr)
         {
-            m_mainWindow = qApp->activeWindow();
+            m_main_window = qApp->activeWindow();
         }
     }
     else if(_e->type() == QEvent::MouseButtonPress || _e->type() == QEvent::MouseButtonRelease
@@ -331,9 +333,9 @@ bool MacroSaver::eventFilter(QObject* _target, QEvent* _e)
         // Ignore the MouseMove event if no buttons are pressed, else we will get one thousand of events
         QWidget* w = qobject_cast<QWidget*>(_target);
         if((_e->type() != QEvent::MouseMove || dynamic_cast<QMouseEvent*>(_e)->buttons() != Qt::MouseButton::NoButton)
-           && !(w != nullptr && w->isWindow()) && _target != m_mainWindow)
+           && !(w != nullptr && w->isWindow()) && _target != m_main_window)
         {
-            std::unique_ptr<PreInteraction> interaction = createInteraction(_target, _e);
+            std::unique_ptr<pre_interaction> interaction = create_interaction(_target, _e);
             if(interaction != nullptr)
             {
                 m_interactions.emplace_back(std::move(interaction));
@@ -346,7 +348,7 @@ bool MacroSaver::eventFilter(QObject* _target, QEvent* _e)
 
 //------------------------------------------------------------------------------
 
-void MacroSaver::infect(QObject* _o)
+void macro_saver::infect(QObject* _o)
 {
     _o->installEventFilter(this);
     for(QObject* child : _o->children())
@@ -357,7 +359,7 @@ void MacroSaver::infect(QObject* _o)
 
 //------------------------------------------------------------------------------
 
-QObject* MacroSaver::findChild(
+QObject* macro_saver::findChild(
     QObject* _o,
     const QString& _type,
     const QString& _object_name,
@@ -386,7 +388,7 @@ QObject* MacroSaver::findChild(
 
 //------------------------------------------------------------------------------
 
-QObjectList MacroSaver::findChildren(
+QObjectList macro_saver::findChildren(
     QObject* _o,
     const QString& _type,
     const QString& _object_name,
@@ -425,7 +427,7 @@ static QObject* parent_of(const QObject* _obj)
 
 //------------------------------------------------------------------------------
 
-QVector<FindStrategy> MacroSaver::find(QObject* _o)
+QVector<find_strategy> macro_saver::find(QObject* _o)
 {
     assert(_o != nullptr);
     QWidget* w            = qobject_cast<QWidget*>(_o);
@@ -436,14 +438,14 @@ QVector<FindStrategy> MacroSaver::find(QObject* _o)
         class_name = "QWidget";
     }
 
-    if(_o == m_mainWindow)
+    if(_o == m_main_window)
     {
-        return {{find_strategy_t::ROOT, class_name, "", 0}};
+        return {{find_strategy_t::root, class_name, "", 0}};
     }
 
     if(_o == qApp->activeModalWidget())
     {
-        return {{find_strategy_t::ACTIVE_MODAL_WIDGET, class_name,
+        return {{find_strategy_t::active_modal_widget, class_name,
             w->objectName().isEmpty() ? w->windowTitle() : w->objectName(), 0
         }
         };
@@ -451,21 +453,21 @@ QVector<FindStrategy> MacroSaver::find(QObject* _o)
 
     if(_o->objectName() != "")
     {
-        QVector<FindStrategy> res {{find_strategy_t::OBJECT_NAME, class_name, _o->objectName().toLatin1(), 0}};
+        QVector<find_strategy> res {{find_strategy_t::object_name, class_name, _o->objectName().toLatin1(), 0}};
         if(QObjectList children;
            w != nullptr
            && (children = findChildren(w->window(), class_name, _o->objectName())).size() == 1 && children[0] == _o)
         {
             res.append(find(w->window()));
         }
-        else if(QObjectList children2 = findChildren(m_mainWindow, class_name, _o->objectName());
+        else if(QObjectList children2 = findChildren(m_main_window, class_name, _o->objectName());
                 children2.size() == 1 && children2[0] == _o)
         {
-            res.append(find(m_mainWindow));
+            res.append(find(m_main_window));
         }
         else
         {
-            QVector<FindStrategy> best_ancestor_strat;
+            QVector<find_strategy> best_ancestor_strat;
             for(QObject* current_ancestor = parent_of(_o) ;
                 current_ancestor != nullptr ;
                 current_ancestor = parent_of(current_ancestor))
@@ -474,8 +476,8 @@ QVector<FindStrategy> MacroSaver::find(QObject* _o)
                        findChildren(current_ancestor, class_name, _o->objectName());
                    children3.size() == 1 && children3[0] == _o)
                 {
-                    QVector<FindStrategy> current_ancestor_strat = find(current_ancestor);
-                    if(current_ancestor_strat.back().type != find_strategy_t::CANT_BE_FOUND
+                    QVector<find_strategy> current_ancestor_strat = find(current_ancestor);
+                    if(current_ancestor_strat.back().type != find_strategy_t::cant_be_found
                        && (best_ancestor_strat.empty() || current_ancestor_strat.size() < best_ancestor_strat.size()))
                     {
                         best_ancestor_strat = current_ancestor_strat;
@@ -485,7 +487,7 @@ QVector<FindStrategy> MacroSaver::find(QObject* _o)
 
             if(best_ancestor_strat.empty())
             {
-                res.append({find_strategy_t::CANT_BE_FOUND, class_name, "", 0});
+                res.append({find_strategy_t::cant_be_found, class_name, "", 0});
             }
             else
             {
@@ -496,26 +498,26 @@ QVector<FindStrategy> MacroSaver::find(QObject* _o)
         return res;
     }
 
-    if(findChildren(m_mainWindow, class_name).size() == 1)
+    if(findChildren(m_main_window, class_name).size() == 1)
     {
-        return {{find_strategy_t::GLOBAL_TYPE, class_name, "", 0}};
+        return {{find_strategy_t::global_type, class_name, "", 0}};
     }
 
     if(w != nullptr && w->actions().size() == 1)
     {
-        QVector<FindStrategy> res {{find_strategy_t::ACTION, class_name, "", 0}};
+        QVector<find_strategy> res {{find_strategy_t::action, class_name, "", 0}};
         res.append(find(w->actions()[0]));
         return res;
     }
 
     if(parent_of(_o) == nullptr)
     {
-        return {{find_strategy_t::CANT_BE_FOUND, class_name, "", 0}};
+        return {{find_strategy_t::cant_be_found, class_name, "", 0}};
     }
 
     if(findChildren(parent_of(_o), class_name, "", Qt::FindDirectChildrenOnly).size() == 1)
     {
-        QVector<FindStrategy> res {{find_strategy_t::LOCAL_TYPE, class_name, "", 0}};
+        QVector<find_strategy> res {{find_strategy_t::local_type, class_name, "", 0}};
         res.append(find(parent_of(_o)));
         return res;
     } // else
@@ -529,36 +531,36 @@ QVector<FindStrategy> MacroSaver::find(QObject* _o)
         }
     }
 
-    QVector<FindStrategy> res {{find_strategy_t::NTH_CHILD, class_name, "", index}};
+    QVector<find_strategy> res {{find_strategy_t::nth_child, class_name, "", index}};
     res.append(find(parent_of(_o)));
     return res;
 }
 
 //------------------------------------------------------------------------------
 
-static QString select_to_code(const sight::ui::test_core::helper::Select& _select)
+static QString select_to_code(const sight::ui::test_core::helper::selector& _select)
 {
     switch(_select.type())
     {
-        case sight::ui::test_core::helper::Select::Type::FROM_MAIN:
+        case sight::ui::test_core::helper::selector::type::from_main:
             return QString("\"%1\"").arg(std::get<std::string>(_select.data()).c_str());
 
-        case sight::ui::test_core::helper::Select::Type::FROM_DIALOG:
-            return QString("Select::fromDialog(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
+        case sight::ui::test_core::helper::selector::type::from_dialog:
+            return QString("selector::fromDialog(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
 
-        case sight::ui::test_core::helper::Select::Type::FROM_PARENT:
+        case sight::ui::test_core::helper::selector::type::from_parent:
         {
             auto [parentName, childName] = std::get<std::pair<std::string, std::string> >(_select.data());
-            return QString(R"(Select::fromParent("%1", "%2"))").arg(parentName.c_str()).arg(childName.c_str());
+            return QString(R"(selector::fromParent("%1", "%2"))").arg(parentName.c_str()).arg(childName.c_str());
         }
 
-        case sight::ui::test_core::helper::Select::Type::FROM_CURRENT:
-            return QString("Select::fromCurrent(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
+        case sight::ui::test_core::helper::selector::type::from_current:
+            return QString("selector::fromCurrent(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
 
-        case sight::ui::test_core::helper::Select::Type::CURRENT:
+        case sight::ui::test_core::helper::selector::type::current:
             return "Select::current()";
 
-        case sight::ui::test_core::helper::Select::Type::DIALOG:
+        case sight::ui::test_core::helper::selector::type::dialog:
             return "Select::dialog()";
     }
 
@@ -571,30 +573,30 @@ static QString select_to_code(const sight::ui::test_core::helper::Select& _selec
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] static std::pair<QVector<FindStrategy>, sight::ui::test_core::helper::Select> compute_select(
-    QVector<FindStrategy> _how_to_find_receiver
+[[nodiscard]] static std::pair<QVector<find_strategy>, sight::ui::test_core::helper::selector> compute_select(
+    QVector<find_strategy> _how_to_find_receiver
 )
 {
-    sight::ui::test_core::helper::Select select = sight::ui::test_core::helper::Select::current();
-    if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::OBJECT_NAME
-       && _how_to_find_receiver[1].type == find_strategy_t::ROOT)
+    sight::ui::test_core::helper::selector select = sight::ui::test_core::helper::selector::current();
+    if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::object_name
+       && _how_to_find_receiver[1].type == find_strategy_t::root)
     {
-        select = sight::ui::test_core::helper::Select(_how_to_find_receiver[0].string.toStdString());
+        select = sight::ui::test_core::helper::selector(_how_to_find_receiver[0].string.toStdString());
         _how_to_find_receiver.pop_front();
         _how_to_find_receiver.pop_front();
     }
-    else if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::OBJECT_NAME
-            && _how_to_find_receiver[1].type == find_strategy_t::ACTIVE_MODAL_WIDGET)
+    else if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::object_name
+            && _how_to_find_receiver[1].type == find_strategy_t::active_modal_widget)
     {
-        select = sight::ui::test_core::helper::Select::fromDialog(_how_to_find_receiver[0].string.toStdString());
+        select = sight::ui::test_core::helper::selector::from_dialog(_how_to_find_receiver[0].string.toStdString());
         _how_to_find_receiver.pop_front();
         _how_to_find_receiver.pop_front();
     }
-    else if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::OBJECT_NAME
-            && _how_to_find_receiver[1].type == find_strategy_t::OBJECT_NAME
-            && _how_to_find_receiver[2].type == find_strategy_t::ROOT)
+    else if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::object_name
+            && _how_to_find_receiver[1].type == find_strategy_t::object_name
+            && _how_to_find_receiver[2].type == find_strategy_t::root)
     {
-        select = sight::ui::test_core::helper::Select::fromParent(
+        select = sight::ui::test_core::helper::selector::from_parent(
             _how_to_find_receiver[1].string.toStdString(),
             _how_to_find_receiver[0].string.toStdString()
         );
@@ -602,9 +604,9 @@ static QString select_to_code(const sight::ui::test_core::helper::Select& _selec
         _how_to_find_receiver.pop_front();
         _how_to_find_receiver.pop_front();
     }
-    else if(!_how_to_find_receiver.empty() && _how_to_find_receiver[0].type == find_strategy_t::ACTIVE_MODAL_WIDGET)
+    else if(!_how_to_find_receiver.empty() && _how_to_find_receiver[0].type == find_strategy_t::active_modal_widget)
     {
-        select = sight::ui::test_core::helper::Select::dialog();
+        select = sight::ui::test_core::helper::selector::dialog();
         _how_to_find_receiver.pop_front();
     }
 
@@ -613,15 +615,15 @@ static QString select_to_code(const sight::ui::test_core::helper::Select& _selec
 
 //------------------------------------------------------------------------------
 
-void MacroSaver::save()
+void macro_saver::save()
 {
     // Interactions preprocessing
-    std::vector<std::unique_ptr<PostInteraction> > pre_post_interactions;
+    std::vector<std::unique_ptr<post_interaction> > pre_post_interactions;
     for(std::size_t i = 0 ; i < m_interactions.size() ; i++)
     {
         if(m_interactions[i]->type == QEvent::Type::MouseButtonPress)
         {
-            const auto& im = static_cast<PreInteractionMouse&>(*m_interactions[i]);
+            const auto& im = static_cast<pre_interaction_mouse&>(*m_interactions[i]);
             if(i + 1 == m_interactions.size())
             {
                 // This mouse button press event is the last event, it won't be ended with a release. Ignore it.
@@ -632,11 +634,11 @@ void MacroSaver::save()
             {
                 // A mouse button press immediately followed with a mouse button release is a simple mouse click.
                 pre_post_interactions.emplace_back(
-                    std::make_unique<PostInteractionMouse>(
-                        im.receiverId,
-                        im.howToFindReceiver,
+                    std::make_unique<post_interaction_mouse>(
+                        im.receiver_id,
+                        im.how_to_find_receiver,
                         im.modifiers,
-                        MOUSE_CLICK,
+                        mouse_click,
                         im.from,
                         im.to,
                         im.button
@@ -655,13 +657,13 @@ void MacroSaver::save()
 
                 if(i < m_interactions.size() && m_interactions[i]->type == QEvent::Type::MouseButtonRelease)
                 {
-                    const auto& release = static_cast<PreInteractionMouse&>(*m_interactions[i]);
+                    const auto& release = static_cast<pre_interaction_mouse&>(*m_interactions[i]);
                     pre_post_interactions.emplace_back(
-                        std::make_unique<PostInteractionMouse>(
-                            im.receiverId,
-                            im.howToFindReceiver,
+                        std::make_unique<post_interaction_mouse>(
+                            im.receiver_id,
+                            im.how_to_find_receiver,
                             im.modifiers,
-                            MOUSE_DRAG,
+                            mouse_drag,
                             im.from,
                             release.to,
                             im.button
@@ -672,25 +674,25 @@ void MacroSaver::save()
         }
         else if(m_interactions[i]->type == QEvent::Type::MouseButtonDblClick)
         {
-            if(pre_post_interactions.back()->type == MOUSE_DOUBLE_CLICK)
+            if(pre_post_interactions.back()->type == mouse_double_click)
             {
                 // This is a duplicated event, ignore it
                 continue;
             }
 
-            if(pre_post_interactions.back()->type == MOUSE_CLICK)
+            if(pre_post_interactions.back()->type == mouse_click)
             {
                 // Ignore the click that generated this double click
                 pre_post_interactions.pop_back();
             }
 
-            const auto& im = static_cast<PreInteractionMouse&>(*m_interactions[i]);
+            const auto& im = static_cast<pre_interaction_mouse&>(*m_interactions[i]);
             pre_post_interactions.emplace_back(
-                std::make_unique<PostInteractionMouse>(
-                    im.receiverId,
-                    im.howToFindReceiver,
+                std::make_unique<post_interaction_mouse>(
+                    im.receiver_id,
+                    im.how_to_find_receiver,
                     im.modifiers,
-                    MOUSE_DOUBLE_CLICK,
+                    mouse_double_click,
                     im.from,
                     im.to,
                     im.button
@@ -699,21 +701,21 @@ void MacroSaver::save()
         }
         else if(m_interactions[i]->type == QEvent::Type::Wheel)
         {
-            const auto& imw    = static_cast<PreInteractionMouseWheel&>(*m_interactions[i]);
-            QPoint angle_delta = imw.angleDelta / 2; // Divide by two because events are duplicated
+            const auto& imw    = static_cast<pre_interaction_mouse_wheel&>(*m_interactions[i]);
+            QPoint angle_delta = imw.angle_delta / 2; // Divide by two because events are duplicated
             // Compress all mouse wheel events into one
             while(i + 1 < m_interactions.size() && m_interactions[i + 1]->type == QEvent::Type::Wheel)
             {
                 i++;
-                angle_delta += static_cast<PreInteractionMouseWheel&>(*m_interactions[i]).angleDelta / 2;
+                angle_delta += static_cast<pre_interaction_mouse_wheel&>(*m_interactions[i]).angle_delta / 2;
             }
 
             pre_post_interactions.emplace_back(
-                std::make_unique<PostInteractionMouseWheel>(
-                    imw.receiverId,
-                    imw.howToFindReceiver,
+                std::make_unique<post_interaction_mouse_wheel>(
+                    imw.receiver_id,
+                    imw.how_to_find_receiver,
                     imw.modifiers,
-                    MOUSE_WHEEL,
+                    mouse_wheel,
                     angle_delta,
                     imw.pos
                 )
@@ -721,16 +723,16 @@ void MacroSaver::save()
         }
         else if(m_interactions[i]->type == QEvent::Type::KeyPress)
         {
-            const auto& ik = static_cast<PreInteractionKeyboard&>(*m_interactions[i].get());
-            if(ik.isPrintable())
+            const auto& ik = static_cast<pre_interaction_keyboard&>(*m_interactions[i].get());
+            if(ik.is_printable())
             {
                 // If the key is printable, we will attempt to "compress" it with the following key events if they are
                 // printable as well, to make the resulting code more readable.
                 QString sequence;
-                const PreInteractionKeyboard* press = nullptr;
+                const pre_interaction_keyboard* press = nullptr;
                 while(i < m_interactions.size() && m_interactions[i]->type == QEvent::Type::KeyPress
-                      && (press = static_cast<PreInteractionKeyboard*>(m_interactions[i].get())) != nullptr
-                      && press->isPrintable())
+                      && (press = static_cast<pre_interaction_keyboard*>(m_interactions[i].get())) != nullptr
+                      && press->is_printable())
                 {
                     sequence += press->sequence;
                     i++;
@@ -744,11 +746,11 @@ void MacroSaver::save()
                 if(sequence.size() > 0)
                 {
                     pre_post_interactions.emplace_back(
-                        std::make_unique<PostInteractionKeyboard>(
-                            ik.receiverId,
-                            ik.howToFindReceiver,
+                        std::make_unique<post_interaction_keyboard>(
+                            ik.receiver_id,
+                            ik.how_to_find_receiver,
                             ik.modifiers,
-                            (sequence.size() > 1 ? KEYBOARD_SEQUENCE : KEYBOARD_CLICK),
+                            (sequence.size() > 1 ? keyboard_sequence : keyboard_click),
                             ik.key,
                             sequence
                         )
@@ -768,11 +770,11 @@ void MacroSaver::save()
                 if(i < m_interactions.size() && m_interactions[i]->type == QEvent::Type::KeyRelease)
                 {
                     pre_post_interactions.emplace_back(
-                        std::make_unique<PostInteractionKeyboard>(
-                            ik.receiverId,
-                            ik.howToFindReceiver,
+                        std::make_unique<post_interaction_keyboard>(
+                            ik.receiver_id,
+                            ik.how_to_find_receiver,
                             ik.modifiers,
-                            KEYBOARD_CLICK,
+                            keyboard_click,
                             ik.key,
                             ik.sequence
                         )
@@ -780,49 +782,49 @@ void MacroSaver::save()
                 }
             }
         }
-        else if(m_interactions[i]->type == ModelViewSelect)
+        else if(m_interactions[i]->type == MODEL_VIEW_SELECT_TYPE)
         {
-            const auto& ilwc = static_cast<PreInteractionModelViewSelect&>(*m_interactions[i]);
+            const auto& ilwc = static_cast<pre_interaction_model_view_select&>(*m_interactions[i]);
             pre_post_interactions.emplace_back(
-                std::make_unique<PostInteractionModelViewSelect>(
-                    ilwc.receiverId,
-                    ilwc.howToFindReceiver,
+                std::make_unique<post_interaction_model_view_select>(
+                    ilwc.receiver_id,
+                    ilwc.how_to_find_receiver,
                     ilwc.modifiers,
-                    MODEL_VIEW_SELECT,
+                    model_view_select,
                     ilwc.name
                 )
             );
         }
-        else if(m_interactions[i]->type == NumberInputModification)
+        else if(m_interactions[i]->type == NUMBER_INPUT_MODIFICATION_TYPE)
         {
-            const auto& nim = static_cast<PreInteractionNumberInputModification&>(*m_interactions[i]);
+            const auto& nim = static_cast<pre_interaction_number_input_modification&>(*m_interactions[i]);
             pre_post_interactions.emplace_back(
-                std::make_unique<PostInteractionNumberInputModification>(
-                    nim.receiverId,
-                    nim.howToFindReceiver,
+                std::make_unique<post_interaction_number_input_modification>(
+                    nim.receiver_id,
+                    nim.how_to_find_receiver,
                     nim.modifiers,
-                    NUMBER_INPUT_MODIFICATION,
-                    nim.modifType,
-                    nim.modifNumber
+                    number_input_modification,
+                    nim.modif_type,
+                    nim.modif_number
                 )
             );
         }
     }
 
-    std::vector<std::unique_ptr<PostInteraction> > post_interactions;
+    std::vector<std::unique_ptr<post_interaction> > post_interactions;
     for(std::size_t i = 0 ; i < pre_post_interactions.size() ; i++)
     {
-        if(pre_post_interactions[i]->type == MOUSE_CLICK
-           && (pre_post_interactions[i]->howToFindReceiver[0].className == "QPushButton"
-               || pre_post_interactions[i]->howToFindReceiver[0].className == "QToolButton"))
+        if(pre_post_interactions[i]->type == mouse_click
+           && (pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QPushButton"
+               || pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QToolButton"))
         {
-            if(pre_post_interactions[i]->howToFindReceiver.back().string == "preferences_configuration")
+            if(pre_post_interactions[i]->how_to_find_receiver.back().string == "preferences_configuration")
             {
                 // Special case: preferences Configuration pop up close button
-                if(InteractionHelperAPI* iha =
+                if(interaction_helper_api* iha =
                        nullptr;
-                   post_interactions.back()->type == HELPER_API
-                   && (iha = static_cast<InteractionHelperAPI*>(post_interactions.back().get()))->methodName
+                   post_interactions.back()->type == helper_api
+                   && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                    == "PreferencesConfiguration::fill")
                 {
                     iha->args[0] += "}";
@@ -830,10 +832,10 @@ void MacroSaver::save()
                 else
                 {
                     post_interactions.emplace_back(
-                        std::make_unique<InteractionHelperAPI>(
+                        std::make_unique<interaction_helper_api>(
                             pre_post_interactions[i]->
-                            receiverId,
-                            QVector<FindStrategy> {},
+                            receiver_id,
+                            QVector<find_strategy> {},
                             "PreferencesConfiguration",
                             std::nullopt,
                             QStringList {"{}"
@@ -843,9 +845,9 @@ void MacroSaver::save()
             }
             else
             {
-                QVector<FindStrategy> how_to_find_receiver  = pre_post_interactions[i]->howToFindReceiver;
-                sight::ui::test_core::helper::Select select = sight::ui::test_core::helper::Select::current();
-                if(how_to_find_receiver.front().type == find_strategy_t::ACTION)
+                QVector<find_strategy> how_to_find_receiver   = pre_post_interactions[i]->how_to_find_receiver;
+                sight::ui::test_core::helper::selector select = sight::ui::test_core::helper::selector::current();
+                if(how_to_find_receiver.front().type == find_strategy_t::action)
                 {
                     // helper::Button::push already handles the "action" case.
                     how_to_find_receiver.pop_front();
@@ -853,8 +855,8 @@ void MacroSaver::save()
 
                 std::tie(how_to_find_receiver, select) = compute_select(how_to_find_receiver);
                 post_interactions.emplace_back(
-                    std::make_unique<InteractionHelperAPI>(
-                        pre_post_interactions[i]->receiverId,
+                    std::make_unique<interaction_helper_api>(
+                        pre_post_interactions[i]->receiver_id,
                         how_to_find_receiver,
                         "Button::push",
                         select
@@ -862,33 +864,33 @@ void MacroSaver::save()
                 );
             }
         }
-        else if(pre_post_interactions[i]->type == MOUSE_CLICK
-                && pre_post_interactions[i]->howToFindReceiver[0].className == "QCheckBox")
+        else if(pre_post_interactions[i]->type == mouse_click
+                && pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QCheckBox")
         {
-            auto [howToFindReceiver, select] = compute_select(pre_post_interactions[i]->howToFindReceiver);
+            auto [howToFindReceiver, select] = compute_select(pre_post_interactions[i]->how_to_find_receiver);
             post_interactions.emplace_back(
-                std::make_unique<InteractionHelperAPI>(
-                    pre_post_interactions[i]->receiverId,
+                std::make_unique<interaction_helper_api>(
+                    pre_post_interactions[i]->receiver_id,
                     howToFindReceiver,
                     "CheckBox::toggle",
                     select
                 )
             );
         }
-        else if(pre_post_interactions[i]->type == MODEL_VIEW_SELECT
-                && (pre_post_interactions[i]->howToFindReceiver[0].className == "QCheckBox"
-                    || pre_post_interactions[i]->howToFindReceiver[0].className == "QComboBox")
-                && pre_post_interactions[i]->howToFindReceiver.back().string == "preferences_configuration")
+        else if(pre_post_interactions[i]->type == model_view_select
+                && (pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QCheckBox"
+                    || pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QComboBox")
+                && pre_post_interactions[i]->how_to_find_receiver.back().string == "preferences_configuration")
         {
-            const auto& imvs = static_cast<const PostInteractionModelViewSelect&>(*pre_post_interactions[i]);
-            QString arg      = QString(R"({"%1", "%2"})").arg(imvs.howToFindReceiver[0].string).arg(imvs.name);
-            if(InteractionHelperAPI* iha =
+            const auto& imvs = static_cast<const post_interaction_model_view_select&>(*pre_post_interactions[i]);
+            QString arg      = QString(R"({"%1", "%2"})").arg(imvs.how_to_find_receiver[0].string).arg(imvs.name);
+            if(interaction_helper_api* iha =
                    nullptr;
-               post_interactions.back()->type == HELPER_API
-               && (iha = static_cast<InteractionHelperAPI*>(post_interactions.back().get()))->methodName
+               post_interactions.back()->type == helper_api
+               && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                == "PreferencesConfiguration::fill")
             {
-                if(!iha->args[0].contains(QString("\"%1\"").arg(pre_post_interactions[i]->howToFindReceiver[0].string)))
+                if(!iha->args[0].contains(QString("\"%1\"").arg(pre_post_interactions[i]->how_to_find_receiver[0].string)))
                 {
                     iha->args[0] += QString(", " + arg);
                 }
@@ -896,9 +898,9 @@ void MacroSaver::save()
             else
             {
                 post_interactions.emplace_back(
-                    std::make_unique<InteractionHelperAPI>(
-                        pre_post_interactions[i]->receiverId,
-                        QVector<FindStrategy> {},
+                    std::make_unique<interaction_helper_api>(
+                        pre_post_interactions[i]->receiver_id,
+                        QVector<find_strategy> {},
                         "PreferencesConfiguration::fill",
                         std::nullopt,
                         QStringList {"{" + arg
@@ -906,32 +908,32 @@ void MacroSaver::save()
                 );
             }
         }
-        else if(pre_post_interactions[i]->type == MODEL_VIEW_SELECT
-                && pre_post_interactions[i]->howToFindReceiver[0].className == "QComboBox")
+        else if(pre_post_interactions[i]->type == model_view_select
+                && pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QComboBox")
         {
-            if(!post_interactions.empty() && post_interactions.back()->type == MOUSE_DRAG)
+            if(!post_interactions.empty() && post_interactions.back()->type == mouse_drag)
             {
                 // It seems mouse drags are always duplicated with comboboxes
                 post_interactions.pop_back();
             }
-            else if(post_interactions.size() >= 2 && post_interactions.back()->type == MOUSE_CLICK
-                    && post_interactions[post_interactions.size() - 2]->type == MOUSE_CLICK)
+            else if(post_interactions.size() >= 2 && post_interactions.back()->type == mouse_click
+                    && post_interactions[post_interactions.size() - 2]->type == mouse_click)
             {
                 // It seems mouse clicks are always duplicated with comboboxes
                 post_interactions.pop_back();
                 post_interactions.pop_back();
             }
-            else if(!post_interactions.empty() && post_interactions.back()->type == HELPER_API)
+            else if(!post_interactions.empty() && post_interactions.back()->type == helper_api)
             {
                 // It seems mouse clicks are always duplicated with comboboxes
                 continue;
             }
 
-            const auto& imvs = static_cast<PostInteractionModelViewSelect&>(*pre_post_interactions[i]);
-            auto [howToFindReceiver, select] = compute_select(imvs.howToFindReceiver);
+            const auto& imvs = static_cast<post_interaction_model_view_select&>(*pre_post_interactions[i]);
+            auto [howToFindReceiver, select] = compute_select(imvs.how_to_find_receiver);
             post_interactions.emplace_back(
-                std::make_unique<InteractionHelperAPI>(
-                    imvs.receiverId,
+                std::make_unique<interaction_helper_api>(
+                    imvs.receiver_id,
                     howToFindReceiver,
                     "ComboBox::select",
                     select,
@@ -939,22 +941,22 @@ void MacroSaver::save()
                     })
             );
         }
-        else if((pre_post_interactions[i]->type == KEYBOARD_CLICK
-                 || pre_post_interactions[i]->type == KEYBOARD_SEQUENCE)
-                && pre_post_interactions[i]->howToFindReceiver[0].className == "QLineEdit")
+        else if((pre_post_interactions[i]->type == keyboard_click
+                 || pre_post_interactions[i]->type == keyboard_sequence)
+                && pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QLineEdit")
         {
-            const auto& ik = static_cast<PostInteractionKeyboard&>(*pre_post_interactions[i]);
-            if(pre_post_interactions[i]->howToFindReceiver.back().type == find_strategy_t::ACTIVE_MODAL_WIDGET)
+            const auto& ik = static_cast<post_interaction_keyboard&>(*pre_post_interactions[i]);
+            if(pre_post_interactions[i]->how_to_find_receiver.back().type == find_strategy_t::active_modal_widget)
             {
                 // Compress all keyboard sequence/click in one
-                QString sequence = (ik.isPrintable() ? ik.sequence : "");
+                QString sequence = (ik.is_printable() ? ik.sequence : "");
                 for( ;
-                     i + 1 < pre_post_interactions.size() && pre_post_interactions[i + 1]->receiverId == ik.receiverId
-                     && (pre_post_interactions[i + 1]->type == KEYBOARD_CLICK
-                         || pre_post_interactions[i + 1]->type == KEYBOARD_SEQUENCE) ;
+                     i + 1 < pre_post_interactions.size() && pre_post_interactions[i + 1]->receiver_id == ik.receiver_id
+                     && (pre_post_interactions[i + 1]->type == keyboard_click
+                         || pre_post_interactions[i + 1]->type == keyboard_sequence) ;
                      i++)
                 {
-                    const auto& ik2 = static_cast<PostInteractionKeyboard&>(*pre_post_interactions[i + 1]);
+                    const auto& ik2 = static_cast<post_interaction_keyboard&>(*pre_post_interactions[i + 1]);
                     if(ik2.key == Qt::Key::Key_Backspace)
                     {
                         sequence.resize(sequence.size() - 1);
@@ -963,7 +965,7 @@ void MacroSaver::save()
                     {
                         break;
                     }
-                    else if(ik2.isPrintable())
+                    else if(ik2.is_printable())
                     {
                         sequence += ik2.sequence;
                     }
@@ -971,20 +973,21 @@ void MacroSaver::save()
                     // Ignore other keys
                 }
 
-                if(pre_post_interactions[i]->howToFindReceiver.back().className == "QFileDialog")
+                if(pre_post_interactions[i]->how_to_find_receiver.back().class_name == "QFileDialog")
                 {
                     post_interactions.emplace_back(
-                        std::make_unique<InteractionHelperAPI>(
-                            ik.receiverId,
-                            QVector<FindStrategy> {},
+                        std::make_unique<interaction_helper_api>(
+                            ik.receiver_id,
+                            QVector<find_strategy> {},
                             "FileDialog::fill",
                             std::nullopt,
                             QStringList {QString("\"%1\"").arg(sequence)
                             })
                     );
-                    if(i + 1 < pre_post_interactions.size() && pre_post_interactions[i + 1]->receiverId == ik.receiverId
-                       && pre_post_interactions[i + 1]->type == KEYBOARD_CLICK
-                       && static_cast<PostInteractionKeyboard&>(*pre_post_interactions[i + 1]).key
+                    if(i + 1 < pre_post_interactions.size()
+                       && pre_post_interactions[i + 1]->receiver_id == ik.receiver_id
+                       && pre_post_interactions[i + 1]->type == keyboard_click
+                       && static_cast<post_interaction_keyboard&>(*pre_post_interactions[i + 1]).key
                        == Qt::Key::Key_Return)
                     {
                         // Ignore the Enter key press to confirm the file dialog, as it is already handled by
@@ -992,21 +995,21 @@ void MacroSaver::save()
                         i++;
                     }
                 }
-                else if(pre_post_interactions[i]->howToFindReceiver.back().string == "preferences_configuration")
+                else if(pre_post_interactions[i]->how_to_find_receiver.back().string == "preferences_configuration")
                 {
                     QString arg =
-                        QString(R"({"%1", "%2"})").arg(pre_post_interactions[i]->howToFindReceiver[0].string).arg(
+                        QString(R"({"%1", "%2"})").arg(pre_post_interactions[i]->how_to_find_receiver[0].string).arg(
                             sequence
                         );
-                    if(InteractionHelperAPI* iha =
+                    if(interaction_helper_api* iha =
                            nullptr;
-                       post_interactions.back()->type == HELPER_API
-                       && (iha = static_cast<InteractionHelperAPI*>(post_interactions.back().get()))->methodName
+                       post_interactions.back()->type == helper_api
+                       && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                        == "PreferencesConfiguration::fill")
                     {
                         if(!iha->args[0].contains(
                                QString("\"%1\"").arg(
-                                   pre_post_interactions[i]->howToFindReceiver[0].
+                                   pre_post_interactions[i]->how_to_find_receiver[0].
                                    string
                                )
                         ))
@@ -1017,10 +1020,10 @@ void MacroSaver::save()
                     else
                     {
                         post_interactions.emplace_back(
-                            std::make_unique<InteractionHelperAPI>(
+                            std::make_unique<interaction_helper_api>(
                                 pre_post_interactions[i]->
-                                receiverId,
-                                QVector<FindStrategy> {},
+                                receiver_id,
+                                QVector<find_strategy> {},
                                 "PreferencesConfiguration::fill",
                                 std::nullopt,
                                 QStringList {"{" + arg
@@ -1031,10 +1034,10 @@ void MacroSaver::save()
             }
             else
             {
-                auto [howToFindReceiver, select] = compute_select(ik.howToFindReceiver);
+                auto [howToFindReceiver, select] = compute_select(ik.how_to_find_receiver);
                 post_interactions.emplace_back(
-                    std::make_unique<InteractionHelperAPI>(
-                        ik.receiverId,
+                    std::make_unique<interaction_helper_api>(
+                        ik.receiver_id,
                         howToFindReceiver,
                         "field::fill",
                         select,
@@ -1043,42 +1046,43 @@ void MacroSaver::save()
                 );
             }
         }
-        else if(pre_post_interactions[i]->type == MODEL_VIEW_SELECT
-                && pre_post_interactions[i]->howToFindReceiver[0].className == "QListWidget")
+        else if(pre_post_interactions[i]->type == model_view_select
+                && pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QListWidget")
         {
-            const auto& ilwc = static_cast<PostInteractionModelViewSelect&>(*pre_post_interactions[i]);
-            if(pre_post_interactions[i]->howToFindReceiver.back().type == find_strategy_t::ACTIVE_MODAL_WIDGET
-               && pre_post_interactions[i]->howToFindReceiver.back().string == "selector")
+            const auto& ilwc = static_cast<post_interaction_model_view_select&>(*pre_post_interactions[i]);
+            if(pre_post_interactions[i]->how_to_find_receiver.back().type == find_strategy_t::active_modal_widget
+               && pre_post_interactions[i]->how_to_find_receiver.back().string == "selector")
             {
-                if(post_interactions.back()->type == HELPER_API
-                   && static_cast<InteractionHelperAPI&>(*post_interactions.back()).methodName
+                if(post_interactions.back()->type == helper_api
+                   && static_cast<interaction_helper_api&>(*post_interactions.back()).method_name
                    == "selector::select"
-                   && post_interactions.back()->receiverId == pre_post_interactions[i]->receiverId)
+                   && post_interactions.back()->receiver_id == pre_post_interactions[i]->receiver_id)
                 {
                     // The user selected an item then selected another one; take only the last choice
                     post_interactions.pop_back();
                 }
 
                 post_interactions.emplace_back(
-                    std::make_unique<InteractionHelperAPI>(
-                        ilwc.receiverId,
-                        QVector<FindStrategy> {},
+                    std::make_unique<interaction_helper_api>(
+                        ilwc.receiver_id,
+                        QVector<find_strategy> {},
                         "selector::select",
                         std::nullopt,
                         QStringList {QString("\"%1\"").arg(ilwc.name)
                         })
                 );
-                if(i + 1 < pre_post_interactions.size() && pre_post_interactions[i + 1]->type == MOUSE_CLICK
-                   && pre_post_interactions[i + 1]->howToFindReceiver[0].className == "QPushButton"
-                   && pre_post_interactions[i + 1]->howToFindReceiver[0].string == "Ok"
-                   && pre_post_interactions[i + 1]->howToFindReceiver[1].type == find_strategy_t::ACTIVE_MODAL_WIDGET)
+                if(i + 1 < pre_post_interactions.size() && pre_post_interactions[i + 1]->type == mouse_click
+                   && pre_post_interactions[i + 1]->how_to_find_receiver[0].class_name == "QPushButton"
+                   && pre_post_interactions[i + 1]->how_to_find_receiver[0].string == "Ok"
+                   && pre_post_interactions[i + 1]->how_to_find_receiver[1].type
+                   == find_strategy_t::active_modal_widget)
                 {
                     // Ignore the eventual "Ok" button click as it is handled by helper::selector::select
                     i++;
                 }
 
-                if(i + 1 < pre_post_interactions.size() && pre_post_interactions[i + 1]->type == MOUSE_DOUBLE_CLICK
-                   && pre_post_interactions[i + 1]->howToFindReceiver[0].string == "SelectorDialogWindow")
+                if(i + 1 < pre_post_interactions.size() && pre_post_interactions[i + 1]->type == mouse_double_click
+                   && pre_post_interactions[i + 1]->how_to_find_receiver[0].string == "SelectorDialogWindow")
                 {
                     // It seems there might be a duplicated double click event
                     i++;
@@ -1086,10 +1090,10 @@ void MacroSaver::save()
             }
             else
             {
-                auto [howToFindReceiver, select] = compute_select(ilwc.howToFindReceiver);
+                auto [howToFindReceiver, select] = compute_select(ilwc.how_to_find_receiver);
                 post_interactions.emplace_back(
-                    std::make_unique<InteractionHelperAPI>(
-                        ilwc.receiverId,
+                    std::make_unique<interaction_helper_api>(
+                        ilwc.receiver_id,
                         howToFindReceiver,
                         "ListWidget::setCurrentText",
                         select,
@@ -1098,64 +1102,64 @@ void MacroSaver::save()
                 );
             }
         }
-        else if(pre_post_interactions[i]->type == NUMBER_INPUT_MODIFICATION
-                && pre_post_interactions[i]->howToFindReceiver[0].className == "QSlider")
+        else if(pre_post_interactions[i]->type == number_input_modification
+                && pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QSlider")
         {
             if(!post_interactions.empty()
-               && (post_interactions.back()->type == MOUSE_DRAG || post_interactions.back()->type == MOUSE_CLICK
-                   || post_interactions.back()->type == MOUSE_DOUBLE_CLICK))
+               && (post_interactions.back()->type == mouse_drag || post_interactions.back()->type == mouse_click
+                   || post_interactions.back()->type == mouse_double_click))
             {
                 // It seems mouse drags are always duplicated with sliders
                 post_interactions.pop_back();
             }
-            else if(!post_interactions.empty() && post_interactions[post_interactions.size() - 1]->type == HELPER_API)
+            else if(!post_interactions.empty() && post_interactions[post_interactions.size() - 1]->type == helper_api)
             {
                 // It seems mouse drags are always duplicated with sliders
                 continue;
             }
 
             const auto& nim =
-                static_cast<PostInteractionNumberInputModification&>(*pre_post_interactions[i]);
-            QVector<FindStrategy> how_to_find_receiver  = nim.howToFindReceiver;
-            sight::ui::test_core::helper::Select select = sight::ui::test_core::helper::Select::current();
-            if(how_to_find_receiver.front().type == find_strategy_t::LOCAL_TYPE
-               && how_to_find_receiver.front().className == "QSlider")
+                static_cast<post_interaction_number_input_modification&>(*pre_post_interactions[i]);
+            QVector<find_strategy> how_to_find_receiver   = nim.how_to_find_receiver;
+            sight::ui::test_core::helper::selector select = sight::ui::test_core::helper::selector::current();
+            if(how_to_find_receiver.front().type == find_strategy_t::local_type
+               && how_to_find_receiver.front().class_name == "QSlider")
             {
                 // Finding the actual QSlider is already handled in helper::Slider::set
                 how_to_find_receiver.pop_front();
             }
 
             std::tie(how_to_find_receiver, select) = compute_select(how_to_find_receiver);
-            if(nim.modifType == modification_t::SET)
+            if(nim.modif_type == modification_t::set)
             {
                 post_interactions.emplace_back(
-                    std::make_unique<InteractionHelperAPI>(
-                        nim.receiverId,
+                    std::make_unique<interaction_helper_api>(
+                        nim.receiver_id,
                         how_to_find_receiver,
                         "Slider::set",
                         select,
-                        QStringList {QString::number(nim.modifNumber)
+                        QStringList {QString::number(nim.modif_number)
                         })
                 );
             }
             else
             {
                 QString position;
-                if(nim.modifType == modification_t::DECREMENT)
+                if(nim.modif_type == modification_t::decrement)
                 {
                     position = "helper::Slider::Position::LEFT";
                 }
-                else if(nim.modifType == modification_t::INCREMENT)
+                else if(nim.modif_type == modification_t::increment)
                 {
                     position = "helper::Slider::Position::RIGHT";
                 }
 
-                if(InteractionHelperAPI* previous_interaction =
+                if(interaction_helper_api* previous_interaction =
                        nullptr;
-                   !post_interactions.empty() && post_interactions.back()->type == HELPER_API
-                   && post_interactions.back()->receiverId == nim.receiverId
+                   !post_interactions.empty() && post_interactions.back()->type == helper_api
+                   && post_interactions.back()->receiver_id == nim.receiver_id
                    && (previous_interaction =
-                           static_cast<InteractionHelperAPI*>(post_interactions.back().get()))->methodName
+                           static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                    == "Slider::move"
                    && previous_interaction->args[0] == position)
                 {
@@ -1172,8 +1176,8 @@ void MacroSaver::save()
                 else
                 {
                     post_interactions.emplace_back(
-                        std::make_unique<InteractionHelperAPI>(
-                            nim.receiverId,
+                        std::make_unique<interaction_helper_api>(
+                            nim.receiver_id,
                             how_to_find_receiver,
                             "Slider::move",
                             select,
@@ -1183,45 +1187,45 @@ void MacroSaver::save()
                 }
             }
         }
-        else if(pre_post_interactions[i]->type == NUMBER_INPUT_MODIFICATION
-                && (pre_post_interactions[i]->howToFindReceiver[0].className == "QSpinBox"
-                    || pre_post_interactions[i]->howToFindReceiver[0].className == "QDoubleSpinBox"))
+        else if(pre_post_interactions[i]->type == number_input_modification
+                && (pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QSpinBox"
+                    || pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QDoubleSpinBox"))
         {
-            if(!post_interactions.empty() && post_interactions.back()->type == MOUSE_CLICK)
+            if(!post_interactions.empty() && post_interactions.back()->type == mouse_click)
             {
                 // It seems mouse clicks are always duplicated with spinboxes
                 post_interactions.pop_back();
             }
-            else if(!post_interactions.empty() && post_interactions.back()->type == HELPER_API)
+            else if(!post_interactions.empty() && post_interactions.back()->type == helper_api)
             {
                 // It seems mouse clicks are always duplicated with spinboxes
                 continue;
             }
 
-            const auto& nim = static_cast<PostInteractionNumberInputModification&>(*pre_post_interactions[i]);
-            auto [howToFindReceiver, select] = compute_select(nim.howToFindReceiver);
-            if(nim.modifType == modification_t::SET)
+            const auto& nim = static_cast<post_interaction_number_input_modification&>(*pre_post_interactions[i]);
+            auto [howToFindReceiver, select] = compute_select(nim.how_to_find_receiver);
+            if(nim.modif_type == modification_t::set)
             {
                 assert(0);
             }
             else
             {
                 QString method_name;
-                if(nim.modifType == modification_t::DECREMENT)
+                if(nim.modif_type == modification_t::decrement)
                 {
                     method_name = "SpinBox::decrement";
                 }
-                else if(nim.modifType == modification_t::INCREMENT)
+                else if(nim.modif_type == modification_t::increment)
                 {
                     method_name = "SpinBox::increment";
                 }
 
-                if(InteractionHelperAPI* previous_interaction =
+                if(interaction_helper_api* previous_interaction =
                        nullptr;
-                   !post_interactions.empty() && post_interactions.back()->type == HELPER_API
-                   && post_interactions.back()->receiverId == nim.receiverId
+                   !post_interactions.empty() && post_interactions.back()->type == helper_api
+                   && post_interactions.back()->receiver_id == nim.receiver_id
                    && (previous_interaction =
-                           static_cast<InteractionHelperAPI*>(post_interactions.back().get()))->methodName
+                           static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                    == method_name)
                 {
                     if(previous_interaction->args.empty())
@@ -1236,8 +1240,8 @@ void MacroSaver::save()
                 else
                 {
                     post_interactions.emplace_back(
-                        std::make_unique<InteractionHelperAPI>(
-                            nim.receiverId,
+                        std::make_unique<interaction_helper_api>(
+                            nim.receiver_id,
                             howToFindReceiver,
                             method_name,
                             select
@@ -1246,38 +1250,38 @@ void MacroSaver::save()
                 }
             }
         }
-        else if(pre_post_interactions[i]->type == MODEL_VIEW_SELECT
-                && pre_post_interactions[i]->howToFindReceiver[0].className == "QColorDialog")
+        else if(pre_post_interactions[i]->type == model_view_select
+                && pre_post_interactions[i]->how_to_find_receiver[0].class_name == "QColorDialog")
         {
             // Ignore all interactions inside the color dialog
             while(std::ranges::any_of(
-                      post_interactions.back()->howToFindReceiver,
-                      [](const FindStrategy& _s)
+                      post_interactions.back()->how_to_find_receiver,
+                      [](const find_strategy& _s)
             {
-                return _s.className == "QColorDialog";
+                return _s.class_name == "QColorDialog";
             }))
             {
                 post_interactions.pop_back();
             }
 
-            if((post_interactions.back()->type == MOUSE_CLICK || post_interactions.back()->type == HELPER_API)
-               && !post_interactions.back()->howToFindReceiver.empty()
-               && post_interactions.back()->howToFindReceiver[0].className == "QPushButton")
+            if((post_interactions.back()->type == mouse_click || post_interactions.back()->type == helper_api)
+               && !post_interactions.back()->how_to_find_receiver.empty()
+               && post_interactions.back()->how_to_find_receiver[0].class_name == "QPushButton")
             {
                 // Get rid of duplicate button click
                 post_interactions.pop_back();
             }
 
-            QVector<FindStrategy> how_to_find_receiver;
-            std::optional<sight::ui::test_core::helper::Select> select;
-            if(InteractionHelperAPI* iha =
+            QVector<find_strategy> how_to_find_receiver;
+            std::optional<sight::ui::test_core::helper::selector> select;
+            if(interaction_helper_api* iha =
                    nullptr;
-               post_interactions.back()->type == HELPER_API
-               && (iha = static_cast<InteractionHelperAPI*>(post_interactions.back().get()))->methodName
+               post_interactions.back()->type == helper_api
+               && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                == "Button::push")
             {
                 // helper::ColorParameter::select already clicks on the Color button
-                how_to_find_receiver = iha->howToFindReceiver;
+                how_to_find_receiver = iha->how_to_find_receiver;
                 select               = iha->select;
                 post_interactions.pop_back();
             }
@@ -1288,22 +1292,22 @@ void MacroSaver::save()
             }
 
             post_interactions.emplace_back(
-                std::make_unique<InteractionHelperAPI>(
-                    pre_post_interactions[i]->receiverId,
+                std::make_unique<interaction_helper_api>(
+                    pre_post_interactions[i]->receiver_id,
                     how_to_find_receiver,
                     "ColorParameter::select",
                     select,
                     QStringList {QString("\"%1\"").arg(
-                                     static_cast<PostInteractionModelViewSelect&>(*pre_post_interactions
-                                                                                  [i]).name
+                                     static_cast<post_interaction_model_view_select&>(*pre_post_interactions
+                                                                                      [i]).name
                     )
                     })
             );
         }
-        else if(pre_post_interactions[i]->howToFindReceiver.back().string == "preferences_configuration"
+        else if(pre_post_interactions[i]->how_to_find_receiver.back().string == "preferences_configuration"
                 || std::ranges::any_of(
-                    pre_post_interactions[i]->howToFindReceiver,
-                    [](const FindStrategy& _f)
+                    pre_post_interactions[i]->how_to_find_receiver,
+                    [](const find_strategy& _f)
         {
             return _f.string == "preferences_configurationWindow";
         }))
@@ -1319,320 +1323,324 @@ void MacroSaver::save()
     QStringList dependencies;
     bool use_helpers            = false;
     bool use_select_constructor = false;
-    for(const std::unique_ptr<PostInteraction>& interaction : post_interactions)
+    for(const std::unique_ptr<post_interaction>& interaction : post_interactions)
     {
-        for(const FindStrategy& strategy : interaction->howToFindReceiver)
+        for(const find_strategy& strategy : interaction->how_to_find_receiver)
         {
-            if(strategy.type == find_strategy_t::GLOBAL_TYPE || strategy.type == find_strategy_t::LOCAL_TYPE)
+            if(strategy.type == find_strategy_t::global_type || strategy.type == find_strategy_t::local_type)
             {
-                dependencies.append(strategy.className);
+                dependencies.append(strategy.class_name);
             }
-            else if(strategy.type == find_strategy_t::ACTION)
+            else if(strategy.type == find_strategy_t::action)
             {
                 dependencies.append("QAction");
             }
-            else if(strategy.type == find_strategy_t::ACTIVE_MODAL_WIDGET)
+            else if(strategy.type == find_strategy_t::active_modal_widget)
             {
-                dependencies.append("ui/testCore/helper/Dialog.hpp");
-                dependencies.append(strategy.className);
+                dependencies.append("ui/testCore/helper/dialog.hpp");
+                dependencies.append(strategy.class_name);
             }
         }
 
-        if(interaction->type == MOUSE_CLICK || interaction->type == MOUSE_DRAG)
+        if(interaction->type == mouse_click || interaction->type == mouse_drag)
         {
             dependencies.append("QPoint");
         }
-        else if(interaction->type == MODEL_VIEW_SELECT)
+        else if(interaction->type == model_view_select)
         {
             dependencies.append("QListWidget");
         }
 
-        if(interaction->type == HELPER_API)
+        if(interaction->type == helper_api)
         {
             use_helpers = true;
-            const auto& iha = static_cast<InteractionHelperAPI&>(*interaction);
-            if(iha.select && iha.select.value().type() != sight::ui::test_core::helper::Select::Type::FROM_MAIN)
+            const auto& iha = static_cast<interaction_helper_api&>(*interaction);
+            if(iha.select && iha.select.value().type() != sight::ui::test_core::helper::selector::type::from_main)
             {
                 use_select_constructor = true;
             }
 
-            dependencies.append(QString("ui/testCore/helper/%1.hpp").arg(iha.methodName.split("::")[0]));
+            dependencies.append(QString("ui/testCore/helper/%1.hpp").arg(iha.method_name.split("::")[0]));
         }
     }
 
     dependencies.sort();
     dependencies.removeDuplicates();
 
-    static constexpr auto write = [](QFile& _f, int _indentation, const QString& _line)
-                                  {
-                                      if(_f.write(
-                                             QByteArray(
-                                                 _indentation,
-                                                 ' '
-                                             ) + _line.toLatin1() + '\n'
-                                         ) < _line.size())
-                                      {
-                                          throw std::runtime_error("Couldn't write data in the file.");
-                                      }
-                                  };
+    static constexpr auto s_WRITE = [](QFile& _f, int _indentation, const QString& _line)
+                                    {
+                                        if(_f.write(
+                                               QByteArray(
+                                                   _indentation,
+                                                   ' '
+                                               ) + _line.toLatin1() + '\n'
+                                           ) < _line.size())
+                                        {
+                                            throw std::runtime_error("Couldn't write data in the file.");
+                                        }
+                                    };
 
     QFile cpp("GuiTest.cpp");
     cpp.open(QIODevice::WriteOnly);
 
-    write(cpp, 0, "#include \"GuiTest.hpp\"");
-    write(cpp, 0, "");
-    write(cpp, 0, "#include <core/runtime/path.hpp>");
-    write(cpp, 0, "#include <ui/testCore/Tester.hpp>");
-    write(cpp, 0, "");
-    write(cpp, 0, "#include <boost/dll.hpp>");
-    write(cpp, 0, "");
+    s_WRITE(cpp, 0, "#include \"GuiTest.hpp\"");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "#include <core/runtime/path.hpp>");
+    s_WRITE(cpp, 0, "#include <ui/testCore/tester.hpp>");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "#include <boost/dll.hpp>");
+    s_WRITE(cpp, 0, "");
     for(const QString& dependency : dependencies)
     {
-        write(cpp, 0, QString("#include <%1>").arg(dependency));
+        s_WRITE(cpp, 0, QString("#include <%1>").arg(dependency));
     }
 
-    write(cpp, 0, "");
-    write(cpp, 0, "CPPUNIT_TEST_SUITE_REGISTRATION(GuiTest);");
-    write(cpp, 0, "");
-    write(cpp, 0, "//------------------------------------------------------------------------------");
-    write(cpp, 0, "");
-    write(cpp, 0, "std::filesystem::path GuiTest::getProfilePath()");
-    write(cpp, 0, "{");
-    write(cpp, 4, "const std::filesystem::path cwd = std::filesystem::path(");
-    write(cpp, 8, "boost::dll::this_line_location().parent_path().parent_path().string()");
-    write(cpp, 4, ");");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "CPPUNIT_TEST_SUITE_REGISTRATION(GuiTest);");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "//------------------------------------------------------------------------------");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "std::filesystem::path GuiTest::getProfilePath()");
+    s_WRITE(cpp, 0, "{");
+    s_WRITE(cpp, 4, "const std::filesystem::path cwd = std::filesystem::path(");
+    s_WRITE(cpp, 8, "boost::dll::this_line_location().parent_path().parent_path().string()");
+    s_WRITE(cpp, 4, ");");
     std::filesystem::path absolute_profile_path(sight::core::runtime::get_current_profile()->get_file_path());
     QString profile_path(QString::fromStdString(std::filesystem::relative(absolute_profile_path).string()));
-    write(cpp, 4, QString("return cwd / \"%1\";").arg(profile_path).toLatin1());
-    write(cpp, 0, "}");
-    write(cpp, 0, "");
+    s_WRITE(cpp, 4, QString("return cwd / \"%1\";").arg(profile_path).toLatin1());
+    s_WRITE(cpp, 0, "}");
+    s_WRITE(cpp, 0, "");
 
-    write(cpp, 0, "void GuiTest::test()");
-    write(cpp, 0, "{");
-    write(cpp, 4, "start(\"GuiTest\",");
-    write(cpp, 8, "[](sight::ui::testCore::Tester& tester)");
-    write(cpp, 4, "{");
+    s_WRITE(cpp, 0, "void GuiTest::test()");
+    s_WRITE(cpp, 0, "{");
+    s_WRITE(cpp, 4, "start(\"GuiTest\",");
+    s_WRITE(cpp, 8, "[](sight::ui::testCore::Tester& tester)");
+    s_WRITE(cpp, 4, "{");
 
     if(use_helpers)
     {
-        write(cpp, 8, "namespace helper = sight::ui::testCore::helper;");
+        s_WRITE(cpp, 8, "namespace helper = sight::ui::testCore::helper;");
     }
 
     if(use_select_constructor)
     {
-        write(cpp, 8, "using Select     = helper::Select;");
+        s_WRITE(cpp, 8, "using Select     = helper::Select;");
     }
 
-    write(cpp, 0, "");
+    s_WRITE(cpp, 0, "");
 
     intptr_t current_item_id = 0;
-    for(const std::unique_ptr<PostInteraction>& interaction : post_interactions)
+    for(const std::unique_ptr<post_interaction>& interaction : post_interactions)
     {
-        if(interaction->receiverId != current_item_id)
+        if(interaction->receiver_id != current_item_id)
         {
             // The receiver of this interaction isn't the current item: We must take it.
-            if(interaction->howToFindReceiver.size() >= 2
-               && interaction->howToFindReceiver.back().type == find_strategy_t::ROOT
-               && interaction->howToFindReceiver[interaction->howToFindReceiver.size() - 2].type
-               == find_strategy_t::OBJECT_NAME)
+            if(interaction->how_to_find_receiver.size() >= 2
+               && interaction->how_to_find_receiver.back().type == find_strategy_t::root
+               && interaction->how_to_find_receiver[interaction->how_to_find_receiver.size() - 2].type
+               == find_strategy_t::object_name)
             {
-                write(
+                s_WRITE(
                     cpp,
                     8,
                     QString(R"(tester.take("%1", "%1");)").arg(
-                        interaction->howToFindReceiver[interaction->
-                                                       howToFindReceiver
-                                                       .size() - 2].string
+                        interaction->how_to_find_receiver[interaction->
+                                                          how_to_find_receiver
+                                                          .size() - 2].string
                     )
                 );
-                interaction->howToFindReceiver.pop_back();
-                interaction->howToFindReceiver.pop_back();
+                interaction->how_to_find_receiver.pop_back();
+                interaction->how_to_find_receiver.pop_back();
             }
 
-            for(int i = interaction->howToFindReceiver.size() - 1 ; i >= 0 ; i--)
+            for(int i = interaction->how_to_find_receiver.size() - 1 ; i >= 0 ; i--)
             {
-                FindStrategy strat = interaction->howToFindReceiver[i];
-                if(strat.type == find_strategy_t::ROOT)
+                find_strategy strat = interaction->how_to_find_receiver[i];
+                if(strat.type == find_strategy_t::root)
                 {
-                    write(cpp, 8, "tester.take(\"main window\", tester.getMainWindow());");
+                    s_WRITE(cpp, 8, "tester.take(\"main window\", tester.getMainWindow());");
                 }
-                else if(strat.type == find_strategy_t::ACTIVE_MODAL_WIDGET)
+                else if(strat.type == find_strategy_t::active_modal_widget)
                 {
-                    write(
+                    s_WRITE(
                         cpp,
                         8,
-                        QString("helper::Dialog::take<%1*>(tester, \"%2\");").arg(strat.className).arg(strat.string)
+                        QString("helper::Dialog::take<%1*>(tester, \"%2\");").arg(strat.class_name).arg(strat.string)
                     );
                 }
-                else if(strat.type == find_strategy_t::OBJECT_NAME)
+                else if(strat.type == find_strategy_t::object_name)
                 {
-                    write(cpp, 8, "tester.yields(");
-                    write(cpp, 12, QString("\"%1\",").arg(strat.string));
-                    write(
+                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.string));
+                    s_WRITE(
                         cpp,
                         12,
                         QString("[](QObject* old) -> QObject* {return old->findChild<QObject*>(\"%1\");}")
                         .arg(strat.string)
                     );
-                    write(cpp, 8, ");");
+                    s_WRITE(cpp, 8, ");");
                 }
-                else if(strat.type == find_strategy_t::GLOBAL_TYPE)
+                else if(strat.type == find_strategy_t::global_type)
                 {
-                    write(cpp, 8, QString("tester.take%1(").arg(strat.string.isEmpty() ? "" : "<QWidget*>"));
-                    write(cpp, 12, QString("\"%1\",").arg(strat.className));
-                    write(cpp, 12, "[&tester]() -> QObject*");
-                    write(cpp, 8, "{");
-                    write(
+                    s_WRITE(cpp, 8, QString("tester.take%1(").arg(strat.string.isEmpty() ? "" : "<QWidget*>"));
+                    s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
+                    s_WRITE(cpp, 12, "[&tester]() -> QObject*");
+                    s_WRITE(cpp, 8, "{");
+                    s_WRITE(
                         cpp,
                         12,
                         QString("return tester.getMainWindow()->findChild<%1*>();")
-                        .arg(strat.className)
+                        .arg(strat.class_name)
                     );
-                    write(cpp, 8, "});");
+                    s_WRITE(cpp, 8, "});");
                 }
-                else if(strat.type == find_strategy_t::ACTION)
+                else if(strat.type == find_strategy_t::action)
                 {
-                    write(cpp, 8, "tester.yields(");
-                    write(cpp, 12, QString("\"%1\",").arg(strat.className));
-                    write(cpp, 12, "[](QObject* old) -> QObject*");
-                    write(cpp, 8, "{");
-                    write(
+                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
+                    s_WRITE(cpp, 12, "[](QObject* old) -> QObject*");
+                    s_WRITE(cpp, 8, "{");
+                    s_WRITE(
                         cpp,
                         12,
                         "return sight::ui::testCore::Tester::getWidgetFromAction(qobject_cast<QAction*>(old));"
                     );
-                    write(cpp, 8, "});");
+                    s_WRITE(cpp, 8, "});");
                 }
-                else if(strat.type == find_strategy_t::LOCAL_TYPE)
+                else if(strat.type == find_strategy_t::local_type)
                 {
-                    write(cpp, 8, "tester.yields(");
-                    write(cpp, 12, QString("\"%1\",").arg(strat.className));
-                    write(cpp, 12, "[](QObject* old) -> QObject*");
-                    write(cpp, 8, "{");
-                    write(cpp, 12, QString("return old->findChild<%1*>();").arg(strat.className));
-                    write(cpp, 8, "});");
+                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
+                    s_WRITE(cpp, 12, "[](QObject* old) -> QObject*");
+                    s_WRITE(cpp, 8, "{");
+                    s_WRITE(cpp, 12, QString("return old->findChild<%1*>();").arg(strat.class_name));
+                    s_WRITE(cpp, 8, "});");
                 }
-                else if(strat.type == find_strategy_t::NTH_CHILD)
+                else if(strat.type == find_strategy_t::nth_child)
                 {
-                    write(cpp, 8, "tester.yields(");
-                    write(cpp, 12, QString("\"%1\",").arg(strat.className));
-                    write(cpp, 12, "[](QObject* old) -> QObject*");
-                    write(cpp, 8, "{");
-                    write(cpp, 12, QString("return old->children()[%1];").arg(strat.integer));
-                    write(cpp, 8, "});");
+                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
+                    s_WRITE(cpp, 12, "[](QObject* old) -> QObject*");
+                    s_WRITE(cpp, 8, "{");
+                    s_WRITE(cpp, 12, QString("return old->children()[%1];").arg(strat.integer));
+                    s_WRITE(cpp, 8, "});");
                 }
-                else if(strat.type == find_strategy_t::CANT_BE_FOUND)
+                else if(strat.type == find_strategy_t::cant_be_found)
                 {
-                    write(
+                    s_WRITE(
                         cpp,
                         8,
                         QString("// TODO: Find the %1. MacroSaver wasn't able to find it automatically.")
-                        .arg(strat.className)
+                        .arg(strat.class_name)
                     );
                 }
             }
 
-            current_item_id = interaction->receiverId;
+            current_item_id = interaction->receiver_id;
         }
 
-        const static QMetaEnum mouseButton = QMetaEnum::fromType<Qt::MouseButtons>();
-        const static QMetaEnum key         = QMetaEnum::fromType<Qt::Key>();
-        if(interaction->type == MOUSE_CLICK)
+        const static QMetaEnum s_MOUSE_BUTTON = QMetaEnum::fromType<Qt::MouseButtons>();
+        const static QMetaEnum s_KEY          = QMetaEnum::fromType<Qt::Key>();
+        if(interaction->type == mouse_click)
         {
-            const auto& im = static_cast<PostInteractionMouse&>(*interaction);
-            write(
+            const auto& im = static_cast<post_interaction_mouse&>(*interaction);
+            s_WRITE(
                 cpp,
                 8,
                 QString(
                     "tester.interact(std::make_unique<sight::ui::testCore::MouseClick>(Qt::MouseButton::%1, %2, %3));"
                 )
-                .arg(mouseButton.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
+                .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
             );
         }
-        else if(interaction->type == MOUSE_DOUBLE_CLICK)
+        else if(interaction->type == mouse_double_click)
         {
-            const auto& im = static_cast<PostInteractionMouse&>(*interaction);
-            write(
+            const auto& im = static_cast<post_interaction_mouse&>(*interaction);
+            s_WRITE(
                 cpp,
                 8,
                 QString(
                     "tester.interact(std::make_unique<sight::ui::testCore::MouseDoubleClick>(Qt::MouseButton::%1, %2, %3));"
                 )
-                .arg(mouseButton.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
+                .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
             );
         }
-        else if(interaction->type == MOUSE_DRAG)
+        else if(interaction->type == mouse_drag)
         {
-            const auto& im = static_cast<PostInteractionMouse&>(*interaction);
-            write(
+            const auto& im = static_cast<post_interaction_mouse&>(*interaction);
+            s_WRITE(
                 cpp,
                 8,
                 QString(
                     "tester.interact(std::make_unique<sight::ui::testCore::MouseDrag>(%1, %2, Qt::MouseButton::%3, %4));"
                 )
                 .arg(QTest::toString(im.from)).arg(QTest::toString(im.to))
-                .arg(mouseButton.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
+                .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
             );
         }
-        else if(interaction->type == MOUSE_WHEEL)
+        else if(interaction->type == mouse_wheel)
         {
-            const auto& im = static_cast<PostInteractionMouseWheel&>(*interaction);
-            write(
+            const auto& im = static_cast<post_interaction_mouse_wheel&>(*interaction);
+            s_WRITE(
                 cpp,
                 8,
                 QString(
                     "tester.interact(std::make_unique<sight::ui::testCore::MouseWheel>(%1, %2, %3));"
                 )
-                .arg(QTest::toString(im.angleDelta)).arg(modifiers_to_string(im.modifiers)).arg(QTest::toString(im.pos))
+                .arg(QTest::toString(im.angle_delta)).arg(modifiers_to_string(im.modifiers)).arg(
+                    QTest::toString(
+                        im.pos
+                    )
+                )
             );
         }
-        else if(interaction->type == KEYBOARD_CLICK)
+        else if(interaction->type == keyboard_click)
         {
-            const auto& ik = static_cast<PostInteractionKeyboard&>(*interaction);
-            write(
+            const auto& ik = static_cast<post_interaction_keyboard&>(*interaction);
+            s_WRITE(
                 cpp,
                 8,
                 QString("tester.interact(std::make_unique<sight::ui::testCore::KeyboardClick>(Qt::Key::%1, %2));")
-                .arg(key.valueToKey(static_cast<int>(ik.key))).arg(modifiers_to_string(ik.modifiers))
+                .arg(s_KEY.valueToKey(static_cast<int>(ik.key))).arg(modifiers_to_string(ik.modifiers))
             );
         }
-        else if(interaction->type == KEYBOARD_SEQUENCE)
+        else if(interaction->type == keyboard_sequence)
         {
-            const auto& ik = static_cast<PostInteractionKeyboard&>(*interaction);
-            write(
+            const auto& ik = static_cast<post_interaction_keyboard&>(*interaction);
+            s_WRITE(
                 cpp,
                 8,
                 QString("tester.interact(std::make_unique<sight::ui::testCore::KeyboardSequence>(\"%1\", %2));")
                 .arg(ik.sequence).arg(modifiers_to_string(ik.modifiers))
             );
         }
-        else if(interaction->type == MODEL_VIEW_SELECT)
+        else if(interaction->type == model_view_select)
         {
-            const auto& ilwc = static_cast<PostInteractionModelViewSelect&>(*interaction);
-            write(cpp, 8, "tester.doSomethingAsynchronously<QListWidget*>(");
-            write(cpp, 12, "[](QListWidget* obj)");
-            write(cpp, 8, "{");
-            write(
+            const auto& ilwc = static_cast<post_interaction_model_view_select&>(*interaction);
+            s_WRITE(cpp, 8, "tester.do_something_asynchronously<QListWidget*>(");
+            s_WRITE(cpp, 12, "[](QListWidget* obj)");
+            s_WRITE(cpp, 8, "{");
+            s_WRITE(
                 cpp,
                 12,
                 QString("obj->setCurrentItem(obj->findItems(\"%1\", Qt::MatchFlag::MatchExactly)[0]);")
                 .arg(ilwc.name)
             );
-            write(cpp, 8, "});");
+            s_WRITE(cpp, 8, "});");
         }
-        else if(interaction->type == NUMBER_INPUT_MODIFICATION)
+        else if(interaction->type == number_input_modification)
         {
             assert(0);
         }
-        else if(interaction->type == HELPER_API)
+        else if(interaction->type == helper_api)
         {
-            const auto& ha = static_cast<InteractionHelperAPI&>(*interaction);
-            write(
+            const auto& ha = static_cast<interaction_helper_api&>(*interaction);
+            s_WRITE(
                 cpp,
                 8,
-                QString("helper::%1(tester%2%3);").arg(ha.methodName).arg(
+                QString("helper::%1(tester%2%3);").arg(ha.method_name).arg(
                     ha.select ? ", "
                     + select_to_code(*ha.select) : ""
                 ).arg(
@@ -1643,31 +1651,31 @@ void MacroSaver::save()
         }
     }
 
-    write(cpp, 4, "});");
-    write(cpp, 0, "}");
+    s_WRITE(cpp, 4, "});");
+    s_WRITE(cpp, 0, "}");
 
     QFile hpp("GuiTest.hpp");
     hpp.open(QIODevice::WriteOnly);
-    write(hpp, 0, "#pragma once");
-    write(hpp, 0, "");
-    write(hpp, 0, "#include <ui/testCore/test.hpp>");
-    write(hpp, 0, "");
-    write(hpp, 0, "#include <core/runtime/profile/profile.hpp>");
-    write(hpp, 0, "");
-    write(hpp, 0, "#include <cppunit/extensions/HelperMacros.h>");
-    write(hpp, 0, "");
-    write(hpp, 0, "class GuiTest : public sight::ui::testCore::test");
-    write(hpp, 0, "{");
-    write(hpp, 0, "CPPUNIT_TEST_SUITE(GuiTest);");
-    write(hpp, 0, "CPPUNIT_TEST(test);");
-    write(hpp, 0, "CPPUNIT_TEST_SUITE_END();");
-    write(hpp, 0, "");
-    write(hpp, 0, "public:");
-    write(hpp, 0, "");
-    write(hpp, 4, "std::filesystem::path getProfilePath() override;");
-    write(hpp, 0, "");
-    write(hpp, 4, "void test();");
-    write(hpp, 0, "};");
+    s_WRITE(hpp, 0, "#pragma once");
+    s_WRITE(hpp, 0, "");
+    s_WRITE(hpp, 0, "#include <ui/testCore/test.hpp>");
+    s_WRITE(hpp, 0, "");
+    s_WRITE(hpp, 0, "#include <core/runtime/profile/profile.hpp>");
+    s_WRITE(hpp, 0, "");
+    s_WRITE(hpp, 0, "#include <cppunit/extensions/HelperMacros.h>");
+    s_WRITE(hpp, 0, "");
+    s_WRITE(hpp, 0, "class GuiTest : public sight::ui::testCore::test");
+    s_WRITE(hpp, 0, "{");
+    s_WRITE(hpp, 0, "CPPUNIT_TEST_SUITE(GuiTest);");
+    s_WRITE(hpp, 0, "CPPUNIT_TEST(test);");
+    s_WRITE(hpp, 0, "CPPUNIT_TEST_SUITE_END();");
+    s_WRITE(hpp, 0, "");
+    s_WRITE(hpp, 0, "public:");
+    s_WRITE(hpp, 0, "");
+    s_WRITE(hpp, 4, "std::filesystem::path getProfilePath() override;");
+    s_WRITE(hpp, 0, "");
+    s_WRITE(hpp, 4, "void test();");
+    s_WRITE(hpp, 0, "};");
 }
 
 //------------------------------------------------------------------------------
@@ -1690,7 +1698,7 @@ static T* find_ancestor(QObject* _child)
 
 //------------------------------------------------------------------------------
 
-std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, QEvent* _e)
+std::unique_ptr<pre_interaction> macro_saver::create_interaction(QObject* _target, QEvent* _e)
 {
     switch(_e->type())
     {
@@ -1705,11 +1713,11 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
             {
                 if(_e->type() == QEvent::MouseButtonPress)
                 {
-                    return std::make_unique<PreInteractionModelViewSelect>(
+                    return std::make_unique<pre_interaction_model_view_select>(
                         reinterpret_cast<intptr_t>(_target),
                         find(lw),
                         Qt::KeyboardModifier::NoModifier,
-                        ModelViewSelect,
+                        MODEL_VIEW_SELECT_TYPE,
                         lw->itemAt(me->pos())->text()
                     );
                 }
@@ -1722,11 +1730,11 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
             {
                 if(_e->type() == QEvent::MouseButtonRelease)
                 {
-                    return std::make_unique<PreInteractionModelViewSelect>(
+                    return std::make_unique<pre_interaction_model_view_select>(
                         reinterpret_cast<intptr_t>(cb),
                         find(cb),
                         Qt::KeyboardModifier::NoModifier,
-                        ModelViewSelect,
+                        MODEL_VIEW_SELECT_TYPE,
                         cb->model()->data(lv->indexAt(me->pos())).toString()
                     );
                 }
@@ -1738,8 +1746,8 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
             {
                 if(_e->type() == QEvent::MouseButtonRelease)
                 {
-                    bool drag_in_progress = m_dragInProgress;
-                    m_dragInProgress = false;
+                    bool drag_in_progress = m_drag_in_progress;
+                    m_drag_in_progress = false;
                     QRect decrement_zone = slider->rect();
                     QRect increment_zone = slider->rect();
                     if(slider->orientation() == Qt::Horizontal)
@@ -1757,49 +1765,49 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
                     {
                         if(decrement_zone.contains(me->pos()))
                         {
-                            return std::make_unique<PreInteractionNumberInputModification>(
+                            return std::make_unique<pre_interaction_number_input_modification>(
                                 reinterpret_cast<intptr_t>(
                                     _target),
                                 find(slider),
                                 me->modifiers(),
-                                NumberInputModification,
-                                modification_t::DECREMENT,
+                                NUMBER_INPUT_MODIFICATION_TYPE,
+                                modification_t::decrement,
                                 1
                             );
                         }
 
                         if(increment_zone.contains(me->pos()))
                         {
-                            return std::make_unique<PreInteractionNumberInputModification>(
+                            return std::make_unique<pre_interaction_number_input_modification>(
                                 reinterpret_cast<intptr_t>(
                                     _target),
                                 find(slider),
                                 me->modifiers(),
-                                NumberInputModification,
-                                modification_t::INCREMENT,
+                                NUMBER_INPUT_MODIFICATION_TYPE,
+                                modification_t::increment,
                                 1
                             );
                         }
                     }
                     else
                     {
-                        return std::make_unique<PreInteractionNumberInputModification>(
+                        return std::make_unique<pre_interaction_number_input_modification>(
                             reinterpret_cast<intptr_t>(_target),
                             find(slider),
                             me->modifiers(),
-                            NumberInputModification,
-                            modification_t::SET,
+                            NUMBER_INPUT_MODIFICATION_TYPE,
+                            modification_t::set,
                             slider->value()
                         );
                     }
                 }
                 else if(_e->type() == QEvent::MouseMove)
                 {
-                    m_dragInProgress = true;
+                    m_drag_in_progress = true;
                 }
                 else if(_e->type() == QEvent::MouseButtonPress)
                 {
-                    m_dragInProgress = false;
+                    m_drag_in_progress = false;
                 }
 
                 return nullptr;
@@ -1815,24 +1823,24 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
                     increment_zone.setX(static_cast<int>(increment_zone.width() * 0.75));
                     if(decrement_zone.contains(me->pos()))
                     {
-                        return std::make_unique<PreInteractionNumberInputModification>(
+                        return std::make_unique<pre_interaction_number_input_modification>(
                             reinterpret_cast<intptr_t>(_target),
                             find(spinbox),
                             me->modifiers(),
-                            NumberInputModification,
-                            modification_t::DECREMENT,
+                            NUMBER_INPUT_MODIFICATION_TYPE,
+                            modification_t::decrement,
                             1
                         );
                     }
 
                     if(increment_zone.contains(me->pos()))
                     {
-                        return std::make_unique<PreInteractionNumberInputModification>(
+                        return std::make_unique<pre_interaction_number_input_modification>(
                             reinterpret_cast<intptr_t>(_target),
                             find(spinbox),
                             me->modifiers(),
-                            NumberInputModification,
-                            modification_t::INCREMENT,
+                            NUMBER_INPUT_MODIFICATION_TYPE,
+                            modification_t::increment,
                             1
                         );
                     }
@@ -1846,11 +1854,11 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
                    button->window()
                ) != nullptr)
             {
-                return std::make_unique<PreInteractionModelViewSelect>(
+                return std::make_unique<pre_interaction_model_view_select>(
                     reinterpret_cast<intptr_t>(button->window()),
                     find(button->window()),
                     me->modifiers(),
-                    ModelViewSelect,
+                    MODEL_VIEW_SELECT_TYPE,
                     button->window()->findChild<QLineEdit*>()->text()
                 );
             }
@@ -1863,11 +1871,11 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
                 // map
                 if(_e->type() == QEvent::MouseButtonRelease)
                 {
-                    return std::make_unique<PreInteractionModelViewSelect>(
+                    return std::make_unique<pre_interaction_model_view_select>(
                         reinterpret_cast<intptr_t>(checkbox),
                         find(checkbox),
                         me->modifiers(),
-                        ModelViewSelect,
+                        MODEL_VIEW_SELECT_TYPE,
                         checkbox->isChecked() ? "true" : "false"
                     );
                 }
@@ -1876,12 +1884,12 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
             }
 
             if(_e->type() == QEvent::MouseButtonDblClick
-               && _target->objectName() == m_mainWindow->windowTitle() + "Window")
+               && _target->objectName() == m_main_window->windowTitle() + "Window")
             {
                 return nullptr;
             }
 
-            return std::make_unique<PreInteractionMouse>(
+            return std::make_unique<pre_interaction_mouse>(
                 reinterpret_cast<intptr_t>(_target),
                 find(_target),
                 me->modifiers(),
@@ -1915,7 +1923,7 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
 
             if(_e->type() == QEvent::KeyPress && !m_interactions.empty()
                && m_interactions.back()->type == QEvent::KeyPress
-               && static_cast<PreInteractionKeyboard&>(*m_interactions.back()).key == ke->key()
+               && static_cast<pre_interaction_keyboard&>(*m_interactions.back()).key == ke->key()
                && !ke->isAutoRepeat())
             {
                 // Ignore duplicates (if the same key is pressed multiple times in a row without any releases, it must
@@ -1923,7 +1931,7 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
                 return nullptr;
             }
 
-            return std::make_unique<PreInteractionKeyboard>(
+            return std::make_unique<pre_interaction_keyboard>(
                 reinterpret_cast<intptr_t>(receiver),
                 find(receiver),
                 ke->modifiers(),
@@ -1936,7 +1944,7 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* _target, 
         case QEvent::Wheel:
         {
             auto* we = static_cast<QWheelEvent*>(_e);
-            return std::make_unique<PreInteractionMouseWheel>(
+            return std::make_unique<pre_interaction_mouse_wheel>(
                 reinterpret_cast<intptr_t>(_target),
                 find(_target),
                 we->modifiers(),

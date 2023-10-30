@@ -40,7 +40,7 @@ public:
      * @param _ogreColor the Ogre color to convert.
      * @return the converted QColor.
      */
-    static constexpr QColor convertOgreColorToQColor(const Ogre::ColourValue& _ogre_color)
+    static constexpr QColor convert_ogre_color_to_q_color(const Ogre::ColourValue& _ogre_color)
     {
         const int r = static_cast<int>(_ogre_color.r * 255);
         const int g = static_cast<int>(_ogre_color.g * 255);
@@ -55,7 +55,7 @@ public:
      * @param _qColor the Qt color to convert.
      * @return the converted Ogre color.
      */
-    static inline Ogre::ColourValue convertQColorToOgreColor(const QColor& _q_color)
+    static inline Ogre::ColourValue convert_q_color_to_ogre_color(const QColor& _q_color)
     {
         const float r = static_cast<float>(_q_color.red()) / 255.F;
         const float g = static_cast<float>(_q_color.green()) / 255.F;

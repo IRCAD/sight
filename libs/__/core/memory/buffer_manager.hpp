@@ -81,16 +81,16 @@ class CORE_CLASS_API buffer_manager : public core::base_object
 {
 public:
 
-    typedef void* buffer_t;
-    typedef const void* const_buffer_t;
-    typedef buffer_t* buffer_ptr_t;
-    typedef void const* const* const_buffer_ptr_t;
+    using buffer_t           = void*;
+    using const_buffer_t     = const void*;
+    using buffer_ptr_t       = buffer_t*;
+    using const_buffer_ptr_t = const void* const*;
 
-    typedef buffer_info::size_t size_t;
+    using size_t = buffer_info::size_t;
 
-    typedef core::com::signal<void ()> updated_signal_t;
+    using updated_signal_t = core::com::signal<void ()>;
 
-    typedef std::map<const_buffer_ptr_t, buffer_info> buffer_info_map_t;
+    using buffer_info_map_t = std::map<const_buffer_ptr_t, buffer_info>;
 
     SIGHT_DECLARE_CLASS(buffer_manager, core::base_object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
@@ -98,11 +98,11 @@ public:
     buffer_manager();
     ~buffer_manager() override;
 
-    typedef enum
+    enum loading_mode_type
     {
-        DIRECT,
-        LAZY
-    } loading_mode_type;
+        direct,
+        lazy
+    };
 
     struct buffer_stats
     {
@@ -117,7 +117,7 @@ public:
         /// path of the file containing the dumped buffer
         core::memory::file_holder fs_file;
         /// format of the dumped file
-        core::memory::file_format_type format {OTHER};
+        core::memory::file_format_type format {other};
         /// true if stream has been set by the user
         bool user_stream {};
     };
@@ -365,7 +365,7 @@ protected:
 
     SPTR(core::memory::policy::base) m_dump_policy;
 
-    loading_mode_type m_loading_mode {buffer_manager::DIRECT};
+    loading_mode_type m_loading_mode {buffer_manager::direct};
 
     SPTR(core::thread::worker) m_worker;
 

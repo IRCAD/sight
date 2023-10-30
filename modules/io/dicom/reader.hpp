@@ -78,14 +78,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(reader, sight::io::service::reader);
 
-    using JobCreatedSignal = core::com::signal<void (core::jobs::base::sptr)>;
+    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
     MODULE_IO_DICOM_API reader() noexcept;
 
     MODULE_IO_DICOM_API ~reader() noexcept;
 
     /// Propose to read a session data file
-    MODULE_IO_DICOM_API void openLocationDialog() override;
+    MODULE_IO_DICOM_API void open_location_dialog() override;
 
 protected:
 
@@ -102,9 +102,9 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override
+    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override
     {
-        return sight::io::service::FOLDER;
+        return sight::io::service::folder;
     }
 
 private:

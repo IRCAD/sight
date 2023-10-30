@@ -392,17 +392,17 @@ public:
 
 private:
 
-    typedef std::set<std::string> requirement_container; ///< Defines the requirement container
+    using requirement_container = std::set<std::string>; ///< Defines the requirement container
     // type.
-    typedef std::map<std::string, std::string> parameter_container; ///< defines the parameter container type
+    using parameter_container = std::map<std::string, std::string>; ///< defines the parameter container type
 
-    static SPTR(module) m_loading_module; ///< a pointer to the module that is currently loading its
+    static SPTR(module) s_loading_module; ///< a pointer to the module that is currently loading its
     // dynamic libraries
 
     std::filesystem::path m_library_location;            ///< the path to the module libraries
-    const std::filesystem::path M_RESOURCES_LOCATION;    ///< the path to the module resources
-    const std::string M_IDENTIFIER;                      ///< a string containing the module identifier
-    const std::string M_CLASS;                           ///< a string containing the module's plugin class name
+    const std::filesystem::path m_resources_location;    ///< the path to the module resources
+    const std::string m_identifier;                      ///< a string containing the module identifier
+    const std::string m_class;                           ///< a string containing the module's plugin class name
     extension_impl_container m_extensions;               ///< all extensions
     extension_point_container m_extension_points;        ///< all extension points
     executable_factory_container m_executable_factories; ///< all executable factories

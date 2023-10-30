@@ -36,76 +36,76 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-structure_traits::sptr structure_traits_dictionary::getStructure(std::string _type)
+structure_traits::sptr structure_traits_dictionary::get_structure(std::string _type)
 {
     SIGHT_ASSERT(
         "Structure of type '" + _type + "' not found",
-        m_structureTraitsMap.find(_type) != m_structureTraitsMap.end()
+        m_structure_traits_map.find(_type) != m_structure_traits_map.end()
     );
-    return m_structureTraitsMap[_type];
+    return m_structure_traits_map[_type];
 }
 
 //------------------------------------------------------------------------------
 
-structure_traits::csptr structure_traits_dictionary::getStructure(std::string _type) const
+structure_traits::csptr structure_traits_dictionary::get_structure(std::string _type) const
 {
     SIGHT_ASSERT(
         "Structure of type '" + _type + "' not found",
-        m_structureTraitsMap.find(_type) != m_structureTraitsMap.end()
+        m_structure_traits_map.find(_type) != m_structure_traits_map.end()
     );
-    return m_structureTraitsMap.at(_type);
+    return m_structure_traits_map.at(_type);
 }
 
 //------------------------------------------------------------------------------
 
-void structure_traits_dictionary::addStructure(structure_traits::sptr _structure_traits)
+void structure_traits_dictionary::add_structure(structure_traits::sptr _structure_traits)
 {
-    std::string type                              = _structure_traits->getType();
-    structure_traits::StructureClass struct_class = _structure_traits->getClass();
-    std::string attachment                        = _structure_traits->get_attachment_type();
+    std::string type                               = _structure_traits->type();
+    structure_traits::structure_class struct_class = _structure_traits->get_class();
+    std::string attachment                         = _structure_traits->get_attachment_type();
 
     SIGHT_THROW_IF(
         "Structure of type '" << type << "' already exist",
-        m_structureTraitsMap.find(type) != m_structureTraitsMap.end()
+        m_structure_traits_map.find(type) != m_structure_traits_map.end()
     );
 
     SIGHT_THROW_IF(
         "Structure of class '" << struct_class << "' can not have attachment",
-        !(attachment.empty() || struct_class == structure_traits::LESION || struct_class
-          == structure_traits::FUNCTIONAL)
+        !(attachment.empty() || struct_class == structure_traits::lesion || struct_class
+          == structure_traits::functional)
     );
 
     SIGHT_THROW_IF(
         "Structure attachment '" << attachment << "' not found in dictionary",
-        !(attachment.empty() || m_structureTraitsMap.find(attachment) != m_structureTraitsMap.end())
+        !(attachment.empty() || m_structure_traits_map.find(attachment) != m_structure_traits_map.end())
     );
 
     SIGHT_THROW_IF(
         "Structure attachment '" << attachment << "' must be of class ORGAN",
-        !(attachment.empty() || m_structureTraitsMap[attachment]->getClass() == structure_traits::ORGAN)
+        !(attachment.empty() || m_structure_traits_map[attachment]->get_class() == structure_traits::organ)
     );
 
     SIGHT_THROW_IF(
         "Structure must have at least one category",
-        _structure_traits->getCategories().empty()
+        _structure_traits->get_categories().empty()
     );
 
     SIGHT_THROW_IF(
         "Wrong structure type '" << type << "', a type cannot contain space",
-        _structure_traits->getType().find(' ') != std::string::npos
+        _structure_traits->type().find(' ') != std::string::npos
     );
 
-    m_structureTraitsMap[type] = _structure_traits;
+    m_structure_traits_map[type] = _structure_traits;
 }
 
 //------------------------------------------------------------------------------
 
-structure_traits_dictionary::StructureTypeNameContainer structure_traits_dictionary::getStructureTypeNames() const
+structure_traits_dictionary::StructureTypeNameContainer structure_traits_dictionary::get_structure_type_names() const
 {
     StructureTypeNameContainer vect_names;
     std::transform(
-        m_structureTraitsMap.begin(),
-        m_structureTraitsMap.end(),
+        m_structure_traits_map.begin(),
+        m_structure_traits_map.end(),
         std::back_inserter(vect_names),
         [](const auto& _e){return _e.first;});
     return vect_names;
@@ -113,9 +113,9 @@ structure_traits_dictionary::StructureTypeNameContainer structure_traits_diction
 
 //------------------------------------------------------------------------------
 
-DATA_API void structure_traits_dictionary::setStructureTraitsMap(const structure_traits_map_t& _structure_traits_map)
+DATA_API void structure_traits_dictionary::set_structure_traits_map(const structure_traits_map_t& _structure_traits_map)
 {
-    m_structureTraitsMap = _structure_traits_map;
+    m_structure_traits_map = _structure_traits_map;
 }
 
 //------------------------------------------------------------------------------
@@ -132,9 +132,9 @@ void structure_traits_dictionary::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_structureTraitsMap = other->m_structureTraitsMap;
+    m_structure_traits_map = other->m_structure_traits_map;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -154,26 +154,26 @@ void structure_traits_dictionary::deep_copy(
         !bool(other)
     );
 
-    m_structureTraitsMap.clear();
-    for(const structure_traits_map_t::value_type& elt : other->m_structureTraitsMap)
+    m_structure_traits_map.clear();
+    for(const auto& elt : other->m_structure_traits_map)
     {
-        m_structureTraitsMap[elt.first] = data::object::copy(elt.second, _cache);
+        m_structure_traits_map[elt.first] = data::object::copy(elt.second, _cache);
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool structure_traits_dictionary::operator==(const structure_traits_dictionary& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_structureTraitsMap, _other.m_structureTraitsMap))
+    if(!core::tools::is_equal(m_structure_traits_map, _other.m_structure_traits_map))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

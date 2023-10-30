@@ -37,16 +37,16 @@ namespace sight::service
 //-----------------------------------------------------------------------------
 
 const core::com::slots::key_t tracker::TRACK_SLOT          = "track";
-const core::com::slots::key_t tracker::START_TRACKING_SLOT = "startTracking";
-const core::com::slots::key_t tracker::STOP_TRACKING_SLOT  = "stopTracking";
+const core::com::slots::key_t tracker::START_TRACKING_SLOT = "start_tracking";
+const core::com::slots::key_t tracker::STOP_TRACKING_SLOT  = "stop_tracking";
 
 //-----------------------------------------------------------------------------
 
 tracker::tracker()
 {
     new_slot(TRACK_SLOT, &tracker::track, this);
-    new_slot(START_TRACKING_SLOT, &tracker::startTracking, this);
-    new_slot(STOP_TRACKING_SLOT, &tracker::stopTracking, this);
+    new_slot(START_TRACKING_SLOT, &tracker::start_tracking, this);
+    new_slot(STOP_TRACKING_SLOT, &tracker::stop_tracking, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void tracker::configuring()
     {
         const auto drop_str = config.get<std::string>("dropObj");
         SIGHT_ASSERT("'dropObj' value must be 'true' or 'false'.", drop_str == "true" || drop_str == "false");
-        m_dropObj = (drop_str == "true");
+        m_drop_obj = (drop_str == "true");
     }
 }
 
@@ -71,28 +71,28 @@ void tracker::configuring()
 
 void tracker::track(core::hires_clock::type _timestamp)
 {
-    SIGHT_DEBUG_IF("[" + this->get_classname() + "] Tracking is not started: does nothing", !m_isTracking);
+    SIGHT_DEBUG_IF("[" + this->get_classname() + "] Tracking is not started: does nothing", !m_is_tracking);
     SIGHT_DEBUG_IF(
         "[" + this->get_classname() + "] Dropping object at " + std::to_string(_timestamp),
-        m_isTracking && m_dropObj && _timestamp <= m_lastTimestamp
+        m_is_tracking && m_drop_obj && _timestamp <= m_last_timestamp
     );
 
-    if(m_isTracking && (!m_dropObj || _timestamp > m_lastTimestamp))
+    if(m_is_tracking && (!m_drop_obj || _timestamp > m_last_timestamp))
     {
         {
             const auto timeline = m_timeline.lock();
             SIGHT_WARN_IF(
-                "the object '" << s_TIMELINE_INPUT << "' is not defined, the 'drop' mode cannot be managed.",
+                "the object '" << TIMELINE_INPUT << "' is not defined, the 'drop' mode cannot be managed.",
                 !timeline
             );
             if(timeline)
             {
-                if(m_dropObj)
+                if(m_drop_obj)
                 {
-                    _timestamp = timeline->getNewerTimestamp();
+                    _timestamp = timeline->get_newer_timestamp();
                 }
 
-                if(timeline->getClosestObject(_timestamp) == nullptr)
+                if(timeline->get_closest_object(_timestamp) == nullptr)
                 {
                     SIGHT_WARN("[" + this->get_classname() + "] No buffer found for the timeline.");
                     return;
@@ -102,7 +102,7 @@ void tracker::track(core::hires_clock::type _timestamp)
 
         SIGHT_DEBUG("[" + this->get_classname() + "] Tracking at " + std::to_string(_timestamp) + "...");
         this->tracking(_timestamp);
-        m_lastTimestamp = _timestamp;
+        m_last_timestamp = _timestamp;
     }
 }
 
@@ -110,21 +110,21 @@ void tracker::track(core::hires_clock::type _timestamp)
 
 service::connections_t tracker::auto_connections() const
 {
-    return {{s_TIMELINE_INPUT, data::timeline::signals::PUSHED, TRACK_SLOT}};
+    return {{TIMELINE_INPUT, data::timeline::signals::PUSHED, TRACK_SLOT}};
 }
 
 //-----------------------------------------------------------------------------
 
-void tracker::startTracking()
+void tracker::start_tracking()
 {
-    m_isTracking = true;
+    m_is_tracking = true;
 }
 
 //-----------------------------------------------------------------------------
 
-void tracker::stopTracking()
+void tracker::stop_tracking()
 {
-    m_isTracking = false;
+    m_is_tracking = false;
 }
 
 //-----------------------------------------------------------------------------

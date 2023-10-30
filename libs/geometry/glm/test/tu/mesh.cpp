@@ -40,49 +40,49 @@ constexpr int V = Y;
 constexpr int W = Z;
 constexpr int H = 3;
 
-const static double s_EPSILON = 10e-9;
+const static double EPSILON = 10e-9;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::glm::ut::MeshFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::glm::ut::mesh_functions_test);
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::setUp()
+void mesh_functions_test::setUp()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::tearDown()
+void mesh_functions_test::tearDown()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual)
+void mesh_functions_test::compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual)
 {
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
         "Conversion world-barycentric-world error.",
         _expected[X],
         _actual[X],
-        s_EPSILON
+        EPSILON
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
         "Conversion world-barycentric-world error.",
         _expected[Y],
         _actual[Y],
-        s_EPSILON
+        EPSILON
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
         "Conversion world-barycentric-world error.",
         _expected[Z],
         _actual[Z],
-        s_EPSILON
+        EPSILON
     );
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarycenterABC2D()
+void mesh_functions_test::compute_barycenter_ab_c_2d()
 {
     // With the same Z it correspond to a 2d case
 
@@ -100,7 +100,7 @@ void MeshFunctionsTest::computeBarycenterABC2D()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
@@ -129,7 +129,7 @@ void MeshFunctionsTest::computeBarycenterABC2D()
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarycenterABC3D()
+void mesh_functions_test::compute_barycenter_ab_c_3d()
 {
     // Second test in 3d.
     const ::glm::dvec3 a {1., 0., 0.};
@@ -145,7 +145,7 @@ void MeshFunctionsTest::computeBarycenterABC3D()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
@@ -174,7 +174,7 @@ void MeshFunctionsTest::computeBarycenterABC3D()
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarycenterABCRealCoords()
+void mesh_functions_test::compute_barycenter_abc_real_coords()
 {
     // Second test in 3d.
     const ::glm::dvec3 a {-0.5, 0., 3.};
@@ -190,7 +190,7 @@ void MeshFunctionsTest::computeBarycenterABCRealCoords()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
@@ -219,7 +219,7 @@ void MeshFunctionsTest::computeBarycenterABCRealCoords()
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarycenterOutsideABC()
+void mesh_functions_test::compute_barycenter_outside_abc()
 {
     // Test with a point outside of the triangle.
 
@@ -236,7 +236,7 @@ void MeshFunctionsTest::computeBarycenterOutsideABC()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, EPSILON);
 
     CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", barycentric[V] > 1.); // v = 20
     CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", barycentric[W] > 1.); //w = 20
@@ -244,7 +244,7 @@ void MeshFunctionsTest::computeBarycenterOutsideABC()
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarycenterTetrahedron()
+void mesh_functions_test::compute_barycenter_tetrahedron()
 {
     // First test in 3d.
     const ::glm::dvec3 a {0., 0., 0.};
@@ -261,7 +261,7 @@ void MeshFunctionsTest::computeBarycenterTetrahedron()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W] + barycentric[H]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w + h = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w + h = 1", 1., sum, EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
@@ -290,7 +290,7 @@ void MeshFunctionsTest::computeBarycenterTetrahedron()
 
 //------------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarycenterOutsideTetrahedron()
+void mesh_functions_test::compute_barycenter_outside_tetrahedron()
 {
     // Test with a point outside of the tetrahedron.
 

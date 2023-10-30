@@ -76,19 +76,19 @@ public:
      * @brief Shows/hides the cross in the scene.
      * @param _visible use true to show the cross.
      */
-    void setVisible(bool _visible);
+    void set_visible(bool _visible);
 
 private:
 
     /// Contains the cross
     Ogre::ManualObject* m_cross;
     /// Parent scene manager
-    Ogre::SceneManager& m_sceneManager;
+    Ogre::SceneManager& m_scene_manager;
 };
 
 //------------------------------------------------------------------------------
 
-inline void picking_cross::setVisible(bool _visible)
+inline void picking_cross::set_visible(bool _visible)
 {
     m_cross->setVisible(_visible);
 }

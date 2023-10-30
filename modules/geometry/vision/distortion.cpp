@@ -50,7 +50,7 @@ static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
 //------------------------------------------------------------------------------
 distortion::distortion() noexcept
 {
-    new_slot(CHANGE_STATE_SLOT, &distortion::changeState, this);
+    new_slot(CHANGE_STATE_SLOT, &distortion::change_state, this);
     new_slot(CALIBRATE_SLOT, &distortion::calibrate, this);
 }
 
@@ -64,10 +64,10 @@ distortion::~distortion() noexcept =
 service::connections_t distortion::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_CAMERA_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(s_CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
+    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
+    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -100,8 +100,8 @@ void distortion::starting()
 
 void distortion::stopping()
 {
-    m_calibrationMismatch = false;
-    m_prevImageSize       = {0, 0, 0};
+    m_calibration_mismatch = false;
+    m_prev_image_size      = {0, 0, 0};
 }
 
 //------------------------------------------------------------------------------
@@ -109,25 +109,25 @@ void distortion::stopping()
 void distortion::updating()
 {
     const auto input_image = m_image.lock();
-    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", input_image);
+    SIGHT_ASSERT("No '" << IMAGE_INPUT << "' found.", input_image);
 
-    if(input_image && m_calibrationMismatch)
+    if(input_image && m_calibration_mismatch)
     {
         const auto input_size = input_image->size();
-        if(input_size != m_prevImageSize)
+        if(input_size != m_prev_image_size)
         {
             // Reset the error detection boolean
-            m_calibrationMismatch = false;
-            m_prevImageSize       = {0, 0, 0};
+            m_calibration_mismatch = false;
+            m_prev_image_size      = {0, 0, 0};
         }
     }
 
-    if(m_isEnabled)
+    if(m_is_enabled)
     {
         const auto camera = m_camera.lock();
-        SIGHT_ASSERT("No '" << s_CAMERA_INPUT << "' found.", camera);
+        SIGHT_ASSERT("No '" << CAMERA_INPUT << "' found.", camera);
 
-        if(camera->getIsCalibrated())
+        if(camera->get_is_calibrated())
         {
             this->remap();
         }
@@ -142,7 +142,7 @@ void distortion::updating()
 
         auto output_image = m_output.lock();
 
-        SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", output_image);
+        SIGHT_ASSERT("No '" << IMAGE_INOUT << "' found.", output_image);
 
         if(input_image && output_image)
         {
@@ -180,11 +180,11 @@ void distortion::updating()
 void distortion::remap()
 {
     const auto input_image = m_image.lock();
-    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", input_image);
+    SIGHT_ASSERT("No '" << IMAGE_INPUT << "' found.", input_image);
     auto output_image = m_output.lock();
-    SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", output_image);
+    SIGHT_ASSERT("No '" << IMAGE_INOUT << "' found.", output_image);
 
-    if(!input_image || !output_image || m_calibrationMismatch)
+    if(!input_image || !output_image || m_calibration_mismatch)
     {
         return;
     }
@@ -198,30 +198,30 @@ void distortion::remap()
 
     const auto input_size = input_image->size();
 
-    if(input_image->getSizeInBytes() == 0 || input_image->numDimensions() < 2)
+    if(input_image->size_in_bytes() == 0 || input_image->num_dimensions() < 2)
     {
         SIGHT_WARN("Can not remap this image, it is empty.");
         return;
     }
 
     const auto camera = m_camera.lock();
-    SIGHT_ASSERT("No '" << s_CAMERA_INPUT << "' found.", camera);
+    SIGHT_ASSERT("No '" << CAMERA_INPUT << "' found.", camera);
 
-    if(input_size[0] != camera->getWidth() || input_size[1] != camera->getHeight())
+    if(input_size[0] != camera->get_width() || input_size[1] != camera->get_height())
     {
         std::stringstream msg;
         msg << "Can not distort/undistort, the camera calibration resolution ["
-        << camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size ["
+        << camera->get_width() << "x" << camera->get_height() << "] does not match the input image size ["
         << input_size[0] << "x" << input_size[1] << "]";
 
         sight::ui::dialog::message::show(
             "Error",
             msg.str(),
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
 
-        m_calibrationMismatch = true;
-        m_prevImageSize       = input_size;
+        m_calibration_mismatch = true;
+        m_prev_image_size      = input_size;
         return;
     }
 
@@ -235,21 +235,21 @@ void distortion::remap()
     }
     if(prev_size != input_size || realloc)
     {
-        data::image::Size size = {input_size[0], input_size[1], 0};
+        data::image::size_t size = {input_size[0], input_size[1], 0};
 
         // Since we may have shared the pointer on the input image, we can't use data::image::allocate
         // Because it will not give us a new buffer and will thus make us modify both input and output images
         data::image::sptr tmp_image = std::make_shared<data::image>();
         output_image->shallow_copy(tmp_image);
-        output_image->resize(size, input_image->getType(), input_image->getPixelFormat());
+        output_image->resize(size, input_image->type(), input_image->pixel_format());
 
-        const data::image::Origin origin = {0., 0., 0.};
-        output_image->setOrigin(origin);
+        const data::image::origin_t origin = {0., 0., 0.};
+        output_image->set_origin(origin);
 
-        const data::image::Spacing spacing = {1., 1., 1.};
-        output_image->setSpacing(spacing);
-        output_image->setWindowWidth({1});
-        output_image->setWindowCenter({0});
+        const data::image::spacing_t spacing = {1., 1., 1.};
+        output_image->set_spacing(spacing);
+        output_image->set_window_width({1});
+        output_image->set_window_center({0});
     }
 
     const auto new_size = output_image->size();
@@ -314,13 +314,13 @@ void distortion::remap()
 
 // ----------------------------------------------------------------------------
 
-void distortion::changeState()
+void distortion::change_state()
 {
     // Reset the error detection boolean
-    m_calibrationMismatch = false;
-    m_prevImageSize       = {0, 0, 0};
+    m_calibration_mismatch = false;
+    m_prev_image_size      = {0, 0, 0};
 
-    m_isEnabled = !m_isEnabled;
+    m_is_enabled = !m_is_enabled;
 }
 
 // ----------------------------------------------------------------------------
@@ -328,8 +328,8 @@ void distortion::changeState()
 void distortion::calibrate()
 {
     // Reset the error detection boolean
-    m_calibrationMismatch = false;
-    m_prevImageSize       = {0, 0, 0};
+    m_calibration_mismatch = false;
+    m_prev_image_size      = {0, 0, 0};
 
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("Object 'camera' is not found.", camera);
@@ -338,7 +338,7 @@ void distortion::calibrate()
     cv::Mat dist_coefs;
     cv::Size size;
 
-    std::tie(intrinsics, size, dist_coefs) = io::opencv::camera::copyToCv(camera.get_shared());
+    std::tie(intrinsics, size, dist_coefs) = io::opencv::camera::copy_to_cv(camera.get_shared());
 
     std::vector<cv::Mat> xy_maps(2);
 

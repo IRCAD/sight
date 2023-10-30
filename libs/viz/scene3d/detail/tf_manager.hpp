@@ -32,7 +32,7 @@ namespace sight::viz::scene3d::detail
 
 //---------------------------------------------------------------------
 
-class TFLoader
+class tf_loader
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 
 //---------------------------------------------------------------------
 
-using tf_manager = resource_manager<sight::data::transfer_function, Ogre::Texture, TFLoader>;
+using tf_manager = resource_manager<sight::data::transfer_function, Ogre::Texture, tf_loader>;
 
 //---------------------------------------------------------------------
 

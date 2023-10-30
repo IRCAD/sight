@@ -34,10 +34,10 @@ namespace sight::ui::dicom::widget
 
 //-----------------------------------------------------------------------------
 
-QTagSelectorWidget::QTagSelectorWidget(QWidget* _parent) :
+q_tag_selector_widget::q_tag_selector_widget(QWidget* _parent) :
     QWidget(_parent),
-    m_groupSpinBox(new ui::dicom::widget::QHexSpinBox()),
-    m_elementSpinBox(new ui::dicom::widget::QHexSpinBox())
+    m_group_spin_box(new ui::dicom::widget::q_hex_spin_box()),
+    m_element_spin_box(new ui::dicom::widget::q_hex_spin_box())
 {
     // Create main layout
     auto* main_layout = new QVBoxLayout();
@@ -45,8 +45,8 @@ QTagSelectorWidget::QTagSelectorWidget(QWidget* _parent) :
     main_layout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Add tag label
-    m_tagNameLabel = new QLabel("<b>Tag name :</b> ");
-    main_layout->addWidget(m_tagNameLabel);
+    m_tag_name_label = new QLabel("<b>Tag name :</b> ");
+    main_layout->addWidget(m_tag_name_label);
 
     // Create bottom widget
     auto* bottom_widget = new QWidget();
@@ -57,50 +57,50 @@ QTagSelectorWidget::QTagSelectorWidget(QWidget* _parent) :
 
     // Spin box
     bottom_layout->addWidget(new QLabel("<b>Group :</b>"));
-    bottom_layout->addWidget(m_groupSpinBox, 1);
+    bottom_layout->addWidget(m_group_spin_box, 1);
     bottom_layout->addWidget(new QLabel("<b>Element :</b>"));
-    bottom_layout->addWidget(m_elementSpinBox, 1);
+    bottom_layout->addWidget(m_element_spin_box, 1);
 
     // Update current name
-    this->updateTagName();
+    this->update_tag_name();
 
     // Connect signals/slots
-    QObject::connect(m_groupSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTagName(int)));
-    QObject::connect(m_elementSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTagName(int)));
+    QObject::connect(m_group_spin_box, SIGNAL(valueChanged(int)), this, SLOT(update_tag_name(int)));
+    QObject::connect(m_element_spin_box, SIGNAL(valueChanged(int)), this, SLOT(update_tag_name(int)));
 }
 
 //-----------------------------------------------------------------------------
 
-QTagSelectorWidget::~QTagSelectorWidget()
+q_tag_selector_widget::~q_tag_selector_widget()
 {
     // Disconnect signales/slots
-    QObject::disconnect(m_groupSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTagName(int)));
-    QObject::disconnect(m_elementSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTagName(int)));
+    QObject::disconnect(m_group_spin_box, SIGNAL(valueChanged(int)), this, SLOT(update_tag_name(int)));
+    QObject::disconnect(m_element_spin_box, SIGNAL(valueChanged(int)), this, SLOT(update_tag_name(int)));
 }
 
 //-----------------------------------------------------------------------------
 
-void QTagSelectorWidget::updateTagName(int /*value*/)
+void q_tag_selector_widget::update_tag_name(int /*value*/)
 {
-    DcmTag tag(Uint16(m_groupSpinBox->value()), Uint16(m_elementSpinBox->value()));
+    DcmTag tag(Uint16(m_group_spin_box->value()), Uint16(m_element_spin_box->value()));
     std::string text = "<b>Tag name :</b> " + std::string(tag.getTagName());
-    m_tagNameLabel->setText(text.c_str());
+    m_tag_name_label->setText(text.c_str());
 }
 
 //-----------------------------------------------------------------------------
 
-void QTagSelectorWidget::setTagValue(const DcmTagKey& _tag)
+void q_tag_selector_widget::set_tag_value(const DcmTagKey& _tag)
 {
-    m_groupSpinBox->setValue(_tag.getGroup());
-    m_elementSpinBox->setValue(_tag.getElement());
-    this->updateTagName();
+    m_group_spin_box->setValue(_tag.getGroup());
+    m_element_spin_box->setValue(_tag.getElement());
+    this->update_tag_name();
 }
 
 //-----------------------------------------------------------------------------
 
-DcmTagKey QTagSelectorWidget::getTag()
+DcmTagKey q_tag_selector_widget::get_tag()
 {
-    return {Uint16(m_groupSpinBox->value()), Uint16(m_elementSpinBox->value())};
+    return {Uint16(m_group_spin_box->value()), Uint16(m_element_spin_box->value())};
 }
 
 } // namespace sight::ui::dicom::widget

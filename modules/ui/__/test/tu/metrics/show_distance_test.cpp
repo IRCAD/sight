@@ -35,10 +35,10 @@ namespace sight::module::ui::metrics::ut
 
 void show_distance_test::setUp()
 {
-    m_showDistance = service::add("sight::module::ui::metrics::show_distance");
+    m_show_distance = service::add("sight::module::ui::metrics::show_distance");
     CPPUNIT_ASSERT_MESSAGE(
         "Failed to create service 'sight::module::ui::metrics::show_distance'",
-        m_showDistance
+        m_show_distance
     );
 }
 
@@ -46,29 +46,29 @@ void show_distance_test::setUp()
 
 void show_distance_test::tearDown()
 {
-    if(!m_showDistance->stopped())
+    if(!m_show_distance->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_showDistance->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_show_distance->stop().get());
     }
 
-    service::remove(m_showDistance);
+    service::remove(m_show_distance);
 }
 
 //------------------------------------------------------------------------------
 
-void show_distance_test::basicTest()
+void show_distance_test::basic_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::RGB);
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::rgb);
 
-    m_showDistance->set_inout(image, "image");
-    CPPUNIT_ASSERT_NO_THROW(m_showDistance->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_showDistance->start().get());
+    m_show_distance->set_inout(image, "image");
+    CPPUNIT_ASSERT_NO_THROW(m_show_distance->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_show_distance->start().get());
 
     CPPUNIT_ASSERT(data::helper::medical_image::get_distance_visibility(*image));
-    CPPUNIT_ASSERT_NO_THROW(m_showDistance->update().get());
+    CPPUNIT_ASSERT_NO_THROW(m_show_distance->update().get());
     CPPUNIT_ASSERT(!data::helper::medical_image::get_distance_visibility(*image));
-    CPPUNIT_ASSERT_NO_THROW(m_showDistance->update().get());
+    CPPUNIT_ASSERT_NO_THROW(m_show_distance->update().get());
     CPPUNIT_ASSERT(data::helper::medical_image::get_distance_visibility(*image));
 }
 

@@ -51,7 +51,7 @@ void dump_policy::configuring()
     {
         for(const auto& iter : params.value())
         {
-            m_policyParams.emplace_back(iter.first, iter.second.get_value<std::string>());
+            m_policy_params.emplace_back(iter.first, iter.second.get_value<std::string>());
         }
     }
 }
@@ -67,7 +67,7 @@ void dump_policy::starting()
 
         if(policy)
         {
-            for(const auto& param : m_policyParams)
+            for(const auto& param : m_policy_params)
             {
                 const bool success = policy->set_param(param.first, param.second);
                 SIGHT_ERROR_IF(

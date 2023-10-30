@@ -35,7 +35,7 @@ const core::com::slots::key_t registerer::COMPUTE_REGISTRATION_SLOT = "computeRe
 
 registerer::registerer() noexcept
 {
-    new_slot(COMPUTE_REGISTRATION_SLOT, &registerer::computeRegistration, this);
+    new_slot(COMPUTE_REGISTRATION_SLOT, &registerer::compute_registration, this);
 }
 
 // ----------------------------------------------------------------------------

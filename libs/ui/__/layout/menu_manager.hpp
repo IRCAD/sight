@@ -47,24 +47,24 @@ public:
 
     SIGHT_DECLARE_CLASS(menu_manager, ui::object);
 
-    typedef std::string registry_key_t;
-    typedef std::vector<ui::menu_item_callback::sptr> callbacks_t;
+    using registry_key_t = std::string;
+    using callbacks_t    = std::vector<ui::menu_item_callback::sptr>;
 
-    typedef enum
+    enum action_t
     {
         DEFAULT,
-        QUIT,
-        ABOUT,
-        HELP,
+        quit,
+        about,
+        help,
         NEW,
-        SEPARATOR
-    } action_t;
+        separator
+    };
 
-    class ActionInfo
+    class action_info
     {
     public:
 
-        ActionInfo() :
+        action_info() :
 
             m_icon("")
         {
@@ -73,11 +73,11 @@ public:
         std::string m_name;
         std::string m_shortcut;
         std::filesystem::path m_icon;
-        bool m_isCheckable {false};
-        bool m_isRadio {false};
+        bool m_is_checkable {false};
+        bool m_is_radio {false};
         action_t m_type {DEFAULT};
-        bool m_isSeparator {false};
-        bool m_isMenu {false};
+        bool m_is_separator {false};
+        bool m_is_menu {false};
     };
 
     UI_API const static registry_key_t REGISTRY_KEY;
@@ -88,12 +88,12 @@ public:
     /**
      * @brief Returns the vector of menu_item managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu_item::sptr> getMenuItems();
+    UI_API virtual std::vector<ui::container::menu_item::sptr> get_menu_items();
 
     /**
      * @brief Returns the vector of menu managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu::sptr> getMenus();
+    UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
 
     /**
      * @brief Initialize layout managers.
@@ -141,33 +141,33 @@ public:
     /**
      * @brief Instantiate actions with parent menu.
      */
-    UI_API virtual void createLayout(ui::container::menu::sptr _parent, const std::string& _id) = 0;
+    UI_API virtual void create_layout(ui::container::menu::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local actions.
      * @pre services using this actions must be stopped before.
      */
-    UI_API virtual void destroyLayout() = 0;
+    UI_API virtual void destroy_layout() = 0;
 
     /**
      * @brief Set the action visibility.
      */
-    UI_API virtual void menuItemSetVisible(ui::container::menu_item::sptr, bool _is_visible) = 0;
+    UI_API virtual void menu_item_set_visible(ui::container::menu_item::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_API virtual void menuItemSetEnabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
+    UI_API virtual void menu_item_set_enabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_API virtual void menuItemSetChecked(ui::container::menu_item::sptr, bool _is_checked) = 0;
+    UI_API virtual void menu_item_set_checked(ui::container::menu_item::sptr, bool _is_checked) = 0;
 
     /**
      * @brief Sets callbacks associate with menu items.
      */
-    virtual void setCallbacks(callbacks_t _callbacks)
+    virtual void set_callbacks(callbacks_t _callbacks)
     {
         m_callbacks = _callbacks;
     }
@@ -177,16 +177,16 @@ protected:
     /**
      * @brief Helper to destroy local actions.
      */
-    UI_API virtual void destroyActions();
+    UI_API virtual void destroy_actions();
 
     /// All actions managed by this layout.
-    std::vector<ui::container::menu_item::sptr> m_menuItems;
+    std::vector<ui::container::menu_item::sptr> m_menu_items;
 
     /// All menus managed by this layout.
     std::vector<ui::container::menu::sptr> m_menus;
 
     /// Save action informations from configuration.
-    std::vector<ActionInfo> m_actionInfo;
+    std::vector<action_info> m_action_info;
 
     /// Callbacks associate with menu items
     callbacks_t m_callbacks;

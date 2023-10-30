@@ -62,7 +62,7 @@ public:
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
     /// It also updates the vertex declaration of the output buffer
-    VIZ_SCENE3D_API void setOutputSettings(
+    VIZ_SCENE3D_API void set_output_settings(
         std::size_t _vertex_count,
         bool _has_color,
         bool _has_tex_coord,
@@ -85,38 +85,38 @@ public:
     VIZ_SCENE3D_API Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
     /// Return the parent mesh.
-    VIZ_SCENE3D_API virtual const Ogre::MeshPtr& getMesh() const;
+    VIZ_SCENE3D_API virtual const Ogre::MeshPtr& get_mesh() const;
 
     /// Mark the output vertex buffer as dirty, the r2vb process will be run on next update
-    VIZ_SCENE3D_API void setDirty();
+    VIZ_SCENE3D_API void set_dirty();
 
     /// Runs the R2VB process.
-    VIZ_SCENE3D_API void manualUpdate();
+    VIZ_SCENE3D_API void manual_update();
 
     /// Set the material used to process the geometry pass.
-    VIZ_SCENE3D_API void setRenderToBufferMaterial(const std::string& _mtl_name);
+    VIZ_SCENE3D_API void set_render_to_buffer_material(const std::string& _mtl_name);
 
-    viz::scene3d::adaptor::wptr m_materialAdaptor;
+    viz::scene3d::adaptor::wptr m_material_adaptor;
 
     data::mesh::cell_type_t get_input_primitive_type() const;
 
 protected:
 
     /// Source object of the r2vb process
-    Ogre::SubEntity* m_srcObject {};
+    Ogre::SubEntity* m_src_object {};
 
     /// Buffer used as output
-    Ogre::RenderToVertexBufferSharedPtr m_r2vbBuffer;
+    Ogre::RenderToVertexBufferSharedPtr m_r2vb_buffer;
 
     /// Tells if the r2vb must be run on next update - typically we want this to be done, at worst, only once per frame.
     /// Thus we use this flag, depending on the technique to enable the r2vb only on the first rendering pass.
     bool m_dirty {false};
 
     /// Primitive type used as input
-    data::mesh::cell_type_t m_inputPrimitiveType {data::mesh::cell_type_t::TRIANGLE};
+    data::mesh::cell_type_t m_input_primitive_type {data::mesh::cell_type_t::triangle};
 
     /// Maximum number of vertices in output buffer
-    std::size_t m_maxOutputVertexCount {0};
+    std::size_t m_max_output_vertex_count {0};
 };
 
 //-----------------------------------------------------------------------------
@@ -126,14 +126,14 @@ protected:
 
 inline r2vb_renderable::~r2vb_renderable()
 {
-    m_srcObject = nullptr;
+    m_src_object = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
 inline Ogre::Real r2vb_renderable::getBoundingRadius() const
 {
-    return m_srcObject->getParent()->getBoundingRadius();
+    return m_src_object->getParent()->getBoundingRadius();
 }
 
 //-----------------------------------------------------------------------------
@@ -145,30 +145,30 @@ inline Ogre::Real r2vb_renderable::getSquaredViewDepth(const Ogre::Camera* _cam)
 
 //-----------------------------------------------------------------------------
 
-inline void r2vb_renderable::setDirty()
+inline void r2vb_renderable::set_dirty()
 {
     m_dirty = true;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void r2vb_renderable::manualUpdate()
+inline void r2vb_renderable::manual_update()
 {
-    m_r2vbBuffer->update(mManager);
+    m_r2vb_buffer->update(mManager);
 }
 
 //-----------------------------------------------------------------------------
 
-inline void r2vb_renderable::setRenderToBufferMaterial(const std::string& _mtl_name)
+inline void r2vb_renderable::set_render_to_buffer_material(const std::string& _mtl_name)
 {
-    m_r2vbBuffer->setRenderToBufferMaterialName(_mtl_name);
+    m_r2vb_buffer->setRenderToBufferMaterialName(_mtl_name);
 }
 
 //------------------------------------------------------------------------------
 
 inline data::mesh::cell_type_t r2vb_renderable::get_input_primitive_type() const
 {
-    return m_inputPrimitiveType;
+    return m_input_primitive_type;
 }
 
 } // namespace sight::viz::scene3d

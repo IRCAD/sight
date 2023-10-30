@@ -49,9 +49,9 @@ inline static void container_notifier_test_fn()
 {
     auto container = std::make_shared<T>();
 
-    static const auto description1 = core::tools::UUID::generate();
-    static const auto description2 = core::tools::UUID::generate();
-    static const auto description3 = core::tools::UUID::generate();
+    static const auto s_DESCRIPTION1 = core::tools::uuid::generate();
+    static const auto s_DESCRIPTION2 = core::tools::uuid::generate();
+    static const auto s_DESCRIPTION3 = core::tools::uuid::generate();
 
     object::sptr object1;
     object::sptr object2;
@@ -77,9 +77,9 @@ inline static void container_notifier_test_fn()
     }
     else
     {
-        object1 = std::make_shared<string>(description1);
-        object2 = std::make_shared<string>(description1);
-        object3 = std::make_shared<string>(description1);
+        object1 = std::make_shared<string>(s_DESCRIPTION1);
+        object2 = std::make_shared<string>(s_DESCRIPTION1);
+        object3 = std::make_shared<string>(s_DESCRIPTION1);
     }
 
     std::mutex mutex;
@@ -89,10 +89,10 @@ inline static void container_notifier_test_fn()
     {
         auto worker                = core::thread::worker::make();
         std::size_t add_call_count = 0;
-        typename T::container_type added_from_slot;
+        typename T::container_t added_from_slot;
 
-        std::function<void(typename T::container_type)> add =
-            [&](typename T::container_type _added_from_signal)
+        std::function<void(typename T::container_t)> add =
+            [&](typename T::container_t _added_from_signal)
             {
                 {
                     std::unique_lock lock(mutex);
@@ -146,9 +146,9 @@ inline static void container_notifier_test_fn()
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
-                container->insert({description1, object1});
-                container->insert({description2, object2});
-                container->insert({description3, object3});
+                container->insert({s_DESCRIPTION1, object1});
+                container->insert({s_DESCRIPTION2, object2});
+                container->insert({s_DESCRIPTION3, object3});
             }
             else
             {
@@ -180,9 +180,9 @@ inline static void container_notifier_test_fn()
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
-                CPPUNIT_ASSERT(added_from_slot[description1] == object1);
-                CPPUNIT_ASSERT(added_from_slot[description2] == object2);
-                CPPUNIT_ASSERT(added_from_slot[description3] == object3);
+                CPPUNIT_ASSERT(added_from_slot[s_DESCRIPTION1] == object1);
+                CPPUNIT_ASSERT(added_from_slot[s_DESCRIPTION2] == object2);
+                CPPUNIT_ASSERT(added_from_slot[s_DESCRIPTION3] == object3);
             }
             else
             {
@@ -197,10 +197,10 @@ inline static void container_notifier_test_fn()
     {
         auto worker                   = core::thread::worker::make();
         std::size_t remove_call_count = 0;
-        typename T::container_type removed_from_slot;
+        typename T::container_t removed_from_slot;
 
-        std::function<void(typename T::container_type)> remove =
-            [&](typename T::container_type _removed_from_signal)
+        std::function<void(typename T::container_t)> remove =
+            [&](typename T::container_t _removed_from_signal)
             {
                 {
                     std::unique_lock lock(mutex);
@@ -245,7 +245,7 @@ inline static void container_notifier_test_fn()
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
-                container->erase(description1);
+                container->erase(s_DESCRIPTION1);
             }
             else
             {
@@ -273,7 +273,7 @@ inline static void container_notifier_test_fn()
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
-                CPPUNIT_ASSERT(removed_from_slot[description1] == object1);
+                CPPUNIT_ASSERT(removed_from_slot[s_DESCRIPTION1] == object1);
             }
             else
             {
@@ -287,11 +287,11 @@ inline static void container_notifier_test_fn()
     {
         auto worker                   = core::thread::worker::make();
         std::size_t change_call_count = 0;
-        typename T::container_type old_from_slot;
-        typename T::container_type new_from_slot;
+        typename T::container_t old_from_slot;
+        typename T::container_t new_from_slot;
 
-        std::function<void(typename T::container_type, typename T::container_type)> change =
-            [&](typename T::container_type _old_from_signal, typename T::container_type _new_from_signal)
+        std::function<void(typename T::container_t, typename T::container_t)> change =
+            [&](typename T::container_t _old_from_signal, typename T::container_t _new_from_signal)
             {
                 {
                     std::unique_lock lock(mutex);
@@ -324,13 +324,13 @@ inline static void container_notifier_test_fn()
 
         {
             // Insert value before creating a notifier
-            container->insert({description1, object1});
-            container->insert({description2, object2});
+            container->insert({s_DESCRIPTION1, object1});
+            container->insert({s_DESCRIPTION2, object2});
 
             // Change one element
             const auto scoped_emitter = container->scoped_emit();
             scoped_emitter->block(blocked_changed_slot);
-            container->insert_or_assign(description2, object3);
+            container->insert_or_assign(s_DESCRIPTION2, object3);
         }
 
         // Check results
@@ -348,8 +348,8 @@ inline static void container_notifier_test_fn()
             CPPUNIT_ASSERT(change_call_count == 1);
             CPPUNIT_ASSERT(blocked_change_called == false);
 
-            CPPUNIT_ASSERT(old_from_slot[description2] == object2);
-            CPPUNIT_ASSERT(new_from_slot[description2] == object3);
+            CPPUNIT_ASSERT(old_from_slot[s_DESCRIPTION2] == object2);
+            CPPUNIT_ASSERT(new_from_slot[s_DESCRIPTION2] == object3);
         }
     }
 }
@@ -368,35 +368,35 @@ void container_notifier_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void container_notifier_test::vectorTest()
+void container_notifier_test::vector_test()
 {
     container_notifier_test_fn<vector>();
 }
 
 //------------------------------------------------------------------------------
 
-void container_notifier_test::compositeTest()
+void container_notifier_test::composite_test()
 {
     container_notifier_test_fn<composite>();
 }
 
 //------------------------------------------------------------------------------
 
-void container_notifier_test::seriesSetTest()
+void container_notifier_test::series_set_test()
 {
     container_notifier_test_fn<series_set>();
 }
 
 //------------------------------------------------------------------------------
 
-void container_notifier_test::activitySetTest()
+void container_notifier_test::activity_set_test()
 {
     container_notifier_test_fn<activity_set>();
 }
 
 //------------------------------------------------------------------------------
 
-void container_notifier_test::cameraSetTest()
+void container_notifier_test::camera_set_test()
 {
     container_notifier_test_fn<camera_set>();
 }

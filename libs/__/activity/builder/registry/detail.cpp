@@ -27,11 +27,11 @@
 namespace sight::activity::builder::registry
 {
 
-struct FwActivitiesBuilderRegistryInstantiatorTag {};
+struct activities_builder_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwActivitiesBuilderRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, activities_builder_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

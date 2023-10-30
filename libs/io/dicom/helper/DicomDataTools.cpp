@@ -35,9 +35,9 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-using PixelTypeConversionMapType = std::map<core::type, gdcm::PixelFormat::ScalarType>;
+using pixel_type_conversion_map_t = std::map<core::type, gdcm::PixelFormat::ScalarType>;
 
-static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
+static const pixel_type_conversion_map_t PIXEL_TYPE_CONVERSION_MAP = {
     {core::type::UINT8, gdcm::PixelFormat::UINT8},
     {core::type::INT8, gdcm::PixelFormat::INT8},
     // {core::type::XXX    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
@@ -53,10 +53,10 @@ static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
 
 //------------------------------------------------------------------------------
 
-gdcm::PixelFormat DicomDataTools::get_pixel_type(const core::type& _type)
+gdcm::PixelFormat dicom_data_tools::get_pixel_type(const core::type& _type)
 {
-    auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(_type);
-    if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
+    auto it = PIXEL_TYPE_CONVERSION_MAP.find(_type);
+    if(it != PIXEL_TYPE_CONVERSION_MAP.end())
     {
         return it->second;
     }
@@ -66,10 +66,10 @@ gdcm::PixelFormat DicomDataTools::get_pixel_type(const core::type& _type)
 
 //------------------------------------------------------------------------------
 
-gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::image::csptr& _image)
+gdcm::PhotometricInterpretation dicom_data_tools::get_photometric_interpretation(const data::image::csptr& _image)
 {
     gdcm::PhotometricInterpretation pi;
-    const std::size_t components = _image->numComponents();
+    const std::size_t components = _image->num_components();
 
     // Attempt a guess (VTK do the same choice)
     switch(components)
@@ -97,19 +97,19 @@ gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(con
 
 //------------------------------------------------------------------------------
 
-gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
+gdcm::Surface::VIEWType dicom_data_tools::convert_to_presentation_type(
     data::material::representation_t _representation_mode
 )
 {
     switch(_representation_mode)
     {
-        case data::material::SURFACE:
+        case data::material::surface:
             return gdcm::Surface::SURFACE;
 
-        case data::material::POINT:
+        case data::material::point:
             return gdcm::Surface::POINTS;
 
-        case data::material::WIREFRAME:
+        case data::material::wireframe:
             return gdcm::Surface::WIREFRAME;
 
         default:
@@ -120,47 +120,47 @@ gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
 
 //------------------------------------------------------------------------------
 
-data::material::representation_t DicomDataTools::convertToRepresentationMode(
+data::material::representation_t dicom_data_tools::convert_to_representation_mode(
     gdcm::Surface::VIEWType _presentation_type
 )
 {
     switch(_presentation_type)
     {
         case gdcm::Surface::SURFACE:
-            return data::material::SURFACE;
+            return data::material::surface;
 
         case gdcm::Surface::WIREFRAME:
-            return data::material::WIREFRAME;
+            return data::material::wireframe;
 
         case gdcm::Surface::POINTS:
-            return data::material::POINT;
+            return data::material::point;
 
         default:
             SIGHT_WARN("Presentation type not handle (changed to : SURFACE)");
-            return data::material::SURFACE;
+            return data::material::surface;
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t DicomDataTools::convertPointToFrameNumber(
+std::size_t dicom_data_tools::convert_point_to_frame_number(
     const data::image::csptr& _image,
     const data::point::csptr& _point
 )
 {
     // Retrieve Z spacing
-    const double z_spacing = (_image->numDimensions() > 2) ? (_image->getSpacing()[2]) : 1;
+    const double z_spacing = (_image->num_dimensions() > 2) ? (_image->spacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double z_origin = (_image->numDimensions() > 2) ? (_image->getOrigin()[2]) : 0;
+    const double z_origin = (_image->num_dimensions() > 2) ? (_image->origin()[2]) : 0;
 
     // Retrieve Z coordinate
-    const auto z_coordinate = static_cast<double>(_point->getCoord()[2]);
+    const auto z_coordinate = static_cast<double>(_point->get_coord()[2]);
 
     // Compute frame number
     const std::size_t frame_number = static_cast<std::size_t>(floor((z_coordinate - z_origin) / z_spacing + 0.5)) + 1;
     SIGHT_THROW_EXCEPTION_IF(
-        io::dicom::exception::Failed("Coordinates out of image bounds."),
+        io::dicom::exception::failed("Coordinates out of image bounds."),
         frame_number<1 || frame_number> _image->size()[2]
     );
 
@@ -169,21 +169,21 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
 
 //------------------------------------------------------------------------------
 
-double DicomDataTools::convertFrameNumberToZCoordinate(
+double dicom_data_tools::convert_frame_number_to_z_coordinate(
     const data::image::csptr& _image,
     const std::size_t _frame_number
 )
 {
     // Retrieve Z spacing
-    const double z_spacing = (_image->numDimensions() > 2) ? (_image->getSpacing()[2]) : 1;
+    const double z_spacing = (_image->num_dimensions() > 2) ? (_image->spacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double z_origin = (_image->numDimensions() > 2) ? (_image->getOrigin()[2]) : 0;
+    const double z_origin = (_image->num_dimensions() > 2) ? (_image->origin()[2]) : 0;
 
     // Compute coordinate
     const std::size_t frame_index = (_frame_number - 1);
     SIGHT_THROW_EXCEPTION_IF(
-        io::dicom::exception::Failed("Coordinates out of image bounds."),
+        io::dicom::exception::failed("Coordinates out of image bounds."),
         frame_index >= _image->size()[2]
     );
     const double z_coordinate = z_origin + static_cast<double>(frame_index) * z_spacing;

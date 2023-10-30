@@ -29,7 +29,7 @@
 namespace sight::module::navigation::calibration
 {
 
-static const service::base::key_t s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
+static const service::base::key_t MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
 
 // -----------------------------------------------------------------------------
 
@@ -50,9 +50,9 @@ void tool_calibration::configuring()
     for(auto it = outputs.first ; it != outputs.second ; ++it)
     {
         const auto key = it->second.get<std::string>("<xmlattr>.key");
-        if(key == s_MATRIX_CENTER_OUTPUT)
+        if(key == MATRIX_CENTER_OUTPUT)
         {
-            m_hasOutputCenter = true;
+            m_has_output_center = true;
         }
     }
 }
@@ -67,10 +67,10 @@ void tool_calibration::starting()
 
 void tool_calibration::stopping()
 {
-    m_matrixCalibration = nullptr;
-    if(m_hasOutputCenter)
+    m_matrix_calibration = nullptr;
+    if(m_has_output_center)
     {
-        m_matrixCenter = nullptr;
+        m_matrix_center = nullptr;
     }
 }
 
@@ -82,9 +82,9 @@ void tool_calibration::updating()
 
 // -----------------------------------------------------------------------------
 
-void tool_calibration::computeRegistration(core::hires_clock::type /*timestamp*/)
+void tool_calibration::compute_registration(core::hires_clock::type /*timestamp*/)
 {
-    const auto matrices_vector = m_matricesVector.lock();
+    const auto matrices_vector = m_matrices_vector.lock();
 
     data::matrix4::sptr calibration_matrix = std::make_shared<data::matrix4>();
 
@@ -96,11 +96,11 @@ void tool_calibration::computeRegistration(core::hires_clock::type /*timestamp*/
         center_matrix_no_rot
     );
 
-    m_matrixCalibration = calibration_matrix;
+    m_matrix_calibration = calibration_matrix;
 
-    if(m_hasOutputCenter)
+    if(m_has_output_center)
     {
-        m_matrixCenter = center_matrix_no_rot;
+        m_matrix_center = center_matrix_no_rot;
     }
 }
 

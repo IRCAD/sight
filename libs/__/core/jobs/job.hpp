@@ -51,11 +51,11 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef SPTR(core::jobs::job) sptr;
-    typedef WPTR(core::jobs::job) wptr;
+    using sptr = std::shared_ptr<core::jobs::job>;
+    using wptr = std::weak_ptr<core::jobs::job>;
 
     /// Task type
-    typedef std::function<void (job&)> task;
+    using task = std::function<void (job&)>;
 
     /// Progress callback type
     using progress_callback_t = std::function<void (std::uint64_t)>;

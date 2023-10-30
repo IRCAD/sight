@@ -115,52 +115,52 @@ private:
      * @brief Computes the camera's projection matrix using its intrinsic parameters and sets it in the scene.
      * @param _cam data use to retreive the camera intrinsic parameters.
      */
-    void calibrateMonoCamera(const data::camera& _cam);
+    void calibrate_mono_camera(const data::camera& _cam);
 
     /// Computes a projection matrix for each camera in the series and set them in the layer.
     /// This matrix is equal to the intrinsic times the extrinsic matrix.
-    void calibrateCameraSet(const data::camera_set& _cs);
+    void calibrate_camera_set(const data::camera_set& _cs);
 
     /// Updates Transformation Matrix.
-    void updateTF3D();
+    void update_t_f_3d();
 
     /// Defines the near clipping plane position.
-    void setNearClipDistance(Ogre::Real _near_clip_distance);
+    void set_near_clip_distance(Ogre::Real _near_clip_distance);
 
     /// Defines the far clipping plane position.
-    void setFarClipDistance(Ogre::Real _far_clip_distance);
+    void set_far_clip_distance(Ogre::Real _far_clip_distance);
 
     /// Defines the aspect ratio.
-    void setAspectRatio(Ogre::Real _ratio);
+    void set_aspect_ratio(Ogre::Real _ratio);
 
     /// Contains the Ogre camera managed by this adaptor.
     Ogre::Camera* m_camera {nullptr};
 
     /// Defines the aspect ratio for the frustum viewport.
-    Ogre::Real m_aspectRatio {0.F};
+    Ogre::Real m_aspect_ratio {0.F};
 
     /// Handles connection with the layer.
-    core::com::helper::sig_slot_connection m_layerConnection;
+    core::com::helper::sig_slot_connection m_layer_connection;
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct CameraNodeListener;
-    CameraNodeListener* m_cameraNodeListener {nullptr};
+    CameraNodeListener* m_camera_node_listener {nullptr};
 
     /// This avoids a self-call to updateTF3D() when we update() the camera
-    bool m_skipUpdate {false};
+    bool m_skip_update {false};
 
     /// Indicates if the calibration has been done successfully. If not, no update can be done without a calibrate
-    bool m_calibrationDone {false};
+    bool m_calibration_done {false};
 
-    static constexpr std::string_view s_CALIBRATION_INPUT = "calibration";
-    static constexpr std::string_view s_CAMERA_SET_INPUT  = "cameraSet";
-    static constexpr std::string_view s_TRANSFORM_INOUT   = "transform";
+    static constexpr std::string_view CALIBRATION_INPUT = "calibration";
+    static constexpr std::string_view CAMERA_SET_INPUT  = "cameraSet";
+    static constexpr std::string_view TRANSFORM_INOUT   = "transform";
 
-    data::ptr<data::camera, data::Access::in> m_cameraCalibration {this, s_CALIBRATION_INPUT, true, true};
-    data::ptr<data::camera_set, data::Access::in> m_camera_set {this, s_CAMERA_SET_INPUT, true, true};
-    data::ptr<data::matrix4, data::Access::inout> m_transform {this, s_TRANSFORM_INOUT, true};
+    data::ptr<data::camera, data::access::in> m_camera_calibration {this, CALIBRATION_INPUT, true, true};
+    data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERA_SET_INPUT, true, true};
+    data::ptr<data::matrix4, data::access::inout> m_transform {this, TRANSFORM_INOUT, true};
 
-    bool m_useOrthographicProjection {false};
+    bool m_use_orthographic_projection {false};
 };
 
 //------------------------------------------------------------------------------

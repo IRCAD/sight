@@ -61,7 +61,7 @@ void client_sender::configuring()
     {
         const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
         const std::string name        = attr.get("deviceName", "Sight");
-        m_deviceNames.push_back(name);
+        m_device_names.push_back(name);
     }
 
     const std::string server_info = config.get("server", "");
@@ -70,8 +70,8 @@ void client_sender::configuring()
         const std::string::size_type split_position = server_info.find(':');
         SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_hostnameConfig = server_info.substr(0, split_position);
-        m_portConfig     = server_info.substr(split_position + 1, server_info.size());
+        m_hostname_config = server_info.substr(0, split_position);
+        m_port_config     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -83,16 +83,16 @@ void client_sender::configuring()
 
 void client_sender::starting()
 {
-    if(!m_client.isConnected())
+    if(!m_client.is_connected())
     {
         try
         {
             ui::preferences preferences;
-            const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
-            const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
+            const auto port     = preferences.delimited_get<std::uint16_t>(m_port_config);
+            const auto hostname = preferences.delimited_get<std::string>(m_hostname_config);
 
             m_client.connect(hostname, port);
-            m_sigConnected->async_emit();
+            m_sig_connected->async_emit();
         }
         catch(core::exception& ex)
         {
@@ -109,12 +109,12 @@ void client_sender::stopping()
 {
     try
     {
-        if(m_client.isConnected())
+        if(m_client.is_connected())
         {
             m_client.disconnect();
         }
 
-        m_sigDisconnected->async_emit();
+        m_sig_disconnected->async_emit();
     }
     catch(core::exception& e)
     {
@@ -125,14 +125,14 @@ void client_sender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void client_sender::sendObject(const data::object::csptr& _obj, const std::size_t _index)
+void client_sender::send_object(const data::object::csptr& _obj, const std::size_t _index)
 {
-    SIGHT_ASSERT("No device name associated with object index " << _index, _index < m_deviceNames.size());
+    SIGHT_ASSERT("No device name associated with object index " << _index, _index < m_device_names.size());
 
-    if(m_client.isConnected())
+    if(m_client.is_connected())
     {
-        m_client.setDeviceNameOut(m_deviceNames[_index]);
-        m_client.sendObject(_obj);
+        m_client.set_device_name_out(m_device_names[_index]);
+        m_client.send_object(_obj);
     }
 }
 

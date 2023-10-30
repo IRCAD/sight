@@ -36,21 +36,21 @@ namespace itk
  * \brief Class that defines how to read/write in the InrImage file format.
  * @todo RGB and vector images.
  */
-class IO_ITK_CLASS_API InrImageIO : public ImageIOBase
+class IO_ITK_CLASS_API inr_image_io : public ImageIOBase
 {
 public:
 
     /** Standard typedef's */
-    typedef InrImageIO Self;
-    typedef ImageIOBase Superclass;
-    typedef SmartPointer<Self> Pointer;
+    using self_t       = inr_image_io;
+    using superclass_t = ImageIOBase;
+    using Pointer      = SmartPointer<self_t>;
 
     /** Method for creation through the object factory. */
-    itkNewMacro(Self)
+    itkNewMacro(self_t)
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(InrImageIO, Superclass) InrImageIO(const Self&) = delete; //purposely not implemented
-    void operator=(const Self&)                                  = delete; //purposely not implemented
+    itkTypeMacro(InrImageIO, superclass_t) inr_image_io(const Self&) = delete; //purposely not implemented
+    void operator=(const Self&)                                      = delete; //purposely not implemented
 
     /*-------- This part of the interfaces deals with reading data. ----- */
 
@@ -85,13 +85,13 @@ public:
 
 protected:
 
-    IO_ITK_API InrImageIO();
-    IO_ITK_API ~InrImageIO() override;
+    IO_ITK_API inr_image_io();
+    IO_ITK_API ~inr_image_io() override;
     void PrintSelf(std::ostream& _os, Indent _indent) const override;
 
 private:
 
-    std::streampos m_headerSize;
+    std::streampos m_header_size;
     //bool m_swapBytes;
 }; // class InrImageIO()
 

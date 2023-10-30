@@ -46,17 +46,17 @@ namespace sight::io::dicom::container
  * @brief This class defines a DICOM SOP instance. It is useful during the whole writing process.
  * This class allows to share data between module writers.
  */
-class IO_DICOM_CLASS_API DicomInstance
+class IO_DICOM_CLASS_API dicom_instance
 {
 public:
 
-    typedef  std::shared_ptr<DicomInstance> sptr;
+    using sptr = std::shared_ptr<dicom_instance>;
 
     /// SOP Instance Container Type
-    typedef std::vector<std::string> SOPInstanceUIDContainerType;
+    using sop_instance_uid_container_t = std::vector<std::string>;
 
     /// Constructor
-    IO_DICOM_API DicomInstance();
+    IO_DICOM_API dicom_instance();
 
     /**
      * @brief Constructor
@@ -64,7 +64,7 @@ public:
      * @param[in] isMultiFiles Set whether the instance must be split in several files or not
      * @param[in] logger Logger
      */
-    IO_DICOM_API DicomInstance(
+    IO_DICOM_API dicom_instance(
         const CSPTR(data::series)& _series,
         SPTR(core::log::logger)_logger = nullptr,
         bool _is_multi_files           = true
@@ -75,93 +75,93 @@ public:
      * @param[in] dicomSeries DicomSeries from which the instance is created
      * @param[in] logger Logger
      */
-    IO_DICOM_API DicomInstance(
+    IO_DICOM_API dicom_instance(
         const CSPTR(data::dicom_series)& _dicom_series,
         SPTR(core::log::logger)_logger = nullptr
     );
 
     /// Copy constructor
-    IO_DICOM_API DicomInstance(const DicomInstance& _dicom_instance);
+    IO_DICOM_API dicom_instance(const dicom_instance& _dicom_instance);
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomInstance();
+    IO_DICOM_API virtual ~dicom_instance();
 
     /// Get the flag on multi-files state of an image series
-    [[nodiscard]] bool getIsMultiFiles() const
+    [[nodiscard]] bool get_is_multi_files() const
     {
-        return m_isMultiFiles;
+        return m_is_multi_files;
     }
 
     /// Set the flag on multi-files state of an image series
-    void setIsMultiFiles(bool _is_multi_files)
+    void set_is_multi_files(bool _is_multi_files)
     {
-        m_isMultiFiles = _is_multi_files;
+        m_is_multi_files = _is_multi_files;
     }
 
     /// Get SOP Class UID
-    [[nodiscard]] const std::string& getSOPClassUID() const
+    [[nodiscard]] const std::string& get_sop_class_uid() const
     {
-        return m_sop_classUID;
+        return m_sop_class_uid;
     }
 
     /// Set SOP Class UID
-    void setSOPClassUID(const std::string& _sop_class_uid)
+    void set_sop_class_uid(const std::string& _sop_class_uid)
     {
-        m_sop_classUID = _sop_class_uid;
+        m_sop_class_uid = _sop_class_uid;
     }
 
     /// Get Series Instance UID
-    [[nodiscard]] const std::string& getSeriesInstanceUID() const
+    [[nodiscard]] const std::string& get_series_instance_uid() const
     {
-        return m_seriesInstanceUID;
+        return m_series_instance_uid;
     }
 
     /// Set Series Instance UID
-    void setSeriesInstanceUID(const std::string& _series_instance_uid)
+    void set_series_instance_uid(const std::string& _series_instance_uid)
     {
-        m_seriesInstanceUID = _series_instance_uid;
+        m_series_instance_uid = _series_instance_uid;
     }
 
     /// Get Study Instance UID
-    [[nodiscard]] const std::string& getStudyInstanceUID() const
+    [[nodiscard]] const std::string& get_study_instance_uid() const
     {
-        return m_studyInstanceUID;
+        return m_study_instance_uid;
     }
 
     /// Set Study Instance UID
-    void setStudyInstanceUID(const std::string& _study_instance_uid)
+    void set_study_instance_uid(const std::string& _study_instance_uid)
     {
-        m_studyInstanceUID = _study_instance_uid;
+        m_study_instance_uid = _study_instance_uid;
     }
 
     /// Get Study Instance UID
-    [[nodiscard]] const std::string& getFrameOfReferenceUID() const
+    [[nodiscard]] const std::string& get_frame_of_reference_uid() const
     {
-        return m_frameOfReferenceUID;
+        return m_frame_of_reference_uid;
     }
 
     /// Set Study Instance UID
-    void setFrameOfReferenceUID(const std::string& _frame_of_reference_uid)
+    void set_frame_of_reference_uid(const std::string& _frame_of_reference_uid)
     {
-        m_frameOfReferenceUID = _frame_of_reference_uid;
+        m_frame_of_reference_uid = _frame_of_reference_uid;
     }
 
     /// Get SOP Instance UID container
-    [[nodiscard]] const SOPInstanceUIDContainerType& getSOPInstanceUIDContainer() const
+    [[nodiscard]] const sop_instance_uid_container_t& get_sop_instance_uid_container() const
     {
-        return m_SOPInstanceUIDContainer;
+        return m_sop_instance_uid_container;
     }
 
     /// Get SOP Instance UID container
-    SOPInstanceUIDContainerType& getSOPInstanceUIDContainer()
+    sop_instance_uid_container_t& get_sop_instance_uid_container()
     {
-        return m_SOPInstanceUIDContainer;
+        return m_sop_instance_uid_container;
     }
 
     /// Set SOP Instance UID Container
-    void setSOPInstanceUIDContainer(const SOPInstanceUIDContainerType& _sop_instance_uid_container)
+    void set_sop_instance_uid_container(const sop_instance_uid_container_t& _sop_instance_uid_container)
     {
-        m_SOPInstanceUIDContainer = _sop_instance_uid_container;
+        m_sop_instance_uid_container = _sop_instance_uid_container;
     }
 
 protected:
@@ -170,39 +170,39 @@ protected:
      * @brief Compute sop_classUID
      * @param[in] series Series
      */
-    void computesop_classUID(const CSPTR(data::series)& _series);
+    void computesop_class_uid(const CSPTR(data::series)& _series);
 
     /**
      * @brief Generate SOPInstanceUIDs according to series type and dimension
      * @param[in] series Series
      */
-    void generateSOPInstanceUIDs(const CSPTR(data::series)& _series);
+    void generate_sop_instance_ui_ds(const CSPTR(data::series)& _series);
 
     /**
      * @brief Extract 'SOP Instance UIDs' and 'Frame of Reference UID' from a DICOM series
      * @param[in] dicomSeries DICOM Series from which the UIDs are extracted
      */
-    void readUIDFromDicomSeries(const CSPTR(data::dicom_series)& _dicom_series);
+    void read_uid_from_dicom_series(const CSPTR(data::dicom_series)& _dicom_series);
 
 private:
 
     /// Define if the instance must be split in several files
-    bool m_isMultiFiles {true};
+    bool m_is_multi_files {true};
 
     /// SOP Class UID
-    std::string m_sop_classUID;
+    std::string m_sop_class_uid;
 
     /// Study Instance UID
-    std::string m_studyInstanceUID;
+    std::string m_study_instance_uid;
 
     /// Series Instance UID
-    std::string m_seriesInstanceUID;
+    std::string m_series_instance_uid;
 
     /// Frame Of Reference UID
-    std::string m_frameOfReferenceUID;
+    std::string m_frame_of_reference_uid;
 
     /// SOP Instance UID container
-    SOPInstanceUIDContainerType m_SOPInstanceUIDContainer;
+    sop_instance_uid_container_t m_sop_instance_uid_container;
 
     /// Logger
     SPTR(core::log::logger) m_logger;

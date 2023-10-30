@@ -42,8 +42,8 @@ class UI_QML_CLASS_API message : public QObject,
                                  public ui::dialog::message_base
 {
 Q_OBJECT
-Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
-Q_PROPERTY(QUrl icon MEMBER m_iconImage NOTIFY iconChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY message_changed)
+Q_PROPERTY(QUrl icon MEMBER m_icon_image NOTIFY icon_changed)
 
 public:
 
@@ -54,37 +54,37 @@ public:
     UI_QML_API ~message() override;
 
     /// Set the title of the message box
-    UI_QML_API void setTitle(const std::string& _title) override;
+    UI_QML_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_QML_API void setMessage(const std::string& _msg) override;
+    UI_QML_API void set_message(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QML_API void setIcon(message::Icons _icon) override;
+    UI_QML_API void set_icon(message::icons _icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QML_API void addButton(message::Buttons _button) override;
+    UI_QML_API void add_button(message::buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_QML_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
+    UI_QML_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Set the default buttons
-    UI_QML_API void setDefaultButton(message::Buttons _button) override;
+    UI_QML_API void set_default_button(message::buttons _button) override;
 
     /// Show the message box and return the clicked button.
-    UI_QML_API Buttons show() override;
+    UI_QML_API buttons show() override;
 
 Q_SIGNALS:
 
     /// notify the qml of property change
-    void buttonsChanged();
-    void messageChanged();
-    void iconChanged();
+    void buttons_changed();
+    void message_changed();
+    void icon_changed();
 
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(int _clicked);
+    void result_dialog(int _clicked);
 
 private:
 
@@ -94,20 +94,20 @@ private:
     /// Dialog box message
     QString m_message;
 
-    message::Buttons m_buttons {message::NOBUTTON};
+    message::buttons m_buttons {message::nobutton};
 
     /// Icon
-    message::Icons m_icon {message::NONE};
+    message::icons m_icon {message::none};
 
     /// Resume the biggest error get with an icon
-    QUrl m_iconImage {""};
+    QUrl m_icon_image {""};
 
     /// boolean to check if button was pressed
-    message::Buttons m_clicked {message::NOBUTTON};
+    message::buttons m_clicked {message::nobutton};
 
     /// Setter to QProperty and emit signal
-    UI_QML_API void emitButtons(StandardButton* /*standardButton*/);
-    UI_QML_API void emitIcon(const QUrl& _icon_path);
+    UI_QML_API void emit_buttons(standard_button* /*standardButton*/);
+    UI_QML_API void emit_icon(const QUrl& _icon_path);
 };
 
 } // namespace sight::ui::qml::dialog

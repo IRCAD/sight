@@ -35,7 +35,7 @@ struct itk_image_caster
 {
     using output_image_t = itk::Image<OUTPUT_PIXELTYPE, 3>;
 
-    struct Params
+    struct params
     {
         sight::data::image::csptr i_img;
         typename output_image_t::Pointer o_img;
@@ -44,7 +44,7 @@ struct itk_image_caster
     //------------------------------------------------------------------------------
 
     template<typename INPUT_PIXELTYPE>
-    void operator()(Params& _p)
+    void operator()(params& _p)
     {
         using input_image_t = itk::Image<INPUT_PIXELTYPE, 3>;
 
@@ -66,10 +66,10 @@ typename itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer cast_to(const sight::data::ima
 {
     using caster_t = itk_image_caster<OUTPUT_PIXELTYPE>;
 
-    typename caster_t::Params p;
+    typename caster_t::params p;
     p.i_img = _img;
 
-    const auto in_type = _img->getType();
+    const auto in_type = _img->type();
 
     sight::core::tools::dispatcher<sight::core::tools::supported_dispatcher_types, caster_t>::invoke(in_type, p);
 

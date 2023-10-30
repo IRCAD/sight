@@ -48,19 +48,19 @@ public:
     SIGHT_DECLARE_SERVICE(menu, service::base);
 
     /// Method called when an action service is stopping
-    UI_API void actionServiceStopping(std::string _action_srv_sid);
+    UI_API void action_service_stopping(std::string _action_srv_sid);
 
     /// Method called when an action service is starting
-    UI_API void actionServiceStarting(std::string _action_srv_sid);
+    UI_API void action_service_starting(std::string _action_srv_sid);
 
     /// Method called when the action service is activated
-    UI_API void actionServiceSetChecked(std::string _action_srv_sid, bool _is_checked);
+    UI_API void action_service_set_checked(std::string _action_srv_sid, bool _is_checked);
 
     /// Method called when the action service is executable
-    UI_API void actionServiceSetEnabled(std::string _action_srv_sid, bool _is_enabled);
+    UI_API void action_service_set_enabled(std::string _action_srv_sid, bool _is_enabled);
 
     /// Method called when the action service is visible
-    UI_API void actionServiceSetVisible(std::string _action_srv_sid, bool _is_visible);
+    UI_API void action_service_set_visible(std::string _action_srv_sid, bool _is_visible);
 
 protected:
 
@@ -119,13 +119,13 @@ protected:
 
 private:
 
-    void initializeLayoutManager(const ui::config_t& _layout_config);
+    void initialize_layout_manager(const ui::config_t& _layout_config);
 
-    ui::layout::menu_manager::sptr m_layoutManager;
+    ui::layout::menu_manager::sptr m_layout_manager;
     SPTR(ui::detail::registry::menu) m_registry;
 
     /// Flag to hide or disable the actions if the service is stopped
-    bool m_hideActions {false};
+    bool m_hide_actions {false};
 };
 
 } // namespace sight::ui

@@ -61,7 +61,7 @@ constexpr static auto inserter(C& _container)
 template<class C>
 constexpr container<C>::container() :
     object(),
-    ContainerWrapper<C>()
+    container_wrapper<C>()
 {
     new_signal<added_signal_t>(ADDED_OBJECTS_SIG);
     new_signal<changed_signal_t>(CHANGED_OBJECTS_SIG);
@@ -72,14 +72,14 @@ template<class C>
 inline container<C>::container(const C& _container) :
     container<C>::container()
 {
-    this->ContainerWrapper<C>::operator=(_container);
+    this->container_wrapper<C>::operator=(_container);
 }
 
 template<class C>
 inline container<C>::container(C&& _container) :
     container<C>::container()
 {
-    this->ContainerWrapper<C>::operator=(_container);
+    this->container_wrapper<C>::operator=(_container);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ constexpr bool container<C>::operator==(const container& _other) const noexcept
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ inline void container<C>::shallow_copy(const object::csptr& _source)
         std::copy(other->cbegin(), other->cend(), inserter(*this));
     }
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -228,7 +228,7 @@ inline void container<C>::deep_copy(const object::csptr& _source, const std::uni
         }
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -246,13 +246,13 @@ constexpr C container<C>::get_content() const noexcept
 template<class C>
 [[nodiscard]] constexpr auto container<C>::scoped_emit() const noexcept
 {
-    return std::make_unique<container<C>::ScopedEmitter>(*this);
+    return std::make_unique<container<C>::scoped_emitter>(*this);
 }
 
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr container<C>::ScopedEmitter::ScopedEmitter(const container<C>& _container) noexcept :
+constexpr container<C>::scoped_emitter::scoped_emitter(const container<C>& _container) noexcept :
     m_container(_container),
     m_backup(_container.get_content())
 {
@@ -261,7 +261,7 @@ constexpr container<C>::ScopedEmitter::ScopedEmitter(const container<C>& _contai
 //------------------------------------------------------------------------------
 
 template<class C>
-inline container<C>::ScopedEmitter::~ScopedEmitter() noexcept
+inline container<C>::scoped_emitter::~scoped_emitter() noexcept
 {
     emit();
 }
@@ -269,19 +269,19 @@ inline container<C>::ScopedEmitter::~ScopedEmitter() noexcept
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void container<C>::ScopedEmitter::block(const core::com::slot_base::sptr& _slot) noexcept
+constexpr void container<C>::scoped_emitter::block(const core::com::slot_base::sptr& _slot) noexcept
 {
-    m_blockedSlots.push_back(_slot);
+    m_blocked_slots.push_back(_slot);
 }
 
 //------------------------------------------------------------------------------
 
 template<class C>
-void container<C>::ScopedEmitter::emit() noexcept
+void container<C>::scoped_emitter::emit() noexcept
 {
-    container<C>::container_type added;
-    container<C>::container_type before;
-    container<C>::container_type after;
+    container<C>::container_t added;
+    container<C>::container_t before;
+    container<C>::container_t after;
 
     // Build the added and the changed lists
     for(const auto& element : m_container)
@@ -310,7 +310,7 @@ void container<C>::ScopedEmitter::emit() noexcept
         }
     }
 
-    container<C>::container_type removed;
+    container<C>::container_t removed;
 
     // Build the removed lists
     for(const auto& element : m_backup)
@@ -338,7 +338,7 @@ void container<C>::ScopedEmitter::emit() noexcept
     {
         auto signal = m_container.template signal<container<C>::added_signal_t>(container<C>::ADDED_OBJECTS_SIG);
         std::vector<core::com::connection::blocker> blockers;
-        for(auto& slot : m_blockedSlots)
+        for(auto& slot : m_blocked_slots)
         {
             blockers.emplace_back(core::com::connection::blocker(signal->get_connection(slot)));
         }
@@ -352,7 +352,7 @@ void container<C>::ScopedEmitter::emit() noexcept
             m_container.template signal<container<C>::changed_signal_t>(container<C>::CHANGED_OBJECTS_SIG);
 
         std::vector<core::com::connection::blocker> blockers;
-        for(auto& slot : m_blockedSlots)
+        for(auto& slot : m_blocked_slots)
         {
             blockers.emplace_back(core::com::connection::blocker(signal->get_connection(slot)));
         }
@@ -366,7 +366,7 @@ void container<C>::ScopedEmitter::emit() noexcept
             m_container.template signal<container<C>::removed_signal_t>(container<C>::REMOVED_OBJECTS_SIG);
 
         std::vector<core::com::connection::blocker> blockers;
-        for(auto& slot : m_blockedSlots)
+        for(auto& slot : m_blocked_slots)
         {
             blockers.emplace_back(core::com::connection::blocker(signal->get_connection(slot)));
         }
@@ -380,7 +380,7 @@ void container<C>::ScopedEmitter::emit() noexcept
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void container<C>::ScopedEmitter::reset() noexcept
+constexpr void container<C>::scoped_emitter::reset() noexcept
 {
     m_backup = m_container.get_content();
 }

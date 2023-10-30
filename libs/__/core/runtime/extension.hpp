@@ -82,9 +82,9 @@ public:
 private:
 
     /// A string containing the extension identifier
-    const std::string M_ID;
+    const std::string m_id;
     /// A string containing the extension point identifier the extension will be connected to
-    const std::string M_POINT;
+    const std::string m_point;
     /// The configuration of the extension
     config_t m_config;
 };

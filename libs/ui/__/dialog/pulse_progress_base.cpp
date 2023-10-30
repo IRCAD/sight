@@ -38,14 +38,14 @@ pulse_progress_base::~pulse_progress_base()
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress_base::setStuff(Stuff _stuff)
+void pulse_progress_base::set_stuff(Stuff _stuff)
 {
     m_stuff = _stuff;
 }
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress_base::setFrequence(MilliSecond _frequence)
+void pulse_progress_base::set_frequence(MilliSecond _frequence)
 {
     m_frequence = _frequence;
 }

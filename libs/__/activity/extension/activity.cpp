@@ -83,9 +83,9 @@ activity_requirement::activity_requirement(const config_t& _config) :
     container(_config.get<std::string>("<xmlattr>.container", "")),
     description(_config.get<std::string>("desc", "")),
     validator(_config.get<std::string>("validator", "")),
-    minOccurs(_config.get<unsigned int>("<xmlattr>.minOccurs", 1)),
-    maxOccurs(_config.get<unsigned int>("<xmlattr>.maxOccurs", 1)),
-    objectConfig(_config.get_child("config", config_t()))
+    min_occurs(_config.get<unsigned int>("<xmlattr>.minOccurs", 1)),
+    max_occurs(_config.get<unsigned int>("<xmlattr>.maxOccurs", 1)),
+    object_config(_config.get_child("config", config_t()))
 {
     for(const auto& v : boost::make_iterator_range(_config.equal_range("key")))
     {
@@ -94,7 +94,7 @@ activity_requirement::activity_requirement(const config_t& _config) :
 
     if(_config.get<std::string>("<xmlattr>.maxOccurs", "") == "*")
     {
-        this->maxOccurs = std::numeric_limits<unsigned int>::max();
+        this->max_occurs = std::numeric_limits<unsigned int>::max();
     }
 
     const std::string& create_str = _config.get<std::string>("<xmlattr>.create", "false");
@@ -102,12 +102,12 @@ activity_requirement::activity_requirement(const config_t& _config) :
     create = (create_str == "true");
     SIGHT_ASSERT(
         "Create option is only available if minOccurs = 0 and maxOccurs = 1",
-        !create || (minOccurs == 0 && maxOccurs == 1)
+        !create || (min_occurs == 0 && max_occurs == 1)
     );
 
     SIGHT_ASSERT(
-        "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
-        minOccurs <= maxOccurs
+        "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << max_occurs << ")",
+        min_occurs <= max_occurs
     );
 
     const std::string& reset_string = _config.get<std::string>("<xmlattr>.reset", "false");
@@ -117,7 +117,7 @@ activity_requirement::activity_requirement(const config_t& _config) :
 
     SIGHT_ASSERT(
         "'Reset' option is only available if 'create' = 'true' or 'minOccurs' = '0'",
-        !reset || create || minOccurs == 0
+        !reset || create || min_occurs == 0
     );
 }
 
@@ -128,12 +128,12 @@ activity_info::activity_info(const SPTR(core::runtime::extension)& _ext) :
     title(_ext->get_config().get<std::string>("title")),
     description(_ext->get_config().get<std::string>("desc")),
     icon(core::runtime::get_module_resource_file_path(_ext->get_config().get<std::string>("icon")).string()),
-    tabInfo(title),
-    bundleId(_ext->get_module()->identifier()),
-    appConfig(_ext->get_config().get_child("appConfig"))
+    tab_info(title),
+    bundle_id(_ext->get_module()->identifier()),
+    app_config(_ext->get_config().get_child("appConfig"))
 {
     const auto& config = _ext->get_config();
-    tabInfo = config.get<std::string>("tabinfo", tabInfo);
+    tab_info = config.get<std::string>("tabinfo", tab_info);
 
     if(const auto& requirements_cfg = config.get_child_optional("requirements"); requirements_cfg.has_value())
     {
@@ -142,13 +142,13 @@ activity_info::activity_info(const SPTR(core::runtime::extension)& _ext) :
             activity_requirement requirement(elem.second);
             requirements.push_back(requirement);
 
-            min_max_t& min_max = m_requirementCount[requirement.type];
+            min_max_t& min_max = m_requirement_count[requirement.type];
 
-            min_max.first += requirement.minOccurs;
+            min_max.first += requirement.min_occurs;
 
-            if(requirement.maxOccurs < (std::numeric_limits<unsigned int>::max() - min_max.second))
+            if(requirement.max_occurs < (std::numeric_limits<unsigned int>::max() - min_max.second))
             {
-                min_max.second += requirement.maxOccurs;
+                min_max.second += requirement.max_occurs;
             }
             else
             {
@@ -157,7 +157,7 @@ activity_info::activity_info(const SPTR(core::runtime::extension)& _ext) :
         }
     }
 
-    builderImpl = config.get<std::string>("builder", "sight::activity::builder::Activity");
+    builder_impl = config.get<std::string>("builder", "sight::activity::builder::Activity");
 
     // backward compatibility
     if(const auto& validator_cfg = config.get_optional<std::string>("validator"); validator_cfg.has_value())
@@ -165,7 +165,7 @@ activity_info::activity_info(const SPTR(core::runtime::extension)& _ext) :
         const auto& validator_impl_str = validator_cfg.value();
         if(!validator_impl_str.empty())
         {
-            validatorsImpl.push_back(validator_impl_str);
+            validators_impl.push_back(validator_impl_str);
         }
     }
 
@@ -173,26 +173,26 @@ activity_info::activity_info(const SPTR(core::runtime::extension)& _ext) :
     {
         for(const auto& validator : boost::make_iterator_range(validators->equal_range("validator")))
         {
-            validatorsImpl.push_back(validator.second.get_value<std::string>());
+            validators_impl.push_back(validator.second.get_value<std::string>());
         }
     }
 
     // Set Default validator if none is defined
-    if(validatorsImpl.empty())
+    if(validators_impl.empty())
     {
-        validatorsImpl.emplace_back("sight::activity::validator::default_activity");
+        validators_impl.emplace_back("sight::activity::validator::default_activity");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool activity_info::usableWith(data_count_t _data_counts) const
+bool activity_info::usable_with(data_count_t _data_counts) const
 {
-    bool ok = _data_counts.size() <= m_requirementCount.size();
+    bool ok = _data_counts.size() <= m_requirement_count.size();
 
     if(ok)
     {
-        for(const RequirementsMinMaxCount::value_type& req_count : m_requirementCount)
+        for(const auto& req_count : m_requirement_count)
         {
             const min_max_t& req_min_max = req_count.second;
             auto iter                    = _data_counts.find(req_count.first);
@@ -215,9 +215,9 @@ bool activity_info::usableWith(data_count_t _data_counts) const
 
         if(ok)
         {
-            for(const data_count_t::value_type& data_count : _data_counts)
+            for(const auto& data_count : _data_counts)
             {
-                if(m_requirementCount.find(data_count.first) == m_requirementCount.end())
+                if(m_requirement_count.find(data_count.first) == m_requirement_count.end())
                 {
                     ok = false;
                     break;
@@ -234,7 +234,7 @@ bool activity_info::usableWith(data_count_t _data_counts) const
 
 //-----------------------------------------------------------------------------
 
-activity::sptr activity::getDefault()
+activity::sptr activity::get_default()
 {
     static auto s_activity = std::make_shared<sight::activity::extension::activity>();
     return s_activity;
@@ -252,13 +252,13 @@ void activity::parse_plugin_infos()
         SIGHT_DEBUG("Parsing <" << ext->get_module()->identifier() << "> Activity");
         activity_info info(ext);
 
-        core::mt::write_lock lock(m_registryMutex);
+        core::mt::write_lock lock(m_registry_mutex);
         SIGHT_ASSERT(
             "The id " << info.id << "(" << info.title << ")"
             << " already exists in the Activity registry",
             m_reg.find(info.id) == m_reg.end()
         );
-        m_reg.insert(Registry::value_type(info.id, info));
+        m_reg.insert(registry::value_type(info.id, info));
     }
 }
 
@@ -266,28 +266,28 @@ void activity::parse_plugin_infos()
 
 void activity::clear_registry()
 {
-    core::mt::write_lock lock(m_registryMutex);
+    core::mt::write_lock lock(m_registry_mutex);
     m_reg.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-bool activity::hasInfo(const std::string& _extension_id) const
+bool activity::has_info(const std::string& _extension_id) const
 {
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     auto iter = m_reg.find(_extension_id);
     return iter != m_reg.end();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<activity_info> activity::getInfos() const
+std::vector<activity_info> activity::get_infos() const
 {
     std::vector<activity_info> infos;
 
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
 
-    for(const Registry::value_type& val : m_reg)
+    for(const auto& val : m_reg)
     {
         infos.push_back(val.second);
     }
@@ -297,7 +297,7 @@ std::vector<activity_info> activity::getInfos() const
 
 //-----------------------------------------------------------------------------
 
-activity_info::data_count_t activity::getDataCount(const data::vector::csptr& _data)
+activity_info::data_count_t activity::get_data_count(const data::vector::csptr& _data)
 {
     activity_info::data_count_t data_count;
 
@@ -311,17 +311,17 @@ activity_info::data_count_t activity::getDataCount(const data::vector::csptr& _d
 
 //-----------------------------------------------------------------------------
 
-std::vector<activity_info> activity::getInfos(const data::vector::csptr& _data) const
+std::vector<activity_info> activity::get_infos(const data::vector::csptr& _data) const
 {
-    activity_info::data_count_t data_count = this->getDataCount(_data);
+    activity_info::data_count_t data_count = this->get_data_count(_data);
     std::vector<activity_info> infos;
 
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
 
-    for(const Registry::value_type& reg_value : m_reg)
+    for(const auto& reg_value : m_reg)
     {
         const activity_info& activity = reg_value.second;
-        if(activity.usableWith(data_count))
+        if(activity.usable_with(data_count))
         {
             infos.push_back(activity);
         }
@@ -332,13 +332,13 @@ std::vector<activity_info> activity::getInfos(const data::vector::csptr& _data) 
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> activity::getKeys() const
+std::vector<std::string> activity::get_keys() const
 {
     std::vector<std::string> keys;
 
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
 
-    for(const Registry::value_type& val : m_reg)
+    for(const auto& val : m_reg)
     {
         keys.push_back(val.first);
     }
@@ -348,9 +348,9 @@ std::vector<std::string> activity::getKeys() const
 
 //-----------------------------------------------------------------------------
 
-activity_info activity::getInfo(const std::string& _extension_id) const
+activity_info activity::get_info(const std::string& _extension_id) const
 {
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     auto iter = m_reg.find(_extension_id);
     SIGHT_ASSERT(
         "The id " << _extension_id << " is not found in the application configuration parameter registry",
@@ -361,20 +361,20 @@ activity_info activity::getInfo(const std::string& _extension_id) const
 
 //-----------------------------------------------------------------------------
 
-std::tuple<activity_info, std::map<std::string, std::string> > activity::getInfoAndReplacementMap(
+std::tuple<activity_info, std::map<std::string, std::string> > activity::get_info_and_replacement_map(
     const data::activity& _activity,
     const activity_config_params_type& _parameters
 ) const
 {
     // Retrieve the activity informations
-    const auto& info = getInfo(_activity.getActivityConfigId());
+    const auto& info = get_info(_activity.get_activity_config_id());
 
-    return {info, getReplacementMap(_activity, info, _parameters)};
+    return {info, get_replacement_map(_activity, info, _parameters)};
 }
 
 //------------------------------------------------------------------------------
 
-std::map<std::string, std::string> activity::getReplacementMap(
+std::map<std::string, std::string> activity::get_replacement_map(
     const data::activity& _activity,
     const activity_info& _info,
     const activity_config_params_type& _parameters
@@ -402,7 +402,7 @@ std::map<std::string, std::string> activity::getReplacementMap(
                 // @TODO This should be removed later when legacy xml code is cleaned.
                 SIGHT_FATAL_IF(
                     "Cannot replace '" << parameter.replace << "' by CAMP path '" << parameter.by << "'.",
-                    parameter.isObjectPath()
+                    parameter.is_object_path()
                 );
 
                 replacement_map[parameter.replace] = parameter.by;
@@ -411,7 +411,7 @@ std::map<std::string, std::string> activity::getReplacementMap(
 
     // Then, use config parameters
     // Parameters will override already present requirements with the same name
-    add_parameters(_info.appConfig.parameters);
+    add_parameters(_info.app_config.parameters);
 
     // Finally, use additional parameters...
     add_parameters(_parameters);

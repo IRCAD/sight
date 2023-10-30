@@ -41,13 +41,13 @@ viz::scene3d::r2vb_renderable* viz::scene3d::r2vb_renderable::make(
     const std::string& _mtl_name
 )
 {
-    const auto& factory_name = viz::scene3d::factory::r2vb_renderable::FACTORY_TYPE_NAME;
+    const auto& factory_name = viz::scene3d::factory::r2vb_renderable::s_factory_type_name;
     auto* instance           = static_cast<viz::scene3d::r2vb_renderable*>
                                (_scene_manager->createMovableObject(_name, factory_name));
 
-    instance->m_inputPrimitiveType = _primitive_type;
-    instance->m_srcObject          = _source_object;
-    instance->mManager             = _scene_manager;
+    instance->m_input_primitive_type = _primitive_type;
+    instance->m_src_object           = _source_object;
+    instance->mManager               = _scene_manager;
 
     // Input material name
 
@@ -65,38 +65,39 @@ viz::scene3d::r2vb_renderable::r2vb_renderable(const Ogre::String& _name) :
 
 //-----------------------------------------------------------------------------
 
-void viz::scene3d::r2vb_renderable::setOutputSettings(
+void viz::scene3d::r2vb_renderable::set_output_settings(
     std::size_t _vertex_count,
     bool _has_color,
     bool _has_tex_coord,
     bool _has_normals
 )
 {
-    if(m_maxOutputVertexCount < _vertex_count)
+    if(m_max_output_vertex_count < _vertex_count)
     {
-        const std::string r2vb_material = (m_r2vbBuffer) ? m_r2vbBuffer->getRenderToBufferMaterial()->getName() : "";
-        m_r2vbBuffer = Ogre::HardwareBufferManager::getSingleton().createRenderToVertexBuffer();
+        const std::string r2vb_material = (m_r2vb_buffer) ? m_r2vb_buffer->getRenderToBufferMaterial()->getName() : "";
+        m_r2vb_buffer = Ogre::HardwareBufferManager::getSingleton().createRenderToVertexBuffer();
 
-        m_r2vbBuffer->setOperationType(Ogre::RenderOperation::OT_TRIANGLE_LIST);
-        m_r2vbBuffer->setResetsEveryUpdate(true);
+        m_r2vb_buffer->setOperationType(Ogre::RenderOperation::OT_TRIANGLE_LIST);
+        m_r2vb_buffer->setResetsEveryUpdate(true);
 
-        const std::size_t num_vertices = m_inputPrimitiveType == data::mesh::cell_type_t::QUAD ? _vertex_count * 2
-                                                                                               : m_inputPrimitiveType
-                                         == data::mesh::cell_type_t::TETRA ? _vertex_count * 4
+        const std::size_t num_vertices = m_input_primitive_type == data::mesh::cell_type_t::quad ? _vertex_count * 2
+                                                                                                 :
+                                         m_input_primitive_type
+                                         == data::mesh::cell_type_t::tetra ? _vertex_count * 4
                                                                            :
                                          _vertex_count;
-        m_r2vbBuffer->setMaxVertexCount(static_cast<unsigned int>(num_vertices));
-        m_r2vbBuffer->setSourceRenderable(m_srcObject);
+        m_r2vb_buffer->setMaxVertexCount(static_cast<unsigned int>(num_vertices));
+        m_r2vb_buffer->setSourceRenderable(m_src_object);
         if(!r2vb_material.empty())
         {
-            m_r2vbBuffer->setRenderToBufferMaterialName(r2vb_material);
+            m_r2vb_buffer->setRenderToBufferMaterialName(r2vb_material);
         }
 
-        m_maxOutputVertexCount = _vertex_count;
+        m_max_output_vertex_count = _vertex_count;
     }
 
     // Define feedback vertex declarations
-    Ogre::VertexDeclaration* vtx_decl = m_r2vbBuffer->getVertexDeclaration();
+    Ogre::VertexDeclaration* vtx_decl = m_r2vb_buffer->getVertexDeclaration();
     vtx_decl->removeAllElements();
 
     std::size_t ofst = 0;
@@ -117,16 +118,16 @@ void viz::scene3d::r2vb_renderable::setOutputSettings(
     }
 
     // Set bounds.
-    this->setBoundingBox(m_srcObject->getParent()->getBoundingBox());
+    this->setBoundingBox(m_src_object->getParent()->getBoundingBox());
 
-    this->setDirty();
+    this->set_dirty();
 }
 
 //-----------------------------------------------------------------------------
 
 const Ogre::String& r2vb_renderable::getMovableType() const
 {
-    return factory::r2vb_renderable::FACTORY_TYPE_NAME;
+    return factory::r2vb_renderable::s_factory_type_name;
 }
 
 //-----------------------------------------------------------------------------
@@ -134,12 +135,12 @@ const Ogre::String& r2vb_renderable::getMovableType() const
 void r2vb_renderable::_updateRenderQueue(Ogre::RenderQueue* _queue)
 {
     // Don't do anything if the object is not visible
-    if(m_srcObject->getParent()->isVisible())
+    if(m_src_object->getParent()->isVisible())
     {
         // Update the ouput vertex buffer only if the dirty flag is set
         if(m_dirty)
         {
-            m_r2vbBuffer->update(mManager);
+            m_r2vb_buffer->update(mManager);
             m_dirty = false;
         }
 
@@ -152,14 +153,14 @@ void r2vb_renderable::_updateRenderQueue(Ogre::RenderQueue* _queue)
 
 void r2vb_renderable::getRenderOperation(Ogre::RenderOperation& _op)
 {
-    m_r2vbBuffer->getRenderOperation(_op);
+    m_r2vb_buffer->getRenderOperation(_op);
 }
 
 //------------------------------------------------------------------------------
 
-const Ogre::MeshPtr& r2vb_renderable::getMesh() const
+const Ogre::MeshPtr& r2vb_renderable::get_mesh() const
 {
-    return m_srcObject->getParent()->getMesh();
+    return m_src_object->getParent()->getMesh();
 }
 
 //-----------------------------------------------------------------------------

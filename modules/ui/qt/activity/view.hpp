@@ -87,7 +87,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::signal<void (data::activity::sptr)> activity_launched_signal_t;
+    using activity_launched_signal_t = core::com::signal<void (data::activity::sptr)>;
 /**
  * @}
  */
@@ -111,15 +111,15 @@ private:
     /**
      * @brief Slot: Launch the given activity in the current view (stop and destroy the previous one).
      */
-    void launchActivity(data::activity::sptr _activity) override;
+    void launch_activity(data::activity::sptr _activity) override;
 
     /// Helper to launch activity configuration
-    sight::app::config_manager::sptr m_configManager;
+    sight::app::config_manager::sptr m_config_manager;
 
     /// WID used to register the activity container
     std::string m_wid;
 
-    activity_launched_signal_t::sptr m_sigActivityLaunched;
+    activity_launched_signal_t::sptr m_sig_activity_launched;
 
     /// Contents margins of the layout.
     int m_border {-1};

@@ -44,7 +44,7 @@ static const core::com::slots::key_t ADD_FRUSTUM_SLOT = "addFrustum";
 frustum_list::frustum_list() noexcept
 {
     new_slot(CLEAR_SLOT, &frustum_list::clear, this);
-    new_slot(ADD_FRUSTUM_SLOT, &frustum_list::addFrustum, this);
+    new_slot(ADD_FRUSTUM_SLOT, &frustum_list::add_frustum, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -56,21 +56,21 @@ frustum_list::~frustum_list() noexcept =
 
 void frustum_list::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    this->setTransformId(
+    this->set_transform_id(
         config.get<std::string>(
-            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
             this->get_id() + "_transform"
         )
     );
 
-    static const std::string s_NEAR_CONFIG   = s_CONFIG + "near";
-    static const std::string s_FAR_CONFIG    = s_CONFIG + "far";
-    static const std::string s_COLOR_CONFIG  = s_CONFIG + "color";
-    static const std::string s_NB_MAX_CONFIG = s_CONFIG + "nbMax";
+    static const std::string s_NEAR_CONFIG   = CONFIG + "near";
+    static const std::string s_FAR_CONFIG    = CONFIG + "far";
+    static const std::string s_COLOR_CONFIG  = CONFIG + "color";
+    static const std::string s_NB_MAX_CONFIG = CONFIG + "nbMax";
 
     m_near     = config.get<float>(s_NEAR_CONFIG, m_near);
     m_far      = config.get<float>(s_FAR_CONFIG, m_far);
@@ -84,25 +84,25 @@ void frustum_list::starting()
 {
     this->initialize();
 
-    m_frustumList.set_capacity(m_capacity);
+    m_frustum_list.set_capacity(m_capacity);
 
     // Create material
     m_material = std::make_shared<data::material>();
-    m_material->diffuse()->setRGBA(m_color);
+    m_material->diffuse()->set_rgba(m_color);
 
-    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::material>(
+    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
     );
-    m_materialAdaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->configure(
-        this->get_id() + "_" + m_materialAdaptor->get_id(),
-        this->get_id() + "_" + m_materialAdaptor->get_id(),
-        this->getRenderService(),
-        m_layerID,
+    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
+    m_material_adaptor->configure(
+        this->get_id() + "_" + m_material_adaptor->get_id(),
+        this->get_id() + "_" + m_material_adaptor->get_id(),
+        this->render_service(),
+        m_layer_id,
         "ambient"
     );
-    m_materialAdaptor->start();
-    m_materialAdaptor->update();
+    m_material_adaptor->start();
+    m_material_adaptor->update();
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ void frustum_list::starting()
 service::connections_t frustum_list::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_FRUSTUM_SLOT);
+    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_FRUSTUM_SLOT);
     return connections;
 }
 
@@ -118,47 +118,47 @@ service::connections_t frustum_list::auto_connections() const
 
 void frustum_list::updating()
 {
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
 void frustum_list::stopping()
 {
-    this->unregisterServices();
+    this->unregister_services();
     this->clear();
-    m_materialAdaptor.reset();
-    m_materialAdaptor = nullptr;
-    m_material        = nullptr;
+    m_material_adaptor.reset();
+    m_material_adaptor = nullptr;
+    m_material         = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void frustum_list::setVisible(bool _visible)
+void frustum_list::set_visible(bool _visible)
 {
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
 
     trans_node->setVisible(_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void frustum_list::addFrustum()
+void frustum_list::add_frustum()
 {
     //Get camera parameters
     const auto camera_data    = m_camera.lock();
     Ogre::Camera* ogre_camera =
-        this->getSceneManager()->createCamera(
+        this->get_scene_manager()->createCamera(
             Ogre::String(
                 this->get_id() + "_camera" + std::to_string(
-                    m_currentCamIndex
+                    m_current_cam_index
                 )
             )
         );
 
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     trans_node->attachObject(ogre_camera);
 
     // Clipping
@@ -172,44 +172,44 @@ void frustum_list::addFrustum()
         ogre_camera->setFarClipDistance(m_far);
     }
 
-    if(camera_data->getIsCalibrated())
+    if(camera_data->get_is_calibrated())
     {
         // Set data to camera
-        const auto width  = static_cast<float>(camera_data->getWidth());
-        const auto height = static_cast<float>(camera_data->getHeight());
+        const auto width  = static_cast<float>(camera_data->get_width());
+        const auto height = static_cast<float>(camera_data->get_height());
         Ogre::Matrix4 m   =
-            sight::viz::scene3d::helper::camera::computeProjectionMatrix(*camera_data, width, height, m_near, m_far);
+            sight::viz::scene3d::helper::camera::compute_projection_matrix(*camera_data, width, height, m_near, m_far);
         ogre_camera->setCustomProjectionMatrix(true, m);
 
-        if(m_frustumList.full())
+        if(m_frustum_list.full())
         {
             //Remove the oldest one
-            auto f = m_frustumList.back();
+            auto f = m_frustum_list.back();
 
             f.first->detachFromParent();
-            this->getSceneManager()->destroyManualObject(f.first);
+            this->get_scene_manager()->destroyManualObject(f.first);
         }
 
-        auto* const frustum = this->getSceneManager()->createManualObject(
+        auto* const frustum = this->get_scene_manager()->createManualObject(
             this->get_id() + "_frustum" + std::to_string(
-                m_currentCamIndex
+                m_current_cam_index
             )
         );
-        auto* const frustum_node = root_scene_node->createChildSceneNode("Node_" + std::to_string(m_currentCamIndex));
+        auto* const frustum_node = root_scene_node->createChildSceneNode("Node_" + std::to_string(m_current_cam_index));
 
-        sight::viz::scene3d::helper::manual_object::createFrustum(
+        sight::viz::scene3d::helper::manual_object::create_frustum(
             frustum,
-            m_materialAdaptor->getMaterialName(),
+            m_material_adaptor->get_material_name(),
             *ogre_camera
         );
 
-        this->setTransfromToNode(frustum_node);
+        this->set_transfrom_to_node(frustum_node);
         frustum_node->attachObject(frustum);
 
         //Add the new one
-        m_frustumList.push_front({frustum, frustum_node});
+        m_frustum_list.push_front({frustum, frustum_node});
 
-        m_currentCamIndex++;
+        m_current_cam_index++;
 
         this->updating();
     }
@@ -221,7 +221,7 @@ void frustum_list::addFrustum()
 
 //-----------------------------------------------------------------------------
 
-void frustum_list::setTransfromToNode(Ogre::SceneNode* _node)
+void frustum_list::set_transfrom_to_node(Ogre::SceneNode* _node)
 {
     const auto transform = m_transform.lock();
     Ogre::Affine3 ogre_mat;
@@ -252,13 +252,13 @@ void frustum_list::setTransfromToNode(Ogre::SceneNode* _node)
 
 void frustum_list::clear()
 {
-    for(const auto& f : m_frustumList)
+    for(const auto& f : m_frustum_list)
     {
         f.first->detachFromParent();
-        this->getSceneManager()->destroyManualObject(f.first);
+        this->get_scene_manager()->destroyManualObject(f.first);
     }
 
-    m_frustumList.clear();
+    m_frustum_list.clear();
 }
 
 //-----------------------------------------------------------------------------

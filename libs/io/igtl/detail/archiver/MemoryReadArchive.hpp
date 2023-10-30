@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <io/zip/exception/Read.hpp>
+#include <io/zip/exception/read.hpp>
 #include <io/zip/read_archive.hpp>
 
 #include <archive.h>
@@ -44,24 +44,24 @@
 namespace sight::io::igtl::detail::archiver
 {
 
-typedef SPTR(std::vector<char>)  BufferSPtr;
-typedef CSPTR(std::vector<char>) BufferCSPtr;
+using buffer_s_ptr  = std::shared_ptr<std::vector<char> >;
+using buffer_cs_ptr = std::shared_ptr<const std::vector<char> >;
 
 /**
  *
  * @brief MemoryReadArchive is a memory archive reader
  */
-class IO_IGTL_CLASS_API MemoryReadArchive : public io::zip::read_archive
+class IO_IGTL_CLASS_API memory_read_archive : public io::zip::read_archive
 {
 public:
 
-    typedef SPTR(MemoryReadArchive) sptr;
+    using sptr = std::shared_ptr<memory_read_archive>;
 
     /// constructor
-    IO_IGTL_API MemoryReadArchive(const char* _buffer, std::size_t _size);
+    IO_IGTL_API memory_read_archive(const char* _buffer, std::size_t _size);
 
     /// destructor
-    IO_IGTL_API ~MemoryReadArchive() override;
+    IO_IGTL_API ~memory_read_archive() override;
 
     /**
      * @brief Returns input stream for the file in current archive (zip).
@@ -78,7 +78,7 @@ public:
      *
      * @return the archive path
      */
-    [[nodiscard]] IO_IGTL_API std::filesystem::path getArchivePath() const override;
+    [[nodiscard]] IO_IGTL_API std::filesystem::path get_archive_path() const override;
 
     /**
      * @brief clone the instance
@@ -87,7 +87,7 @@ public:
      */
     [[nodiscard]] read_archive::sptr clone() const override
     {
-        return SPTR(MemoryReadArchive)(new MemoryReadArchive(m_BUFFER, M_SIZE));
+        return SPTR(memory_read_archive)(new memory_read_archive(m_buffer, m_size));
     }
 
 private:
@@ -97,15 +97,15 @@ private:
      *
      * @param[in] buffer buffer data to fill
      */
-    void readEntry(BufferSPtr _content);
+    void read_entry(buffer_s_ptr _content);
 
 private:
 
     /// size of archive
-    const std::size_t M_SIZE;
+    const std::size_t m_size;
 
     /// buffer contain the archive data
-    const char* m_BUFFER;
+    const char* m_buffer;
 
     /// archive instance
     struct archive* m_archive;
@@ -114,7 +114,7 @@ private:
     std::map<std::string, SPTR(std::istream)> m_streams;
 
     /// buffer read size in memory(huge because we have to read in memory, big buffer should be efficient)
-    static const int s_BUFFER_READ_SIZE = 20000;
+    static const int BUFFER_READ_SIZE = 20000;
 };
 
 } // namespace sight::io::igtl::detail::archiver

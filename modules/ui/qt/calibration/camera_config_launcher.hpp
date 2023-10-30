@@ -110,34 +110,34 @@ protected:
 
 private Q_SLOTS:
 
-    void onAddClicked();
-    void onImportClicked();
-    void onRemoveClicked();
-    void onExtrinsicToggled(bool _checked);
-    void onCameraChanged(int _index);
+    void on_add_clicked();
+    void on_import_clicked();
+    void on_remove_clicked();
+    void on_extrinsic_toggled(bool _checked);
+    void on_camera_changed(int _index);
 
 private:
 
     /// Start the configuration for the intrinsic calibration
-    void startIntrinsicConfig(std::size_t _index);
+    void start_intrinsic_config(std::size_t _index);
 
     /// Start the configuration for the extrinsic calibration
-    void startExtrinsicConfig(std::size_t _index);
+    void start_extrinsic_config(std::size_t _index);
 
     /// Adds a Camera in cameraSet and the CalibrationInfo in the activity
-    void addCamera();
+    void add_camera();
 
-    QPointer<QComboBox> m_cameraComboBox;
-    QPointer<QPushButton> m_addButton;
-    QPointer<QPushButton> m_importButton;
-    QPointer<QPushButton> m_removeButton;
-    QPointer<QPushButton> m_extrinsicButton;
+    QPointer<QComboBox> m_camera_combo_box;
+    QPointer<QPushButton> m_add_button;
+    QPointer<QPushButton> m_import_button;
+    QPointer<QPushButton> m_remove_button;
+    QPointer<QPushButton> m_extrinsic_button;
 
-    sight::app::helper::config_launcher m_intrinsicLauncher;
-    sight::app::helper::config_launcher m_extrinsicLauncher;
+    sight::app::helper::config_launcher m_intrinsic_launcher;
+    sight::app::helper::config_launcher m_extrinsic_launcher;
 
-    data::ptr<data::camera_set, data::Access::inout> m_camera_set {this, "cameraSet"};
-    data::ptr<data::activity, data::Access::inout> m_activity {this, "activity"};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "cameraSet"};
+    data::ptr<data::activity, data::access::inout> m_activity {this, "activity"};
 };
 
 } // namespace sight::module::ui::qt::calibration

@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/splitter/TagValueSplitter.hpp"
+#include "filter/dicom/splitter/tag_value_splitter.hpp"
 
 #include <data/dicom_series.hpp>
 
@@ -31,15 +31,15 @@ namespace sight::filter::dicom::splitter
 {
 
 /**
- * @brief Filter that uses the sop_classUID tag to split the instances
+ * @brief filter that uses the sop_classUID tag to split the instances
  */
-class FILTER_DICOM_CLASS_API sop_class_uid_splitter : public sight::filter::dicom::splitter::TagValueSplitter
+class FILTER_DICOM_CLASS_API sop_class_uid_splitter : public sight::filter::dicom::splitter::tag_value_splitter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         sop_class_uid_splitter,
-        sight::filter::dicom::splitter::TagValueSplitter,
+        sight::filter::dicom::splitter::tag_value_splitter,
         sight::filter::dicom::factory::make<sop_class_uid_splitter>
     );
 
@@ -56,21 +56,21 @@ public:
     ) const override;
 
     /// Return the name of the filter
-    FILTER_DICOM_API std::string getName() const override;
+    FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string getDescription() const override;
+    FILTER_DICOM_API std::string get_description() const override;
 
     /// Return true if a configuration is required
-    FILTER_DICOM_API bool isConfigurationRequired() const override;
+    FILTER_DICOM_API bool is_configuration_required() const override;
 
 protected:
 
-    /// Filter name
-    static const std::string s_FILTER_NAME;
+    /// filter name
+    static const std::string FILTER_NAME;
 
-    /// Filter description
-    static const std::string s_FILTER_DESCRIPTION;
+    /// filter description
+    static const std::string FILTER_DESCRIPTION;
 };
 
 } // namespace sight::filter::dicom::splitter

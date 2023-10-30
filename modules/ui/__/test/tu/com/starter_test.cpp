@@ -36,7 +36,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(DummyService, service::base);
 
-    int nbUpdate = 0;
+    int nb_update = 0;
 
     //------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ public:
 
     void updating() override
     {
-        nbUpdate++;
+        nb_update++;
     }
 
     //------------------------------------------------------------------------------
@@ -78,15 +78,15 @@ void starter_test::setUp()
 
 void starter_test::tearDown()
 {
-    if(m_dummyService != nullptr)
+    if(m_dummy_service != nullptr)
     {
-        if(!m_dummyService->stopped())
+        if(!m_dummy_service->stopped())
         {
-            CPPUNIT_ASSERT_NO_THROW(m_dummyService->stop().get());
+            CPPUNIT_ASSERT_NO_THROW(m_dummy_service->stop().get());
         }
 
-        service::remove(m_dummyService);
-        m_dummyService = nullptr;
+        service::remove(m_dummy_service);
+        m_dummy_service = nullptr;
     }
 
     if(!m_starter->stopped())
@@ -99,18 +99,18 @@ void starter_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void starter_test::test(const std::string& _action_name, bool _exists, ShouldBe _should_be, int _nb_update)
+void starter_test::test(const std::string& _action_name, bool _exists, should_be _should_be, int _nb_update)
 {
     if(_exists)
     {
         service::base::sptr target_service = service::add("DummyService", "targetService");
         CPPUNIT_ASSERT_MESSAGE("Failed to create service 'DummyService'", target_service);
-        m_dummyService = std::dynamic_pointer_cast<DummyService>(target_service);
-        CPPUNIT_ASSERT_MESSAGE("Failed to cast service to 'DummyService'", m_dummyService);
-        CPPUNIT_ASSERT_NO_THROW(m_dummyService->configure());
-        if(_should_be == ShouldBe::STOPPED)
+        m_dummy_service = std::dynamic_pointer_cast<DummyService>(target_service);
+        CPPUNIT_ASSERT_MESSAGE("Failed to cast service to 'DummyService'", m_dummy_service);
+        CPPUNIT_ASSERT_NO_THROW(m_dummy_service->configure());
+        if(_should_be == should_be::stopped)
         {
-            CPPUNIT_ASSERT_NO_THROW(m_dummyService->start().get());
+            CPPUNIT_ASSERT_NO_THROW(m_dummy_service->start().get());
         }
     }
 
@@ -123,87 +123,87 @@ void starter_test::test(const std::string& _action_name, bool _exists, ShouldBe 
 
     if(_exists)
     {
-        if(_should_be == ShouldBe::STARTED)
+        if(_should_be == should_be::started)
         {
-            CPPUNIT_ASSERT(m_dummyService->started());
+            CPPUNIT_ASSERT(m_dummy_service->started());
         }
-        else if(_should_be == ShouldBe::STOPPED)
+        else if(_should_be == should_be::stopped)
         {
-            CPPUNIT_ASSERT(m_dummyService->stopped());
+            CPPUNIT_ASSERT(m_dummy_service->stopped());
         }
         else
         {
-            CPPUNIT_ASSERT(m_dummyService->started());
-            CPPUNIT_ASSERT_EQUAL(_nb_update, m_dummyService->nbUpdate);
+            CPPUNIT_ASSERT(m_dummy_service->started());
+            CPPUNIT_ASSERT_EQUAL(_nb_update, m_dummy_service->nb_update);
             CPPUNIT_ASSERT_NO_THROW(m_starter->update().get());
-            CPPUNIT_ASSERT(m_dummyService->stopped());
+            CPPUNIT_ASSERT(m_dummy_service->stopped());
         }
 
-        CPPUNIT_ASSERT_EQUAL(_nb_update, m_dummyService->nbUpdate);
+        CPPUNIT_ASSERT_EQUAL(_nb_update, m_dummy_service->nb_update);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::startTest()
+void starter_test::start_test()
 {
-    test("start", true, ShouldBe::STARTED, 1);
+    test("start", true, should_be::started, 1);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::startOnlyTest()
+void starter_test::start_only_test()
 {
-    test("start_only", true, ShouldBe::STARTED, 0);
+    test("start_only", true, should_be::started, 0);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::startIfExistsTest()
+void starter_test::start_if_exists_test()
 {
-    test("start_if_exists", true, ShouldBe::STARTED, 1);
+    test("start_if_exists", true, should_be::started, 1);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::startIfExistsButDoesntExistTest()
+void starter_test::start_if_exists_but_doesnt_exist_test()
 {
     test("start_if_exists", false);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::stopTest()
+void starter_test::stop_test()
 {
-    test("stop", true, ShouldBe::STOPPED);
+    test("stop", true, should_be::stopped);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::stopIfExistsTest()
+void starter_test::stop_if_exists_test()
 {
-    test("stop_if_exists", true, ShouldBe::STOPPED);
+    test("stop_if_exists", true, should_be::stopped);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::stopIfExistsButDoesntExistTest()
+void starter_test::stop_if_exists_but_doesnt_exist_test()
 {
     test("stop_if_exists", false);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::startOrStopTest()
+void starter_test::start_or_stop_test()
 {
-    test("start_or_stop", true, ShouldBe::STARTED_THEN_STOPPED, 1);
+    test("start_or_stop", true, should_be::started_then_stopped, 1);
 }
 
 //------------------------------------------------------------------------------
 
-void starter_test::startOnlyOrStopTest()
+void starter_test::start_only_or_stop_test()
 {
-    test("start_only_or_stop", true, ShouldBe::STARTED_THEN_STOPPED, 0);
+    test("start_only_or_stop", true, should_be::started_then_stopped, 0);
 }
 
 //------------------------------------------------------------------------------

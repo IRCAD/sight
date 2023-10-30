@@ -57,7 +57,7 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::signal<void (std::filesystem::path)> folder_selected_signal_t;
+    using folder_selected_signal_t = core::com::signal<void (std::filesystem::path)>;
     static const core::com::signals::key_t FOLDER_SELECTED_SIG;
     /// @}
 
@@ -81,7 +81,7 @@ protected:
 private:
 
     /// Optional title for the dialog
-    std::string m_dialogTitle;
+    std::string m_dialog_title;
 };
 
 } // namespace sight::module::ui::io

@@ -46,7 +46,7 @@ namespace sight::io::dicom::reader::iod
 /**
  * @brief SurfaceSegmentationIOD class used to read Surface Segmentation IODs
  */
-class IO_DICOM_CLASS_API SurfaceSegmentationIOD : public io::dicom::reader::iod::InformationObjectDefinition
+class IO_DICOM_CLASS_API surface_segmentation_iod : public io::dicom::reader::iod::information_object_definition
 {
 public:
 
@@ -58,16 +58,16 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API SurfaceSegmentationIOD(
+    IO_DICOM_API surface_segmentation_iod(
         const data::dicom_series::csptr& _dicom_series,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~SurfaceSegmentationIOD() override;
+    IO_DICOM_API ~surface_segmentation_iod() override;
 
     /**
      * @brief Read a DICOM File

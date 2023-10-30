@@ -42,7 +42,7 @@ public:
      * @param[in] _paramSrv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
-    MODULE_UI_VIZ_API static service::config_t createConfig(
+    MODULE_UI_VIZ_API static service::config_t create_config(
         const sight::viz::scene3d::parameter_adaptor::csptr& _adaptor,
         const service::base::csptr& _param_srv,
         core::com::helper::sig_slot_connection& _connections

@@ -92,16 +92,16 @@ protected:
 
 private:
 
-    typedef std::vector<bool> invert_vector_t;
+    using invert_vector_t = std::vector<bool>;
 
     /// Vector to specify if matrix must be inverted.
-    invert_vector_t m_invertVector;
+    invert_vector_t m_invert_vector;
 
-    static constexpr std::string_view s_MATRIX_GROUP_INPUT = "matrix";
-    data::ptr_vector<data::matrix4, sight::data::Access::in> m_matrices {this, s_MATRIX_GROUP_INPUT, true};
+    static constexpr std::string_view MATRIX_GROUP_INPUT = "matrix";
+    data::ptr_vector<data::matrix4, sight::data::access::in> m_matrices {this, MATRIX_GROUP_INPUT, true};
 
-    static constexpr std::string_view s_OUTPUT = "output";
-    data::ptr<data::matrix4, sight::data::Access::inout> m_output {this, s_OUTPUT};
+    static constexpr std::string_view OUTPUT = "output";
+    data::ptr<data::matrix4, sight::data::access::inout> m_output {this, OUTPUT};
 };
 
 } //namespace sight::module::geometry

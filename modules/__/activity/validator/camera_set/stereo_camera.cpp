@@ -54,14 +54,14 @@ sight::activity::validator::return_t stereo_camera::validate(const data::object:
         if(camera_set->size() == 2)
         {
             data::camera::csptr camera0 = camera_set->get_camera(0);
-            if(!camera0->getIsCalibrated())
+            if(!camera0->get_is_calibrated())
             {
                 validation.first  = false;
                 validation.second = "The first CameraSet should be calibrated.";
             }
 
             data::camera::csptr camera1 = camera_set->get_camera(1);
-            if(!camera1->getIsCalibrated())
+            if(!camera1->get_is_calibrated())
             {
                 validation.first  = false;
                 validation.second = "The second CameraSet should be calibrated.";

@@ -110,7 +110,7 @@
 
             <connect>
                 <signal>depthRangeSliderSrv/doubleChanged</signal>
-                <slot>square1Adp/setDoubleParameter</slot>
+                <slot>square1Adp/set_double_parameter</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

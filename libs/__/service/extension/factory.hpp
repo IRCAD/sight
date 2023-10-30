@@ -50,13 +50,13 @@ class SERVICE_CLASS_API factory : public core::base_object // NOLINT(bugprone-fo
 {
 public:
 
-    typedef std::string key_t;
-    typedef std::vector<key_t> key_vector_t;
-    typedef std::pair<std::string, std::string> StringPair;
+    using key_t         = std::string;
+    using key_vector_t  = std::vector<key_t>;
+    using string_pair_t = std::pair<std::string, std::string>;
 
     /// We keep boost here because std implementation does not support a pair of std::string as key
-    typedef boost::unordered_map<StringPair, bool> support_map_t;
-    typedef std::function<SPTR(service::base)()> factoryType;
+    using support_map_t = boost::unordered_map<string_pair_t, bool>;
+    using factoryType   = std::function<std::shared_ptr<service::base>()>;
 
     SIGHT_DECLARE_CLASS(factory, core::base_object);
 
@@ -83,28 +83,28 @@ public:
     SERVICE_API void clear_factory();
 
     /// return a vector of service implementation
-    SERVICE_API std::vector<std::string> getImplementationIdFromObjectAndType(
+    SERVICE_API std::vector<std::string> get_implementation_id_from_object_and_type(
         const std::string& _object,
         const std::string& _type
     ) const;
 
     /// return the default service implementation for an object
-    SERVICE_API std::string getDefaultImplementationIdFromObjectAndType(
+    SERVICE_API std::string get_default_implementation_id_from_object_and_type(
         const std::string& _object,
         const std::string& _type
     ) const;
 
     /// return the objects registered for a given service.
-    SERVICE_API const std::vector<std::string>& getServiceObjects(const std::string& _srv_impl) const;
+    SERVICE_API const std::vector<std::string>& get_service_objects(const std::string& _srv_impl) const;
 
     /// return the service description.
-    SERVICE_API std::string getServiceDescription(const std::string& _srv_impl) const;
+    SERVICE_API std::string get_service_description(const std::string& _srv_impl) const;
 
     /// return the service capabilities.
-    SERVICE_API std::string getServiceTags(const std::string& _srv_impl) const;
+    SERVICE_API std::string get_service_tags(const std::string& _srv_impl) const;
 
     /// Check if the service with given object and implementation is valid
-    SERVICE_API bool checkServiceValidity(const std::string& _object, const std::string& _srv_impl) const;
+    SERVICE_API bool check_service_validity(const std::string& _object, const std::string& _srv_impl) const;
 
     /**
      * @brief Check whether an object (object) supports service of type srvType
@@ -129,36 +129,36 @@ public:
 
 private:
 
-    struct ServiceInfo
+    struct service_info
     {
-        std::string serviceType;
-        std::vector<std::string> objectImpl;
+        std::string service_type;
+        std::vector<std::string> object_impl;
         std::string desc;
         std::string tags;
         std::shared_ptr<core::runtime::module> module;
         factoryType factory;
-        bool objectsSetFromModule {false}; // True if the objects implementation are set from the module information
+        bool objects_set_from_module {false}; // True if the objects implementation are set from the module information
     };
-    typedef std::unordered_map<key_t, ServiceInfo> SrvRegContainer;
+    using srv_reg_container_t = std::unordered_map<key_t, service_info>;
 
     /**
      * @brief print services informations
      * @warning not thread-safe
      */
-    static void printInfoMap(const SrvRegContainer& _src);
+    static void print_info_map(const srv_reg_container_t& _src);
 
     /**
      * @brief Trace services not declared in plugin.xml
      * @warning not thread-safe
      */
-    void checkServicesNotDeclaredInPluginXml() const;
+    void check_services_not_declared_in_plugin_xml() const;
 
     /// Container of service information
-    SrvRegContainer m_srvImplToSrvInfo;
-    support_map_t m_supportMap;
+    srv_reg_container_t m_srv_impl_to_srv_info;
+    support_map_t m_support_map;
 
-    mutable core::mt::read_write_mutex m_srvImplToSrvInfoMutex;
-    mutable core::mt::read_write_mutex m_supportMapMutex;
+    mutable core::mt::read_write_mutex m_srv_impl_to_srv_info_mutex;
+    mutable core::mt::read_write_mutex m_support_map_mutex;
 };
 
 } // namespace extension

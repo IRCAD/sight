@@ -40,12 +40,12 @@ namespace sight::io::dicom::writer::ie
  * @brief InformationEntity base class used to write modules
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API InformationEntity
+class IO_DICOM_CLASS_API information_entity
 {
 public:
 
-    typedef std::function<void (std::uint64_t)> ProgressCallback;
-    typedef std::function<bool ()> CancelRequestedCallback;
+    using progress_callback         = std::function<void (std::uint64_t)>;
+    using cancel_requested_callback = std::function<bool ()>;
 
     /**
      * @brief Constructor
@@ -56,17 +56,17 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API InformationEntity(
+    IO_DICOM_API information_entity(
         SPTR(gdcm::Writer)_writer,
-        SPTR(io::dicom::container::DicomInstance)_instance,
+        SPTR(io::dicom::container::dicom_instance)_instance,
         CSPTR(DATATYPE)_object,
-        core::log::logger::sptr _logger = nullptr,
-        ProgressCallback _progress      = nullptr,
-        CancelRequestedCallback _cancel = nullptr
+        core::log::logger::sptr _logger   = nullptr,
+        progress_callback _progress       = nullptr,
+        cancel_requested_callback _cancel = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~InformationEntity();
+    IO_DICOM_API virtual ~information_entity();
 
 protected:
 
@@ -74,7 +74,7 @@ protected:
     SPTR(gdcm::Writer) m_writer;
 
     /// DICOM Instance
-    SPTR(io::dicom::container::DicomInstance) m_instance;
+    SPTR(io::dicom::container::dicom_instance) m_instance;
 
     /// Sight Object
     CSPTR(DATATYPE) m_object;
@@ -83,29 +83,29 @@ protected:
     core::log::logger::sptr m_logger;
 
     /// Progress callback for jobs
-    ProgressCallback m_progressCallback;
+    progress_callback m_progress_callback;
 
     /// Cancel information for jobs
-    CancelRequestedCallback m_cancelRequestedCallback;
+    cancel_requested_callback m_cancel_requested_callback;
 };
 
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-InformationEntity<DATATYPE>::InformationEntity(
+information_entity<DATATYPE>::information_entity(
     SPTR(gdcm::Writer)_writer,
-    SPTR(io::dicom::container::DicomInstance)_instance,
+    SPTR(io::dicom::container::dicom_instance)_instance,
     CSPTR(DATATYPE)_object,
     core::log::logger::sptr _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
     m_writer(std::move(_writer)),
     m_instance(std::move(_instance)),
     m_object(std::move(_object)),
     m_logger(std::move(_logger)),
-    m_progressCallback(std::move(_progress)),
-    m_cancelRequestedCallback(std::move(_cancel))
+    m_progress_callback(std::move(_progress)),
+    m_cancel_requested_callback(std::move(_cancel))
 {
     SIGHT_ASSERT("Writer should not be null.", m_writer);
     SIGHT_ASSERT("Instance should not be null.", m_instance);
@@ -114,7 +114,7 @@ InformationEntity<DATATYPE>::InformationEntity(
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE> InformationEntity<DATATYPE>::~InformationEntity()
+template<class DATATYPE> information_entity<DATATYPE>::~information_entity()
 = default;
 
 //------------------------------------------------------------------------------

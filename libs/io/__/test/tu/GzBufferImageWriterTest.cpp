@@ -29,20 +29,20 @@
 
 #include <numeric>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::GzBufferImageWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::gz_buffer_image_writer_test);
 
 namespace sight::io::ut
 {
 
 //------------------------------------------------------------------------------
 
-void GzBufferImageWriterTest::basicTest()
+void gz_buffer_image_writer_test::basic_test()
 {
     auto gz_buffer_image_writer    = std::make_shared<writer::gz_buffer_image_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path()
                                      / ("test" + gz_buffer_image_writer->extension());
     auto image_in = std::make_shared<data::image>();
-    image_in->resize({16}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
+    image_in->resize({16}, core::type::UINT8, data::image::pixel_format::gray_scale);
     {
         auto image_lock = image_in->dump_lock();
         std::iota(image_in->begin<std::uint8_t>(), image_in->end<std::uint8_t>(), std::uint8_t(0));

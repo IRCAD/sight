@@ -39,8 +39,8 @@ class DATA_CLASS_API color final : public object
 {
 public:
 
-    typedef float color_t;
-    typedef std::array<color_t, 4> ColorArray;
+    using color_t       = float;
+    using color_array_t = std::array<color_t, 4>;
 
     SIGHT_DECLARE_CLASS(color, object);
 
@@ -51,16 +51,16 @@ public:
     DATA_API ~color() noexcept override = default;
 
     /** Get/Set the array of color values (red, green, blue, alpha).
-     *  @name ColorArray accessor
+     *  @name color_array_t accessor
      *  @{  */
-    ColorArray& getRGBA();
-    const ColorArray& getRGBA() const;
-    void setRGBA(const ColorArray& _v_rgba);
+    color_array_t& rgba();
+    const color_array_t& rgba() const;
+    void set_rgba(const color_array_t& _v_rgba);
     /** @} */
 
     ///@{
     /// Set RGBA color
-    DATA_API void setRGBA(
+    DATA_API void set_rgba(
         color_t _red,
         color_t _green,
         color_t _blue,
@@ -69,7 +69,7 @@ public:
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
     ///@param[in] hexaColor c hexadecimal format (\#ffffff)
-    DATA_API void setRGBA(const std::string& _hexa_color);
+    DATA_API void set_rgba(const std::string& _hexa_color);
     ///@}
 
     /** @name color attributes accessor
@@ -114,28 +114,28 @@ public:
 protected:
 
     //! RGBA of the image (in terms of points)
-    ColorArray m_vRGBA {};
+    color_array_t m_v_rgba {};
 }; // end class color
 
 //-----------------------------------------------------------------------------
 
-inline color::ColorArray& color::getRGBA()
+inline color::color_array_t& color::rgba()
 {
-    return this->m_vRGBA;
+    return this->m_v_rgba;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const color::ColorArray& color::getRGBA() const
+inline const color::color_array_t& color::rgba() const
 {
-    return this->m_vRGBA;
+    return this->m_v_rgba;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void color::setRGBA(const color::ColorArray& _v_rgba)
+inline void color::set_rgba(const color::color_array_t& _v_rgba)
 {
-    this->m_vRGBA = _v_rgba;
+    this->m_v_rgba = _v_rgba;
 }
 
 //-----------------------------------------------------------------------------

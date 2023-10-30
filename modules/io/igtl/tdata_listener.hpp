@@ -89,35 +89,35 @@ protected:
 
 private:
 
-    typedef std::map<std::string, std::uint64_t> matrix_name_index_t;
+    using matrix_name_index_t = std::map<std::string, std::uint64_t>;
 
     ///Push received matrices in timeline
-    void manageTimeline(const SPTR(data::composite)& _obj, double _timestamp = 0);
+    void manage_timeline(const SPTR(data::composite)& _obj, double _timestamp = 0);
 
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject
      *        this method run in a thread
      */
-    void runClient();
+    void run_client();
 
     /// Future used to wait for the client
-    std::future<void> m_clientFuture;
+    std::future<void> m_client_future;
 
     /// client socket
-    sight::io::igtl::Client m_client;
+    sight::io::igtl::client m_client;
 
     /// hostname config key
-    std::string m_hostnameConfig;
+    std::string m_hostname_config;
 
     /// port config key
-    std::string m_portConfig;
+    std::string m_port_config;
 
     /// device names key
-    std::vector<std::string> m_deviceNamesConfig;
+    std::vector<std::string> m_device_names_config;
 
-    matrix_name_index_t m_matrixNameIndex;
+    matrix_name_index_t m_matrix_name_index;
 
-    data::ptr<data::matrix_tl, sight::data::Access::inout> m_timeline {this, "timeline"};
+    data::ptr<data::matrix_tl, sight::data::access::inout> m_timeline {this, "timeline"};
 };
 
 } // namespace sight::module::io::igtl

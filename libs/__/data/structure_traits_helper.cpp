@@ -29,30 +29,30 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-const structure_traits_helper::category_translator_t structure_traits_helper::s_CATEGORYTRANSLATOR =
+const structure_traits_helper::category_translator_t structure_traits_helper::CATEGORYTRANSLATOR =
     boost::assign::list_of<structure_traits_helper::category_translator_t::relation>
-        (data::structure_traits::BODY, std::string("Body"))
-        (data::structure_traits::HEAD, std::string("Head"))
-        (data::structure_traits::NECK, std::string("Neck"))
-        (data::structure_traits::THORAX, std::string("Thorax"))
-        (data::structure_traits::ABDOMEN, std::string("Abdomen"))
-        (data::structure_traits::PELVIS, std::string("Pelvis"))
-        (data::structure_traits::ARM, std::string("Arm"))
-        (data::structure_traits::LEG, std::string("Leg"))
-        (data::structure_traits::LIVER_SEGMENTS, std::string("Liver_segments"))
-        (data::structure_traits::OTHER, std::string("Other"));
+        (data::structure_traits::body, std::string("Body"))
+        (data::structure_traits::head, std::string("Head"))
+        (data::structure_traits::neck, std::string("Neck"))
+        (data::structure_traits::thorax, std::string("Thorax"))
+        (data::structure_traits::abdomen, std::string("Abdomen"))
+        (data::structure_traits::pelvis, std::string("Pelvis"))
+        (data::structure_traits::arm, std::string("Arm"))
+        (data::structure_traits::leg, std::string("Leg"))
+        (data::structure_traits::liver_segments, std::string("Liver_segments"))
+        (data::structure_traits::other, std::string("Other"));
 
 //------------------------------------------------------------------------------
 
-const structure_traits_helper::class_translator_t structure_traits_helper::s_CLASSTRANSLATOR =
+const structure_traits_helper::class_translator_t structure_traits_helper::CLASSTRANSLATOR =
     boost::assign::list_of<structure_traits_helper::class_translator_t::relation>
-        (data::structure_traits::TOOL, std::string("Tool"))
-        (data::structure_traits::ENVIRONMENT, std::string("Environment"))
-        (data::structure_traits::VESSEL, std::string("Vessel"))
-        (data::structure_traits::LESION, std::string("Lesion"))
-        (data::structure_traits::ORGAN, std::string("Organ"))
-        (data::structure_traits::FUNCTIONAL, std::string("Functional"))
-        (data::structure_traits::NO_CONSTRAINT, std::string("No_constraint"));
+        (data::structure_traits::tool, std::string("Tool"))
+        (data::structure_traits::environment, std::string("Environment"))
+        (data::structure_traits::vessel, std::string("Vessel"))
+        (data::structure_traits::lesion, std::string("Lesion"))
+        (data::structure_traits::organ, std::string("Organ"))
+        (data::structure_traits::functional, std::string("Functional"))
+        (data::structure_traits::no_constraint, std::string("No_constraint"));
 
 //------------------------------------------------------------------------------
 

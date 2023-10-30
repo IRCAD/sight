@@ -84,16 +84,16 @@ private:
     int m_priority {2};
 
     /// Defines the mask used to filter out entities when picking.
-    std::uint32_t m_queryMask {0xFFFFFFFF};
+    std::uint32_t m_query_mask {0xFFFFFFFF};
 
     /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant {true};
+    bool m_layer_order_dependant {true};
 
     /// Contains the interactor managed by the adaptor.
     std::shared_ptr<sight::viz::scene3d::interactor::mesh_picker_interactor> m_interactor;
 
     /// Defines the signal sent on picking events.
-    sight::viz::scene3d::interactor::mesh_picker_interactor::point_clicked_sig_t::sptr m_pickedSig;
+    sight::viz::scene3d::interactor::mesh_picker_interactor::point_clicked_sig_t::sptr m_picked_sig;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

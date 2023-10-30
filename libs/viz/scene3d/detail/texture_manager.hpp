@@ -32,7 +32,7 @@ namespace sight::viz::scene3d::detail
 
 //---------------------------------------------------------------------
 
-class TextureLoader
+class texture_loader
 {
 public:
 
@@ -47,6 +47,6 @@ public:
  *
  * Currently, it is only used for grayscale images.
  */
-using texture_manager = resource_manager<sight::data::image, Ogre::Texture, TextureLoader>;
+using texture_manager = resource_manager<sight::data::image, Ogre::Texture, texture_loader>;
 
 } // namespace sight::viz::scene3d::detail

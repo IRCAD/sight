@@ -29,24 +29,24 @@ namespace sight::data::ut
 class fiducials_series_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(fiducials_series_test);
-CPPUNIT_TEST(shallow_copyTest);
-CPPUNIT_TEST(deep_copyTest);
-CPPUNIT_TEST(simpleSetterGetterTest);
-CPPUNIT_TEST(fiducialSetSetterGetterTest);
-CPPUNIT_TEST(referencedImageSetterGetterTest);
-CPPUNIT_TEST(fiducialSetterGetterTest);
-CPPUNIT_TEST(graphicCoordinatesDataSetterGetterTest);
+CPPUNIT_TEST(shallow_copy_test);
+CPPUNIT_TEST(deep_copy_test);
+CPPUNIT_TEST(simple_setter_getter_test);
+CPPUNIT_TEST(fiducial_set_setter_getter_test);
+CPPUNIT_TEST(referenced_image_setter_getter_test);
+CPPUNIT_TEST(fiducial_setter_getter_test);
+CPPUNIT_TEST(graphic_coordinates_data_setter_getter_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void shallow_copyTest();
-    static void deep_copyTest();
-    static void simpleSetterGetterTest();
-    static void fiducialSetSetterGetterTest();
-    static void referencedImageSetterGetterTest();
-    static void fiducialSetterGetterTest();
-    static void graphicCoordinatesDataSetterGetterTest();
+    static void shallow_copy_test();
+    static void deep_copy_test();
+    static void simple_setter_getter_test();
+    static void fiducial_set_setter_getter_test();
+    static void referenced_image_setter_getter_test();
+    static void fiducial_setter_getter_test();
+    static void graphic_coordinates_data_setter_getter_test();
 };
 
 } // namespace sight::data::ut

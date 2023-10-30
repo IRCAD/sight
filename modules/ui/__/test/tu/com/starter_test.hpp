@@ -35,15 +35,15 @@ class DummyService;
 class starter_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(starter_test);
-CPPUNIT_TEST(startTest);
-CPPUNIT_TEST(startOnlyTest);
-CPPUNIT_TEST(startIfExistsTest);
-CPPUNIT_TEST(startIfExistsButDoesntExistTest);
-CPPUNIT_TEST(stopTest);
-CPPUNIT_TEST(stopIfExistsTest);
-CPPUNIT_TEST(stopIfExistsButDoesntExistTest);
-CPPUNIT_TEST(startOrStopTest);
-CPPUNIT_TEST(startOnlyOrStopTest);
+CPPUNIT_TEST(start_test);
+CPPUNIT_TEST(start_only_test);
+CPPUNIT_TEST(start_if_exists_test);
+CPPUNIT_TEST(start_if_exists_but_doesnt_exist_test);
+CPPUNIT_TEST(stop_test);
+CPPUNIT_TEST(stop_if_exists_test);
+CPPUNIT_TEST(stop_if_exists_but_doesnt_exist_test);
+CPPUNIT_TEST(start_or_stop_test);
+CPPUNIT_TEST(start_only_or_stop_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,34 +51,34 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    enum class ShouldBe
+    enum class should_be
     {
-        STARTED,
-        STOPPED,
-        STARTED_THEN_STOPPED
+        started,
+        stopped,
+        started_then_stopped
     };
 
     void test(
         const std::string& _action_name,
         bool _exists,
-        ShouldBe _should_be = ShouldBe::STARTED,
-        int _nb_update      = 0
+        should_be _should_be = should_be::started,
+        int _nb_update       = 0
     );
 
-    void startTest();
-    void startOnlyTest();
-    void startIfExistsTest();
-    void startIfExistsButDoesntExistTest();
-    void stopTest();
-    void stopIfExistsTest();
-    void stopIfExistsButDoesntExistTest();
-    void startOrStopTest();
-    void startOnlyOrStopTest();
+    void start_test();
+    void start_only_test();
+    void start_if_exists_test();
+    void start_if_exists_but_doesnt_exist_test();
+    void stop_test();
+    void stop_if_exists_test();
+    void stop_if_exists_but_doesnt_exist_test();
+    void start_or_stop_test();
+    void start_only_or_stop_test();
 
 private:
 
     service::base::sptr m_starter;
-    std::shared_ptr<DummyService> m_dummyService;
+    std::shared_ptr<DummyService> m_dummy_service;
 };
 
 } // namespace sight::module::ui::com::ut

@@ -22,7 +22,7 @@
 
 #include "io/vtk/BitmapImageReader.hpp"
 
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/jobs/base.hpp>
@@ -39,43 +39,43 @@
 #include <vtkImageReader2Factory.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER(sight::io::vtk::BitmapImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::bitmap_image_reader);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-BitmapImageReader::BitmapImageReader() :
+bitmap_image_reader::bitmap_image_reader() :
     m_job(std::make_shared<core::jobs::observer>("Bitmap image reader"))
 {
     /* Initialize the available extensions */
     std::vector<std::string> ext;
-    BitmapImageReader::getAvailableExtensions(ext);
+    bitmap_image_reader::get_available_extensions(ext);
 
     if(!ext.empty())
     {
-        m_availableExtensions = ext.at(0);
+        m_available_extensions = ext.at(0);
         for(std::vector<std::string>::size_type i = 1 ; i < ext.size() ; i++)
         {
-            m_availableExtensions = m_availableExtensions + " " + ext.at(i);
+            m_available_extensions = m_available_extensions + " " + ext.at(i);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-BitmapImageReader::~BitmapImageReader()
+bitmap_image_reader::~bitmap_image_reader()
 = default;
 
 //------------------------------------------------------------------------------
 
-void BitmapImageReader::read()
+void bitmap_image_reader::read()
 {
     SIGHT_ASSERT("The current object has expired.", !m_object.expired());
     SIGHT_ASSERT("Unable to lock object", m_object.lock());
 
-    data::image::sptr p_image = getConcreteObject();
+    data::image::sptr p_image = get_concrete_object();
 
     // Use a vtkImageReader2Factory to automatically detect the type of the input file
     // And select the right reader for the file
@@ -86,11 +86,11 @@ void BitmapImageReader::read()
 
     reader->SetFileName(this->get_file().string().c_str());
 
-    using helper::vtkLambdaCommand;
-    vtkSmartPointer<vtkLambdaCommand> progress_callback;
+    using helper::vtk_lambda_command;
+    vtkSmartPointer<vtk_lambda_command> progress_callback;
 
-    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progress_callback->SetCallback(
+    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
+    progress_callback->set_callback(
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
@@ -119,21 +119,21 @@ void BitmapImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string BitmapImageReader::extension() const
+std::string bitmap_image_reader::extension() const
 {
-    return m_availableExtensions;
+    return m_available_extensions;
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr BitmapImageReader::getJob() const
+core::jobs::base::sptr bitmap_image_reader::get_job() const
 {
     return m_job;
 }
 
 //------------------------------------------------------------------------------
 
-void BitmapImageReader::getAvailableExtensions(std::vector<std::string>& _ext)
+void bitmap_image_reader::get_available_extensions(std::vector<std::string>& _ext)
 {
     /* Get the collection of available bitmap image readers */
     vtkSmartPointer<vtkImageReader2Collection> ir2c = vtkSmartPointer<vtkImageReader2Collection>::New();

@@ -95,8 +95,8 @@ public:
      * @name Signals
      * @{
      */
-    typedef core::com::signal<void (bool)> bool_signal_t;
-    typedef core::com::signal<void ()> void_signal_t;
+    using bool_signal_t = core::com::signal<void (bool)>;
+    using void_signal_t = core::com::signal<void ()>;
 
     /// Signal emitted when action is checked/unchecked
     static const core::com::signals::key_t IS_ENABLED_SIG;
@@ -161,25 +161,25 @@ public:
      */
 
     /// Method called when the action service is stopping
-    UI_API void actionServiceStopping();
+    UI_API void action_service_stopping();
 
     /// Method called when the action service is starting
-    UI_API void actionServiceStarting();
+    UI_API void action_service_starting();
 
     /// Checks or unchecks the action service.
-    UI_API virtual void setChecked(bool _checked);
+    UI_API virtual void set_checked(bool _checked);
 
     /// Sets the action service executable or not.
     [[nodiscard]] UI_API bool checked() const;
 
     /// Enables or disables the action service.
-    UI_API void setEnabled(bool _enabled);
+    UI_API void set_enabled(bool _enabled);
 
     /// Sets the action service executable or not.
     [[nodiscard]] UI_API bool enabled() const;
 
     /// Shows or hides the action.
-    UI_API void setVisible(bool _is_visible);
+    UI_API void set_visible(bool _is_visible);
 
     /// Shows the action.
     UI_API void show();
@@ -201,7 +201,7 @@ public:
      *
      * @return true if user click on 'true' button.
      */
-    UI_API bool confirmAction();
+    UI_API bool confirm_action();
 
 protected:
 
@@ -220,26 +220,26 @@ private:
     bool m_checked {false};
     bool m_enabled {true};
     bool m_visible {true};
-    bool m_confirmAction {false};
-    bool m_defaultButton {false};
-    std::string m_confirmMessage;
+    bool m_confirm_action {false};
+    bool m_default_button {false};
+    std::string m_confirm_message;
 };
 
 //-----------------------------------------------------------------------------
 
-class LockAction
+class lock_action
 {
 public:
 
-    LockAction(action::wptr _action) :
+    lock_action(action::wptr _action) :
         m_action(_action)
     {
-        m_action.lock()->setEnabled(false);
+        m_action.lock()->set_enabled(false);
     }
 
-    ~LockAction()
+    ~lock_action()
     {
-        m_action.lock()->setEnabled(true);
+        m_action.lock()->set_enabled(true);
     }
 
 private:

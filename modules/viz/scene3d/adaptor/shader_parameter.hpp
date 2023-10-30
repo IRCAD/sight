@@ -35,15 +35,15 @@ namespace sight::module::viz::scene3d::adaptor
  * Send parameters to vertex and fragment shaders
  *
  * @section Slots Slots
- *  - \b setBoolParameter(bool, std::string): Set the uniform from an integer value.
- *  - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): Set the uniform from a color value.
- *  - \b setIntParameter(int, std::string): Set the uniform from an integer value.
- *  - \b setInt2Parameter(int, int, std::string): Set the uniform from two integer values.
- *  - \b setInt3Parameter(int, int, int, std::string): Set the uniform from three integer values.
+ *  - \b set_bool_parameter(bool, std::string): Set the uniform from an integer value.
+ *  - \b set_color_parameter(std::array<std::uint8_t, 4>, std::string): Set the uniform from a color value.
+ *  - \b set_int_parameter(int, std::string): Set the uniform from an integer value.
+ *  - \b set_int2_parameter(int, int, std::string): Set the uniform from two integer values.
+ *  - \b set_int3_parameter(int, int, int, std::string): Set the uniform from three integer values.
  *  - \b setFloatParameter(float, std::string): Set the uniform from an float value.
- *  - \b setDoubleParameter(double, std::string): Set the uniform from an double value.
- *  - \b setDouble2Parameter(double, double, std::string): Set the uniform from two double values.
- *  - \b setDouble3Parameter(double, double, double, std::string): Set the uniform from three double values.
+ *  - \b set_double_parameter(double, std::string): Set the uniform from an double value.
+ *  - \b set_double2_parameter(double, double, std::string): Set the uniform from two double values.
+ *  - \b set_double3_parameter(double, double, double, std::string): Set the uniform from three double values.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -92,7 +92,7 @@ protected:
 private:
 
     /// Defines the material name.
-    std::string m_materialName;
+    std::string m_material_name;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

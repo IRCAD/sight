@@ -54,14 +54,14 @@ class VIZ_SCENE3D_CLASS_API plane
 {
 public:
 
-    using OrientationMode = data::helper::medical_image::orientation_t;
+    using orientation_mode = data::helper::medical_image::orientation_t;
 
     /// Defines the texture filtering mode.
     enum class filter_t : std::uint8_t
     {
-        NONE,
-        LINEAR,
-        ANISOTROPIC
+        none,
+        linear,
+        anisotropic
     };
 
     using sptr = std::shared_ptr<plane>;
@@ -96,7 +96,7 @@ public:
      * @param _enableTransparency used true to enable the opacity.
      */
     VIZ_SCENE3D_API void update(
-        OrientationMode _orientation,
+        orientation_mode _orientation,
         const Ogre::Vector3& _spacing,
         const Ogre::Vector3& _origin,
         bool _enable_transparency
@@ -108,7 +108,7 @@ public:
      *     - in 3D, it will also move the scene node in space.
      * @param _slicesIndex the image slices indexes.
      */
-    VIZ_SCENE3D_API void changeSlice(const std::array<float, 3>& _slices_index);
+    VIZ_SCENE3D_API void change_slice(const std::array<float, 3>& _slices_index);
 
     /**
      * @brief Sets the plane's opacity.
@@ -116,37 +116,37 @@ public:
      *
      * @pre _f must fit between 0 and 1.
      */
-    VIZ_SCENE3D_API void setEntityOpacity(float _f);
+    VIZ_SCENE3D_API void set_entity_opacity(float _f);
 
     /**
      * @brief Shows/hides the plane in the scene.
      * @param _visible use true to show the plane.
      */
-    VIZ_SCENE3D_API void setVisible(bool _visible);
+    VIZ_SCENE3D_API void set_visible(bool _visible);
 
     /**
      * @brief Adds or updates the texture containing the transfer function data in the negato passes.
      * @param _tfTexture the TF texture.
      */
-    VIZ_SCENE3D_API void setTFData(const viz::scene3d::transfer_function& _tf_texture);
+    VIZ_SCENE3D_API void set_tf_data(const viz::scene3d::transfer_function& _tf_texture);
 
     /// Gets the image axis orthogonal to the plane.
-    [[nodiscard]] VIZ_SCENE3D_API OrientationMode getOrientationMode() const;
+    [[nodiscard]] VIZ_SCENE3D_API orientation_mode get_orientation_mode() const;
 
     /// Gets the movable object created by this class.
-    [[nodiscard]] VIZ_SCENE3D_API const Ogre::MovableObject* getMovableObject() const;
+    [[nodiscard]] VIZ_SCENE3D_API const Ogre::MovableObject* get_movable_object() const;
 
     /**
      * @brief Sets the picking flags.
      * @param _flags the flags use for the picking.
      */
-    VIZ_SCENE3D_API void setQueryFlags(std::uint32_t _flags);
+    VIZ_SCENE3D_API void set_query_flags(std::uint32_t _flags);
 
     /// Sets this object's render queue group and render priority.
-    VIZ_SCENE3D_API void setRenderQueuerGroupAndPriority(std::uint8_t _group_id, std::uint16_t _priority);
+    VIZ_SCENE3D_API void set_render_queuer_group_and_priority(std::uint8_t _group_id, std::uint16_t _priority);
 
     /// Compute two cross lines that intersect at the given position, according to the plane orientation.
-    VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> computeCross(
+    VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> compute_cross(
         const Ogre::Vector3& _center,
         const Ogre::Vector3& _image_origin
     ) const;
@@ -154,12 +154,12 @@ public:
 private:
 
     /// Sets the plane's original position.
-    void updatePosition();
+    void update_position();
 
     /// Sets the dimensions for the related members, and also creates a movable plane to instantiate the entity.
-    Ogre::MovablePlane setDimensions(const Ogre::Vector3& _spacing);
+    Ogre::MovablePlane set_dimensions(const Ogre::Vector3& _spacing);
 
-    struct LineShape
+    struct line_shape
     {
         /// Contains the manual object that represent borders.
         Ogre::ManualObject* shape {nullptr};
@@ -172,57 +172,57 @@ private:
     };
 
     /// Optional border
-    LineShape m_border;
+    line_shape m_border;
 
     /// Lines representing the slices of the two other orthogonal planes
-    LineShape m_slicesCross;
+    line_shape m_slices_cross;
 
     /// Defines the filtering type for this plane.
-    filter_t m_filtering {filter_t::ANISOTROPIC};
+    filter_t m_filtering {filter_t::anisotropic};
 
     /// Defines the orientation mode of the plane.
-    OrientationMode m_orientation {OrientationMode::X_AXIS};
+    orientation_mode m_orientation {orientation_mode::x_axis};
 
     /// Contains the plane on which we will apply a texture.
-    Ogre::MeshPtr m_slicePlane;
+    Ogre::MeshPtr m_slice_plane;
 
     /// Defines the origin position of the slice plane according to the source image's origin.
     Ogre::Vector3 m_origin {Ogre::Vector3::ZERO};
 
     /// Contains the plane material.
-    Ogre::MaterialPtr m_texMaterial {nullptr};
+    Ogre::MaterialPtr m_tex_material {nullptr};
 
     /// Contains the texture.
     viz::scene3d::texture::sptr m_texture;
 
     /// Contains the scenemanager containing the plane.
-    Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_scene_manager {nullptr};
 
     /// Defines a strings needed to initialize mesh, scenenode, etc.
-    std::string m_slicePlaneName;
+    std::string m_slice_plane_name;
 
     /// Defines the entity name. used to recover this from the Ogre entityManager.
-    std::string m_entityName;
+    std::string m_entity_name;
 
     /// Defines the scene node name used to recover the scene node from it's name.
-    std::string m_sceneNodeName;
+    std::string m_scene_node_name;
 
     /// Contains the scene node on which we will attach the mesh.
-    Ogre::SceneNode* m_planeSceneNode {nullptr};
+    Ogre::SceneNode* m_plane_scene_node {nullptr};
 
     /// Contains the parent scene node.
-    Ogre::SceneNode* m_parentSceneNode {nullptr};
+    Ogre::SceneNode* m_parent_scene_node {nullptr};
 
     /// Defines the entity's size in the X,Y,Z axis.
     Ogre::Vector3 m_size {0.F};
 
     /// Defines the opacity applied to the entity.
-    float m_entityOpacity {1.F};
+    float m_entity_opacity {1.F};
 };
 
 //------------------------------------------------------------------------------
 
-inline plane::OrientationMode plane::getOrientationMode() const
+inline plane::orientation_mode plane::get_orientation_mode() const
 {
     return m_orientation;
 }

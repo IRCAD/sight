@@ -51,14 +51,14 @@ void quit::configuring()
 
 void quit::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //-----------------------------------------------------------------------------
 
 void quit::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------
@@ -73,9 +73,9 @@ void quit::info(std::ostream& _sstream)
 void quit::updating()
 {
     sight::ui::cursor cursor;
-    cursor.setCursor(sight::ui::cursor_base::BUSY);
+    cursor.set_cursor(sight::ui::cursor_base::busy);
     sight::ui::application::get()->exit(0);
-    cursor.setDefaultCursor();
+    cursor.set_default_cursor();
 }
 
 //-----------------------------------------------------------------------------

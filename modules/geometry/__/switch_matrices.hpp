@@ -75,10 +75,10 @@ public:
         default;
 
     MODULE_GEOMETRY_API static const core::com::slots::key_t SWITCH_SLOT;
-    typedef core::com::slot<void ()> switch_slot_t;
+    using switch_slot_t = core::com::slot<void ()>;
 
     MODULE_GEOMETRY_API static const core::com::slots::key_t SWITCH_TO_SLOT;
-    typedef core::com::slot<void (int)> switch_to_slot_t;
+    using switch_to_slot_t = core::com::slot<void (int)>;
 
 protected:
 
@@ -95,22 +95,22 @@ protected:
     MODULE_GEOMETRY_API void updating() override;
 
     /// Switch to next Matrix
-    MODULE_GEOMETRY_API void switchMatrix();
+    MODULE_GEOMETRY_API void switch_matrix();
 
     /// Switch to Matrix "index"
-    MODULE_GEOMETRY_API void switchToMatrix(int _index);
+    MODULE_GEOMETRY_API void switch_to_matrix(int _index);
 
     MODULE_GEOMETRY_API connections_t auto_connections() const override;
 
 private:
 
-    std::size_t m_indexOfDesiredMatrix {0};
+    std::size_t m_index_of_desired_matrix {0};
 
-    static constexpr std::string_view s_MATRIX_INPUT  = "matrix";
-    static constexpr std::string_view s_MATRIX_OUTPUT = "output";
+    static constexpr std::string_view MATRIX_INPUT  = "matrix";
+    static constexpr std::string_view MATRIX_OUTPUT = "output";
 
-    data::ptr_vector<data::matrix4, data::Access::in> m_matrix {this, s_MATRIX_INPUT, true};
-    data::ptr<data::matrix4, data::Access::inout> m_output {this, s_MATRIX_OUTPUT};
+    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT, true};
+    data::ptr<data::matrix4, data::access::inout> m_output {this, MATRIX_OUTPUT};
 };
 
 } //namespace sight::module::geometry

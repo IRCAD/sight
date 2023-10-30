@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,19 +26,19 @@
 namespace sight::io::dicom::helper::ut
 {
 
-class FiducialTest : public CPPUNIT_NS::TestFixture
+class fiducial_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(FiducialTest);
-CPPUNIT_TEST(containsLandmarksTest);
-CPPUNIT_TEST(containsDistancesTest);
-CPPUNIT_TEST(contains3DDistancesTest);
+CPPUNIT_TEST_SUITE(fiducial_test);
+CPPUNIT_TEST(contains_landmarks_test);
+CPPUNIT_TEST(contains_distances_test);
+CPPUNIT_TEST(contains_3d_distances_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void containsLandmarksTest();
-    static void containsDistancesTest();
-    static void contains3DDistancesTest();
+    static void contains_landmarks_test();
+    static void contains_distances_test();
+    static void contains_3d_distances_test();
 };
 
 } // namespace sight::io::dicom::helper::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,23 +26,23 @@
 namespace sight::io::dicom::helper::ut
 {
 
-class DicomCodedAttributeTest : public CPPUNIT_NS::TestFixture
+class dicom_coded_attribute_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DicomCodedAttributeTest);
-CPPUNIT_TEST(convertEntryToCodedAttributeTest);
-CPPUNIT_TEST(convertEntryToGdcmCodedAttributeTest);
-CPPUNIT_TEST(checkAndFormatEntryWithWrongValueTest);
-CPPUNIT_TEST(checkAndFormatEntryWithSingleValueTest);
-CPPUNIT_TEST(checkAndFormatEntryWithMultipleValuesTest);
+CPPUNIT_TEST_SUITE(dicom_coded_attribute_test);
+CPPUNIT_TEST(convert_entry_to_coded_attribute_test);
+CPPUNIT_TEST(convert_entry_to_gdcm_coded_attribute_test);
+CPPUNIT_TEST(check_and_format_entry_with_wrong_value_test);
+CPPUNIT_TEST(check_and_format_entry_with_single_value_test);
+CPPUNIT_TEST(check_and_format_entry_with_multiple_values_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void convertEntryToCodedAttributeTest();
-    static void convertEntryToGdcmCodedAttributeTest();
-    static void checkAndFormatEntryWithWrongValueTest();
-    static void checkAndFormatEntryWithSingleValueTest();
-    static void checkAndFormatEntryWithMultipleValuesTest();
+    static void convert_entry_to_coded_attribute_test();
+    static void convert_entry_to_gdcm_coded_attribute_test();
+    static void check_and_format_entry_with_wrong_value_test();
+    static void check_and_format_entry_with_single_value_test();
+    static void check_and_format_entry_with_multiple_values_test();
 };
 
 } // namespace sight::io::dicom::helper::ut

@@ -30,26 +30,26 @@ namespace sight::service
 
 notifier::notifier(core::com::signals& _signals) noexcept
 {
-    _signals(signals::NOTIFIED, M_NOTIFIED_SIG);
-    _signals(signals::NOTIFICATION_CLOSED, M_NOTIFICATION_CLOSED_SIG);
+    _signals(signals::NOTIFIED, m_notified_sig);
+    _signals(signals::NOTIFICATION_CLOSED, m_notification_closed_sig);
 }
 
 //------------------------------------------------------------------------------
 
-void notifier::notify(Notification _notification) const
+void notifier::notify(notification _notification) const
 {
     SIGHT_FATAL_IF("channel '" + _notification.channel + "' not found.", !m_channels.contains(_notification.channel));
     _notification.channel = m_channels.at(_notification.channel);
-    M_NOTIFIED_SIG->async_emit(std::move(_notification));
+    m_notified_sig->async_emit(std::move(_notification));
 }
 
 //------------------------------------------------------------------------------
 
-void notifier::closeNotification(std::string _channel) const
+void notifier::close_notification(std::string _channel) const
 {
     SIGHT_FATAL_IF("channel '" + _channel + "' not found.", !m_channels.contains(_channel));
     _channel = m_channels.at(_channel);
-    M_NOTIFICATION_CLOSED_SIG->async_emit(std::move(_channel));
+    m_notification_closed_sig->async_emit(std::move(_channel));
 }
 
 //------------------------------------------------------------------------------

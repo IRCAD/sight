@@ -55,29 +55,29 @@ namespace sight::io::bitmap
  * The performance should still be better than VTK or even OpenCV because of direct API calls and avoided unneeded
  * buffer copy.
  */
-class IO_BITMAP_CLASS_API Reader final : public io::reader::generic_object_reader<data::image>,
+class IO_BITMAP_CLASS_API reader final : public io::reader::generic_object_reader<data::image>,
                                          public core::location::single_file,
                                          public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        Reader,
+        reader,
         io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<Reader>
+        io::reader::factory::make<reader>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Delete default constructors and assignment operators
-    Reader(const Reader&)            = delete;
-    Reader(Reader&&)                 = delete;
-    Reader& operator=(const Reader&) = delete;
-    Reader& operator=(Reader&&)      = delete;
+    reader(const reader&)            = delete;
+    reader(reader&&)                 = delete;
+    reader& operator=(const reader&) = delete;
+    reader& operator=(reader&&)      = delete;
 
     /// Constructor/Destructor
-    IO_BITMAP_API Reader();
-    IO_BITMAP_API ~Reader() override;
+    IO_BITMAP_API reader();
+    IO_BITMAP_API ~reader() override;
 
     /// Main writing method from generic_object_reader
     IO_BITMAP_API void read() override;
@@ -87,7 +87,7 @@ public:
     ///      NVJPEG2K. DEFAULT is LIBTIFF and ANY will guess using the file extension. "*J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
-    IO_BITMAP_API void read(Backend _backend);
+    IO_BITMAP_API void read(backend _backend);
 
     /// Specialized writing method that allows to write to a ostream
     /// @arg ostream: the stream to write to. It is up to the user to open it.
@@ -97,7 +97,7 @@ public:
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API void read(
         std::istream& _istream,
-        Backend _backend = Backend::LIBTIFF
+        backend _backend = backend::libtiff
     );
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid

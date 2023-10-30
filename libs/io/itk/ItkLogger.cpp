@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,16 +30,16 @@
  * @brief Outputs ITK messages to the sight log.
  */
 // NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): used via pointers
-class ItkLogger : public ::itk::OutputWindow
+class itk_logger : public ::itk::OutputWindow
 {
 public:
 
-    using Self    = ItkLogger;
-    using Pointer = ::itk::SmartPointer<Self>;
+    using self_t    = itk_logger;
+    using pointer_t = ::itk::SmartPointer<self_t>;
 
     itkTypeMacro(ItkLogger, ::itk::Object);
 
-    static Pointer New();
+    static pointer_t New();
 
     void DisplayText(const char* _txt) override;
     void DisplayErrorText(const char* _txt) override;
@@ -48,62 +48,62 @@ public:
 
 private:
 
-    ItkLogger();
-    ~ItkLogger() override;
+    itk_logger();
+    ~itk_logger() override;
 };
 
 //------------------------------------------------------------------------------
 
-ItkLogger::Pointer ItkLogger::New()
+itk_logger::pointer_t itk_logger::New()
 {
-    return {new ItkLogger()};
+    return {new itk_logger()};
 }
 
 //------------------------------------------------------------------------------
 
-ItkLogger::ItkLogger()
+itk_logger::itk_logger()
 = default;
 
 //------------------------------------------------------------------------------
 
-ItkLogger::~ItkLogger()
+itk_logger::~itk_logger()
 = default;
 
 //------------------------------------------------------------------------------
 
-void ItkLogger::DisplayText(const char* _txt)
+void itk_logger::DisplayText(const char* _txt)
 {
     SIGHT_INFO("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
-void ItkLogger::DisplayErrorText(const char* _txt)
+void itk_logger::DisplayErrorText(const char* _txt)
 {
     SIGHT_ERROR("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
-void ItkLogger::DisplayWarningText(const char* _txt)
+void itk_logger::DisplayWarningText(const char* _txt)
 {
     SIGHT_WARN("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
-void ItkLogger::DisplayDebugText(const char* _txt)
+void itk_logger::DisplayDebugText(const char* _txt)
 {
     SIGHT_DEBUG("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
-struct LoggerInstantiator
+struct logger_instantiator
 {
-    LoggerInstantiator()
+    logger_instantiator()
     {
-        ItkLogger::Pointer logger = ItkLogger::New();
+        auto logger = itk_logger::New();
         ::itk::OutputWindow::SetInstance(logger);
         logger->Delete();
     }
@@ -111,4 +111,4 @@ struct LoggerInstantiator
 
 //------------------------------------------------------------------------------
 
-static LoggerInstantiator instantiator;
+static logger_instantiator instantiator;

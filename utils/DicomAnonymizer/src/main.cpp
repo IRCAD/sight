@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,8 +101,8 @@ int main(int argc, char** argv)
     }
 
     // Copy and anonymize
-    sight::io::dicom::helper::DicomAnonymizer::copyDirectory(input, output);
-    sight::io::dicom::helper::DicomAnonymizer anonymizer;
+    sight::io::dicom::helper::dicom_anonymizer::copy_directory(input, output);
+    sight::io::dicom::helper::dicom_anonymizer anonymizer;
     anonymizer.anonymize(output);
 
     return EXIT_SUCCESS;

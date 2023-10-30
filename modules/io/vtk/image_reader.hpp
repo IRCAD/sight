@@ -67,7 +67,7 @@ namespace sight::module::io::vtk
  * @subsection In-Out In-Out
  * - \b data [sight::data::image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the image to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
 class MODULE_IO_VTK_CLASS_API image_reader : public sight::io::service::reader
@@ -79,14 +79,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(image_reader, sight::io::service::reader);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Configure the image path with a dialogBox.
      *
      * This method is used to find the file path using a file selector.
      */
-    MODULE_IO_VTK_API void openLocationDialog() override;
+    MODULE_IO_VTK_API void open_location_dialog() override;
 
     /**
      * @brief Constructor. Do nothing.
@@ -99,7 +99,7 @@ public:
      * @param[out] image new empty image that will contain image loaded, if reading process is a success.
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
-    MODULE_IO_VTK_API static bool loadImage(
+    MODULE_IO_VTK_API static bool load_image(
         const std::filesystem::path& _vtk_file,
         std::shared_ptr<data::image> _img,
         const SPTR(job_created_signal_t)& _sig_job_created
@@ -107,7 +107,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
 
     /// Method called when the service is started, does nothing.
     MODULE_IO_VTK_API void starting() override;
@@ -132,9 +132,9 @@ protected:
 private:
 
     /// Image path, location of image on filesystem.
-    std::filesystem::path m_fsImgPath;
+    std::filesystem::path m_fs_img_path;
 
-    SPTR(job_created_signal_t) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

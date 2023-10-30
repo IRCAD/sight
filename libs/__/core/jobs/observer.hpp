@@ -41,8 +41,8 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef SPTR(core::jobs::observer) sptr;
-    typedef WPTR(core::jobs::observer) wptr;
+    using sptr = std::shared_ptr<core::jobs::observer>;
+    using wptr = std::weak_ptr<core::jobs::observer>;
 
     /// Progress callback type
     using progress_callback_t = std::function<void (std::uint64_t)>;
@@ -89,7 +89,7 @@ protected:
     CORE_API shared_future run_impl() override;
 
     /// Task type
-    typedef std::packaged_task<void ()> packaged_task;
+    using packaged_task = std::packaged_task<void ()>;
 
     /// Task observed
     packaged_task m_finish_task;

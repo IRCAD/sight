@@ -43,14 +43,14 @@ namespace sight::core::runtime::detail
 {
 
 #ifdef WIN32
-const std::regex runtime::s_match_module_path("share(?!.*share)\\\\.*");
+const std::regex runtime::MATCH_MODULE_PATH("share(?!.*share)\\\\.*");
 #else
-const std::regex runtime::s_match_module_path("share(?!.*share)/.*");
+const std::regex runtime::MATCH_MODULE_PATH("share(?!.*share)/.*");
 #endif
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<runtime> runtime::m_instance;
+std::shared_ptr<runtime> runtime::s_instance;
 
 //------------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ void runtime::add_modules(const std::filesystem::path& _repository)
             });
         const auto lib_repo_str = std::regex_replace(
             _repository.lexically_normal().string(),
-            s_match_module_path,
+            MATCH_MODULE_PATH,
             MODULE_LIB_PREFIX
         );
         m_repositories.emplace_back(
@@ -172,7 +172,7 @@ void runtime::add_modules(const std::filesystem::path& _repository)
 void runtime::add_executable_factory(std::shared_ptr<executable_factory> _factory)
 {
     // Ensures no registered factory has the same identifier
-    const std::string type(_factory->get_type());
+    const std::string type(_factory->type());
     if(this->find_executable_factory(type) != nullptr)
     {
         throw runtime_exception(type + ": type already used by an executable factory.");
@@ -187,7 +187,7 @@ void runtime::add_executable_factory(std::shared_ptr<executable_factory> _factor
 void runtime::unregister_executable_factory(std::shared_ptr<executable_factory> _factory)
 {
     // Ensures no registered factory has the same identifier.
-    const std::string type(_factory->get_type());
+    const std::string type(_factory->type());
     SIGHT_WARN_IF("ExecutableFactory Type " + type + " not found.", this->find_executable_factory(type) == nullptr);
 
     // Removes the executable factory.
@@ -200,9 +200,9 @@ std::shared_ptr<executable_factory> runtime::find_executable_factory(const std::
 {
     const std::string type = filter_id(_type);
     std::shared_ptr<executable_factory> res_factory;
-    for(const executable_factory_container::value_type& factory : m_executable_factories)
+    for(const auto& factory : m_executable_factories)
     {
-        if(factory->get_type() == type && factory->enabled())
+        if(factory->type() == type && factory->enabled())
         {
             res_factory = factory;
             break;
@@ -335,12 +335,12 @@ std::shared_ptr<core::runtime::module> runtime::find_enabled_module(const std::s
 
 runtime& runtime::get()
 {
-    if(m_instance == nullptr)
+    if(s_instance == nullptr)
     {
-        m_instance = std::make_shared<runtime>();
+        s_instance = std::make_shared<runtime>();
     }
 
-    auto* runtime = m_instance.get();
+    auto* runtime = s_instance.get();
     return *runtime;
 }
 
@@ -350,7 +350,7 @@ std::shared_ptr<core::runtime::extension> runtime::find_extension(const std::str
 {
     const std::string id = filter_id(_identifier);
     std::shared_ptr<core::runtime::extension> res_extension;
-    for(const extension_container::value_type& extension : m_extensions)
+    for(const auto& extension : m_extensions)
     {
         if(extension->identifier() == id && extension->enabled())
         {
@@ -391,7 +391,7 @@ std::shared_ptr<extension_point> runtime::find_extension_point(const std::string
 {
     const std::string id = filter_id(_identifier);
     std::shared_ptr<extension_point> res_extension_point;
-    for(const extension_point_container::value_type& extension_point : m_extension_points)
+    for(const auto& extension_point : m_extension_points)
     {
         if(extension_point->identifier() == id && extension_point->enabled())
         {

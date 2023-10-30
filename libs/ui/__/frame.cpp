@@ -47,17 +47,17 @@ const core::com::slots::key_t frame::HIDE_SLOT        = "hide";
 
 const core::com::signals::key_t frame::CLOSED_SIG = "closed";
 
-ui::container::widget::wptr frame::m_progressWidget = std::weak_ptr<ui::container::widget>();
+ui::container::widget::wptr frame::s_progress_widget = std::weak_ptr<ui::container::widget>();
 
 //-----------------------------------------------------------------------------
 
 frame::frame() :
 
-    m_closePolicy("exit")
+    m_close_policy("exit")
 {
-    m_sigClosed = new_signal<closed_signal_t>(CLOSED_SIG);
+    m_sig_closed = new_signal<closed_signal_t>(CLOSED_SIG);
 
-    new_slot(SET_VISIBLE_SLOT, &frame::setVisible, this);
+    new_slot(SET_VISIBLE_SLOT, &frame::set_visible, this);
     new_slot(SHOW_SLOT, &frame::show, this);
     new_slot(HIDE_SLOT, &frame::hide, this);
 }
@@ -66,44 +66,44 @@ frame::frame() :
 
 void frame::initialize()
 {
-    m_viewRegistry = ui::detail::registry::view::make(this->get_id());
+    m_view_registry = ui::detail::registry::view::make(this->get_id());
 
     const auto config = this->get_config();
     const auto gui    = config.get_child_optional("gui");
 
     if(gui.has_value())
     {
-        this->initializeLayoutManager(gui->get_child("frame"));
+        this->initialize_layout_manager(gui->get_child("frame"));
 
-        if(const auto menu_bar = gui->get_child_optional("menuBar"); menu_bar.has_value())
+        if(const auto menu_bar = gui->get_child_optional("menubar"); menu_bar.has_value())
         {
-            this->initializeMenuBarBuilder(menu_bar.value());
+            this->initialize_menu_bar_builder(menu_bar.value());
 
-            m_hasMenuBar = true;
+            m_has_menu_bar = true;
         }
 
-        if(const auto tool_bar = gui->get_child_optional("toolBar"); tool_bar.has_value())
+        if(const auto tool_bar = gui->get_child_optional("toolbar"); tool_bar.has_value())
         {
-            this->initializeToolBarBuilder(tool_bar.value());
+            this->initialize_tool_bar_builder(tool_bar.value());
 
-            m_hasToolBar = true;
+            m_has_tool_bar = true;
         }
 
         // find ViewRegistryManager configuration
         if(const auto registry = config.get_child_optional("registry"); registry.has_value())
         {
-            m_viewRegistry->initialize(registry.value());
+            m_view_registry->initialize(registry.value());
         }
     }
 
     if(const auto onclose = config.get<std::string>("window.<xmlattr>.onclose", ""); !onclose.empty())
     {
-        m_closePolicy = onclose;
+        m_close_policy = onclose;
         SIGHT_ASSERT(
-            "[" + this->get_id() + "' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
+            "[" + this->get_id() + "' ] Invalid onclose value, actual: '" << m_close_policy << "', accepted: '"
             + CLOSE_POLICY_NOTIFY + "', '" + CLOSE_POLICY_EXIT + "' or '" + CLOSE_POLICY_MESSAGE + "'",
-            m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
-            || m_closePolicy == CLOSE_POLICY_MESSAGE
+            m_close_policy == CLOSE_POLICY_NOTIFY || m_close_policy == CLOSE_POLICY_EXIT
+            || m_close_policy == CLOSE_POLICY_MESSAGE
         );
     }
 }
@@ -115,71 +115,71 @@ void frame::create()
     SIGHT_ASSERT(
         "[" + this->get_id() + "' ] frame must be initialized, don't forget to call 'initialize()' in "
                                "'configuring()' method.",
-        m_frameLayoutManager
+        m_frame_layout_manager
     );
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_frameLayoutManager->createFrame();
+            m_frame_layout_manager->create_frame();
         })
     ).wait();
 
-    ui::container::widget::sptr frame = m_frameLayoutManager->getFrame();
-    if(m_progressWidget.expired())
+    ui::container::widget::sptr frame = m_frame_layout_manager->get_frame();
+    if(s_progress_widget.expired())
     {
-        m_progressWidget = frame;
+        s_progress_widget = frame;
     }
 
-    ui::container::widget::sptr container = m_frameLayoutManager->getContainer();
+    ui::container::widget::sptr container = m_frame_layout_manager->get_container();
     std::vector<ui::container::widget::sptr> sub_views;
     sub_views.push_back(container);
-    m_viewRegistry->manage(sub_views);
+    m_view_registry->manage(sub_views);
 
     ui::layout::frame_manager::CloseCallback fct;
 
-    if(m_closePolicy == CLOSE_POLICY_EXIT)
+    if(m_close_policy == CLOSE_POLICY_EXIT)
     {
-        fct = onCloseExit;
+        fct = on_close_exit;
     }
-    else if(m_closePolicy == CLOSE_POLICY_NOTIFY)
+    else if(m_close_policy == CLOSE_POLICY_NOTIFY)
     {
-        fct = [this](auto&& ...){onCloseNotify();};
+        fct = [this](auto&& ...){on_close_notify();};
     }
-    else if(m_closePolicy == CLOSE_POLICY_MESSAGE)
+    else if(m_close_policy == CLOSE_POLICY_MESSAGE)
     {
-        fct = onCloseMessage;
+        fct = on_close_message;
         auto app = sight::ui::application::get();
-        app->setConfirm(true);
+        app->set_confirm(true);
     }
 
-    m_frameLayoutManager->setCloseCallback(fct);
+    m_frame_layout_manager->set_close_callback(fct);
 
-    if(m_hasMenuBar)
+    if(m_has_menu_bar)
     {
         core::thread::get_default_worker()->post_task<void>(
             std::function<void()>(
                 [&]
             {
-                m_menuBarBuilder->createMenuBar(frame);
+                m_menu_bar_builder->create_menu_bar(frame);
             })
         ).wait();
 
-        m_viewRegistry->manageMenuBar(m_menuBarBuilder->getMenuBar());
+        m_view_registry->manage_menu_bar(m_menu_bar_builder->get_menu_bar());
     }
 
-    if(m_hasToolBar)
+    if(m_has_tool_bar)
     {
         core::thread::get_default_worker()->post_task<void>(
             std::function<void()>(
                 [&]
             {
-                m_toolBarBuilder->createToolBar(frame);
+                m_tool_bar_builder->create_tool_bar(frame);
             })
         ).wait();
 
-        m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
+        m_view_registry->manage_tool_bar(m_tool_bar_builder->get_tool_bar());
     }
 }
 
@@ -187,109 +187,109 @@ void frame::create()
 
 void frame::destroy()
 {
-    SIGHT_ASSERT("view must be initialized.", m_viewRegistry);
+    SIGHT_ASSERT("view must be initialized.", m_view_registry);
 
-    if(m_hasToolBar)
+    if(m_has_tool_bar)
     {
-        m_viewRegistry->unmanageToolBar();
-        SIGHT_ASSERT("toolbar must be initialized.", m_toolBarBuilder);
+        m_view_registry->unmanage_tool_bar();
+        SIGHT_ASSERT("toolbar must be initialized.", m_tool_bar_builder);
 
         core::thread::get_default_worker()->post_task<void>(
             std::function<void()>(
                 [&]
             {
-                m_toolBarBuilder->destroyToolBar();
+                m_tool_bar_builder->destroy_tool_bar();
             })
         ).wait();
     }
 
-    if(m_hasMenuBar)
+    if(m_has_menu_bar)
     {
-        m_viewRegistry->unmanageMenuBar();
-        SIGHT_ASSERT("menubar must be initialized.", m_menuBarBuilder);
+        m_view_registry->unmanage_menu_bar();
+        SIGHT_ASSERT("menubar must be initialized.", m_menu_bar_builder);
 
         core::thread::get_default_worker()->post_task<void>(
             std::function<void()>(
                 [&]
             {
-                m_menuBarBuilder->destroyMenuBar();
+                m_menu_bar_builder->destroy_menu_bar();
             })
         ).wait();
     }
 
-    m_viewRegistry->unmanage();
-    SIGHT_ASSERT("frame must be initialized.", m_frameLayoutManager);
+    m_view_registry->unmanage();
+    SIGHT_ASSERT("frame must be initialized.", m_frame_layout_manager);
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_frameLayoutManager->destroyFrame();
+            m_frame_layout_manager->destroy_frame();
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::initializeLayoutManager(const ui::config_t& _layout_config)
+void frame::initialize_layout_manager(const ui::config_t& _layout_config)
 {
     ui::object::sptr gui_obj = ui::factory::make(
         ui::layout::frame_manager::REGISTRY_KEY
     );
-    m_frameLayoutManager = std::dynamic_pointer_cast<ui::layout::frame_manager>(gui_obj);
+    m_frame_layout_manager = std::dynamic_pointer_cast<ui::layout::frame_manager>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::layout::frame_manager::REGISTRY_KEY,
-        m_frameLayoutManager
+        m_frame_layout_manager
     );
 
-    m_frameLayoutManager->initialize(_layout_config);
+    m_frame_layout_manager->initialize(_layout_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::initializeMenuBarBuilder(const ui::config_t& _menu_bar_config)
+void frame::initialize_menu_bar_builder(const ui::config_t& _menu_bar_config)
 {
     ui::object::sptr gui_obj = ui::factory::make(ui::builder::menubar::REGISTRY_KEY);
-    m_menuBarBuilder = std::dynamic_pointer_cast<ui::builder::menubar>(gui_obj);
+    m_menu_bar_builder = std::dynamic_pointer_cast<ui::builder::menubar>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::builder::menubar::REGISTRY_KEY,
-        m_menuBarBuilder
+        m_menu_bar_builder
     );
 
-    m_menuBarBuilder->initialize(_menu_bar_config);
+    m_menu_bar_builder->initialize(_menu_bar_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::initializeToolBarBuilder(const ui::config_t& _tool_bar_config)
+void frame::initialize_tool_bar_builder(const ui::config_t& _tool_bar_config)
 {
     ui::object::sptr gui_obj = ui::factory::make(ui::builder::toolbar::REGISTRY_KEY);
-    m_toolBarBuilder = std::dynamic_pointer_cast<ui::builder::toolbar>(gui_obj);
+    m_tool_bar_builder = std::dynamic_pointer_cast<ui::builder::toolbar>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::builder::toolbar::REGISTRY_KEY,
-        m_toolBarBuilder
+        m_tool_bar_builder
     );
 
-    m_toolBarBuilder->initialize(_tool_bar_config);
+    m_tool_bar_builder->initialize(_tool_bar_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::onCloseExit()
+void frame::on_close_exit()
 {
     sight::ui::application::get()->exit(0);
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::onCloseNotify()
+void frame::on_close_notify()
 {
-    m_sigClosed->async_emit();
+    m_sig_closed->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::onCloseMessage()
+void frame::on_close_message()
 {
     auto app = sight::ui::application::get();
     app->exit(0);
@@ -297,31 +297,31 @@ void frame::onCloseMessage()
 
 //-----------------------------------------------------------------------------
 
-ui::container::widget::sptr frame::getProgressWidget()
+ui::container::widget::sptr frame::get_progress_widget()
 {
-    return m_progressWidget.lock();
+    return s_progress_widget.lock();
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::setVisible(bool _is_visible)
+void frame::set_visible(bool _is_visible)
 {
-    ui::container::widget::sptr container = m_frameLayoutManager->getFrame();
-    container->setVisible(_is_visible);
+    ui::container::widget::sptr container = m_frame_layout_manager->get_frame();
+    container->set_visible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
 void frame::show()
 {
-    this->setVisible(true);
+    this->set_visible(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void frame::hide()
 {
-    this->setVisible(false);
+    this->set_visible(false);
 }
 
 //-----------------------------------------------------------------------------

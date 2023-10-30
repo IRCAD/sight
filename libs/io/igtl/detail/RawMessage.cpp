@@ -30,7 +30,7 @@
 namespace sight::io::igtl::detail
 {
 
-RawMessage::RawMessage(std::string const& _body_type)
+raw_message::raw_message(std::string const& _body_type)
 {
 #if defined(OpenIGTLink_HEADER_VERSION)
     m_SendMessageType    = _body_type;
@@ -42,54 +42,54 @@ RawMessage::RawMessage(std::string const& _body_type)
 
 //-----------------------------------------------------------------------------
 
-RawMessage::~RawMessage()
+raw_message::~raw_message()
 = default;
 
 //-----------------------------------------------------------------------------
 
-void RawMessage::append(const raw_data_t& _msg)
+void raw_message::append(const raw_data_t& _msg)
 {
     m_msg.insert(m_msg.end(), _msg.begin(), _msg.end());
 }
 
 //-----------------------------------------------------------------------------
 
-void RawMessage::append(const char* _data, std::size_t _size)
+void raw_message::append(const char* _data, std::size_t _size)
 {
     m_msg.insert(m_msg.end(), _data, _data + _size);
 }
 
 //-----------------------------------------------------------------------------
 
-RawMessage::Pointer RawMessage::New(std::string const& _body_type)
+raw_message::Pointer raw_message::New(std::string const& _body_type)
 {
-    return {new RawMessage(_body_type)};
+    return {new raw_message(_body_type)};
 }
 
 //-----------------------------------------------------------------------------
 
-RawMessage::raw_data_t const& RawMessage::getMessage() const
-{
-    return m_msg;
-}
-
-//-----------------------------------------------------------------------------
-
-RawMessage::raw_data_t& RawMessage::getMessage()
+raw_message::raw_data_t const& raw_message::get_message() const
 {
     return m_msg;
 }
 
 //-----------------------------------------------------------------------------
 
-int RawMessage::GetBodyPackSize()
+raw_message::raw_data_t& raw_message::get_message()
+{
+    return m_msg;
+}
+
+//-----------------------------------------------------------------------------
+
+int raw_message::GetBodyPackSize()
 {
     return boost::numeric_cast<int>(sizeof(uint32_t) + m_msg.size());
 }
 
 //-----------------------------------------------------------------------------
 
-int RawMessage::PackBody()
+int raw_message::PackBody()
 {
     uint32_t* size = nullptr;
     char* str      = nullptr;
@@ -108,7 +108,7 @@ int RawMessage::PackBody()
 
 //-----------------------------------------------------------------------------
 
-int RawMessage::UnpackBody()
+int raw_message::UnpackBody()
 {
     uint32_t* size = nullptr;
     char* str      = nullptr;

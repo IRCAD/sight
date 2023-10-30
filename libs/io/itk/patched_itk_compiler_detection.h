@@ -1,4 +1,4 @@
-
+// NOLINTBEGIN
 // This is a generated file. Do not edit!
 
 #ifndef ITK_COMPILER_DETECTION_H
@@ -292,3 +292,5 @@ template<> struct ITKStaticAssert<true>{};
 #endif
 
 #endif
+
+// NOLINTEND

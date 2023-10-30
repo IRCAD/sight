@@ -33,18 +33,18 @@
 namespace sight::io::session::detail::reconstruction
 {
 
-constexpr static auto s_IsVisible {"IsVisible"};
-constexpr static auto s_OrganName {"OrganName"};
-constexpr static auto s_StructureType {"structure_t"};
-constexpr static auto s_Material {"Material"};
-constexpr static auto s_Image {"image"};
-constexpr static auto s_Mesh {"Mesh"};
-constexpr static auto s_ComputedMaskVolume {"ComputedMaskVolume"};
+constexpr static auto IS_VISIBLE {"IsVisible"};
+constexpr static auto ORGAN_NAME {"OrganName"};
+constexpr static auto STRUCTURE_TYPE {"structure_t"};
+constexpr static auto MATERIAL {"Material"};
+constexpr static auto IMAGE {"image"};
+constexpr static auto MESH {"Mesh"};
+constexpr static auto COMPUTED_MASK_VOLUME {"ComputedMaskVolume"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -57,21 +57,21 @@ inline static void write(
     helper::write_version<data::reconstruction>(_tree, 1);
 
     // Serialize attributes
-    _tree.put(s_IsVisible, reconstruction->getIsVisible());
-    helper::write_string(_tree, s_OrganName, reconstruction->getOrganName());
-    helper::write_string(_tree, s_StructureType, reconstruction->get_structure_type());
+    _tree.put(IS_VISIBLE, reconstruction->get_is_visible());
+    helper::write_string(_tree, ORGAN_NAME, reconstruction->get_organ_name());
+    helper::write_string(_tree, STRUCTURE_TYPE, reconstruction->get_structure_type());
 
-    _children[s_Material] = reconstruction->getMaterial();
-    _children[s_Image]    = reconstruction->getImage();
-    _children[s_Mesh]     = reconstruction->getMesh();
+    _children[MATERIAL] = reconstruction->get_material();
+    _children[IMAGE]    = reconstruction->get_image();
+    _children[MESH]     = reconstruction->get_mesh();
 
-    _tree.put(s_ComputedMaskVolume, reconstruction->getComputedMaskVolume());
+    _tree.put(COMPUTED_MASK_VOLUME, reconstruction->get_computed_mask_volume());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::reconstruction::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -85,15 +85,15 @@ inline static data::reconstruction::sptr read(
     helper::read_version<data::reconstruction>(_tree, 0, 1);
 
     // Deserialize attributes
-    reconstruction->setIsVisible(_tree.get<bool>(s_IsVisible));
-    reconstruction->setOrganName(helper::read_string(_tree, s_OrganName));
-    reconstruction->set_structure_type(helper::read_string(_tree, s_StructureType));
+    reconstruction->set_is_visible(_tree.get<bool>(IS_VISIBLE));
+    reconstruction->set_organ_name(helper::read_string(_tree, ORGAN_NAME));
+    reconstruction->set_structure_type(helper::read_string(_tree, STRUCTURE_TYPE));
 
-    reconstruction->setMaterial(std::dynamic_pointer_cast<data::material>(_children.at(s_Material)));
-    reconstruction->setImage(std::dynamic_pointer_cast<data::image>(_children.at(s_Image)));
-    reconstruction->setMesh(std::dynamic_pointer_cast<data::mesh>(_children.at(s_Mesh)));
+    reconstruction->set_material(std::dynamic_pointer_cast<data::material>(_children.at(MATERIAL)));
+    reconstruction->set_image(std::dynamic_pointer_cast<data::image>(_children.at(IMAGE)));
+    reconstruction->set_mesh(std::dynamic_pointer_cast<data::mesh>(_children.at(MESH)));
 
-    reconstruction->setComputedMaskVolume(_tree.get<double>(s_ComputedMaskVolume));
+    reconstruction->set_computed_mask_volume(_tree.get<double>(COMPUTED_MASK_VOLUME));
 
     return reconstruction;
 }

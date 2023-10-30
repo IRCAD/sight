@@ -32,21 +32,21 @@ class UI_CLASS_API message_dummy : public message_base
 {
 public:
 
-    UI_API void setTitle(const std::string& _title) override;
-    UI_API void setMessage(const std::string& _msg) override;
-    UI_API void setIcon(Icons _icon) override;
-    UI_API void addButton(Buttons _button) override;
-    UI_API void setDefaultButton(Buttons _button) override;
-    UI_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
+    UI_API void set_title(const std::string& _title) override;
+    UI_API void set_message(const std::string& _msg) override;
+    UI_API void set_icon(icons _icon) override;
+    UI_API void add_button(buttons _button) override;
+    UI_API void set_default_button(buttons _button) override;
+    UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
-    UI_API Buttons show() override;
+    UI_API buttons show() override;
 
-    UI_API static void pushAction(Buttons _action);
+    UI_API static void push_action(buttons _action);
     UI_API static bool clear();
 
 private:
 
-    static std::queue<Buttons> actions;
+    static std::queue<buttons> s_actions;
 };
 
 }

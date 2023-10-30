@@ -47,7 +47,7 @@ public:
      * @param _modelSeries Model series where the mesh must be added.
      * @param _rec Reconstruction that must be added
      */
-    DATA_API static void addReconstruction(
+    DATA_API static void add_reconstruction(
         const data::model_series::sptr& _model_series,
         const data::reconstruction::sptr& _rec
     );
@@ -62,12 +62,12 @@ public:
      * @param _visible Visibility flag of the reconstruction.
      * @return Output reconstruction.
      */
-    DATA_API static data::reconstruction::sptr createReconstructionFromMesh(
+    DATA_API static data::reconstruction::sptr create_reconstruction_from_mesh(
         const data::mesh::sptr& _mesh,
         const std::string& _organ_name,
         const std::string& _structure_type,
         const data::color::sptr& _color        = std::make_shared<data::color>(),
-        data::material::representation_t _mode = data::material::SURFACE,
+        data::material::representation_t _mode = data::material::surface,
         bool _visible                          = true
     );
 
@@ -81,13 +81,13 @@ public:
      * @param _mode Representation mode of the material of the reconstruction.
      * @param _visible Visibility flag of the reconstruction.
      */
-    DATA_API static void addMesh(
+    DATA_API static void add_mesh(
         const data::model_series::sptr& _model_series,
         const data::mesh::sptr& _mesh,
         const std::string& _organ_name,
         const std::string& _structure_type,
         const data::color::sptr& _color        = std::make_shared<data::color>(),
-        data::material::representation_t _mode = data::material::SURFACE,
+        data::material::representation_t _mode = data::material::surface,
         bool _visible                          = true
     );
 };

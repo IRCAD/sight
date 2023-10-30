@@ -48,7 +48,7 @@ void transfer_function_opacity::configuring()
 void transfer_function_opacity::starting()
 {
     this->create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -56,9 +56,9 @@ void transfer_function_opacity::starting()
     m_slider->setRange(1, 100);
 
     layout->addWidget(m_slider, 0);
-    QObject::connect(m_slider, &QSlider::valueChanged, this, &transfer_function_opacity::changeOpacity);
+    QObject::connect(m_slider, &QSlider::valueChanged, this, &transfer_function_opacity::change_opacity);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
     this->updating();
 }
@@ -105,14 +105,14 @@ void transfer_function_opacity::updating()
 
 void transfer_function_opacity::stopping()
 {
-    QObject::disconnect(m_slider, &QSlider::valueChanged, this, &transfer_function_opacity::changeOpacity);
+    QObject::disconnect(m_slider, &QSlider::valueChanged, this, &transfer_function_opacity::change_opacity);
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void transfer_function_opacity::changeOpacity(int _value)
+void transfer_function_opacity::change_opacity(int _value)
 {
     const auto tf      = m_tf.lock();
     const auto& pieces = tf->pieces();
@@ -152,9 +152,9 @@ void transfer_function_opacity::changeOpacity(int _value)
 service::connections_t transfer_function_opacity::auto_connections() const
 {
     return {
-        {s_TF, data::transfer_function::MODIFIED_SIG, service::slots::UPDATE},
-        {s_TF, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE},
-        {s_TF, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE}
+        {TF, data::transfer_function::MODIFIED_SIG, service::slots::UPDATE},
+        {TF, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE},
+        {TF, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

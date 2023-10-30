@@ -102,9 +102,9 @@ using rgba = data::iterator::rgba;
 
 } // namespace point
 
-typedef std::uint32_t cell_t;
-typedef std::uint32_t point_t;
-typedef std::uint32_t Size;
+using cell_t  = std::uint32_t;
+using point_t = std::uint32_t;
+using size_t  = std::uint32_t;
 
 namespace cell
 {

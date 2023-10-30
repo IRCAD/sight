@@ -33,7 +33,7 @@ namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 
-double normalize(fwVec3d& _vec)
+double normalize(fw_vec3d& _vec)
 {
     const glm::dvec3 vec_glm        = glm::make_vec3<double>(_vec.data());
     const double length             = vec_length(_vec);
@@ -46,16 +46,16 @@ double normalize(fwVec3d& _vec)
 
 //------------------------------------------------------------------------------
 
-fwVec3d normalized(const fwVec3d& _vec)
+fw_vec3d normalized(const fw_vec3d& _vec)
 {
-    fwVec3d normalized = _vec;
+    fw_vec3d normalized = _vec;
     normalize(normalized);
     return normalized;
 }
 
 //------------------------------------------------------------------------------
 
-double dot(const fwVec3d& _v1, const fwVec3d& _v2)
+double dot(const fw_vec3d& _v1, const fw_vec3d& _v2)
 {
     // Using GLM here is slower, especially in debug, so keep it simple
     return _v1[0] * _v2[0] + _v1[1] * _v2[1] + _v1[2] * _v2[2];
@@ -63,7 +63,7 @@ double dot(const fwVec3d& _v1, const fwVec3d& _v2)
 
 //------------------------------------------------------------------------------
 
-fwVec3d cross(const fwVec3d& _v1, const fwVec3d& _v2)
+fw_vec3d cross(const fw_vec3d& _v1, const fw_vec3d& _v2)
 {
     const glm::dvec3 vec_glm1 = glm::make_vec3<double>(_v1.data());
     const glm::dvec3 vec_glm2 = glm::make_vec3<double>(_v2.data());
@@ -75,7 +75,7 @@ fwVec3d cross(const fwVec3d& _v1, const fwVec3d& _v2)
 
 //------------------------------------------------------------------------------
 
-double vec_length(const fwVec3d& _vec)
+double vec_length(const fw_vec3d& _vec)
 {
     glm::dvec3 vec_glm(_vec[0], _vec[1], _vec[2]);
     return glm::length(vec_glm);
@@ -83,7 +83,7 @@ double vec_length(const fwVec3d& _vec)
 
 //------------------------------------------------------------------------------
 
-void negate(fwVec3d& _vec)
+void negate(fw_vec3d& _vec)
 {
     _vec[0] = -_vec[0];
     _vec[1] = -_vec[1];
@@ -94,7 +94,7 @@ void negate(fwVec3d& _vec)
 
 //------------------------------------------------------------------------------
 
-fwVec3d& operator*=(fwVec3d& _vec1, double _val)
+fw_vec3d& operator*=(fw_vec3d& _vec1, double _val)
 {
     glm::dvec3 vec_glm1(_vec1[0], _vec1[1], _vec1[2]);
     vec_glm1 *= _val;
@@ -105,7 +105,7 @@ fwVec3d& operator*=(fwVec3d& _vec1, double _val)
 
 //------------------------------------------------------------------------------
 
-fwVec3d& operator/=(fwVec3d& _vec, double _val)
+fw_vec3d& operator/=(fw_vec3d& _vec, double _val)
 {
     SIGHT_THROW_IF("Division by 0 not possible.", _val == 0.0);
 
@@ -118,7 +118,7 @@ fwVec3d& operator/=(fwVec3d& _vec, double _val)
 
 //------------------------------------------------------------------------------
 
-fwVec3d& operator+=(fwVec3d& _vec1, const fwVec3d& _vec2)
+fw_vec3d& operator+=(fw_vec3d& _vec1, const fw_vec3d& _vec2)
 {
     glm::dvec3 vec_glm1 = glm::make_vec3<double>(_vec1.data());
     glm::dvec3 vec_glm2 = glm::make_vec3<double>(_vec2.data());
@@ -130,7 +130,7 @@ fwVec3d& operator+=(fwVec3d& _vec1, const fwVec3d& _vec2)
 
 //------------------------------------------------------------------------------
 
-fwVec3d& operator-=(fwVec3d& _vec1, const fwVec3d& _vec2)
+fw_vec3d& operator-=(fw_vec3d& _vec1, const fw_vec3d& _vec2)
 {
     glm::dvec3 vec_glm1 = glm::make_vec3<double>(_vec1.data());
     glm::dvec3 vec_glm2 = glm::make_vec3<double>(_vec2.data());
@@ -142,7 +142,7 @@ fwVec3d& operator-=(fwVec3d& _vec1, const fwVec3d& _vec2)
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator*(const fwVec3d& _vec, double _val)
+fw_vec3d operator*(const fw_vec3d& _vec, double _val)
 {
     glm::dvec3 vec_glm1(_vec[0], _vec[1], _vec[2]);
     glm::dvec3 vec_glm = vec_glm1 * _val;
@@ -152,14 +152,14 @@ fwVec3d operator*(const fwVec3d& _vec, double _val)
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator*(const double _val, const fwVec3d& _vec)
+fw_vec3d operator*(const double _val, const fw_vec3d& _vec)
 {
     return _vec * _val;
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator/(const fwVec3d& _vec, double _val)
+fw_vec3d operator/(const fw_vec3d& _vec, double _val)
 {
     SIGHT_THROW_IF("Division by 0 not possible.", _val == 0.0);
 
@@ -171,7 +171,7 @@ fwVec3d operator/(const fwVec3d& _vec, double _val)
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator+(const fwVec3d& _vec1, const fwVec3d& _vec2)
+fw_vec3d operator+(const fw_vec3d& _vec1, const fw_vec3d& _vec2)
 {
     const glm::dvec3 vec_glm1 = glm::make_vec3<double>(_vec1.data());
     const glm::dvec3 vec_glm2 = glm::make_vec3<double>(_vec2.data());
@@ -182,7 +182,7 @@ fwVec3d operator+(const fwVec3d& _vec1, const fwVec3d& _vec2)
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2)
+fw_vec3d operator-(const fw_vec3d& _vec1, const fw_vec3d& _vec2)
 {
     const glm::dvec3 vec_glm1 = glm::make_vec3<double>(_vec1.data());
     const glm::dvec3 vec_glm2 = glm::make_vec3<double>(_vec2.data());
@@ -193,7 +193,7 @@ fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2)
 
 //------------------------------------------------------------------------------
 
-bool operator==(const fwVec3d& _vec1, const fwVec3d& _vec2)
+bool operator==(const fw_vec3d& _vec1, const fw_vec3d& _vec2)
 {
     const glm::dvec3 vec_glm1 = glm::make_vec3<double>(_vec1.data());
     const glm::dvec3 vec_glm2 = glm::make_vec3<double>(_vec2.data());
@@ -204,7 +204,7 @@ bool operator==(const fwVec3d& _vec1, const fwVec3d& _vec2)
 
 //------------------------------------------------------------------------------
 
-bool operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2)
+bool operator!=(const fw_vec3d& _vec1, const fw_vec3d& _vec2)
 {
     return !(_vec1 == _vec2);
 }

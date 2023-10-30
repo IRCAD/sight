@@ -38,16 +38,16 @@ Q_OBJECT
 
 public:
 
-    class Paintable
+    class paintable
     {
     public:
 
-        Paintable(QWidget* _w) :
+        paintable(QWidget* _w) :
             m_widget(_w)
         {
         }
 
-        virtual ~Paintable()
+        virtual ~paintable()
         = default;
 
         virtual void draw(QPainter&, bool _enabled           = true) = 0;
@@ -57,7 +57,7 @@ public:
 
         //------------------------------------------------------------------------------
 
-        [[nodiscard]] QSize drawingArea() const
+        [[nodiscard]] QSize drawing_area() const
         {
             return m_widget->size();
         }
@@ -77,24 +77,24 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setMinimumMinMaxDelta(double _d)
+    void set_minimum_min_max_delta(double _d)
     {
-        m_minimumMinMaxDelta = _d;
+        m_minimum_min_max_delta = _d;
     }
 
 public Q_SLOTS:
 
-    UI_QT_API_QT void setPos(double _min, double _max);
+    UI_QT_API_QT void set_pos(double _min, double _max);
 
 Q_SIGNALS:
 
-    void sliderRangeChanged(double _min, double _max);
-    void sliderRangeEdited(double _min, double _max);
+    void slider_range_changed(double _min, double _max);
+    void slider_range_edited(double _min, double _max);
 
 protected:
 
     void move(int _delta);
-    bool movedTo(double _min, double _max);
+    bool moved_to(double _min, double _max);
 
     void paintEvent(QPaintEvent* _event) override;
     void mouseMoveEvent(QMouseEvent* _event) override;
@@ -103,24 +103,24 @@ protected:
     void wheelEvent(QWheelEvent* _event) override;
     void resizeEvent(QResizeEvent* _event) override;
 
-    Paintable* m_minHandle;
-    Paintable* m_maxHandle;
-    Paintable* m_window;
+    paintable* m_min_handle;
+    paintable* m_max_handle;
+    paintable* m_window;
 
-    Paintable* m_current {nullptr};
+    paintable* m_current {nullptr};
 
-    int m_handleSize {11};
+    int m_handle_size {11};
 
-    QPoint m_pressPos;
-    int m_pressMin {};
-    int m_pressMax {};
+    QPoint m_press_pos;
+    int m_press_min {};
+    int m_press_max {};
 
-    double m_minValue {0.};
-    double m_maxValue {1.};
+    double m_min_value {0.};
+    double m_max_value {1.};
 
-    double m_minimumMinMaxDelta {0.};
-    bool m_allowMinGreaterThanMax {true};
-    bool m_emitRangeChanged {};
+    double m_minimum_min_max_delta {0.};
+    bool m_allow_min_greater_than_max {true};
+    bool m_emit_range_changed {};
 };
 
 } // namespace sight::ui::qt::widget

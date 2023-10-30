@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,11 +27,11 @@
 namespace sight::ui::history::ut
 {
 
-class ImageDiffCommandTest : public CPPUNIT_NS::TestFixture
+class image_diff_command_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ImageDiffCommandTest);
-CPPUNIT_TEST(undoredoTest);
-CPPUNIT_TEST(getSizeTest);
+CPPUNIT_TEST_SUITE(image_diff_command_test);
+CPPUNIT_TEST(undoredo_test);
+CPPUNIT_TEST(get_size_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,8 +41,8 @@ public:
     void tearDown() override;
 
     // Test
-    static void undoredoTest();
-    static void getSizeTest();
+    static void undoredo_test();
+    static void get_size_test();
 };
 
 } // namespace sight::ui::history::ut

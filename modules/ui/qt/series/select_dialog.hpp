@@ -96,10 +96,10 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::series_set, sight::data::Access::in> m_series_set {this, "seriesSet"};
-    sight::data::ptr<sight::data::model_series, sight::data::Access::out> m_modelSeries {this, "modelSeries"};
-    sight::data::ptr<sight::data::image_series, sight::data::Access::out> m_imageSeries {this, "imageSeries"};
-    sight::data::ptr<sight::data::image, sight::data::Access::out> m_image {this, "image"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::in> m_series_set {this, "seriesSet"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::out> m_model_series {this, "modelSeries"};
+    sight::data::ptr<sight::data::image_series, sight::data::access::out> m_image_series {this, "imageSeries"};
+    sight::data::ptr<sight::data::image, sight::data::access::out> m_image {this, "image"};
 };
 
 } // namespace sight::module::ui::qt::series

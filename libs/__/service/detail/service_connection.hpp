@@ -53,10 +53,10 @@ public:
     void disconnect(const sight::service::base& _service);
 
     /// Connect only the start slot of the service with other services and objects
-    void connectStartSlot(const sight::service::base& _service);
+    void connect_start_slot(const sight::service::base& _service);
 
     /// Disconnect only the start slot of service from other services and objects
-    void disconnectStartSlot(const sight::service::base& _service);
+    void disconnect_start_slot(const sight::service::base& _service);
 
     /// Add a known connection from the appConfig
     void add(const core::com::helper::proxy_connections& _proxy);

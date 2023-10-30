@@ -35,7 +35,7 @@ class adaptor;
 namespace registry
 {
 
-typedef std::map<std::string, std::string> adaptor_registry_t;
+using adaptor_registry_t = std::map<std::string, std::string>;
 
 /// Returns map containing adaptor-render association
 VIZ_SCENE2D_API adaptor_registry_t& get_adaptor_registry();

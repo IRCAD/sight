@@ -49,18 +49,18 @@ static const core::com::slots::key_t STOP_RECORD      = "stopRecord";
 static const core::com::slots::key_t RECORD           = "record";
 static const core::com::slots::key_t TOGGLE_RECORDING = "toggleRecording";
 
-const std::string video_writer::s_MP4_EXTENSION = ".mp4";
-const std::string video_writer::s_AVC1_CODEC    = "avc1";
+const std::string video_writer::P4_EXTENSION = ".mp4";
+const std::string video_writer::AV_C1_CODEC  = "avc1";
 
 //------------------------------------------------------------------------------
 
 video_writer::video_writer() noexcept
 {
-    new_slot(SAVE_FRAME, &video_writer::saveFrame, this);
-    new_slot(START_RECORD, &video_writer::startRecord, this);
-    new_slot(STOP_RECORD, &video_writer::stopRecord, this);
+    new_slot(SAVE_FRAME, &video_writer::save_frame, this);
+    new_slot(START_RECORD, &video_writer::start_record, this);
+    new_slot(STOP_RECORD, &video_writer::stop_record, this);
     new_slot(RECORD, &video_writer::record, this);
-    new_slot(TOGGLE_RECORDING, &video_writer::toggleRecording, this);
+    new_slot(TOGGLE_RECORDING, &video_writer::toggle_recording, this);
 }
 
 //------------------------------------------------------------------------------
@@ -70,9 +70,9 @@ video_writer::~video_writer() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType video_writer::getIOPathType() const
+sight::io::service::path_type_t video_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
@@ -90,26 +90,26 @@ void video_writer::starting()
 
 //------------------------------------------------------------------------------
 
-void video_writer::openLocationDialog()
+void video_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("mp4", "*.mp4");
-    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.set_title(m_window_title.empty() ? "Choose an file to save the video" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("mp4", "*.mp4");
+    dialog_file.set_option(ui::dialog::location::write);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
-        m_selectedExtension = dialog_file.getSelectedExtensions().front();
+        m_selected_extension = dialog_file.get_selected_extensions().front();
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         this->set_file(result->get_file());
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -117,7 +117,7 @@ void video_writer::openLocationDialog()
 
 void video_writer::stopping()
 {
-    this->stopRecord();
+    this->stop_record();
 }
 
 //------------------------------------------------------------------------------
@@ -128,17 +128,17 @@ void video_writer::updating()
 
 //------------------------------------------------------------------------------
 
-void video_writer::writeBuffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t)_buffer)
+void video_writer::write_buffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t)_buffer)
 {
     SIGHT_ASSERT("OpenCV video writer not initialized", m_writer);
-    const std::uint8_t* image_buffer = &_buffer->getElement(0);
+    const std::uint8_t* image_buffer = &_buffer->get_element(0);
 
     const cv::Mat image(
         cv::Size(_width, _height),
-        m_imageType, const_cast<std::uint8_t*>(image_buffer), // NOLINT(cppcoreguidelines-pro-type-const-cast)
+        m_image_type, const_cast<std::uint8_t*>(image_buffer), // NOLINT(cppcoreguidelines-pro-type-const-cast)
         cv::Mat::AUTO_STEP
     );
-    if(m_imageType == CV_16UC1)
+    if(m_image_type == CV_16UC1)
     {
         // Convert the image to a RGB image
         cv::Mat img8bit;
@@ -148,14 +148,14 @@ void video_writer::writeBuffer(int _width, int _height, CSPTR(data::frame_tl::bu
 
         m_writer->write(img_color);
     }
-    else if(m_imageType == CV_8UC3)
+    else if(m_image_type == CV_8UC3)
     {
         // convert the image from RGB to BGR
         cv::Mat image_bgr;
         cv::cvtColor(image, image_bgr, cv::COLOR_RGB2BGR);
         m_writer->write(image_bgr);
     }
-    else if(m_imageType == CV_8UC4)
+    else if(m_image_type == CV_8UC4)
     {
         // convert the image from RGBA to BGR
         cv::Mat image_bgr;
@@ -170,9 +170,9 @@ void video_writer::writeBuffer(int _width, int _height, CSPTR(data::frame_tl::bu
 
 //------------------------------------------------------------------------------
 
-void video_writer::saveFrame(core::hires_clock::type _timestamp)
+void video_writer::save_frame(core::hires_clock::type _timestamp)
 {
-    if(m_isRecording)
+    if(m_is_recording)
     {
         // Retrieve dataStruct associated with this service
         const auto locked   = m_data.lock();
@@ -182,7 +182,7 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
             "The object is not a '"
             + data::frame_tl::classname()
             + "' or '"
-            + sight::io::service::s_DATA_KEY
+            + sight::io::service::DATA_KEY
             + "' is not correctly set.",
             frame_tl
         );
@@ -190,12 +190,12 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
-            CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->getClosestBuffer(_timestamp);
+            CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(_timestamp);
             if(buffer)
             {
-                const int width  = static_cast<int>(frame_tl->getWidth());
-                const int height = static_cast<int>(frame_tl->getHeight());
-                this->writeBuffer(width, height, buffer);
+                const int width  = static_cast<int>(frame_tl->get_width());
+                const int height = static_cast<int>(frame_tl->get_height());
+                this->write_buffer(width, height, buffer);
             }
         }
         else
@@ -205,8 +205,8 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
                 // computes number of fps
                 const double fps = 1000 * static_cast<double>(m_timestamps.size())
                                    / (m_timestamps.back() - m_timestamps.front());
-                const int width                      = static_cast<int>(frame_tl->getWidth());
-                const int height                     = static_cast<int>(frame_tl->getHeight());
+                const int width                      = static_cast<int>(frame_tl->get_width());
+                const int height                     = static_cast<int>(frame_tl->get_height());
                 std::filesystem::path path           = this->get_file();
                 const std::string provided_extension = path.extension().string();
                 std::string extension_to_use;
@@ -216,7 +216,7 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
                 if(provided_extension.empty())
                 {
                     // No extension provided, add extension of selected filter.
-                    extension_to_use = m_selectedExtension;
+                    extension_to_use = m_selected_extension;
                     path            += extension_to_use;
                 }
                 else
@@ -224,9 +224,9 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
                     extension_to_use = provided_extension;
                 }
 
-                if(extension_to_use == s_MP4_EXTENSION)
+                if(extension_to_use == P4_EXTENSION)
                 {
-                    codec = s_AVC1_CODEC;
+                    codec = AV_C1_CODEC;
                 }
                 else
                 {
@@ -235,7 +235,7 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
                         "The extension " + extension_to_use + " is not supported. Unable to write the file: "
                         + path.string()
                     );
-                    this->stopRecord();
+                    this->stop_record();
                     return;
                 }
 
@@ -259,17 +259,17 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
                         "Video recording",
                         "Unable to write the video in the file: " + path.string()
                     );
-                    this->stopRecord();
+                    this->stop_record();
                 }
                 else
                 {
                     for(const auto& old_timestamp : m_timestamps)
                     {
                         // writes the old frames used to compute the number of fps
-                        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->getClosestBuffer(old_timestamp);
+                        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(old_timestamp);
                         if(buffer)
                         {
-                            this->writeBuffer(width, height, buffer);
+                            this->write_buffer(width, height, buffer);
                         }
                     }
                 }
@@ -284,35 +284,35 @@ void video_writer::saveFrame(core::hires_clock::type _timestamp)
 
 //------------------------------------------------------------------------------
 
-void video_writer::startRecord()
+void video_writer::start_record()
 {
-    if(!this->hasLocationDefined())
+    if(!this->has_location_defined())
     {
-        this->openLocationDialog();
+        this->open_location_dialog();
     }
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         const auto data     = m_data.lock();
         const auto frame_tl = std::dynamic_pointer_cast<const data::frame_tl>(data.get_shared());
 
-        if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 3)
+        if(frame_tl->type() == core::type::UINT8 && frame_tl->num_components() == 3)
         {
-            m_imageType = CV_8UC3;
+            m_image_type = CV_8UC3;
         }
-        else if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 4)
+        else if(frame_tl->type() == core::type::UINT8 && frame_tl->num_components() == 4)
         {
-            m_imageType = CV_8UC4;
+            m_image_type = CV_8UC4;
         }
-        else if(frame_tl->getType() == core::type::UINT16 && frame_tl->numComponents() == 1)
+        else if(frame_tl->type() == core::type::UINT16 && frame_tl->num_components() == 1)
         {
-            m_imageType = CV_16UC1;
+            m_image_type = CV_16UC1;
         }
         else
         {
             SIGHT_ERROR(
-                "This type of frame : " + frame_tl->getType().name() + " with "
-                + std::to_string(frame_tl->numComponents()) + " components is not supported"
+                "This type of frame : " + frame_tl->type().name() + " with "
+                + std::to_string(frame_tl->num_components()) + " components is not supported"
             );
             return;
         }
@@ -324,21 +324,21 @@ void video_writer::startRecord()
             std::filesystem::create_directories(dirname);
         }
 
-        m_isRecording = true;
+        m_is_recording = true;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void video_writer::stopRecord()
+void video_writer::stop_record()
 {
-    m_isRecording = false;
+    m_is_recording = false;
     m_timestamps.clear();
     if(m_writer)
     {
         m_writer->release();
         m_writer.reset();
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -348,25 +348,25 @@ void video_writer::record(bool _state)
 {
     if(_state)
     {
-        this->startRecord();
+        this->start_record();
     }
     else
     {
-        this->stopRecord();
+        this->stop_record();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void video_writer::toggleRecording()
+void video_writer::toggle_recording()
 {
-    if(m_isRecording)
+    if(m_is_recording)
     {
-        this->stopRecord();
+        this->stop_record();
     }
     else
     {
-        this->startRecord();
+        this->start_record();
     }
 }
 
@@ -375,7 +375,7 @@ void video_writer::toggleRecording()
 service::connections_t video_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::s_DATA_KEY, data::timeline::signals::PUSHED, SAVE_FRAME);
+    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, SAVE_FRAME);
     return connections;
 }
 

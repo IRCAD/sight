@@ -36,12 +36,12 @@ public:
 
     UI_QT_API_QT non_linear_slider(QWidget* _parent = nullptr);
 
-    UI_QT_API_QT void setOrientation(Qt::Orientation _orientation);
+    UI_QT_API_QT void set_orientation(Qt::Orientation _orientation);
 
-    UI_QT_API_QT void setValues(const std::vector<int>& _values);
-    UI_QT_API_QT void setValue(int _value);
+    UI_QT_API_QT void set_values(const std::vector<int>& _values);
+    UI_QT_API_QT void set_value(int _value);
 
-    UI_QT_API_QT void setTracking(bool _tracking);
+    UI_QT_API_QT void set_tracking(bool _tracking);
 
     UI_QT_API_QT int value();
     UI_QT_API_QT std::size_t index();
@@ -51,8 +51,8 @@ public:
 
 Q_SIGNALS:
 
-    UI_QT_API_QT void valueChanged(int _value);
-    UI_QT_API_QT void rangeChanged(int _min, int _max);
+    UI_QT_API_QT void value_changed(int _value);
+    UI_QT_API_QT void range_changed(int _min, int _max);
 
 protected:
 

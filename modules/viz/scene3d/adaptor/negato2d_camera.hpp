@@ -92,7 +92,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, double _delta, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void wheel_event(modifier /*_modifier*/, double _delta, int _x, int _y) final;
 
     /**
      * @brief Zooms in the scene at the current cursor position.
@@ -100,7 +100,7 @@ public:
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    MODULE_VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) final;
+    MODULE_VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
 
     /**
      * @brief Moves the camera along the projection plane.
@@ -109,7 +109,7 @@ public:
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
      */
-    MODULE_VIZ_SCENE3D_API void panGestureMoveEvent(int _x, int _y, int _dx, int _dy) final;
+    MODULE_VIZ_SCENE3D_API void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Ends Moving the camera along the projection plane.
@@ -118,7 +118,7 @@ public:
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
      */
-    MODULE_VIZ_SCENE3D_API void panGestureReleaseEvent(int _x, int _y, int _dx, int _dy) final;
+    MODULE_VIZ_SCENE3D_API void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -132,9 +132,9 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
-        sight::viz::scene3d::interactor::base::MouseButton _button,
-        Modifier /*_mods*/,
+    MODULE_VIZ_SCENE3D_API void mouse_move_event(
+        sight::viz::scene3d::interactor::base::mouse_button _button,
+        modifier /*_mods*/,
         int _x,
         int _y,
         int _dx,
@@ -148,9 +148,9 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(
-        sight::viz::scene3d::interactor::base::MouseButton _button,
-        Modifier /*_mods*/,
+    MODULE_VIZ_SCENE3D_API void button_press_event(
+        sight::viz::scene3d::interactor::base::mouse_button _button,
+        modifier /*_mods*/,
         int _x,
         int _y
     ) final;
@@ -161,9 +161,9 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(
-        sight::viz::scene3d::interactor::base::MouseButton _button,
-        Modifier /*_mods*/,
+    MODULE_VIZ_SCENE3D_API void button_release_event(
+        sight::viz::scene3d::interactor::base::mouse_button _button,
+        modifier /*_mods*/,
         int _x,
         int _y
     ) final;
@@ -174,7 +174,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int _x, int _y) final;
 
 protected:
 
@@ -202,56 +202,56 @@ protected:
 
 private:
 
-    using Orientation = data::helper::medical_image::orientation_t;
+    using orientation_t = data::helper::medical_image::orientation_t;
 
     /// SLOT: resets the camera's zoom.
-    void resetCamera();
+    void reset_camera();
 
     /// SLOT: resets the display when resizing.
-    void resizeViewport();
+    void resize_viewport();
 
     /**
      * @brief SLOT: sets the camera's orientation to one of the image's axes.
      * @param _from origin of the orientation.
      * @param _to destination of the orientation.
      */
-    void changeOrientation(int _from, int _to);
+    void change_orientation(int _from, int _to);
 
     /// Updates the transfer function window and level by adding the input values.
-    void updateWindowing(double _dw, double _dl);
+    void update_windowing(double _dw, double _dl);
 
     /// Defines the current interaction status.
-    bool m_isInteracting {false};
+    bool m_is_interacting {false};
 
     /// Defines the image current orientation.
-    Orientation m_currentNegatoOrientation {data::helper::medical_image::orientation_t::Z_AXIS};
+    orientation_t m_current_negato_orientation {data::helper::medical_image::orientation_t::z_axis};
 
     /// Defines the interaction priority.
     int m_priority {0};
 
     /// Defines the transfer function window value at the time the interaction started.
-    double m_initialWindow {0.F};
+    double m_initial_window {0.F};
 
     /// Defines the transfer function level value at the time the interaction started.
-    double m_initialLevel {0.F};
+    double m_initial_level {0.F};
 
     /// Defines the mouse position at the time the windowing interaction started.
-    Ogre::Vector2i m_initialPos {-1, -1};
+    Ogre::Vector2i m_initial_pos {-1, -1};
 
     /// Defines the margin to the border of the viewport.
     float m_margin {0.1F};
 
     /// This allows us to reset the camera when Qt refreshes the size of the viewport after the start of the adaptor
-    bool m_hasMoved {false};
+    bool m_has_moved {false};
 
     /// Handles connection with the layer.
-    core::com::helper::sig_slot_connection m_layerConnection;
+    core::com::helper::sig_slot_connection m_layer_connection;
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    static constexpr std::string_view s_TF_INOUT    = "tf";
+    static constexpr std::string_view IMAGE_INOUT = "image";
+    static constexpr std::string_view TF_INOUT    = "tf";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT, true};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, TF_INOUT, false, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

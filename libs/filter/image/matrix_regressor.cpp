@@ -41,13 +41,13 @@ namespace sight::filter::image
 //-----------------------------------------------------------------------------
 
 matrix_regressor::matrix_regressor(const data::vector::csptr& _matrix_list, std::vector<point_t> _points) :
-    m_pointList(std::move(_points))
+    m_point_list(std::move(_points))
 {
     for(const auto& elt : *_matrix_list)
     {
         data::matrix4::sptr mat = std::dynamic_pointer_cast<data::matrix4>(elt);
 
-        m_matList.push_back(geometry::data::to_glm_mat(*mat));
+        m_mat_list.push_back(geometry::data::to_glm_mat(*mat));
     }
 }
 
@@ -86,9 +86,9 @@ data::matrix4::sptr matrix_regressor::minimize(
 
             double distance = 0;
 
-            for(const glm::dmat4& m : this->m_matList)
+            for(const glm::dmat4& m : this->m_mat_list)
             {
-                for(const matrix_regressor::point_t& p : this->m_pointList)
+                for(const matrix_regressor::point_t& p : this->m_point_list)
                 {
                     distance += glm::distance2(m * p, mat * p);
                 }

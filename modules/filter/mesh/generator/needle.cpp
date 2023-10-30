@@ -57,7 +57,7 @@ const core::com::slots::key_t UPDATE_HEIGHT = "updateHeight";
 
 needle::needle() noexcept
 {
-    new_slot(UPDATE_HEIGHT, &needle::updateHeight, this);
+    new_slot(UPDATE_HEIGHT, &needle::update_height, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -74,16 +74,16 @@ void needle::configuring()
     const auto config = config_tree.get_child("config.<xmlattr>");
 
     // Default cylinder configuration
-    m_radius         = config.get<double>("radius", m_radius);
-    m_height         = config.get<double>("height", m_height);
-    m_resolution     = config.get<int>("resolution", m_resolution);
-    m_offsetToOrigin = config.get<bool>("offsetToOrigin", false);
+    m_radius           = config.get<double>("radius", m_radius);
+    m_height           = config.get<double>("height", m_height);
+    m_resolution       = config.get<int>("resolution", m_resolution);
+    m_offset_to_origin = config.get<bool>("offsetToOrigin", false);
 
     // Full optional needle configuration
     const auto needle_config_tree = config_tree.get_child_optional("needle");
     if(needle_config_tree.is_initialized())
     {
-        m_needleMode = true;
+        m_needle_mode = true;
 
         const auto needle_config = config_tree.get_child("needle.<xmlattr>");
 
@@ -96,7 +96,7 @@ void needle::configuring()
                 needle_color[0] == '#'
                 && (needle_color.length() == 7 || needle_color.length() == 9)
             );
-            data::tools::color::hexaStringToRGBA(needle_color, m_needleColor);
+            data::tools::color::hexa_string_to_rgba(needle_color, m_needle_color);
         }
 
         const auto minor_steps_config_tree = (*needle_config_tree).get_child_optional("minorSteps");
@@ -113,10 +113,10 @@ void needle::configuring()
                     minor_steps_color[0] == '#'
                     && (minor_steps_color.length() == 7 || minor_steps_color.length() == 9)
                 );
-                data::tools::color::hexaStringToRGBA(minor_steps_color, m_needleMinorStepsColor);
+                data::tools::color::hexa_string_to_rgba(minor_steps_color, m_needle_minor_steps_color);
             }
 
-            m_needleMinorStepsLength = minor_steps_config.get<double>("length", m_needleMinorStepsLength);
+            m_needle_minor_steps_length = minor_steps_config.get<double>("length", m_needle_minor_steps_length);
         }
 
         const auto major_steps_config_tree = (*needle_config_tree).get_child_optional("majorSteps");
@@ -133,10 +133,10 @@ void needle::configuring()
                     major_steps_color[0] == '#'
                     && (major_steps_color.length() == 7 || major_steps_color.length() == 9)
                 );
-                data::tools::color::hexaStringToRGBA(major_steps_color, m_needleMajorStepsColor);
+                data::tools::color::hexa_string_to_rgba(major_steps_color, m_needle_major_steps_color);
             }
 
-            m_needleMajorSteps = major_steps_config.get<unsigned int>("steps", m_needleMajorSteps);
+            m_needle_major_steps = major_steps_config.get<unsigned int>("steps", m_needle_major_steps);
         }
     }
 }
@@ -159,14 +159,14 @@ void needle::updating()
 {
     vtkSmartPointer<vtkPolyData> vtk_mesh;
 
-    if(m_needleMode)
+    if(m_needle_mode)
     {
-        vtk_mesh = constructNeedle();
+        vtk_mesh = construct_needle();
     }
     else // Default cylinder construction
     {
-        double center                               = (m_offsetToOrigin ? m_height / 2.0 : 0.0);
-        vtkSmartPointer<vtkCylinderSource> cylinder = constructSourceObject<vtkCylinderSource>(m_height, center);
+        double center                               = (m_offset_to_origin ? m_height / 2.0 : 0.0);
+        vtkSmartPointer<vtkCylinderSource> cylinder = construct_source_object<vtkCylinderSource>(m_height, center);
 
         vtkSmartPointer<vtkTriangleFilter> triangle_filter = vtkSmartPointer<vtkTriangleFilter>::New();
         triangle_filter->SetInputConnection(cylinder->GetOutputPort());
@@ -177,7 +177,7 @@ void needle::updating()
 
     auto mesh = m_mesh.lock();
     SIGHT_ASSERT("No 'mesh' found.", mesh);
-    io::vtk::helper::mesh::fromVTKMesh(vtk_mesh, mesh.get_shared());
+    io::vtk::helper::mesh::from_vtk_mesh(vtk_mesh, mesh.get_shared());
 
     data::object::modified_signal_t::sptr sig;
     sig = mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -186,14 +186,14 @@ void needle::updating()
 
 // ------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> needle::constructNeedle()
+vtkSmartPointer<vtkPolyData> needle::construct_needle()
 {
     // Number of cylinder regarding their needed length
-    const double nb_of_cylinders = m_height / m_needleMinorStepsLength;
+    const double nb_of_cylinders = m_height / m_needle_minor_steps_length;
     // Entire part
     const int nb_of_entire_parts = int(nb_of_cylinders);
     // Decimal part
-    const double rest_of_cylinder = m_needleMinorStepsLength * (nb_of_cylinders - nb_of_entire_parts);
+    const double rest_of_cylinder = m_needle_minor_steps_length * (nb_of_cylinders - nb_of_entire_parts);
 
     // Appender object to append cylinders, torus and cone to generate a needle
     vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
@@ -202,21 +202,21 @@ vtkSmartPointer<vtkPolyData> needle::constructNeedle()
     // Sweep the needle along its axis without the tip cylinder that will be replaced by a cone
     for(int cylinder_index = (nb_of_entire_parts - 2) ; cylinder_index >= 0 ; --cylinder_index)
     {
-        center = (m_needleMinorStepsLength / 2.0) + (m_needleMinorStepsLength * cylinder_index);
+        center = (m_needle_minor_steps_length / 2.0) + (m_needle_minor_steps_length * cylinder_index);
 
         // Put a torus every "m_needleMajorSteps" minor steps (for example every 5 minor steps by default) and not on
         // the end of the needle
-        if((unsigned(nb_of_entire_parts - cylinder_index) % m_needleMajorSteps) == 0 && cylinder_index != 0)
+        if((unsigned(nb_of_entire_parts - cylinder_index) % m_needle_major_steps) == 0 && cylinder_index != 0)
         {
             // Move the center from half the minor step length to get the torus on the edge of two cylinders
-            const double torus_center              = center - m_needleMinorStepsLength / 2.0;
-            vtkSmartPointer<vtkPolyData> poly_data = generateTorus(torus_center, m_needleMajorStepsColor);
+            const double torus_center              = center - m_needle_minor_steps_length / 2.0;
+            vtkSmartPointer<vtkPolyData> poly_data = generate_torus(torus_center, m_needle_major_steps_color);
 
             appender->AddInputData(poly_data);
         }
 
-        vtkSmartPointer<vtkCylinderSource> cylinder = constructSourceObject<vtkCylinderSource>(
-            m_needleMinorStepsLength,
+        vtkSmartPointer<vtkCylinderSource> cylinder = construct_source_object<vtkCylinderSource>(
+            m_needle_minor_steps_length,
             center
         );
 
@@ -224,11 +224,11 @@ vtkSmartPointer<vtkPolyData> needle::constructNeedle()
 
         if((cylinder_index % 2) == 0)
         {
-            poly_data = filterAndColorSourceObject(cylinder->GetOutputPort(), m_needleColor);
+            poly_data = filter_and_color_source_object(cylinder->GetOutputPort(), m_needle_color);
         }
         else
         {
-            poly_data = filterAndColorSourceObject(cylinder->GetOutputPort(), m_needleMinorStepsColor);
+            poly_data = filter_and_color_source_object(cylinder->GetOutputPort(), m_needle_minor_steps_color);
         }
 
         appender->AddInputData(poly_data);
@@ -236,24 +236,24 @@ vtkSmartPointer<vtkPolyData> needle::constructNeedle()
 
     // Replace the last cylinder by a cone to mimic a needle
     // Compute the rest of the needle to get the cone length
-    const double height = m_needleMinorStepsLength + rest_of_cylinder;
+    const double height = m_needle_minor_steps_length + rest_of_cylinder;
     // Compute the new center of this cone
-    center = (m_needleMinorStepsLength * (nb_of_entire_parts - 1)) + (rest_of_cylinder / 2.0)
-             + (m_needleMinorStepsLength / 2.0);
+    center = (m_needle_minor_steps_length * (nb_of_entire_parts - 1)) + (rest_of_cylinder / 2.0)
+             + (m_needle_minor_steps_length / 2.0);
 
-    vtkSmartPointer<vtkConeSource> cone = constructSourceObject<vtkConeSource>(height, center);
+    vtkSmartPointer<vtkConeSource> cone = construct_source_object<vtkConeSource>(height, center);
     // Put the cone in the right direction and remove its bottom cap (avoiding ugly effects because of wrong normal
     // computations)
     cone->SetDirection(0, 1, 0);
     cone->SetCapping(0);
-    vtkSmartPointer<vtkPolyData> poly_data = filterAndColorSourceObject(cone->GetOutputPort(), m_needleColor);
+    vtkSmartPointer<vtkPolyData> poly_data = filter_and_color_source_object(cone->GetOutputPort(), m_needle_color);
     appender->AddInputData(poly_data);
     appender->Update();
 
     // The needle is generated as if the offsetToOrigin parameter was set to true. If the offset is not needed,
     // translate it
     // along its axis and half its height distance
-    if(!m_offsetToOrigin)
+    if(!m_offset_to_origin)
     {
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
         transform->Translate(0.0, -m_height / 2.0, 0.0);
@@ -273,7 +273,7 @@ vtkSmartPointer<vtkPolyData> needle::constructNeedle()
 // ------------------------------------------------------------------------------
 
 template<class T>
-vtkSmartPointer<T> needle::constructSourceObject(double _height, double _center)
+vtkSmartPointer<T> needle::construct_source_object(double _height, double _center)
 {
     vtkSmartPointer<T> source = vtkSmartPointer<T>::New();
     source->SetRadius(m_radius);
@@ -286,7 +286,7 @@ vtkSmartPointer<T> needle::constructSourceObject(double _height, double _center)
 
 // ------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> needle::filterAndColorSourceObject(
+vtkSmartPointer<vtkPolyData> needle::filter_and_color_source_object(
     vtkAlgorithmOutput* _source_algorithm,
     const std::array<unsigned char, 4>& _rgba
 )
@@ -317,7 +317,7 @@ vtkSmartPointer<vtkPolyData> needle::filterAndColorSourceObject(
 
 // ------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> needle::generateTorus(double _center, const std::array<unsigned char, 4>& _rgba) const
+vtkSmartPointer<vtkPolyData> needle::generate_torus(double _center, const std::array<unsigned char, 4>& _rgba) const
 {
     vtkSmartPointer<vtkParametricTorus> torus = vtkSmartPointer<vtkParametricTorus>::New();
 
@@ -337,14 +337,14 @@ vtkSmartPointer<vtkPolyData> needle::generateTorus(double _center, const std::ar
     transform_filter->SetTransform(transform);
     transform_filter->Update();
 
-    vtkSmartPointer<vtkPolyData> poly_data = filterAndColorSourceObject(transform_filter->GetOutputPort(), _rgba);
+    vtkSmartPointer<vtkPolyData> poly_data = filter_and_color_source_object(transform_filter->GetOutputPort(), _rgba);
 
     return poly_data;
 }
 
 // ------------------------------------------------------------------------------
 
-void needle::updateHeight(double _height)
+void needle::update_height(double _height)
 {
     m_height = _height;
     this->updating();

@@ -22,18 +22,18 @@
                     <view caption="Negato3" align="right" />
                     <view align="left" visible="false" />
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" />
+                <toolbar sid="toolbar" />
                 <view wid="view_negato1" />
                 <view wid="view_negato2" />
                 <view wid="view_negato3" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::tool_bar">
+        <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
@@ -118,7 +118,7 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
-        <start uid="toolBar" />
+        <start uid="toolbar" />
         <start uid="ActionPrevious" />
         <start uid="ActionNext" />
 

@@ -84,7 +84,7 @@ public:
     MODULE_UI_API ~config_launcher() noexcept override;
 
     /// Set the action service is activated/disable.
-    MODULE_UI_API void setChecked(bool _is_checked) override;
+    MODULE_UI_API void set_checked(bool _is_checked) override;
 
     // Launched signal key
     MODULE_UI_API static const core::com::signals::key_t LAUNCHED_SIG;
@@ -94,8 +94,8 @@ protected:
     /**
      * @name Defines signal triggered when config is started
      * @{ */
-    typedef core::com::signal<void ()> launched_signal_t;
-    launched_signal_t::sptr m_sigLaunched;
+    using launched_signal_t = core::com::signal<void ()>;
+    launched_signal_t::sptr m_sig_launched;
     /**  @} */
 
     ///This method launches the action::starting method.
@@ -135,16 +135,16 @@ protected:
      * @}
      */
     /// Slot: stop the config.
-    void stopConfig();
+    void stop_config();
     /**
      * @}
      */
 
-    app::helper::config_launcher::uptr m_configLauncher;
+    app::helper::config_launcher::uptr m_config_launcher;
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 
     /// Input data to pass to the configuration
-    data::ptr_vector<data::object, data::Access::inout> m_data {this, app::helper::config_launcher::s_DATA_GROUP};
+    data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};
 };
 
 } // namespace sight::module::ui

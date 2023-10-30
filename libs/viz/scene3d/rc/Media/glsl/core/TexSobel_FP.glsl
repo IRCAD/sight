@@ -74,7 +74,7 @@ uniform float far_clip;
 
 // Variables setted by user to choose normal map filter type and parameters
 /**
- * Filter type allowing to choose different filters (0,1 are defaults, >2 are prototypes)
+ * filter type allowing to choose different filters (0,1 are defaults, >2 are prototypes)
  * 0 : Sobel with interpolation depending on depth
  * 1 : Mini Prewitt
  * 2 : Sobel

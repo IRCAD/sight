@@ -60,24 +60,24 @@ point_list::~point_list() noexcept
 {
     if(m_entity != nullptr)
     {
-        Ogre::SceneManager* scene_mgr = this->getSceneManager();
+        Ogre::SceneManager* scene_mgr = this->get_scene_manager();
         scene_mgr->destroyEntity(m_entity);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void point_list::setVisible(bool _visible)
+void point_list::set_visible(bool _visible)
 {
     if(m_entity != nullptr)
     {
-        this->getRenderService()->makeCurrent();
+        this->render_service()->make_current();
 
         m_entity->setVisible(_visible);
 
-        m_meshGeometry->setVisible(_visible);
+        m_mesh_geometry->set_visible(_visible);
 
-        this->requestRender();
+        this->request_render();
     }
 }
 
@@ -85,50 +85,50 @@ void point_list::setVisible(bool _visible)
 
 void point_list::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_COLOR_CONFIG             = s_CONFIG + "color";
-    static const std::string s_VISIBLE_CONFIG           = s_CONFIG + "visible";
-    static const std::string s_AUTORESET_CAMERA_CONFIG  = s_CONFIG + "autoresetcamera";
-    static const std::string s_MATERIAL_TEMPLATE_CONFIG = s_CONFIG + "materialTemplate";
-    static const std::string s_FIXED_SIZE_CONFIG        = s_CONFIG + "fixedSize";
-    static const std::string s_TEXTURE_NAME_CONFIG      = s_CONFIG + "textureName";
-    static const std::string s_QUERY_CONFIG             = s_CONFIG + "queryFlags";
-    static const std::string s_RADIUS_CONFIG            = s_CONFIG + "radius";
-    static const std::string s_DISPLAY_LABEL_CONFIG     = s_CONFIG + "displayLabel";
-    static const std::string s_LABEL_COLOR_CONFIG       = s_CONFIG + "labelColor";
-    static const std::string s_FONT_SOURCE_CONFIG       = s_CONFIG + "fontSource";
-    static const std::string s_FONT_SIZE_CONFIG         = s_CONFIG + "fontSize";
+    static const std::string s_COLOR_CONFIG             = CONFIG + "color";
+    static const std::string s_VISIBLE_CONFIG           = CONFIG + "visible";
+    static const std::string s_AUTORESET_CAMERA_CONFIG  = CONFIG + "autoresetcamera";
+    static const std::string s_MATERIAL_TEMPLATE_CONFIG = CONFIG + "materialTemplate";
+    static const std::string s_FIXED_SIZE_CONFIG        = CONFIG + "fixedSize";
+    static const std::string s_TEXTURE_NAME_CONFIG      = CONFIG + "textureName";
+    static const std::string s_QUERY_CONFIG             = CONFIG + "queryFlags";
+    static const std::string s_RADIUS_CONFIG            = CONFIG + "radius";
+    static const std::string s_DISPLAY_LABEL_CONFIG     = CONFIG + "displayLabel";
+    static const std::string s_LABEL_COLOR_CONFIG       = CONFIG + "labelColor";
+    static const std::string s_FONT_SOURCE_CONFIG       = CONFIG + "fontSource";
+    static const std::string s_FONT_SIZE_CONFIG         = CONFIG + "fontSize";
 
     const std::string color = config.get<std::string>(s_COLOR_CONFIG, "");
 
-    const bool visible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
-    this->updateVisibility(visible);
+    const bool visible = config.get<bool>(s_VISIBLE_CONFIG, m_visible);
+    this->update_visibility(visible);
 
     SIGHT_ASSERT("Material not found", m_material);
-    m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
+    m_material->diffuse()->set_rgba(color.empty() ? "#FFFFFFFF" : color);
 
-    m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
+    m_auto_reset_camera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
     if(config.count(s_MATERIAL_TEMPLATE_CONFIG) != 0U)
     {
         // An existing Ogre material will be used for this mesh
-        m_customMaterial       = true;
-        m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG);
+        m_custom_material        = true;
+        m_material_template_name = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG);
     }
     else if(config.get(s_FIXED_SIZE_CONFIG, false))
     {
-        m_materialTemplateName = "Billboard_FixedSize";
+        m_material_template_name = "Billboard_FixedSize";
     }
 
     // The mesh adaptor will pass the texture name to the created material adaptor
-    m_textureName = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
+    m_texture_name = config.get(s_TEXTURE_NAME_CONFIG, m_texture_name);
 
-    this->setTransformId(
+    this->set_transform_id(
         config.get<std::string>(
-            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
             this->get_id() + "_transform"
         )
     );
@@ -142,18 +142,18 @@ void point_list::configuring()
             hexa_mask.length() > 2
             && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
+        m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
-    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize   = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_font_source = config.get(s_FONT_SOURCE_CONFIG, m_font_source);
+    m_font_size   = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
 
-    m_radius       = config.get(s_RADIUS_CONFIG, m_radius);
-    m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
+    m_radius        = config.get(s_RADIUS_CONFIG, m_radius);
+    m_display_label = config.get(s_DISPLAY_LABEL_CONFIG, m_display_label);
 
     const std::string label_color = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
-    m_labelColor = std::make_shared<data::color>();
-    m_labelColor->setRGBA(label_color);
+    m_label_color = std::make_shared<data::color>();
+    m_label_color->set_rgba(label_color);
 }
 
 //-----------------------------------------------------------------------------
@@ -162,33 +162,33 @@ void point_list::starting()
 {
     this->initialize();
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    m_meshGeometry = std::make_shared<sight::viz::scene3d::mesh>(this->get_id());
-    m_meshGeometry->setDynamic(true);
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode = this->getOrCreateTransformNode(root_scene_node);
+    m_mesh_geometry = std::make_shared<sight::viz::scene3d::mesh>(this->get_id());
+    m_mesh_geometry->set_dynamic(true);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    m_scene_node = this->get_or_create_transform_node(root_scene_node);
 
-    const auto point_list = m_pointList.lock();
+    const auto point_list = m_point_list.lock();
     if(point_list)
     {
-        this->updateMesh(point_list.get_shared());
+        this->update_mesh(point_list.get_shared());
     }
     else
     {
         const auto mesh = m_mesh.lock();
         if(mesh)
         {
-            if(!m_customMaterial && mesh->has<data::mesh::Attributes::POINT_COLORS>())
+            if(!m_custom_material && mesh->has<data::mesh::attribute::point_colors>())
             {
-                m_materialTemplateName += "_PerPointColor";
+                m_material_template_name += "_PerPointColor";
             }
 
-            this->updateMesh(mesh.get_shared());
+            this->update_mesh(mesh.get_shared());
         }
         else
         {
-            SIGHT_ERROR("No '" << s_POINTLIST_INPUT << "' or '" << s_MESH_INPUT << "' specified.")
+            SIGHT_ERROR("No '" << POINTLIST_INPUT << "' or '" << MESH_INPUT << "' specified.")
         }
     }
 }
@@ -198,12 +198,12 @@ void point_list::starting()
 service::connections_t point_list::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_POINTLIST_INPUT, data::point_list::POINT_ADDED_SIG, service::slots::UPDATE);
-    connections.push(s_POINTLIST_INPUT, data::point_list::POINT_REMOVED_SIG, service::slots::UPDATE);
-    connections.push(s_POINTLIST_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(POINTLIST_INPUT, data::point_list::POINT_ADDED_SIG, service::slots::UPDATE);
+    connections.push(POINTLIST_INPUT, data::point_list::POINT_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(POINTLIST_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE);
 
-    connections.push(s_MESH_INPUT, data::mesh::VERTEX_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_MESH_INPUT, data::mesh::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MESH_INPUT, data::mesh::VERTEX_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MESH_INPUT, data::mesh::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -212,13 +212,13 @@ service::connections_t point_list::auto_connections() const
 
 void point_list::stopping()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    this->unregisterServices();
+    this->unregister_services();
 
-    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
     SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
-    m_meshGeometry->clearMesh(*scene_mgr);
+    m_mesh_geometry->clear_mesh(*scene_mgr);
 
     if(m_entity != nullptr)
     {
@@ -226,53 +226,53 @@ void point_list::stopping()
         m_entity = nullptr;
     }
 
-    m_meshGeometry.reset();
+    m_mesh_geometry.reset();
 }
 
 //-----------------------------------------------------------------------------
 
 void point_list::updating()
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    if((!getVisibility() || !this->getRenderService()->isShownOnScreen()))
+    if((!get_visibility() || !this->render_service()->is_shown_on_screen()))
     {
         return;
     }
 
-    this->destroyLabel();
+    this->destroy_label();
 
-    const auto point_list = m_pointList.lock();
+    const auto point_list = m_point_list.lock();
     if(point_list)
     {
-        this->updateMesh(point_list.get_shared());
+        this->update_mesh(point_list.get_shared());
     }
     else
     {
         const auto mesh = m_mesh.lock();
         if(mesh)
         {
-            this->updateMesh(mesh.get_shared());
+            this->update_mesh(mesh.get_shared());
         }
         else
         {
-            SIGHT_ERROR("No '" << s_POINTLIST_INPUT << "' or '" << s_MESH_INPUT << "' specified.")
+            SIGHT_ERROR("No '" << POINTLIST_INPUT << "' or '" << MESH_INPUT << "' specified.")
         }
     }
 
-    this->requestRender();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
-void point_list::createLabel(const data::point_list::csptr& _point_list)
+void point_list::create_label(const data::point_list::csptr& _point_list)
 {
-    auto render_srv          = this->getRenderService();
+    auto render_srv          = this->render_service();
     std::size_t i            = 0;
     std::string label_number = std::to_string(i);
-    for(const auto& point : _point_list->getPoints())
+    for(const auto& point : _point_list->get_points())
     {
-        const auto label = point->getLabel();
+        const auto label = point->get_label();
         if(!label.empty())
         {
             label_number = label;
@@ -282,19 +282,19 @@ void point_list::createLabel(const data::point_list::csptr& _point_list)
             label_number = std::to_string(i);
         }
 
-        m_labels.push_back(sight::viz::scene3d::text::make(this->getLayer()));
-        m_labels[i]->setFontSize(m_fontSize);
-        m_labels[i]->setText(label_number);
-        m_labels[i]->setTextColor(
+        m_labels.push_back(sight::viz::scene3d::text::make(this->layer()));
+        m_labels[i]->set_font_size(m_font_size);
+        m_labels[i]->set_text(label_number);
+        m_labels[i]->set_text_color(
             Ogre::ColourValue(
-                m_labelColor->red(),
-                m_labelColor->green(),
-                m_labelColor->blue()
+                m_label_color->red(),
+                m_label_color->green(),
+                m_label_color->blue()
             )
         );
-        m_nodes.push_back(m_sceneNode->createChildSceneNode(this->get_id() + label_number));
-        m_labels[i]->attachToNode(m_nodes[i], this->getLayer()->getDefaultCamera());
-        data::point::point_coord_array_t coord = point->getCoord();
+        m_nodes.push_back(m_scene_node->createChildSceneNode(this->get_id() + label_number));
+        m_labels[i]->attach_to_node(m_nodes[i], this->layer()->get_default_camera());
+        data::point::point_coord_array_t coord = point->get_coord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
         i++;
     }
@@ -302,41 +302,41 @@ void point_list::createLabel(const data::point_list::csptr& _point_list)
 
 //------------------------------------------------------------------------------
 
-void point_list::destroyLabel()
+void point_list::destroy_label()
 {
-    std::ranges::for_each(m_nodes, [this](auto& _node){m_sceneNode->removeAndDestroyChild(_node);});
+    std::ranges::for_each(m_nodes, [this](auto& _node){m_scene_node->removeAndDestroyChild(_node);});
     m_nodes.clear();
 
-    std::ranges::for_each(m_labels, [](auto& _label){_label->detachFromNode();});
+    std::ranges::for_each(m_labels, [](auto& _label){_label->detach_from_node();});
     m_labels.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void point_list::updateMesh(const data::point_list::csptr& _point_list)
+void point_list::update_mesh(const data::point_list::csptr& _point_list)
 {
-    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
     SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
 
-    detachAndDestroyEntity();
+    detach_and_destroy_entity();
 
-    const std::size_t ui_num_vertices = _point_list->getPoints().size();
+    const std::size_t ui_num_vertices = _point_list->get_points().size();
     if(ui_num_vertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
-        m_meshGeometry->clearMesh(*scene_mgr);
+        m_mesh_geometry->clear_mesh(*scene_mgr);
 
         return;
     }
 
-    if(m_displayLabel)
+    if(m_display_label)
     {
-        this->createLabel(_point_list);
+        this->create_label(_point_list);
     }
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    m_meshGeometry->updateMesh(_point_list);
+    m_mesh_geometry->update_mesh(_point_list);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -344,53 +344,53 @@ void point_list::updateMesh(const data::point_list::csptr& _point_list)
 
     if(m_entity == nullptr)
     {
-        m_entity = m_meshGeometry->createEntity(*scene_mgr);
-        m_entity->setVisible(m_isVisible);
-        m_entity->setQueryFlags(m_queryFlags);
+        m_entity = m_mesh_geometry->create_entity(*scene_mgr);
+        m_entity->setVisible(m_visible);
+        m_entity->setQueryFlags(m_query_flags);
     }
 
     //------------------------------------------
     // Update vertex layers
     //------------------------------------------
 
-    m_meshGeometry->updateVertices(_point_list);
+    m_mesh_geometry->update_vertices(_point_list);
 
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor(_point_list->get_id());
+    this->update_material_adaptor(_point_list->get_id());
 
-    this->attachNode(m_entity);
+    this->attach_node(m_entity);
 
-    m_meshGeometry->setVisible(m_isVisible);
+    m_mesh_geometry->set_visible(m_visible);
 
-    if(m_autoResetCamera)
+    if(m_auto_reset_camera)
     {
-        this->getRenderService()->resetCameraCoordinates(m_layerID);
+        this->render_service()->reset_camera_coordinates(m_layer_id);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void point_list::updateMesh(const data::mesh::csptr& _mesh)
+void point_list::update_mesh(const data::mesh::csptr& _mesh)
 {
-    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
     SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
 
-    detachAndDestroyEntity();
+    detach_and_destroy_entity();
 
-    const std::size_t ui_num_vertices = _mesh->numPoints();
+    const std::size_t ui_num_vertices = _mesh->num_points();
     if(ui_num_vertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
 
-        m_meshGeometry->clearMesh(*scene_mgr);
+        m_mesh_geometry->clear_mesh(*scene_mgr);
         return;
     }
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    m_meshGeometry->updateMesh(std::const_pointer_cast<data::mesh>(_mesh), true);
+    m_mesh_geometry->update_mesh(std::const_pointer_cast<data::mesh>(_mesh), true);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -398,51 +398,51 @@ void point_list::updateMesh(const data::mesh::csptr& _mesh)
 
     if(m_entity == nullptr)
     {
-        m_entity = m_meshGeometry->createEntity(*scene_mgr);
-        m_entity->setVisible(m_isVisible);
-        m_entity->setQueryFlags(m_queryFlags);
+        m_entity = m_mesh_geometry->create_entity(*scene_mgr);
+        m_entity->setVisible(m_visible);
+        m_entity->setQueryFlags(m_query_flags);
     }
 
     //------------------------------------------
     // Update vertex layers
     //------------------------------------------
 
-    m_meshGeometry->updateVertices(_mesh);
-    m_meshGeometry->updateColors(_mesh);
+    m_mesh_geometry->update_vertices(_mesh);
+    m_mesh_geometry->update_colors(_mesh);
 
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor(_mesh->get_id());
+    this->update_material_adaptor(_mesh->get_id());
 
-    this->attachNode(m_entity);
+    this->attach_node(m_entity);
 
-    m_meshGeometry->setVisible(m_isVisible);
+    m_mesh_geometry->set_visible(m_visible);
 
-    if(m_autoResetCamera)
+    if(m_auto_reset_camera)
     {
-        this->getRenderService()->resetCameraCoordinates(m_layerID);
+        this->render_service()->reset_camera_coordinates(m_layer_id);
     }
 }
 
 //------------------------------------------------------------------------------
 
-scene3d::adaptor::material::sptr point_list::createMaterialService(const std::string& _mesh_id)
+scene3d::adaptor::material::sptr point_list::create_material_service(const std::string& _mesh_id)
 {
-    auto material_adaptor = this->registerService<module::viz::scene3d::adaptor::material>(
+    auto material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
     );
     material_adaptor->set_inout(m_material, "material", true);
 
     const auto tpl_name =
-        !m_materialTemplateName.empty() ? m_materialTemplateName : sight::viz::scene3d::material::
+        !m_material_template_name.empty() ? m_material_template_name : sight::viz::scene3d::material::
         DEFAULT_MATERIAL_TEMPLATE_NAME;
 
     material_adaptor->configure(
         this->get_id() + "_" + material_adaptor->get_id(),
         _mesh_id + "_" + material_adaptor->get_id(),
-        this->getRenderService(),
-        m_layerID,
+        this->render_service(),
+        m_layer_id,
         "",
         tpl_name
     );
@@ -452,29 +452,29 @@ scene3d::adaptor::material::sptr point_list::createMaterialService(const std::st
 
 //------------------------------------------------------------------------------
 
-void point_list::updateMaterialAdaptor(const std::string& _mesh_id)
+void point_list::update_material_adaptor(const std::string& _mesh_id)
 {
-    if(!m_materialAdaptor)
+    if(!m_material_adaptor)
     {
         if(m_entity != nullptr)
         {
-            m_materialAdaptor = this->createMaterialService(_mesh_id);
-            m_materialAdaptor->start();
+            m_material_adaptor = this->create_material_service(_mesh_id);
+            m_material_adaptor->start();
 
-            auto* material_fw = m_materialAdaptor->getMaterialFw();
-            m_meshGeometry->updateMaterial(material_fw, false);
-            material_fw->setMeshSize(m_radius);
+            auto* material_fw = m_material_adaptor->get_material_fw();
+            m_mesh_geometry->update_material(material_fw, false);
+            material_fw->set_mesh_size(m_radius);
 
-            m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
+            m_entity->setMaterialName(m_material_adaptor->get_material_name());
 
-            if(!m_textureName.empty())
+            if(!m_texture_name.empty())
             {
                 const auto texture = Ogre::TextureManager::getSingleton().load(
-                    m_textureName,
+                    m_texture_name,
                     sight::viz::scene3d::RESOURCE_GROUP
                 );
                 Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
-                    m_materialAdaptor->getMaterialName(),
+                    m_material_adaptor->get_material_name(),
                     sight::viz::scene3d::RESOURCE_GROUP
                 );
 
@@ -484,49 +484,49 @@ void point_list::updateMaterialAdaptor(const std::string& _mesh_id)
                 tex_unit_state->setTexture(texture);
             }
 
-            m_materialAdaptor->update();
+            m_material_adaptor->update();
         }
     }
-    else if(m_materialAdaptor->inout<data::material>(material::s_MATERIAL_INOUT).lock()
+    else if(m_material_adaptor->inout<data::material>(material::MATERIAL_INOUT).lock()
             != m_material)
     {
-        auto* material_fw = m_materialAdaptor->getMaterialFw();
-        m_meshGeometry->updateMaterial(material_fw, false);
-        material_fw->setMeshSize(m_radius);
+        auto* material_fw = m_material_adaptor->get_material_fw();
+        m_mesh_geometry->update_material(material_fw, false);
+        material_fw->set_mesh_size(m_radius);
     }
     else
     {
-        auto* material_fw = m_materialAdaptor->getMaterialFw();
-        m_meshGeometry->updateMaterial(material_fw, false);
-        material_fw->setMeshSize(m_radius);
+        auto* material_fw = m_material_adaptor->get_material_fw();
+        m_mesh_geometry->update_material(material_fw, false);
+        material_fw->set_mesh_size(m_radius);
 
-        m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
+        m_entity->setMaterialName(m_material_adaptor->get_material_name());
 
-        m_materialAdaptor->slot(service::slots::UPDATE)->run();
+        m_material_adaptor->slot(service::slots::UPDATE)->run();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void point_list::attachNode(Ogre::MovableObject* _node)
+void point_list::attach_node(Ogre::MovableObject* _node)
 {
-    SIGHT_ASSERT("transform Node shouldn't be null", m_sceneNode);
-    m_sceneNode->attachObject(_node);
+    SIGHT_ASSERT("transform Node shouldn't be null", m_scene_node);
+    m_scene_node->attachObject(_node);
 
     // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds
-    m_sceneNode->_update(true, false);
+    m_scene_node->_update(true, false);
 }
 
 //-----------------------------------------------------------------------------
 
-void point_list::detachAndDestroyEntity()
+void point_list::detach_and_destroy_entity()
 {
     if(m_entity != nullptr)
     {
-        Ogre::SceneManager* const scene_mgr = this->getSceneManager();
-        if(m_sceneNode != nullptr)
+        Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
+        if(m_scene_node != nullptr)
         {
-            m_sceneNode->detachObject(m_entity);
+            m_scene_node->detachObject(m_entity);
         }
 
         scene_mgr->destroyEntity(m_entity);

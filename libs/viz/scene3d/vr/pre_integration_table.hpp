@@ -49,23 +49,23 @@ public:
     VIZ_SCENE3D_API ~pre_integration_table();
 
     /// Initializes the texture resource.
-    VIZ_SCENE3D_API void createTexture(const std::string& _parent_id);
+    VIZ_SCENE3D_API void create_texture(const std::string& _parent_id);
 
     /// Destroy the texture
-    VIZ_SCENE3D_API void removeTexture();
+    VIZ_SCENE3D_API void remove_texture();
 
     /// Sets the table resolution based on the new image and recomputes it.
-    VIZ_SCENE3D_API void imageUpdate(
+    VIZ_SCENE3D_API void image_update(
         const data::image::csptr& _img,
         const data::transfer_function::csptr& _tf,
         float _sampling_rate
     );
 
     /// Computes the table based on the given TF and slice distance.
-    VIZ_SCENE3D_API void tfUpdate(const data::transfer_function::csptr& _tf, float _sample_distance);
+    VIZ_SCENE3D_API void tf_update(const data::transfer_function::csptr& _tf, float _sample_distance);
 
     /// Get the texture holding the pre-integration table.
-    [[nodiscard]] VIZ_SCENE3D_API inline Ogre::TexturePtr getTexture() const;
+    [[nodiscard]] VIZ_SCENE3D_API inline Ogre::TexturePtr get_texture() const;
 
     /// Returns the image value interval.
     [[nodiscard]] VIZ_SCENE3D_API inline std::pair<int, int> get_min_max() const;
@@ -73,7 +73,7 @@ public:
 private:
 
     /// Defines a texture pixel.
-    struct TablePixel
+    struct table_pixel
     {
         uint8_t b;
         uint8_t g;
@@ -82,36 +82,36 @@ private:
     };
 
     /// Pixel structure used when computing the table.
-    typedef glm::vec4 IntegralPixel;
+    using integral_pixel = glm::vec4;
 
     /// Array storing table values.
-    TablePixel* m_table {nullptr};
+    table_pixel* m_table {nullptr};
 
     /// Transfer function integral.
-    IntegralPixel* m_integralTable {nullptr};
+    integral_pixel* m_integral_table {nullptr};
 
     /// Table's GPU texture.
-    Ogre::TexturePtr m_tableTexture;
+    Ogre::TexturePtr m_table_texture;
 
     /// image value interval.
-    std::pair<int, int> m_valueInterval;
+    std::pair<int, int> m_value_interval;
 
     /// texture resolution.
-    unsigned m_textureSize {0};
+    unsigned m_texture_size {0};
 };
 
 //-----------------------------------------------------------------------------
 
-Ogre::TexturePtr pre_integration_table::getTexture() const
+Ogre::TexturePtr pre_integration_table::get_texture() const
 {
-    return m_tableTexture;
+    return m_table_texture;
 }
 
 //-----------------------------------------------------------------------------
 
 std::pair<int, int> pre_integration_table::get_min_max() const
 {
-    return m_valueInterval;
+    return m_value_interval;
 }
 
 //-----------------------------------------------------------------------------

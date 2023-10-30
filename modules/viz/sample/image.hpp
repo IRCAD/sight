@@ -84,18 +84,18 @@ protected:
 private:
 
     /// Contains the render service.
-    service::base::sptr m_renderSrv {nullptr};
+    service::base::sptr m_render_srv {nullptr};
 
     /// Contains the trackball interactor adaptor.
-    service::base::sptr m_interactorSrv {nullptr};
+    service::base::sptr m_interactor_srv {nullptr};
 
     /// Contains the negato adaptor.
-    service::base::sptr m_negatoSrv {nullptr};
+    service::base::sptr m_negato_srv {nullptr};
 
     /// Default transfer function
     data::transfer_function::sptr m_tf;
 
-    data::ptr<data::image, data::Access::in> m_image {this, "image", false};
+    data::ptr<data::image, data::access::in> m_image {this, "image", false};
 };
 
 } // namespace sight::module::viz::sample.

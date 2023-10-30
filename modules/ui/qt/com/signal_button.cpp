@@ -52,16 +52,16 @@ static const core::com::slots::key_t HIDE_SLOT        = "hide";
 //-----------------------------------------------------------------------------
 
 signal_button::signal_button() noexcept :
-    m_sigClicked(new_signal<clicked_signal_t>(CLICKED_SIG)),
-    m_sigToggled(new_signal<toggled_signal_t>(TOGGLED_SIG))
+    m_sig_clicked(new_signal<clicked_signal_t>(CLICKED_SIG)),
+    m_sig_toggled(new_signal<toggled_signal_t>(TOGGLED_SIG))
 {
-    new_slot(SET_CHECKED_SLOT, &signal_button::setChecked, this);
+    new_slot(SET_CHECKED_SLOT, &signal_button::set_checked, this);
     new_slot(CHECK_SLOT, &signal_button::check, this);
     new_slot(UNCHECK_SLOT, &signal_button::uncheck, this);
-    new_slot(SET_ENABLED_SLOT, &signal_button::setEnabled, this);
+    new_slot(SET_ENABLED_SLOT, &signal_button::set_enabled, this);
     new_slot(ENABLE_SLOT, &signal_button::enable, this);
     new_slot(DISABLE_SLOT, &signal_button::disable, this);
-    new_slot(SET_VISIBLE_SLOT, &signal_button::setVisible, this);
+    new_slot(SET_VISIBLE_SLOT, &signal_button::set_visible, this);
     new_slot(SHOW_SLOT, &signal_button::show, this);
     new_slot(HIDE_SLOT, &signal_button::hide, this);
 }
@@ -83,13 +83,13 @@ void signal_button::configuring()
 
     if(config.has_value())
     {
-        m_checkable    = config->get<bool>("checkable", m_checkable);
-        m_checkAtStart = config->get<bool>("checked", m_checkAtStart);
-        m_enable       = config->get<bool>("enable", m_enable);
+        m_checkable      = config->get<bool>("checkable", m_checkable);
+        m_check_at_start = config->get<bool>("checked", m_check_at_start);
+        m_enable         = config->get<bool>("enable", m_enable);
 
-        m_text    = config->get<std::string>("text", m_text);
-        m_text2   = config->get<std::string>("text2", m_text2);
-        m_toolTip = config->get<std::string>("toolTip", m_toolTip);
+        m_text     = config->get<std::string>("text", m_text);
+        m_text2    = config->get<std::string>("text2", m_text2);
+        m_tool_tip = config->get<std::string>("toolTip", m_tool_tip);
 
         if(const auto icon = config->get_optional<std::string>("icon"); icon.has_value())
         {
@@ -101,8 +101,8 @@ void signal_button::configuring()
             m_icon2 = core::runtime::get_module_resource_file_path(icon.value());
         }
 
-        m_iconWidth  = config->get<unsigned int>("iconWidth", m_iconWidth);
-        m_iconHeight = config->get<unsigned int>("iconHeight", m_iconHeight);
+        m_icon_width  = config->get<unsigned int>("iconWidth", m_icon_width);
+        m_icon_height = config->get<unsigned int>("iconHeight", m_icon_height);
     }
 }
 
@@ -112,18 +112,18 @@ void signal_button::starting()
 {
     this->create();
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
     m_button->setEnabled(m_enable);
     m_button->setProperty("class", "signal-button");
     layout->addWidget(m_button);
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
-    if(!m_toolTip.empty())
+    if(!m_tool_tip.empty())
     {
-        m_button->setToolTip(QString::fromStdString(m_toolTip));
+        m_button->setToolTip(QString::fromStdString(m_tool_tip));
     }
 
     if(!m_icon.empty())
@@ -131,16 +131,16 @@ void signal_button::starting()
         m_button->setIcon(QIcon(QString::fromStdString(m_icon.string())));
     }
 
-    if(m_iconWidth > 0 && m_iconHeight > 0)
+    if(m_icon_width > 0 && m_icon_height > 0)
     {
-        m_button->setIconSize(QSize(int(m_iconWidth), int(m_iconHeight)));
+        m_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
     }
 
     if(m_checkable)
     {
         m_button->setCheckable(true);
 
-        if(m_checkAtStart)
+        if(m_check_at_start)
         {
             m_button->setChecked(true);
             if(!m_text2.empty())
@@ -155,8 +155,8 @@ void signal_button::starting()
         }
     }
 
-    QObject::connect(m_button.data(), &QPushButton::clicked, this, &signal_button::onClicked);
-    QObject::connect(m_button.data(), &QPushButton::toggled, this, &signal_button::onToggled);
+    QObject::connect(m_button.data(), &QPushButton::clicked, this, &signal_button::on_clicked);
+    QObject::connect(m_button.data(), &QPushButton::toggled, this, &signal_button::on_toggled);
 }
 
 //-----------------------------------------------------------------------------
@@ -174,22 +174,22 @@ void signal_button::stopping()
 
 //-----------------------------------------------------------------------------
 
-void signal_button::onClicked()
+void signal_button::on_clicked()
 {
-    m_sigClicked->async_emit();
+    m_sig_clicked->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
-void signal_button::onToggled(bool _toggled)
+void signal_button::on_toggled(bool _toggled)
 {
-    this->setChecked(_toggled);
-    m_sigToggled->async_emit(_toggled);
+    this->set_checked(_toggled);
+    m_sig_toggled->async_emit(_toggled);
 }
 
 //-----------------------------------------------------------------------------
 
-void signal_button::setChecked(bool _checked)
+void signal_button::set_checked(bool _checked)
 {
     if(_checked)
     {
@@ -226,21 +226,21 @@ void signal_button::setChecked(bool _checked)
 
 void signal_button::check()
 {
-    this->setChecked(true);
+    this->set_checked(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void signal_button::uncheck()
 {
-    this->setChecked(false);
+    this->set_checked(false);
 }
 
 //-----------------------------------------------------------------------------
 
-void signal_button::setEnabled(bool _is_enabled)
+void signal_button::set_enabled(bool _is_enabled)
 {
-    editor::setEnabled(_is_enabled);
+    editor::set_enabled(_is_enabled);
     // Keep this in case of signal_button is used outside a view container
     m_button->setEnabled(_is_enabled);
 }
@@ -249,21 +249,21 @@ void signal_button::setEnabled(bool _is_enabled)
 
 void signal_button::enable()
 {
-    this->setEnabled(true);
+    this->set_enabled(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void signal_button::disable()
 {
-    this->setEnabled(false);
+    this->set_enabled(false);
 }
 
 //-----------------------------------------------------------------------------
 
-void signal_button::setVisible(bool _is_visible)
+void signal_button::set_visible(bool _is_visible)
 {
-    editor::setVisible(_is_visible);
+    editor::set_visible(_is_visible);
     // Keep this in case of signal_button is used outside a view container
     m_button->setVisible(_is_visible);
 }
@@ -272,14 +272,14 @@ void signal_button::setVisible(bool _is_visible)
 
 void signal_button::show()
 {
-    this->setVisible(true);
+    this->set_visible(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void signal_button::hide()
 {
-    this->setVisible(false);
+    this->set_visible(false);
 }
 
 //-----------------------------------------------------------------------------

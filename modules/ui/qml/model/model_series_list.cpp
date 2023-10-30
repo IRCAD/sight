@@ -37,8 +37,8 @@ const core::com::signals::key_t model_series_list::EMPTIED_SELECTION_SIG       =
 
 model_series_list::model_series_list() noexcept
 {
-    m_sigReconstructionSelected = new_signal<reconstruction_selected_signal_t>(RECONSTRUCTION_SELECTED_SIG);
-    m_sigEmptiedSelection       = new_signal<emptied_selection_signal_t>(EMPTIED_SELECTION_SIG);
+    m_sig_reconstruction_selected = new_signal<reconstruction_selected_signal_t>(RECONSTRUCTION_SELECTED_SIG);
+    m_sig_emptied_selection       = new_signal<emptied_selection_signal_t>(EMPTIED_SELECTION_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ void model_series_list::starting()
 
 void model_series_list::stopping()
 {
-    m_listModel->updateModelSeries(nullptr);
+    m_list_model->update_model_series(nullptr);
 
     sight::ui::qml::editor::stopping();
 }
@@ -72,59 +72,59 @@ void model_series_list::configuring()
 
 void model_series_list::updating()
 {
-    auto model_series = m_modelSeries.lock();
+    auto model_series = m_model_series.lock();
     SIGHT_ASSERT("inout 'modelSeries' is missing", model_series);
 
-    SIGHT_ASSERT("list model is not defined.", m_listModel);
-    m_listModel->updateModelSeries(model_series.get_shared());
+    SIGHT_ASSERT("list model is not defined.", m_list_model);
+    m_list_model->update_model_series(model_series.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onOrganSelected(int _index)
+void model_series_list::on_organ_selected(int _index)
 {
     if(_index >= 0)
     {
-        auto model_series = m_modelSeries.lock();
-        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
+        auto model_series = m_model_series.lock();
+        SIGHT_ASSERT("'" << MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
 
-        const auto& recs = model_series->getReconstructionDB();
+        const auto& recs = model_series->get_reconstruction_db();
 
         const auto& selected_rec = recs.at(static_cast<std::size_t>(_index));
-        m_sigReconstructionSelected->async_emit(selected_rec);
+        m_sig_reconstruction_selected->async_emit(selected_rec);
     }
     else
     {
-        m_sigEmptiedSelection->async_emit();
+        m_sig_emptied_selection->async_emit();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onShowReconstructions(int _state)
+void model_series_list::on_show_reconstructions(int _state)
 {
-    auto model_series = m_modelSeries.lock();
-    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
+    auto model_series = m_model_series.lock();
+    SIGHT_ASSERT("'" << MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
     data::helper::field helper(model_series.get_shared());
-    helper.addOrSwap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
+    helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
     helper.notify();
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onOrganVisibilityChanged(int _index, bool _visible)
+void model_series_list::on_organ_visibility_changed(int _index, bool _visible)
 {
     if(_index >= 0)
     {
-        auto model_series = m_modelSeries.lock();
-        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
+        auto model_series = m_model_series.lock();
+        SIGHT_ASSERT("'" << MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
 
-        const auto& recs         = model_series->getReconstructionDB();
+        const auto& recs         = model_series->get_reconstruction_db();
         const auto& selected_rec = recs.at(static_cast<std::size_t>(_index));
 
-        if(selected_rec->getIsVisible() != _visible)
+        if(selected_rec->get_is_visible() != _visible)
         {
-            selected_rec->setIsVisible(_visible);
+            selected_rec->set_is_visible(_visible);
 
             data::reconstruction::visibility_modified_signal_t::sptr sig;
             sig = selected_rec->signal<data::reconstruction::visibility_modified_signal_t>(
@@ -137,16 +137,16 @@ void model_series_list::onOrganVisibilityChanged(int _index, bool _visible)
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onCheckAllBoxes(bool _checked)
+void model_series_list::on_check_all_boxes(bool _checked)
 {
-    auto model_series = m_modelSeries.lock();
-    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
+    auto model_series = m_model_series.lock();
+    SIGHT_ASSERT("'" << MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
 
-    for(const auto& rec : model_series->getReconstructionDB())
+    for(const auto& rec : model_series->get_reconstruction_db())
     {
-        if(rec->getIsVisible() != _checked)
+        if(rec->get_is_visible() != _checked)
         {
-            rec->setIsVisible(_checked);
+            rec->set_is_visible(_checked);
 
             data::reconstruction::visibility_modified_signal_t::sptr sig;
             sig = rec->signal<data::reconstruction::visibility_modified_signal_t>(
@@ -164,9 +164,9 @@ void model_series_list::onCheckAllBoxes(bool _checked)
 service::connections_t model_series_list::auto_connections() const
 {
     return {
-        {s_MODEL_SERIES_INOUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE},
-        {s_MODEL_SERIES_INOUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE},
-        {s_MODEL_SERIES_INOUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE}
+        {MODEL_SERIES_INOUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE},
+        {MODEL_SERIES_INOUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE},
+        {MODEL_SERIES_INOUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE}
     };
 }
 

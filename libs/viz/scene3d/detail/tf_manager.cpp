@@ -39,7 +39,7 @@ namespace sight::viz::scene3d::detail
 
 // ----------------------------------------------------------------------------
 
-TFLoader::return_t TFLoader::load(const sight::data::transfer_function& _tf, Ogre::Texture* _texture)
+tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, Ogre::Texture* _texture)
 {
     static std::uint32_t texture_size = ~0U;
     // Unluckily Ogre does not seem to give us the maximum texture size through the caps... :'(
@@ -54,7 +54,7 @@ TFLoader::return_t TFLoader::load(const sight::data::transfer_function& _tf, Ogr
     if(_texture->getTextureType() != Ogre::TEX_TYPE_1D)
     {
         SIGHT_DEBUG("Allocate transfer function: " << _tf.get_id() << " " << texture_size);
-        viz::scene3d::utils::allocateTexture(
+        viz::scene3d::utils::allocate_texture(
             _texture,
             texture_size,
             1,
@@ -77,7 +77,7 @@ TFLoader::return_t TFLoader::load(const sight::data::transfer_function& _tf, Ogr
     auto* p_dest           = static_cast<std::uint8_t*>(pix_box.data);
 
     // Retrieves the transfer function's intensity window
-    const min_max_t tf_wl_min_max = _tf.windowMinMax();
+    const min_max_t tf_wl_min_max = _tf.window_min_max();
 
     // The window can be inverted
     const value_t min = std::min(tf_wl_min_max.second, tf_wl_min_max.first);

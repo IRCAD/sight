@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,10 @@ namespace sight::module::io::dimse::ut
 /**
  * @brief Test PacsConfigurationInitializer controller
  */
-class IoPacsTest : public CPPUNIT_NS::TestFixture
+class io_pacs_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(IoPacsTest);
-CPPUNIT_TEST(pacsConfigurationInitializer);
+CPPUNIT_TEST_SUITE(io_pacs_test);
+CPPUNIT_TEST(pacs_configuration_initializer);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,7 +42,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void pacsConfigurationInitializer();
+    static void pacs_configuration_initializer();
 };
 
 } // namespace sight::module::io::dimse::ut

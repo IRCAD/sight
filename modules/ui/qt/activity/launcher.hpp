@@ -72,8 +72,8 @@ namespace sight::module::ui::qt::activity
                 <parameter replace="SERIES_SET" by="medicalData" />
             </parameters>
 
-            <!-- Filter mode 'include' allows all given activity id-s.
-                 Filter mode 'exclude' allows all activity id-s excepted given ones. -->
+            <!-- filter mode 'include' allows all given activity id-s.
+                 filter mode 'exclude' allows all activity id-s excepted given ones. -->
             <filter>
                 <mode>include</mode>
                 <id>activity_viz_negato</id>
@@ -140,7 +140,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::signal<void (sight::activity::message)> activity_launched_signal_t;
+    using activity_launched_signal_t = core::com::signal<void (sight::activity::message)>;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG;
@@ -175,14 +175,14 @@ protected:
      */
     void configuring() override;
 
-    typedef sight::activity::extension::activity_config_params_type parameters_t;
+    using parameters_t = sight::activity::extension::activity_config_params_type;
 
-    typedef std::vector<std::string> keys_t;
+    using keys_t = std::vector<std::string>;
 
-    typedef std::map<std::string, std::string> quick_launch_t;
+    using quick_launch_t = std::map<std::string, std::string>;
 
     //// SLOT: Updates action state (enable if activities are available for current selection).
-    virtual void updateState();
+    virtual void update_state();
 
 private:
 
@@ -190,7 +190,7 @@ private:
      * @brief Launches activity if only Activity are selected.
      * @return Returns true if only Activity are selected.
      */
-    bool launchAS(const data::vector::csptr& _selection);
+    bool launch_as(const data::vector::csptr& _selection);
 
     /**
      * @brief Slots to launch the given series.
@@ -199,13 +199,13 @@ private:
      * If series is an Activity, it is launched, otherwise it launches the first available activity for
      * this series or used m_quickLaunch information if a default association is defined for this series type.
      */
-    void launchSeries(data::series::sptr _series);
+    void launch_series(data::series::sptr _series);
 
     /**
      * @brief Slots to launch the given activity.
      * @param series the activity to launch.
      */
-    void launchActivity(data::activity::sptr _activity);
+    void launch_activity(data::activity::sptr _activity);
 
     /**
      * @brief Send message to launch new tab view
@@ -214,7 +214,7 @@ private:
      *
      * @param info activity information
      */
-    void sendConfig(const sight::activity::extension::activity_info& _info);
+    void send_config(const sight::activity::extension::activity_info& _info);
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
@@ -222,39 +222,39 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const sight::activity::extension::activity_info& _info, const data::vector::csptr& _selection);
+    void build_activity(const sight::activity::extension::activity_info& _info, const data::vector::csptr& _selection);
 
-    typedef sight::activity::extension::activity::infos_t activity_infos_t;
+    using activity_infos_t = sight::activity::extension::activity::infos_t;
 
     /// Show custom dialog box
     static sight::activity::extension::activity_info show(const activity_infos_t& _infos);
 
     /// Returns enabled activity infos according to activity filter.
-    activity_infos_t getEnabledActivities(const activity_infos_t& _infos);
+    activity_infos_t get_enabled_activities(const activity_infos_t& _infos);
 
     parameters_t m_parameters;
 
     /**
-     * @brief Filter mode : include or exclude activity configurations.
+     * @brief filter mode : include or exclude activity configurations.
      * @note Allowed values : 'include' or 'exclude'
      */
-    std::string m_filterMode;
+    std::string m_filter_mode;
 
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
     keys_t m_keys;
 
     /// Signal emitted when activity is launched. Send a message containing the activity information.
-    activity_launched_signal_t::sptr m_sigActivityLaunched;
+    activity_launched_signal_t::sptr m_sig_activity_launched;
 
     /// launcher's mode (message or immediate)
     std::string m_mode;
 
     /// Defines quick association between series type (a classname) and an activity id used by launchSeries method
-    quick_launch_t m_quickLaunch;
+    quick_launch_t m_quick_launch;
 
-    static constexpr std::string_view s_SERIES = "series";
+    static constexpr std::string_view SERIES = "series";
 
-    data::ptr<data::vector, sight::data::Access::in> m_series {this, s_SERIES};
+    data::ptr<data::vector, sight::data::access::in> m_series {this, SERIES};
 };
 
 } // namespace sight::module::ui::qt::activity

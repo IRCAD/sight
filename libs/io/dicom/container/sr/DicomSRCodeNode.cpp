@@ -31,40 +31,40 @@ namespace sight::io::dicom::container::sr
 
 //------------------------------------------------------------------------------
 
-DicomSRCodeNode::DicomSRCodeNode(
-    const DicomCodedAttribute& _coded_attribute,
+dicom_sr_code_node::dicom_sr_code_node(
+    const dicom_coded_attribute& _coded_attribute,
     const std::string& _relationship
     ,
-    DicomCodedAttribute _coded_entry
+    dicom_coded_attribute _coded_entry
 ) :
-    io::dicom::container::sr::DicomSRNode(_coded_attribute, "CODE", _relationship),
-    m_codedEntry(std::move(_coded_entry))
+    io::dicom::container::sr::dicom_sr_node(_coded_attribute, "CODE", _relationship),
+    m_coded_entry(std::move(_coded_entry))
 {
 }
 
 //------------------------------------------------------------------------------
 
-DicomSRCodeNode::~DicomSRCodeNode()
+dicom_sr_code_node::~dicom_sr_code_node()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomSRCodeNode::write(gdcm::DataSet& _dataset) const
+void dicom_sr_code_node::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(_dataset);
+    io::dicom::container::sr::dicom_sr_node::write(_dataset);
 
     // Concept Code Sequence - Type 1
     gdcm::SmartPointer<gdcm::SequenceOfItems> code_sequence =
-        this->createConceptNameCodeSequence(m_codedEntry);
-    io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa168>(code_sequence, _dataset);
+        this->create_concept_name_code_sequence(m_coded_entry);
+    io::dicom::helper::dicom_data_writer::set_and_merge_sequence_tag_value<0x0040, 0xa168>(code_sequence, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRCodeNode::print(std::ostream& _os) const
+void dicom_sr_code_node::print(std::ostream& _os) const
 {
-    DicomSRNode::print(_os);
-    _os << "\\nCoded entry : [" << m_codedEntry << "]";
+    dicom_sr_node::print(_os);
+    _os << "\\nCoded entry : [" << m_coded_entry << "]";
 }
 
 //------------------------------------------------------------------------------

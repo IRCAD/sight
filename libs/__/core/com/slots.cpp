@@ -64,9 +64,9 @@ slot_base::sptr slots::operator[](const key_t& _key) const
 
 //-----------------------------------------------------------------------------
 
-slots::slot_key_container_type slots::get_slot_keys() const
+slots::slot_key_container_t slots::get_slot_keys() const
 {
-    slots::slot_key_container_type slot_keys;
+    slots::slot_key_container_t slot_keys;
     for(const auto& elem : m_slots)
     {
         slot_keys.push_back(elem.first);

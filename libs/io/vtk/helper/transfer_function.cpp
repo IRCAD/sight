@@ -29,7 +29,7 @@ namespace sight::io::vtk::helper
 
 //------------------------------------------------------------------------------
 
-void transfer_function::toVtkLookupTable(
+void transfer_function::to_vtk_lookup_table(
     data::transfer_function::csptr _tf,
     vtkSmartPointer<vtkLookupTable> _lt,
     bool _allow_transparency,
@@ -40,7 +40,7 @@ void transfer_function::toVtkLookupTable(
     _lt->SetNumberOfTableValues(_size);
     _lt->SetScaleToLinear();
 
-    data::transfer_function::min_max_t min_max = _tf->minMax();
+    data::transfer_function::min_max_t min_max = _tf->min_max();
 
     _lt->SetTableRange(min_max.first, min_max.second);
 
@@ -75,7 +75,7 @@ void transfer_function::toVtkLookupTable(
 
 //------------------------------------------------------------------------------
 
-void transfer_function::toBWVtkLookupTable(
+void transfer_function::to_bw_vtk_lookup_table(
     double _range_min,
     double _range_max,
     vtkSmartPointer<vtkLookupTable> _lt,

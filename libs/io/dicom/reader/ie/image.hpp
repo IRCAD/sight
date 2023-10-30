@@ -33,7 +33,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief image Information Entity class
  */
-class IO_DICOM_CLASS_API image : public io::dicom::reader::ie::InformationEntity<data::image>
+class IO_DICOM_CLASS_API image : public io::dicom::reader::ie::information_entity<data::image>
 {
 public:
 
@@ -50,11 +50,11 @@ public:
     IO_DICOM_API image(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::sptr& _image,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
@@ -64,24 +64,24 @@ public:
      * @brief Read image Plane Module tags
      * @see PS 3.3 C.7.6.2
      */
-    IO_DICOM_API virtual void readImagePlaneModule();
+    IO_DICOM_API virtual void read_image_plane_module();
 
     /**
      * @brief Read image Pixel Module tags
      * @see PS 3.3 C.7.6.3
      */
-    IO_DICOM_API virtual void readImagePixelModule();
+    IO_DICOM_API virtual void read_image_pixel_module();
 
     /**
      * @brief Read VOI LUT Module tags
      * @see PS 3.3 C.11.2
      */
-    IO_DICOM_API virtual void readVOILUTModule();
+    IO_DICOM_API virtual void read_voilut_module();
 
     /// Enable buffer rotation
-    void setBufferRotationEnabled(bool _enabled)
+    void set_buffer_rotation_enabled(bool _enabled)
     {
-        m_enableBufferRotation = _enabled;
+        m_enable_buffer_rotation = _enabled;
     }
 
 protected:
@@ -95,7 +95,7 @@ protected:
      * @return Global raw buffer of the image.
      * @throw(io::dicom::exception::Failed)
      */
-    char* readImageBuffer(
+    char* read_image_buffer(
         const std::vector<unsigned int>& _dimensions,
         core::type _image_type,
         std::uint16_t _bits_allocated,
@@ -109,14 +109,14 @@ protected:
      * @param[in] dimensions image dimensions
      * @param[in] bitsAllocated Number of bits allocated before rescale
      */
-    char* correctImageOrientation(
+    char* correct_image_orientation(
         char* _buffer,
         std::vector<unsigned int>& _dimensions,
         std::uint16_t _bits_allocated
     );
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation {true};
+    bool m_enable_buffer_rotation {true};
 };
 
 } // namespace sight::io::dicom::reader::ie

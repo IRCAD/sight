@@ -44,14 +44,14 @@ namespace sight::module::io::dimse
 
 static const core::com::slots::key_t SHOW_DIALOG_SLOT = "showDialog";
 
-static const service::base::key_t s_SHOW_DIALOG_CONFIG = "showDialog";
+static const service::base::key_t SHOW_DIALOG_CONFIG = "showDialog";
 
 //------------------------------------------------------------------------------
 
 pacs_configuration_editor::pacs_configuration_editor() noexcept :
     sight::service::notifier(m_signals)
 {
-    m_slotShowDialog = this->new_slot(SHOW_DIALOG_SLOT, &pacs_configuration_editor::showDialog);
+    m_slot_show_dialog = this->new_slot(SHOW_DIALOG_SLOT, &pacs_configuration_editor::show_dialog);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void pacs_configuration_editor::configuring()
 
     if(config)
     {
-        m_showDialog = config->get<bool>(s_SHOW_DIALOG_CONFIG, m_showDialog);
+        m_show_dialog = config->get<bool>(SHOW_DIALOG_CONFIG, m_show_dialog);
     }
 }
 
@@ -74,122 +74,120 @@ void pacs_configuration_editor::configuring()
 void pacs_configuration_editor::starting()
 {
     // Create the worker.
-    m_requestWorker = core::thread::worker::make();
+    m_request_worker = core::thread::worker::make();
 
     const auto pacs_configuration = m_config.lock();
 
     sight::ui::service::create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     auto* grid_layout = new QGridLayout();
 
-    m_SCUAppEntityTitleEdit = new QLineEdit();
-    m_SCUAppEntityTitleEdit->setText(pacs_configuration->getLocalApplicationTitle().c_str());
+    m_scu_app_entity_title_edit = new QLineEdit();
+    m_scu_app_entity_title_edit->setText(pacs_configuration->get_local_application_title().c_str());
     auto* const ae_tof_scu = new QLabel("AET of the SCU:");
     ae_tof_scu->setToolTip("Application entity title of the client");
     ae_tof_scu->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     grid_layout->addWidget(ae_tof_scu, 0, 0);
-    grid_layout->addWidget(m_SCUAppEntityTitleEdit, 0, 1);
+    grid_layout->addWidget(m_scu_app_entity_title_edit, 0, 1);
 
-    m_SCPAppEntityTitleEdit = new QLineEdit();
-    m_SCPAppEntityTitleEdit->setText(pacs_configuration->getPacsApplicationTitle().c_str());
+    m_scp_app_entity_title_edit = new QLineEdit();
+    m_scp_app_entity_title_edit->setText(pacs_configuration->get_pacs_application_title().c_str());
     auto* const ae_tof_scp = new QLabel("AET of the SCP:");
     ae_tof_scp->setToolTip("Application entity title of the PACS server");
     ae_tof_scp->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     grid_layout->addWidget(ae_tof_scp, 1, 0);
-    grid_layout->addWidget(m_SCPAppEntityTitleEdit, 1, 1);
+    grid_layout->addWidget(m_scp_app_entity_title_edit, 1, 1);
 
-    m_SCPHostNameEdit = new QLineEdit();
-    m_SCPHostNameEdit->setText(pacs_configuration->getPacsHostName().c_str());
+    m_scp_host_name_edit = new QLineEdit();
+    m_scp_host_name_edit->setText(pacs_configuration->get_pacs_host_name().c_str());
     auto* const host_name_of_scp = new QLabel("Host name of the SCP:");
     host_name_of_scp->setToolTip("Host name of the PACS server");
     host_name_of_scp->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     grid_layout->addWidget(host_name_of_scp, 2, 0);
-    grid_layout->addWidget(m_SCPHostNameEdit, 2, 1);
+    grid_layout->addWidget(m_scp_host_name_edit, 2, 1);
 
-    m_SCPPortEdit = new QSpinBox();
-    m_SCPPortEdit->setRange(0, 65535);
-    m_SCPPortEdit->setValue(pacs_configuration->getPacsApplicationPort());
+    m_scp_port_edit = new QSpinBox();
+    m_scp_port_edit->setRange(0, 65535);
+    m_scp_port_edit->setValue(pacs_configuration->get_pacs_application_port());
     auto* const scp_port = new QLabel("Port of the SCP");
     scp_port->setToolTip("Port of the PACS server");
     scp_port->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     grid_layout->addWidget(scp_port, 3, 0);
-    grid_layout->addWidget(m_SCPPortEdit, 3, 1);
+    grid_layout->addWidget(m_scp_port_edit, 3, 1);
 
-    m_moveAppEntityTitleEdit = new QLineEdit();
-    m_moveAppEntityTitleEdit->setText(pacs_configuration->getMoveApplicationTitle().c_str());
+    m_move_app_entity_title_edit = new QLineEdit();
+    m_move_app_entity_title_edit->setText(pacs_configuration->get_move_application_title().c_str());
     auto* const aet_of_move_scu = new QLabel("AET of the move SCU");
     aet_of_move_scu->setToolTip("Application entity title of the move client");
     aet_of_move_scu->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     grid_layout->addWidget(aet_of_move_scu, 4, 0);
-    grid_layout->addWidget(m_moveAppEntityTitleEdit, 4, 1);
+    grid_layout->addWidget(m_move_app_entity_title_edit, 4, 1);
 
-    m_movePort = new QSpinBox();
-    m_movePort->setRange(0, 65535);
-    m_movePort->setValue(pacs_configuration->getMoveApplicationPort());
+    m_move_port = new QSpinBox();
+    m_move_port->setRange(0, 65535);
+    m_move_port->setValue(pacs_configuration->get_move_application_port());
     auto* const port_of_move_scu = new QLabel("Port of the move SCU:");
     port_of_move_scu->setToolTip("Port of the move client");
     port_of_move_scu->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     grid_layout->addWidget(port_of_move_scu, 5, 0);
-    grid_layout->addWidget(m_movePort, 5, 1);
+    grid_layout->addWidget(m_move_port, 5, 1);
 
-    m_retrieveMethodWidget = new QComboBox();
-    m_retrieveMethodWidget->addItem("Move");
-    m_retrieveMethodWidget->addItem("Get");
-    m_retrieveMethodWidget->setCurrentIndex(
-        (pacs_configuration->getRetrieveMethod()
-         == sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) ? 0 : 1
+    m_retrieve_method_widget = new QComboBox();
+    m_retrieve_method_widget->addItem("Move");
+    m_retrieve_method_widget->addItem("Get");
+    m_retrieve_method_widget->setCurrentIndex(
+        (pacs_configuration->get_retrieve_method()
+         == sight::io::dimse::data::pacs_configuration::retrieve_method::move) ? 0 : 1
     );
     auto* const retrieve_method = new QLabel("Retrieve method:");
     retrieve_method->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     grid_layout->addWidget(retrieve_method, 6, 0);
-    grid_layout->addWidget(m_retrieveMethodWidget, 6, 1);
+    grid_layout->addWidget(m_retrieve_method_widget, 6, 1);
 
-    m_pingPacsButtonWidget = new QPushButton("Ping PACS");
-    grid_layout->addWidget(m_pingPacsButtonWidget, 7, 0, 1, 2);
+    m_ping_pacs_button_widget = new QPushButton("Ping PACS");
+    grid_layout->addWidget(m_ping_pacs_button_widget, 7, 0, 1, 2);
 
-    qt_container->setLayout(grid_layout);
+    qt_container->set_layout(grid_layout);
 
     // Connect signals.
-    QObject::connect(m_pingPacsButtonWidget, SIGNAL(clicked()), this, SLOT(pingPACS()));
+    QObject::connect(m_ping_pacs_button_widget, &QPushButton::clicked, this, &self_t::ping_pacs);
     QObject::connect(
-        m_SCUAppEntityTitleEdit,
-        SIGNAL(editingFinished()),
+        m_scu_app_entity_title_edit,
+        &QLineEdit::editingFinished,
         this,
-        SLOT(
-            onSCUAppEntityTitleChanged()
-        )
+        &self_t::on_scu_app_entity_title_changed
     );
-    QObject::connect(m_SCPHostNameEdit,SIGNAL(editingFinished()),this,SLOT(onSCPHostNameChanged()));
+    QObject::connect(m_scp_host_name_edit, &QLineEdit::editingFinished, this, &self_t::on_scp_host_name_changed);
     QObject::connect(
-        m_SCPAppEntityTitleEdit,
-        SIGNAL(editingFinished()),
+        m_scp_app_entity_title_edit,
+        &QLineEdit::editingFinished,
         this,
-        SLOT(onSCPAppEntityTitleChanged())
+        &self_t::on_scp_app_entity_title_changed
     );
     QObject::connect(
-        m_SCPPortEdit,
-        SIGNAL(valueChanged(int)),
+        m_scp_port_edit,
+        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
         this,
-        SLOT(onSCPPortChanged(int))
+        &self_t::on_scp_port_changed
     );
     QObject::connect(
-        m_moveAppEntityTitleEdit,
-        SIGNAL(editingFinished()),
+        m_move_app_entity_title_edit,
+        &QLineEdit::editingFinished,
         this,
-        SLOT(onMoveAppEntityTitleChanged())
+        &self_t::on_move_app_entity_title_changed
     );
     QObject::connect(
-        m_movePort,
-        SIGNAL(valueChanged(int)),
+        m_move_port,
+        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
         this,
-        SLOT(onMovePortChanged(int))
+        &self_t::on_move_port_changed
     );
     QObject::connect(
-        m_retrieveMethodWidget,
-        SIGNAL(currentIndexChanged(int)),
+        m_retrieve_method_widget,
+        static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         this,
-        SLOT(onRetrieveMethodChanged(int))
+        &self_t::on_retrieve_method_changed
     );
 }
 
@@ -204,100 +202,100 @@ void pacs_configuration_editor::updating()
 void pacs_configuration_editor::stopping()
 {
     // Disconnect signals.
-    QObject::disconnect(m_pingPacsButtonWidget,SIGNAL(clicked()),this,SLOT(pingPACS()));
+    QObject::disconnect(m_ping_pacs_button_widget, &QPushButton::clicked, this, &self_t::ping_pacs);
     QObject::disconnect(
-        m_SCUAppEntityTitleEdit,
-        SIGNAL(editingFinished()),
+        m_scu_app_entity_title_edit,
+        &QLineEdit::editingFinished,
         this,
-        SLOT(onSCUAppEntityTitleChanged())
+        &self_t::on_scu_app_entity_title_changed
     );
     QObject::disconnect(
-        m_SCPHostNameEdit,
-        SIGNAL(editingFinished()),
+        m_scp_host_name_edit,
+        &QLineEdit::editingFinished,
         this,
-        SLOT(onSCPHostNameChanged())
+        &self_t::on_scp_host_name_changed
     );
     QObject::disconnect(
-        m_SCPAppEntityTitleEdit,
-        SIGNAL(editingFinished()),
+        m_scp_app_entity_title_edit,
+        &QLineEdit::editingFinished,
         this,
-        SLOT(onSCPAppEntityTitleChanged())
+        &self_t::on_scp_app_entity_title_changed
     );
     QObject::disconnect(
-        m_SCPPortEdit,
-        SIGNAL(valueChanged(int)),
+        m_scp_port_edit,
+        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
         this,
-        SLOT(onSCPPortChanged(int))
+        &self_t::on_scp_port_changed
     );
     QObject::disconnect(
-        m_moveAppEntityTitleEdit,
-        SIGNAL(editingFinished()),
+        m_move_app_entity_title_edit,
+        &QLineEdit::editingFinished,
         this,
-        SLOT(onMoveAppEntityTitleChanged())
+        &self_t::on_move_app_entity_title_changed
     );
     QObject::disconnect(
-        m_movePort,
-        SIGNAL(valueChanged(int)),
+        m_move_port,
+        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
         this,
-        SLOT(onMovePortChanged(int))
+        &self_t::on_move_port_changed
     );
     QObject::disconnect(
-        m_retrieveMethodWidget,
-        SIGNAL(currentIndexChanged(int)),
+        m_retrieve_method_widget,
+        static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         this,
-        SLOT(onRetrieveMethodChanged(int))
+        &self_t::on_retrieve_method_changed
     );
 
     // Stop the worker.
-    m_requestWorker->stop();
-    m_requestWorker.reset();
+    m_request_worker->stop();
+    m_request_worker.reset();
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::pingPACS()
+void pacs_configuration_editor::ping_pacs()
 {
-    m_requestWorker->post(
+    m_request_worker->post(
         [&]
         {
             const auto pacs_configuration = m_config.lock();
 
-            auto series_enquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
+            auto series_enquirer = std::make_shared<sight::io::dimse::series_enquirer>();
 
             bool success = false;
             try
             {
                 series_enquirer->initialize(
-                    pacs_configuration->getLocalApplicationTitle(),
-                    pacs_configuration->getPacsHostName(),
-                    pacs_configuration->getPacsApplicationPort(),
-                    pacs_configuration->getPacsApplicationTitle()
+                    pacs_configuration->get_local_application_title(),
+                    pacs_configuration->get_pacs_host_name(),
+                    pacs_configuration->get_pacs_application_port(),
+                    pacs_configuration->get_pacs_application_title()
                 );
                 series_enquirer->connect();
-                success = series_enquirer->pingPacs();
+                success = series_enquirer->ping_pacs();
             }
-            catch(sight::io::dimse::exceptions::Base& e)
+            catch(sight::io::dimse::exceptions::base& e)
             {
                 SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(e.what()));
             }
 
-            if(series_enquirer->isConnectedToPacs())
+            if(series_enquirer->is_connected_to_pacs())
             {
                 series_enquirer->disconnect();
             }
 
             // Display a message with the ping result.
-            if(m_showDialog)
+            if(m_show_dialog)
             {
                 if(success)
                 {
-                    m_slotShowDialog->async_run("Ping Pacs","Ping succeeded!");
+                    m_slot_show_dialog->async_run("Ping Pacs", "Ping succeeded!");
                 }
                 else
                 {
-                    m_slotShowDialog->async_run("Ping Pacs","Ping failed!");
+                    m_slot_show_dialog->async_run("Ping Pacs", "Ping failed!");
                 }
             }
 
@@ -316,7 +314,7 @@ void pacs_configuration_editor::pingPACS()
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::modifiedNotify(sight::io::dimse::data::PacsConfiguration::sptr _pacs_configuration)
+void pacs_configuration_editor::modified_notify(sight::io::dimse::data::pacs_configuration::sptr _pacs_configuration)
 {
     auto sig = _pacs_configuration->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
@@ -327,95 +325,94 @@ void pacs_configuration_editor::modifiedNotify(sight::io::dimse::data::PacsConfi
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::onSCUAppEntityTitleChanged()
+void pacs_configuration_editor::on_scu_app_entity_title_changed()
 {
     const auto pacs_configuration = m_config.lock();
 
-    pacs_configuration->setLocalApplicationTitle(m_SCUAppEntityTitleEdit->text().toStdString());
+    pacs_configuration->set_local_application_title(m_scu_app_entity_title_edit->text().toStdString());
 
-    this->modifiedNotify(pacs_configuration.get_shared());
+    this->modified_notify(pacs_configuration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::onSCPHostNameChanged()
+void pacs_configuration_editor::on_scp_host_name_changed()
 {
     const auto pacs_configuration = m_config.lock();
 
-    pacs_configuration->setPacsHostName(m_SCPHostNameEdit->text().toStdString());
+    pacs_configuration->set_pacs_host_name(m_scp_host_name_edit->text().toStdString());
 
-    this->modifiedNotify(pacs_configuration.get_shared());
+    this->modified_notify(pacs_configuration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::onSCPAppEntityTitleChanged()
+void pacs_configuration_editor::on_scp_app_entity_title_changed()
 {
     const auto pacs_configuration = m_config.lock();
 
-    pacs_configuration->setPacsApplicationTitle(m_SCPAppEntityTitleEdit->text().toStdString());
+    pacs_configuration->set_pacs_application_title(m_scp_app_entity_title_edit->text().toStdString());
 
-    this->modifiedNotify(pacs_configuration.get_shared());
+    this->modified_notify(pacs_configuration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::onSCPPortChanged(int _value)
+void pacs_configuration_editor::on_scp_port_changed(int _value)
 {
     const auto pacs_configuration = m_config.lock();
 
-    pacs_configuration->setPacsApplicationPort(static_cast<std::uint16_t>(_value));
+    pacs_configuration->set_pacs_application_port(static_cast<std::uint16_t>(_value));
 
-    this->modifiedNotify(pacs_configuration.get_shared());
+    this->modified_notify(pacs_configuration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::onMoveAppEntityTitleChanged()
+void pacs_configuration_editor::on_move_app_entity_title_changed()
 {
     const auto pacs_configuration = m_config.lock();
 
-    pacs_configuration->setMoveApplicationTitle(m_moveAppEntityTitleEdit->text().toStdString());
+    pacs_configuration->set_move_application_title(m_move_app_entity_title_edit->text().toStdString());
 
-    this->modifiedNotify(pacs_configuration.get_shared());
+    this->modified_notify(pacs_configuration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::onMovePortChanged(int _value)
+void pacs_configuration_editor::on_move_port_changed(int _value)
 {
     const auto pacs_configuration = m_config.lock();
 
-    pacs_configuration->setMoveApplicationPort(static_cast<std::uint16_t>(_value));
+    pacs_configuration->set_move_application_port(static_cast<std::uint16_t>(_value));
 
-    this->modifiedNotify(pacs_configuration.get_shared());
+    this->modified_notify(pacs_configuration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::onRetrieveMethodChanged(int _index)
+void pacs_configuration_editor::on_retrieve_method_changed(int _index)
 {
     const auto pacs_configuration = m_config.lock();
 
-    pacs_configuration->setRetrieveMethod(
-        (_index
-         == 0) ? (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) : (sight::io::dimse::data::
-                                                                                      PacsConfiguration::
-                                                                                      GET_RETRIEVE_METHOD)
+    pacs_configuration->set_retrieve_method(
+        (_index == 0)
+        ? (sight::io::dimse::data::pacs_configuration::retrieve_method::move)
+        : (sight::io::dimse::data::pacs_configuration::retrieve_method::get)
     );
 
-    this->modifiedNotify(pacs_configuration.get_shared());
+    this->modified_notify(pacs_configuration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void pacs_configuration_editor::showDialog(const std::string _title,const std::string _message)
+void pacs_configuration_editor::show_dialog(const std::string _title, const std::string _message)
 {
     sight::ui::dialog::message message_box;
-    message_box.setTitle(_title);
-    message_box.setMessage(_message);
-    message_box.setIcon(ui::dialog::message::INFO);
-    message_box.addButton(ui::dialog::message::OK);
+    message_box.set_title(_title);
+    message_box.set_message(_message);
+    message_box.set_icon(ui::dialog::message::info);
+    message_box.add_button(ui::dialog::message::ok);
     message_box.show();
 }
 

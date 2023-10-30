@@ -32,12 +32,12 @@ namespace sight::io::itk::ut
 //-----------------------------------------------------------------------------
 
 template<class TYPE>
-void ImageConversionTest::stressTestForAType()
+void image_conversion_test::stress_test_for_a_type()
 {
     for(unsigned char k = 0 ; k < 5 ; k++)
     {
         data::image::sptr image = std::make_shared<data::image>();
-        utest_data::generator::image::generateRandomImage(image, core::type::get<TYPE>());
+        utest_data::generator::image::generate_random_image(image, core::type::get<TYPE>());
 
         typedef ::itk::Image<TYPE, 3> image_t;
         typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
@@ -45,14 +45,14 @@ void ImageConversionTest::stressTestForAType()
         data::image::sptr image2 = std::make_shared<data::image>();
         io::itk::move_from_itk<image_t>(itk_image, image2, false);
 
-        image2->setWindowCenter(image->getWindowCenter());
-        image2->setWindowWidth(image->getWindowWidth());
+        image2->set_window_center(image->window_center());
+        image2->set_window_width(image->window_width());
 
         CPPUNIT_ASSERT(*image == *image2);
 
         data::image::sptr image3 = io::itk::move_from_itk<image_t>(itk_image, false);
-        image3->setWindowCenter(image->getWindowCenter());
-        image3->setWindowWidth(image->getWindowWidth());
+        image3->set_window_center(image->window_center());
+        image3->set_window_width(image->window_width());
 
         CPPUNIT_ASSERT(*image == *image3);
     }

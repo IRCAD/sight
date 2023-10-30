@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,10 @@
 namespace sight::io::http::ut
 {
 
-class RequestTest : public CPPUNIT_NS::TestFixture
+class request_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(RequestTest);
-CPPUNIT_TEST(testRequest);
+CPPUNIT_TEST_SUITE(request_test);
+CPPUNIT_TEST(test_request);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,12 +45,12 @@ public:
 
     // Test functions
     // Tests the Request class API
-    void testRequest();
+    void test_request();
 
 private:
 
     // Object Request
-    sight::io::http::Request::sptr m_request;
+    sight::io::http::request::sptr m_request;
 };
 
 } // namespace sight::io::http::ut

@@ -54,11 +54,11 @@ public:
 
     /// Class used to register a class factory in factory registry.
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry(std::string _functor_key)
+        registry(std::string _functor_key)
         {
             auto fact = [](const sight::viz::scene3d::layer::sptr& _layer) -> std::shared_ptr<T>
                         {
@@ -80,49 +80,49 @@ public:
     VIZ_SCENE3D_API static inline const std::string REGISTRY_KEY {"sight::viz::scene3d::text::REGISTRY_KEY"};
 
     static const inline std::string TEXT_EDITED_SIGNAL = "textEdited";
-    using TextEditedSignal = core::com::signal<void (std::string)>;
+    using text_edited_signal_t = core::com::signal<void (std::string)>;
 
     static const inline std::string EDITING_FINISHED_SIGNAL = "editingFinished";
-    using EditingFinishedSignal = core::com::signal<void ()>;
+    using editing_finished_signal_t = core::com::signal<void ()>;
 
     text()
     {
-        new_signal<TextEditedSignal>(TEXT_EDITED_SIGNAL);
-        new_signal<EditingFinishedSignal>(EDITING_FINISHED_SIGNAL);
+        new_signal<text_edited_signal_t>(TEXT_EDITED_SIGNAL);
+        new_signal<editing_finished_signal_t>(EDITING_FINISHED_SIGNAL);
     }
 
     /// Attach to a scene node.
-    VIZ_SCENE3D_API virtual void attachToNode(Ogre::SceneNode* _node, Ogre::Camera* _camera) = 0;
+    VIZ_SCENE3D_API virtual void attach_to_node(Ogre::SceneNode* _node, Ogre::Camera* _camera) = 0;
 
     /// Detach the text from a scene node
-    VIZ_SCENE3D_API virtual void detachFromNode() = 0;
+    VIZ_SCENE3D_API virtual void detach_from_node() = 0;
 
     /// Displayed text.
-    VIZ_SCENE3D_API virtual void setText(const std::string& _text) = 0;
+    VIZ_SCENE3D_API virtual void set_text(const std::string& _text) = 0;
 
     /// Position in screen coordinates.
-    VIZ_SCENE3D_API virtual void setPosition(float _x, float _y) = 0;
+    VIZ_SCENE3D_API virtual void set_position(float _x, float _y) = 0;
 
     /// Text color, white by default.
-    VIZ_SCENE3D_API virtual void setTextColor(const Ogre::ColourValue& _color) = 0;
+    VIZ_SCENE3D_API virtual void set_text_color(const Ogre::ColourValue& _color) = 0;
 
     /// Text color, white by default.
-    VIZ_SCENE3D_API virtual void setTextColor(const std::string& _color) = 0;
+    VIZ_SCENE3D_API virtual void set_text_color(const std::string& _color) = 0;
 
     /// Set the visibility of the text.
-    VIZ_SCENE3D_API virtual void setVisible(bool _visible) = 0;
+    VIZ_SCENE3D_API virtual void set_visible(bool _visible) = 0;
 
     /// Aligns the text by setting the x and y coordinates' origin.
-    VIZ_SCENE3D_API virtual void setTextAlignment(const std::string& _h_align, const std::string& _valign) = 0;
+    VIZ_SCENE3D_API virtual void set_text_alignment(const std::string& _h_align, const std::string& _valign) = 0;
 
     /// Sets the font to be used for rendering.
-    VIZ_SCENE3D_API virtual void setFont(const std::string& _font) = 0;
+    VIZ_SCENE3D_API virtual void set_font(const std::string& _font) = 0;
 
     /// Sets the font size to be used for rendering.
-    VIZ_SCENE3D_API virtual void setFontSize(std::size_t _size) = 0;
+    VIZ_SCENE3D_API virtual void set_font_size(std::size_t _size) = 0;
 
     /// Sets the edit mode. If true, the label can be modified, else it is read-only.
-    VIZ_SCENE3D_API virtual void setEditMode(bool _edit_mode) = 0;
+    VIZ_SCENE3D_API virtual void set_edit_mode(bool _edit_mode) = 0;
 };
 
 } // namespace sight::viz::scene3d

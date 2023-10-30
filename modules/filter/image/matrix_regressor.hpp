@@ -102,13 +102,13 @@ protected:
 
 private:
 
-    static constexpr std::string_view s_MATRIX_LIST_IN       = "matrixList";
-    static constexpr std::string_view s_POINT_LIST_IN        = "pointList";
-    static constexpr std::string_view s_OPTIMAL_MATRIX_INOUT = "optimalMatrix";
+    static constexpr std::string_view MATRIX_LIST_IN       = "matrixList";
+    static constexpr std::string_view POINT_LIST_IN        = "pointList";
+    static constexpr std::string_view OPTIMAL_MATRIX_INOUT = "optimalMatrix";
 
-    sight::data::ptr<sight::data::vector, sight::data::Access::in> m_matrixList {this, s_MATRIX_LIST_IN};
-    sight::data::ptr<sight::data::point_list, sight::data::Access::in> m_pointList {this, s_POINT_LIST_IN};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::inout> m_optimalMatrix {this, s_OPTIMAL_MATRIX_INOUT};
+    sight::data::ptr<sight::data::vector, sight::data::access::in> m_matrix_list {this, MATRIX_LIST_IN};
+    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_point_list {this, POINT_LIST_IN};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_optimal_matrix {this, OPTIMAL_MATRIX_INOUT};
 };
 
 } // namespace sight::module::filter::image.

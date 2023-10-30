@@ -124,12 +124,12 @@ private:
     /** @} */
 
     /// SLOT: update the depth range
-    void setDepthRange(int _val, std::string _key);
+    void set_depth_range(int _val, std::string _key);
 
     /**
      * @brief Computes a point cloud from a depth map.
      */
-    void depthMapToPointCloud(
+    void depth_map_to_point_cloud(
         const data::camera::csptr& _depth_camera,
         const data::image::csptr& _depth_map,
         const data::mesh::sptr& _point_cloud
@@ -139,7 +139,7 @@ private:
      * @brief Computes a point cloud with colors from a depth map and a color
      * map.
      */
-    void depthMapToPointCloudRGB(
+    void depth_map_to_point_cloud_rgb(
         const data::camera::csptr& _depth_camera,
         const data::camera::csptr& _color_camera,
         const data::image::csptr& _depth_map,
@@ -149,14 +149,14 @@ private:
     ) const;
 
     /// Min value of depth used to build pointcloud.
-    std::uint16_t m_minDepth = 0;
+    std::uint16_t m_min_depth = 0;
     /// Max value of depth used to build pointcloud.
-    std::uint16_t m_maxDepth = UINT16_MAX;
+    std::uint16_t m_max_depth = UINT16_MAX;
 
-    sight::data::ptr<sight::data::camera_set, sight::data::Access::in> m_calibration {this, "calibration"};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_depthMap {this, "depthMap"};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_rgbMap {this, "rgbMap"};
-    sight::data::ptr<sight::data::mesh, sight::data::Access::inout> m_pointCloud {this, "pointCloud"};
+    sight::data::ptr<sight::data::camera_set, sight::data::access::in> m_calibration {this, "calibration"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_depth_map {this, "depthMap"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_rgb_map {this, "rgbMap"};
+    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_point_cloud {this, "pointCloud"};
 };
 
 } // namespace sight::module::filter::vision

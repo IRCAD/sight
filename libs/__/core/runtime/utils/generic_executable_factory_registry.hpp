@@ -36,7 +36,7 @@ namespace sight::core::runtime::utils
 template<typename E>
 struct generic_executable_factory_registry : public executable_factory_registry
 {
-    typedef generic_executable_factory<E> factory_type;
+    using factory_type = generic_executable_factory<E>;
 
     /**
      * @brief   Constructor

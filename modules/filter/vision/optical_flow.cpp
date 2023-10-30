@@ -42,8 +42,8 @@ static const core::com::signals::key_t CAMERA_REMAINED_SIG = "cameraRemained";
 
 optical_flow::optical_flow() noexcept
 {
-    m_motionSignal   = new_signal<motion_signal_t>(CAMERA_MOVED_SIG);
-    m_noMotionSignal = new_signal<no_motion_signal_t>(CAMERA_REMAINED_SIG);
+    m_motion_signal    = new_signal<motion_signal_t>(CAMERA_MOVED_SIG);
+    m_no_motion_signal = new_signal<no_motion_signal_t>(CAMERA_REMAINED_SIG);
 }
 
 // ----------------------------------------------------------------------------
@@ -60,8 +60,8 @@ void optical_flow::configuring()
 
     if(config)
     {
-        m_latency          = config->get<unsigned int>("latency", m_latency);
-        m_imageScaleFactor = config->get<float>("scaleFactor", m_imageScaleFactor);
+        m_latency            = config->get<unsigned int>("latency", m_latency);
+        m_image_scale_factor = config->get<float>("scaleFactor", m_image_scale_factor);
     }
 }
 
@@ -89,18 +89,18 @@ void optical_flow::updating()
     // Scope to lock frameTL
     {
         const auto frame_tl = m_timeline.lock();
-        SIGHT_ASSERT(" Input " << s_FRAME_TIMELINE_INPUT << " cannot be null", frame_tl);
-        core::hires_clock::type timestamp = frame_tl->getNewerTimestamp();
-        if(timestamp < m_lastTimestamp + m_latency)
+        SIGHT_ASSERT(" Input " << FRAME_TIMELINE_INPUT << " cannot be null", frame_tl);
+        core::hires_clock::type timestamp = frame_tl->get_newer_timestamp();
+        if(timestamp < m_last_timestamp + m_latency)
         {
             return;
         }
 
-        m_lastTimestamp = timestamp;
+        m_last_timestamp = timestamp;
 
-        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->getClosestBuffer(frame_tl->getNewerTimestamp());
+        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(frame_tl->get_newer_timestamp());
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        auto* frame_buff = const_cast<std::uint8_t*>(&buffer->getElement(0));
+        auto* frame_buff = const_cast<std::uint8_t*>(&buffer->get_element(0));
 
         temp_img = io::opencv::frame_tl::move_to_cv(frame_tl.get_shared(), frame_buff);
 
@@ -112,39 +112,39 @@ void optical_flow::updating()
         // If image is small enough no need to re-scale it.
         if(size_of_frame[0] > 640)
         {
-            s.width  = static_cast<int>(std::round(static_cast<float>(size_of_frame[0]) / m_imageScaleFactor));
-            s.height = static_cast<int>(std::round(static_cast<float>(size_of_frame[1]) / m_imageScaleFactor));
+            s.width  = static_cast<int>(std::round(static_cast<float>(size_of_frame[0]) / m_image_scale_factor));
+            s.height = static_cast<int>(std::round(static_cast<float>(size_of_frame[1]) / m_image_scale_factor));
             cv::resize(temp_img, temp_img, s);
         }
 
-        if(frame_tl->numComponents() == 1)
+        if(frame_tl->num_components() == 1)
         {
             gray_img = temp_img;
         }
-        else if(frame_tl->numComponents() == 3)
+        else if(frame_tl->num_components() == 3)
         {
             cv::cvtColor(temp_img, gray_img, cv::COLOR_RGB2GRAY);
         }
-        else if(frame_tl->numComponents() == 4)
+        else if(frame_tl->num_components() == 4)
         {
             cv::cvtColor(temp_img, gray_img, cv::COLOR_RGBA2GRAY);
         }
         else
         {
-            SIGHT_FATAL("Wrong type of image (nb of components = " << frame_tl->numComponents() << ").");
+            SIGHT_FATAL("Wrong type of image (nb of components = " << frame_tl->num_components() << ").");
         }
     }
 
     if(!m_initialization)
     {
-        m_mainMutex.lock();
+        m_main_mutex.lock();
 
-        m_lastGrayImg = gray_img;
+        m_last_gray_img = gray_img;
         // Detect "good" features in frame. (parameters coming from opencv/samples/cpp/lkdemo.cpp).
-        cv::goodFeaturesToTrack(m_lastGrayImg, m_lastCorners, 2000, 0.01, 10);
+        cv::goodFeaturesToTrack(m_last_gray_img, m_last_corners, 2000, 0.01, 10);
         m_initialization = true;
 
-        m_mainMutex.unlock();
+        m_main_mutex.unlock();
 
         return;
     }
@@ -157,26 +157,26 @@ void optical_flow::updating()
     long double rms = 0; // Root mean square difference between each detected corners.
     int n_move      = 0; // Incremented each time a corners has moved.
 
-    m_mainMutex.lock();
+    m_main_mutex.lock();
 
     SIGHT_ASSERT(
-        "last image and current image should have same size: " << m_lastGrayImg.size << " , "
+        "last image and current image should have same size: " << m_last_gray_img.size << " , "
         << gray_img.size
         ,
-        m_lastGrayImg.size == gray_img.size
+        m_last_gray_img.size == gray_img.size
     );
 
     // Optical flow (Lucas-Kanade version).
-    cv::calcOpticalFlowPyrLK(m_lastGrayImg, gray_img, m_lastCorners, current_corners, status, err);
+    cv::calcOpticalFlowPyrLK(m_last_gray_img, gray_img, m_last_corners, current_corners, status, err);
 
-    for(int index = 0 ; index < m_lastCorners.size().height ; index++)
+    for(int index = 0 ; index < m_last_corners.size().height ; index++)
     {
         // Check if flow for feature 'index' has been found.
         // Opencv doc for 'status' vector: Each element of the vector is set to 1 if
         // the flow for the corresponding features has been found, otherwise, it is set to 0.
         if(status[static_cast<std::size_t>(index)] != 0U)
         {
-            corners_diff = m_lastCorners.at<cv::Vec2f>(index) - current_corners.at<cv::Vec2f>(index);
+            corners_diff = m_last_corners.at<cv::Vec2f>(index) - current_corners.at<cv::Vec2f>(index);
             rms         +=
                 static_cast<long double>(corners_diff[0] * corners_diff[0] + corners_diff[1] * corners_diff[1]);
 
@@ -201,22 +201,22 @@ void optical_flow::updating()
     if((rms > 100) && ((static_cast<float>(n_move) / (static_cast<float>(acc))) > 0.8F) && !m_motion)
     {
         m_motion = !m_motion;
-        m_motionSignal->async_emit();
+        m_motion_signal->async_emit();
     }
     // No movement or movement on few points (ex: an object moving on the video):
     // we can assume that camera is not moving.
     else if((rms < 1 || ((static_cast<float>(n_move) / (static_cast<float>(acc))) < 0.5F)) && m_motion)
     {
         m_motion = !m_motion;
-        m_noMotionSignal->async_emit();
+        m_no_motion_signal->async_emit();
     }
 
     // Keep last image.
-    m_lastGrayImg = gray_img;
+    m_last_gray_img = gray_img;
     // Detect "good" features in the frame. (parameters coming from opencv/samples/cpp/lkdemo.cpp).
-    cv::goodFeaturesToTrack(m_lastGrayImg, m_lastCorners, 2000, 0.01, 10);
+    cv::goodFeaturesToTrack(m_last_gray_img, m_last_corners, 2000, 0.01, 10);
 
-    m_mainMutex.unlock();
+    m_main_mutex.unlock();
 }
 
 // ----------------------------------------------------------------------------
@@ -233,7 +233,7 @@ service::connections_t optical_flow::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(s_FRAME_TIMELINE_INPUT, data::timeline::signals::PUSHED, service::slots::UPDATE);
+    connections.push(FRAME_TIMELINE_INPUT, data::timeline::signals::PUSHED, service::slots::UPDATE);
 
     return connections;
 }

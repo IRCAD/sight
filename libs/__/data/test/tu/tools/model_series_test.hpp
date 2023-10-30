@@ -30,9 +30,9 @@ namespace sight::data::tools::ut
 class model_series_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(model_series_test);
-CPPUNIT_TEST(addReconstruction);
-CPPUNIT_TEST(addMesh);
-CPPUNIT_TEST(createReconstructionFromMesh);
+CPPUNIT_TEST(add_reconstruction);
+CPPUNIT_TEST(add_mesh);
+CPPUNIT_TEST(create_reconstruction_from_mesh);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,9 +44,9 @@ public:
     void tearDown() override;
     /**  @} */
 
-    static void addReconstruction();
-    static void createReconstructionFromMesh();
-    static void addMesh();
+    static void add_reconstruction();
+    static void create_reconstruction_from_mesh();
+    static void add_mesh();
 };
 
 } // namespace sight::data::tools::ut

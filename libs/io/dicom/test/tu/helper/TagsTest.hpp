@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,19 +26,19 @@
 namespace sight::io::dicom::helper::ut
 {
 
-class TagsTest : public CPPUNIT_NS::TestFixture
+class tags_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(TagsTest);
-CPPUNIT_TEST(getGdcmTagNominalTest);
-CPPUNIT_TEST(getGdcmTagNotANumberTest);
-CPPUNIT_TEST(getGdcmTagTooBigTest);
+CPPUNIT_TEST_SUITE(tags_test);
+CPPUNIT_TEST(get_gdcm_tag_nominal_test);
+CPPUNIT_TEST(get_gdcm_tag_not_a_number_test);
+CPPUNIT_TEST(get_gdcm_tag_too_big_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void getGdcmTagNominalTest();
-    static void getGdcmTagNotANumberTest();
-    static void getGdcmTagTooBigTest();
+    static void get_gdcm_tag_nominal_test();
+    static void get_gdcm_tag_not_a_number_test();
+    static void get_gdcm_tag_too_big_test();
 };
 
 } // namespace sight::io::dicom::helper::ut

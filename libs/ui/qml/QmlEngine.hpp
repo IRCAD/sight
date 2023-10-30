@@ -41,33 +41,33 @@ namespace sight::ui::qml
  *
  * It allows to define the components to load and the main component to launch.
  */
-class QmlEngine
+class qml_engine
 {
 public:
 
-    QmlEngine();
+    qml_engine();
 
-    ~QmlEngine();
+    ~qml_engine();
 
     /// Return the QmlEngine singleton
-    UI_QML_API static SPTR(QmlEngine) getDefault();
+    UI_QML_API static SPTR(qml_engine) get_default();
 
     /**
      * @brief Load and launch the qml component as the root component
      * @see Use getRootObjects() to get the main objects.
      */
-    UI_QML_API void loadMainComponent(const std::filesystem::path& _file);
+    UI_QML_API void load_main_component(const std::filesystem::path& _file);
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      * Add a context in which the component will be created instead of the root context
      */
-    UI_QML_API QObject* createComponent(const std::filesystem::path& _file, QSharedPointer<QQmlContext>& _context);
+    UI_QML_API QObject* create_component(const std::filesystem::path& _file, QSharedPointer<QQmlContext>& _context);
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      */
-    UI_QML_API QObject* createComponent(const std::filesystem::path& _file);
+    UI_QML_API QObject* create_component(const std::filesystem::path& _file);
 
     /**
      * @brief Define the path as a directory where the engine searches for installed modules in a URL-based directory
@@ -95,10 +95,10 @@ public:
      *
      * @see http://doc.qt.io/qt-5/qtqml-syntax-directoryimports.html
      */
-    UI_QML_API void importModulePath(const std::filesystem::path& _path);
+    UI_QML_API void import_module_path(const std::filesystem::path& _path);
 
     /// Returns a list of all the root objects instantiated by the QQmlApplicationEngine
-    UI_QML_API QList<QObject*> getRootObjects();
+    UI_QML_API QList<QObject*> get_root_objects();
 
     /**
      * @brief Returns the engine's root context.
@@ -108,12 +108,12 @@ public:
      * Additional data that should only be available to a subset of component instances should be added to sub-contexts
      * parented to the root context.
      */
-    UI_QML_API QQmlContext* getRootContext();
+    UI_QML_API QQmlContext* get_root_context();
 
 private:
 
     /// Engine singleton
-    static SPTR(QmlEngine) s_current;
+    static SPTR(qml_engine) s_current;
 
     /// qml engine
     QPointer<QQmlApplicationEngine> m_engine;

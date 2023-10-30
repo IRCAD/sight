@@ -39,8 +39,8 @@ static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "setThreshold";
 
 depth_image_masking::depth_image_masking() noexcept
 {
-    new_slot(SET_BACKGROUND_SLOT, &depth_image_masking::setBackground, this);
-    new_slot(SET_THRESHOLD_SLOT, &depth_image_masking::setThreshold, this);
+    new_slot(SET_BACKGROUND_SLOT, &depth_image_masking::set_background, this);
+    new_slot(SET_THRESHOLD_SLOT, &depth_image_masking::set_threshold, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ service::connections_t depth_image_masking::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(s_DEPTH_IMAGE_KEY, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(DEPTH_IMAGE_KEY, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -81,20 +81,20 @@ service::connections_t depth_image_masking::auto_connections() const
 
 void depth_image_masking::updating()
 {
-    if(!m_cvDepthMaskImage.empty())
+    if(!m_cv_depth_mask_image.empty())
     {
-        const auto video_image = m_videoImage.lock();
-        SIGHT_ASSERT("No '" << s_VIDEO_IMAGE_KEY << "' found.", video_image);
-        const auto depth_image = m_depthImage.lock();
-        SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depth_image);
+        const auto video_image = m_video_image.lock();
+        SIGHT_ASSERT("No '" << VIDEO_IMAGE_KEY << "' found.", video_image);
+        const auto depth_image = m_depth_image.lock();
+        SIGHT_ASSERT("No '" << DEPTH_IMAGE_KEY << "' found.", depth_image);
 
         const cv::Mat cv_video_image = io::opencv::image::move_to_cv(video_image.get_shared());
         const cv::Mat cv_depth_image = io::opencv::image::move_to_cv(depth_image.get_shared());
 
         cv::Mat cv_masked_depth;
-        cv_depth_image.copyTo(cv_masked_depth, m_cvMaskImage);
+        cv_depth_image.copyTo(cv_masked_depth, m_cv_mask_image);
 
-        cv::Mat cv_foreground_image = (cv_masked_depth < (m_cvDepthMaskImage - m_threshold));
+        cv::Mat cv_foreground_image = (cv_masked_depth < (m_cv_depth_mask_image - m_threshold));
 
         cv::Mat morph_elem = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
         cv::dilate(cv_foreground_image, cv_foreground_image, morph_elem);
@@ -103,8 +103,8 @@ void depth_image_masking::updating()
         cv::Mat cv_masked_video = cv::Mat::zeros(cv_video_image.rows, cv_video_image.cols, cv_video_image.type());
         cv_video_image.copyTo(cv_masked_video, cv_foreground_image);
 
-        auto foreground_image = m_foregroundImage.lock();
-        SIGHT_ASSERT("No '" << s_FOREGROUND_IMAGE_KEY << "' found.", foreground_image);
+        auto foreground_image = m_foreground_image.lock();
+        SIGHT_ASSERT("No '" << FOREGROUND_IMAGE_KEY << "' found.", foreground_image);
 
         io::opencv::image::copy_from_cv(*foreground_image, cv_masked_video);
 
@@ -113,47 +113,47 @@ void depth_image_masking::updating()
         );
         sig->async_emit();
 
-        m_sigComputed->async_emit();
+        m_sig_computed->async_emit();
     }
 }
 
 // ------------------------------------------------------------------------------
 
-void depth_image_masking::setBackground()
+void depth_image_masking::set_background()
 {
-    const auto mask_image = m_maskImage.lock();
-    SIGHT_ASSERT("No '" << s_MASK_IMAGE_KEY << "' found.", mask_image);
-    const auto depth_image = m_depthImage.lock();
-    SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depth_image);
+    const auto mask_image = m_mask_image.lock();
+    SIGHT_ASSERT("No '" << MASK_IMAGE_KEY << "' found.", mask_image);
+    const auto depth_image = m_depth_image.lock();
+    SIGHT_ASSERT("No '" << DEPTH_IMAGE_KEY << "' found.", depth_image);
 
-    if(mask_image && depth_image && (mask_image->getType() != core::type::NONE)
-       && (depth_image->getType() != core::type::NONE))
+    if(mask_image && depth_image && (mask_image->type() != core::type::NONE)
+       && (depth_image->type() != core::type::NONE))
     {
         const cv::Mat cv_depth_image = io::opencv::image::move_to_cv(depth_image.get_shared());
-        m_cvMaskImage = io::opencv::image::move_to_cv(mask_image.get_shared());
-        if(m_cvMaskImage.channels() == 4)
+        m_cv_mask_image = io::opencv::image::move_to_cv(mask_image.get_shared());
+        if(m_cv_mask_image.channels() == 4)
         {
-            cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
+            cv::cvtColor(m_cv_mask_image, m_cv_mask_image, cv::COLOR_BGRA2GRAY);
         }
-        else if(m_cvMaskImage.channels() == 3)
+        else if(m_cv_mask_image.channels() == 3)
         {
-            cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGR2GRAY);
-        }
-
-        m_cvMaskImage = (m_cvMaskImage > 0);
-
-        if(m_cvDepthMaskImage.empty())
-        {
-            m_cvDepthMaskImage = cv::Mat::zeros(cv_depth_image.rows, cv_depth_image.cols, cv_depth_image.type());
+            cv::cvtColor(m_cv_mask_image, m_cv_mask_image, cv::COLOR_BGR2GRAY);
         }
 
-        cv_depth_image.copyTo(m_cvDepthMaskImage, m_cvMaskImage);
+        m_cv_mask_image = (m_cv_mask_image > 0);
+
+        if(m_cv_depth_mask_image.empty())
+        {
+            m_cv_depth_mask_image = cv::Mat::zeros(cv_depth_image.rows, cv_depth_image.cols, cv_depth_image.type());
+        }
+
+        cv_depth_image.copyTo(m_cv_depth_mask_image, m_cv_mask_image);
     }
 }
 
 // ------------------------------------------------------------------------------
 
-void depth_image_masking::setThreshold(int _threshold)
+void depth_image_masking::set_threshold(int _threshold)
 {
     m_threshold = _threshold;
 }

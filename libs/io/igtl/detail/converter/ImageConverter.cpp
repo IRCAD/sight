@@ -37,22 +37,22 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string ImageConverter::s_IGTL_TYPE          = "IMAGE";
-const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = data::image::classname();
+const std::string image_converter::IGTL_TYPE          = "IMAGE";
+const std::string image_converter::FWDATA_OBJECT_TYPE = data::image::classname();
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::ImageConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::image_converter);
 
-ImageConverter::ImageConverter()
+image_converter::image_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-ImageConverter::~ImageConverter()
+image_converter::~image_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer image_converter::from_fw_data_object(data::object::csptr _src) const
 {
     data::image::csptr src_img = std::dynamic_pointer_cast<const data::image>(_src);
     ::igtl::Matrix4x4 matrix;
@@ -64,11 +64,11 @@ ImageConverter::~ImageConverter()
     ::igtl::ImageMessage::Pointer dest = ::igtl::ImageMessage::New();
     ::igtl::IdentityMatrix(matrix);
     dest->SetMatrix(matrix);
-    dest->SetScalarType(ImageTypeConverter::get_igtl_type(src_img->getType()));
+    dest->SetScalarType(image_type_converter::get_igtl_type(src_img->type()));
     dest->SetCoordinateSystem(::igtl::ImageMessage::COORDINATE_LPS);
-    dest->SetOrigin(float(src_img->getOrigin()[0]), float(src_img->getOrigin()[1]), float(src_img->getOrigin()[2]));
-    dest->SetSpacing(float(src_img->getSpacing()[0]), float(src_img->getSpacing()[1]), float(src_img->getSpacing()[2]));
-    dest->SetNumComponents(static_cast<int>(src_img->numComponents()));
+    dest->SetOrigin(float(src_img->origin()[0]), float(src_img->origin()[1]), float(src_img->origin()[2]));
+    dest->SetSpacing(float(src_img->spacing()[0]), float(src_img->spacing()[1]), float(src_img->spacing()[2]));
+    dest->SetNumComponents(static_cast<int>(src_img->num_components()));
     dest->SetDimensions(
         static_cast<int>(src_img->size()[0]),
         static_cast<int>(src_img->size()[1]),
@@ -82,7 +82,7 @@ ImageConverter::~ImageConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr image_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     ::igtl::ImageMessage::Pointer src_img;
     char* igtl_image_buffer    = nullptr;
@@ -91,9 +91,9 @@ data::object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     std::array<float, 3> igtl_spacing {};
     std::array<float, 3> igtl_origins {};
     std::array<int, 3> igtl_dimensions {};
-    data::image::Spacing spacing;
-    data::image::Origin origins;
-    data::image::Size size;
+    data::image::spacing_t spacing;
+    data::image::origin_t origins;
+    data::image::size_t size;
 
     src_img = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage*>(_src.GetPointer()));
     src_img->GetSpacing(igtl_spacing.data());
@@ -102,28 +102,28 @@ data::object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     std::transform(igtl_spacing.begin(), igtl_spacing.end(), spacing.begin(), boost::numeric_cast<double, float>);
     std::copy(igtl_dimensions.begin(), igtl_dimensions.end(), size.begin());
     std::transform(igtl_origins.begin(), igtl_origins.end(), origins.begin(), boost::numeric_cast<double, float>);
-    dest_img->setOrigin(origins);
-    dest_img->setSpacing(spacing);
+    dest_img->set_origin(origins);
+    dest_img->set_spacing(spacing);
 
-    sight::data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
+    enum sight::data::image::pixel_format format = data::image::pixel_format::gray_scale;
     if(src_img->GetNumComponents() == 1)
     {
-        format = data::image::PixelFormat::GRAY_SCALE;
+        format = data::image::pixel_format::gray_scale;
     }
     else if(src_img->GetNumComponents() == 3)
     {
-        format = data::image::PixelFormat::RGB;
+        format = data::image::pixel_format::rgb;
     }
     else if(src_img->GetNumComponents() == 4)
     {
-        format = data::image::PixelFormat::RGBA;
+        format = data::image::pixel_format::rgba;
     }
     else
     {
         SIGHT_ASSERT("invalid number of components: " + std::to_string(src_img->GetNumComponents()), false);
     }
 
-    dest_img->resize(size, ImageTypeConverter::get_fw_tools_type(std::uint8_t(src_img->GetScalarType())), format);
+    dest_img->resize(size, image_type_converter::get_fw_tools_type(std::uint8_t(src_img->GetScalarType())), format);
     auto dest_iter = dest_img->begin();
     igtl_image_buffer = reinterpret_cast<char*>(src_img->GetScalarPointer());
     std::copy(igtl_image_buffer, igtl_image_buffer + src_img->GetImageSize(), dest_iter);
@@ -138,23 +138,23 @@ data::object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
 
 //-----------------------------------------------------------------------------
 
-base::sptr ImageConverter::New()
+base::sptr image_converter::New()
 {
-    return std::make_shared<ImageConverter>();
+    return std::make_shared<image_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& ImageConverter::get_igtl_type() const
+std::string const& image_converter::get_igtl_type() const
 {
-    return ImageConverter::s_IGTL_TYPE;
+    return image_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& ImageConverter::getFwDataObjectType() const
+std::string const& image_converter::get_fw_data_object_type() const
 {
-    return ImageConverter::s_FWDATA_OBJECT_TYPE;
+    return image_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

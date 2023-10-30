@@ -38,44 +38,44 @@
 
 #include <io/__/writer/registry/macros.hpp>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::SurfaceSegmentation);
+SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::surface_segmentation);
 
 namespace sight::io::dicom::writer
 {
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentation::SurfaceSegmentation() :
+surface_segmentation::surface_segmentation() :
     m_logger(std::make_shared<core::log::logger>()),
-    m_writerJob(std::make_shared<core::jobs::observer>("Writing DICOM file"))
+    m_writer_job(std::make_shared<core::jobs::observer>("Writing DICOM file"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentation::~SurfaceSegmentation()
+surface_segmentation::~surface_segmentation()
 = default;
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentation::write()
+void surface_segmentation::write()
 {
-    const data::model_series::csptr src_model_series        = this->getConcreteObject();
-    const data::dicom_series::csptr associated_dicom_series = src_model_series->getDicomReference();
+    const data::model_series::csptr src_model_series        = this->get_concrete_object();
+    const data::dicom_series::csptr associated_dicom_series = src_model_series->get_dicom_reference();
 
     SIGHT_ASSERT("sight::data::model_series not instanced", src_model_series);
 
     if(!associated_dicom_series)
     {
         m_logger->critical("Unable to retrieve information from the associated image series.");
-        m_writerJob->done();
-        m_writerJob->finish();
+        m_writer_job->done();
+        m_writer_job->finish();
         return;
     }
 
     // Verify matching Patient's names
-    const std::string& model_patient_name = src_model_series->getPatientName();
-    const std::string& image_patient_name = associated_dicom_series->getPatientName();
+    const std::string& model_patient_name = src_model_series->get_patient_name();
+    const std::string& image_patient_name = associated_dicom_series->get_patient_name();
     if(model_patient_name != image_patient_name)
     {
         m_logger->warning(
@@ -85,8 +85,8 @@ void SurfaceSegmentation::write()
     }
 
     // Verify matching Patient ID
-    const std::string& model_patient_id = src_model_series->getPatientID();
-    const std::string& image_patient_id = associated_dicom_series->getPatientID();
+    const std::string& model_patient_id = src_model_series->get_patient_id();
+    const std::string& image_patient_id = associated_dicom_series->get_patient_id();
     if(model_patient_id != image_patient_id)
     {
         m_logger->warning(
@@ -96,8 +96,8 @@ void SurfaceSegmentation::write()
     }
 
     // Verify matching Study Instance UID
-    const std::string& model_study_instance_uid = src_model_series->getStudyInstanceUID();
-    const std::string& image_study_instance_uid = associated_dicom_series->getStudyInstanceUID();
+    const std::string& model_study_instance_uid = src_model_series->get_study_instance_uid();
+    const std::string& image_study_instance_uid = associated_dicom_series->get_study_instance_uid();
     if(model_study_instance_uid != image_study_instance_uid)
     {
         m_logger->warning(
@@ -113,55 +113,55 @@ void SurfaceSegmentation::write()
     // Copy Study and Patient
     /// @todo verify this is required since we already have the same patient ID and same study uid, which means we
     /// certainly already have the same data...
-    model_series->copyPatientModule(associated_dicom_series);
-    model_series->copyGeneralStudyModule(associated_dicom_series);
-    model_series->copyPatientStudyModule(associated_dicom_series);
+    model_series->copy_patient_module(associated_dicom_series);
+    model_series->copy_general_study_module(associated_dicom_series);
+    model_series->copy_patient_study_module(associated_dicom_series);
 
-    SPTR(io::dicom::container::DicomInstance) associated_dicom_instance =
-        std::make_shared<io::dicom::container::DicomInstance>(associated_dicom_series, m_logger);
+    SPTR(io::dicom::container::dicom_instance) associated_dicom_instance =
+        std::make_shared<io::dicom::container::dicom_instance>(associated_dicom_series, m_logger);
 
-    SPTR(io::dicom::container::DicomInstance) model_instance =
-        std::make_shared<io::dicom::container::DicomInstance>(model_series, m_logger, false);
+    SPTR(io::dicom::container::dicom_instance) model_instance =
+        std::make_shared<io::dicom::container::dicom_instance>(model_series, m_logger, false);
 
-    m_writerJob->done_work(0);
-    m_writerJob->set_total_work_units(model_series->getReconstructionDB().size());
+    m_writer_job->done_work(0);
+    m_writer_job->set_total_work_units(model_series->get_reconstruction_db().size());
 
-    io::dicom::writer::iod::SurfaceSegmentationIOD iod(model_instance,
-                                                       associated_dicom_instance,
-                                                       this->get_file(),
-                                                       m_logger,
-                                                       m_writerJob->progress_callback(),
-                                                       m_writerJob->cancel_requested_callback());
+    io::dicom::writer::iod::surface_segmentation_iod iod(model_instance,
+                                                         associated_dicom_instance,
+                                                         this->get_file(),
+                                                         m_logger,
+                                                         m_writer_job->progress_callback(),
+                                                         m_writer_job->cancel_requested_callback());
     try
     {
         iod.write(model_series);
     }
-    catch(const io::dicom::exception::Failed& e)
+    catch(const io::dicom::exception::failed& e)
     {
         m_logger->critical(e.what());
     }
 
-    m_writerJob->done();
-    m_writerJob->finish();
+    m_writer_job->done();
+    m_writer_job->finish();
 }
 
 //------------------------------------------------------------------------------
 
-std::string SurfaceSegmentation::extension() const
+std::string surface_segmentation::extension() const
 {
     return {""};
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(core::jobs::base) SurfaceSegmentation::getJob() const
+SPTR(core::jobs::base) surface_segmentation::get_job() const
 {
-    return m_writerJob;
+    return m_writer_job;
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(core::log::logger) SurfaceSegmentation::getLogger() const
+SPTR(core::log::logger) surface_segmentation::get_logger() const
 {
     return m_logger;
 }

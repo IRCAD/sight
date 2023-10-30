@@ -32,9 +32,9 @@ namespace sight::app::ut
 class multi_config_controller_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(multi_config_controller_test);
-CPPUNIT_TEST(multiConfigTest);
-CPPUNIT_TEST(setConfigKeyTest);
-CPPUNIT_TEST(defaultLoadingTest);
+CPPUNIT_TEST(multi_config_test);
+CPPUNIT_TEST(set_config_key_test);
+CPPUNIT_TEST(default_loading_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,15 +47,15 @@ public:
     // set a config (slot) and check that the right service is started.
     // set the other config and test.
     // set the initial config again.
-    static void multiConfigTest();
+    static void multi_config_test();
 
     //Test if the setConfig slot with a bad key is ignored.
     // Starts the service and setConfig with the right key.
     // Calls setConfig with a bad key. Update and test that the service are still the same.
-    static void setConfigKeyTest();
+    static void set_config_key_test();
 
     //Test the default config loaded when update is call without any setConfig before.
-    static void defaultLoadingTest();
+    static void default_loading_test();
 };
 
 } // namespace sight::app::ut

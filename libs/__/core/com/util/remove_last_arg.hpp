@@ -40,7 +40,7 @@ template<typename R, typename A1, typename A2, typename A3, typename A4, typenam
          typename A8, typename A9>
 struct remove_last_arg<R(A1, A2, A3, A4, A5, A6, A7, A8, A9)>
 {
-    typedef R type(A1, A2, A3, A4, A5, A6, A7, A8);
+    using type = R(A1, A2, A3, A4, A5, A6, A7, A8);
 };
 
 /// remove_last_arg specialization.
@@ -48,63 +48,63 @@ template<typename R, typename A1, typename A2, typename A3, typename A4, typenam
          typename A8>
 struct remove_last_arg<R(A1, A2, A3, A4, A5, A6, A7, A8)>
 {
-    typedef R type(A1, A2, A3, A4, A5, A6, A7);
+    using type = R(A1, A2, A3, A4, A5, A6, A7);
 };
 
 /// remove_last_arg specialization.
 template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
 struct remove_last_arg<R(A1, A2, A3, A4, A5, A6, A7)>
 {
-    typedef R type(A1, A2, A3, A4, A5, A6);
+    using type = R(A1, A2, A3, A4, A5, A6);
 };
 
 /// remove_last_arg specialization.
 template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
 struct remove_last_arg<R(A1, A2, A3, A4, A5, A6)>
 {
-    typedef R type(A1, A2, A3, A4, A5);
+    using type = R(A1, A2, A3, A4, A5);
 };
 
 /// remove_last_arg specialization.
 template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5>
 struct remove_last_arg<R(A1, A2, A3, A4, A5)>
 {
-    typedef R type(A1, A2, A3, A4);
+    using type = R(A1, A2, A3, A4);
 };
 
 /// remove_last_arg specialization.
 template<typename R, typename A1, typename A2, typename A3, typename A4>
 struct remove_last_arg<R(A1, A2, A3, A4)>
 {
-    typedef R type(A1, A2, A3);
+    using type = R(A1, A2, A3);
 };
 
 /// remove_last_arg specialization.
 template<typename R, typename A1, typename A2, typename A3>
 struct remove_last_arg<R(A1, A2, A3)>
 {
-    typedef R type(A1, A2);
+    using type = R(A1, A2);
 };
 
 /// remove_last_arg specialization.
 template<typename R, typename A1, typename A2>
 struct remove_last_arg<R(A1, A2)>
 {
-    typedef R type(A1);
+    using type = R(A1);
 };
 
 /// remove_last_arg specialization.
 template<typename R, typename A1>
 struct remove_last_arg<R(A1)>
 {
-    typedef R type();
+    using type = R();
 };
 
 /// remove_last_arg specialization.
 template<typename R>
 struct remove_last_arg<R()>
 {
-    typedef R type();
+    using type = R();
 };
 
 } // namespace sight::core::com::util

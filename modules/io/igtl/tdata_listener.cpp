@@ -53,14 +53,14 @@ void tdata_listener::configuring()
     const std::string::size_type split_position = server_info.find(':');
     SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-    m_hostnameConfig = server_info.substr(0, split_position);
-    m_portConfig     = server_info.substr(split_position + 1, server_info.size());
+    m_hostname_config = server_info.substr(0, split_position);
+    m_port_config     = server_info.substr(split_position + 1, server_info.size());
 
     const auto devices = configuration.equal_range("deviceName");
     std::transform(
         devices.first,
         devices.second,
-        std::back_inserter(m_deviceNamesConfig),
+        std::back_inserter(m_device_names_config),
         [](const auto& _device)
         {
             return _device.second.template get_value<std::string>();
@@ -71,13 +71,13 @@ void tdata_listener::configuring()
     for(const auto& m : boost::make_iterator_range(tdata.equal_range("matrix")))
     {
         const auto index = m.second.get<std::uint64_t>("<xmlattr>.index");
-        m_matrixNameIndex[m.second.get<std::string>("<xmlattr>.name")] = index;
+        m_matrix_name_index[m.second.get<std::string>("<xmlattr>.name")] = index;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void tdata_listener::runClient()
+void tdata_listener::run_client()
 {
     data::composite::sptr composite = std::make_shared<data::composite>();
 
@@ -85,28 +85,28 @@ void tdata_listener::runClient()
     try
     {
         ui::preferences preferences;
-        const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
-        const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
+        const auto port     = preferences.delimited_get<std::uint16_t>(m_port_config);
+        const auto hostname = preferences.delimited_get<std::string>(m_hostname_config);
 
-        if(!m_deviceNamesConfig.empty())
+        if(!m_device_names_config.empty())
         {
-            for(const auto& dn : m_deviceNamesConfig)
+            for(const auto& dn : m_device_names_config)
             {
-                m_client.addAuthorizedDevice(preferences.delimited_get<std::string>(dn));
+                m_client.add_authorized_device(preferences.delimited_get<std::string>(dn));
             }
 
-            m_client.setFilteringByDeviceName(true);
+            m_client.set_filtering_by_device_name(true);
         }
 
         m_client.connect(hostname, port);
-        m_sigConnected->async_emit();
+        m_sig_connected->async_emit();
     }
     catch(core::exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
-        if(this->status() == STARTED)
+        if(this->started())
         {
             sight::ui::dialog::message::show("Connection error", ex.what());
             this->slot(service::slots::STOP)->async_run();
@@ -123,15 +123,15 @@ void tdata_listener::runClient()
     // 2. Receive messages
     try
     {
-        while(m_client.isConnected())
+        while(m_client.is_connected())
         {
             std::string device_name;
             double timestamp                  = 0;
-            data::object::sptr receive_object = m_client.receiveObject(device_name, timestamp);
+            data::object::sptr receive_object = m_client.receive_object(device_name, timestamp);
             if(receive_object)
             {
                 composite->shallow_copy(receive_object);
-                this->manageTimeline(composite, timestamp);
+                this->manage_timeline(composite, timestamp);
             }
         }
     }
@@ -140,7 +140,7 @@ void tdata_listener::runClient()
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
-        if(this->status() == STARTED)
+        if(this->started())
         {
             sight::ui::dialog::message::show("Error", ex.what());
             this->slot(service::slots::STOP)->async_run();
@@ -158,10 +158,10 @@ void tdata_listener::runClient()
 void tdata_listener::starting()
 {
     const auto mat_tl = m_timeline.lock();
-    mat_tl->setMaximumSize(10);
-    mat_tl->initPoolSize(static_cast<unsigned int>(m_matrixNameIndex.size()));
+    mat_tl->set_maximum_size(10);
+    mat_tl->init_pool_size(static_cast<unsigned int>(m_matrix_name_index.size()));
 
-    m_clientFuture = std::async(std::launch::async, [this](auto&& ...){runClient();});
+    m_client_future = std::async(std::launch::async, [this](auto&& ...){run_client();});
 }
 
 //-----------------------------------------------------------------------------
@@ -169,25 +169,25 @@ void tdata_listener::starting()
 void tdata_listener::stopping()
 {
     m_client.disconnect();
-    m_clientFuture.wait();
-    m_sigDisconnected->async_emit();
+    m_client_future.wait();
+    m_sig_disconnected->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
-void tdata_listener::manageTimeline(const data::composite::sptr& _obj, double _timestamp)
+void tdata_listener::manage_timeline(const data::composite::sptr& _obj, double _timestamp)
 {
     const auto mat_tl = m_timeline.lock();
     SPTR(data::matrix_tl::buffer_t) matrix_buf;
-    matrix_buf = mat_tl->createBuffer(_timestamp);
+    matrix_buf = mat_tl->create_buffer(_timestamp);
 
     for(const auto& elt : *_obj)
     {
         data::matrix4::csptr transfo_matrix = std::dynamic_pointer_cast<const data::matrix4>(elt.second);
 
-        auto it = m_matrixNameIndex.find(elt.first);
+        auto it = m_matrix_name_index.find(elt.first);
 
-        if(transfo_matrix && it != m_matrixNameIndex.end())
+        if(transfo_matrix && it != m_matrix_name_index.end())
         {
             std::uint64_t index = it->second;
 
@@ -203,12 +203,12 @@ void tdata_listener::manageTimeline(const data::composite::sptr& _obj, double _t
             //don't push the matrix if it contains only '0'
             if(!is_zero)
             {
-                matrix_buf->setElement(matrix_values, static_cast<unsigned int>(index));
+                matrix_buf->set_element(matrix_values, static_cast<unsigned int>(index));
             }
         }
     }
 
-    mat_tl->pushObject(matrix_buf);
+    mat_tl->push_object(matrix_buf);
 
     data::timeline::signals::pushed_t::sptr sig;
     sig = mat_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);

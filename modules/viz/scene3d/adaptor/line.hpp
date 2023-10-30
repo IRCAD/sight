@@ -44,7 +44,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor shows a simple line.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the line is shown or not.
+ * - \b update_visibility(bool): Sets whether the line is shown or not.
  * - \b toggleVisibility(): Toggle whether the line is shown or not.
  * - \b show(): shows the line.
  * - \b hide(): hides the line.
@@ -99,7 +99,7 @@ protected:
      * @brief Sets the line visibility.
      * @param _visible the visibility status of the line.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
 private:
 
@@ -107,22 +107,22 @@ private:
      * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(Ogre::MovableObject* _object);
+    void attach_node(Ogre::MovableObject* _object);
 
     /**
      * @brief Draws a line.
      * @param _existingLine use true if the line already exist.
      */
-    void drawLine(bool _existing_line);
+    void draw_line(bool _existing_line);
 
     /**
      * @brief SLOT: updates length of the line.
      * @param _length length of the line (in mm).
      */
-    void updateLength(float _length);
+    void update_length(float _length);
 
     /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::material::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
@@ -140,7 +140,7 @@ private:
     bool m_dashed {false};
 
     /// Defines the length of one dash.
-    float m_dashLength {2.5F};
+    float m_dash_length {2.5F};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

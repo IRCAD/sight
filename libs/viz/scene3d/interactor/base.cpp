@@ -38,7 +38,7 @@ namespace sight::viz::scene3d::interactor
 
 base::base(layer::sptr _layer, bool _layer_order_dependant) :
     m_layer(_layer),
-    m_layerOrderDependant(_layer_order_dependant)
+    m_layer_order_dependant(_layer_order_dependant)
 {
 }
 
@@ -49,15 +49,15 @@ base::~base()
 
 // ----------------------------------------------------------------------------
 
-void base::setSceneLength(float /*unused*/)
+void base::set_scene_length(float /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::mouseMoveEvent(
-    MouseButton /*unused*/,
-    Modifier /*unused*/,
+void base::mouse_move_event(
+    mouse_button /*unused*/,
+    modifier /*unused*/,
     int /*unused*/,
     int /*unused*/,
     int /*unused*/,
@@ -68,88 +68,88 @@ void base::mouseMoveEvent(
 
 //------------------------------------------------------------------------------
 
-void base::wheelEvent(Modifier /*unused*/, double /*unused*/, int /*unused*/, int /*unused*/)
+void base::wheel_event(modifier /*unused*/, double /*unused*/, int /*unused*/, int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::buttonReleaseEvent(MouseButton /*unused*/, Modifier /*unused*/, int /*unused*/, int /*unused*/)
+void base::button_release_event(mouse_button /*unused*/, modifier /*unused*/, int /*unused*/, int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::buttonPressEvent(MouseButton /*unused*/, Modifier /*unused*/, int /*unused*/, int /*unused*/)
+void base::button_press_event(mouse_button /*unused*/, modifier /*unused*/, int /*unused*/, int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::buttonDoublePressEvent(MouseButton /*unused*/, Modifier /*unused*/, int /*unused*/, int /*unused*/)
+void base::button_double_press_event(mouse_button /*unused*/, modifier /*unused*/, int /*unused*/, int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::keyPressEvent(int /*unused*/, Modifier /*unused*/, int /*unused*/, int /*unused*/)
+void base::key_press_event(int /*unused*/, modifier /*unused*/, int /*unused*/, int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::keyReleaseEvent(int /*unused*/, Modifier /*unused*/, int /*unused*/, int /*unused*/)
+void base::key_release_event(int /*unused*/, modifier /*unused*/, int /*unused*/, int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::resizeEvent(int /*unused*/, int /*unused*/)
+void base::resize_event(int /*unused*/, int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::pinchGestureEvent(double /*_scaleFactor*/, int /*_centerX*/, int /*_centerY*/)
+void base::pinch_gesture_event(double /*_scaleFactor*/, int /*_centerX*/, int /*_centerY*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::panGestureMoveEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
+void base::pan_gesture_move_event(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
+void base::pan_gesture_release_event(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::longTapGestureEvent(int /*_x*/, int /*_y*/)
+void base::long_tap_gesture_event(int /*_x*/, int /*_y*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::leaveEvent()
+void base::leave_event()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void base::enterEvent()
+void base::enter_event()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-bool base::isInLayer(int _mouse_x, int _mouse_y, layer::sptr _layer, bool _layer_order_dependant)
+bool base::is_in_layer(int _mouse_x, int _mouse_y, layer::sptr _layer, bool _layer_order_dependant)
 {
-    const auto* const layer_vp = _layer->getViewport();
-    bool is_in_layer           = isInViewport(_mouse_x, _mouse_y, layer_vp);
+    const auto* const layer_vp = _layer->get_viewport();
+    bool is_in_layer           = is_in_viewport(_mouse_x, _mouse_y, layer_vp);
 
     // Check if there's no layer above.
     if(_layer_order_dependant)
@@ -161,7 +161,7 @@ bool base::isInLayer(int _mouse_x, int _mouse_y, layer::sptr _layer, bool _layer
             const auto* const vp = render_window->getViewport(i);
             if(vp->getZOrder() > layer_vp->getZOrder())
             {
-                is_in_layer = !isInViewport(_mouse_x, _mouse_y, vp);
+                is_in_layer = !is_in_viewport(_mouse_x, _mouse_y, vp);
             }
         }
     }
@@ -171,7 +171,7 @@ bool base::isInLayer(int _mouse_x, int _mouse_y, layer::sptr _layer, bool _layer
 
 // ----------------------------------------------------------------------------
 
-bool base::isInViewport(int _mouse_x, int _mouse_y, const Ogre::Viewport* const _vp)
+bool base::is_in_viewport(int _mouse_x, int _mouse_y, const Ogre::Viewport* const _vp)
 {
     const int top    = _vp->getActualTop();
     const int left   = _vp->getActualLeft();

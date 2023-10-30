@@ -99,16 +99,16 @@ protected:
 
 private:
 
-    typedef core::com::signal<void (std::string)> landmark_updated_signal_t;
+    using landmark_updated_signal_t = core::com::signal<void (std::string)>;
 
     /// SLOT: updates selected point.
-    void updateSelectedPoint(std::string _name, std::size_t _index);
+    void update_selected_point(std::string _name, std::size_t _index);
 
     /// SLOT: updates added point.
-    void updatePoint(std::string _name);
+    void update_point(std::string _name);
 
     /// SLOT: updates removed point.
-    void removePoint();
+    void remove_point();
 
     /// Label containing the landmark group name.
     std::string m_label;
@@ -117,13 +117,13 @@ private:
     std::size_t m_index {0};
 
     /// Bool showing if a landmark is selected.
-    bool m_landmarkSelected {false};
+    bool m_landmark_selected {false};
 
-    static constexpr std::string_view s_TRANSFORM_INPUT = "matrix";
-    static constexpr std::string_view s_LANDMARK_INOUT  = "landmark";
+    static constexpr std::string_view TRANSFORM_INPUT = "matrix";
+    static constexpr std::string_view LANDMARK_INOUT  = "landmark";
 
-    data::ptr<sight::data::matrix4, data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
-    data::ptr<sight::data::landmarks, data::Access::inout> m_landmarks {this, s_LANDMARK_INOUT};
+    data::ptr<sight::data::matrix4, data::access::in> m_transform {this, TRANSFORM_INPUT};
+    data::ptr<sight::data::landmarks, data::access::inout> m_landmarks {this, LANDMARK_INOUT};
 };
 
 } // namespace sight::module::geometry

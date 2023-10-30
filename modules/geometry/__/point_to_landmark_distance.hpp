@@ -104,22 +104,22 @@ protected:
 
 private:
 
-    typedef core::com::signal<void (float)> distance_changed_signal_t;
+    using distance_changed_signal_t = core::com::signal<void (float)>;
 
     /// SLOT: updates selected point.
-    void updateSelectedPoint(std::string _name, std::size_t _index);
+    void update_selected_point(std::string _name, std::size_t _index);
 
     /// SLOT: updates added point.
-    void updatePoint(std::string _name);
+    void update_point(std::string _name);
 
     /// SLOT: updates removed point.
-    void removePoint();
+    void remove_point();
 
     /// Selected landmark.
-    glm::dvec3 m_currentLandmark {};
+    glm::dvec3 m_current_landmark {};
 
     /// Bool showing if a landmark is selected.
-    bool m_landmarkSelected {false};
+    bool m_landmark_selected {false};
 
     /// Unit to concatenate with the computed result.
     std::string m_unit;
@@ -127,10 +127,10 @@ private:
     /// Precision of the displayed distance.
     int m_precision {6};
 
-    data::ptr<data::matrix4, sight::data::Access::in> m_pointMatrix {this, "pointMatrix"};
-    data::ptr<data::landmarks, sight::data::Access::in> m_landmark {this, "landmark"};
-    data::ptr<data::matrix4, sight::data::Access::inout> m_pointToLandmarkMatrix {this, "pointToLandmarkMatrix"};
-    data::ptr<data::string, sight::data::Access::inout> m_distanceText {this, "distanceText"};
+    data::ptr<data::matrix4, sight::data::access::in> m_point_matrix {this, "pointMatrix"};
+    data::ptr<data::landmarks, sight::data::access::in> m_landmark {this, "landmark"};
+    data::ptr<data::matrix4, sight::data::access::inout> m_point_to_landmark_matrix {this, "pointToLandmarkMatrix"};
+    data::ptr<data::string, sight::data::access::inout> m_distance_text {this, "distanceText"};
 };
 
 } // namespace sight::module::geometry

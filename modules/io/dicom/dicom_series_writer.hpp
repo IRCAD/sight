@@ -67,7 +67,7 @@ class MODULE_IO_DICOM_CLASS_API dicom_series_writer : public sight::io::service:
 {
 public:
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     SIGHT_DECLARE_SERVICE(dicom_series_writer, sight::io::service::writer);
 
@@ -82,7 +82,7 @@ public:
     MODULE_IO_DICOM_API ~dicom_series_writer() noexcept override;
 
     /// Propose select a directory where to save the DICOM files.
-    MODULE_IO_DICOM_API void openLocationDialog() override;
+    MODULE_IO_DICOM_API void open_location_dialog() override;
 
 protected:
 
@@ -99,18 +99,18 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override;
 
 private:
 
     /// Save the selected Dicom series
-    void saveDicomSeries(
+    void save_dicom_series(
         const std::filesystem::path _folder,
         const CSPTR(data::dicom_series)& _series
     ) const;
 
     /// Signal emitted when a job is created
-    SPTR(JobCreatedSignal) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::dicom

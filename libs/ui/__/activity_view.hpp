@@ -70,8 +70,8 @@ public:
 
 protected:
 
-    typedef activity::extension::activity_config_param parameter_t;
-    typedef activity::extension::activity_config_params_type parameters_t;
+    using parameter_t  = activity::extension::activity_config_param;
+    using parameters_t = activity::extension::activity_config_params_type;
 
     /// Constructor. Do nothing.
     UI_API activity_view();
@@ -86,19 +86,19 @@ protected:
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity cannot be launch in two different tabs.
      */
-    UI_API virtual void launchActivity(data::activity::sptr _activity) = 0;
+    UI_API virtual void launch_activity(data::activity::sptr _activity) = 0;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    UI_API virtual bool validateActivity(data::activity::sptr _activity) const;
+    UI_API virtual bool validate_activity(data::activity::sptr _activity) const;
 
     /// Create the activity given in 'mainActivity' configuration
-    UI_API data::activity::sptr createMainActivity() const override;
+    UI_API data::activity::sptr create_main_activity() const override;
 
     /// Input data to pass to the configuration
-    data::ptr_vector<data::object, data::Access::inout> m_data {this, "data"};
+    data::ptr_vector<data::object, data::access::inout> m_data {this, "data"};
 };
 
 } // namespace sight::ui

@@ -31,15 +31,15 @@
                         <icon>Tuto15Matrix/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <menuBar />
+                    <menubar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
                     <view sid="containerView" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -237,8 +237,8 @@
 
             <connect>
                 <signal>shhowMeshSrv/boolChanged</signal>
-                <slot>mesh1Adp/updateVisibility</slot>
-                <slot>mesh2Adp/updateVisibility</slot>
+                <slot>mesh1Adp/update_visibility</slot>
+                <slot>mesh2Adp/update_visibility</slot>
             </connect>
 
             <connect>

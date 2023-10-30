@@ -66,110 +66,110 @@ void representation_editor::updating()
 {
     {
         auto reconstruction = m_rec.lock();
-        SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
-        m_material = reconstruction->getMaterial();
+        SIGHT_ASSERT("'" << RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
+        m_material = reconstruction->get_material();
     }
 
-    int representation_mode = m_material->getRepresentationMode();
-    int shading_mode        = m_material->getShadingMode();
-    int normal              = m_material->getOptionsMode();
-    Q_EMIT materialChanged(representation_mode, shading_mode, normal);
+    int representation_mode = m_material->get_representation_mode();
+    int shading_mode        = static_cast<int>(m_material->get_shading_mode());
+    int normal              = m_material->get_options_mode();
+    Q_EMIT material_changed(representation_mode, shading_mode, normal);
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::onChangeRepresentation(int _id)
+void representation_editor::on_change_representation(int _id)
 {
-    data::material::representation_t selected_mode = data::material::SURFACE;
+    data::material::representation_t selected_mode = data::material::surface;
 
     switch(_id)
     {
         case 1:
-            selected_mode = data::material::SURFACE;
+            selected_mode = data::material::surface;
             break;
 
         case 2:
-            selected_mode = data::material::POINT;
+            selected_mode = data::material::point;
             break;
 
         case 3:
-            selected_mode = data::material::WIREFRAME;
+            selected_mode = data::material::wireframe;
             break;
 
         case 4:
-            selected_mode = data::material::EDGE;
+            selected_mode = data::material::edge;
             break;
 
         default:
-            selected_mode = data::material::SURFACE;
+            selected_mode = data::material::surface;
     }
 
-    m_material->setRepresentationMode(selected_mode);
-    this->notifyMaterial();
+    m_material->set_representation_mode(selected_mode);
+    this->notify_material();
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::onChangeShading(int _id)
+void representation_editor::on_change_shading(int _id)
 {
-    data::material::shading_t selected_mode = data::material::PHONG;
+    data::material::shading_t selected_mode = data::material::shading_t::phong;
 
     switch(_id)
     {
         case 0:
-            selected_mode = data::material::AMBIENT;
+            selected_mode = data::material::shading_t::ambient;
             break;
 
         case 1:
-            selected_mode = data::material::FLAT;
+            selected_mode = data::material::shading_t::flat;
             break;
 
         case 2:
-            selected_mode = data::material::PHONG;
+            selected_mode = data::material::shading_t::phong;
             break;
 
         default:
-            selected_mode = data::material::PHONG;
+            selected_mode = data::material::shading_t::phong;
     }
 
-    m_material->setShadingMode(selected_mode);
-    this->notifyMaterial();
+    m_material->set_shading_mode(selected_mode);
+    this->notify_material();
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::onShowNormals(int _state)
+void representation_editor::on_show_normals(int _state)
 {
     switch(_state)
     {
         case 1:
-            m_material->setOptionsMode(data::material::STANDARD);
+            m_material->set_options_mode(data::material::standard);
             break;
 
         case 2:
-            m_material->setOptionsMode(data::material::NORMALS);
+            m_material->set_options_mode(data::material::normals);
             break;
 
         case 3:
-            m_material->setOptionsMode(data::material::CELLS_NORMALS);
+            m_material->set_options_mode(data::material::cells_normals);
             break;
 
         default:
-            m_material->setOptionsMode(data::material::STANDARD);
+            m_material->set_options_mode(data::material::standard);
     }
 
-    this->notifyMaterial();
+    this->notify_material();
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::notifyMaterial()
+void representation_editor::notify_material()
 {
     auto reconstruction = m_rec.lock();
     SIGHT_ASSERT("No Reconstruction!", reconstruction);
 
     data::object::modified_signal_t::sptr sig;
-    sig = reconstruction->getMaterial()->signal<data::object::modified_signal_t>(
+    sig = reconstruction->get_material()->signal<data::object::modified_signal_t>(
         data::object::MODIFIED_SIG
     );
     sig->async_emit();
@@ -180,7 +180,7 @@ void representation_editor::notifyMaterial()
 service::connections_t representation_editor::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_RECONSTRUCTION_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(RECONSTRUCTION_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

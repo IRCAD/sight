@@ -20,21 +20,21 @@
 
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
-                    <menuBar />
-                    <toolBar />
+                    <menubar />
+                    <toolbar />
                     <frame>
                         <name>ExDetectCamMotion</name>
                         <icon>ExDetectCamMotion/app.ico</icon>
                     </frame>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
-                    <toolBar sid="toolbarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <editor />
@@ -264,7 +264,7 @@
 
             <connect>
                 <signal>frameUpdaterSrv/synchronizationDone</signal>
-                <slot>genericSceneSrv/requestRender</slot>
+                <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

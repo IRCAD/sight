@@ -52,7 +52,7 @@ void matrix_regressor_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void matrix_regressor_test::identityTest()
+void matrix_regressor_test::identity_test()
 {
     auto id = std::make_shared<data::matrix4>();
 
@@ -90,7 +90,7 @@ void matrix_regressor_test::identityTest()
 
 //------------------------------------------------------------------------------
 
-void matrix_regressor_test::avgTranslationTest()
+void matrix_regressor_test::avg_translation_test()
 {
     data::matrix4 id;
     auto trans1 = std::make_shared<data::matrix4>();
@@ -139,7 +139,7 @@ void matrix_regressor_test::avgTranslationTest()
 
 //------------------------------------------------------------------------------
 
-void matrix_regressor_test::avgRotationTest()
+void matrix_regressor_test::avg_rotation_test()
 {
     data::matrix4::sptr id  = std::make_shared<data::matrix4>();
     data::matrix4::sptr rot = std::make_shared<data::matrix4>();

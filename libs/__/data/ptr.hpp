@@ -33,8 +33,8 @@
 namespace sight::data
 {
 
-template<class DATATYPE, data::Access ACCESS>
-using ptr_type_traits = std::conditional_t<ACCESS == data::Access::out,
+template<class DATATYPE, data::access ACCESS>
+using ptr_type_traits = std::conditional_t<ACCESS == data::access::out,
                                            data::mt::shared_ptr<typename access_type_traits<DATATYPE, ACCESS>::object>,
                                            data::mt::weak_ptr<typename access_type_traits<DATATYPE, ACCESS>::object> >;
 
@@ -54,7 +54,7 @@ public:
         std::string_view _key,
         bool _auto_connect,
         bool _optional,
-        Access _access,
+        access _access,
         std::optional<std::size_t> _index = std::nullopt
     );
     DATA_API virtual ~base_ptr();
@@ -62,7 +62,7 @@ public:
     [[nodiscard]] std::string_view key() const;
     [[nodiscard]] bool auto_connect() const;
     [[nodiscard]] bool optional() const;
-    [[nodiscard]] Access access() const;
+    [[nodiscard]] enum access access() const;
 
     // Generic getter
     DATA_API virtual sight::data::object::csptr get() = 0;
@@ -85,9 +85,9 @@ protected:
 
     has_data* m_holder {nullptr};
     std::string_view m_key;
-    bool m_autoConnect {false};
+    bool m_auto_connect {false};
     bool m_optional {false};
-    Access m_access {Access::in};
+    enum access m_access {access::in};
 };
 
 //------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ inline std::string_view base_ptr::key() const
 
 inline bool base_ptr::auto_connect() const
 {
-    return m_autoConnect;
+    return m_auto_connect;
 }
 
 //------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ inline bool base_ptr::optional() const
 
 //------------------------------------------------------------------------------
 
-inline Access base_ptr::access() const
+inline enum access base_ptr::access() const
 {
     return m_access;
 }
@@ -124,7 +124,7 @@ inline Access base_ptr::access() const
  * This class purpose is to be used as a service class member to declare and access data.
  * It must be converted to a locked_ptr via the lock() function in order to access the referenced object.
  */
-template<class DATATYPE, data::Access ACCESS>
+template<class DATATYPE, data::access ACCESS>
 class ptr final : public ptr_type_traits<DATATYPE,
                                          ACCESS>,
                   public base_ptr
@@ -138,7 +138,7 @@ public:
         has_data* _holder,
         std::string_view _key,
         bool _auto_connect                = false,
-        bool _optional                    = access_type_traits<DATATYPE, ACCESS>::optional,
+        bool _optional                    = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT,
         std::optional<std::size_t> _index = {}) noexcept :
         base_ptr(_holder, _key, _auto_connect, _optional, ACCESS, _index)
     {
@@ -154,7 +154,7 @@ public:
     ptr& operator=(ptr&&)      = delete;
 
     /// This method is only available if it is an output
-    template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
+    template<data::access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::VALUE> >
     ptr& operator=(const typename access_type_traits<DATATYPE, ACCESS>::value& _obj)
     {
         this->set(_obj, {}, {}, {}, true);
@@ -162,7 +162,7 @@ public:
     }
 
     /// This method is only available if it is an output
-    template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
+    template<data::access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::VALUE> >
     void reset()
     {
         this->set(nullptr, {}, {}, {}, true);
@@ -172,7 +172,7 @@ private:
 
     /// Only the owner of the pointer can update the content of the pointer
     friend class has_data;
-    template<class, data::Access>
+    template<class, data::access>
     friend class ptr_vector;
 
     //------------------------------------------------------------------------------
@@ -191,14 +191,14 @@ private:
         bool _signal                         = false
     ) final
     {
-        if constexpr(ACCESS == data::Access::out)
+        if constexpr(ACCESS == data::access::out)
         {
             if(_signal)
             {
                 const auto ptr = this->lock();
                 if(ptr)
                 {
-                    m_holder->notify_unregister_out(ptr.get_shared(), m_deferredId);
+                    m_holder->notify_unregister_out(ptr.get_shared(), m_deferred_id);
                 }
             }
         }
@@ -220,7 +220,7 @@ private:
 
             if(_auto_connect.has_value())
             {
-                m_autoConnect = _auto_connect.value();
+                m_auto_connect = _auto_connect.value();
             }
 
             if(_optional.has_value())
@@ -228,11 +228,11 @@ private:
                 m_optional = _optional.value();
             }
 
-            if constexpr(ACCESS == data::Access::out)
+            if constexpr(ACCESS == data::access::out)
             {
                 if(_signal)
                 {
-                    m_holder->notify_register_out(_obj, m_deferredId);
+                    m_holder->notify_register_out(_obj, m_deferred_id);
                 }
             }
         }
@@ -242,12 +242,12 @@ private:
 
     void set_deferred_id(const std::string& _id, std::optional<std::size_t> = std::nullopt) final
     {
-        m_deferredId = _id;
+        m_deferred_id = _id;
     }
 
     // Pointer on deferred objects (created at runtime) may reference different objects over time
     // To reference the same object amongst different services, we use a specific label
-    std::string m_deferredId;
+    std::string m_deferred_id;
 };
 
 /**
@@ -255,7 +255,7 @@ private:
  *
  * This class purpose is to be used as a service class member to declare and access multiple data of the same type.
  */
-template<class DATATYPE, data::Access ACCESS>
+template<class DATATYPE, data::access ACCESS>
 class ptr_vector final : public base_ptr
 {
 public:
@@ -268,7 +268,7 @@ public:
         has_data* _holder,
         std::string_view _key,
         bool _auto_connect = false,
-        bool _optional     = access_type_traits<DATATYPE, ACCESS>::optional
+        bool _optional     = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT
     ) noexcept :
         base_ptr(_holder, _key, _auto_connect, _optional, ACCESS, {})
     {
@@ -293,7 +293,7 @@ public:
         if(m_ptrs.find(_index) == m_ptrs.end())
         {
             // Initializes members
-            m_ptrs.emplace(std::make_pair(_index, new ptr_t(m_holder, m_key, m_autoConnect, m_optional, _index)));
+            m_ptrs.emplace(std::make_pair(_index, new ptr_t(m_holder, m_key, m_auto_connect, m_optional, _index)));
         }
 
         return *m_ptrs[_index];
@@ -395,12 +395,12 @@ private:
             m_ptrs.emplace(
                 std::make_pair(
                     _index.value(),
-                    new ptr_t(m_holder, m_key, m_autoConnect, m_optional, _index)
+                    new ptr_t(m_holder, m_key, m_auto_connect, m_optional, _index)
                 )
             );
         }
 
-        m_ptrs[*_index]->m_deferredId = _id;
+        m_ptrs[*_index]->m_deferred_id = _id;
     }
 
     /// Collection of data, indexed by key

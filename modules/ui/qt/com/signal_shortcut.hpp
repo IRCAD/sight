@@ -57,7 +57,7 @@ public:
     SIGHT_DECLARE_SERVICE(signal_shortcut, service::base);
 
     /// Signal emitted when the shortcut is received.
-    typedef core::com::signal<void ()> activated_shortcut_signal_t;
+    using activated_shortcut_signal_t = core::com::signal<void ()>;
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API signal_shortcut() noexcept;
@@ -91,7 +91,7 @@ protected:
 
 private Q_SLOTS:
 
-    void onActivation();
+    void on_activation();
 
 private:
 
@@ -107,7 +107,7 @@ private:
     std::string m_wid;
 
     /// Qt shortcut object
-    QShortcut* m_shortcutObject {nullptr};
+    QShortcut* m_shortcut_object {nullptr};
 };
 
 } // namespace sight::module::ui::qt::com

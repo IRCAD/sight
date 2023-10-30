@@ -47,25 +47,25 @@ public:
     UI_QT_API ~message() override = default;
 
     /// Set the title of the message box
-    UI_QT_API void setTitle(const std::string& _title) override;
+    UI_QT_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_QT_API void setMessage(const std::string& _msg) override;
+    UI_QT_API void set_message(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QT_API void setIcon(message::Icons _icon) override;
+    UI_QT_API void set_icon(message::icons _icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QT_API void addButton(message::Buttons _button) override;
+    UI_QT_API void add_button(message::buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_QT_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
+    UI_QT_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Set the default buttons
-    UI_QT_API void setDefaultButton(message::Buttons _button) override;
+    UI_QT_API void set_default_button(message::buttons _button) override;
 
     /// Show the message box and return the clicked button.
-    UI_QT_API Buttons show() override;
+    UI_QT_API buttons show() override;
 
 protected:
 
@@ -76,16 +76,16 @@ protected:
     std::string m_message;
 
     /// List of the button
-    Buttons m_buttons {NOBUTTON};
+    buttons m_buttons {nobutton};
 
     /// default buttons
-    Buttons m_defaultButton {NOBUTTON};
+    buttons m_default_button {nobutton};
 
     /// Icon
-    message::Icons m_icon {ui::qt::dialog::message::NONE};
+    message::icons m_icon {ui::qt::dialog::message::none};
 
     /// Stores custom buttons
-    QVector<QPushButton*> m_customButtons;
+    QVector<QPushButton*> m_custom_buttons;
 };
 
 } // namespace sight::ui::qt::dialog

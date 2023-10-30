@@ -46,37 +46,18 @@ void type_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-class A
-{
-};
-
-//------------------------------------------------------------------------------
-
 void type_test::basic_test()
 {
-    core::type in_t8  = core::type::INT8;
-    core::type in_t16 = core::type::INT16;
-    core::type in_t32 = core::type::INT32;
-    core::type in_t64 = core::type::INT64;
-
-    core::type uin_t8  = core::type::UINT8;
-    core::type uin_t16 = core::type::UINT16;
-    core::type uin_t32 = core::type::UINT32;
-    core::type uin_t64 = core::type::UINT64;
-
-    core::type FLOAT  = core::type::FLOAT;
-    core::type DOUBLE = core::type::DOUBLE;
-
-    CPPUNIT_ASSERT_EQUAL(std::string("int8"), in_t8.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("int16"), in_t16.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("int32"), in_t32.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("int64"), in_t64.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), uin_t8.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("uint16"), uin_t16.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("uint32"), uin_t32.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("uint64"), uin_t64.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("float"), FLOAT.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("double"), DOUBLE.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("int8"), core::type::INT8.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("int16"), core::type::INT16.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("int32"), core::type::INT32.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("int64"), core::type::INT64.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), core::type::UINT8.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("uint16"), core::type::UINT16.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("uint32"), core::type::UINT32.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("uint64"), core::type::UINT64.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("float"), core::type::FLOAT.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("double"), core::type::DOUBLE.name());
 
     CPPUNIT_ASSERT_EQUAL(std::string("int8"), core::type::get<signed char>().name());
     CPPUNIT_ASSERT_EQUAL(std::string("int8"), core::type::get<char>().name());
@@ -98,19 +79,19 @@ void type_test::basic_test()
 
     CPPUNIT_ASSERT_EQUAL(core::type::NONE, core::type());
 
-    CPPUNIT_ASSERT_EQUAL(in_t8, core::type::get<signed char>());
-    CPPUNIT_ASSERT_EQUAL(in_t8, core::type::get<char>());
-    CPPUNIT_ASSERT_EQUAL(in_t16, core::type::get<short>());
-    CPPUNIT_ASSERT_EQUAL(in_t32, core::type::get<int>());
-    CPPUNIT_ASSERT_EQUAL(in_t64, core::type::get<std::int64_t>());
+    CPPUNIT_ASSERT_EQUAL(core::type::INT8, core::type::get<signed char>());
+    CPPUNIT_ASSERT_EQUAL(core::type::INT8, core::type::get<char>());
+    CPPUNIT_ASSERT_EQUAL(core::type::INT16, core::type::get<short>());
+    CPPUNIT_ASSERT_EQUAL(core::type::INT32, core::type::get<int>());
+    CPPUNIT_ASSERT_EQUAL(core::type::INT64, core::type::get<std::int64_t>());
 
-    CPPUNIT_ASSERT_EQUAL(uin_t8, core::type::get<unsigned char>());
-    CPPUNIT_ASSERT_EQUAL(uin_t16, core::type::get<unsigned short>());
-    CPPUNIT_ASSERT_EQUAL(uin_t32, core::type::get<unsigned int>());
-    CPPUNIT_ASSERT_EQUAL(uin_t64, core::type::get<std::uint64_t>());
+    CPPUNIT_ASSERT_EQUAL(core::type::UINT8, core::type::get<unsigned char>());
+    CPPUNIT_ASSERT_EQUAL(core::type::UINT16, core::type::get<unsigned short>());
+    CPPUNIT_ASSERT_EQUAL(core::type::UINT32, core::type::get<unsigned int>());
+    CPPUNIT_ASSERT_EQUAL(core::type::UINT64, core::type::get<std::uint64_t>());
 
-    CPPUNIT_ASSERT_EQUAL(FLOAT, core::type::get<float>());
-    CPPUNIT_ASSERT_EQUAL(DOUBLE, core::type::get<double>());
+    CPPUNIT_ASSERT_EQUAL(core::type::FLOAT, core::type::get<float>());
+    CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, core::type::get<double>());
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +121,7 @@ void type_test::type_to_string_test()
 
 void type_test::type_switch_test()
 {
-    static constexpr auto TYPES = {
+    static constexpr auto s_TYPES = {
         core::type::INT8,
         core::type::INT16,
         core::type::INT32,
@@ -166,7 +147,7 @@ void type_test::type_switch_test()
         {core::type::DOUBLE, false},
     };
 
-    for(const auto& type : TYPES)
+    for(const auto& type : s_TYPES)
     {
         switch(type)
         {

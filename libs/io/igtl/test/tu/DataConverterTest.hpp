@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,17 +27,17 @@
 namespace sight::io::igtl::detail::ut
 {
 
-class DataConverterTest : public CPPUNIT_NS::TestFixture
+class data_converter_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DataConverterTest);
-CPPUNIT_TEST(meshConverterTest);
-CPPUNIT_TEST(imageConverterTest);
-CPPUNIT_TEST(matrixConverterTest);
-CPPUNIT_TEST(pointListConverterTest);
-CPPUNIT_TEST(stringConverterTest);
-CPPUNIT_TEST(lineConverterTest);
-CPPUNIT_TEST(scalarConverterTest);
-CPPUNIT_TEST(compositeConverterTest);
+CPPUNIT_TEST_SUITE(data_converter_test);
+CPPUNIT_TEST(mesh_converter_test);
+CPPUNIT_TEST(image_converter_test);
+CPPUNIT_TEST(matrix_converter_test);
+CPPUNIT_TEST(point_list_converter_test);
+CPPUNIT_TEST(string_converter_test);
+CPPUNIT_TEST(line_converter_test);
+CPPUNIT_TEST(scalar_converter_test);
+CPPUNIT_TEST(composite_converter_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,14 +45,14 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void imageConverterTest();
-    static void matrixConverterTest();
-    static void pointListConverterTest();
-    static void stringConverterTest();
-    static void lineConverterTest();
-    static void scalarConverterTest();
-    static void meshConverterTest();
-    static void compositeConverterTest();
+    static void image_converter_test();
+    static void matrix_converter_test();
+    static void point_list_converter_test();
+    static void string_converter_test();
+    static void line_converter_test();
+    static void scalar_converter_test();
+    static void mesh_converter_test();
+    static void composite_converter_test();
 };
 
 } // namespace sight::io::igtl::detail::ut

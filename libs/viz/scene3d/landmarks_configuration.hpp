@@ -46,19 +46,19 @@ struct VIZ_SCENE3D_CLASS_API landmarks_configuration
     std::optional<sight::data::landmarks::size_t> size {std::nullopt};
 
     /// Shape of the landmarks.
-    std::optional<sight::data::landmarks::Shape> shape {std::nullopt};
+    std::optional<sight::data::landmarks::shape> shape {std::nullopt};
 
     /// Maximum number of landmark in the group. Value < 0 means "no limit".
-    std::optional<int> groupMax {std::nullopt};
+    std::optional<int> group_max {std::nullopt};
 
     /// Maximum number of visible landmark. Value < 0 means "no limit".
-    std::optional<int> visibleMax {std::nullopt};
+    std::optional<int> visible_max {std::nullopt};
 
     /// Maximum number of total landmark. Value < 0 means "no limit".
-    std::optional<int> totalMax {std::nullopt};
+    std::optional<int> total_max {std::nullopt};
 
     /// List of movable groups if `modify="group"` is used. If empty, only current group is movable.
-    std::optional<std::set<std::string> > movableGroups {std::nullopt};
+    std::optional<std::set<std::string> > movable_groups {std::nullopt};
 };
 
 } // namespace sight::viz::scene3d

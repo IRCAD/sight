@@ -66,8 +66,8 @@ void series_pusher::configuring()
         const std::string::size_type split_position = server_info.find(':');
         SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_serverHostnameKey = server_info.substr(0, split_position);
-        m_serverPortKey     = server_info.substr(split_position + 1, server_info.size());
+        m_server_hostname_key = server_info.substr(0, split_position);
+        m_server_port_key     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -95,7 +95,7 @@ void series_pusher::updating()
 
     try
     {
-        m_serverPort = preferences.delimited_get(m_serverPortKey, m_serverPort);
+        m_server_port = preferences.delimited_get(m_server_port_key, m_server_port);
     }
     catch(...)
     {
@@ -104,52 +104,52 @@ void series_pusher::updating()
 
     try
     {
-        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
+        m_server_hostname = preferences.delimited_get(m_server_hostname_key, m_server_hostname);
     }
     catch(...)
     {
         // Do nothing
     }
 
-    const auto selected_series = m_selectedSeries.lock();
+    const auto selected_series = m_selected_series.lock();
 
-    if(m_isPushing)
+    if(m_is_pushing)
     {
         // Display a message to inform the user that the service is already pushing data.
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Pushing Series");
-        message_box.setMessage(
+        message_box.set_title("Pushing Series");
+        message_box.set_message(
             "The service is already pushing data. Please wait until the pushing is done "
             "before sending a new push request."
         );
-        message_box.setIcon(ui::dialog::message::INFO);
-        message_box.addButton(ui::dialog::message::OK);
+        message_box.set_icon(ui::dialog::message::info);
+        message_box.add_button(ui::dialog::message::ok);
         message_box.show();
     }
     else if(selected_series->empty())
     {
         // Display a message to inform the user that there is no series selected.
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Pushing Series");
-        message_box.setMessage("Unable to push series, there is no series selected.");
-        message_box.setIcon(ui::dialog::message::INFO);
-        message_box.addButton(ui::dialog::message::OK);
+        message_box.set_title("Pushing Series");
+        message_box.set_message("Unable to push series, there is no series selected.");
+        message_box.set_icon(ui::dialog::message::info);
+        message_box.add_button(ui::dialog::message::ok);
         message_box.show();
     }
     else
     {
         // Push series to the PACS
-        this->pushSeries();
+        this->push_series();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void series_pusher::pushSeries()
+void series_pusher::push_series()
 {
-    m_isPushing = true;
+    m_is_pushing = true;
 
-    const auto series_vector = m_selectedSeries.lock();
+    const auto series_vector = m_selected_series.lock();
 
     // Connect to PACS
     std::size_t nb_series_success = 0;
@@ -164,7 +164,7 @@ void series_pusher::pushSeries()
 
         nb_series_success++;
 
-        data::dicom_series::dicom_container_t dicom_container = dicom_series->getDicomContainer();
+        data::dicom_series::dicom_container_t dicom_container = dicom_series->get_dicom_container();
         const std::size_t dicom_container_size                = dicom_container.size();
 
         try
@@ -180,13 +180,13 @@ void series_pusher::pushSeries()
                 const QByteArray file_buffer = QByteArray::fromRawData(buffer, int(size));
 
                 /// Url PACS
-                const std::string pacs_server("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
-                sight::io::http::Request::sptr request =
-                    sight::io::http::Request::New(pacs_server + "/instances");
+                const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
+                sight::io::http::request::sptr request =
+                    sight::io::http::request::New(pacs_server + "/instances");
                 QByteArray series_answer;
                 if(file_buffer.size() != 0)
                 {
-                    series_answer = m_clientQt.post(request, file_buffer);
+                    series_answer = m_client_qt.post(request, file_buffer);
                     if(!series_answer.isEmpty())
                     {
                         nb_instance_success++;
@@ -195,7 +195,7 @@ void series_pusher::pushSeries()
 
                 if(dicom_container_size == nb_instance_success)
                 {
-                    sight::module::io::dicomweb::series_pusher::displayMessage(
+                    sight::module::io::dicomweb::series_pusher::display_message(
                         "Upload successful: " + std::to_string(nb_series_success) + "/"
                         + std::to_string(series_vector->size()),
                         false
@@ -203,32 +203,32 @@ void series_pusher::pushSeries()
                 }
             }
         }
-        catch(sight::io::http::exceptions::HostNotFound& exception)
+        catch(sight::io::http::exceptions::host_not_found& exception)
         {
             std::stringstream ss;
             ss << "Host not found.\n"
             << "Please check your configuration: \n"
-            << "Pacs host name: " << m_serverHostname << "\n"
-            << "Pacs port: " << m_serverPort << "\n";
-            sight::module::io::dicomweb::series_pusher::displayMessage(ss.str(), true);
+            << "Pacs host name: " << m_server_hostname << "\n"
+            << "Pacs port: " << m_server_port << "\n";
+            sight::module::io::dicomweb::series_pusher::display_message(ss.str(), true);
             SIGHT_WARN(exception.what());
         }
     }
 
     // Set pushing boolean to false
-    m_isPushing = false;
+    m_is_pushing = false;
 }
 
 //------------------------------------------------------------------------------
 
-void series_pusher::displayMessage(const std::string& _message, bool _error)
+void series_pusher::display_message(const std::string& _message, bool _error)
 {
     SIGHT_WARN_IF("Error: " + _message, _error);
     sight::ui::dialog::message message_box;
-    message_box.setTitle((_error ? "Error" : "Information"));
-    message_box.setMessage(_message);
-    message_box.setIcon(_error ? (ui::dialog::message::CRITICAL) : (ui::dialog::message::INFO));
-    message_box.addButton(ui::dialog::message::OK);
+    message_box.set_title((_error ? "Error" : "Information"));
+    message_box.set_message(_message);
+    message_box.set_icon(_error ? (ui::dialog::message::critical) : (ui::dialog::message::info));
+    message_box.add_button(ui::dialog::message::ok);
     message_box.show();
 }
 

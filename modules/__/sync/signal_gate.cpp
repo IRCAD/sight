@@ -96,7 +96,7 @@ void signal_gate::starting()
 
                 sig->connect(slot);
 
-                m_waitingSlots.push_back(slot);
+                m_waiting_slots.push_back(slot);
             }
         }
     }
@@ -106,7 +106,7 @@ void signal_gate::starting()
 
 void signal_gate::stopping()
 {
-    m_waitingSlots.clear();
+    m_waiting_slots.clear();
     m_flags.clear();
 }
 

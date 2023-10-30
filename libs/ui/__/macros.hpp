@@ -31,7 +31,7 @@ namespace sight::ui
 {
 
 #define SIGHT_REGISTER_GUI(GuiClassname, GuiFunctorKey) \
-    static sight::ui::object::Registry<GuiClassname> \
+    static sight::ui::object::registry<GuiClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(GuiFunctorKey);
 
 } // namespace sight::ui

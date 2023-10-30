@@ -31,7 +31,7 @@ namespace sight::module::ui::ut
 class export_set_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(export_set_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    service::base::sptr m_exportSet;
+    service::base::sptr m_export_set;
 };
 
 } // namespace sight::module::ui::ut

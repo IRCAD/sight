@@ -26,10 +26,10 @@
 namespace sight::viz::scene3d::helper::ut
 {
 
-class transformableTest : public CPPUNIT_NS::TestFixture
+class transformable_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(transformableTest);
-CPPUNIT_TEST(transformNodeTest);
+CPPUNIT_TEST_SUITE(transformable_test);
+CPPUNIT_TEST(transform_node_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,7 +38,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void transformNodeTest();
+    static void transform_node_test();
 };
 
 } // namespace sight::viz::scene3d::helper::ut

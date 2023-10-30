@@ -35,39 +35,39 @@ namespace sight::data::tools
 /// Structure to store picking information
 struct  picking_info
 {
-    enum Modifier
+    enum modifier
     {
-        NONE  = 0,
-        CTRL  = 1,
-        SHIFT = 2
+        none  = 0,
+        ctrl  = 1,
+        shift = 2
     };
 
-    enum class Event : std::int8_t
+    enum class event : std::int8_t
     {
-        MOUSE_LEFT_UP = 0,
-        MOUSE_RIGHT_UP,
-        MOUSE_MIDDLE_UP,
-        MOUSE_WHEELFORWARD,
-        MOUSE_LEFT_DOWN,
-        MOUSE_RIGHT_DOWN,
-        MOUSE_MIDDLE_DOWN,
-        MOUSE_WHEELBACKWARD,
-        MOUSE_MOVE,
-        KEY_PRESS,
+        mouse_left_up = 0,
+        mouse_right_up,
+        mouse_middle_up,
+        mouse_wheelforward,
+        mouse_left_down,
+        mouse_right_down,
+        mouse_middle_down,
+        mouse_wheelbackward,
+        mouse_move,
+        key_press,
     };
 
     /// Position clicked in world coordinates
-    std::array<double, 3> m_worldPos {};
+    std::array<double, 3> m_world_pos {};
     /// Id of the cell
-    int m_cellId = -1;
+    int m_cell_id = -1;
     /// Id of the closest point
-    int m_closestPointId = -1;
+    int m_closest_point_id = -1;
     /// Mouse event
-    Event m_eventId = Event::MOUSE_LEFT_UP;
+    event m_event_id = event::mouse_left_up;
     /// Modifier mask
-    std::int8_t m_modifierMask = 0;
+    std::int8_t m_modifier_mask = 0;
     /// Key event
-    char m_keyPressed = 0;
+    char m_key_pressed = 0;
 
     core::hires_clock::type m_timestamp {};
 };

@@ -25,18 +25,18 @@
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="true" />
+                <toolbar sid="toolbar" start="true" />
                 <view sid="leftView" start="true" />
                 <view sid="centerView" start="true" />
                 <view sid="bottomView" start="true" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::tool_bar" >
+        <service uid="toolbar" type="sight::module::ui::toolbar" >
             <gui>
                 <layout>
                     <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/Settings.svg" style="check" />

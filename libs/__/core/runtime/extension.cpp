@@ -36,8 +36,8 @@ extension::extension(
     const std::string& _point
 ) :
     module_element(_module),
-    M_ID(filter_id(_id)),
-    M_POINT(filter_id(_point))
+    m_id(filter_id(_id)),
+    m_point(filter_id(_point))
 {
 }
 
@@ -45,14 +45,14 @@ extension::extension(
 
 const std::string& extension::identifier() const
 {
-    return M_ID;
+    return m_id;
 }
 
 //------------------------------------------------------------------------------
 
 const std::string& extension::point() const
 {
-    return M_POINT;
+    return m_point;
 }
 
 //------------------------------------------------------------------------------

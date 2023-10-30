@@ -15,18 +15,18 @@
 
             <service uid="view" type="sight::module::ui::view" >
                 <gui>
-                    <toolBar />
+                    <toolbar />
                     <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                     </layout>
                 </gui>
                 <registry>
                     <parent wid="${TOOLBAR}" />
-                    <toolBar sid="toolBarView" start="true" />
+                    <toolbar sid="toolBarView" start="true" />
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::tool_bar" >
+            <service uid="toolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout style="ToolButtonTextUnderIcon" >
                         <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui/icons/monkey.png" />
@@ -68,8 +68,8 @@
 
         <service uid="mainFrame" type="sight::module::ui::frame" >
             <gui>
-                <menuBar />
-                <toolBar />
+                <menubar />
+                <toolbar />
                 <frame>
                     <name>Tuto14Gui</name>
                     <icon>Tuto14Gui/tuto.ico</icon>
@@ -77,13 +77,13 @@
                 </frame>
             </gui>
             <registry>
-                <menuBar sid="menuBarView" start="true" />
-                <toolBar sid="toolBarView" start="true" />
+                <menubar sid="menuBarView" start="true" />
+                <toolbar sid="toolBarView" start="true" />
                 <view sid="backgroundView" start="true" />
             </registry>
         </service>
 
-        <service uid="menuBarView" type="sight::module::ui::menu_bar" >
+        <service uid="menuBarView" type="sight::module::ui::menubar" >
             <gui>
                 <layout>
                     <menu name="My Menu" />
@@ -137,7 +137,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::tool_bar" >
+        <service uid="toolBarView" type="sight::module::ui::toolbar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
                     <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
@@ -301,17 +301,17 @@
                     <view toolTip="You can put some useful information here"  />
                     <view toolTip="This button is check/unchecked by clicking on 'Click' or 'Me'"  />
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <view sid="clickSrv" start="true" />
                 <view sid="meSrv" start="true" />
                 <view sid="checkableSrv" start="true" />
-                <toolBar sid="toolbar2View" start="true" />
+                <toolbar sid="toolbar2View" start="true" />
             </registry>
         </service>
 
-        <service uid="toolbar2View" type="sight::module::ui::tool_bar" >
+        <service uid="toolbar2View" type="sight::module::ui::toolbar" >
             <gui>
                 <layout>
                     <menuItem name="Item 2" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />

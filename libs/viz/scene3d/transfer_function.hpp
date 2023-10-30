@@ -66,7 +66,7 @@ public:
 private:
 
     /// Stores the tf window to upload it when necessary as a fragment shader uniform
-    Ogre::Vector3 m_tfWindow;
+    Ogre::Vector3 m_tf_window;
 };
 
 //------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ inline void transfer_function::bind(
     tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
     tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
-    _params->setNamedConstant(_uniform, m_tfWindow);
+    _params->setNamedConstant(_uniform, m_tf_window);
 }
 
 //-----------------------------------------------------------------------------

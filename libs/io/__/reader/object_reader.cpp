@@ -34,7 +34,7 @@ void object_reader::set_object(core::tools::object::sptr _p_object)
 
 //------------------------------------------------------------------------------
 
-core::tools::object::sptr object_reader::getObject() const
+core::tools::object::sptr object_reader::get_object() const
 {
     auto object = m_object.lock();
     SIGHT_ASSERT("Object is null", object);
@@ -45,7 +45,7 @@ core::tools::object::sptr object_reader::getObject() const
 
 void object_reader::cancel() const
 {
-    auto job = this->getJob();
+    auto job = this->get_job();
     if(job)
     {
         job->cancel();

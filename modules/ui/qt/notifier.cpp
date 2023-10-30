@@ -36,24 +36,24 @@ namespace sight::module::ui::qt
 
 static const core::com::slots::key_t POP_NOTIFICATION_SLOT   = "pop";
 static const core::com::slots::key_t CLOSE_NOTIFICATION_SLOT = "closeNotification";
-static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
+static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "set_enum_parameter";
 
-static const std::string s_POSITION_KEY("position");
-static const std::string s_DURATION_KEY("duration");
-static const std::string s_SIZE_KEY("size");
-static const std::string s_MAX_KEY("max");
-static const std::string s_CLOSABLE_KEY("closable");
+static const std::string POSITION_KEY("position");
+static const std::string DURATION_KEY("duration");
+static const std::string SIZE_KEY("size");
+static const std::string MAX_KEY("max");
+static const std::string CLOSABLE_KEY("closable");
 
-static const std::string s_INFINITE("infinite");
+static const std::string INFINITE("infinite");
 
-static const std::map<const std::string, const sight::ui::dialog::notification::Position> s_POSITION_MAP = {
-    {"TOP_RIGHT", service::Notification::Position::TOP_RIGHT},
-    {"TOP_LEFT", service::Notification::Position::TOP_LEFT},
-    {"CENTERED_TOP", service::Notification::Position::CENTERED_TOP},
-    {"CENTERED", service::Notification::Position::CENTERED},
-    {"BOTTOM_RIGHT", service::Notification::Position::BOTTOM_RIGHT},
-    {"BOTTOM_LEFT", service::Notification::Position::BOTTOM_LEFT},
-    {"CENTERED_BOTTOM", service::Notification::Position::CENTERED_BOTTOM}
+static const std::map<const std::string, const sight::ui::dialog::notification::position> POSITION_MAP = {
+    {"TOP_RIGHT", service::notification::position::top_right},
+    {"TOP_LEFT", service::notification::position::top_left},
+    {"CENTERED_TOP", service::notification::position::centered_top},
+    {"CENTERED", service::notification::position::centered},
+    {"BOTTOM_RIGHT", service::notification::position::bottom_right},
+    {"BOTTOM_LEFT", service::notification::position::bottom_left},
+    {"CENTERED_BOTTOM", service::notification::position::centered_bottom}
 };
 
 //-----------------------------------------------------------------------------
@@ -61,8 +61,8 @@ static const std::map<const std::string, const sight::ui::dialog::notification::
 notifier::notifier() noexcept
 {
     new_slot(POP_NOTIFICATION_SLOT, &notifier::pop, this);
-    new_slot(CLOSE_NOTIFICATION_SLOT, &notifier::closeNotification, this);
-    new_slot(SET_ENUM_PARAMETER_SLOT, &notifier::setEnumParameter, this);
+    new_slot(CLOSE_NOTIFICATION_SLOT, &notifier::close_notification, this);
+    new_slot(SET_ENUM_PARAMETER_SLOT, &notifier::set_enum_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,18 +75,18 @@ void notifier::configuring()
     {
         for(const auto& channel : boost::make_iterator_range(channels->equal_range("channel")))
         {
-            Configuration channel_config {};
+            configuration channel_config {};
 
             // UID
             const auto& uid = channel.second.get_optional<std::string>("<xmlattr>.uid").value_or("");
 
             // Position
-            if(const auto& position = channel.second.get_optional<std::string>("<xmlattr>." + s_POSITION_KEY);
+            if(const auto& position = channel.second.get_optional<std::string>("<xmlattr>." + POSITION_KEY);
                position)
             {
-                if(s_POSITION_MAP.contains(*position))
+                if(POSITION_MAP.contains(*position))
                 {
-                    channel_config.position = s_POSITION_MAP.at(*position);
+                    channel_config.position = POSITION_MAP.at(*position);
                 }
                 else
                 {
@@ -100,10 +100,10 @@ void notifier::configuring()
             }
 
             // Duration
-            if(const auto& duration = channel.second.get_optional<std::string>("<xmlattr>." + s_DURATION_KEY);
+            if(const auto& duration = channel.second.get_optional<std::string>("<xmlattr>." + DURATION_KEY);
                duration)
             {
-                if(*duration == s_INFINITE)
+                if(*duration == INFINITE)
                 {
                     channel_config.duration = std::chrono::milliseconds(0);
                 }
@@ -119,7 +119,7 @@ void notifier::configuring()
                             "Duration '"
                             + *duration
                             + "' is not valid. Accepted values are: '"
-                            + s_INFINITE
+                            + INFINITE
                             + "' or a positive number of milliseconds."
                         )
                     }
@@ -127,7 +127,7 @@ void notifier::configuring()
             }
 
             // Size
-            if(const auto& size = channel.second.get_optional<std::string>("<xmlattr>." + s_SIZE_KEY); size)
+            if(const auto& size = channel.second.get_optional<std::string>("<xmlattr>." + SIZE_KEY); size)
             {
                 try
                 {
@@ -154,7 +154,7 @@ void notifier::configuring()
             }
 
             // Max
-            if(const auto& max = channel.second.get_optional<std::string>("<xmlattr>." + s_MAX_KEY); max)
+            if(const auto& max = channel.second.get_optional<std::string>("<xmlattr>." + MAX_KEY); max)
             {
                 try
                 {
@@ -171,7 +171,7 @@ void notifier::configuring()
             }
 
             // Closable
-            if(const auto& closable = channel.second.get_optional<std::string>("<xmlattr>." + s_CLOSABLE_KEY);
+            if(const auto& closable = channel.second.get_optional<std::string>("<xmlattr>." + CLOSABLE_KEY);
                closable)
             {
                 channel_config.closable = *closable == "true";
@@ -181,27 +181,27 @@ void notifier::configuring()
         }
     }
 
-    m_defaultMessage    = config.get<std::string>("message", m_defaultMessage);
-    m_parentContainerID = config.get<std::string>("parent.<xmlattr>.uid", m_parentContainerID);
+    m_default_message     = config.get<std::string>("message", m_default_message);
+    m_parent_container_id = config.get<std::string>("parent.<xmlattr>.uid", m_parent_container_id);
 }
 
 //-----------------------------------------------------------------------------
 
 void notifier::starting()
 {
-    if(!m_parentContainerID.empty())
+    if(!m_parent_container_id.empty())
     {
-        auto container = sight::ui::registry::get_sid_container(m_parentContainerID);
+        auto container = sight::ui::registry::get_sid_container(m_parent_container_id);
 
         if(!container)
         {
-            container = sight::ui::registry::get_wid_container(m_parentContainerID);
+            container = sight::ui::registry::get_wid_container(m_parent_container_id);
         }
 
         // If we have an SID/WID set the container.
         if(container)
         {
-            m_containerWhereToDisplayNotifs = container;
+            m_container_where_to_display_notifs = container;
         }
     }
 }
@@ -229,17 +229,17 @@ void notifier::updating()
 
 //-----------------------------------------------------------------------------
 
-void notifier::setEnumParameter(std::string _val, std::string _key)
+void notifier::set_enum_parameter(std::string _val, std::string _key)
 {
     try
     {
-        if(_key == s_POSITION_KEY)
+        if(_key == POSITION_KEY)
         {
-            m_channels[""].position = s_POSITION_MAP.at(_val);
+            m_channels[""].position = POSITION_MAP.at(_val);
         }
-        else if(_key == s_DURATION_KEY)
+        else if(_key == DURATION_KEY)
         {
-            if(_val == s_INFINITE)
+            if(_val == INFINITE)
             {
                 m_channels[""].duration = std::chrono::milliseconds(0);
             }
@@ -248,7 +248,7 @@ void notifier::setEnumParameter(std::string _val, std::string _key)
                 m_channels[""].duration = std::chrono::milliseconds(std::stoul(_val));
             }
         }
-        else if(_key == s_SIZE_KEY)
+        else if(_key == SIZE_KEY)
         {
             if(const auto pos = _val.find_first_of('x'); pos != std::string::npos)
             {
@@ -258,11 +258,11 @@ void notifier::setEnumParameter(std::string _val, std::string _key)
                 m_channels[""].size = {int(width), int(height)};
             }
         }
-        else if(_key == s_MAX_KEY)
+        else if(_key == MAX_KEY)
         {
             m_channels[""].max = std::stoul(_val);
         }
-        else if(_key == s_CLOSABLE_KEY)
+        else if(_key == CLOSABLE_KEY)
         {
             m_channels[""].closable = _val == "true";
         }
@@ -275,7 +275,7 @@ void notifier::setEnumParameter(std::string _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void notifier::pop(service::Notification _notification)
+void notifier::pop(service::notification _notification)
 {
     const bool channel_configured = m_channels.contains(_notification.channel);
 
@@ -335,7 +335,7 @@ void notifier::pop(service::Notification _notification)
                         : size;
 
     // If the maximum number of notification is reached, remove the oldest one.
-    cleanNotifications(position, *target_stack.max, *target_stack.size);
+    clean_notifications(position, *target_stack.max, *target_stack.size);
 
     // Get or create the notification
     const auto& popup =
@@ -348,14 +348,14 @@ void notifier::pop(service::Notification _notification)
                 {
                     for(const auto& popup : stack.popups)
                     {
-                        if(popup->getChannel() == _notification.channel)
+                        if(popup->get_channel() == _notification.channel)
                         {
                             // If the position doesn't match, fix it
                             if(old_position != position)
                             {
                                 // Explicit copy
                                 auto copy = popup;
-                                copy->setIndex(static_cast<unsigned int>(target_stack.popups.size()));
+                                copy->set_index(static_cast<unsigned int>(target_stack.popups.size()));
                                 target_stack.popups.emplace_back(copy);
 
                                 // Remove the original
@@ -372,30 +372,30 @@ void notifier::pop(service::Notification _notification)
 
             // No channel or the dialog was not found, create a new one
             auto popup = std::make_shared<sight::ui::dialog::notification>();
-            popup->setIndex(static_cast<unsigned int>(target_stack.popups.size()));
+            popup->set_index(static_cast<unsigned int>(target_stack.popups.size()));
             target_stack.popups.emplace_back(popup);
 
             return popup;
         }();
 
-    popup->setContainer(m_containerWhereToDisplayNotifs);
+    popup->set_container(m_container_where_to_display_notifs);
 
-    const std::string& message_to_show = _notification.message.empty() ? m_defaultMessage : _notification.message;
-    popup->setMessage(message_to_show);
+    const std::string& message_to_show = _notification.message.empty() ? m_default_message : _notification.message;
+    popup->set_message(message_to_show);
 
-    popup->setType(_notification.type);
-    popup->setPosition(position);
-    popup->setDuration(duration);
-    popup->setSize(*target_stack.size);
-    popup->setClosedCallback([this, popup](auto&& ...){onNotificationClosed(popup);});
-    popup->setChannel(_notification.channel);
-    popup->setClosable(closable);
+    popup->set_type(_notification.type);
+    popup->set_position(position);
+    popup->set_duration(duration);
+    popup->set_size(*target_stack.size);
+    popup->set_closed_callback([this, popup](auto&& ...){on_notification_closed(popup);});
+    popup->set_channel(_notification.channel);
+    popup->set_closable(closable);
     popup->show();
 }
 
 //------------------------------------------------------------------------------
 
-void notifier::closeNotification(std::string _channel)
+void notifier::close_notification(std::string _channel)
 {
     bool found = false;
 
@@ -403,7 +403,7 @@ void notifier::closeNotification(std::string _channel)
     {
         for(const auto& popup : stack.popups)
         {
-            if(popup->getChannel() == _channel)
+            if(popup->get_channel() == _channel)
             {
                 found = true;
                 popup->close();
@@ -416,22 +416,22 @@ void notifier::closeNotification(std::string _channel)
 
 //------------------------------------------------------------------------------
 
-void notifier::onNotificationClosed(const sight::ui::dialog::notification::sptr& _notif)
+void notifier::on_notification_closed(const sight::ui::dialog::notification::sptr& _notif)
 {
     // If the notification still exist
     for(auto& [position, stack] : m_stacks)
     {
         if(auto it = std::find(stack.popups.begin(), stack.popups.end(), _notif); it != stack.popups.end())
         {
-            eraseNotification(position, it);
+            erase_notification(position, it);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::list<sight::ui::dialog::notification::sptr>::iterator notifier::eraseNotification(
-    const service::Notification::Position& _position,
+std::list<sight::ui::dialog::notification::sptr>::iterator notifier::erase_notification(
+    const enum service::notification::position& _position,
     const std::list<sight::ui::dialog::notification::sptr>::iterator& _it
 )
 {
@@ -443,7 +443,7 @@ std::list<sight::ui::dialog::notification::sptr>::iterator notifier::eraseNotifi
     // Move all the remaining notifications one index lower
     while(remaining_it != stack.popups.end())
     {
-        (*remaining_it)->moveDown();
+        (*remaining_it)->move_down();
         ++remaining_it;
     }
 
@@ -453,8 +453,8 @@ std::list<sight::ui::dialog::notification::sptr>::iterator notifier::eraseNotifi
 
 //------------------------------------------------------------------------------
 
-void notifier::cleanNotifications(
-    const service::Notification::Position& _position,
+void notifier::clean_notifications(
+    const enum service::notification::position& _position,
     std::size_t _max,
     std::array<int, 2> _size,
     bool _skip_permanent
@@ -468,7 +468,7 @@ void notifier::cleanNotifications(
     // Count how many popups that can be removed there are
     for(const auto& popup : stack.popups)
     {
-        if(!_skip_permanent || popup->getDuration())
+        if(!_skip_permanent || popup->get_duration())
         {
             ++removable_popups;
         }
@@ -477,11 +477,11 @@ void notifier::cleanNotifications(
     for(auto it = stack.popups.begin() ; removable_popups >= _max && it != stack.popups.end() ; )
     {
         // If the popup is removable
-        if(const auto& duration = (*it)->getDuration(); !_skip_permanent || (duration && duration->count() > 0))
+        if(const auto& duration = (*it)->get_duration(); !_skip_permanent || (duration && duration->count() > 0))
         {
             // Remove it
             (*it)->close();
-            it = eraseNotification(_position, it);
+            it = erase_notification(_position, it);
             --removable_popups;
         }
         else
@@ -493,7 +493,7 @@ void notifier::cleanNotifications(
     // Adjust sizes
     for(const auto& popup : stack.popups)
     {
-        popup->setSize(_size);
+        popup->set_size(_size);
     }
 }
 

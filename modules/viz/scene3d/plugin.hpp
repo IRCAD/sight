@@ -35,12 +35,12 @@ namespace sight::module::viz::scene3d
  * @brief Allows to redirect Ogre logs on Sight logs
  * We need this class to be declared outside to export DLL symbols on Windows.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SightOgreListener final : public Ogre::LogListener
+class MODULE_VIZ_SCENE3D_CLASS_API sight_ogre_listener final : public Ogre::LogListener
 {
 public:
 
     /// Does nothing.
-    ~SightOgreListener() override
+    ~sight_ogre_listener() override
     = default;
 
     /**
@@ -72,13 +72,13 @@ public:
 private:
 
     /// Contains the Ogre's log manager.
-    Ogre::LogManager* m_logManager {nullptr};
+    Ogre::LogManager* m_log_manager {nullptr};
 
     /// Contains the Ogre's log.
     Ogre::Log* m_log {nullptr};
 
     /// Contains the Ogre listener.
-    SightOgreListener* m_listener {nullptr};
+    sight_ogre_listener* m_listener {nullptr};
 };
 
 } // namespace sight::module::viz::scene3d.

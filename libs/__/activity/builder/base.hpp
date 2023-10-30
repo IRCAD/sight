@@ -48,7 +48,7 @@ class ACTIVITY_CLASS_API base : public core::base_object
 {
 public:
 
-    typedef data::activity::config_id_t config_id_t;
+    using config_id_t = data::activity::config_id_t;
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -57,11 +57,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry(std::string _functor_key)
+        registry(std::string _functor_key)
         {
             sight::activity::builder::registry::get()->add_factory(
                 _functor_key,
@@ -78,14 +78,14 @@ public:
      * @param[in] currentSelection a vector which contains current selected data.
      * @return specific data Activity for the specified Activity.
      */
-    ACTIVITY_API virtual data::activity::sptr buildData(
+    ACTIVITY_API virtual data::activity::sptr build_data(
         const activity::extension::activity_info& _activity_info,
         const CSPTR(data::vector)& _current_selection
     ) const = 0;
 
 protected:
 
-    ACTIVITY_API virtual SPTR(data::vector) getType(
+    ACTIVITY_API virtual SPTR(data::vector) type(
         const CSPTR(data::vector) & _current_selection,
         const std::string& _type
     ) const;

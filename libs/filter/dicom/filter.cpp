@@ -35,21 +35,21 @@ filter::~filter()
 
 //-----------------------------------------------------------------------------
 
-bool filter::isConfigurationRequired() const
+bool filter::is_configuration_required() const
 {
     return false;
 }
 
 //-----------------------------------------------------------------------------
 
-bool filter::isConfigurableWithGUI() const
+bool filter::is_configurable_with_gui() const
 {
     return false;
 }
 
 //-----------------------------------------------------------------------------
 
-void filter::configureWithGUI()
+void filter::configure_with_gui()
 {
     SIGHT_WARN("You should override this function in order to configure your filter using a GUI frame.");
 }

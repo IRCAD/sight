@@ -31,7 +31,7 @@ namespace sight::data::ut
 
 //------------------------------------------------------------------------------
 
-void resection_test::equalityTest()
+void resection_test::equality_test()
 {
     auto resection1 = std::make_shared<data::resection>();
     auto resection2 = std::make_shared<data::resection>();
@@ -52,14 +52,14 @@ void resection_test::equalityTest()
     );
 
     auto plane_list = std::make_shared<data::plane_list>();
-    plane_list->setPlanes({std::make_shared<data::plane>()});
-    TEST(setPlaneList(plane_list));
-    TEST(SetInputs({std::make_shared<data::reconstruction>()}));
-    TEST(setOutputs({std::make_shared<data::reconstruction>()}));
-    TEST(setIsSafePart(false));
-    TEST(setName("1"));
-    TEST(setIsVisible(false));
-    TEST(setIsValid(true));
+    plane_list->set_planes({std::make_shared<data::plane>()});
+    TEST(set_plane_list(plane_list));
+    TEST(set_inputs({std::make_shared<data::reconstruction>()}));
+    TEST(set_outputs({std::make_shared<data::reconstruction>()}));
+    TEST(set_is_safe_part(false));
+    TEST(set_name("1"));
+    TEST(set_is_visible(false));
+    TEST(set_is_valid(true));
 
     #undef TEST
 }

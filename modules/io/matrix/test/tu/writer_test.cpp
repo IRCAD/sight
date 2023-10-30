@@ -44,21 +44,21 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::matrix::ut::writer_test);
 namespace sight::module::io::matrix::ut
 {
 
-static const std::string expected =
+static const std::string EXPECTED =
     "1;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;\n"
     "2;2.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;\n"
     "3;3.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;1.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;0.0000000;\n";
 
-static const std::shared_ptr<const sight::data::matrix_tl> source_tl =
+static const std::shared_ptr<const sight::data::matrix_tl> SOURCE_TL =
     []
     {
         auto matrix_tl = std::make_shared<sight::data::matrix_tl>();
-        matrix_tl->initPoolSize(4);
+        matrix_tl->init_pool_size(4);
 
         const auto fill_tl =
-            [&matrix_tl](const core::hires_clock::type timestamp)
+            [&matrix_tl](const core::hires_clock::type _timestamp)
             {
-                auto data = matrix_tl->createBuffer(timestamp);
+                auto data = matrix_tl->create_buffer(_timestamp);
 
                 std::array<float, 16> matrix {
                     1., 0., 0., 0.,
@@ -67,9 +67,9 @@ static const std::shared_ptr<const sight::data::matrix_tl> source_tl =
                     0., 0., 0., 1.
                 };
 
-                matrix[0] = float(timestamp);
-                data->setElement(matrix, 0);
-                matrix_tl->pushObject(data);
+                matrix[0] = float(_timestamp);
+                data->set_element(matrix, 0);
+                matrix_tl->push_object(data);
             };
 
         fill_tl(1);
@@ -84,10 +84,10 @@ static const std::shared_ptr<const sight::data::matrix_tl> source_tl =
 void writer_test::setUp()
 {
     ui::preferences::set_enabled(true);
-    ui::preferences::set_password_policy(core::crypto::password_keeper::password_policy::NEVER);
+    ui::preferences::set_password_policy(core::crypto::password_keeper::password_policy::never);
 
     // Set the profile name
-    const std::string& profile_name = core::tools::UUID::generate();
+    const std::string& profile_name = core::tools::uuid::generate();
     core::runtime::get_current_profile()->set_name(profile_name);
 }
 
@@ -99,7 +99,7 @@ void writer_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void writer_test::basicTest()
+void writer_test::basic_test()
 {
     // Create a temporary directory
     core::os::temp_dir tmp_dir;
@@ -107,7 +107,7 @@ void writer_test::basicTest()
     // Create the service
     auto matrix_writer = service::add("sight::module::io::matrix::matrix_writer");
     CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::io::matrix::matrix_writer'", matrix_writer);
-    matrix_writer->set_input(source_tl, "data");
+    matrix_writer->set_input(SOURCE_TL, "data");
 
     // Create the service configuration
     service::config_t config;
@@ -138,18 +138,18 @@ void writer_test::basicTest()
     // Check the result...
     CPPUNIT_ASSERT_EQUAL(
         false,
-        std::dynamic_pointer_cast<sight::io::service::writer>(matrix_writer)->hasFailed()
+        std::dynamic_pointer_cast<sight::io::service::writer>(matrix_writer)->has_failed()
     );
 
     std::ifstream file(tmp_dir / "matrices.csv");
     std::string actual((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    CPPUNIT_ASSERT_EQUAL(expected, actual);
+    CPPUNIT_ASSERT_EQUAL(EXPECTED, actual);
 }
 
 //------------------------------------------------------------------------------
 
-void writer_test::baseFolderTest()
+void writer_test::base_folder_test()
 {
     // Create a temporary directory
     core::os::temp_dir tmp_dir;
@@ -157,7 +157,7 @@ void writer_test::baseFolderTest()
     // Create the service
     auto matrix_writer = service::add("sight::module::io::matrix::matrix_writer");
     CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::io::matrix::matrix_writer'", matrix_writer);
-    matrix_writer->set_input(source_tl, "data");
+    matrix_writer->set_input(SOURCE_TL, "data");
 
     // Create the service configuration
     service::config_t config;
@@ -190,13 +190,13 @@ void writer_test::baseFolderTest()
     // Check the result...
     CPPUNIT_ASSERT_EQUAL(
         false,
-        std::dynamic_pointer_cast<sight::io::service::writer>(matrix_writer)->hasFailed()
+        std::dynamic_pointer_cast<sight::io::service::writer>(matrix_writer)->has_failed()
     );
 
     std::ifstream file(tmp_dir / "matrices.csv");
     std::string actual((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    CPPUNIT_ASSERT_EQUAL(expected, actual);
+    CPPUNIT_ASSERT_EQUAL(EXPECTED, actual);
 }
 
 } // namespace sight::module::io::matrix::ut

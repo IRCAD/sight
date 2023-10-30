@@ -29,7 +29,7 @@ namespace sight::app::parser
 
 //------------------------------------------------------------------------------
 
-void color::createConfig(core::tools::object::sptr _obj)
+void color::create_config(core::tools::object::sptr _obj)
 {
     const data::color::sptr color = std::dynamic_pointer_cast<data::color>(_obj);
     SIGHT_ASSERT("color does not exist.", color);
@@ -41,7 +41,7 @@ void color::createConfig(core::tools::object::sptr _obj)
         hexa_color[0] == '#'
         && (hexa_color.length() == 7 || hexa_color.length() == 9)
     );
-    color->setRGBA(hexa_color);
+    color->set_rgba(hexa_color);
 }
 
 //------------------------------------------------------------------------------

@@ -49,32 +49,32 @@ namespace sight::module::navigation::optics
 const core::com::signals::key_t aruco_tracker::DETECTION_DONE_SIG  = "detectionDone";
 const core::com::signals::key_t aruco_tracker::MARKER_DETECTED_SIG = "markerDetected";
 
-const core::com::slots::key_t aruco_tracker::SET_PARAMETER_SLOT = "setParameter";
+const core::com::slots::key_t aruco_tracker::SET_PARAMETER_SLOT = "set_parameter";
 
 //-----------------------------------------------------------------------------
 
 aruco_tracker::aruco_tracker() noexcept :
-    m_sigDetectionDone(new_signal<detection_done_signal_t>(DETECTION_DONE_SIG))
+    m_sig_detection_done(new_signal<detection_done_signal_t>(DETECTION_DONE_SIG))
 {
     new_signal<marker_detected_signal_t>(MARKER_DETECTED_SIG);
 
-    new_slot(SET_PARAMETER_SLOT, &aruco_tracker::setParameter, this);
+    new_slot(SET_PARAMETER_SLOT, &aruco_tracker::set_parameter, this);
 
     // Initialize detector parameters
-    m_detectorParams = cv::makePtr<cv::aruco::DetectorParameters>();
+    m_detector_params = cv::makePtr<cv::aruco::DetectorParameters>();
 
     // We need to tweak some parameters to adjust detection in our cases.
     //minimum distance of any corner to the image border for detected markers (in pixels) (default 3)
-    m_detectorParams->minDistanceToBorder = 1;
+    m_detector_params->minDistanceToBorder = 1;
 
     // minimum mean distance beetween two marker corners to be considered
     // similar, so that the smaller one is removed.
     // The rate is relative to the smaller perimeter of the two markers (default 0.05).
-    m_detectorParams->minMarkerDistanceRate = 0.01;
+    m_detector_params->minMarkerDistanceRate = 0.01;
 
     // corner refinement method. (CORNER_REFINE_NONE, no refinement. CORNER_REFINE_SUBPIX,
     // do subpixel refinement.)
-    m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
+    m_detector_params->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
 
     // For now only original aruco markers are used
     m_dictionary =
@@ -92,8 +92,8 @@ service::connections_t aruco_tracker::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(s_FRAME_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_FRAME_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(FRAME_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(FRAME_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -125,28 +125,28 @@ void aruco_tracker::configuring()
     }
 
     // Get the debug markers flag
-    m_debugMarkers = config.get<bool>("debugMarkers", false);
+    m_debug_markers = config.get<bool>("debugMarkers", false);
 
     // Do corner refinement ?
     const bool do_corner_refinement = config.get<bool>("cornerRefinement", true);
-    m_detectorParams->cornerRefinementMethod = (do_corner_refinement
-                                                ? cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
-                                                : cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
+    m_detector_params->cornerRefinementMethod = (do_corner_refinement
+                                                 ? cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
+                                                 : cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
 }
 
 //-----------------------------------------------------------------------------
 
 void aruco_tracker::starting()
 {
-    m_isTracking = true;
+    m_is_tracking = true;
 }
 
 //-----------------------------------------------------------------------------
 
 void aruco_tracker::stopping()
 {
-    m_isInitialized = false;
-    m_isTracking    = false;
+    m_is_initialized = false;
+    m_is_tracking    = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -164,14 +164,14 @@ void aruco_tracker::updating()
 
 void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
 {
-    if(!m_isInitialized)
+    if(!m_is_initialized)
     {
         const auto ar_cam = m_camera.lock();
 
-        std::tie(m_cameraParams.intrinsic, m_cameraParams.size, m_cameraParams.distorsion) =
-            io::opencv::camera::copyToCv(ar_cam.get_shared());
+        std::tie(m_camera_params.intrinsic, m_camera_params.size, m_camera_params.distorsion) =
+            io::opencv::camera::copy_to_cv(ar_cam.get_shared());
 
-        m_isInitialized = true;
+        m_is_initialized = true;
     }
 
     cv::Mat in_image;
@@ -206,7 +206,7 @@ void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
         {
             SIGHT_ERROR(
                 "Invalid number of components ( " + std::to_string(nb_of_components) + " ) for : '"
-                << s_FRAME_INOUT << "' (accepted values are 1, 3 or 4). "
+                << FRAME_INOUT << "' (accepted values are 1, 3 or 4). "
             );
 
             return;
@@ -219,9 +219,9 @@ void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
         cv::Mat undistort_grey;
         {
             const auto ar_cam = m_camera.lock();
-            if(ar_cam->getIsCalibrated())
+            if(ar_cam->get_is_calibrated())
             {
-                cv::undistort(grey, undistort_grey, m_cameraParams.intrinsic, m_cameraParams.distorsion);
+                cv::undistort(grey, undistort_grey, m_camera_params.intrinsic, m_camera_params.distorsion);
             }
             else
             {
@@ -235,12 +235,12 @@ void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
             m_dictionary,
             detected_markers,
             detected_markers_ids,
-            m_detectorParams,
+            m_detector_params,
             cv::noArray()
         );
 
         //Note: This draws all detected markers
-        if(m_debugMarkers)
+        if(m_debug_markers)
         {
             if(nb_of_components == 4) // RGBA or BGRA.
             {
@@ -269,7 +269,7 @@ void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
                         found_marker = true;
 
                         // Push matrix
-                        auto marker_map = m_markerMap[tag_tl_index].lock();
+                        auto marker_map = m_marker_map[tag_tl_index].lock();
                         SIGHT_ASSERT("Marker map not found", marker_map);
 
                         data::marker_map::marker_t marker;
@@ -280,12 +280,12 @@ void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
                             marker[j][1] = detected_markers[i][j].y;
                         }
 
-                        marker_map->setMarker(std::to_string(marker_id), marker);
+                        marker_map->set_marker(std::to_string(marker_id), marker);
                     }
                 }
             }
 
-            auto marker_map = m_markerMap[tag_tl_index].lock();
+            auto marker_map = m_marker_map[tag_tl_index].lock();
             // Always send the signal even if we did not find anything.
             // This allows to keep updating the whole processing pipeline.
             auto sig = marker_map->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -297,54 +297,54 @@ void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
         }
 
         // Emit
-        m_sigDetectionDone->async_emit(_timestamp);
+        m_sig_detection_done->async_emit(_timestamp);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void aruco_tracker::setParameter(sight::ui::parameter_t _val, std::string _key)
+void aruco_tracker::set_parameter(sight::ui::parameter_t _val, std::string _key)
 {
     if(_key == "adaptiveThreshWinSizeMin")
     {
         static const int s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE = 3;
         int val                                               = std::get<int>(_val);
-        if(m_detectorParams->adaptiveThreshWinSizeMin < s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE)
+        if(m_detector_params->adaptiveThreshWinSizeMin < s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE)
         {
             SIGHT_ERROR("Tried to set adaptiveThreshWinSizeMin < 3, let it set to 3");
             val = s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE;
         }
 
-        if(val >= m_detectorParams->adaptiveThreshWinSizeMax)
+        if(val >= m_detector_params->adaptiveThreshWinSizeMax)
         {
-            val = m_detectorParams->adaptiveThreshWinSizeMax - 1;
+            val = m_detector_params->adaptiveThreshWinSizeMax - 1;
             SIGHT_ERROR("Tried to set adaptiveThreshWinSizeMin > adaptiveThreshWinSizeMax, let it set to " << val);
         }
 
-        m_detectorParams->adaptiveThreshWinSizeMin = val;
+        m_detector_params->adaptiveThreshWinSizeMin = val;
     }
     else if(_key == "adaptiveThreshWinSizeMax")
     {
         int val = std::get<int>(_val);
-        if(m_detectorParams->adaptiveThreshWinSizeMin >= val)
+        if(m_detector_params->adaptiveThreshWinSizeMin >= val)
         {
-            val = m_detectorParams->adaptiveThreshWinSizeMin + 1;
+            val = m_detector_params->adaptiveThreshWinSizeMin + 1;
             SIGHT_ERROR("Tried to set adaptiveThreshWinSizeMax < adaptiveThreshWinSizeMin, let it set to " << val);
         }
 
-        m_detectorParams->adaptiveThreshWinSizeMax = val;
+        m_detector_params->adaptiveThreshWinSizeMax = val;
     }
     else if(_key == "adaptiveThreshWinSizeStep")
     {
-        m_detectorParams->adaptiveThreshWinSizeStep = std::get<int>(_val);
+        m_detector_params->adaptiveThreshWinSizeStep = std::get<int>(_val);
     }
     else if(_key == "minDistanceToBorder")
     {
-        m_detectorParams->minDistanceToBorder = std::get<int>(_val);
+        m_detector_params->minDistanceToBorder = std::get<int>(_val);
     }
     else if(_key == "cornerRefinementWinSize")
     {
-        m_detectorParams->cornerRefinementWinSize = std::get<int>(_val);
+        m_detector_params->cornerRefinementWinSize = std::get<int>(_val);
     }
     else if(_key == "cornerRefinementMaxIterations")
     {
@@ -355,39 +355,39 @@ void aruco_tracker::setParameter(sight::ui::parameter_t _val, std::string _key)
             SIGHT_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << val);
         }
 
-        m_detectorParams->cornerRefinementMaxIterations = val;
+        m_detector_params->cornerRefinementMaxIterations = val;
     }
     else if(_key == "markerBorderBits")
     {
-        m_detectorParams->markerBorderBits = std::get<int>(_val);
+        m_detector_params->markerBorderBits = std::get<int>(_val);
     }
     else if(_key == "perspectiveRemovePixelPerCell")
     {
-        m_detectorParams->perspectiveRemovePixelPerCell = std::get<int>(_val);
+        m_detector_params->perspectiveRemovePixelPerCell = std::get<int>(_val);
     }
     else if(_key == "adaptiveThreshConstant")
     {
-        m_detectorParams->adaptiveThreshConstant = std::get<double>(_val);
+        m_detector_params->adaptiveThreshConstant = std::get<double>(_val);
     }
     else if(_key == "minMarkerPerimeterRate")
     {
-        m_detectorParams->minMarkerPerimeterRate = std::get<double>(_val);
+        m_detector_params->minMarkerPerimeterRate = std::get<double>(_val);
     }
     else if(_key == "maxMarkerPerimeterRate")
     {
-        m_detectorParams->maxMarkerPerimeterRate = std::get<double>(_val);
+        m_detector_params->maxMarkerPerimeterRate = std::get<double>(_val);
     }
     else if(_key == "polygonalApproxAccuracyRate")
     {
-        m_detectorParams->polygonalApproxAccuracyRate = std::get<double>(_val);
+        m_detector_params->polygonalApproxAccuracyRate = std::get<double>(_val);
     }
     else if(_key == "minCornerDistanceRate")
     {
-        m_detectorParams->minCornerDistanceRate = std::get<double>(_val);
+        m_detector_params->minCornerDistanceRate = std::get<double>(_val);
     }
     else if(_key == "minMarkerDistanceRate")
     {
-        m_detectorParams->minMarkerDistanceRate = std::get<double>(_val);
+        m_detector_params->minMarkerDistanceRate = std::get<double>(_val);
     }
     else if(_key == "cornerRefinementMinAccuracy")
     {
@@ -398,37 +398,37 @@ void aruco_tracker::setParameter(sight::ui::parameter_t _val, std::string _key)
             SIGHT_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << val);
         }
 
-        m_detectorParams->cornerRefinementMinAccuracy = val;
+        m_detector_params->cornerRefinementMinAccuracy = val;
     }
     else if(_key == "perspectiveRemoveIgnoredMarginPerCell")
     {
-        m_detectorParams->perspectiveRemoveIgnoredMarginPerCell = std::get<double>(_val);
+        m_detector_params->perspectiveRemoveIgnoredMarginPerCell = std::get<double>(_val);
     }
     else if(_key == "maxErroneousBitsInBorderRate")
     {
-        m_detectorParams->maxErroneousBitsInBorderRate = std::get<double>(_val);
+        m_detector_params->maxErroneousBitsInBorderRate = std::get<double>(_val);
     }
     else if(_key == "minOtsuStdDev")
     {
-        m_detectorParams->minOtsuStdDev = std::get<double>(_val);
+        m_detector_params->minOtsuStdDev = std::get<double>(_val);
     }
     else if(_key == "errorCorrectionRate")
     {
-        m_detectorParams->errorCorrectionRate = std::get<double>(_val);
+        m_detector_params->errorCorrectionRate = std::get<double>(_val);
     }
     else if(_key == "debugMode")
     {
-        m_debugMarkers = std::get<bool>(_val);
+        m_debug_markers = std::get<bool>(_val);
     }
     else if(_key == "corner")
     {
         if(std::get<bool>(_val))
         {
-            m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
+            m_detector_params->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
         }
         else
         {
-            m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
+            m_detector_params->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
         }
     }
     else

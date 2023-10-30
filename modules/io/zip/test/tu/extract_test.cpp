@@ -48,7 +48,7 @@ namespace sight::module::io::zip::ut
 
 //------------------------------------------------------------------------------
 
-void extract_test::basicArchiveTest()
+void extract_test::basic_archive_test()
 {
     std::filesystem::path tmp_folder = core::tools::system::get_temporary_folder("extract_test_basicArchiveTest");
     std::filesystem::remove_all(tmp_folder);
@@ -60,12 +60,12 @@ void extract_test::basicArchiveTest()
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.
-    ui::dialog::location_dummy::pushPaths(
-        {utest_data::Data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
+    ui::dialog::location_dummy::push_paths(
+        {utest_data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
         });
 
     // We choose the output path.
-    ui::dialog::location_dummy::pushPaths({tmp_folder});
+    ui::dialog::location_dummy::push_paths({tmp_folder});
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
@@ -86,33 +86,33 @@ void extract_test::basicArchiveTest()
     CPPUNIT_ASSERT(!vti_path.empty());
 
     // Try to open the file using VTK to check if it is valid.
-    auto vti_reader = std::make_shared<sight::io::vtk::VtiImageReader>();
+    auto vti_reader = std::make_shared<sight::io::vtk::vti_image_reader>();
     vti_reader->set_file(vti_path);
     auto img = std::make_shared<data::image>();
     vti_reader->set_object(img);
     CPPUNIT_ASSERT_NO_THROW(vti_reader->read());
 
-    ui::dialog::location_dummy::pushPaths(
-        {utest_data::Data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
+    ui::dialog::location_dummy::push_paths(
+        {utest_data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
         });
-    ui::dialog::location_dummy::pushPaths({tmp_folder});
+    ui::dialog::location_dummy::push_paths({tmp_folder});
 
     // Oops, we choose the same folder again! We get a warning. Let's try again.
-    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::RETRY);
-    ui::dialog::location_dummy::pushPaths({tmp_folder});
+    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::retry);
+    ui::dialog::location_dummy::push_paths({tmp_folder});
 
     // Ah, clumsy us, we chose the exact same folder! Let's try again later.
-    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::CANCEL);
+    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::cancel);
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
-    ui::dialog::location_dummy::pushPaths(
-        {utest_data::Data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
+    ui::dialog::location_dummy::push_paths(
+        {utest_data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
         });
-    ui::dialog::location_dummy::pushPaths({tmp_folder});
+    ui::dialog::location_dummy::push_paths({tmp_folder});
 
     // Well, well, the folder still isn't empty. Tough luck. Let's simply overwrite it.
-    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::YES);
+    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::yes);
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
@@ -122,7 +122,7 @@ void extract_test::basicArchiveTest()
 
 //------------------------------------------------------------------------------
 
-void extract_test::encryptedArchiveTest()
+void extract_test::encrypted_archive_test()
 {
     std::filesystem::path tmp_folder = core::tools::system::get_temporary_folder("extract_test_encryptedArchiveTest");
     std::filesystem::remove_all(tmp_folder);
@@ -134,19 +134,19 @@ void extract_test::encryptedArchiveTest()
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.
-    ui::dialog::location_dummy::pushPaths(
-        {utest_data::Data::dir() / "sight/ui/ArchiveExtractor/encrypted-archive.sample"
+    ui::dialog::location_dummy::push_paths(
+        {utest_data::dir() / "sight/ui/ArchiveExtractor/encrypted-archive.sample"
         });
 
     // We choose the output path.
-    ui::dialog::location_dummy::pushPaths({tmp_folder});
+    ui::dialog::location_dummy::push_paths({tmp_folder});
 
     // The archive is encrypted, let's input a password.
-    ui::dialog::input_dummy::pushInput("tartare");
+    ui::dialog::input_dummy::push_input("tartare");
 
     // Ah, wrong one. Let's try again.
-    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::RETRY);
-    ui::dialog::input_dummy::pushInput("bouboule");
+    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::retry);
+    ui::dialog::input_dummy::push_input("bouboule");
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
@@ -167,7 +167,7 @@ void extract_test::encryptedArchiveTest()
     CPPUNIT_ASSERT(!vti_path.empty());
 
     // Try to open the file using VTK to check if it is valid.
-    auto vti_reader = std::make_shared<sight::io::vtk::VtiImageReader>();
+    auto vti_reader = std::make_shared<sight::io::vtk::vti_image_reader>();
     vti_reader->set_file(vti_path);
     auto img = std::make_shared<data::image>();
     vti_reader->set_object(img);

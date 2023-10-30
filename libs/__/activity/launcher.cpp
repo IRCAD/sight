@@ -39,10 +39,10 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-void launcher::parseConfiguration(const configuration_t& _config, const in_out_map_t& _inouts)
+void launcher::parse_configuration(const configuration_t& _config, const in_out_map_t& _inouts)
 {
-    m_mainActivityId = _config.get<std::string>("mainActivity.<xmlattr>.id", "");
-    SIGHT_DEBUG_IF("main activity 'id' is not defined", m_mainActivityId.empty());
+    m_main_activity_id = _config.get<std::string>("mainActivity.<xmlattr>.id", "");
+    SIGHT_DEBUG_IF("main activity 'id' is not defined", m_main_activity_id.empty());
 
     if(const auto inouts_cfg = _config.get_child_optional("inout"); inouts_cfg.has_value())
     {
@@ -95,14 +95,14 @@ void launcher::parseConfiguration(const configuration_t& _config, const in_out_m
         parameter_t param;
         param.replace = replace;
         param.by      = by;
-        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isObjectPath());
+        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.is_object_path());
         m_parameters.push_back(param);
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::string> launcher::validateActivity(
+std::pair<bool, std::string> launcher::validate_activity(
     const data::activity::csptr& _activity
 )
 {
@@ -110,12 +110,12 @@ std::pair<bool, std::string> launcher::validateActivity(
     std::string message;
     // Applies validator on activity to check the data
     activity::extension::activity_info info;
-    info = activity::extension::activity::getDefault()->getInfo(_activity->getActivityConfigId());
+    info = activity::extension::activity::get_default()->get_info(_activity->get_activity_config_id());
 
     // load activity module
-    core::runtime::start_module(info.bundleId);
+    core::runtime::start_module(info.bundle_id);
 
-    for(const std::string& validator_impl : info.validatorsImpl)
+    for(const std::string& validator_impl : info.validators_impl)
     {
         /// Process activity validator
         auto validator          = activity::validator::factory::make(validator_impl);
@@ -140,19 +140,19 @@ std::pair<bool, std::string> launcher::validateActivity(
 
 //------------------------------------------------------------------------------
 
-data::activity::sptr launcher::createMainActivity() const
+data::activity::sptr launcher::create_main_activity() const
 {
     activity::extension::activity_info info;
-    info = activity::extension::activity::getDefault()->getInfo(m_mainActivityId);
+    info = activity::extension::activity::get_default()->get_info(m_main_activity_id);
 
     auto activity = std::make_shared<data::activity>();
     if(!info.requirements.empty())
     {
         for(const auto& req : info.requirements)
         {
-            if((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
+            if((req.min_occurs == 0 && req.max_occurs == 0) || req.create)
             {
-                (*activity)[req.name] = sight::activity::detail::data::create(req.type, req.objectConfig);
+                (*activity)[req.name] = sight::activity::detail::data::create(req.type, req.object_config);
             }
             else
             {
@@ -161,7 +161,7 @@ data::activity::sptr launcher::createMainActivity() const
         }
     }
 
-    activity->setActivityConfigId(info.id);
+    activity->set_activity_config_id(info.id);
 
     return activity;
 }

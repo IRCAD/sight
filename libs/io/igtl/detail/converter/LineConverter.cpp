@@ -35,22 +35,22 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string LineConverter::s_IGTL_TYPE          = "POSITION";
-const std::string LineConverter::s_FWDATA_OBJECT_TYPE = data::line::classname();
+const std::string line_converter::IGTL_TYPE          = "POSITION";
+const std::string line_converter::FWDATA_OBJECT_TYPE = data::line::classname();
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::LineConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::line_converter);
 
-LineConverter::LineConverter()
+line_converter::line_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-LineConverter::~LineConverter()
+line_converter::~line_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer LineConverter::fromFwDataObject(data::object::csptr _src) const
+::igtl::MessageBase::Pointer line_converter::from_fw_data_object(data::object::csptr _src) const
 {
     std::array<float, 3> pos {};
     std::array<float, 4> direction {};
@@ -60,14 +60,14 @@ LineConverter::~LineConverter()
 
     dest = ::igtl::PositionMessage::New();
     std::transform(
-        src_line->getPosition()->getCoord().begin(),
-        src_line->getPosition()->getCoord().end(),
+        src_line->get_position()->get_coord().begin(),
+        src_line->get_position()->get_coord().end(),
         pos.data(),
         boost::numeric_cast<double, float>
     );
     std::transform(
-        src_line->getDirection()->getCoord().begin(),
-        src_line->getDirection()->getCoord().end(),
+        src_line->get_direction()->get_coord().begin(),
+        src_line->get_direction()->get_coord().end(),
         direction.data(),
         boost::numeric_cast<double, float>
     );
@@ -78,7 +78,7 @@ LineConverter::~LineConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr line_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     std::array<float, 3> igtl_pos {};
     // While we only use the first three elements of direction, igtl::PositionMessage::GetQuaternion requires a
@@ -88,20 +88,20 @@ data::object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     data::line::sptr dest                     = std::make_shared<data::line>();
     auto* msg                                 = dynamic_cast< ::igtl::PositionMessage*>(_src.GetPointer());
     ::igtl::PositionMessage::Pointer src_line = ::igtl::PositionMessage::Pointer(msg);
-    dest->setPosition(std::make_shared<data::point>());
-    dest->setDirection(std::make_shared<data::point>());
+    dest->set_position(std::make_shared<data::point>());
+    dest->set_direction(std::make_shared<data::point>());
     src_line->GetPosition(igtl_pos.data());
     src_line->GetQuaternion(igtl_direction.data());
     std::transform(
         igtl_pos.begin(),
         igtl_pos.end(),
-        dest->getPosition()->getCoord().begin(),
+        dest->get_position()->get_coord().begin(),
         boost::numeric_cast<float, double>
     );
     std::transform(
         igtl_direction.begin(),
         igtl_direction.begin() + 3,
-        dest->getDirection()->getCoord().begin(),
+        dest->get_direction()->get_coord().begin(),
         boost::numeric_cast<float, double>
     );
 
@@ -110,23 +110,23 @@ data::object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
 //-----------------------------------------------------------------------------
 
-base::sptr LineConverter::New()
+base::sptr line_converter::New()
 {
-    return std::make_shared<LineConverter>();
+    return std::make_shared<line_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& LineConverter::get_igtl_type() const
+std::string const& line_converter::get_igtl_type() const
 {
-    return LineConverter::s_IGTL_TYPE;
+    return line_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& LineConverter::getFwDataObjectType() const
+std::string const& line_converter::get_fw_data_object_type() const
 {
-    return LineConverter::s_FWDATA_OBJECT_TYPE;
+    return line_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

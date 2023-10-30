@@ -39,7 +39,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor renders a video frame from a 2D-image.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): sets whether the video is visible or not.
+ * - \b update_visibility(bool): sets whether the video is visible or not.
  * - \b toggleVisibility(): toggle whether the video is visible or not.
  * - \b show(): shows the video.
  * - \b hide(): hides the video.
@@ -123,45 +123,45 @@ protected:
      * @brief Sets the video visibility.
      * @param _visible the visibility status of the video.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
 
 private:
 
     ///@brief Internal wrapper holding config defines.
     struct config
     {
-        static inline const std::string s_VISIBLE           = s_CONFIG + "visible";
-        static inline const std::string s_MATERIAL_TEMPLATE = s_CONFIG + "materialTemplate";
-        static inline const std::string s_TEXTURE_NAME      = s_CONFIG + "textureName";
-        static inline const std::string s_FILTERING         = s_CONFIG + "filtering";
-        static inline const std::string s_SCALING           = s_CONFIG + "scaling";
-        static inline const std::string s_RADIUS            = s_CONFIG + "radius";
-        static inline const std::string s_DISPLAY_LABEL     = s_CONFIG + "displayLabel";
-        static inline const std::string s_LABEL_COLOR       = s_CONFIG + "labelColor";
-        static inline const std::string s_COLOR             = s_CONFIG + "color";
-        static inline const std::string s_FIXED_SIZE        = s_CONFIG + "fixedSize";
-        static inline const std::string s_QUERY             = s_CONFIG + "queryFlags";
-        static inline const std::string s_FONT_SOURCE       = s_CONFIG + "fontSource";
-        static inline const std::string s_FONT_SIZE         = s_CONFIG + "fontSize";
+        static inline const std::string VISIBLE           = CONFIG + "visible";
+        static inline const std::string MATERIAL_TEMPLATE = CONFIG + "materialTemplate";
+        static inline const std::string TEXTURE_NAME      = CONFIG + "textureName";
+        static inline const std::string FILTERING         = CONFIG + "filtering";
+        static inline const std::string SCALING           = CONFIG + "scaling";
+        static inline const std::string RADIUS            = CONFIG + "radius";
+        static inline const std::string DISPLAY_LABEL     = CONFIG + "displayLabel";
+        static inline const std::string LABEL_COLOR       = CONFIG + "labelColor";
+        static inline const std::string COLOR             = CONFIG + "color";
+        static inline const std::string FIXED_SIZE        = CONFIG + "fixedSize";
+        static inline const std::string QUERY             = CONFIG + "queryFlags";
+        static inline const std::string FONT_SOURCE       = CONFIG + "fontSource";
+        static inline const std::string FONT_SIZE         = CONFIG + "fontSize";
     };
 
     /// SLOTS: updates the displayed transfer function.
-    void updateTF();
+    void update_tf();
 
     /// SLOTS: updates 2D coordinates of the pointlist from image space (bottom left) to video space (center center).
-    void updatePL();
+    void update_pl();
 
     /// SLOTS: whether to use or not bilinear filtering
-    void setFiltering(bool /*filtering*/);
+    void set_filtering(bool /*filtering*/);
 
     /// SLOTS: whether to scale or not the video to occupy the whole viewport
     void scale(bool /*value*/);
 
     /// Updates the current texture filtering option
-    void updateTextureFiltering();
+    void update_texture_filtering();
 
     /// Cleans scene entities and associated mesh.
-    void clearEntity();
+    void clear_entity();
 
     /// Contains the Ogre texture used to store the image.
     sight::viz::scene3d::texture::sptr m_texture;
@@ -173,43 +173,43 @@ private:
     Ogre::MeshPtr m_mesh;
 
     /// Contains the node where the plane is attached.
-    Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_scene_node {nullptr};
 
     /// Contains the Ogre entity used to display the video plane.
     Ogre::Entity* m_entity {nullptr};
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
-    std::unique_ptr<sight::viz::scene3d::transfer_function> m_gpuTF;
+    std::unique_ptr<sight::viz::scene3d::transfer_function> m_gpu_tf;
 
     /// Defines if the texture is initialized.
-    bool m_isTextureInit {false};
+    bool m_is_texture_init {false};
 
     /// Defines the previous image size.
-    std::size_t m_previousWidth {0};
+    std::size_t m_previous_width {0};
 
     /// Defines the previous image spacing.
-    std::size_t m_previousHeight {0};
+    std::size_t m_previous_height {0};
 
     /// Defines the previous viewport width.
-    int m_previousViewportWidth {0};
+    int m_previous_viewport_width {0};
 
     /// Defines the previous viewport height.
-    int m_previousViewportHeight {0};
+    int m_previous_viewport_height {0};
 
     /// Defines the previous image type.
-    core::type m_previousType;
+    core::type m_previous_type;
 
     /// Contains the pointlist in the video space coordinates.
-    data::point_list::sptr m_pointList {nullptr};
+    data::point_list::sptr m_point_list {nullptr};
 
     /// Contains the adaptor used to display the 2D pointlist.
-    sight::viz::scene3d::adaptor::sptr m_pointListAdaptor {nullptr};
+    sight::viz::scene3d::adaptor::sptr m_point_list_adaptor {nullptr};
 
     /// Defines material's name used by the point list.
-    std::string m_materialTemplateName;
+    std::string m_material_template_name;
 
     /// Defines the attached texture adaptor UID used by the point list.
-    std::string m_textureName;
+    std::string m_texture_name;
 
     /// Defines whether of not the video texture will use bilinear filtering
     bool m_filtering {false};
@@ -218,39 +218,39 @@ private:
     bool m_scaling {true};
 
     /// Whether an update to the current plane is required due to a scaling change or not
-    bool m_forcePlaneUpdate {false};
+    bool m_force_plane_update {false};
 
     /// Defines the billboards radius.
     std::string m_radius;
 
     /// Defines if label numbers are displayed.
-    std::string m_displayLabel;
+    std::string m_display_label;
 
     /// Defines the RGB color for the label point color.
-    std::string m_labelColor;
+    std::string m_label_color;
 
     /// Defines the color of points.
     std::string m_color;
 
     /// Defines if billboard will have a fixed size in screen space.
-    std::string m_fixedSize;
+    std::string m_fixed_size;
 
     /// Defines the mask for picking requests in the point list.
-    std::string m_queryFlags;
+    std::string m_query_flags;
 
     /// Defines the true_t font source file.
-    std::string m_fontSource;
+    std::string m_font_source;
 
     /// Defines the font size in points.
-    std::string m_fontSize;
+    std::string m_font_size;
 
-    static constexpr std::string_view s_IMAGE_INPUT = "image";
-    static constexpr std::string_view s_TF_INPUT    = "tf";
-    static constexpr std::string_view s_PL_INPUT    = "pointList";
+    static constexpr std::string_view IMAGE_INPUT = "image";
+    static constexpr std::string_view TF_INPUT    = "tf";
+    static constexpr std::string_view PL_INPUT    = "pointList";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::Access::in> m_tf {this, s_TF_INPUT, true, true};
-    sight::data::ptr<sight::data::point_list, sight::data::Access::in> m_pl {this, s_PL_INPUT, true, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_INPUT, true, true};
+    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, PL_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

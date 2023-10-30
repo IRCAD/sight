@@ -56,7 +56,7 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b interaction (optional, default=true): enable or disable mouse interaction with the square
  *
  * @section Slots Slots
- * -\b setDoubleParameter(double, std::string): set the double parameters 'x' and 'y'
+ * -\b set_double_parameter(double, std::string): set the double parameters 'x' and 'y'
  */
 class MODULE_VIZ_SCENE2D_CLASS_API square : public sight::viz::scene2d::adaptor
 {
@@ -74,11 +74,11 @@ protected:
     MODULE_VIZ_SCENE2D_API void updating() override;
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
-    MODULE_VIZ_SCENE2D_API void setColor(const std::string& _color);
-    MODULE_VIZ_SCENE2D_API bool coordViewIsInItem(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item);
-    MODULE_VIZ_SCENE2D_API sight::viz::scene2d::vec2d_t coordViewToCoordItem(
+    MODULE_VIZ_SCENE2D_API void set_color(const std::string& _color);
+    MODULE_VIZ_SCENE2D_API bool coord_view_is_in_item(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item);
+    MODULE_VIZ_SCENE2D_API sight::viz::scene2d::vec2d_t coord_view_to_coord_item(
         const sight::viz::scene2d::vec2d_t& _coord,
         QGraphicsItem* _item
     );
@@ -90,13 +90,13 @@ private:
     QColor m_color;
     QGraphicsItemGroup* m_layer {nullptr};
     QGraphicsRectItem* m_rec {nullptr};
-    sight::viz::scene2d::vec2d_t m_oldCoord {};
+    sight::viz::scene2d::vec2d_t m_old_coord {};
 
-    bool m_pointIsCaptured {false};
-    bool m_autoRefresh {true};
+    bool m_point_is_captured {false};
+    bool m_auto_refresh {true};
     bool m_interaction {true};
     static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
-    void setDoubleParameter(double _val, std::string _key);
+    void set_double_parameter(double _val, std::string _key);
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

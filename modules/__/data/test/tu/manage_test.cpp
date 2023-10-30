@@ -51,7 +51,7 @@ void manage_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInCompositeTest(const std::string& _slot_name, bool _already_present)
+void manage_test::generic_add_in_composite_test(const std::string& _slot_name, bool _already_present)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::composite>();
@@ -83,7 +83,7 @@ void manage_test::genericAddInCompositeTest(const std::string& _slot_name, bool 
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInVectorTest(const std::string& _slot_name, bool _already_present)
+void manage_test::generic_add_in_vector_test(const std::string& _slot_name, bool _already_present)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::vector>();
@@ -127,10 +127,10 @@ void manage_test::genericAddInVectorTest(const std::string& _slot_name, bool _al
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInSeriesSetTest(const std::string& _slot_name, bool _already_present)
+void manage_test::generic_add_in_series_set_test(const std::string& _slot_name, bool _already_present)
 {
     auto object = std::make_shared<sight::data::series>();
-    object->setPatientName("You");
+    object->set_patient_name("You");
     auto container = std::make_shared<sight::data::series_set>();
     if(_already_present)
     {
@@ -172,7 +172,7 @@ void manage_test::genericAddInSeriesSetTest(const std::string& _slot_name, bool 
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInFieldTest(const std::string& _slot_name, bool _already_present)
+void manage_test::generic_add_in_field_test(const std::string& _slot_name, bool _already_present)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::string>();
@@ -204,140 +204,140 @@ void manage_test::genericAddInFieldTest(const std::string& _slot_name, bool _alr
 
 //------------------------------------------------------------------------------
 
-void manage_test::addInCompositeTest()
+void manage_test::add_in_composite_test()
 {
-    genericAddInCompositeTest("add");
+    generic_add_in_composite_test("add");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addInVectorTest()
+void manage_test::add_in_vector_test()
 {
-    genericAddInVectorTest("add");
+    generic_add_in_vector_test("add");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addInSeriesSetTest()
+void manage_test::add_in_series_set_test()
 {
-    genericAddInSeriesSetTest("add");
+    generic_add_in_series_set_test("add");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addInFieldTest()
+void manage_test::add_in_field_test()
 {
-    genericAddInFieldTest("add");
+    generic_add_in_field_test("add");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addCopyInCompositeTest()
+void manage_test::add_copy_in_composite_test()
 {
-    genericAddInCompositeTest("addCopy");
+    generic_add_in_composite_test("addCopy");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addCopyInVectorTest()
+void manage_test::add_copy_in_vector_test()
 {
-    genericAddInVectorTest("addCopy");
+    generic_add_in_vector_test("addCopy");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addCopyInSeriesSetTest()
+void manage_test::add_copy_in_series_set_test()
 {
-    genericAddInSeriesSetTest("addCopy");
+    generic_add_in_series_set_test("addCopy");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addCopyInFieldTest()
+void manage_test::add_copy_in_field_test()
 {
-    genericAddInFieldTest("addCopy");
+    generic_add_in_field_test("addCopy");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndNotPresentInCompositeTest()
+void manage_test::add_or_swap_and_not_present_in_composite_test()
 {
-    genericAddInCompositeTest("addOrSwap");
+    generic_add_in_composite_test("addOrSwap");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndNotPresentInVectorTest()
+void manage_test::add_or_swap_and_not_present_in_vector_test()
 {
-    genericAddInVectorTest("addOrSwap");
+    generic_add_in_vector_test("addOrSwap");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndNotPresentInSeriesSetTest()
+void manage_test::add_or_swap_and_not_present_in_series_set_test()
 {
-    genericAddInSeriesSetTest("addOrSwap");
+    generic_add_in_series_set_test("addOrSwap");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndNotPresentInFieldTest()
+void manage_test::add_or_swap_and_not_present_in_field_test()
 {
-    genericAddInFieldTest("addOrSwap");
+    generic_add_in_field_test("addOrSwap");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndPresentInCompositeTest()
+void manage_test::add_or_swap_and_present_in_composite_test()
 {
-    genericAddInCompositeTest("addOrSwap", true);
+    generic_add_in_composite_test("addOrSwap", true);
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndPresentInVectorTest()
+void manage_test::add_or_swap_and_present_in_vector_test()
 {
-    genericAddInVectorTest("addOrSwap", true);
+    generic_add_in_vector_test("addOrSwap", true);
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndPresentInSeriesSetTest()
+void manage_test::add_or_swap_and_present_in_series_set_test()
 {
-    genericAddInSeriesSetTest("addOrSwap", true);
+    generic_add_in_series_set_test("addOrSwap", true);
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::addOrSwapAndPresentInFieldTest()
+void manage_test::add_or_swap_and_present_in_field_test()
 {
-    genericAddInFieldTest("addOrSwap", true);
+    generic_add_in_field_test("addOrSwap", true);
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::swapObjInCompositeTest()
+void manage_test::swap_obj_in_composite_test()
 {
-    genericAddInCompositeTest("swapObj");
+    generic_add_in_composite_test("swapObj");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::swapObjAndNotPresentInFieldTest()
+void manage_test::swap_obj_and_not_present_in_field_test()
 {
-    CPPUNIT_ASSERT_THROW(genericAddInFieldTest("swapObj"), sight::data::exception);
+    CPPUNIT_ASSERT_THROW(generic_add_in_field_test("swapObj"), sight::data::exception);
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::swapObjAndPresentInFieldTest()
+void manage_test::swap_obj_and_present_in_field_test()
 {
-    genericAddInFieldTest("swapObj", true);
+    generic_add_in_field_test("swapObj", true);
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInCompositeTest(const std::string& _slot_name)
+void manage_test::generic_remove_in_composite_test(const std::string& _slot_name)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::composite>();
@@ -358,7 +358,7 @@ void manage_test::genericRemoveInCompositeTest(const std::string& _slot_name)
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInVectorTest(const std::string& _slot_name)
+void manage_test::generic_remove_in_vector_test(const std::string& _slot_name)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::vector>();
@@ -376,10 +376,10 @@ void manage_test::genericRemoveInVectorTest(const std::string& _slot_name)
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInSeriesSetTest(const std::string& _slot_name)
+void manage_test::generic_remove_in_series_set_test(const std::string& _slot_name)
 {
     auto object = std::make_shared<sight::data::series>();
-    object->setPatientName("You");
+    object->set_patient_name("You");
     auto container = std::make_shared<sight::data::series_set>();
     container->push_back(object);
 
@@ -395,7 +395,7 @@ void manage_test::genericRemoveInSeriesSetTest(const std::string& _slot_name)
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInFieldTest(const std::string& _slot_name)
+void manage_test::generic_remove_in_field_test(const std::string& _slot_name)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::string>();
@@ -416,42 +416,42 @@ void manage_test::genericRemoveInFieldTest(const std::string& _slot_name)
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeInCompositeTest()
+void manage_test::remove_in_composite_test()
 {
-    genericRemoveInCompositeTest("remove");
+    generic_remove_in_composite_test("remove");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeInVectorTest()
+void manage_test::remove_in_vector_test()
 {
-    genericRemoveInVectorTest("remove");
+    generic_remove_in_vector_test("remove");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeInSeriesSetTest()
+void manage_test::remove_in_series_set_test()
 {
-    genericRemoveInSeriesSetTest("remove");
+    generic_remove_in_series_set_test("remove");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeInFieldTest()
+void manage_test::remove_in_field_test()
 {
-    genericRemoveInFieldTest("remove");
+    generic_remove_in_field_test("remove");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeIfPresentInCompositeTest()
+void manage_test::remove_if_present_in_composite_test()
 {
-    genericRemoveInCompositeTest("removeIfPresent");
+    generic_remove_in_composite_test("removeIfPresent");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeIfPresentInVectorTest()
+void manage_test::remove_if_present_in_vector_test()
 {
     m_manage->start().get();
     //genericRemoveInVectorTest("removeIfPresent"); // TODO: fix crash
@@ -459,44 +459,44 @@ void manage_test::removeIfPresentInVectorTest()
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeIfPresentInSeriesSetTest()
+void manage_test::remove_if_present_in_series_set_test()
 {
-    genericRemoveInSeriesSetTest("removeIfPresent");
+    generic_remove_in_series_set_test("removeIfPresent");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::removeIfPresentInFieldTest()
+void manage_test::remove_if_present_in_field_test()
 {
-    genericRemoveInFieldTest("removeIfPresent");
+    generic_remove_in_field_test("removeIfPresent");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::clearCompositeTest()
+void manage_test::clear_composite_test()
 {
-    genericRemoveInCompositeTest("clear");
+    generic_remove_in_composite_test("clear");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::clearVectorTest()
+void manage_test::clear_vector_test()
 {
-    genericRemoveInVectorTest("clear");
+    generic_remove_in_vector_test("clear");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::clearSeriesSetTest()
+void manage_test::clear_series_set_test()
 {
-    genericRemoveInSeriesSetTest("clear");
+    generic_remove_in_series_set_test("clear");
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::clearFieldTest()
+void manage_test::clear_field_test()
 {
-    genericRemoveInFieldTest("clear");
+    generic_remove_in_field_test("clear");
 }
 
 } // namespace sight::module::data::ut

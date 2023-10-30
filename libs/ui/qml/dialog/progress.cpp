@@ -52,9 +52,9 @@ progress::progress(
 )
 {
     // get the qml engine QmlApplicationEngine
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
-    // find if toolBar exist on the ApplicationWindow
-    const auto& root_objects = engine->getRootObjects();
+    SPTR(ui::qml::qml_engine) engine = ui::qml::qml_engine::get_default();
+    // find if toolbar exist on the ApplicationWindow
+    const auto& root_objects = engine->get_root_objects();
     QObject* tool_bar        = nullptr;
     for(const auto& root : root_objects)
     {
@@ -66,14 +66,14 @@ progress::progress(
     }
 
     // TODO: find a way to remove the context from rootContext but instead only on the object
-    engine->getRootContext()->setContextProperty("progressDialog", this);
+    engine->get_root_context()->setContextProperty("progressDialog", this);
     if(tool_bar != nullptr)
     {
         // get the path of the qml ui file in the 'rc' directory
         const auto& dialog_path =
             core::runtime::get_library_resource_file_path("ui_qml/dialog/Progress.qml");
         // load the qml ui component
-        m_dialog = engine->createComponent(dialog_path);
+        m_dialog = engine->create_component(dialog_path);
         SIGHT_ASSERT("The Qml File progress is not found or not loaded", m_dialog);
         auto* item = qobject_cast<QQuickItem*>(m_dialog);
         // get ownership to not get Progress qml destroyed
@@ -89,7 +89,7 @@ progress::progress(
         const auto& dialog_path =
             core::runtime::get_library_resource_file_path("ui_qml/dialog/progress.qml");
         // load the qml ui component
-        m_window = engine->createComponent(dialog_path);
+        m_window = engine->create_component(dialog_path);
         SIGHT_ASSERT("The Qml File progress is not found or not loaded", m_window);
         m_window->setProperty("title", QString::fromStdString(_title));
         m_dialog = m_window->findChild<QObject*>("dialog");
@@ -98,8 +98,8 @@ progress::progress(
     }
 
     m_visible = true;
-    this->progress::setTitle(_title);
-    this->progress::setMessage(_message);
+    this->progress::set_title(_title);
+    this->progress::set_message(_message);
 }
 
 //------------------------------------------------------------------------------
@@ -124,9 +124,9 @@ void progress::operator()(float _percent, std::string _msg)
     // check if the dialog box has been closed by the user and cancel the progress
     if(!m_visible)
     {
-        if(m_cancelCallback != nullptr)
+        if(m_cancel_callback != nullptr)
         {
-            this->cancelPressed();
+            this->cancel_pressed();
         }
 
         return;
@@ -136,27 +136,27 @@ void progress::operator()(float _percent, std::string _msg)
     if(value != this->m_value)
     {
         this->m_value = value;
-        this->setMessage(_msg);
-        this->setTitle(m_title.toStdString());
+        this->set_message(_msg);
+        this->set_title(m_title.toStdString());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void progress::setTitle(const std::string& _title)
+void progress::set_title(const std::string& _title)
 {
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
 
     m_title = QString::fromStdString(_title);
     if(m_window != nullptr)
     {
-        Q_EMIT titleChanged();
+        Q_EMIT title_changed();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void progress::setMessage(const std::string& _msg)
+void progress::set_message(const std::string& _msg)
 {
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     QString message = "";
@@ -176,17 +176,17 @@ void progress::setMessage(const std::string& _msg)
 
 //------------------------------------------------------------------------------
 
-void progress::hideCancelButton()
+void progress::hide_cancel_button()
 {
-    m_hasCallback = false;
-    Q_EMIT hasCallbackChanged();
+    m_has_callback = false;
+    Q_EMIT has_callback_changed();
 }
 
 //------------------------------------------------------------------------------
 
-void progress::cancelPressed()
+void progress::cancel_pressed()
 {
-    progress_base::cancelPressed();
+    progress_base::cancel_pressed();
 }
 
 //------------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 
 #include "viz/scene2d/registry/adaptor.hpp"
 
-#include "viz/scene2d/Scene2DGraphicsView.hpp"
+#include "viz/scene2d/graphics_view.hpp"
 
 #include <service/macros.hpp>
 #include <service/registry.hpp>
@@ -46,21 +46,21 @@ adaptor::~adaptor() noexcept =
 
 //-----------------------------------------------------------------------------
 
-void adaptor::setZValue(float _z_value)
+void adaptor::set_z_value(float _z_value)
 {
-    m_zValue = _z_value;
+    m_z_value = _z_value;
 }
 
 //-----------------------------------------------------------------------------
 
-float adaptor::getZValue() const
+float adaptor::get_z_value() const
 {
-    return m_zValue;
+    return m_z_value;
 }
 
 //-----------------------------------------------------------------------------
 
-viz::scene2d::render::sptr adaptor::getScene2DRender() const
+viz::scene2d::render::sptr adaptor::get_scene_2d_render() const
 {
     const auto& registry = viz::scene2d::registry::get_adaptor_registry();
     const auto& iter     = registry.find(this->get_id());
@@ -74,19 +74,19 @@ viz::scene2d::render::sptr adaptor::getScene2DRender() const
 
 //-----------------------------------------------------------------------------
 
-double adaptor::getViewSizeRatio() const
+double adaptor::get_view_size_ratio() const
 {
-    SIGHT_ASSERT("Height should be greater than 0.", this->getScene2DRender()->getView()->height() > 0);
+    SIGHT_ASSERT("Height should be greater than 0.", this->get_scene_2d_render()->get_view()->height() > 0);
 
-    return static_cast<double>(this->getScene2DRender()->getView()->width())
-           / static_cast<double>(this->getScene2DRender()->getView()->height());
+    return static_cast<double>(this->get_scene_2d_render()->get_view()->width())
+           / static_cast<double>(this->get_scene_2d_render()->get_view()->height());
 }
 
 //-----------------------------------------------------------------------------
 
-vec2d_t adaptor::viewToViewport(const scene2d::data::Viewport& _viewport) const
+vec2d_t adaptor::view_to_viewport(const scene2d::data::viewport& _viewport) const
 {
-    auto* view = this->getScene2DRender()->getView();
+    auto* view = this->get_scene_2d_render()->get_view();
 
     const double viewport_height = _viewport.height();
     const double viewport_width  = _viewport.width();
@@ -101,14 +101,14 @@ vec2d_t adaptor::viewToViewport(const scene2d::data::Viewport& _viewport) const
 
 //-----------------------------------------------------------------------------
 
-vec2d_t adaptor::mapAdaptorToScene(
+vec2d_t adaptor::map_adaptor_to_scene(
     const vec2d_t& _xy
 ) const
 {
     double x = NAN;
     double y = NAN;
 
-    if(m_xAxis->get_scale_type() == scene2d::data::Axis::LOG)
+    if(m_x_axis->get_scale_type() == scene2d::data::axis::log)
     {
         // Logarithm 10 cannot get negative values
         if(_xy.x <= 0.)
@@ -118,16 +118,16 @@ vec2d_t adaptor::mapAdaptorToScene(
         else
         {
             // Apply the x scale and the log to the x value
-            x = m_xAxis->getScale() * log10(_xy.x);
+            x = m_x_axis->get_scale() * log10(_xy.x);
         }
     }
     else
     {
         // Apply just the x scale to the x value
-        x = m_xAxis->getScale() * _xy.x;
+        x = m_x_axis->get_scale() * _xy.x;
     }
 
-    if(m_yAxis->get_scale_type() == scene2d::data::Axis::LOG)
+    if(m_y_axis->get_scale_type() == scene2d::data::axis::log)
     {
         // Logarithm 10 cannot get negative values
         if(_xy.y <= 0.)
@@ -137,13 +137,13 @@ vec2d_t adaptor::mapAdaptorToScene(
         else
         {
             // Apply the y scale and the log to the y value
-            y = m_yAxis->getScale() * log10(_xy.y);
+            y = m_y_axis->get_scale() * log10(_xy.y);
         }
     }
     else
     {
         // Apply just the y scale to the y value
-        y = m_yAxis->getScale() * _xy.y;
+        y = m_y_axis->get_scale() * _xy.y;
     }
 
     return {x, y};
@@ -151,27 +151,27 @@ vec2d_t adaptor::mapAdaptorToScene(
 
 //-----------------------------------------------------------------------------
 
-vec2d_t adaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
+vec2d_t adaptor::map_scene_to_adaptor(const vec2d_t& _xy) const
 {
     // Do the reverse operation of the mapAdaptorToScene function
     double x = NAN;
     double y = NAN;
-    if(m_xAxis->get_scale_type() == scene2d::data::Axis::LOG)
+    if(m_x_axis->get_scale_type() == scene2d::data::axis::log)
     {
-        x = 10. * std::exp(_xy.x) / m_xAxis->getScale();
+        x = 10. * std::exp(_xy.x) / m_x_axis->get_scale();
     }
     else
     {
-        x = (_xy.x) / m_xAxis->getScale();
+        x = (_xy.x) / m_x_axis->get_scale();
     }
 
-    if(m_yAxis->get_scale_type() == scene2d::data::Axis::LOG)
+    if(m_y_axis->get_scale_type() == scene2d::data::axis::log)
     {
-        y = 10. * std::exp(_xy.y) / m_yAxis->getScale();
+        y = 10. * std::exp(_xy.y) / m_y_axis->get_scale();
     }
     else
     {
-        y = _xy.y / m_yAxis->getScale();
+        y = _xy.y / m_y_axis->get_scale();
     }
 
     return {x, y};
@@ -179,34 +179,34 @@ vec2d_t adaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
 
 //-----------------------------------------------------------------------------
 
-void adaptor::configureParams()
+void adaptor::configure_params()
 {
     const config_t config = this->get_config().get_child("config.<xmlattr>");
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
     if(config.count("xAxis") != 0U)
     {
-        m_xAxis = this->getScene2DRender()->getAxis(config.get<std::string>("xAxis"));
-        SIGHT_ASSERT("xAxis not found", m_xAxis);
+        m_x_axis = this->get_scene_2d_render()->get_axis(config.get<std::string>("xAxis"));
+        SIGHT_ASSERT("xAxis not found", m_x_axis);
     }
     else
     {
-        m_xAxis = std::make_shared<scene2d::data::Axis>();
+        m_x_axis = std::make_shared<scene2d::data::axis>();
     }
 
     if(config.count("yAxis") != 0U)
     {
-        m_yAxis = this->getScene2DRender()->getAxis(config.get<std::string>("yAxis"));
-        SIGHT_ASSERT("yAxis not found", m_xAxis);
+        m_y_axis = this->get_scene_2d_render()->get_axis(config.get<std::string>("yAxis"));
+        SIGHT_ASSERT("yAxis not found", m_x_axis);
     }
     else
     {
-        m_yAxis = std::make_shared<scene2d::data::Axis>();
+        m_y_axis = std::make_shared<scene2d::data::axis>();
     }
 
     if(config.count("zValue") != 0U)
     {
-        m_zValue = config.get<float>("zValue");
+        m_z_value = config.get<float>("zValue");
     }
 
     if(config.count("opacity") != 0U)
@@ -217,7 +217,7 @@ void adaptor::configureParams()
 
 //-----------------------------------------------------------------------------
 
-void adaptor::processInteraction(scene2d::data::Event& /*unused*/)
+void adaptor::process_interaction(scene2d::data::event& /*unused*/)
 {
 }
 

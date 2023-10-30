@@ -45,20 +45,20 @@ namespace sight::app::helper
 {
 
 /// container for the data keywords for a service configuration
-const std::array<std::string, 3> s_DATA_KEYWORDS = {{"in", "out", "inout"}};
+const std::array<std::string, 3> DATA_KEYWORDS = {{"in", "out", "inout"}};
 
 static std::map<std::string, service::base::sptr> s_services_props;
 static std::mutex s_services_props_mutex;
 
 //-----------------------------------------------------------------------------
 
-void config::createConnections(
+void config::create_connections(
     const core::runtime::config_t& _connection_cfg,
     core::com::helper::sig_slot_connection& _connections,
     const CSPTR(core::tools::object)& _obj
 )
 {
-    ConnectionInfo info = parseConnections(_connection_cfg, _obj);
+    connection_info info = parse_connections(_connection_cfg, _obj);
 
     core::tools::object::sptr sig_source     = core::tools::id::get_object(info.m_signal.first);
     core::com::has_signals::sptr has_signals = std::dynamic_pointer_cast<core::com::has_signals>(sig_source);
@@ -79,22 +79,22 @@ void config::createConnections(
 
 //-----------------------------------------------------------------------------
 
-config::ConnectionInfo config::parseConnections(
+config::connection_info config::parse_connections(
     const core::runtime::config_t& _connection_cfg,
     const CSPTR(core::tools::object)& _obj
 )
 {
-    ConnectionInfo info;
+    connection_info info;
 
     for(const auto& elem : _connection_cfg)
     {
         const auto src = elem.second.get_value<std::string>();
-        static const std::regex re("(.*)/(.*)");
+        static const std::regex s_RE("(.*)/(.*)");
         std::smatch match;
         std::string uid;
         std::string key;
 
-        if(std::regex_match(src, match, re))
+        if(std::regex_match(src, match, s_RE))
         {
             SIGHT_ASSERT("Wrong value for attribute src: " << src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
@@ -138,7 +138,7 @@ config::ConnectionInfo config::parseConnections(
 
 //-----------------------------------------------------------------------------
 
-core::com::helper::proxy_connections config::parseConnections2(
+core::com::helper::proxy_connections config::parse_connections2(
     const core::runtime::config_t& _connection_cfg,
     const std::string& _err_msg_head,
     std::function<std::string()> _generate_channel_name_fn
@@ -153,13 +153,13 @@ core::com::helper::proxy_connections config::parseConnections2(
 
     for(const auto& elem : _connection_cfg)
     {
-        const static std::regex re("(.*)/(.*)");
+        const static std::regex s_RE("(.*)/(.*)");
         std::smatch match;
         std::string uid;
         std::string key;
 
         const auto src = elem.second.get_value<std::string>();
-        if(std::regex_match(src, match, re))
+        if(std::regex_match(src, match, s_RE))
         {
             SIGHT_ASSERT("errMsgHead + Wrong value for attribute src: " << src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
@@ -172,11 +172,11 @@ core::com::helper::proxy_connections config::parseConnections2(
 
             if(elem.first == "signal")
             {
-                proxy_cnt.addSignalConnection(uid, key);
+                proxy_cnt.add_signal_connection(uid, key);
             }
             else if(elem.first == "slot")
             {
-                proxy_cnt.addSlotConnection(uid, key);
+                proxy_cnt.add_slot_connection(uid, key);
             }
         }
         else if(elem.first != "<xmlattr>")
@@ -195,14 +195,14 @@ core::com::helper::proxy_connections config::parseConnections2(
 
 //-----------------------------------------------------------------------------
 
-void config::disconnectProxies(const std::string& _object_key, config::proxy_connections_map_t& _proxy_map)
+void config::disconnect_proxies(const std::string& _object_key, config::proxy_connections_map_t& _proxy_map)
 {
     auto iter = _proxy_map.find(_object_key);
     if(iter != _proxy_map.end())
     {
         core::com::proxy::sptr proxy = core::com::proxy::get();
 
-        proxy_connectionsVectType proxy_connections = iter->second;
+        proxy_connections_vect_t proxy_connections = iter->second;
 
         for(const auto& proxy_connection : proxy_connections)
         {
@@ -230,7 +230,7 @@ void config::disconnectProxies(const std::string& _object_key, config::proxy_con
 
 //-----------------------------------------------------------------------------
 
-app::detail::service_config config::parseService(
+app::detail::service_config config::parse_service(
     const boost::property_tree::ptree& _srv_elem,
     const std::string& _err_msg_head
 )
@@ -259,7 +259,7 @@ app::detail::service_config config::parseService(
     );
 
     // AutoConnect
-    srvconfig.m_globalAutoConnect = core::runtime::get_ptree_value(_srv_elem, "<xmlattr>.auto_connect", false);
+    srvconfig.m_global_auto_connect = core::runtime::get_ptree_value(_srv_elem, "<xmlattr>.auto_connect", false);
 
     // Worker key
     srvconfig.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
@@ -267,7 +267,7 @@ app::detail::service_config config::parseService(
     // Get service configuration
     if(!config.empty())
     {
-        const auto srv_cfg_factory = service::extension::config::getDefault();
+        const auto srv_cfg_factory = service::extension::config::get_default();
         srvconfig.m_config = srv_cfg_factory->get_service_config(config, srvconfig.m_type);
     }
     else
@@ -292,7 +292,7 @@ app::detail::service_config config::parseService(
 
     // Collect all input/output configurations
     std::vector<std::pair<std::string, boost::property_tree::ptree> > object_cfgs;
-    for(const auto& data_keyword : s_DATA_KEYWORDS)
+    for(const auto& data_keyword : DATA_KEYWORDS)
     {
         auto obj_cfgs = _srv_elem.equal_range(data_keyword);
         for(auto obj_cfg = obj_cfgs.first ; obj_cfg != obj_cfgs.second ; ++obj_cfg)
@@ -305,18 +305,18 @@ app::detail::service_config config::parseService(
     for(const auto& cfg : object_cfgs)
     {
         // Access type
-        app::detail::ObjectServiceconfig objconfig;
+        app::detail::object_serviceconfig objconfig;
         if(cfg.first == "in")
         {
-            objconfig.m_access = data::Access::in;
+            objconfig.m_access = data::access::in;
         }
         else if(cfg.first == "out")
         {
-            objconfig.m_access = data::Access::out;
+            objconfig.m_access = data::access::out;
         }
         else if(cfg.first == "inout")
         {
-            objconfig.m_access = data::Access::inout;
+            objconfig.m_access = data::access::inout;
         }
         else
         {
@@ -331,14 +331,14 @@ app::detail::service_config config::parseService(
             const std::string& key = group.value();
             const auto default_cfg = get_object_key_attrs(srvconfig.m_type, key);
 
-            objconfig.m_autoConnect = core::runtime::get_ptree_value(
+            objconfig.m_auto_connect = core::runtime::get_ptree_value(
                 cfg.second,
                 "<xmlattr>.auto_connect",
                 default_cfg.first
             );
 
             // Optional is global to all keys in the group
-            if(objconfig.m_access != data::Access::out)
+            if(objconfig.m_access != data::access::out)
             {
                 objconfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
@@ -354,7 +354,7 @@ app::detail::service_config config::parseService(
             std::size_t count = 0;
             for(auto group_cfg = key_cfgs.first ; group_cfg != key_cfgs.second ; ++group_cfg)
             {
-                app::detail::ObjectServiceconfig group_objconfig = objconfig;
+                app::detail::object_serviceconfig group_objconfig = objconfig;
 
                 // Identifier
                 group_objconfig.m_uid = group_cfg->second.get<std::string>("<xmlattr>.uid", "");
@@ -366,14 +366,14 @@ app::detail::service_config config::parseService(
                 group_objconfig.m_key = key;
 
                 // AutoConnect can be overriden by element in the group
-                group_objconfig.m_autoConnect = core::runtime::get_ptree_value(
+                group_objconfig.m_auto_connect = core::runtime::get_ptree_value(
                     group_cfg->second,
                     "<xmlattr>.auto_connect",
-                    group_objconfig.m_autoConnect
+                    group_objconfig.m_auto_connect
                 );
 
                 // Optional can be overriden by element in the group
-                if(group_objconfig.m_access != data::Access::out)
+                if(group_objconfig.m_access != data::access::out)
                 {
                     group_objconfig.m_optional = core::runtime::get_ptree_value(
                         group_cfg->second,
@@ -409,14 +409,14 @@ app::detail::service_config config::parseService(
             const auto default_cfg = get_object_key_attrs(srvconfig.m_type, objconfig.m_key);
 
             // AutoConnect
-            objconfig.m_autoConnect = core::runtime::get_ptree_value(
+            objconfig.m_auto_connect = core::runtime::get_ptree_value(
                 cfg.second,
                 "<xmlattr>.auto_connect",
                 default_cfg.first
             );
 
             // Optional
-            if(objconfig.m_access != data::Access::out)
+            if(objconfig.m_access != data::access::out)
             {
                 objconfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
@@ -464,7 +464,7 @@ std::pair<bool, bool> config::get_object_key_attrs(
 
 // ----------------------------------------------------------------------------
 
-void config::clearProps()
+void config::clear_props()
 {
     std::lock_guard guard(s_services_props_mutex);
     s_services_props.clear();

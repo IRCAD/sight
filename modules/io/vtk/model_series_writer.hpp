@@ -71,7 +71,7 @@ namespace sight::module::io::vtk
  * @subsection Input Input
  * - \b data [sight::data::model_series]: model to save.
  * @subsection Configuration Configuration
- * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
+ * - \b folder (optional): path of the folder, if it is not defined, 'open_location_dialog()' should be called to define
  * the path.
  * - \b extension (optional): extension to use when writing files (vtk, vtp, obj, stl, ply). If nothing is set
  * a popup will ask to user to choose one.
@@ -89,18 +89,18 @@ public:
 
     SIGHT_DECLARE_SERVICE(model_series_writer, sight::io::service::writer);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Configure the mesh path.
      *
      * This method is used to find the file path  using a file selector.
      */
-    MODULE_IO_VTK_API void openLocationDialog() override;
+    MODULE_IO_VTK_API void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
@@ -146,13 +146,13 @@ private:
      * @param[in] _filename : name of the file to write with extension. extension will be used to choose the writer.
      * @param[in] _mesh : const pointer of the data mesh.
      */
-    void writeMesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh);
+    void write_mesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh);
 
     /// Job Created signal
-    SPTR(job_created_signal_t) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 
     ///  Stores the selectedExtension from dialog.
-    std::string m_selectedExtension;
+    std::string m_selected_extension;
 };
 
 } // namespace sight::module::io::vtk

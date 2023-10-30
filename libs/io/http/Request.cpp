@@ -27,52 +27,52 @@
 namespace sight::io::http
 {
 
-Request::Request()
+request::request()
 = default;
 
-Request::Request(std::string _url) :
+request::request(std::string _url) :
     m_url(std::move(_url))
 {
 }
 
 //------------------------------------------------------------------------------
 
-Request::sptr Request::New(const std::string& _url)
+request::sptr request::New(const std::string& _url)
 {
-    return std::make_shared<Request>(_url);
+    return std::make_shared<request>(_url);
 }
 
 //------------------------------------------------------------------------------
 
-void Request::addHeader(const std::string& _key, const std::string& _value)
+void request::add_header(const std::string& _key, const std::string& _value)
 {
     m_headers[_key] = _value;
 }
 
 //------------------------------------------------------------------------------
 
-void Request::setHeaders(const headers_t& _headers)
+void request::set_headers(const headers_t& _headers)
 {
     m_headers = _headers;
 }
 
 //------------------------------------------------------------------------------
 
-const Request::headers_t& Request::getHeaders() const
+const request::headers_t& request::get_headers() const
 {
     return m_headers;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string& Request::getUrl() const
+const std::string& request::get_url() const
 {
     return m_url;
 }
 
 //------------------------------------------------------------------------------
 
-void Request::setUrl(const std::string& _url)
+void request::set_url(const std::string& _url)
 {
     m_url = _url;
 }

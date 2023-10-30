@@ -23,15 +23,15 @@ This example shows the possibilities of parameters:
                         <icon>ex_parameters/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <menuBar/>
+                    <menubar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
                     <view sid="mainview" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
+            <service uid="menuBarView" type="sight::module::ui::menubar" >
                 <gui>
                     <layout>
                         <menu name="Preferences" />
@@ -219,98 +219,98 @@ This example shows the possibilities of parameters:
 
             <connect>
                 <signal>preferencesAct/preferenceChanged</signal>
-                <slot>parameters1Srv/setParameter</slot>
-                <slot>parameters2Srv/setParameter</slot>
+                <slot>parameters1Srv/set_parameter</slot>
+                <slot>parameters2Srv/set_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/boolChanged</signal>
-                <slot>parameters2Srv/setBoolParameter</slot>
+                <slot>parameters2Srv/set_bool_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/boolChanged</signal>
-                <slot>parameters1Srv/setBoolParameter</slot>
+                <slot>parameters1Srv/set_bool_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/colorChanged</signal>
-                <slot>parameters2Srv/setColorParameter</slot>
+                <slot>parameters2Srv/set_color_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/colorChanged</signal>
-                <slot>parameters1Srv/setColorParameter</slot>
+                <slot>parameters1Srv/set_color_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/doubleChanged</signal>
-                <slot>parameters2Srv/setDoubleParameter</slot>
+                <slot>parameters2Srv/set_double_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/doubleChanged</signal>
-                <slot>parameters1Srv/setDoubleParameter</slot>
+                <slot>parameters1Srv/set_double_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/double2Changed</signal>
-                <slot>parameters2Srv/setDouble2Parameter</slot>
+                <slot>parameters2Srv/set_double2_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/double2Changed</signal>
-                <slot>parameters1Srv/setDouble2Parameter</slot>
+                <slot>parameters1Srv/set_double2_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/double3Changed</signal>
-                <slot>parameters2Srv/setDouble3Parameter</slot>
+                <slot>parameters2Srv/set_double3_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/double3Changed</signal>
-                <slot>parameters1Srv/setDouble3Parameter</slot>
+                <slot>parameters1Srv/set_double3_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/intChanged</signal>
-                <slot>parameters2Srv/setIntParameter</slot>
+                <slot>parameters2Srv/set_int_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/intChanged</signal>
-                <slot>parameters1Srv/setIntParameter</slot>
+                <slot>parameters1Srv/set_int_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/int2Changed</signal>
-                <slot>parameters2Srv/setInt2Parameter</slot>
+                <slot>parameters2Srv/set_int2_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/int2Changed</signal>
-                <slot>parameters1Srv/setInt2Parameter</slot>
+                <slot>parameters1Srv/set_int2_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/int3Changed</signal>
-                <slot>parameters2Srv/setInt3Parameter</slot>
+                <slot>parameters2Srv/set_int3_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/int3Changed</signal>
-                <slot>parameters1Srv/setInt3Parameter</slot>
+                <slot>parameters1Srv/set_int3_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters1Srv/enumChanged</signal>
-                <slot>parameters2Srv/setEnumParameter</slot>
+                <slot>parameters2Srv/set_enum_parameter</slot>
             </connect>
 
             <connect>
                 <signal>parameters2Srv/enumChanged</signal>
-                <slot>parameters1Srv/setEnumParameter</slot>
+                <slot>parameters1Srv/set_enum_parameter</slot>
             </connect>
 
             <!-- Connection to update the parameters minimum/maximum -->

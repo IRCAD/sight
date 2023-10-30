@@ -31,7 +31,7 @@ class image_properties_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(image_properties_test);
 
-CPPUNIT_TEST(propertiesTest);
+CPPUNIT_TEST(properties_test);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -41,7 +41,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void propertiesTest();
+    static void properties_test();
 };
 
 } // namespace sight::activity::ut

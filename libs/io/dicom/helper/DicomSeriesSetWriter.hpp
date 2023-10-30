@@ -51,9 +51,9 @@ namespace sight::io::dicom
 namespace helper
 {
 
-class DicomAnonymizer;
+class dicom_anonymizer;
 
-class IO_DICOM_CLASS_API DicomSeriesSetWriter :
+class IO_DICOM_CLASS_API dicom_series_set_writer :
     public io::writer::generic_object_writer<data::series_set>,
     public core::location::single_folder,
     public core::location::single_file
@@ -61,33 +61,33 @@ class IO_DICOM_CLASS_API DicomSeriesSetWriter :
 public:
 
     SIGHT_DECLARE_CLASS(
-        DicomSeriesSetWriter,
+        dicom_series_set_writer,
         io::writer::generic_object_writer<data::series_set>,
-        io::writer::factory::make<DicomSeriesSetWriter>
+        io::writer::factory::make<dicom_series_set_writer>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @brief Constructor/Destructor
      * @{ */
-    IO_DICOM_API DicomSeriesSetWriter();
-    IO_DICOM_API ~DicomSeriesSetWriter() override = default;
+    IO_DICOM_API dicom_series_set_writer();
+    IO_DICOM_API ~dicom_series_set_writer() override = default;
     /**  @} */
 
     /// Return an empty string
     IO_DICOM_API std::string extension() const override;
 
     /// Get job aggregator
-    IO_DICOM_API SPTR(core::jobs::aggregator) getAggregator();
+    IO_DICOM_API SPTR(core::jobs::aggregator) get_aggregator();
 
     /// Set anonymizer (if anonymization required)
-    IO_DICOM_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& _anonymizer);
+    IO_DICOM_API void set_anonymizer(const SPTR(helper::dicom_anonymizer)& _anonymizer);
 
     /// Write the image series in DICOM format.
     IO_DICOM_API void write() override;
 
     /// Set Producer
-    IO_DICOM_API void setProducer(std::string _producer);
+    IO_DICOM_API void set_producer(std::string _producer);
 
 private:
 
@@ -95,7 +95,7 @@ private:
     SPTR(core::jobs::aggregator) m_aggregator;
 
     /// Optional anonymiser
-    SPTR(DicomAnonymizer) m_anonymizer;
+    SPTR(dicom_anonymizer) m_anonymizer;
 
     /// Producer
     std::string m_producer;

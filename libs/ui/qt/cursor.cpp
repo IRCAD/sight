@@ -33,28 +33,28 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-void cursor::setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default)
+void cursor::set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default)
 {
     QCursor qt_cursor(Qt::ArrowCursor);
     switch(_cursor)
     {
-        case cursor_base::BUSY:
+        case cursor_base::busy:
             qt_cursor.setShape(Qt::BusyCursor);
             break;
 
-        case cursor_base::WAIT:
+        case cursor_base::wait:
             qt_cursor.setShape(Qt::WaitCursor);
             break;
 
-        case cursor_base::CROSS:
+        case cursor_base::cross:
             qt_cursor.setShape(Qt::CrossCursor);
             break;
 
-        case cursor_base::OPEN_HAND:
+        case cursor_base::open_hand:
             qt_cursor.setShape(Qt::OpenHandCursor);
             break;
 
-        case cursor_base::CLOSED_HAND:
+        case cursor_base::closed_hand:
             qt_cursor.setShape(Qt::ClosedHandCursor);
             break;
 
@@ -75,7 +75,7 @@ void cursor::setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_
 
 //-----------------------------------------------------------------------------
 
-void cursor::setDefaultCursor()
+void cursor::set_default_cursor()
 {
     qApp->restoreOverrideCursor();
 }

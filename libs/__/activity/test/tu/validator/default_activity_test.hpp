@@ -36,10 +36,10 @@ class default_activity_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(default_activity_test);
 
-CPPUNIT_TEST(requirementsTest);
-CPPUNIT_TEST(objectTest);
-CPPUNIT_TEST(validatorTest);
-CPPUNIT_TEST(bigActivityTest);
+CPPUNIT_TEST(requirements_test);
+CPPUNIT_TEST(object_test);
+CPPUNIT_TEST(validator_test);
+CPPUNIT_TEST(big_activity_test);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -49,10 +49,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void requirementsTest();
-    static void objectTest();
-    static void validatorTest();
-    static void bigActivityTest();
+    static void requirements_test();
+    static void object_test();
+    static void validator_test();
+    static void big_activity_test();
 };
 
 } // namespace sight::activity::ut

@@ -33,8 +33,8 @@ namespace sight::filter::image::ut
 class image_diff_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(image_diff_test);
-CPPUNIT_TEST(storeDiffsTest);
-CPPUNIT_TEST(undoRedoTest);
+CPPUNIT_TEST(store_diffs_test);
+CPPUNIT_TEST(undo_redo_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,10 +43,10 @@ public:
     void tearDown() override;
 
     /// Test image_diff constructors, copy/move operators, accessors, and modifying methods.
-    static void storeDiffsTest();
+    static void store_diffs_test();
 
     /// Test image_diff revert/apply methods.
-    static void undoRedoTest();
+    static void undo_redo_test();
 };
 
 } // namespace sight::filter::image::ut

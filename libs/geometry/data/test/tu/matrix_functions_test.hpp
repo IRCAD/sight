@@ -32,10 +32,10 @@ class matrix_functions_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(matrix_functions_test);
-    CPPUNIT_TEST(checkMultVecMatrix);
-    CPPUNIT_TEST(checkRotationMatrix);
-    CPPUNIT_TEST(checkInverse);
-    CPPUNIT_TEST(multiplicationTest);
+    CPPUNIT_TEST(check_mult_vec_matrix);
+    CPPUNIT_TEST(check_rotation_matrix);
+    CPPUNIT_TEST(check_inverse);
+    CPPUNIT_TEST(multiplication_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,10 +43,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void checkMultVecMatrix();
-    static void checkRotationMatrix();
-    static void checkInverse();
-    static void multiplicationTest();
+    static void check_mult_vec_matrix();
+    static void check_rotation_matrix();
+    static void check_inverse();
+    static void multiplication_test();
 };
 
 } // namespace sight::geometry::data::ut

@@ -32,7 +32,7 @@ namespace sight::viz::scene3d::helper::ut
 class scene_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(scene_test);
-CPPUNIT_TEST(getNodeById);
+CPPUNIT_TEST(get_node_by_id);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,7 +41,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void getNodeById();
+    static void get_node_by_id();
 };
 
 } // namespace sight::viz::scene3d::helper::ut

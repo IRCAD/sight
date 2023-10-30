@@ -25,7 +25,7 @@
 
         <service uid="mainView" type="sight::module::ui::view">
             <gui>
-                <toolBar />
+                <toolbar />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" />
@@ -33,12 +33,12 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" start="true" />
                 <view sid="genericSceneSrv" start="true" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::tool_bar">
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <editor />
@@ -130,7 +130,7 @@
 
         <connect>
             <signal>frameSynchronizerSrv/synchronizationDone</signal>
-            <slot>genericSceneSrv/requestRender</slot>
+            <slot>genericSceneSrv/request_render</slot>
             <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 

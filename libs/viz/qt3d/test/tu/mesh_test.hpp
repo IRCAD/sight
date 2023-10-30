@@ -30,8 +30,8 @@ namespace sight::viz::qt3d_test::ut
 class mesh_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(mesh_test);
-CPPUNIT_TEST(setCubeMesh);
-CPPUNIT_TEST(centerCameraOnCube);
+CPPUNIT_TEST(set_cube_mesh);
+CPPUNIT_TEST(center_camera_on_cube);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,9 +44,9 @@ public:
 
     void tearDown() override;
 
-    static void setCubeMesh();
+    static void set_cube_mesh();
 
-    static void centerCameraOnCube();
+    static void center_camera_on_cube();
 };
 
 } // namespace sight::viz::qt3dTest::ut

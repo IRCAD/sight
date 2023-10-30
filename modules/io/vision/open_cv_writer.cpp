@@ -55,14 +55,14 @@ void open_cv_writer::configuring()
 
 //----------------------------------------------------------------------------
 
-void open_cv_writer::openLocationDialog()
+void open_cv_writer::open_location_dialog()
 {
-    this->defineLocationGUI();
+    this->define_location_gui();
 }
 
 //----------------------------------------------------------------------------
 
-bool open_cv_writer::defineLocationGUI()
+bool open_cv_writer::define_location_gui()
 {
     bool ok = false;
 
@@ -70,12 +70,12 @@ bool open_cv_writer::defineLocationGUI()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::WRITE);
-    dialog_file.setType(ui::dialog::location::SINGLE_FILE);
-    dialog_file.addFilter("XML file", "*.xml");
-    dialog_file.addFilter("YAML file", "*.yaml *.yml");
+    dialog_file.set_title(m_window_title.empty() ? "Enter file name" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::write);
+    dialog_file.set_type(ui::dialog::location::single_file);
+    dialog_file.add_filter("XML file", "*.xml");
+    dialog_file.add_filter("YAML file", "*.yaml *.yml");
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
 
@@ -83,12 +83,12 @@ bool open_cv_writer::defineLocationGUI()
     {
         this->set_file(result->get_file());
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         ok = true;
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 
     return ok;
@@ -111,12 +111,12 @@ void open_cv_writer::stopping()
 void open_cv_writer::updating()
 {
     bool use_dialog = false;
-    if(!this->hasLocationDefined())
+    if(!this->has_location_defined())
     {
-        use_dialog = this->defineLocationGUI();
+        use_dialog = this->define_location_gui();
         if(!use_dialog)
         {
-            m_writeFailed = true;
+            m_write_failed = true;
             return;
         }
     }
@@ -126,7 +126,7 @@ void open_cv_writer::updating()
 
     if(!camera_set)
     {
-        m_writeFailed = true;
+        m_write_failed = true;
     }
 
     SIGHT_ASSERT("CameraSet is null", camera_set);
@@ -146,14 +146,14 @@ void open_cv_writer::updating()
         camera_matrices.push_back(cv::Mat::eye(3, 3, CV_64F));
         camera_dist_coefs.push_back(cv::Mat::eye(5, 1, CV_64F));
 
-        camera_matrices[i].at<double>(0, 0) = cameras[i]->getFx();
-        camera_matrices[i].at<double>(1, 1) = cameras[i]->getFy();
-        camera_matrices[i].at<double>(0, 2) = cameras[i]->getCx();
-        camera_matrices[i].at<double>(1, 2) = cameras[i]->getCy();
+        camera_matrices[i].at<double>(0, 0) = cameras[i]->get_fx();
+        camera_matrices[i].at<double>(1, 1) = cameras[i]->get_fy();
+        camera_matrices[i].at<double>(0, 2) = cameras[i]->get_cx();
+        camera_matrices[i].at<double>(1, 2) = cameras[i]->get_cy();
 
         for(std::uint8_t c = 0 ; c < 5 ; ++c)
         {
-            camera_dist_coefs[i].at<double>(c, 0) = cameras[i]->getDistortionCoefficient()[c];
+            camera_dist_coefs[i].at<double>(c, 0) = cameras[i]->get_distortion_coefficient()[c];
         }
     }
 
@@ -168,13 +168,13 @@ void open_cv_writer::updating()
         cam_num << "camera_" << c;
 
         fs << cam_num.str() << "{";
-        fs << "id" << camera->getCameraID().c_str();
-        fs << "description" << camera->getDescription().c_str();
-        fs << "imageWidth" << static_cast<int>(camera->getWidth());
-        fs << "imageHeight" << static_cast<int>(camera->getHeight());
+        fs << "id" << camera->get_camera_id().c_str();
+        fs << "description" << camera->get_description().c_str();
+        fs << "imageWidth" << static_cast<int>(camera->get_width());
+        fs << "imageHeight" << static_cast<int>(camera->get_height());
         fs << "matrix" << camera_matrices[c];
         fs << "distortion" << camera_dist_coefs[c];
-        fs << "scale" << camera->getScale();
+        fs << "scale" << camera->get_scale();
 
         const auto extrinsic_matrix = camera_set->get_extrinsic_matrix(c);
         if(extrinsic_matrix)
@@ -198,15 +198,15 @@ void open_cv_writer::updating()
     //clear locations only if it was configured through GUI.
     if(use_dialog)
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
 // ----------------------------------------------------------------------------
 
-sight::io::service::IOPathType open_cv_writer::getIOPathType() const
+sight::io::service::path_type_t open_cv_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 // ----------------------------------------------------------------------------

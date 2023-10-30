@@ -41,7 +41,7 @@ void gz_array_reader::read()
 
     assert(file.empty() == false);
 
-    data::array::sptr array         = this->getConcreteObject();
+    data::array::sptr array         = this->get_concrete_object();
     std::size_t array_size_in_bytes = array->resize(array->size());
     const auto dump_lock            = array->dump_lock();
 

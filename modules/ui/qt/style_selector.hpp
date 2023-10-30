@@ -107,13 +107,13 @@ protected:
 private:
 
     /// Applies the style _stylename.
-    void changeStyle(const std::string& _style_name);
+    void change_style(const std::string& _style_name);
 
     ///Slot: check preference key THEME, and update theme accordingly.
-    void updateFromPrefs();
+    void update_from_prefs();
 
     /// Map to stores theme names and their path.
-    std::map<std::string, std::filesystem::path> m_styleMap;
+    std::map<std::string, std::filesystem::path> m_style_map;
 };
 
 } //namespace sight::module::ui::qt

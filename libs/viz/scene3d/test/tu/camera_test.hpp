@@ -32,9 +32,9 @@ namespace sight::viz::scene3d::ut
 class camera_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(camera_test);
-CPPUNIT_TEST(computeProjectionMatrix);
-CPPUNIT_TEST(convertPixelToWorldSpace);
-CPPUNIT_TEST(convertWorldSpaceToScreenSpace);
+CPPUNIT_TEST(compute_projection_matrix);
+CPPUNIT_TEST(convert_pixel_to_world_space);
+CPPUNIT_TEST(convert_world_space_to_screen_space);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,9 +42,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void computeProjectionMatrix();
-    static void convertPixelToWorldSpace();
-    static void convertWorldSpaceToScreenSpace();
+    static void compute_projection_matrix();
+    static void convert_pixel_to_world_space();
+    static void convert_world_space_to_screen_space();
 };
 
 } // namespace sight::viz::scene3d::ut

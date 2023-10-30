@@ -41,7 +41,7 @@ class generic_object_writer : public io::writer::object_writer
 public:
 
     /// the object type related
-    typedef DATATYPE data_t;
+    using data_t = DATATYPE;
 
     SIGHT_DECLARE_CLASS(generic_object_writer<DATATYPE>, io::writer::object_writer);
 
@@ -75,9 +75,9 @@ public:
      *
      * This method automatically casts object in correct data_t.
      */
-    virtual std::shared_ptr<const data_t> getConcreteObject() const
+    virtual std::shared_ptr<const data_t> get_concrete_object() const
     {
-        return std::dynamic_pointer_cast<const data_t>(getObject());
+        return std::dynamic_pointer_cast<const data_t>(get_object());
     }
 };
 

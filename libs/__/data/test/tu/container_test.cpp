@@ -38,7 +38,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::containerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::container_test);
 
 namespace sight::data::ut
 {
@@ -48,22 +48,22 @@ namespace sight::data::ut
 template<class C>
 inline static void test_container(const C& _source, const C& _modified_source)
 {
-    class Container : public data::container<C>
+    class container : public data::container<C>
     {
     public:
 
         using data::container<C>::container;
-        using ContainerWrapper<C>::operator=;
+        using container_wrapper<C>::operator=;
     };
 
     // Initialization test
     {
-        Container container(_source);
+        container container(_source);
 
         // Should be a perfect copy, is_equal will also test default forward iterators
         CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
 
-        Container modified_container(_modified_source);
+        class container modified_container(_modified_source);
 
         // Should be different
         CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
@@ -71,13 +71,13 @@ inline static void test_container(const C& _source, const C& _modified_source)
 
     // Assignement test
     {
-        Container container;
+        container container;
         container = _source;
 
         // Should be a perfect copy, is_equal will also test default forward iterators
         CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
 
-        Container modified_container;
+        class container modified_container;
         modified_container = _modified_source;
 
         // Should be different
@@ -88,14 +88,14 @@ inline static void test_container(const C& _source, const C& _modified_source)
 
     // std::copy test
     {
-        Container container;
+        container container;
 
         std::copy(_source.cbegin(), _source.cend(), inserter(container));
 
         // Should be a perfect copy
         CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
 
-        Container modified_container;
+        class container modified_container;
 
         std::copy(_modified_source.cbegin(), _modified_source.cend(), inserter(modified_container));
 
@@ -106,8 +106,8 @@ inline static void test_container(const C& _source, const C& _modified_source)
     // Clear test
     if constexpr(core::tools::is_container_dynamic<C>::value)
     {
-        Container container(_source);
-        Container empty;
+        container container(_source);
+        class container empty;
 
         CPPUNIT_ASSERT(!core::tools::is_equal(container, empty));
 
@@ -119,7 +119,7 @@ inline static void test_container(const C& _source, const C& _modified_source)
     // Special features of vector kind container
     if constexpr(core::tools::is_vector<C>::value)
     {
-        Container container(_source);
+        container container(_source);
 
         const auto& element = _source[0];
 
@@ -204,19 +204,19 @@ inline static void map_test_dispatcher(
 
 //------------------------------------------------------------------------------
 
-void containerTest::setUp()
+void container_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void containerTest::tearDown()
+void container_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void containerTest::array_test()
+void container_test::array_test()
 {
     test_container(
         std::array<int, 3>({1, 2, 3}),
@@ -251,7 +251,7 @@ void containerTest::array_test()
 
 //------------------------------------------------------------------------------
 
-void containerTest::generic_test()
+void container_test::generic_test()
 {
     test_dispatcher<int>(
         {1, 2, 3},
@@ -285,7 +285,7 @@ void containerTest::generic_test()
 
 //------------------------------------------------------------------------------
 
-void containerTest::map_test()
+void container_test::map_test()
 {
     map_test_dispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
 

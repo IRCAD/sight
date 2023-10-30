@@ -59,16 +59,16 @@ struct has_alpha : std::false_type {};
 template<typename T>
 struct has_alpha<T, decltype((void) T::a, 0)>: std::true_type {};
 
-class OpenJPEGWriter final
+class open_jpeg_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    OpenJPEGWriter(const OpenJPEGWriter&)            = delete;
-    OpenJPEGWriter& operator=(const OpenJPEGWriter&) = delete;
+    open_jpeg_writer(const open_jpeg_writer&)            = delete;
+    open_jpeg_writer& operator=(const open_jpeg_writer&) = delete;
 
     /// Constructor
-    inline OpenJPEGWriter() noexcept
+    inline open_jpeg_writer() noexcept
     {
         try
         {
@@ -92,7 +92,7 @@ public:
     }
 
     /// Destructor
-    inline ~OpenJPEGWriter() noexcept = default;
+    inline ~open_jpeg_writer() noexcept = default;
 
     /// Writing
     template<
@@ -108,8 +108,8 @@ public:
     inline std::size_t write(
         const data::image& _image,
         O& _output,
-        Writer::Mode,
-        Flag _flag = Flag::NONE
+        writer::mode,
+        flag _flag = flag::none
 )
     {
         // Create codec
@@ -117,7 +117,7 @@ public:
         /// @warning Everything must be re-created and re-destroyed in one shot.
         /// @warning Doing otherwise leads to strange memory corruption, although most image codecs allows you to do so.
 
-        const auto& image_type = _image.getType();
+        const auto& image_type = _image.type();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << image_type,
             image_type != core::type::INT8
@@ -128,22 +128,22 @@ public:
             && image_type != core::type::UINT32
         );
 
-        const auto& pixel_format = _image.getPixelFormat();
+        const auto& pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image format: " << pixel_format,
-            pixel_format != data::image::PixelFormat::GRAY_SCALE
-            && pixel_format != data::image::PixelFormat::RGB
-            && pixel_format != data::image::PixelFormat::RGBA
-            && pixel_format != data::image::PixelFormat::BGR
-            && pixel_format != data::image::PixelFormat::BGRA
+            pixel_format != data::image::pixel_format::gray_scale
+            && pixel_format != data::image::pixel_format::rgb
+            && pixel_format != data::image::pixel_format::rgba
+            && pixel_format != data::image::pixel_format::bgr
+            && pixel_format != data::image::pixel_format::bgra
         );
 
         // Create an RAII to be sure everything is cleaned at exit
-        struct Keeper final
+        struct keeper final
         {
-            inline Keeper() noexcept = default;
+            inline keeper() noexcept = default;
 
-            inline ~Keeper()
+            inline ~keeper()
             {
                 // Cleanup
                 if(m_image)
@@ -175,14 +175,14 @@ public:
 
         CHECK_OPJ(
             keeper.m_codec = opj_create_compress(
-                _flag == Flag::J2K_STREAM ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
+                _flag == flag::j2_k_stream ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
             )
         );
 
         // Install info, warning, error handlers
-        CHECK_OPJ(opj_set_info_handler(keeper.m_codec, infoCallback, nullptr));
-        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, warningCallback, nullptr));
-        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, errorCallback, nullptr));
+        CHECK_OPJ(opj_set_info_handler(keeper.m_codec, info_callback, nullptr));
+        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, warning_callback, nullptr));
+        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, error_callback, nullptr));
 
         // Create output stream (10 MB buffer by default)
         CHECK_OPJ(keeper.m_stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE * 10, OPJ_FALSE));
@@ -190,17 +190,17 @@ public:
         // Setup OPJ user stream
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            opj_stream_set_user_data(keeper.m_stream, &_output, freeCallback);
+            opj_stream_set_user_data(keeper.m_stream, &_output, free_callback);
         }
         else
         {
-            opj_stream_set_user_data(keeper.m_stream, &keeper.m_buffer, freeCallback);
+            opj_stream_set_user_data(keeper.m_stream, &keeper.m_buffer, free_callback);
         }
 
         // Setup stream callback
-        opj_stream_set_write_function(keeper.m_stream, writeCallback);
-        opj_stream_set_skip_function(keeper.m_stream, skipCallback);
-        opj_stream_set_seek_function(keeper.m_stream, seekCallback);
+        opj_stream_set_write_function(keeper.m_stream, write_callback);
+        opj_stream_set_skip_function(keeper.m_stream, skip_callback);
+        opj_stream_set_seek_function(keeper.m_stream, seek_callback);
 
         // Adjust parameters
         const auto& sizes       = _image.size();
@@ -208,7 +208,7 @@ public:
         const OPJ_UINT32 height = OPJ_UINT32(sizes[1]);
 
         // Format can .jp2 or .j2k
-        m_parameters.cod_format = _flag == Flag::J2K_STREAM ? 0 : 1;
+        m_parameters.cod_format = _flag == flag::j2_k_stream ? 0 : 1;
 
         // Wavelet decomposition levels. 6-5 Seems to be a good default, but should be multiple of block size
         m_parameters.numresolution = std::min(
@@ -216,7 +216,7 @@ public:
             std::min(int(width) / m_parameters.cblockw_init, int(height) / m_parameters.cblockh_init)
         );
 
-        const OPJ_UINT32 num_components = OPJ_UINT32(_image.numComponents());
+        const OPJ_UINT32 num_components = OPJ_UINT32(_image.num_components());
         m_parameters.tcp_mct = num_components == 1 ? 0 : 1;
 
         // Build the component param array
@@ -240,7 +240,7 @@ public:
             });
 
         // Guess the color space to use
-        const OPJ_COLOR_SPACE color_space = pixel_format == data::image::GRAY_SCALE
+        const OPJ_COLOR_SPACE color_space = pixel_format == data::image::gray_scale
                                             ? OPJ_CLRSPC_GRAY
                                             : OPJ_CLRSPC_SRGB;
 
@@ -265,11 +265,11 @@ public:
             case 8:
                 if(image_type.is_signed())
                 {
-                    toOpenJPEG<std::int8_t>(_image, *keeper.m_image);
+                    to_open_jpeg<std::int8_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    toOpenJPEG<std::uint8_t>(_image, *keeper.m_image);
+                    to_open_jpeg<std::uint8_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -277,11 +277,11 @@ public:
             case 16:
                 if(image_type.is_signed())
                 {
-                    toOpenJPEG<std::int16_t>(_image, *keeper.m_image);
+                    to_open_jpeg<std::int16_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    toOpenJPEG<std::uint16_t>(_image, *keeper.m_image);
+                    to_open_jpeg<std::uint16_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -289,11 +289,11 @@ public:
             case 32:
                 if(image_type.is_signed())
                 {
-                    toOpenJPEG<std::uint32_t>(_image, *keeper.m_image);
+                    to_open_jpeg<std::uint32_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    toOpenJPEG<std::uint32_t>(_image, *keeper.m_image);
+                    to_open_jpeg<std::uint32_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -355,7 +355,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void infoCallback(const char*, void*)
+    inline static void info_callback(const char*, void*)
     {
         // Too much noise for regular "info"
         // SIGHT_DEBUG(msg);
@@ -363,21 +363,21 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(const char* _msg, void*)
+    inline static void warning_callback(const char* _msg, void*)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(const char* _msg, void*)
+    inline static void error_callback(const char* _msg, void*)
     {
         SIGHT_THROW(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_SIZE_T writeCallback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
+    inline static OPJ_SIZE_T write_callback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data != nullptr)
         {
@@ -391,7 +391,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_OFF_T skipCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    inline static OPJ_OFF_T skip_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data != nullptr)
         {
@@ -405,7 +405,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_BOOL seekCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    inline static OPJ_BOOL seek_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data != nullptr)
         {
@@ -419,44 +419,44 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void freeCallback(void* /*p_user_data*/)
+    inline static void free_callback(void* /*p_user_data*/)
     {
     }
 
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void toOpenJPEG(const data::image& _image, opj_image_t& _opj_image)
+    inline static void to_open_jpeg(const data::image& _image, opj_image_t& _opj_image)
     {
-        switch(_image.getPixelFormat())
+        switch(_image.pixel_format())
         {
-            case data::image::GRAY_SCALE:
+            case data::image::gray_scale:
             {
-                struct Pixel
+                struct pixel
                 {
                     T a;
                 };
 
-                toOpenJPEGPixels<Pixel>(_image, _opj_image);
+                to_open_jpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
-            case data::image::RGB:
+            case data::image::rgb:
             {
-                struct Pixel
+                struct pixel
                 {
                     T r;
                     T g;
                     T b;
                 };
 
-                toOpenJPEGPixels<Pixel>(_image, _opj_image);
+                to_open_jpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
-            case data::image::RGBA:
+            case data::image::rgba:
             {
-                struct Pixel
+                struct pixel
                 {
                     T r;
                     T g;
@@ -464,26 +464,26 @@ private:
                     T a;
                 };
 
-                toOpenJPEGPixels<Pixel>(_image, _opj_image);
+                to_open_jpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
-            case data::image::BGR:
+            case data::image::bgr:
             {
-                struct Pixel
+                struct pixel
                 {
                     T b;
                     T g;
                     T r;
                 };
 
-                toOpenJPEGPixels<Pixel>(_image, _opj_image);
+                to_open_jpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
-            case data::image::BGRA:
+            case data::image::bgra:
             {
-                struct Pixel
+                struct pixel
                 {
                     T b;
                     T g;
@@ -491,7 +491,7 @@ private:
                     T a;
                 };
 
-                toOpenJPEGPixels<Pixel>(_image, _opj_image);
+                to_open_jpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
@@ -503,7 +503,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void toOpenJPEGPixels(const data::image& _image, opj_image_t& _opj_image)
+    inline static void to_open_jpeg_pixels(const data::image& _image, opj_image_t& _opj_image)
     {
         const auto& sizes = _image.size();
 

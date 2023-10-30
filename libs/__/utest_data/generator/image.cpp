@@ -43,12 +43,12 @@ using core::tools::random::safe_rand;
 template<typename T, typename T2 = T, typename I>
 inline static void randomize(I& _iterable, std::uint32_t _seed = 0)
 {
-    using Distribution = std::conditional_t<std::is_floating_point_v<T>,
-                                            std::uniform_real_distribution<T>,
-                                            std::uniform_int_distribution<T2> >;
+    using distribution_t = std::conditional_t<std::is_floating_point_v<T>,
+                                              std::uniform_real_distribution<T>,
+                                              std::uniform_int_distribution<T2> >;
 
     std::mt19937 random(_seed);
-    Distribution distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+    distribution_t distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 
     for(auto it = _iterable.template begin<T>(), end = _iterable.template end<T>() ; it != end ; ++it)
     {
@@ -62,7 +62,7 @@ template<typename I>
 inline static void randomize_iterable(I& _iterable, std::uint32_t _seed = 0)
 {
     auto lock       = _iterable.dump_lock();
-    const auto type = _iterable.getType();
+    const auto type = _iterable.type();
 
     if(type == core::type::NONE || type == core::type::UINT8)
     {
@@ -112,13 +112,13 @@ inline static void randomize_iterable(I& _iterable, std::uint32_t _seed = 0)
 
 //------------------------------------------------------------------------------
 
-void image::generateImage(
+void image::generate_image(
     data::image::sptr _image,
-    const data::image::Size& _sizes,
-    const data::image::Spacing& _spacing,
-    const data::image::Origin& _origin,
+    const data::image::size_t& _sizes,
+    const data::image::spacing_t& _spacing,
+    const data::image::origin_t& _origin,
     const core::type& _type,
-    const data::image::PixelFormat& _format,
+    const enum data::image::pixel_format& _format,
     const std::optional<std::uint32_t>& _seed
 )
 {
@@ -127,8 +127,8 @@ void image::generateImage(
     const auto lock = _image->dump_lock();
 
     _image->resize(_sizes, _type, _format);
-    _image->setSpacing(_spacing);
-    _image->setOrigin(_origin);
+    _image->set_spacing(_spacing);
+    _image->set_origin(_origin);
 
     if(_seed)
     {
@@ -136,7 +136,7 @@ void image::generateImage(
     }
     else
     {
-        std::memset(_image->buffer(), 0, _image->getSizeInBytes());
+        std::memset(_image->buffer(), 0, _image->size_in_bytes());
     }
 
     sight::data::helper::medical_image::check_image_slice_index(_image);
@@ -144,48 +144,48 @@ void image::generateImage(
 
 //------------------------------------------------------------------------------
 
-void image::generateRandomImage(data::image::sptr _image, core::type _type, std::uint32_t _seed)
+void image::generate_random_image(data::image::sptr _image, core::type _type, std::uint32_t _seed)
 {
-    static constexpr int SIZE        = 50;
-    static constexpr int DOUBLE_SIZE = SIZE * 2;
+    static constexpr int s_SIZE        = 50;
+    static constexpr int s_DOUBLE_SIZE = s_SIZE * 2;
 
-    data::image::Size size;
-    size[0] = static_cast<data::image::Size::value_type>(safe_rand() % SIZE + 2);
-    size[1] = static_cast<data::image::Size::value_type>(safe_rand() % SIZE + 2);
-    size[2] = static_cast<data::image::Size::value_type>(safe_rand() % SIZE + 2);
+    data::image::size_t size;
+    size[0] = static_cast<data::image::size_t::value_type>(safe_rand() % s_SIZE + 2);
+    size[1] = static_cast<data::image::size_t::value_type>(safe_rand() % s_SIZE + 2);
+    size[2] = static_cast<data::image::size_t::value_type>(safe_rand() % s_SIZE + 2);
 
-    data::image::Spacing spacing;
-    spacing[0] = (safe_rand() % DOUBLE_SIZE + 1) / double(SIZE);
-    spacing[1] = (safe_rand() % DOUBLE_SIZE + 1) / double(SIZE);
-    spacing[2] = (safe_rand() % DOUBLE_SIZE + 1) / double(SIZE);
-    _image->setSpacing(spacing);
+    data::image::spacing_t spacing;
+    spacing[0] = (safe_rand() % s_DOUBLE_SIZE + 1) / double(s_SIZE);
+    spacing[1] = (safe_rand() % s_DOUBLE_SIZE + 1) / double(s_SIZE);
+    spacing[2] = (safe_rand() % s_DOUBLE_SIZE + 1) / double(s_SIZE);
+    _image->set_spacing(spacing);
 
-    data::image::Origin origin;
-    origin[0] = (safe_rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
-    origin[1] = (safe_rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
-    origin[2] = (safe_rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
-    _image->setOrigin(origin);
+    data::image::origin_t origin;
+    origin[0] = (safe_rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
+    origin[1] = (safe_rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
+    origin[2] = (safe_rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
+    _image->set_origin(origin);
 
-    _image->resize(size, _type, data::image::GRAY_SCALE);
+    _image->resize(size, _type, data::image::gray_scale);
 
-    randomizeImage(_image, _seed);
+    randomize_image(_image, _seed);
 
-    _image->setWindowWidth({(safe_rand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1});
-    _image->setWindowCenter({(safe_rand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.)});
+    _image->set_window_width({(safe_rand() % s_DOUBLE_SIZE) / double(s_SIZE / 10.) + 1});
+    _image->set_window_center({(safe_rand() % s_DOUBLE_SIZE - s_SIZE) / double(s_SIZE / 10.)});
 
     sight::data::helper::medical_image::check_image_slice_index(_image);
 }
 
 //------------------------------------------------------------------------------
 
-void image::randomizeImage(data::image::sptr _image, std::uint32_t _seed)
+void image::randomize_image(data::image::sptr _image, std::uint32_t _seed)
 {
     randomize_iterable(*_image, _seed);
 }
 
 //------------------------------------------------------------------------------
 
-void image::randomizeArray(data::array::sptr _array, std::uint32_t _seed)
+void image::randomize_array(data::array::sptr _array, std::uint32_t _seed)
 {
     randomize_iterable(*_array, _seed);
 }

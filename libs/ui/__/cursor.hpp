@@ -47,10 +47,10 @@ public:
 
     // TODO : update API to reflect the cursor stack
     /// Set the cursor
-    UI_API void setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default = true) override;
+    UI_API void set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default = true) override;
 
     /// Set the default cursor
-    UI_API void setDefaultCursor() override;
+    UI_API void set_default_cursor() override;
 
 protected:
 
@@ -60,98 +60,98 @@ protected:
 
 /// Convenience "busy" cursor  that will reset to default once deleted
 /// It can be useful in case of exception
-class UI_CLASS_API BusyCursor : public cursor
+class UI_CLASS_API busy_cursor : public cursor
 {
 public:
 
-    SIGHT_DECLARE_CLASS(BusyCursor, cursor);
+    SIGHT_DECLARE_CLASS(busy_cursor, cursor);
 
     /// Constructor. Sets cursor to "busy" state
-    UI_API BusyCursor()
+    UI_API busy_cursor()
     {
-        setCursor(state_t::BUSY);
+        set_cursor(state_t::busy);
     }
 
     /// Destructor. Reset cursor to default
-    UI_API ~BusyCursor() override
+    UI_API ~busy_cursor() override
     {
-        setDefaultCursor();
+        set_default_cursor();
     }
 };
 
-class UI_CLASS_API WaitCursor : public cursor
+class UI_CLASS_API wait_cursor : public cursor
 {
 public:
 
-    SIGHT_DECLARE_CLASS(WaitCursor, cursor);
+    SIGHT_DECLARE_CLASS(wait_cursor, cursor);
 
     /// Constructor. Sets cursor to "wait" state
-    UI_API WaitCursor()
+    UI_API wait_cursor()
     {
-        setCursor(state_t::WAIT);
+        set_cursor(state_t::wait);
     }
 
     /// Destructor. Reset cursor to default
-    UI_API ~WaitCursor() override
+    UI_API ~wait_cursor() override
     {
-        setDefaultCursor();
+        set_default_cursor();
     }
 };
 
-class UI_CLASS_API CrossCursor : public cursor
+class UI_CLASS_API cross_cursor : public cursor
 {
 public:
 
-    SIGHT_DECLARE_CLASS(CrossCursor, cursor);
+    SIGHT_DECLARE_CLASS(cross_cursor, cursor);
 
     /// Constructor. Sets cursor to "cross" state
-    UI_API CrossCursor()
+    UI_API cross_cursor()
     {
-        setCursor(state_t::CROSS);
+        set_cursor(state_t::cross);
     }
 
     /// Destructor. Reset cursor to default
-    UI_API ~CrossCursor() override
+    UI_API ~cross_cursor() override
     {
-        setDefaultCursor();
+        set_default_cursor();
     }
 };
 
-class UI_CLASS_API OpenHandCursor : public cursor
+class UI_CLASS_API open_hand_cursor : public cursor
 {
 public:
 
-    SIGHT_DECLARE_CLASS(OpenHandCursor, cursor);
+    SIGHT_DECLARE_CLASS(open_hand_cursor, cursor);
 
     /// Constructor. Sets cursor to "cross" state
-    UI_API OpenHandCursor()
+    UI_API open_hand_cursor()
     {
-        setCursor(state_t::OPEN_HAND);
+        set_cursor(state_t::open_hand);
     }
 
     /// Destructor. Reset cursor to default
-    UI_API ~OpenHandCursor() override
+    UI_API ~open_hand_cursor() override
     {
-        setDefaultCursor();
+        set_default_cursor();
     }
 };
 
-class UI_CLASS_API ClosedHandCursor : public cursor
+class UI_CLASS_API closed_hand_cursor : public cursor
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ClosedHandCursor, cursor);
+    SIGHT_DECLARE_CLASS(closed_hand_cursor, cursor);
 
     /// Constructor. Sets cursor to "cross" state
-    UI_API ClosedHandCursor()
+    UI_API closed_hand_cursor()
     {
-        setCursor(state_t::CLOSED_HAND);
+        set_cursor(state_t::closed_hand);
     }
 
     /// Destructor. Reset cursor to default
-    UI_API ~ClosedHandCursor() override
+    UI_API ~closed_hand_cursor() override
     {
-        setDefaultCursor();
+        set_default_cursor();
     }
 };
 

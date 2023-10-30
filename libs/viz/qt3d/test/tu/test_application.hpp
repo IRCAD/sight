@@ -26,7 +26,7 @@
 #include <array>
 #include <string>
 
-struct ArgV
+struct arg_v
 {
 #ifdef WIN32
     std::array<std::string, 1> m_argvs = {"test_application"};
@@ -38,13 +38,13 @@ struct ArgV
     int m_argc {int(m_argvs.size())};
 };
 
-class test_application : private ArgV,
+class test_application : private arg_v,
                          public QGuiApplication
 {
 public:
 
     test_application() :
-        ArgV(),
+        arg_v(),
         QGuiApplication(m_argc, m_argv.data())
     {
     }

@@ -29,14 +29,14 @@
 
 #include <numeric>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::Matrix4WriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::matrix4_writer_test);
 
 namespace sight::io::ut
 {
 
 //------------------------------------------------------------------------------
 
-void Matrix4WriterTest::basicTest()
+void matrix4_writer_test::basic_test()
 {
     auto matrix_writer             = std::make_shared<writer::matrix4_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + matrix_writer->extension());

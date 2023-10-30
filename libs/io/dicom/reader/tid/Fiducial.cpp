@@ -38,71 +38,71 @@ namespace sight::io::dicom::reader::tid
 
 //------------------------------------------------------------------------------
 
-Fiducial::Fiducial(
+fiducial::fiducial(
     const data::dicom_series::csptr& _dicom_series,
     const SPTR(gdcm::Reader)& _reader,
-    const io::dicom::container::DicomInstance::sptr& _instance,
+    const io::dicom::container::dicom_instance::sptr& _instance,
     const data::image::sptr& _image,
     const core::log::logger::sptr& _logger
 ) :
-    io::dicom::reader::tid::TemplateID<data::image>(_dicom_series, _reader, _instance, _image, _logger)
+    io::dicom::reader::tid::template_id<data::image>(_dicom_series, _reader, _instance, _image, _logger)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Fiducial::~Fiducial()
+fiducial::~fiducial()
 = default;
 
 //------------------------------------------------------------------------------
 
-void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node)
+void fiducial::read_node(const SPTR(io::dicom::container::sr::dicom_sr_node)& _node)
 {
-    if(_node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature")
-       && !_node->getSubNodeContainer().empty())
+    if(_node->get_coded_attribute() == io::dicom::container::dicom_coded_attribute("122340", "DCM", "Fiducial feature")
+       && !_node->get_sub_node_container().empty())
     {
         std::string label;
         double x            = 0;
         double y            = 0;
         double z            = 0;
         bool found_landmark = false;
-        for(const SPTR(io::dicom::container::sr::DicomSRNode) & sub_node : _node->getSubNodeContainer())
+        for(const SPTR(io::dicom::container::sr::dicom_sr_node) & sub_node : _node->get_sub_node_container())
         {
             // Read label
-            if(sub_node->getCodedAttribute()
-               == io::dicom::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"))
+            if(sub_node->get_coded_attribute()
+               == io::dicom::container::dicom_coded_attribute("122369", "DCM", "Fiducial intent"))
             {
-                SPTR(io::dicom::container::sr::DicomSRTextNode) intent_node =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRTextNode>(sub_node);
+                SPTR(io::dicom::container::sr::dicom_sr_text_node) intent_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::dicom_sr_text_node>(sub_node);
                 if(intent_node)
                 {
-                    label = intent_node->getTextValue();
+                    label = intent_node->get_text_value();
                 }
             }
             // 2D Coordinate
-            else if(sub_node->getType() == "SCOORD")
+            else if(sub_node->type() == "SCOORD")
             {
-                SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoord_node =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoordNode>(sub_node);
+                SPTR(io::dicom::container::sr::dicom_srs_coord_node) scoord_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::dicom_srs_coord_node>(sub_node);
                 if(scoord_node && scoord_node->get_graphic_type() == "POINT")
                 {
                     // Retrieve coordinates
-                    io::dicom::container::sr::DicomSRSCoordNode::graphic_data_container_t coordinates =
-                        scoord_node->getGraphicDataContainer();
+                    io::dicom::container::sr::dicom_srs_coord_node::graphic_data_container_t coordinates =
+                        scoord_node->get_graphic_data_container();
 
                     x = coordinates[0];
                     y = coordinates[1];
 
-                    if(!scoord_node->getSubNodeContainer().empty())
+                    if(!scoord_node->get_sub_node_container().empty())
                     {
-                        SPTR(io::dicom::container::sr::DicomSRImageNode) image_node =
-                            std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRImageNode>(
-                                *scoord_node->getSubNodeContainer().begin()
+                        SPTR(io::dicom::container::sr::dicom_sr_image_node) image_node =
+                            std::dynamic_pointer_cast<io::dicom::container::sr::dicom_sr_image_node>(
+                                *scoord_node->get_sub_node_container().begin()
                             );
                         if(image_node)
                         {
-                            const int frame_number = image_node->getFrameNumber();
-                            z = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
+                            const int frame_number = image_node->get_frame_number();
+                            z = io::dicom::helper::dicom_data_tools::convert_frame_number_to_z_coordinate(
                                 m_object,
                                 std::size_t(frame_number)
                             );
@@ -112,15 +112,15 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node
                 }
             }
             // 3D Coordinate
-            else if(sub_node->getType() == "SCOORD3D")
+            else if(sub_node->type() == "SCOORD3D")
             {
-                SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord3_d_node =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoord3DNode>(sub_node);
-                if(scoord3_d_node && scoord3_d_node->get_graphic_type() == "POINT")
+                SPTR(io::dicom::container::sr::dicom_srs_coord3_d_node) scoord_3d_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::dicom_srs_coord3_d_node>(sub_node);
+                if(scoord_3d_node && scoord_3d_node->get_graphic_type() == "POINT")
                 {
                     // Retrieve coordinates
-                    io::dicom::container::sr::DicomSRSCoordNode::graphic_data_container_t coordinates =
-                        scoord3_d_node->getGraphicDataContainer();
+                    io::dicom::container::sr::dicom_srs_coord_node::graphic_data_container_t coordinates =
+                        scoord_3d_node->get_graphic_data_container();
                     x              = coordinates[0];
                     y              = coordinates[1];
                     z              = coordinates[2];
@@ -131,17 +131,17 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node
 
         if(found_landmark)
         {
-            this->addLandmark(x, y, z, label);
+            this->add_landmark(x, y, z, label);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Fiducial::addLandmark(double _x, double _y, double _z, const std::string& _label)
+void fiducial::add_landmark(double _x, double _y, double _z, const std::string& _label)
 {
     data::point::sptr point = std::make_shared<data::point>(_x, _y, _z);
-    point->setLabel(_label);
+    point->set_label(_label);
 
     data::point_list::sptr point_list = data::helper::medical_image::get_landmarks(*m_object);
 
@@ -151,7 +151,7 @@ void Fiducial::addLandmark(double _x, double _y, double _z, const std::string& _
         data::helper::medical_image::set_landmarks(*m_object, point_list);
     }
 
-    point_list->getPoints().push_back(point);
+    point_list->get_points().push_back(point);
     data::helper::medical_image::set_landmarks_visibility(*m_object, true);
 }
 

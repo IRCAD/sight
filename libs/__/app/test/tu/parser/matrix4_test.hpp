@@ -29,12 +29,12 @@ namespace sight::app::parser::ut
 class matrix4_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(matrix4_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void basicTest();
+    static void basic_test();
 };
 
 } // namespace sight::app::parser::ut

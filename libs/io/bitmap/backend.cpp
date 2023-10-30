@@ -33,26 +33,26 @@ namespace sight::io::bitmap
 
 //------------------------------------------------------------------------------
 
-data::sequenced_set<std::string> extensions(Backend _backend)
+data::sequenced_set<std::string> extensions(backend _backend)
 {
     switch(_backend)
     {
-        case Backend::NVJPEG:
-        case Backend::LIBJPEG:
+        case backend::nvjpeg:
+        case backend::libjpeg:
             return {detail::JPG_EXT, detail::JPEG_EXT};
 
-        case Backend::NVJPEG2K_J2K:
-        case Backend::OPENJPEG_J2K:
+        case backend::nvjpeg2k_j2k:
+        case backend::openjpeg_j2_k:
             return {detail::J2K_EXT};
 
-        case Backend::NVJPEG2K:
-        case Backend::OPENJPEG:
+        case backend::nvjpeg2k:
+        case backend::openjpeg:
             return {detail::JP2_EXT};
 
-        case Backend::LIBTIFF:
+        case backend::libtiff:
             return {detail::TIFF_EXT, detail::TIF_EXT};
 
-        case Backend::LIBPNG:
+        case backend::libpng:
             return {detail::PNG_EXT};
 
         default:
@@ -119,26 +119,26 @@ bool nv_jpeg_2k()
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, std::string> wildcard_filter(Backend _backend)
+std::pair<std::string, std::string> wildcard_filter(backend _backend)
 {
     switch(_backend)
     {
-        case Backend::NVJPEG:
-        case Backend::LIBJPEG:
+        case backend::nvjpeg:
+        case backend::libjpeg:
             return std::make_pair(detail::JPEG_LABEL, std::string("*") + detail::JPG_EXT + " *" + detail::JPEG_EXT);
 
-        case Backend::NVJPEG2K:
-        case Backend::OPENJPEG:
+        case backend::nvjpeg2k:
+        case backend::openjpeg:
             return std::make_pair(detail::J2K_LABEL, std::string("*") + detail::JP2_EXT);
 
-        case Backend::NVJPEG2K_J2K:
-        case Backend::OPENJPEG_J2K:
+        case backend::nvjpeg2k_j2k:
+        case backend::openjpeg_j2_k:
             return std::make_pair(detail::J2K_LABEL, std::string("*") + detail::J2K_EXT);
 
-        case Backend::LIBTIFF:
+        case backend::libtiff:
             return std::make_pair(detail::TIFF_LABEL, std::string("*") + detail::TIF_EXT + +" *" + detail::TIFF_EXT);
 
-        case Backend::LIBPNG:
+        case backend::libpng:
             return std::make_pair(detail::PNG_LABEL, std::string("*") + detail::PNG_EXT);
 
         default:
@@ -149,13 +149,13 @@ std::pair<std::string, std::string> wildcard_filter(Backend _backend)
 #ifdef SIGHT_ENABLE_NVJPEG
 /// Ensure the CUDA context and all associated memory are frees when the application exits.
 /// This allows to proper memory leak detection using tools like valgrind and cuda-memcheck.
-static const struct CudaResetter
+static const struct cuda_resetter
 {
-    ~CudaResetter()
+    ~cuda_resetter()
     {
         cudaDeviceReset();
     }
-} s_CUDA_RESETTER;
+} CUDA_RESETTER;
 #endif
 
 } // namespace sight::io::bitmap

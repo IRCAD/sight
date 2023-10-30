@@ -93,15 +93,15 @@ protected:
      */
     MODULE_GEOMETRY_API connections_t auto_connections() const override;
 
-    static constexpr std::string_view s_SOURCE_INPUT      = "source";
-    static constexpr std::string_view s_TRANSLATION_INOUT = "translation";
-    static constexpr std::string_view s_ROTATION_INOUT    = "rotation";
-    static constexpr std::string_view s_SCALE_INOUT       = "scale";
+    static constexpr std::string_view SOURCE_INPUT      = "source";
+    static constexpr std::string_view TRANSLATION_INOUT = "translation";
+    static constexpr std::string_view ROTATION_INOUT    = "rotation";
+    static constexpr std::string_view SCALE_INOUT       = "scale";
 
-    data::ptr<data::matrix4, sight::data::Access::in> m_source {this, s_SOURCE_INPUT, true};
-    data::ptr<data::matrix4, sight::data::Access::inout> m_translation {this, s_TRANSLATION_INOUT};
-    data::ptr<data::matrix4, sight::data::Access::inout> m_rotation {this, s_ROTATION_INOUT};
-    data::ptr<data::matrix4, sight::data::Access::inout> m_scale {this, s_SCALE_INOUT};
+    data::ptr<data::matrix4, sight::data::access::in> m_source {this, SOURCE_INPUT, true};
+    data::ptr<data::matrix4, sight::data::access::inout> m_translation {this, TRANSLATION_INOUT};
+    data::ptr<data::matrix4, sight::data::access::inout> m_rotation {this, ROTATION_INOUT};
+    data::ptr<data::matrix4, sight::data::access::inout> m_scale {this, SCALE_INOUT};
 };
 
 } //namespace sight::module::geometry

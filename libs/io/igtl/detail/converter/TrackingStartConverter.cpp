@@ -34,25 +34,25 @@
 namespace sight::io::igtl::detail::converter
 {
 
-const std::string TrackingStartConverter::s_IGTL_TYPE          = "STT_TDATA";
-const std::string TrackingStartConverter::s_FWDATA_OBJECT_TYPE = data::composite::classname();
-const std::string s_statusKey                                  = "Status";
-const std::string s_resolutionKey                              = "Resolution";
-const std::string s_coordinateNameKey                          = "CoordinateName";
+const std::string tracking_start_converter::IGTL_TYPE          = "STT_TDATA";
+const std::string tracking_start_converter::FWDATA_OBJECT_TYPE = data::composite::classname();
+const std::string STATUS_KEY                                   = "Status";
+const std::string RESOLUTION_KEY                               = "Resolution";
+const std::string COORDINATE_NAME_KEY                          = "CoordinateName";
 
-CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::TrackingStartConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::tracking_start_converter);
 
-TrackingStartConverter::TrackingStartConverter()
+tracking_start_converter::tracking_start_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-TrackingStartConverter::~TrackingStartConverter()
+tracking_start_converter::~tracking_start_converter()
 = default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::object::csptr /*src*/) const
+::igtl::MessageBase::Pointer tracking_start_converter::from_fw_data_object(data::object::csptr /*src*/) const
 {
     ::igtl::StartTrackingDataMessage::Pointer tracking_msg = ::igtl::StartTrackingDataMessage::New();
 
@@ -64,7 +64,7 @@ TrackingStartConverter::~TrackingStartConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
+data::object::sptr tracking_start_converter::from_igtl_message(const ::igtl::MessageBase::Pointer _src) const
 {
     auto* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(_src.GetPointer());
 
@@ -73,21 +73,21 @@ data::object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::Message
     data::composite::sptr composite = std::make_shared<data::composite>();
     {
         data::boolean::sptr status = std::make_shared<data::boolean>();
-        (*composite)[s_statusKey] = status;
+        (*composite)[STATUS_KEY] = status;
 
-        status->setValue(true);
+        status->set_value(true);
     }
     {
         data::integer::sptr resolution = std::make_shared<data::integer>();
-        (*composite)[s_resolutionKey] = resolution;
+        (*composite)[RESOLUTION_KEY] = resolution;
 
-        resolution->setValue(tracking_msg->GetResolution());
+        resolution->set_value(tracking_msg->GetResolution());
     }
     {
         data::string::sptr coordinate_name = std::make_shared<data::string>();
-        (*composite)[s_coordinateNameKey] = coordinate_name;
+        (*composite)[COORDINATE_NAME_KEY] = coordinate_name;
 
-        coordinate_name->setValue(tracking_msg->GetCoordinateName());
+        coordinate_name->set_value(tracking_msg->GetCoordinateName());
     }
 
     return composite;
@@ -95,23 +95,23 @@ data::object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::Message
 
 //-----------------------------------------------------------------------------
 
-base::sptr TrackingStartConverter::New()
+base::sptr tracking_start_converter::New()
 {
-    return std::make_shared<TrackingStartConverter>();
+    return std::make_shared<tracking_start_converter>();
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& TrackingStartConverter::get_igtl_type() const
+std::string const& tracking_start_converter::get_igtl_type() const
 {
-    return TrackingStartConverter::s_IGTL_TYPE;
+    return tracking_start_converter::IGTL_TYPE;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string const& TrackingStartConverter::getFwDataObjectType() const
+std::string const& tracking_start_converter::get_fw_data_object_type() const
 {
-    return TrackingStartConverter::s_FWDATA_OBJECT_TYPE;
+    return tracking_start_converter::FWDATA_OBJECT_TYPE;
 }
 
 } // namespace sight::io::igtl::detail::converter

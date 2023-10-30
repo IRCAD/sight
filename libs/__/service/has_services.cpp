@@ -43,16 +43,16 @@ has_services::~has_services() noexcept
     SIGHT_ASSERT(
         "Some sub-services were not unregistered, something is probably wrong. "
         "Please use unregisterService() or unregisterServices() before destroying the sub-services owner.",
-        m_subServices.empty()
+        m_sub_services.empty()
     );
 }
 
 //------------------------------------------------------------------------------
 
-service::base::csptr has_services::getRegisteredService(const core::tools::id::type& _id) const
+service::base::csptr has_services::get_registered_service(const core::tools::id::type& _id) const
 {
     service::base::sptr srv;
-    for(const auto& w_service : m_subServices)
+    for(const auto& w_service : m_sub_services)
     {
         const service::base::sptr& service = w_service.lock();
         if(service && (service->get_id() == _id))
@@ -67,16 +67,16 @@ service::base::csptr has_services::getRegisteredService(const core::tools::id::t
 
 //------------------------------------------------------------------------------
 
-void has_services::unregisterService(const core::tools::id::type& _id)
+void has_services::unregister_service(const core::tools::id::type& _id)
 {
-    for(auto it_srv = m_subServices.begin() ; it_srv != m_subServices.end() ; )
+    for(auto it_srv = m_sub_services.begin() ; it_srv != m_sub_services.end() ; )
     {
         const service::base::sptr& service = it_srv->lock();
         if(service && (service->get_id() == _id))
         {
             service->stop().wait();
             service::unregister_service(service);
-            it_srv = m_subServices.erase(it_srv);
+            it_srv = m_sub_services.erase(it_srv);
         }
         else
         {
@@ -87,18 +87,18 @@ void has_services::unregisterService(const core::tools::id::type& _id)
 
 //------------------------------------------------------------------------------
 
-void has_services::unregisterService(const base::sptr& _service)
+void has_services::unregister_service(const base::sptr& _service)
 {
     auto iter = std::find_if(
-        m_subServices.begin(),
-        m_subServices.end(),
+        m_sub_services.begin(),
+        m_sub_services.end(),
         [ = ](const service::base::wptr& _adaptor)
         {
             return _adaptor.lock() == _service;
         });
 
-    SIGHT_ASSERT("service '" + _service->get_id() + "' is not registered", iter != m_subServices.end());
-    m_subServices.erase(iter);
+    SIGHT_ASSERT("service '" + _service->get_id() + "' is not registered", iter != m_sub_services.end());
+    m_sub_services.erase(iter);
 
     _service->stop().wait();
     service::unregister_service(_service);
@@ -106,27 +106,27 @@ void has_services::unregisterService(const base::sptr& _service)
 
 //------------------------------------------------------------------------------
 
-service::base::sptr has_services::registerService(const std::string& _impl_type, const std::string& _id)
+service::base::sptr has_services::register_service(const std::string& _impl_type, const std::string& _id)
 {
     auto srv = service::add(_impl_type, _id);
-    m_subServices.push_back(srv);
+    m_sub_services.push_back(srv);
 
     return srv;
 }
 
 //------------------------------------------------------------------------------
 
-void has_services::unregisterServices(const std::string& _classname)
+void has_services::unregister_services(const std::string& _classname)
 {
     const std::string classname = core::runtime::filter_id(_classname);
-    for(auto it_srv = m_subServices.begin() ; it_srv != m_subServices.end() ; )
+    for(auto it_srv = m_sub_services.begin() ; it_srv != m_sub_services.end() ; )
     {
         const service::base::sptr& srv = it_srv->lock();
         if(srv && (classname.empty() || srv->get_classname() == classname))
         {
             srv->stop().wait();
             service::unregister_service(srv);
-            it_srv = m_subServices.erase(it_srv);
+            it_srv = m_sub_services.erase(it_srv);
         }
         else
         {

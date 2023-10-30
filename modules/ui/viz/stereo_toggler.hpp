@@ -84,13 +84,13 @@ private:
     using stereo_active_sig_t = core::com::signal<void (bool)>;
 
     /// layer in which we enable/disable stereo.
-    std::string m_layerId;
+    std::string m_layer_id;
 
     /// Mode that is toggled.
-    sight::viz::scene3d::compositor::core::stereo_mode_t m_stereoMode {stereo_mode_t::NONE};
+    sight::viz::scene3d::compositor::core::stereo_mode_t m_stereo_mode {stereo_mode_t::none};
 
     /// Sent at each update, notifies if stereo is enabled.
-    stereo_active_sig_t::sptr m_stereoActiveSig;
+    stereo_active_sig_t::sptr m_stereo_active_sig;
 };
 
 } // namespace sight::module::ui::viz

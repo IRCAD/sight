@@ -29,29 +29,29 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::transformableTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::transformable_test);
 
 namespace sight::viz::scene3d::helper::ut
 {
 
 // Create a object of type transformable to test it.
-class Testtransformable : public transformable
+class testtransformable : public transformable
 {
 public:
 
-    Testtransformable()  = default;
-    ~Testtransformable() = default;
+    testtransformable()  = default;
+    ~testtransformable() = default;
 };
 
 //------------------------------------------------------------------------------
 
-void transformableTest::setUp()
+void transformable_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void transformableTest::tearDown()
+void transformable_test::tearDown()
 {
 }
 
@@ -61,29 +61,29 @@ void transformableTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void transformableTest::transformNodeTest()
+void transformable_test::transform_node_test()
 {
-    auto* ogre_root                   = utils::getOgreRoot();
+    auto* ogre_root                   = utils::get_ogre_root();
     Ogre::SceneManager* scene_manager = ogre_root->createSceneManager("DefaultSceneManager", "test");
 
     Ogre::SceneNode* root_node = scene_manager->getRootSceneNode();
     ASSERT_NOT_NULL(root_node);
 
-    auto* my_fake_transformable = new Testtransformable();
+    auto* my_fake_transformable = new testtransformable();
 
-    my_fake_transformable->setTransformId("TransformTestId");
+    my_fake_transformable->set_transform_id("TransformTestId");
 
-    const auto id = my_fake_transformable->getTransformId();
+    const auto id = my_fake_transformable->get_transform_id();
 
     CPPUNIT_ASSERT_EQUAL(std::string("TransformTestId"), id);
 
-    auto* const null_transform_node = my_fake_transformable->getTransformNode();
+    auto* const null_transform_node = my_fake_transformable->get_transform_node();
     CPPUNIT_ASSERT(nullptr == null_transform_node);
 
-    auto* const transform_node = my_fake_transformable->getOrCreateTransformNode(root_node);
+    auto* const transform_node = my_fake_transformable->get_or_create_transform_node(root_node);
     ASSERT_NOT_NULL(transform_node);
 
-    auto* const transform_node2 = my_fake_transformable->getTransformNode();
+    auto* const transform_node2 = my_fake_transformable->get_transform_node();
 
     ASSERT_NOT_NULL(transform_node2);
 

@@ -82,25 +82,25 @@ public:
     MODULE_IO_MATRIX_API service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_MATRIX_API void openLocationDialog() override;
+    MODULE_IO_MATRIX_API void open_location_dialog() override;
 
     /// Return file type (io::service::FOLDER)
-    MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_MATRIX_API sight::io::service::path_type_t get_path_type() const override;
 
     /// SLOT: Save current matrices.
-    MODULE_IO_MATRIX_API void saveMatrix(core::hires_clock::type _timestamp);
+    MODULE_IO_MATRIX_API void save_matrix(core::hires_clock::type _timestamp);
 
     /// SLOT: Write matrices in csv file
     MODULE_IO_MATRIX_API void write(core::hires_clock::type _timestamp);
 
     /// SLOT: Start recording
-    MODULE_IO_MATRIX_API void startRecord();
+    MODULE_IO_MATRIX_API void start_record();
 
     /// SLOT: Stop recording
-    MODULE_IO_MATRIX_API void stopRecord();
+    MODULE_IO_MATRIX_API void stop_record();
 
     /// SLOT: Change base folder
-    MODULE_IO_MATRIX_API void setBaseFolder(std::string _path) override;
+    MODULE_IO_MATRIX_API void set_base_folder(std::string _path) override;
 
 protected:
 
@@ -119,7 +119,7 @@ protected:
 private:
 
     /// True if the service is recording.
-    bool m_isRecording {false};
+    bool m_is_recording {false};
 
     /// flag if the service is in "interactive" mode. IE if a dialog box is displayed to select the file.
     bool m_interactive {true};

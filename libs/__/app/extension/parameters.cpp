@@ -33,13 +33,13 @@
 namespace sight::app::extension
 {
 
-parameters::sptr parameters::s_appConfigParameters = std::make_shared<parameters>();
+parameters::sptr parameters::s_app_config_parameters = std::make_shared<parameters>();
 
 //-----------------------------------------------------------------------------
 
-parameters::sptr parameters::getDefault()
+parameters::sptr parameters::get_default()
 {
-    return s_appConfigParameters;
+    return s_app_config_parameters;
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ void parameters::parse_plugin_infos()
             }
         }
 
-        core::mt::write_lock lock(m_registryMutex);
+        core::mt::write_lock lock(m_registry_mutex);
 #ifdef _DEBUG
         auto iter = m_reg.find(extension_id);
 #endif
@@ -88,15 +88,15 @@ parameters::parameters()
 
 void parameters::clear_registry()
 {
-    core::mt::write_lock lock(m_registryMutex);
+    core::mt::write_lock lock(m_registry_mutex);
     m_reg.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-const field_adaptor_t& parameters::getParameters(const std::string& _extension_id) const
+const field_adaptor_t& parameters::get_parameters(const std::string& _extension_id) const
 {
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     auto iter = m_reg.find(core::runtime::filter_id(_extension_id));
     SIGHT_ASSERT(
         "The id " << _extension_id << " is not found in the application configuration parameter registry",

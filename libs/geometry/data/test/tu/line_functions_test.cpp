@@ -54,24 +54,24 @@ void line_functions_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::checkGetClosestPoint()
+void line_functions_test::check_get_closest_point()
 {
     {
-        fwLine line = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fwVec3d pt  = {{5, 10, 0}};
+        fw_line line = {{{0, 0, 0}}, {{1, 0, 0}}};
+        fw_vec3d pt  = {{5, 10, 0}};
 
-        fwVec3d closest_pt = geometry::data::get_closest_point(line, pt);
+        fw_vec3d closest_pt = geometry::data::get_closest_point(line, pt);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(5., closest_pt[0], 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closest_pt[1], 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closest_pt[2], 0.001);
     }
     {
-        fwLine line = {{{2, -3, 1}}, {{1, 4, -3}}};
+        fw_line line = {{{2, -3, 1}}, {{1, 4, -3}}};
         geometry::data::normalize(line.second);
-        fwVec3d pt = {{1, 42, 2}};
+        fw_vec3d pt = {{1, 42, 2}};
 
-        fwVec3d closest_pt;
+        fw_vec3d closest_pt;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::getClosestPoint");
@@ -91,15 +91,15 @@ void line_functions_test::checkGetClosestPoint()
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::checkGetClosestPoints()
+void line_functions_test::check_get_closest_points()
 {
-    fwVec3d point_on_this;
-    fwVec3d point_on_line;
+    fw_vec3d point_on_this;
+    fw_vec3d point_on_line;
 
     // No intersection, parallel lines
     {
-        fwLine line1 = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fwLine line2 = {{{0, 1, 0}}, {{1, 0, 0}}};
+        fw_line line1 = {{{0, 0, 0}}, {{1, 0, 0}}};
+        fw_line line2 = {{{0, 1, 0}}, {{1, 0, 0}}};
 
         bool b_intersection = geometry::data::get_closest_points(line1, line2, point_on_this, point_on_line);
 
@@ -108,8 +108,8 @@ void line_functions_test::checkGetClosestPoints()
 
     // Intersection
     {
-        fwLine line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
-        fwLine line2 = {{{0, 0, 0}}, {{1, 1, 1}}};
+        fw_line line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
+        fw_line line2 = {{{0, 0, 0}}, {{1, 1, 1}}};
 
         geometry::data::normalize(line2.second);
 
@@ -128,8 +128,8 @@ void line_functions_test::checkGetClosestPoints()
 
     // No intersection, but lines are not parallel
     {
-        fwLine line1 = {{{1, 1, 1}}, {{-1, 0, 0}}};
-        fwLine line2 = {{{-2, -1, -3}}, {{-1, -1, -1}}};
+        fw_line line1 = {{{1, 1, 1}}, {{-1, 0, 0}}};
+        fw_line line2 = {{{-2, -1, -3}}, {{-1, -1, -1}}};
 
         geometry::data::normalize(line2.second);
 
@@ -160,11 +160,11 @@ void line_functions_test::checkGetClosestPoints()
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::checkIntersect1()
+void line_functions_test::check_intersect1()
 {
     {
-        fwLine line = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fwVec3d pt  = {{5, 10, 0}};
+        fw_line line = {{{0, 0, 0}}, {{1, 0, 0}}};
+        fw_vec3d pt  = {{5, 10, 0}};
 
         bool b_intersection = false;
         b_intersection = geometry::data::intersect(line, 11.0, pt);
@@ -177,9 +177,9 @@ void line_functions_test::checkIntersect1()
         CPPUNIT_ASSERT(b_intersection == false);
     }
     {
-        fwLine line = {{{2, -3, 1}}, {{1, 4, -3}}};
+        fw_line line = {{{2, -3, 1}}, {{1, 4, -3}}};
         geometry::data::normalize(line.second);
-        fwVec3d pt = {{1, 42, 2}};
+        fw_vec3d pt = {{1, 42, 2}};
 
         bool b_intersection = false;
 #ifndef FW_PROFILING_DISABLED
@@ -205,14 +205,14 @@ void line_functions_test::checkIntersect1()
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::checkIntersect2()
+void line_functions_test::check_intersect2()
 {
     // No intersection, parallel lines
     {
-        fwLine line1      = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fwVec3d origin    = {{0, 1, 0}};
-        fwVec3d direction = {{1, 0, 0}};
-        fwVec3d point_on_line;
+        fw_line line1      = {{{0, 0, 0}}, {{1, 0, 0}}};
+        fw_vec3d origin    = {{0, 1, 0}};
+        fw_vec3d direction = {{1, 0, 0}};
+        fw_vec3d point_on_line;
 
         bool b_intersection = geometry::data::intersect(line1, 100.0, origin, direction, point_on_line);
 
@@ -221,11 +221,11 @@ void line_functions_test::checkIntersect2()
 
     // Intersection
     {
-        fwLine line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
+        fw_line line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
 
-        fwVec3d origin    = {{0, 0, 0}};
-        fwVec3d direction = {{1, 1, 1}};
-        fwVec3d point_on_line;
+        fw_vec3d origin    = {{0, 0, 0}};
+        fw_vec3d direction = {{1, 1, 1}};
+        fw_vec3d point_on_line;
 
         geometry::data::normalize(direction);
 
@@ -252,7 +252,7 @@ void line_functions_test::checkIntersect2()
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::checkIntersect3()
+void line_functions_test::check_intersect3()
 {
 }
 

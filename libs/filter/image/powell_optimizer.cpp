@@ -30,15 +30,14 @@ namespace sight::filter::image
 {
 
 // NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): used via pointers
-class PowellMetric : public powell_optimizer::powell_optimizer_t::MetricType
+class powell_metric : public powell_optimizer::powell_optimizer_t::MetricType
 {
 public:
 
-    using Self         = PowellMetric;
-    using Superclass   = powell_optimizer::powell_optimizer_t::MetricType;
-    using Pointer      = itk::SmartPointer<Self>;
-    using ConstPointer = itk::SmartPointer<const Self>;
-    itkNewMacro(Self);
+    using self_t     = powell_metric;
+    using superclass = powell_optimizer::powell_optimizer_t::MetricType;
+    using Pointer    = itk::SmartPointer<self_t>;
+    itkNewMacro(self_t);
 
     //-----------------------------------------------------------------------------
 
@@ -48,7 +47,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    void setFunction(powell_optimizer::optimized_function_t _f)
+    void set_function(powell_optimizer::optimized_function_t _f)
     {
         m_function = _f;
     }
@@ -119,10 +118,10 @@ public:
 
 private:
 
-    PowellMetric()
+    powell_metric()
     = default;
 
-    ~PowellMetric() override
+    ~powell_metric() override
     = default;
 
     ParametersType m_parameters;
@@ -141,11 +140,11 @@ powell_optimizer::powell_optimizer(
 ) :
     m_function(_f)
 {
-    m_powellOptimizer = powell_optimizer_t::New();
-    m_powellOptimizer->SetStepTolerance(_step_tolerance);
-    m_powellOptimizer->SetValueTolerance(_value_tolerance);
-    m_powellOptimizer->SetStepLength(_step_length);
-    m_powellOptimizer->SetMaximumIteration(_maximum_iterations);
+    m_powell_optimizer = powell_optimizer_t::New();
+    m_powell_optimizer->SetStepTolerance(_step_tolerance);
+    m_powell_optimizer->SetValueTolerance(_value_tolerance);
+    m_powell_optimizer->SetStepLength(_step_length);
+    m_powell_optimizer->SetMaximumIteration(_maximum_iterations);
 }
 
 //-----------------------------------------------------------------------------
@@ -154,16 +153,16 @@ powell_optimizer::function_parameters_t powell_optimizer::optimize(
     const powell_optimizer::function_parameters_t& _init_parameters
 )
 {
-    PowellMetric::Pointer metric = PowellMetric::New();
-    metric->setFunction(m_function);
+    auto metric = powell_metric::New();
+    metric->set_function(m_function);
     function_parameters_t init_params(_init_parameters);
     metric->SetParameters(init_params);
 
-    m_powellOptimizer->SetMetric(metric);
+    m_powell_optimizer->SetMetric(metric);
 
     try
     {
-        m_powellOptimizer->StartOptimization();
+        m_powell_optimizer->StartOptimization();
     }
     catch(itk::ExceptionObject& e)
     {

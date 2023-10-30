@@ -54,7 +54,7 @@ void mono_camera_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void mono_camera_test::testValidator()
+void mono_camera_test::test_validator()
 {
     auto validator = factory::make("sight::module::activity::validator::camera_set::mono_camera");
     CPPUNIT_ASSERT(validator);
@@ -90,7 +90,7 @@ void mono_camera_test::testValidator()
         );
     }
     {
-        camera->setIsCalibrated(true);
+        camera->set_is_calibrated(true);
         validation = obj_validator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "CameraSet with a calibrated camera should be valid",
@@ -99,7 +99,7 @@ void mono_camera_test::testValidator()
         );
     }
     {
-        camera2->setIsCalibrated(true);
+        camera2->set_is_calibrated(true);
         camera_set->add_camera(camera2);
         validation = obj_validator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(

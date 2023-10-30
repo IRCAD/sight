@@ -74,7 +74,7 @@ void push_selection::updating()
     auto dest_series_set = m_series_set.lock();
     SIGHT_ASSERT("\"seriesSet\" key is not found.", dest_series_set);
 
-    const auto selected_series = m_selectedSeries.lock();
+    const auto selected_series = m_selected_series.lock();
 
     // Save added series in this container in order to display information on the push
     std::vector<data::series::sptr> added_series;
@@ -96,17 +96,17 @@ void push_selection::updating()
 
     // Display the informations
     sight::ui::dialog::message message_box;
-    message_box.setIcon(sight::ui::dialog::message::INFO);
-    message_box.addButton(sight::ui::dialog::message::OK);
-    message_box.setTitle("Push Series");
+    message_box.set_icon(sight::ui::dialog::message::info);
+    message_box.add_button(sight::ui::dialog::message::ok);
+    message_box.set_title("Push Series");
 
     if(selected_series->empty())
     {
-        message_box.setMessage("Unable to push series, there is no series selected.");
+        message_box.set_message("Unable to push series, there is no series selected.");
     }
     else if(added_series.empty())
     {
-        message_box.setMessage("Unable to push series, the series are already present in the database.");
+        message_box.set_message("Unable to push series, the series are already present in the database.");
     }
     else
     {
@@ -122,12 +122,12 @@ void push_selection::updating()
 
         for(const auto& series : added_series)
         {
-            std::string description = series->getSeriesDescription();
+            std::string description = series->get_series_description();
             description = (description.empty()) ? "[No description]" : description;
             ss << "- " << description << std::endl;
         }
 
-        message_box.setMessage(ss.str());
+        message_box.set_message(ss.str());
     }
 
     message_box.show();

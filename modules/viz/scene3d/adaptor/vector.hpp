@@ -46,7 +46,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor shows a simple vector.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the vector is shown or not.
+ * - \b update_visibility(bool): Sets whether the vector is shown or not.
  * - \b toggleVisibility(): Toggle whether the vector is shown or not.
  * - \b updateLength(float): set the length of the vector.
  * - \b show(): Shows the vector.
@@ -99,7 +99,7 @@ protected:
      * @brief Sets the vector visibility.
      * @param _visible the visibility status of the vector.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
 
 private:
 
@@ -107,13 +107,13 @@ private:
      * @brief Updates the length of the vector.
      * @param _length length of the vector.
      */
-    void updateLength(float _length);
+    void update_length(float _length);
 
     /// Create the vector.
-    void createVector();
+    void create_vector();
 
     /// Deletes the vector resources.
-    void deleteVector();
+    void delete_vector();
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
@@ -131,10 +131,10 @@ private:
     Ogre::ManualObject* m_cone {nullptr};
 
     /// Contains the scene node where all of our manual objects are attached.
-    Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_scene_node {nullptr};
 
     /// Contains the material used to draw the vector.
-    module::viz::scene3d::adaptor::material::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -53,10 +53,10 @@ protected:
      *
      * @warning This method remove the activity that are not in the list of activity to launch
      */
-    ACTIVITY_API int parseActivities(data::activity_set& _activity_set);
+    ACTIVITY_API int parse_activities(data::activity_set& _activity_set);
 
     /// Store the data of the activity at the given index
-    ACTIVITY_API void storeActivityData(
+    ACTIVITY_API void store_activity_data(
         const data::activity_set& _activity_set,
         std::size_t _index,
         const data::composite::csptr& _overrides = nullptr
@@ -73,7 +73,7 @@ protected:
      * @param slot slot to block in case the activity is created. It is usefull if the service listen notification on
      * the activity_set
      */
-    ACTIVITY_API data::activity::sptr getActivity(
+    ACTIVITY_API data::activity::sptr get_activity(
         data::activity_set& _activity_set,
         std::size_t _index,
         const core::com::slot_base::sptr& _slot = nullptr
@@ -87,7 +87,7 @@ protected:
      * @param activity_set ActivitySet containing all the activities
      * @param index the activity in index and all the following will be removed
      */
-    ACTIVITY_API void removeLastActivities(data::activity_set& _activity_set, std::size_t _index);
+    ACTIVITY_API void remove_last_activities(data::activity_set& _activity_set, std::size_t _index);
 
     /**
      * @brief Reset all data created by activities (create="true", minOccurs="0") at index and beyond.
@@ -97,13 +97,13 @@ protected:
      * @param activity_set ActivitySet containing all the activities
      * @param index the activity in index and all the following will be cleaned
      */
-    ACTIVITY_API void cleanRequirements(std::size_t _index);
+    ACTIVITY_API void clean_requirements(std::size_t _index);
 
     /// List of the activity to create.
-    std::vector<std::string> m_activityIds;
+    std::vector<std::string> m_activity_ids;
 
     /// Index of the current activity
-    int m_currentActivity {-1};
+    int m_current_activity {-1};
 
     /// Map containing all the data produced by the activities. It is used to create the next one.
     std::map<std::string, data::object::sptr> m_requirements;

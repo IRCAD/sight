@@ -96,7 +96,7 @@ public:
             [this](const auto& _e)
                 {
                     const auto extension = std::dynamic_pointer_cast<detail::extension>(_e);
-                    return extension->point() == M_ID && extension->enabled() && extension->validate() == extension::valid;
+                    return extension->point() == m_id && extension->enabled() && extension->validate() == extension::valid;
                 });
 
         return container;
@@ -118,9 +118,9 @@ public:
 
 private:
 
-    const std::string M_ID; ///< a string containing the extension point
+    const std::string m_id; ///< a string containing the extension point
     // identifier
-    const std::filesystem::path M_SCHEMA; ///< a path to the XML schema used to validate
+    const std::filesystem::path m_schema; ///< a path to the XML schema used to validate
     // contributed extensions
     mutable std::shared_ptr<io::validator> m_validator; ///< a shared pointer to the extension validator
 };

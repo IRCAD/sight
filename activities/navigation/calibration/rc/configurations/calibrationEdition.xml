@@ -18,7 +18,7 @@
 
         <service uid="mainView" type="sight::module::ui::view">
             <gui>
-                <toolBar />
+                <toolbar />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
@@ -28,14 +28,14 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" start="true" />
                 <view sid="camerasView" start="true" />
                 <view sid="videoSliderSrv" start="true" />
                 <view sid="cameraInfoView" start="true" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::tool_bar">
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Export camera set" icon="sight::module::ui::flaticons/BlueSave.svg" />

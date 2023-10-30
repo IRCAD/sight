@@ -57,23 +57,23 @@ public:
     /**
      * @brief Instantiate frame.
      */
-    UI_QT_API_QT void createFrame() override;
+    UI_QT_API_QT void create_frame() override;
 
     /**
      * @brief Destroy local frame with sub containers.
      */
-    UI_QT_API_QT void destroyFrame() override;
+    UI_QT_API_QT void destroy_frame() override;
 
 private Q_SLOTS:
 
-    void onCloseFrame();
+    void on_close_frame();
 
 private:
 
-    void setState(FrameState _state);
-    FrameState getState();
+    void set_state(frame_state _state);
+    frame_state get_state();
 
-    QPointer<QMainWindow> m_qtWindow;
+    QPointer<QMainWindow> m_qt_window;
 };
 
 } // namespace sight::ui::qt::layout

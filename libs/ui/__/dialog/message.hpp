@@ -48,10 +48,10 @@ public:
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      * @return Returns the button enum value corresponding to the pressed button
      */
-    UI_API static message::Buttons show(
+    UI_API static message::buttons show(
         const std::string& _title,
         const std::string& _message,
-        message::Icons _icon = INFO
+        message::icons _icon = info
     );
 
     /// Constructor. Create the implementation of the specific message box
@@ -65,31 +65,31 @@ public:
      * @param message Message of the message box
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      */
-    UI_API message(const std::string& _title, const std::string& _message, message::Icons _icon = INFO);
+    UI_API message(const std::string& _title, const std::string& _message, message::icons _icon = info);
 
     /// Destructor. Do nothing
     UI_API ~message() override;
 
     /// Set the title of the message box
-    UI_API void setTitle(const std::string& _title) override;
+    UI_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_API void setMessage(const std::string& _msg) override;
+    UI_API void set_message(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_API void setIcon(message::Icons _icon) override;
+    UI_API void set_icon(message::icons _icon) override;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    UI_API void addButton(message::Buttons _button) override;
+    UI_API void add_button(message::buttons _button) override;
 
     /// Set the default button
-    UI_API void setDefaultButton(message::Buttons _button) override;
+    UI_API void set_default_button(message::buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
+    UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Show the message box and return the clicked button.
-    UI_API message::Buttons show() override;
+    UI_API message::buttons show() override;
 
 protected:
 

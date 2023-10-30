@@ -35,7 +35,7 @@ const window_interactor::factory_registry_key_t window_interactor::OFFSCREEN_REG
 
 //-----------------------------------------------------------------------------
 
-window_interactor::sptr window_interactor::createManager()
+window_interactor::sptr window_interactor::create_manager()
 {
     window_interactor::sptr manager = viz::scene3d::factory::make(
         viz::scene3d::window_interactor::REGISTRY_KEY
@@ -49,7 +49,7 @@ window_interactor::sptr window_interactor::createManager()
 
 //-----------------------------------------------------------------------------
 
-window_interactor::sptr window_interactor::createOffscreenManager(
+window_interactor::sptr window_interactor::create_offscreen_manager(
     unsigned int _w,
     unsigned int _h
 )
@@ -77,7 +77,7 @@ window_interactor::~window_interactor()
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::setFullscreen(bool /*unused*/, int /*unused*/)
+void window_interactor::set_fullscreen(bool /*unused*/, int /*unused*/)
 {
     SIGHT_ERROR("Fullscreen not supported.");
 }

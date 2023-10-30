@@ -41,7 +41,7 @@ namespace sight::io::dicom::container
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance() :
+dicom_instance::dicom_instance() :
 
     m_logger(nullptr)
 {
@@ -49,68 +49,68 @@ DicomInstance::DicomInstance() :
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(
+dicom_instance::dicom_instance(
     const data::series::csptr& _series,
     core::log::logger::sptr _logger,
     bool _is_multi_files
 ) :
-    m_isMultiFiles(_is_multi_files),
-    m_studyInstanceUID(_series->getStudyInstanceUID()),
-    m_seriesInstanceUID(_series->getSeriesInstanceUID()),
+    m_is_multi_files(_is_multi_files),
+    m_study_instance_uid(_series->get_study_instance_uid()),
+    m_series_instance_uid(_series->get_series_instance_uid()),
     m_logger(std::move(_logger))
 {
     // Compute sop_classUID
-    this->computesop_classUID(_series);
+    this->computesop_class_uid(_series);
 
     // Generate SOPInstanceUIDs
-    this->generateSOPInstanceUIDs(_series);
+    this->generate_sop_instance_ui_ds(_series);
 
     // Generate Frame of Reference UID
     gdcm::UIDGenerator uid_generator;
-    m_frameOfReferenceUID = uid_generator.Generate();
+    m_frame_of_reference_uid = uid_generator.Generate();
 }
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(
+dicom_instance::dicom_instance(
     const data::dicom_series::csptr& _dicom_series,
     core::log::logger::sptr _logger
 ) :
-    m_isMultiFiles(_dicom_series->getDicomContainer().size() > 1),
-    m_studyInstanceUID(_dicom_series->getStudyInstanceUID()),
-    m_seriesInstanceUID(_dicom_series->getSeriesInstanceUID()),
+    m_is_multi_files(_dicom_series->get_dicom_container().size() > 1),
+    m_study_instance_uid(_dicom_series->get_study_instance_uid()),
+    m_series_instance_uid(_dicom_series->get_series_instance_uid()),
     m_logger(std::move(_logger))
 {
     SIGHT_ASSERT("DicomSeries is not instantiated", _dicom_series);
 
     // Get sop_classUID
-    data::dicom_series::sop_classUIDContainerType sop_class_uid_container = _dicom_series->getSOPClassUIDs();
+    data::dicom_series::sop_class_uid_container_t sop_class_uid_container = _dicom_series->get_sop_class_ui_ds();
     if(!sop_class_uid_container.empty())
     {
-        m_sop_classUID = *(sop_class_uid_container.begin());
+        m_sop_class_uid = *(sop_class_uid_container.begin());
     }
 
-    this->readUIDFromDicomSeries(_dicom_series);
+    this->read_uid_from_dicom_series(_dicom_series);
 }
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(const DicomInstance& _dicom_instance) :
-    m_isMultiFiles(_dicom_instance.m_isMultiFiles),
-    m_sop_classUID(_dicom_instance.m_sop_classUID),
-    m_SOPInstanceUIDContainer(_dicom_instance.m_SOPInstanceUIDContainer),
+dicom_instance::dicom_instance(const dicom_instance& _dicom_instance) :
+    m_is_multi_files(_dicom_instance.m_is_multi_files),
+    m_sop_class_uid(_dicom_instance.m_sop_class_uid),
+    m_sop_instance_uid_container(_dicom_instance.m_sop_instance_uid_container),
     m_logger(_dicom_instance.m_logger)
 {
 }
 
 //------------------------------------------------------------------------------
 
-DicomInstance::~DicomInstance()
+dicom_instance::~dicom_instance()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::computesop_classUID(const data::series::csptr& _series)
+void dicom_instance::computesop_class_uid(const data::series::csptr& _series)
 {
     // Retrieve series type
     data::image_series::csptr image_series = std::dynamic_pointer_cast<const data::image_series>(_series);
@@ -122,11 +122,11 @@ void DicomInstance::computesop_classUID(const data::series::csptr& _series)
     if(image_series)
     {
         // Compute instance dimension
-        unsigned int dimension = getIsMultiFiles() ? 2 : static_cast<unsigned int>(image_series->numDimensions());
+        unsigned int dimension = get_is_multi_files() ? 2 : static_cast<unsigned int>(image_series->num_dimensions());
 
         // Define SOP Class UID from the modality
         gdcm::MediaStorage media_storage;
-        media_storage.GuessFromModality(_series->getModality().c_str(), dimension);
+        media_storage.GuessFromModality(_series->get_modality().c_str(), dimension);
 
         // Identify the sop_classUID from a guess
         if(media_storage != gdcm::MediaStorage::MS_END && media_storage.GetString() != nullptr)
@@ -145,18 +145,18 @@ void DicomInstance::computesop_classUID(const data::series::csptr& _series)
     }
 
     // Update instance information
-    this->setSOPClassUID(sop_class_uid);
+    this->set_sop_class_uid(sop_class_uid);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::generateSOPInstanceUIDs(const data::series::csptr& _series)
+void dicom_instance::generate_sop_instance_ui_ds(const data::series::csptr& _series)
 {
     // Retrieve ImageSeries
     data::image_series::csptr image_series = std::dynamic_pointer_cast<const data::image_series>(_series);
 
     // Compute number of instances
-    const std::size_t nb_instances = (image_series && m_isMultiFiles) ? (image_series->size()[2]) : (1);
+    const std::size_t nb_instances = (image_series && m_is_multi_files) ? (image_series->size()[2]) : (1);
 
     // Create generator
     gdcm::UIDGenerator uid_generator;
@@ -164,13 +164,13 @@ void DicomInstance::generateSOPInstanceUIDs(const data::series::csptr& _series)
     // Generate UIDs
     for(std::size_t i = 0 ; i < nb_instances ; ++i)
     {
-        m_SOPInstanceUIDContainer.emplace_back(uid_generator.Generate());
+        m_sop_instance_uid_container.emplace_back(uid_generator.Generate());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::readUIDFromDicomSeries(const data::dicom_series::csptr& _dicom_series)
+void dicom_instance::read_uid_from_dicom_series(const data::dicom_series::csptr& _dicom_series)
 {
     const gdcm::Tag sop_instance_uid_tag       = gdcm::Tag(0x0008, 0x0018); // SOP Instance UID
     const gdcm::Tag frame_of_reference_uid_tag = gdcm::Tag(0x0020, 0x0052); // Frame of Reference UID
@@ -179,7 +179,7 @@ void DicomInstance::readUIDFromDicomSeries(const data::dicom_series::csptr& _dic
     selectedtags.insert(frame_of_reference_uid_tag);
 
     std::set<std::string> frame_of_reference_uid_container;
-    for(const auto& item : _dicom_series->getDicomContainer())
+    for(const auto& item : _dicom_series->get_dicom_container())
     {
         const core::memory::buffer_object::sptr buffer_obj          = item.second;
         const core::memory::buffer_manager::stream_info stream_info = buffer_obj->get_stream_info();
@@ -197,17 +197,20 @@ void DicomInstance::readUIDFromDicomSeries(const data::dicom_series::csptr& _dic
 
         const gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
         // SOP Instance UID
-        m_SOPInstanceUIDContainer.push_back(io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(dataset));
+        m_sop_instance_uid_container.push_back(
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0008,
+                                                                0x0018>(dataset)
+        );
         // Retrieve frame of reference UID
         frame_of_reference_uid_container.insert(
-            io::dicom::helper::DicomDataReader::getTagValue<0x0020,
-                                                            0x0052>(dataset)
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0020,
+                                                                0x0052>(dataset)
         );
     }
 
     if(frame_of_reference_uid_container.size() == 1)
     {
-        m_frameOfReferenceUID = *(frame_of_reference_uid_container.begin());
+        m_frame_of_reference_uid = *(frame_of_reference_uid_container.begin());
     }
     else if(frame_of_reference_uid_container.size() > 1)
     {

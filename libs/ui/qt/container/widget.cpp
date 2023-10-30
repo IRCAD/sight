@@ -45,7 +45,7 @@ widget::~widget() noexcept
 
 //-----------------------------------------------------------------------------
 
-void widget::setLayout(QLayout* const _layout)
+void widget::set_layout(QLayout* const _layout)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setLayout().", m_container);
 
@@ -91,7 +91,7 @@ void widget::clean()
 
 //-----------------------------------------------------------------------------
 
-void widget::destroyContainer()
+void widget::destroy_container()
 {
     SIGHT_ASSERT("The container must be initialized before invoking destroyContainer().", m_container);
 
@@ -104,21 +104,21 @@ void widget::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-void widget::setQtContainer(QWidget* _container)
+void widget::set_qt_container(QWidget* _container)
 {
     m_container = _container;
 }
 
 //-----------------------------------------------------------------------------
 
-QWidget* widget::getQtContainer() const
+QWidget* widget::get_qt_container() const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-bool widget::isShownOnScreen()
+bool widget::is_shown_on_screen()
 {
     SIGHT_ASSERT("The container must be initialized before invoking isShownOnScreen().", m_container);
     return m_container->isVisible();
@@ -126,7 +126,7 @@ bool widget::isShownOnScreen()
 
 //-----------------------------------------------------------------------------
 
-void widget::setVisible(bool _is_visible)
+void widget::set_visible(bool _is_visible)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setVisible().", m_container);
 
@@ -143,7 +143,7 @@ void widget::setVisible(bool _is_visible)
 
 //-----------------------------------------------------------------------------
 
-void widget::setEnabled(bool _is_enabled)
+void widget::set_enabled(bool _is_enabled)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
 

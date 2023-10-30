@@ -26,17 +26,17 @@
 
             <service uid="containerView" type="sight::module::ui::view" >
                 <gui>
-                    <toolBar align="top" />
+                    <toolbar align="top" />
                     <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                     </layout>
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="true" />
+                    <toolbar sid="toolBarView" start="true" />
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::tool_bar" >
+            <service uid="toolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
                         <menuItem name="Extract archive" icon="sight::module::ui::flaticons/Volume.svg" />

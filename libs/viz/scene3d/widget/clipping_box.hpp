@@ -70,7 +70,7 @@ public:
     VIZ_SCENE3D_API virtual ~clipping_box();
 
     /// Find out if a movable object belongs to this widget.
-    bool belongsToWidget(const Ogre::MovableObject* _object) const;
+    bool belongs_to_widget(const Ogre::MovableObject* _object) const;
 
     /**
      * @brief Drags a widget toward a screen position.
@@ -81,10 +81,10 @@ public:
      * @param _screenX cursor's horizontal position.
      * @param _screenY cursor's vertical position.
      */
-    VIZ_SCENE3D_API void widgetPicked(Ogre::MovableObject* _picked_widget, int _screen_x, int _screen_y);
+    VIZ_SCENE3D_API void widget_picked(Ogre::MovableObject* _picked_widget, int _screen_x, int _screen_y);
 
     /// Drops the currently selected widget.
-    VIZ_SCENE3D_API void widgetReleased();
+    VIZ_SCENE3D_API void widget_released();
 
     /**
      * @brief Translates the clipping box along the screen's axes.
@@ -110,10 +110,10 @@ public:
     VIZ_SCENE3D_API bool scale_clipping_box(int _x, int _y, int _dy);
 
     /// Returns whether the widgets are visible or hidden.
-    [[nodiscard]] VIZ_SCENE3D_API bool getVisibility() const;
+    [[nodiscard]] VIZ_SCENE3D_API bool get_visibility() const;
 
     /// Hides or shows the widget.
-    VIZ_SCENE3D_API void setVisibility(bool _visibility);
+    VIZ_SCENE3D_API void set_visibility(bool _visibility);
 
     /// Returns the axis aligned coordinates of the clipping widget in volume image space.
     [[nodiscard]] VIZ_SCENE3D_API Ogre::AxisAlignedBox get_clipping_box() const;
@@ -122,93 +122,93 @@ public:
     [[nodiscard]] VIZ_SCENE3D_API Ogre::Matrix4 get_clipping_transform() const;
 
     /// Sets the clipping cube from the input transform.
-    VIZ_SCENE3D_API void updateFromTransform(const Ogre::Matrix4& _clipping_mx);
+    VIZ_SCENE3D_API void update_from_transform(const Ogre::Matrix4& _clipping_mx);
 
 private:
 
     /// The current selection mode.
     enum
     {
-        NONE,
-        BOX,
-        CAMERA
-    } m_selectionMode {NONE};
+        none,
+        box,
+        camera
+    } m_selection_mode {none};
 
     /// Get the face's image positions.
-    [[nodiscard]] std::array<Ogre::Vector3, 4> getFacePositions(vr::volume_renderer::CubeFace _face_name) const;
+    [[nodiscard]] std::array<Ogre::Vector3, 4> get_face_positions(vr::volume_renderer::cube_face _face_name) const;
 
     /// Get the center of a clipping box face.
-    [[nodiscard]] Ogre::Vector3 getFaceCenter(vr::volume_renderer::CubeFace _face_name) const;
+    [[nodiscard]] Ogre::Vector3 get_face_center(vr::volume_renderer::cube_face _face_name) const;
 
     /// Returns the clipping box's image space positions.
-    [[nodiscard]] std::array<Ogre::Vector3, 8> clipping_boxPositions() const;
+    [[nodiscard]] std::array<Ogre::Vector3, 8> clipping_box_positions() const;
 
     /// Creates the widget objects and scene nodes.
-    void initWidgets();
+    void init_widgets();
 
     /// Updates the widget's positions based on the clipping box.
-    void updateWidgets();
+    void update_widgets();
 
     /// Highlight a clipping box face.
-    void selectFace(vr::volume_renderer::CubeFace _face_name);
+    void select_face(vr::volume_renderer::cube_face _face_name);
 
     /// Unhighlight face.
-    void deselectFace();
+    void deselect_face();
 
     /// Computes the axis aligned clipping box positions from the input transform.
-    void applyTransform(const Ogre::Matrix4& _clipping_mx);
+    void apply_transform(const Ogre::Matrix4& _clipping_mx);
 
     /// ID of the service using this widget.
-    const std::string M_ID;
+    const std::string m_id;
 
     /// This object's scene manager.
-    Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_scene_manager {nullptr};
 
     /// Camera too which the volume is rendered.
     Ogre::Camera* m_camera {nullptr};
 
     /// Parent node containing the volume.
-    Ogre::SceneNode* m_volumeSceneNode {nullptr};
+    Ogre::SceneNode* m_volume_scene_node {nullptr};
 
     /// Node holding widget objects.
-    Ogre::SceneNode* m_widgetSceneNode {nullptr};
+    Ogre::SceneNode* m_widget_scene_node {nullptr};
 
     /// Maps widget objects to their scene node and to a cube face.
     std::map<const Ogre::MovableObject*,
-             std::pair<vr::volume_renderer::CubeFace, Ogre::SceneNode*> > m_widgets;
+             std::pair<vr::volume_renderer::cube_face, Ogre::SceneNode*> > m_widgets;
 
     /// Axis aligned clipping cube.
-    std::array<Ogre::Vector3, 2> m_clippingCube {{Ogre::Vector3::ZERO, Ogre::Vector3::UNIT_SCALE}};
+    std::array<Ogre::Vector3, 2> m_clipping_cube {{Ogre::Vector3::ZERO, Ogre::Vector3::UNIT_SCALE}};
 
     /// Object used to display the clipping box.
-    Ogre::ManualObject* m_boundingBox {nullptr};
+    Ogre::ManualObject* m_bounding_box {nullptr};
 
     /// Oject holding the highlighted face geometry.
-    Ogre::ManualObject* m_selectedFace {nullptr};
+    Ogre::ManualObject* m_selected_face {nullptr};
 
     /// Widget currently being dragged.
-    Ogre::Entity* m_selectedWidget {nullptr};
+    Ogre::Entity* m_selected_widget {nullptr};
 
     /// Picked box point.
-    Ogre::Vector3 m_pickedBoxPoint;
+    Ogre::Vector3 m_picked_box_point;
 
     /// Material applied to the pickable spheres.
-    Ogre::MaterialPtr m_handleMtl;
+    Ogre::MaterialPtr m_handle_mtl;
 
     /// Material applied to a sphere when it is selected.
-    Ogre::MaterialPtr m_handleHightlightMtl;
+    Ogre::MaterialPtr m_handle_hightlight_mtl;
 
     /// Material displaying the edges of the box.
-    Ogre::MaterialPtr m_boxMtl;
+    Ogre::MaterialPtr m_box_mtl;
 
     /// Material displaying the edges when user is interacting with the widget.
-    Ogre::MaterialPtr m_boxHighlightMtl;
+    Ogre::MaterialPtr m_box_highlight_mtl;
 
     /// Material displaying the currently selected face.
-    Ogre::MaterialPtr m_boxFaceMtl;
+    Ogre::MaterialPtr m_box_face_mtl;
 
     /// Called when the clipping box is modified through interaction.
-    clipping_update_callback_t m_clippingUpdateCallback;
+    clipping_update_callback_t m_clipping_update_callback;
 };
 
 } // namespace sight::viz::scene3d::widget

@@ -44,9 +44,9 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b removeAll(): removes all groups.
- * - \b removeGroup(std::string): removes an entire group.
+ * - \b remove_group(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
- * - \b renameGroup(std::string, std::string): replaces and old group's name by a new one.
+ * - \b rename_group(std::string, std::string): replaces and old group's name by a new one.
  * - \b addPoint(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
  * - \b insertPoint(std::string, std::size_t): inserts a point.
@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b initializeImage(): initializes image slices index if there is one.
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
- * - \b updateVisibility(bool): shows or hides the landmarks.
+ * - \b update_visibility(bool): shows or hides the landmarks.
  * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
  * - \b show(): shows the landmarks.
  * - \b hide(): hides the landmarks.
@@ -120,14 +120,14 @@ public:
     /// Destroys the adaptor.
     MODULE_VIZ_SCENE3D_API ~landmarks() noexcept final = default;
 
-    struct MODULE_VIZ_SCENE3D_CLASS_API Slots final
+    struct MODULE_VIZ_SCENE3D_CLASS_API slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
         inline static const key_t REMOVE_ALL              = "removeAll";
-        inline static const key_t REMOVE_GROUP            = "removeGroup";
+        inline static const key_t REMOVE_GROUP            = "remove_group";
         inline static const key_t MODIFY_GROUP            = "modifyGroup";
-        inline static const key_t RENAME_GROUP            = "renameGroup";
+        inline static const key_t RENAME_GROUP            = "rename_group";
         inline static const key_t MODIFY_POINT            = "modifyPoint";
         inline static const key_t ADD_POINT               = "addPoint";
         inline static const key_t REMOVE_POINT            = "removePoint";
@@ -145,77 +145,77 @@ public:
     };
 
     /// SLOT: removes all groups.
-    MODULE_VIZ_SCENE3D_API void removeAll();
+    MODULE_VIZ_SCENE3D_API void remove_all();
 
     /// SLOT: removes an entire group.
     /// @param _groupName name of the group to remove.
-    MODULE_VIZ_SCENE3D_API void removeGroup(std::string _group_name);
+    MODULE_VIZ_SCENE3D_API void remove_group(std::string _group_name);
 
     /// SLOT: removes an entire group and re-create it.
     /// @param _groupName name of the group to update.
-    MODULE_VIZ_SCENE3D_API void modifyGroup(std::string _group_name);
+    MODULE_VIZ_SCENE3D_API void modify_group(std::string _group_name);
 
     /// SLOT: replaces an entire group and re-create it.
     /// @param _oldGroupName old group name to update.
     /// @param _newGroupName new group name to replace the old one.
-    MODULE_VIZ_SCENE3D_API void renameGroup(std::string _old_group_name, std::string _new_group_name);
+    MODULE_VIZ_SCENE3D_API void rename_group(std::string _old_group_name, std::string _new_group_name);
 
     /// SLOT: removes a point group and update it.
     /// @param _groupName name of the group to update.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_API void modifyPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_API void modify_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: adds the last point of a landmarks group.
     /// _groupName group name of the point to add.
-    MODULE_VIZ_SCENE3D_API void addPoint(std::string _group_name);
+    MODULE_VIZ_SCENE3D_API void add_point(std::string _group_name);
 
     /// SLOT: removes a point.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_API void removePoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_API void remove_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: inserts a point.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_API void insertPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_API void insert_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: hightlights the selected landmark.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_API void selectPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_API void select_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: resets the hightlights the selected landmark.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_API void deselectPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_API void deselect_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: initializes image slices index if there is one.
-    MODULE_VIZ_SCENE3D_API void initializeImage();
+    MODULE_VIZ_SCENE3D_API void initialize_image();
 
     /// SLOT: updates the image slice type.
     /// @param _from origin of the orientation.
     /// @param _to destination of the orientation.
-    MODULE_VIZ_SCENE3D_API void changeSliceType(int _from, int _to);
+    MODULE_VIZ_SCENE3D_API void change_slice_type(int _from, int _to);
 
     /// SLOT: updates the image slice index to show or hide landmarks.
     /// @param _axialIndex new axial slice index.
     /// @param _frontalIndex new frontal slice index.
     /// @param _sagittalIndex new sagittal slice index.
-    MODULE_VIZ_SCENE3D_API void changeSliceIndex(int _axial_index, int _frontal_index, int _sagittal_index);
+    MODULE_VIZ_SCENE3D_API void change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index);
 
     /// SLOT: Toggle landmarks addition
     /// @param toggle set or unset landmarks addition mode.
-    MODULE_VIZ_SCENE3D_API void toggleAddLandmarks(bool _toggle);
+    MODULE_VIZ_SCENE3D_API void toggle_add_landmarks(bool _toggle);
 
     /// SLOT: Toggle landmarks removal
     /// @param toggle set or unset landmarks removal mode.
-    MODULE_VIZ_SCENE3D_API void toggleRemoveLandmarks(bool _toggle);
+    MODULE_VIZ_SCENE3D_API void toggle_remove_landmarks(bool _toggle);
 
     /// SLOT: Remove all visible landmarks
-    MODULE_VIZ_SCENE3D_API void removeLandmarks();
+    MODULE_VIZ_SCENE3D_API void remove_landmarks();
 
     /// SLOT: Create a point and insert it in the Landmarks data.
-    MODULE_VIZ_SCENE3D_API void createLandmark(sight::data::landmarks::point_t _point);
+    MODULE_VIZ_SCENE3D_API void create_landmark(sight::data::landmarks::point_t _point);
 
     /// SLOT: Configure the new landmarks size, shape and color used when adding landmarks ind "ADD" mode.
     /// Parameter with `std::nullopt`, means "no change".
@@ -226,17 +226,17 @@ public:
     /// @param groupMax the maximum number of landmark in the group. Value < 0 means "no limit".
     /// @param visibleMax the maximum number of visible landmark. Value < 0 means "no limit".
     /// @param totalMax the maximum number of total landmark. Value < 0 means "no limit".
-    MODULE_VIZ_SCENE3D_API void configureLandmarks(
+    MODULE_VIZ_SCENE3D_API void configure_landmarks(
         std::optional<std::string> _group,
         std::optional<sight::data::landmarks::color_t> _color,
         std::optional<sight::data::landmarks::size_t> _size,
-        std::optional<sight::data::landmarks::Shape> _shape,
+        std::optional<sight::data::landmarks::shape> _shape,
         std::optional<int> _group_max,
         std::optional<int> _visible_max,
         std::optional<int> _total_max
     );
 
-    struct MODULE_VIZ_SCENE3D_CLASS_API Signals final
+    struct MODULE_VIZ_SCENE3D_CLASS_API signals final
     {
         using key_t = sight::core::com::signals::key_t;
 
@@ -281,7 +281,7 @@ protected:
      * @brief Sets the landmarks visibility.
      * @param _visible the visibility status of the landmarks.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
 
     /**
      * @brief Retrieves the picked landmark and stores the result in m_pickedData.
@@ -290,7 +290,7 @@ protected:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
     /**
      * @brief Moves a landmark stored in m_pickedData.
@@ -301,9 +301,9 @@ protected:
      * @param _dx width displacement of the mouse since the last event.
      * @param _dx height displacement of the mouse since the last event.
      */
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
-        MouseButton _button,
-        Modifier _mod,
+    MODULE_VIZ_SCENE3D_API void mouse_move_event(
+        mouse_button _button,
+        modifier _mod,
         int _x,
         int _y,
         int _dx,
@@ -317,7 +317,7 @@ protected:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
     /**
      * @brief Listens to mouse buttons being double pressed.
@@ -326,14 +326,14 @@ protected:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_double_press_event(mouse_button _button, modifier _mods, int _x, int _y) final;
 
 private:
 
     /// Stores data used to display one landmark.
-    struct Landmark final
+    struct landmark final
     {
-        Landmark(
+        landmark(
             Ogre::SceneNode* _node,
             Ogre::ManualObject* _object,
             std::string _group_name,
@@ -342,7 +342,7 @@ private:
         ) :
             m_node(_node),
             m_object(_object),
-            m_groupName(_group_name),
+            m_group_name(_group_name),
             m_index(_index),
             m_label(_label)
         {
@@ -350,33 +350,33 @@ private:
 
         Ogre::SceneNode* m_node {nullptr};       /*!< Contains the node of the landmark */
         Ogre::ManualObject* m_object {nullptr};  /*!< Contains the manual object that represent the landmark */
-        std::string m_groupName;                 /*!< Defines the group name of the landmark */
+        std::string m_group_name;                /*!< Defines the group name of the landmark */
         std::size_t m_index {0};                 /*!< Defines the index of the landmark */
         sight::viz::scene3d::text::sptr m_label; /*!< Defines the text label of the landmark (can be nullptr) */
     };
 
     /// Stores data used to hightlight the selected landmark.
-    struct SelectedLandmark final
+    struct selected_landmark final
     {
-        SelectedLandmark(core::thread::timer::sptr _timer, std::shared_ptr<Landmark> _landmark) :
+        selected_landmark(core::thread::timer::sptr _timer, std::shared_ptr<landmark> _landmark) :
             m_timer(_timer),
             m_landmark(_landmark)
         {
         }
 
         core::thread::timer::sptr m_timer;
-        std::shared_ptr<Landmark> m_landmark;
+        std::shared_ptr<landmark> m_landmark;
         bool m_show {false};
     };
 
-    typedef data::helper::medical_image::orientation_t OrientationMode;
+    using orientation_mode = data::helper::medical_image::orientation_t;
 
     /// Show the landmark at the given index.
-    enum class ViewDistance : std::uint8_t
+    enum class view_distance : std::uint8_t
     {
-        SLICES_IN_RANGE = 0,
-        CURRENT_SLICE,
-        ALL_SLICES
+        slices_in_range = 0,
+        current_slice,
+        all_slices
     };
 
     /**
@@ -384,11 +384,11 @@ private:
      * @param _cam camera from which to extract the direction vector.
      * @return A vector representing the camera direction
      */
-    static Ogre::Vector3 getCamDirection(const Ogre::Camera* _cam);
+    static Ogre::Vector3 get_cam_direction(const Ogre::Camera* _cam);
 
     /// Signal send when double clicked on a landmark, send its world coordinates;
-    const Signals::world_coordinates_signal_t::sptr M_SEND_WORLD_COORD {
-        new_signal<Signals::world_coordinates_signal_t>(Signals::SEND_WORLD_COORD)
+    const signals::world_coordinates_signal_t::sptr m_send_world_coord {
+        new_signal<signals::world_coordinates_signal_t>(signals::SEND_WORLD_COORD)
     };
 
     /**
@@ -397,7 +397,7 @@ private:
      * @param _index index of the point relative to the group.
      * @param _landmarks landmarks data in which the point will be inserted.
      */
-    std::shared_ptr<Landmark> insertMyPoint(
+    std::shared_ptr<landmark> insert_my_point(
         std::string _group_name,
         std::size_t _index,
         const data::landmarks::csptr& _landmarks
@@ -407,19 +407,19 @@ private:
      * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
      * @param _selectedLandmark which landmarks to manage.
      */
-    void hightlight(std::shared_ptr<SelectedLandmark> _selected_landmark);
+    void hightlight(std::shared_ptr<selected_landmark> _selected_landmark);
 
     /// Used to create a landmark and pick it. Called by the mouse event (pick) and the slot (no pick).
-    void createAndPickLandmark(const sight::data::landmarks::point_t& _point, bool _pick = true);
+    void create_and_pick_landmark(const sight::data::landmarks::point_t& _point, bool _pick = true);
 
     /// Check if the maximum number of landmarks is reached.
-    bool isMaxLandmarksReached();
+    bool is_max_landmarks_reached();
 
     /**
      * @brief Hides landmarks that are not on the current image slice index (if one is given).
      * @see hideLandmark().
      */
-    void hideLandmarks();
+    void hide_landmarks();
 
     /**
      * @brief Gets the nearest picked position if there is one.
@@ -427,55 +427,55 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional<Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
+    std::optional<Ogre::Vector3> get_nearest_picked_position(int _x, int _y);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark to hide.
      */
-    void hideLandmark(std::shared_ptr<Landmark> _landmark);
+    void hide_landmark(std::shared_ptr<landmark> _landmark);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param landmark the landmark to hide.
      * @param landmarks landmarks data in which the landmarks should be hidden.
      */
-    void hideMyLandmark(Landmark& _landmark, const data::landmarks& _landmarks);
+    void hide_my_landmark(landmark& _landmark, const data::landmarks& _landmarks);
 
-    bool isLandmarkVisible(const data::landmarks::point_t& _point, data::landmarks::size_t _group_size) const;
+    bool is_landmark_visible(const data::landmarks::point_t& _point, data::landmarks::size_t _group_size) const;
 
     /// Contains the root scene node.
-    Ogre::SceneNode* m_transNode {nullptr};
+    Ogre::SceneNode* m_trans_node {nullptr};
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
 
     /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::material::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
 
     /// Stores each landmarks points.
-    std::vector<std::shared_ptr<Landmark> > m_manualObjects;
+    std::vector<std::shared_ptr<landmark> > m_manual_objects;
 
     /// Enables labels.
-    bool m_enableLabels {true};
+    bool m_enable_labels {true};
 
     /// Defines the label font size in points.
-    std::size_t m_fontSize {12};
+    std::size_t m_font_size {12};
 
     /// Stores informations about the selected landmark.
-    std::list<std::shared_ptr<SelectedLandmark> > m_selectedLandmarks;
+    std::list<std::shared_ptr<selected_landmark> > m_selected_landmarks;
 
     /// Define a mutex to synchronized methods working with selected landmark.
-    std::mutex m_selectedMutex;
+    std::mutex m_selected_mutex;
 
     /// Defines the image orientation.
-    OrientationMode m_orientation {OrientationMode::Z_AXIS};
+    orientation_mode m_orientation {orientation_mode::z_axis};
 
     /// Defines the view distance of the landmarks.
-    ViewDistance m_viewDistance {ViewDistance::SLICES_IN_RANGE};
+    view_distance m_view_distance {view_distance::slices_in_range};
 
     /// Stores the current position index for each axis.
-    std::array<float, 3> m_currentSlicePos {0.F, 0.F, 0.F};
+    std::array<float, 3> m_current_slice_pos {0.F, 0.F, 0.F};
 
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive {true};
@@ -484,42 +484,42 @@ private:
     int m_priority {2};
 
     /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
-    std::shared_ptr<Landmark> m_pickedData {nullptr};
+    std::shared_ptr<landmark> m_picked_data {nullptr};
 
     /// Defines the mask used to filter out entities when the distance is auto snapped.
-    std::uint32_t m_queryMask {0xFFFFFFFF};
+    std::uint32_t m_query_mask {0xFFFFFFFF};
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_landmarksQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_landmarks_query_flag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Landmark addition / removal toggle
-    enum class LandmarksMode : uint8_t
+    enum class landmarks_mode : uint8_t
     {
-        NONE = 0,
-        ADD,
-        REMOVE
-    } m_landmarksMode {LandmarksMode::NONE};
+        none = 0,
+        add,
+        remove
+    } m_landmarks_mode {landmarks_mode::none};
 
     /// Initial group configuration
     /// @{
-    std::string m_currentGroup {"Landmarks"};
-    sight::data::landmarks::color_t m_currentColor {1.0F, 1.0F, 0.0F, 1.0F};
-    sight::data::landmarks::size_t m_currentSize {32.0F};
-    sight::data::landmarks::Shape m_currentShape {sight::data::landmarks::Shape::SPHERE};
+    std::string m_current_group {"Landmarks"};
+    sight::data::landmarks::color_t m_current_color {1.0F, 1.0F, 0.0F, 1.0F};
+    sight::data::landmarks::size_t m_current_size {32.0F};
+    sight::data::landmarks::shape m_current_shape {sight::data::landmarks::shape::sphere};
     /// @}
 
     /// Allow to limit the number of landmarks
     /// @{
-    std::map<std::string, std::size_t> m_groupMax;
-    std::optional<size_t> m_visibleMax {std::nullopt};
-    std::optional<size_t> m_totalMax {std::nullopt};
+    std::map<std::string, std::size_t> m_group_max;
+    std::optional<size_t> m_visible_max {std::nullopt};
+    std::optional<size_t> m_total_max {std::nullopt};
     /// @}
 
-    static constexpr std::string_view s_LANDMARKS_INOUT = "landmarks";
-    static constexpr std::string_view s_IMAGE_INPUT     = "image";
+    static constexpr std::string_view LANDMARKS_INOUT = "landmarks";
+    static constexpr std::string_view IMAGE_INPUT     = "image";
 
-    sight::data::ptr<sight::data::landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INOUT, true};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
+    sight::data::ptr<sight::data::landmarks, sight::data::access::inout> m_landmarks {this, LANDMARKS_INOUT, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

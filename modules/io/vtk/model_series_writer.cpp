@@ -62,27 +62,27 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 model_series_writer::model_series_writer() noexcept
 {
-    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
+    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType model_series_writer::getIOPathType() const
+sight::io::service::path_type_t model_series_writer::get_path_type() const
 {
-    return sight::io::service::FOLDER;
+    return sight::io::service::folder;
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_writer::openLocationDialog()
+void model_series_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
-    dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
-    dialog.setDefaultLocation(default_directory);
-    dialog.setOption(ui::dialog::location::WRITE);
-    dialog.setType(ui::dialog::location::FOLDER);
+    dialog.set_title(m_window_title.empty() ? "Choose a directory to save meshes" : m_window_title);
+    dialog.set_default_location(default_directory);
+    dialog.set_option(ui::dialog::location::write);
+    dialog.set_type(ui::dialog::location::folder);
 
     core::location::single_folder::sptr result;
 
@@ -95,12 +95,12 @@ void model_series_writer::openLocationDialog()
 
         // message box
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Overwrite confirmation");
-        message_box.setMessage("The selected directory is not empty. Write anyway ?");
-        message_box.setIcon(ui::dialog::message::QUESTION);
-        message_box.addButton(ui::dialog::message::YES);
-        message_box.addButton(ui::dialog::message::CANCEL);
-        if(message_box.show() == sight::ui::dialog::message::YES)
+        message_box.set_title("Overwrite confirmation");
+        message_box.set_message("The selected directory is not empty. Write anyway ?");
+        message_box.set_icon(ui::dialog::message::question);
+        message_box.add_button(ui::dialog::message::yes);
+        message_box.add_button(ui::dialog::message::cancel);
+        if(message_box.show() == sight::ui::dialog::message::yes)
         {
             break;
         }
@@ -110,9 +110,9 @@ void model_series_writer::openLocationDialog()
     {
         this->set_folder(result->get_folder());
         default_directory->set_folder(result->get_folder().parent_path());
-        dialog.saveDefaultLocation(default_directory);
+        dialog.save_default_location(default_directory);
 
-        if(m_selectedExtension.empty())
+        if(m_selected_extension.empty())
         {
             // Ask user to select extension
             // Create a map with description that will be displayed to user, and extensions.
@@ -134,19 +134,19 @@ void model_series_writer::openLocationDialog()
                     return _pair.first;
                 });
             sight::ui::dialog::selector extension_dialog;
-            extension_dialog.setTitle("Extensions");
-            extension_dialog.setMessage("Choose the extensions: ");
+            extension_dialog.set_title("Extensions");
+            extension_dialog.set_message("Choose the extensions: ");
             extension_dialog.set_choices(descriptions);
 
             if(const auto& choices = extension_dialog.show(); !choices.empty())
             {
-                m_selectedExtension = description_to_extension[choices.front()];
+                m_selected_extension = description_to_extension[choices.front()];
             }
         }
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -182,7 +182,7 @@ void model_series_writer::configuring()
         }
         else
         {
-            m_selectedExtension = "." + ext;
+            m_selected_extension = "." + ext;
         }
     }
 }
@@ -206,29 +206,29 @@ typename WRITER::sptr configure_writer(const std::filesystem::path& _filename)
 
 //------------------------------------------------------------------------------
 
-void model_series_writer::writeMesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh)
+void model_series_writer::write_mesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh)
 {
     sight::io::writer::object_writer::sptr mesh_writer;
     const auto ext = _filename.extension();
     if(ext == ".vtk")
     {
-        mesh_writer = configure_writer<sight::io::vtk::MeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::mesh_writer>(_filename);
     }
     else if(ext == ".vtp")
     {
-        mesh_writer = configure_writer<sight::io::vtk::VtpMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::vtp_mesh_writer>(_filename);
     }
     else if(ext == ".obj")
     {
-        mesh_writer = configure_writer<sight::io::vtk::ObjMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::obj_mesh_writer>(_filename);
     }
     else if(ext == ".stl")
     {
-        mesh_writer = configure_writer<sight::io::vtk::StlMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::stl_mesh_writer>(_filename);
     }
     else if(ext == ".ply")
     {
-        mesh_writer = configure_writer<sight::io::vtk::PlyMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::ply_mesh_writer>(_filename);
     }
     else
     {
@@ -240,7 +240,7 @@ void model_series_writer::writeMesh(const std::filesystem::path& _filename, cons
         );
     }
 
-    m_sigJobCreated->emit(mesh_writer->getJob());
+    m_sig_job_created->emit(mesh_writer->get_job());
 
     mesh_writer->set_object(_mesh);
     mesh_writer->write();
@@ -250,9 +250,9 @@ void model_series_writer::writeMesh(const std::filesystem::path& _filename, cons
 
 void model_series_writer::updating()
 {
-    m_writeFailed = true;
+    m_write_failed = true;
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         // Retrieve dataStruct associated with this service
         const auto locked       = m_data.lock();
@@ -262,27 +262,27 @@ void model_series_writer::updating()
             "The object is not a '"
             + data::model_series::classname()
             + "' or '"
-            + sight::io::service::s_DATA_KEY
+            + sight::io::service::DATA_KEY
             + "' is not correctly set.",
             model_series
         );
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
-        for(const auto& rec : model_series->getReconstructionDB())
+        for(const auto& rec : model_series->get_reconstruction_db())
         {
             SIGHT_ASSERT("Reconstruction from model series is not instanced", rec);
-            data::mesh::sptr mesh = rec->getMesh();
+            data::mesh::sptr mesh = rec->get_mesh();
             SIGHT_ASSERT("Mesh from reconstruction is not instanced", mesh);
 
             const std::filesystem::path filename = this->get_folder()
-                                                   / (rec->getOrganName() + "_" + mesh->get_uuid()
-                                                      + m_selectedExtension);
+                                                   / (rec->get_organ_name() + "_" + mesh->get_uuid()
+                                                      + m_selected_extension);
             try
             {
-                this->writeMesh(filename, mesh);
-                m_writeFailed = false;
+                this->write_mesh(filename, mesh);
+                m_write_failed = false;
             }
             catch(const std::exception& e)
             {
@@ -292,7 +292,7 @@ void model_series_writer::updating()
                 sight::ui::dialog::message::show(
                     "Warning",
                     ss.str(),
-                    sight::ui::dialog::message::WARNING
+                    sight::ui::dialog::message::warning
                 );
             }
             catch(...)
@@ -300,12 +300,12 @@ void model_series_writer::updating()
                 sight::ui::dialog::message::show(
                     "Warning",
                     "Warning during saving",
-                    sight::ui::dialog::message::WARNING
+                    sight::ui::dialog::message::warning
                 );
             }
         }
 
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
 }
 

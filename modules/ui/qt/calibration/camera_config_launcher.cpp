@@ -74,8 +74,8 @@ void camera_config_launcher::configuring()
     const service::config_t& intrinsic = config.get_child("intrinsic");
     const service::config_t& extrinsic = config.get_child("extrinsic");
 
-    m_intrinsicLauncher.parseConfig(intrinsic, this->get_sptr());
-    m_extrinsicLauncher.parseConfig(extrinsic, this->get_sptr());
+    m_intrinsic_launcher.parse_config(intrinsic, this->get_sptr());
+    m_extrinsic_launcher.parse_config(extrinsic, this->get_sptr());
 }
 
 //------------------------------------------------------------------------------
@@ -84,12 +84,12 @@ void camera_config_launcher::starting()
 {
     this->create();
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* layout = new QHBoxLayout();
 
-    m_cameraComboBox = new QComboBox();
-    layout->addWidget(m_cameraComboBox);
+    m_camera_combo_box = new QComboBox();
+    layout->addWidget(m_camera_combo_box);
 
     QIcon add_icon(QString::fromStdString(
                        core::runtime::get_module_resource_file_path(
@@ -98,9 +98,9 @@ void camera_config_launcher::starting()
                        )
                        .string()
     ));
-    m_addButton = new QPushButton(add_icon, "");
-    m_addButton->setToolTip("Add a new camera.");
-    layout->addWidget(m_addButton);
+    m_add_button = new QPushButton(add_icon, "");
+    m_add_button->setToolTip("Add a new camera.");
+    layout->addWidget(m_add_button);
 
     QIcon import_icon(QString::fromStdString(
                           core::runtime::get_module_resource_file_path(
@@ -109,9 +109,9 @@ void camera_config_launcher::starting()
                           )
                           .string()
     ));
-    m_importButton = new QPushButton(import_icon, "");
-    m_importButton->setToolTip("Import an intrinsic calibration.");
-    layout->addWidget(m_importButton);
+    m_import_button = new QPushButton(import_icon, "");
+    m_import_button->setToolTip("Import an intrinsic calibration.");
+    layout->addWidget(m_import_button);
 
     QIcon remove_icon(QString::fromStdString(
                           core::runtime::get_module_resource_file_path(
@@ -120,15 +120,15 @@ void camera_config_launcher::starting()
                           )
                           .string()
     ));
-    m_removeButton = new QPushButton(remove_icon, "");
-    m_removeButton->setToolTip("Remove the camera.");
-    layout->addWidget(m_removeButton);
+    m_remove_button = new QPushButton(remove_icon, "");
+    m_remove_button->setToolTip("Remove the camera.");
+    layout->addWidget(m_remove_button);
 
-    m_extrinsicButton = new QPushButton("Extrinsic");
-    layout->addWidget(m_extrinsicButton);
-    m_extrinsicButton->setCheckable(true);
+    m_extrinsic_button = new QPushButton("Extrinsic");
+    layout->addWidget(m_extrinsic_button);
+    m_extrinsic_button->setCheckable(true);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
     std::size_t nb_cam = 0;
     {
@@ -138,39 +138,39 @@ void camera_config_launcher::starting()
     }
     if(nb_cam == 0)
     {
-        this->addCamera();
+        this->add_camera();
 
-        m_extrinsicButton->setEnabled(false);
-        m_removeButton->setEnabled(false);
+        m_extrinsic_button->setEnabled(false);
+        m_remove_button->setEnabled(false);
     }
     else
     {
         for(std::size_t i = 0 ; i < nb_cam ; ++i)
         {
-            m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
+            m_camera_combo_box->addItem(QString("Camera %1").arg(i + 1));
         }
 
         const bool more_than_one_camera = (nb_cam > 1);
 
-        m_extrinsicButton->setEnabled(more_than_one_camera);
-        m_removeButton->setEnabled(more_than_one_camera);
+        m_extrinsic_button->setEnabled(more_than_one_camera);
+        m_remove_button->setEnabled(more_than_one_camera);
 
-        this->startIntrinsicConfig(0);
+        this->start_intrinsic_config(0);
     }
 
-    QObject::connect(m_cameraComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCameraChanged(int)));
-    QObject::connect(m_addButton, SIGNAL(clicked()), this, SLOT(onAddClicked()));
-    QObject::connect(m_importButton, SIGNAL(clicked()), this, SLOT(onImportClicked()));
-    QObject::connect(m_removeButton, SIGNAL(clicked()), this, SLOT(onRemoveClicked()));
-    QObject::connect(m_extrinsicButton, SIGNAL(toggled(bool)), this, SLOT(onExtrinsicToggled(bool)));
+    QObject::connect(m_camera_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(on_camera_changed(int)));
+    QObject::connect(m_add_button, &QPushButton::clicked, this, &self_t::on_add_clicked);
+    QObject::connect(m_import_button, &QPushButton::clicked, this, &self_t::on_import_clicked);
+    QObject::connect(m_remove_button, &QPushButton::clicked, this, &self_t::on_remove_clicked);
+    QObject::connect(m_extrinsic_button, &QPushButton::toggled, this, &self_t::on_extrinsic_toggled);
 }
 
 //------------------------------------------------------------------------------
 
 void camera_config_launcher::stopping()
 {
-    m_intrinsicLauncher.stopConfig();
-    m_extrinsicLauncher.stopConfig();
+    m_intrinsic_launcher.stop_config();
+    m_extrinsic_launcher.stop_config();
 
     this->destroy();
 }
@@ -183,7 +183,7 @@ void camera_config_launcher::updating()
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::onCameraChanged(int _index)
+void camera_config_launcher::on_camera_changed(int _index)
 {
     {
         const auto camera_set = m_camera_set.lock();
@@ -195,41 +195,41 @@ void camera_config_launcher::onCameraChanged(int _index)
 
     if(_index == 0)
     {
-        m_extrinsicButton->setChecked(false);
-        m_extrinsicButton->setEnabled(false);
+        m_extrinsic_button->setChecked(false);
+        m_extrinsic_button->setEnabled(false);
     }
     else
     {
-        m_extrinsicButton->setEnabled(true);
+        m_extrinsic_button->setEnabled(true);
     }
 
-    if(m_extrinsicButton->isChecked())
+    if(m_extrinsic_button->isChecked())
     {
-        this->startExtrinsicConfig(static_cast<std::size_t>(_index));
+        this->start_extrinsic_config(static_cast<std::size_t>(_index));
     }
     else
     {
-        this->startIntrinsicConfig(static_cast<std::size_t>(_index));
+        this->start_intrinsic_config(static_cast<std::size_t>(_index));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::onAddClicked()
+void camera_config_launcher::on_add_clicked()
 {
-    m_extrinsicButton->setEnabled(true);
-    m_removeButton->setEnabled(true);
+    m_extrinsic_button->setEnabled(true);
+    m_remove_button->setEnabled(true);
 
-    this->addCamera();
+    this->add_camera();
 }
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::onImportClicked()
+void camera_config_launcher::on_import_clicked()
 {
     auto vector = std::make_shared<data::vector>();
     auto reader = sight::service::add<io::service::reader>("sight::module::io::session::reader");
-    reader->set_inout(vector, io::service::s_DATA_KEY);
+    reader->set_inout(vector, io::service::DATA_KEY);
 
     try
     {
@@ -239,7 +239,7 @@ void camera_config_launcher::onImportClicked()
         reader->configure(config);
 
         reader->start();
-        reader->openLocationDialog();
+        reader->open_location_dialog();
         reader->update();
         reader->stop();
     }
@@ -247,9 +247,9 @@ void camera_config_launcher::onImportClicked()
     {
         sight::ui::dialog::message dlg;
         const auto msg = "Cannot read file: " + std::string(e.what());
-        dlg.setTitle("Read error");
-        dlg.setMessage(msg);
-        dlg.setIcon(sight::ui::dialog::message::Icons::CRITICAL);
+        dlg.set_title("Read error");
+        dlg.set_message(msg);
+        dlg.set_icon(sight::ui::dialog::message::icons::critical);
         SIGHT_ERROR(msg);
 
         throw;
@@ -271,7 +271,7 @@ void camera_config_launcher::onImportClicked()
             {
                 const auto& camera    = camera_set->get_camera(n_camera);
                 const auto& camera_id =
-                    camera->getCameraID() + " [" + std::to_string(n_set) + ", " + std::to_string(n_camera) + "]";
+                    camera->get_camera_id() + " [" + std::to_string(n_set) + ", " + std::to_string(n_camera) + "]";
 
                 camera_map.insert(std::make_pair(camera_id, camera));
                 cameras << QString::fromStdString(camera_id);
@@ -286,7 +286,7 @@ void camera_config_launcher::onImportClicked()
         sight::ui::dialog::message::show(
             "No CameraSet in file",
             "There are no CameraSet present in the loaded file.",
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
     }
     else if(cameras.empty())
@@ -294,15 +294,15 @@ void camera_config_launcher::onImportClicked()
         sight::ui::dialog::message::show(
             "No Cameras in file",
             "There are CameraSet present in the loaded CameraSet, but no Cameras were found",
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
     }
     else
     {
-        auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+        auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
         bool ok           = false;
         auto selected     = QInputDialog::getItem(
-            qt_container->getQtContainer(),
+            qt_container->get_qt_container(),
             "Please select a camera",
             "Camera",
             cameras,
@@ -315,7 +315,7 @@ void camera_config_launcher::onImportClicked()
         {
             const auto selected_std    = selected.toStdString();
             const auto selected_camera = camera_map[selected_std];
-            const auto cam_idx         = m_cameraComboBox->currentIndex();
+            const auto cam_idx         = m_camera_combo_box->currentIndex();
             const auto camera_set      = m_camera_set.lock();
             auto camera                = camera_set->get_camera(std::size_t(cam_idx));
             camera->deep_copy(selected_camera);
@@ -329,12 +329,12 @@ void camera_config_launcher::onImportClicked()
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::onRemoveClicked()
+void camera_config_launcher::on_remove_clicked()
 {
-    const auto index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
+    const auto index = static_cast<std::size_t>(m_camera_combo_box->currentIndex());
     if(index > 0)
     {
-        m_cameraComboBox->blockSignals(true);
+        m_camera_combo_box->blockSignals(true);
 
         {
             const auto camera_set = m_camera_set.lock();
@@ -355,22 +355,22 @@ void camera_config_launcher::onRemoveClicked()
             const std::size_t nb_cam = camera_set->size();
             if(nb_cam == 1)
             {
-                m_extrinsicButton->setEnabled(false);
-                m_removeButton->setEnabled(false);
+                m_extrinsic_button->setEnabled(false);
+                m_remove_button->setEnabled(false);
             }
 
             // Renamed all items from 1 to nbCam
-            m_cameraComboBox->clear();
+            m_camera_combo_box->clear();
             for(std::size_t i = 0 ; i < nb_cam ; ++i)
             {
-                m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
+                m_camera_combo_box->addItem(QString("Camera %1").arg(i + 1));
             }
         }
 
         // select first camera
-        m_cameraComboBox->setCurrentIndex(0);
-        this->startIntrinsicConfig(0);
-        m_cameraComboBox->blockSignals(false);
+        m_camera_combo_box->setCurrentIndex(0);
+        this->start_intrinsic_config(0);
+        m_camera_combo_box->blockSignals(false);
     }
     else
     {
@@ -380,27 +380,27 @@ void camera_config_launcher::onRemoveClicked()
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::onExtrinsicToggled(bool _checked)
+void camera_config_launcher::on_extrinsic_toggled(bool _checked)
 {
     std::size_t index = 0;
     {
         const auto camera_set = m_camera_set.lock();
-        index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
+        index = static_cast<std::size_t>(m_camera_combo_box->currentIndex());
         SIGHT_ASSERT("Bad index: " << index, index < camera_set->size());
     }
     if(_checked)
     {
-        this->startExtrinsicConfig(index);
+        this->start_extrinsic_config(index);
     }
     else
     {
-        this->startIntrinsicConfig(index);
+        this->start_intrinsic_config(index);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::startIntrinsicConfig(std::size_t _index)
+void camera_config_launcher::start_intrinsic_config(std::size_t _index)
 {
     sight::app::field_adaptor_t replace_map;
     {
@@ -416,14 +416,14 @@ void camera_config_launcher::startIntrinsicConfig(std::size_t _index)
         replace_map["calibrationInfo"] = calib_info->get_id();
     }
 
-    m_extrinsicLauncher.stopConfig();
-    m_intrinsicLauncher.stopConfig();
-    m_intrinsicLauncher.startConfig(this->get_sptr(), replace_map);
+    m_extrinsic_launcher.stop_config();
+    m_intrinsic_launcher.stop_config();
+    m_intrinsic_launcher.start_config(this->get_sptr(), replace_map);
 }
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::startExtrinsicConfig(std::size_t _index)
+void camera_config_launcher::start_extrinsic_config(std::size_t _index)
 {
     sight::app::field_adaptor_t replace_map;
     {
@@ -435,10 +435,10 @@ void camera_config_launcher::startExtrinsicConfig(std::size_t _index)
         data::camera::sptr camera2 = camera_set->get_camera(camera_idx);
 
         // Check if the two cameras are calibrated
-        if(!camera1->getIsCalibrated() || !camera2->getIsCalibrated())
+        if(!camera1->get_is_calibrated() || !camera2->get_is_calibrated())
         {
             sight::ui::dialog::message::show("Calibration", "Cameras must be intrinsically calibrated.");
-            m_extrinsicButton->setChecked(false);
+            m_extrinsic_button->setChecked(false);
             return;
         }
 
@@ -472,14 +472,14 @@ void camera_config_launcher::startExtrinsicConfig(std::size_t _index)
         replace_map["camIndex"]         = std::to_string(_index);
     }
 
-    m_extrinsicLauncher.stopConfig();
-    m_intrinsicLauncher.stopConfig();
-    m_extrinsicLauncher.startConfig(this->get_sptr(), replace_map);
+    m_extrinsic_launcher.stop_config();
+    m_intrinsic_launcher.stop_config();
+    m_extrinsic_launcher.start_config(this->get_sptr(), replace_map);
 }
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::addCamera()
+void camera_config_launcher::add_camera()
 {
     std::size_t nb_cam = 0;
     {
@@ -503,12 +503,12 @@ void camera_config_launcher::addCamera()
         sig->async_emit(camera);
     }
 
-    m_cameraComboBox->blockSignals(true);
-    m_cameraComboBox->addItem(QString("Camera %1").arg(nb_cam + 1));
-    m_cameraComboBox->setCurrentIndex(static_cast<int>(nb_cam));
-    m_extrinsicButton->setChecked(false);
-    this->startIntrinsicConfig(nb_cam);
-    m_cameraComboBox->blockSignals(false);
+    m_camera_combo_box->blockSignals(true);
+    m_camera_combo_box->addItem(QString("Camera %1").arg(nb_cam + 1));
+    m_camera_combo_box->setCurrentIndex(static_cast<int>(nb_cam));
+    m_extrinsic_button->setChecked(false);
+    this->start_intrinsic_config(nb_cam);
+    m_camera_combo_box->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------

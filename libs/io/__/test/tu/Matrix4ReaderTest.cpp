@@ -27,14 +27,14 @@
 
 #include <filesystem>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::Matrix4ReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::matrix4_reader_test);
 
 namespace sight::io::ut
 {
 
 //------------------------------------------------------------------------------
 
-void Matrix4ReaderTest::basicTest()
+void matrix4_reader_test::basic_test()
 {
     constexpr std::string_view file_content = R"(
 0 1 2 3

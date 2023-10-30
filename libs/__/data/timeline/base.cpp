@@ -41,7 +41,7 @@ base::base()
 bool base::operator==(const base& _other) const noexcept
 {
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

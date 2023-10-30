@@ -50,27 +50,27 @@ public:
     UI_QT_API ~menubar() override = default;
 
     /**
-     * @brief Instantiate menu with parent menuBar.
+     * @brief Instantiate menu with parent menubar.
      * @pre layout must be initialized before.
-     * @pre parent menuBar must be instanced.
+     * @pre parent menubar must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::menubar::sptr _parent, const std::string& _id) override;
+    UI_QT_API void create_layout(ui::container::menubar::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local menus.
      * @pre services using this menus must be stopped before.
      */
-    UI_QT_API void destroyLayout() override;
+    UI_QT_API void destroy_layout() override;
 
     /**
      * @brief Set the menu visibility.
      */
-    UI_QT_API void menuIsVisible(ui::container::menu::sptr _menu, bool _is_visible) override;
+    UI_QT_API void menu_is_visible(ui::container::menu::sptr _menu, bool _is_visible) override;
 
     /**
      * @brief Set the menu enable or not.
      */
-    UI_QT_API void menuIsEnabled(ui::container::menu::sptr _menu, bool _is_enabled) override;
+    UI_QT_API void menu_is_enabled(ui::container::menu::sptr _menu, bool _is_enabled) override;
 
 protected:
 

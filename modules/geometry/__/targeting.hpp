@@ -103,13 +103,13 @@ protected:
 private:
 
     /// SLOT: updates selected landmark point position on the crosshair.
-    void updateSelectedPoint(std::string _name, std::size_t _index);
+    void update_selected_point(std::string _name, std::size_t _index);
 
     /// SLOT: updates last landmark point position on the crosshair.
-    void updatePoint(std::string _name);
+    void update_point(std::string _name);
 
     /// SLOT: removes the landmark's position on the crosshair.
-    void removePoint();
+    void remove_point();
 
     /// Label containing the landmark group name.
     std::string m_label;
@@ -118,18 +118,18 @@ private:
     std::size_t m_index {0};
 
     /// Bool showing if a landmark is selected.
-    bool m_landmarkSelected {false};
+    bool m_landmark_selected {false};
 
     /// Target landmark.
-    glm::dvec3 m_targetLandmark {0.};
+    glm::dvec3 m_target_landmark {0.};
 
     /// Width of the background image (pixels).
     int m_width {400};
 
-    static constexpr std::string_view s_MATRIX_INPUT = "matrix";
-    data::ptr<data::matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_INPUT, true};
-    data::ptr<data::landmarks, sight::data::Access::in> m_landmark {this, "landmark", false};
-    data::ptr<data::point_list, sight::data::Access::inout> m_pointList {this, "pointList", false};
+    static constexpr std::string_view MATRIX_INPUT = "matrix";
+    data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_INPUT, true};
+    data::ptr<data::landmarks, sight::data::access::in> m_landmark {this, "landmark", false};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList", false};
 };
 
 } // namespace sight::module::geometry

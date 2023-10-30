@@ -36,12 +36,12 @@ class point_list_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(point_list_test);
-    CPPUNIT_TEST(copyTest);
-    CPPUNIT_TEST(getterTest);
-    CPPUNIT_TEST(setterTest);
-    CPPUNIT_TEST(pushTest);
-    CPPUNIT_TEST(removeTest);
-    CPPUNIT_TEST(clearTest);
+    CPPUNIT_TEST(copy_test);
+    CPPUNIT_TEST(getter_test);
+    CPPUNIT_TEST(setter_test);
+    CPPUNIT_TEST(push_test);
+    CPPUNIT_TEST(remove_test);
+    CPPUNIT_TEST(clear_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,12 +50,12 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void copyTest();
-    static void getterTest();
-    static void setterTest();
-    static void pushTest();
-    static void removeTest();
-    static void clearTest();
+    static void copy_test();
+    static void getter_test();
+    static void setter_test();
+    static void push_test();
+    static void remove_test();
+    static void clear_test();
 };
 
 } // namespace sight::data::ut

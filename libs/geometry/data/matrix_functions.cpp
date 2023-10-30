@@ -32,9 +32,9 @@ namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 
-void mult_vec_matrix(const fwMatrix4x4& _matrix, const fwVec3d& _source, fwVec3d& _dest)
+void mult_vec_matrix(const fw_matrix4x4& _matrix, const fw_vec3d& _source, fw_vec3d& _dest)
 {
-    // fwMatrix4x4 is stored row-major
+    // fw_matrix4x4 is stored row-major
     // glm matrices are stored column-major
 
     glm::dmat4x4 mat(_matrix[0][0], _matrix[1][0], _matrix[2][0], _matrix[3][0],
@@ -52,9 +52,9 @@ void mult_vec_matrix(const fwMatrix4x4& _matrix, const fwVec3d& _source, fwVec3d
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4 get_inverse(const fwMatrix4x4& _matrix)
+fw_matrix4x4 get_inverse(const fw_matrix4x4& _matrix)
 {
-    // fwMatrix4x4 is stored row-major
+    // fw_matrix4x4 is stored row-major
     // glm matrices are stored column-major
 
     glm::dmat4x4 mat(_matrix[0][0], _matrix[1][0], _matrix[2][0], _matrix[3][0],
@@ -64,7 +64,7 @@ fwMatrix4x4 get_inverse(const fwMatrix4x4& _matrix)
 
     glm::dmat4x4 mat_inv = glm::inverse(mat);
 
-    fwMatrix4x4 inverse = {{{{mat_inv[0][0], mat_inv[1][0], mat_inv[2][0], mat_inv[3][0]}},
+    fw_matrix4x4 inverse = {{{{mat_inv[0][0], mat_inv[1][0], mat_inv[2][0], mat_inv[3][0]}},
         {{mat_inv[0][1], mat_inv[1][1], mat_inv[2][1], mat_inv[3][1]}},
         {{mat_inv[0][2], mat_inv[1][2], mat_inv[2][2], mat_inv[3][2]}},
         {{mat_inv[0][3], mat_inv[1][3], mat_inv[2][3], mat_inv[3][3]
@@ -77,9 +77,9 @@ fwMatrix4x4 get_inverse(const fwMatrix4x4& _matrix)
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4 get_rotation_matrix(const fwVec3d& _vec_norm)
+fw_matrix4x4 get_rotation_matrix(const fw_vec3d& _vec_norm)
 {
-    fwMatrix4x4 r;
+    fw_matrix4x4 r;
 
     const double f_v0 = _vec_norm[0];
     const double f_v1 = _vec_norm[1];
@@ -125,7 +125,7 @@ fwMatrix4x4 get_rotation_matrix(const fwVec3d& _vec_norm)
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4 operator*(const fwMatrix4x4& _matrix1, const fwMatrix4x4& _matrix2)
+fw_matrix4x4 operator*(const fw_matrix4x4& _matrix1, const fw_matrix4x4& _matrix2)
 {
     glm::dmat4x4 mat1(_matrix1[0][0], _matrix1[1][0], _matrix1[2][0], _matrix1[3][0],
                       _matrix1[0][1], _matrix1[1][1], _matrix1[2][1], _matrix1[3][1],
@@ -139,7 +139,7 @@ fwMatrix4x4 operator*(const fwMatrix4x4& _matrix1, const fwMatrix4x4& _matrix2)
 
     glm::dmat4x4 prod = mat1 * mat2;
 
-    fwMatrix4x4 product = {{{{prod[0][0], prod[1][0], prod[2][0], prod[3][0]}},
+    fw_matrix4x4 product = {{{{prod[0][0], prod[1][0], prod[2][0], prod[3][0]}},
         {{prod[0][1], prod[1][1], prod[2][1], prod[3][1]}},
         {{prod[0][2], prod[1][2], prod[2][2], prod[3][2]}},
         {{prod[0][3], prod[1][3], prod[2][3], prod[3][3]

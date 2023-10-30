@@ -31,14 +31,14 @@ namespace sight::ui::dialog
 
 //-----------------------------------------------------------------------------
 
-message::Buttons message::show(
+message::buttons message::show(
     const std::string& _title,
     const std::string& _message,
-    message::Icons _icon
+    message::icons _icon
 )
 {
     ui::dialog::message message_box(_title, _message, _icon);
-    message_box.addButton(ui::dialog::message::OK);
+    message_box.add_button(ui::dialog::message::ok);
     return message_box.show();
 }
 
@@ -61,7 +61,7 @@ message::message()
 message::message(
     const std::string& _title,
     const std::string& _message,
-    message::Icons _icon
+    message::icons _icon
 )
 {
     core::thread::get_default_worker()->post_task<void>(
@@ -73,9 +73,9 @@ message::message(
 
             if(m_implementation)
             {
-                m_implementation->setTitle(_title);
-                m_implementation->setMessage(_message);
-                m_implementation->setIcon(_icon);
+                m_implementation->set_title(_title);
+                m_implementation->set_message(_message);
+                m_implementation->set_icon(_icon);
             }
         })
     ).wait();
@@ -88,7 +88,7 @@ message::~message()
 
 //-----------------------------------------------------------------------------
 
-void message::setTitle(const std::string& _title)
+void message::set_title(const std::string& _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -96,7 +96,7 @@ void message::setTitle(const std::string& _title)
         {
             if(m_implementation)
             {
-                m_implementation->setTitle(_title);
+                m_implementation->set_title(_title);
             }
         })
     ).wait();
@@ -104,7 +104,7 @@ void message::setTitle(const std::string& _title)
 
 //-----------------------------------------------------------------------------
 
-void message::setMessage(const std::string& _msg)
+void message::set_message(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -112,7 +112,7 @@ void message::setMessage(const std::string& _msg)
         {
             if(m_implementation)
             {
-                m_implementation->setMessage(_msg);
+                m_implementation->set_message(_msg);
             }
         })
     ).wait();
@@ -120,7 +120,7 @@ void message::setMessage(const std::string& _msg)
 
 //-----------------------------------------------------------------------------
 
-void message::setIcon(message::Icons _icon)
+void message::set_icon(message::icons _icon)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -128,7 +128,7 @@ void message::setIcon(message::Icons _icon)
         {
             if(m_implementation)
             {
-                m_implementation->setIcon(_icon);
+                m_implementation->set_icon(_icon);
             }
         })
     ).wait();
@@ -136,7 +136,7 @@ void message::setIcon(message::Icons _icon)
 
 //-----------------------------------------------------------------------------
 
-void message::addButton(message::Buttons _button)
+void message::add_button(message::buttons _button)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -144,7 +144,7 @@ void message::addButton(message::Buttons _button)
         {
             if(m_implementation)
             {
-                m_implementation->addButton(_button);
+                m_implementation->add_button(_button);
             }
         })
     ).wait();
@@ -152,7 +152,7 @@ void message::addButton(message::Buttons _button)
 
 //-----------------------------------------------------------------------------
 
-void message::setDefaultButton(message::Buttons _button)
+void message::set_default_button(message::buttons _button)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -160,7 +160,7 @@ void message::setDefaultButton(message::Buttons _button)
         {
             if(m_implementation)
             {
-                m_implementation->setDefaultButton(_button);
+                m_implementation->set_default_button(_button);
             }
         })
     ).wait();
@@ -168,7 +168,7 @@ void message::setDefaultButton(message::Buttons _button)
 
 //-----------------------------------------------------------------------------
 
-void message::addCustomButton(const std::string& _label, std::function<void()> _clicked_fn)
+void message::add_custom_button(const std::string& _label, std::function<void()> _clicked_fn)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -176,7 +176,7 @@ void message::addCustomButton(const std::string& _label, std::function<void()> _
         {
             if(m_implementation)
             {
-                m_implementation->addCustomButton(_label, _clicked_fn);
+                m_implementation->add_custom_button(_label, _clicked_fn);
             }
         })
     ).wait();
@@ -184,20 +184,20 @@ void message::addCustomButton(const std::string& _label, std::function<void()> _
 
 //-----------------------------------------------------------------------------
 
-message::Buttons message::show()
+message::buttons message::show()
 {
     if(m_implementation)
     {
-        using R = message::Buttons;
+        using ret_t = message::buttons;
 
-        std::function<R()> func = [this](auto&& ...){return m_implementation->show();};
-        std::shared_future<R> f = core::thread::get_default_worker()->post_task<R>(func);
+        std::function<ret_t()> func = [this](auto&& ...){return m_implementation->show();};
+        std::shared_future<ret_t> f = core::thread::get_default_worker()->post_task<ret_t>(func);
         f.wait();
 
         return f.get();
     }
 
-    return message::NOBUTTON;
+    return message::nobutton;
 }
 
 //-----------------------------------------------------------------------------

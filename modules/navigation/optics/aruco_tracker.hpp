@@ -48,9 +48,9 @@ namespace sight::module::navigation::optics
  * @section Slots Slots
  * @subsection Inherited Inherited slots (from tracker)
  * - \b track(timestamp) : Slot to fills the timeline with the new positions of the grid
- * - \b startTracking() : Slot called when the user wants to start tracking
- * - \b stopTracking() : Slot called when the user wants to stop tracking
- * - \b setParameter(ui::parameter_t, std::string): set a parameter from the UI.
+ * - \b start_tracking() : Slot called when the user wants to start tracking
+ * - \b stop_tracking() : Slot called when the user wants to stop tracking
+ * - \b set_parameter(ui::parameter_t, std::string): set a parameter from the UI.
  *
  * @section XML XML Configuration
  *
@@ -96,8 +96,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(aruco_tracker, service::tracker);
 
-    typedef core::com::signal<void (core::hires_clock::type _timestamp)> detection_done_signal_t;
-    typedef core::com::signal<void (bool)> marker_detected_signal_t;
+    using detection_done_signal_t  = core::com::signal<void (core::hires_clock::type)>;
+    using marker_detected_signal_t = core::com::signal<void (bool)>;
 
     /**
      * @name Signal API
@@ -117,8 +117,8 @@ public:
     MODULE_NAVIGATION_OPTICS_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
     /** @} */
 
-    typedef std::vector<int> marker_id_t;
-    typedef std::vector<marker_id_t> MarkerIDVectorType;
+    using marker_id_t        = std::vector<int>;
+    using marker_id_vector_t = std::vector<marker_id_t>;
 
     /**
      * @brief Constructor.
@@ -163,7 +163,7 @@ protected:
 private:
 
     /// Handles camera parameters (intrinsic matrix, distorsion coefficients and image size)
-    struct Camera
+    struct camera
     {
         cv::Mat intrinsic;
         cv::Mat distorsion;
@@ -171,35 +171,35 @@ private:
     };
 
     /// Slot called when a boolean value is changed
-    void setParameter(sight::ui::parameter_t _val, std::string _key);
+    void set_parameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Camera parameters
-    Camera m_cameraParams;
+    camera m_camera_params;
 
     /// Marker vector [[0,1,2],[4,5,6]]
-    MarkerIDVectorType m_markers;
+    marker_id_vector_t m_markers;
 
     /// True if tracker is initialized
-    bool m_isInitialized {false};
+    bool m_is_initialized {false};
 
     /// Display markers in the image or not
-    bool m_debugMarkers {false};
+    bool m_debug_markers {false};
 
     /// aruco detector parameters structure
-    cv::Ptr<cv::aruco::DetectorParameters> m_detectorParams;
+    cv::Ptr<cv::aruco::DetectorParameters> m_detector_params;
 
     /// Dictionary/Set of markers. It contains the inner codification
     cv::Ptr<cv::aruco::Dictionary> m_dictionary;
 
     /// Signal to emit when
-    detection_done_signal_t::sptr m_sigDetectionDone;
+    detection_done_signal_t::sptr m_sig_detection_done;
 
-    static constexpr std::string_view s_CAMERA_INPUT           = "camera";
-    static constexpr std::string_view s_MARKER_MAP_INOUT_GROUP = "markerMap";
+    static constexpr std::string_view CAMERA_INPUT           = "camera";
+    static constexpr std::string_view MARKER_MAP_INOUT_GROUP = "markerMap";
 
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
-    data::ptr<data::image, data::Access::inout> m_frame {this, s_FRAME_INOUT};
-    data::ptr_vector<data::marker_map, data::Access::inout> m_markerMap {this, s_MARKER_MAP_INOUT_GROUP};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
+    data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};
+    data::ptr_vector<data::marker_map, data::access::inout> m_marker_map {this, MARKER_MAP_INOUT_GROUP};
 };
 
 } // namespace sight::module::navigation::optics

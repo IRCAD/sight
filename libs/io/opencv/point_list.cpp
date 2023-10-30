@@ -27,21 +27,21 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-void point_list::copyToCv(const data::point::csptr& _src, cv::Point2d& _dst)
+void point_list::copy_to_cv(const data::point::csptr& _src, cv::Point2d& _dst)
 {
-    _dst.x = _src->getCoord()[0];
-    _dst.y = _src->getCoord()[1];
+    _dst.x = _src->get_coord()[0];
+    _dst.y = _src->get_coord()[1];
 }
 
 //------------------------------------------------------------------------------
 
-void point_list::copyToCv(const data::point_list::csptr& _src, std::vector<cv::Point2d>& _dst)
+void point_list::copy_to_cv(const data::point_list::csptr& _src, std::vector<cv::Point2d>& _dst)
 {
     _dst.clear();
-    for(const auto& point : _src->getPoints())
+    for(const auto& point : _src->get_points())
     {
         cv::Point2d cv_point;
-        copyToCv(point, cv_point);
+        copy_to_cv(point, cv_point);
         _dst.push_back(cv_point);
     }
 }
@@ -50,10 +50,10 @@ void point_list::copyToCv(const data::point_list::csptr& _src, std::vector<cv::P
 
 void point_list::copy_from_cv(const std::vector<cv::Point2d>& _src, const data::point_list::sptr& _dst)
 {
-    _dst->getPoints().clear();
+    _dst->get_points().clear();
     for(const auto& cv_point : _src)
     {
-        _dst->getPoints().push_back(std::make_shared<data::point>(cv_point.x, cv_point.y, 0.));
+        _dst->get_points().push_back(std::make_shared<data::point>(cv_point.x, cv_point.y, 0.));
     }
 }
 

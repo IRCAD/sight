@@ -56,7 +56,7 @@ using tokenizer_t      = boost::tokenizer<char_separator_t>;
 
 //------------------------------------------------------------------------------
 
-csv_reader::token_container_t csv_reader::getLine(const std::string& _separator)
+csv_reader::token_container_t csv_reader::get_line(const std::string& _separator)
 {
     std::string line;
     token_container_t tokens;

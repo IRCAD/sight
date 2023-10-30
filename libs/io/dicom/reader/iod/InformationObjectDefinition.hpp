@@ -40,12 +40,12 @@ namespace sight::io::dicom::reader::iod
 /**
  * @brief InformationObjectDefinition base class used to read DICOM IODs
  */
-class IO_DICOM_CLASS_API InformationObjectDefinition
+class IO_DICOM_CLASS_API information_object_definition
 {
 public:
 
-    typedef std::function<void (std::uint64_t)> ProgressCallback;
-    typedef std::function<bool ()> CancelRequestedCallback;
+    using progress_callback         = std::function<void (std::uint64_t)>;
+    using cancel_requested_callback = std::function<bool ()>;
 
     /**
      * @brief Constructor
@@ -55,16 +55,16 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API InformationObjectDefinition(
+    IO_DICOM_API information_object_definition(
         data::dicom_series::csptr _dicom_series,
-        SPTR(io::dicom::container::DicomInstance)_instance,
-        core::log::logger::sptr _logger = nullptr,
-        ProgressCallback _progress      = nullptr,
-        CancelRequestedCallback _cancel = nullptr
+        SPTR(io::dicom::container::dicom_instance)_instance,
+        core::log::logger::sptr _logger   = nullptr,
+        progress_callback _progress       = nullptr,
+        cancel_requested_callback _cancel = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~InformationObjectDefinition();
+    IO_DICOM_API virtual ~information_object_definition();
 
     /**
      * @brief Read a DICOM File
@@ -76,19 +76,19 @@ public:
 protected:
 
     /// DICOM Instance
-    SPTR(io::dicom::container::DicomInstance) m_instance;
+    SPTR(io::dicom::container::dicom_instance) m_instance;
 
     /// Dicom Series
-    data::dicom_series::csptr m_dicomSeries;
+    data::dicom_series::csptr m_dicom_series;
 
     ///Logger
     core::log::logger::sptr m_logger;
 
     /// Progress callback for jobs
-    ProgressCallback m_progressCallback;
+    progress_callback m_progress_callback;
 
     /// Cancel information for jobs
-    CancelRequestedCallback m_cancelRequestedCallback;
+    cancel_requested_callback m_cancel_requested_callback;
 };
 
 } // namespace sight::io::dicom::reader::iod

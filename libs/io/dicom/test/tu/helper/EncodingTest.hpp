@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,17 +26,17 @@
 namespace sight::io::dicom::helper::ut
 {
 
-class EncodingTest : public CPPUNIT_NS::TestFixture
+class encoding_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(EncodingTest);
-CPPUNIT_TEST(noCodeExtensionTest);
-CPPUNIT_TEST(codeExtensionTest);
+CPPUNIT_TEST_SUITE(encoding_test);
+CPPUNIT_TEST(no_code_extension_test);
+CPPUNIT_TEST(code_extension_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void noCodeExtensionTest();
-    static void codeExtensionTest();
+    static void no_code_extension_test();
+    static void code_extension_test();
 };
 
 } // namespace sight::io::dicom::helper::ut

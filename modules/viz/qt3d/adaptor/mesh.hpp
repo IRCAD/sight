@@ -36,7 +36,7 @@ namespace sight::module::viz::qt3d::adaptor
  * This class handles the conversion of data::mesh to Qt3D. It can handle triangles.
  *
  * @section Slot Slot
- * - \b updateVisibility(bool): shows or hides the mesh.
+ * - \b update_visibility(bool): shows or hides the mesh.
  * - \b toggleVisibility(): Toggle whether the adaptor is shown or not.
  *
  * @section XML XML Configuration
@@ -97,24 +97,24 @@ protected:
      * @brief Sets whether the mesh is to be seen or not.
      * @param _visible the visibility status of the mesh.
      */
-    MODULE_VIZ_QT3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_QT3D_API void set_visible(bool _visible) override;
 
 private:
 
     /// Updates mesh vertices.
-    void modifyVertices();
+    void modify_vertices();
 
     /// Contains a Qt3D mesh.
     QPointer<sight::viz::qt3d::data::mesh> m_mesh;
 
     /// Specifies the material adaptor used to configure mesh material.
-    std::string m_materialName;
+    std::string m_material_name;
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera {false};
+    bool m_auto_reset_camera {false};
 
-    static constexpr std::string_view s_MESH_INOUT = "mesh";
-    data::ptr<data::mesh, data::Access::inout> m_meshData {this, s_MESH_INOUT, true};
+    static constexpr std::string_view MESH_INOUT = "mesh";
+    data::ptr<data::mesh, data::access::inout> m_mesh_data {this, MESH_INOUT, true};
 };
 
 } // namespace sight::module::viz::qt3d::adaptor.

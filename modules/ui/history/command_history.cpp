@@ -52,8 +52,8 @@ command_history::command_history()
     new_slot(REDO_SLOT, &command_history::redo, this);
     new_slot(CLEAR_SLOT, &command_history::clear, this);
 
-    m_canUndoSig = new_signal<can_do_signal_t>(CANUNDO_SIGNAL);
-    m_canRedoSig = new_signal<can_do_signal_t>(CANREDO_SIGNAL);
+    m_can_undo_sig = new_signal<can_do_signal_t>(CANUNDO_SIGNAL);
+    m_can_redo_sig = new_signal<can_do_signal_t>(CANREDO_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,12 +72,12 @@ void command_history::configuring()
 
     if(max_commands.is_initialized())
     {
-        m_undoRedoManager.setCommandCount(max_commands.value());
+        m_undo_redo_manager.set_command_count(max_commands.value());
     }
 
     if(max_memory.is_initialized())
     {
-        m_undoRedoManager.setHistorySize(max_memory.value());
+        m_undo_redo_manager.set_history_size(max_memory.value());
     }
 }
 
@@ -85,61 +85,61 @@ void command_history::configuring()
 
 void command_history::starting()
 {
-    this->emitModifiedSig();
+    this->emit_modified_sig();
 }
 
 //-----------------------------------------------------------------------------
 
 void command_history::updating()
 {
-    this->emitModifiedSig();
+    this->emit_modified_sig();
 }
 
 //-----------------------------------------------------------------------------
 
 void command_history::stopping()
 {
-    m_undoRedoManager.clear();
+    m_undo_redo_manager.clear();
 }
 
 //-----------------------------------------------------------------------------
 
 void command_history::enqueue(sight::ui::history::command::sptr _command)
 {
-    m_undoRedoManager.enqueue(_command);
-    this->emitModifiedSig();
+    m_undo_redo_manager.enqueue(_command);
+    this->emit_modified_sig();
 }
 
 //-----------------------------------------------------------------------------
 
 void command_history::undo()
 {
-    m_undoRedoManager.undo();
-    this->emitModifiedSig();
+    m_undo_redo_manager.undo();
+    this->emit_modified_sig();
 }
 
 //-----------------------------------------------------------------------------
 
 void command_history::redo()
 {
-    m_undoRedoManager.redo();
-    this->emitModifiedSig();
+    m_undo_redo_manager.redo();
+    this->emit_modified_sig();
 }
 
 //-----------------------------------------------------------------------------
 
 void command_history::clear()
 {
-    m_undoRedoManager.clear();
-    this->emitModifiedSig();
+    m_undo_redo_manager.clear();
+    this->emit_modified_sig();
 }
 
 //-----------------------------------------------------------------------------
 
-void command_history::emitModifiedSig() const
+void command_history::emit_modified_sig() const
 {
-    m_canUndoSig->async_emit(m_undoRedoManager.canUndo());
-    m_canRedoSig->async_emit(m_undoRedoManager.canRedo());
+    m_can_undo_sig->async_emit(m_undo_redo_manager.can_undo());
+    m_can_redo_sig->async_emit(m_undo_redo_manager.can_redo());
 }
 
 //-----------------------------------------------------------------------------

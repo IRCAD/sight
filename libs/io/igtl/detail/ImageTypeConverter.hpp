@@ -37,17 +37,17 @@ namespace sight::io::igtl::detail
 /**
  * @brief Utility class for image type conversion between igtl data and fwData
  */
-class IO_IGTL_CLASS_API ImageTypeConverter
+class IO_IGTL_CLASS_API image_type_converter
 {
 public:
 
-    typedef std::map<core::type, std::uint8_t> TypeConverterMap;
+    using type_converter_map_t = std::map<core::type, std::uint8_t>;
 
     /// Not implemented
-    ImageTypeConverter() = delete;
+    image_type_converter() = delete;
 
     /// Not implemented
-    ~ImageTypeConverter() = delete;
+    ~image_type_converter() = delete;
 
     /**
      * @brief init type converter map for conversion between core::type and igtlImage enum Type
@@ -55,7 +55,7 @@ public:
      * @return a map contain all equivalence between core::type and igtlImage enum Type
      */
 
-    static TypeConverterMap initTypeConverterMap();
+    static type_converter_map_t init_type_converter_map();
 
     /**
      * @brief get core::type from an igtlType
@@ -76,7 +76,7 @@ public:
 private:
 
     /// type converter map between igtl pixel type and Sight pixel type
-    static TypeConverterMap s_typeConverterMap;
+    static type_converter_map_t s_type_converter_map;
 };
 
 } //namespace sight::io::igtl::detail

@@ -27,11 +27,11 @@
 namespace sight::activity::validator::registry
 {
 
-struct FwActivitiesValidatorRegistryInstantiatorTag {};
+struct activities_validator_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwActivitiesValidatorRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, activities_validator_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

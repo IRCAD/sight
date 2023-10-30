@@ -38,19 +38,19 @@ namespace sight::geometry::data
 
 //-----------------------------------------------------------------------------
 
-sight::data::array::sptr point_list::computeDistance(
+sight::data::array::sptr point_list::compute_distance(
     sight::data::point_list::sptr _point_list1,
     sight::data::point_list::sptr _point_list2
 )
 {
     SIGHT_ASSERT(
         "the 2 pointLists must have the same number of points",
-        _point_list1->getPoints().size() == _point_list2->getPoints().size()
+        _point_list1->get_points().size() == _point_list2->get_points().size()
     );
 
-    const sight::data::point_list::PointListContainer points1 = _point_list1->getPoints();
-    const sight::data::point_list::PointListContainer points2 = _point_list2->getPoints();
-    const std::size_t size                                    = points1.size();
+    const auto points1     = _point_list1->get_points();
+    const auto points2     = _point_list2->get_points();
+    const std::size_t size = points1.size();
 
     sight::data::array::sptr output_array = std::make_shared<sight::data::array>();
     output_array->resize({size}, sight::core::type::DOUBLE);
@@ -59,8 +59,8 @@ sight::data::array::sptr point_list::computeDistance(
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
-        const sight::data::point::point_coord_array_t tmp1 = points1[i]->getCoord();
-        const sight::data::point::point_coord_array_t tmp2 = points2[i]->getCoord();
+        const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
+        const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
         const glm::dvec3 pt1                               = glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
         const glm::dvec3 pt2                               = glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
         *distance_array_itr = glm::distance(pt1, pt2);
@@ -77,8 +77,8 @@ void point_list::transform(
     const sight::data::matrix4::csptr& _matrix
 )
 {
-    sight::data::point_list::PointListContainer points = _point_list->getPoints();
-    const std::size_t size                             = points.size();
+    const sight::data::point_list::container_t points = _point_list->get_points();
+    const std::size_t size                            = points.size();
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
@@ -98,11 +98,11 @@ void point_list::associate(
 {
     SIGHT_ASSERT(
         "the 2 pointLists must have the same number of points",
-        _point_list1->getPoints().size() == _point_list2->getPoints().size()
+        _point_list1->get_points().size() == _point_list2->get_points().size()
     );
 
-    sight::data::point_list::PointListContainer points1 = _point_list1->getPoints();
-    sight::data::point_list::PointListContainer points2 = _point_list2->getPoints();
+    const sight::data::point_list::container_t points1 = _point_list1->get_points();
+    const sight::data::point_list::container_t points2 = _point_list2->get_points();
 
     const std::size_t size = points1.size();
 
@@ -114,8 +114,8 @@ void point_list::associate(
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
-        const sight::data::point::point_coord_array_t tmp1 = points1[i]->getCoord();
-        const sight::data::point::point_coord_array_t tmp2 = points2[i]->getCoord();
+        const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
+        const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
 
         // Add the point to vector/list
         vec1.emplace_back(tmp1[0], tmp1[1], tmp1[2]);
@@ -145,8 +145,8 @@ void point_list::associate(
         point_coord[1] = it_closest_point->y;
         point_coord[2] = it_closest_point->z;
 
-        sight::data::point::sptr pt = points2[index];
-        pt->setCoord(point_coord);
+        const sight::data::point::sptr& pt = points2[index];
+        pt->set_coord(point_coord);
         ++index;
 
         // Erase the already matched point
@@ -156,17 +156,17 @@ void point_list::associate(
 
 //------------------------------------------------------------------------------
 
-sight::data::point::sptr point_list::removeClosestPoint(
+sight::data::point::sptr point_list::remove_closest_point(
     const sight::data::point_list::sptr& _point_list,
     const sight::data::point::csptr& _point,
     float _delta
 )
 {
     // Initial data
-    const auto& list = _point_list->getPoints();
+    const auto& list = _point_list->get_points();
     if(!list.empty())
     {
-        const auto& coord1 = _point->getCoord();
+        const auto& coord1 = _point->get_coord();
         const glm::vec3 p1 {coord1[0], coord1[1], coord1[2]};
 
         // Data to find the closest point
@@ -178,7 +178,7 @@ sight::data::point::sptr point_list::removeClosestPoint(
         // Find the closest one
         for(std::size_t i = 0 ; i < list.size() ; ++i)
         {
-            const auto& coord2 = list[i]->getCoord();
+            const auto& coord2 = list[i]->get_coord();
             const glm::vec3 p2 {coord2[0], coord2[1], coord2[2]};
 
             float temp_closest = NAN;

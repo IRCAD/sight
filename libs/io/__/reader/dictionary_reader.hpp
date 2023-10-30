@@ -64,7 +64,7 @@ public:
     IO_API std::string extension() const override;
 
     /// Returns the default dictionary path ( file in rc directory path of fwDataIO library )
-    IO_API static std::filesystem::path getDefaultDictionaryPath();
+    IO_API static std::filesystem::path get_default_dictionary_path();
 };
 
 } // namespace sight::io::reader

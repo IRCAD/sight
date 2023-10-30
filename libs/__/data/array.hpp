@@ -51,7 +51,7 @@ namespace sight::data
  * @subsection Allocation Allocation
  *
  * The array buffer is allocated using the resize() method.
- * You can get the allocated size using getSizeInBytes().
+ * You can get the allocated size using size_in_bytes().
  *
  * @warning The allocated size can be different from the array size: it can happen if you called resize(..., false).
  * It may be useful when you don't want to reallocate the image too often, but you need to be sure to allocate enough
@@ -158,15 +158,15 @@ public:
     /**
      * @brief array size type
      */
-    typedef std::vector<std::size_t> size_t;
+    using size_t = std::vector<std::size_t>;
     /**
      * @brief Offset type
      */
-    typedef std::vector<std::size_t> offset_t;
+    using offset_t = std::vector<std::size_t>;
     /**
      * @brief Index type
      */
-    typedef offset_t index_t;
+    using index_t = offset_t;
 
     /**
      * @brief Constructor
@@ -239,21 +239,21 @@ public:
      *
      * @return One array element size in bytes.
      */
-    DATA_API std::size_t getElementSizeInBytes() const;
+    DATA_API std::size_t element_size_in_bytes() const;
 
     /**
      * @brief Get the number of elements of type <getType()> in the array
      *
      * @return number of array elements
      */
-    DATA_API std::size_t numElements() const;
+    DATA_API std::size_t num_elements() const;
 
     /**
      * @brief Getter for the array view size
      *
      * @return  array view size in bytes.
      */
-    DATA_API std::size_t getSizeInBytes() const;
+    DATA_API std::size_t size_in_bytes() const;
 
     /**
      * @brief Getter for the array size
@@ -267,35 +267,35 @@ public:
      *
      * @return vector of steps in each dimension for array walking
      */
-    DATA_API const offset_t& getStrides() const;
+    DATA_API const offset_t& get_strides() const;
 
     /**
      * @brief Getter for number of dimensions, ie. size().size()
      *
      * @return array's number of dimensions
      */
-    DATA_API std::size_t numDimensions() const;
+    DATA_API std::size_t num_dimensions() const;
 
     /**
      * @brief Set array's buffer ownership
      *
      * @param own New ownership value
      */
-    DATA_API void setIsBufferOwner(bool _own);
+    DATA_API void set_is_buffer_owner(bool _own);
 
     /**
      * @brief Getter for array's buffer ownership
      *
      * @return Current array buffer ownership
      */
-    DATA_API bool getIsBufferOwner() const;
+    DATA_API bool get_is_buffer_owner() const;
 
     /**
      * @brief Getter for array's type
      *
      * @return Type of array
      */
-    DATA_API core::type getType() const;
+    DATA_API core::type type() const;
 
     /**
      * @brief Compute strides for given parameters
@@ -303,7 +303,7 @@ public:
      * @param size array size
      * @param sizeOfType size of a component
      */
-    DATA_API static offset_t computeStrides(size_t _size, std::size_t _size_of_type);
+    DATA_API static offset_t compute_strides(size_t _size, std::size_t _size_of_type);
 
     /// Return buffer object
     ///@{
@@ -312,7 +312,7 @@ public:
     ///@}
 
     /// Set buffer object
-    void setBufferObject(const core::memory::buffer_object::sptr& _buffer_obj);
+    void set_buffer_object(const core::memory::buffer_object::sptr& _buffer_obj);
 
     /// Exchanges the content of the array with the content of _source.
     DATA_API void swap(array::sptr _source) noexcept;
@@ -401,7 +401,7 @@ public:
      * @param policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      */
-    DATA_API void setBuffer(
+    DATA_API void set_buffer(
         void* _buf,
         bool _take_ownership,
         const array::size_t& _size,
@@ -515,7 +515,7 @@ protected:
      * @param takeOwnership if true, the array will manage allocation and destroy the buffer when needed.
      * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    DATA_API void setBuffer(
+    DATA_API void set_buffer(
         void* _buf,
         bool _take_ownership                                 = false,
         core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
@@ -528,8 +528,8 @@ protected:
      * @return buffer item pointer
      * @{
      */
-    DATA_API char* getBufferPtr(const array::index_t& _id);
-    DATA_API const char* getBufferPtr(const array::index_t& _id) const;
+    DATA_API char* get_buffer_ptr(const array::index_t& _id);
+    DATA_API const char* get_buffer_ptr(const array::index_t& _id) const;
     ///@}
 
     /**
@@ -537,7 +537,7 @@ protected:
      * @param id Item array index
      * @return buffer offset
      */
-    DATA_API std::size_t getBufferOffset(const array::index_t& _id) const;
+    DATA_API std::size_t get_buffer_offset(const array::index_t& _id) const;
 
     /// Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
@@ -552,30 +552,30 @@ private:
 
     offset_t m_strides {0};
     core::type m_type;
-    core::memory::buffer_object::sptr m_bufferObject;
+    core::memory::buffer_object::sptr m_buffer_object;
     size_t m_size;
-    bool m_isBufferOwner {true};
+    bool m_is_buffer_owner {true};
 };
 
 //-----------------------------------------------------------------------------
 
 inline core::memory::buffer_object::csptr array::get_buffer_object() const
 {
-    return m_bufferObject;
+    return m_buffer_object;
 }
 
 //-----------------------------------------------------------------------------
 
 inline core::memory::buffer_object::sptr array::get_buffer_object()
 {
-    return m_bufferObject;
+    return m_buffer_object;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void array::setBufferObject(const core::memory::buffer_object::sptr& _buffer_obj)
+inline void array::set_buffer_object(const core::memory::buffer_object::sptr& _buffer_obj)
 {
-    m_bufferObject = _buffer_obj;
+    m_buffer_object = _buffer_obj;
 }
 
 //------------------------------------------------------------------------------
@@ -593,7 +593,7 @@ inline T& array::at(const array::index_t& _id)
             return _a < _b;
         });
     SIGHT_THROW_EXCEPTION_IF(exception("Index out of bounds"), !is_index_in_bounds);
-    return *reinterpret_cast<T*>(this->getBufferPtr(_id));
+    return *reinterpret_cast<T*>(this->get_buffer_ptr(_id));
 }
 
 //------------------------------------------------------------------------------
@@ -604,7 +604,7 @@ inline const T& array::at(const array::index_t& _id) const
     const bool is_index_in_bounds =
         std::equal(_id.begin(), _id.end(), m_size.begin(), std::less<>());
     SIGHT_THROW_EXCEPTION_IF(exception("Index out of bounds"), !is_index_in_bounds);
-    return *reinterpret_cast<T*>(this->getBufferPtr(_id));
+    return *reinterpret_cast<T*>(this->get_buffer_ptr(_id));
 }
 
 //------------------------------------------------------------------------------
@@ -615,9 +615,9 @@ inline T& array::at(const std::size_t& _offset)
     SIGHT_THROW_EXCEPTION_IF(
         exception(
             "Index out of bounds, " + std::to_string(_offset) + " is not in [0-"
-            + std::to_string(this->getSizeInBytes() / sizeof(T) - 1) + "]"
+            + std::to_string(this->size_in_bytes() / sizeof(T) - 1) + "]"
         ),
-        _offset >= this->getSizeInBytes() / sizeof(T)
+        _offset >= this->size_in_bytes() / sizeof(T)
     );
     return *(reinterpret_cast<T*>(this->buffer()) + _offset);
 }
@@ -630,9 +630,9 @@ inline const T& array::at(const std::size_t& _offset) const
     SIGHT_THROW_EXCEPTION_IF(
         exception(
             "Index out of bounds, " + std::to_string(_offset) + " is not in [0-"
-            + std::to_string(this->getSizeInBytes() / sizeof(T) - 1) + "]"
+            + std::to_string(this->size_in_bytes() / sizeof(T) - 1) + "]"
         ),
-        _offset >= this->getSizeInBytes() / sizeof(T)
+        _offset >= this->size_in_bytes() / sizeof(T)
     );
     return *(reinterpret_cast<const T*>(this->buffer()) + _offset);
 }
@@ -642,7 +642,7 @@ inline const T& array::at(const std::size_t& _offset) const
 template<typename T>
 inline array::iterator<T> array::begin()
 {
-    return iterator<T>(static_cast<typename iterator<T>::pointer>(buffer()));
+    return iterator<T>(static_cast<typename iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -651,7 +651,7 @@ template<typename T>
 inline array::iterator<T> array::end()
 {
     auto itr = begin<T>();
-    itr += static_cast<typename iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    itr += static_cast<typename iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -660,7 +660,7 @@ inline array::iterator<T> array::end()
 template<typename T>
 inline array::const_iterator<T> array::begin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(buffer()));
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -669,7 +669,7 @@ template<typename T>
 inline array::const_iterator<T> array::end() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -678,7 +678,7 @@ inline array::const_iterator<T> array::end() const
 template<typename T>
 inline array::const_iterator<T> array::cbegin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(buffer()));
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -687,7 +687,7 @@ template<typename T>
 inline array::const_iterator<T> array::cend() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 

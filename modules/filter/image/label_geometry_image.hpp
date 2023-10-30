@@ -101,13 +101,13 @@ private:
      * @param value
      * @param key
      */
-    void updateSelectedPointList(std::string _value, std::string _key);
+    void update_selected_point_list(std::string _value, std::string _key);
 
-    std::vector<std::vector<std::size_t> > m_lPointListLabels;
-    std::vector<data::point_list::sptr> m_lPointListCentroids;
+    std::vector<std::vector<std::size_t> > m_l_point_list_labels;
+    std::vector<data::point_list::sptr> m_l_point_list_centroids;
 
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_image {this, "image"};
-    sight::data::ptr<sight::data::point_list, sight::data::Access::out> m_pointList {this, "pointList"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, "image"};
+    sight::data::ptr<sight::data::point_list, sight::data::access::out> m_point_list {this, "pointList"};
 };
 
 } // namespace sight::module::filter::image

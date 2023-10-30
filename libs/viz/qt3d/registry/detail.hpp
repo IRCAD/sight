@@ -37,11 +37,10 @@ class window_interactor;
 namespace registry
 {
 
-typedef std::string key_t;
+using key_t = std::string;
+using type  = sight::core::factory_registry<std::shared_ptr<sight::viz::qt3d::window_interactor>(), key_t>;
 
-typedef sight::core::factory_registry<SPTR(sight::viz::qt3d::window_interactor)(), key_t> Type;
-
-VIZ_QT3D_API SPTR(Type) get();
+VIZ_QT3D_API SPTR(type) get();
 
 } // namespace registry.
 

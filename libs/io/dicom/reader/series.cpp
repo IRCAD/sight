@@ -59,16 +59,16 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
     SIGHT_ASSERT("Logger should not be null.", m_logger);
 
     // Create instance
-    SPTR(io::dicom::container::DicomInstance) instance =
-        std::make_shared<io::dicom::container::DicomInstance>(_dicom_series);
+    SPTR(io::dicom::container::dicom_instance) instance =
+        std::make_shared<io::dicom::container::dicom_instance>(_dicom_series);
 
     // Create result
     data::series::sptr result;
 
-    if(!_dicom_series->getDicomContainer().empty())
+    if(!_dicom_series->get_dicom_container().empty())
     {
         // Get sop_classUID
-        data::dicom_series::sop_classUIDContainerType sop_class_uid_container = _dicom_series->getSOPClassUIDs();
+        data::dicom_series::sop_class_uid_container_t sop_class_uid_container = _dicom_series->get_sop_class_ui_ds();
         const std::string sop_class_uid                                       = *sop_class_uid_container.begin();
 
         // If the DicomSeries contains an image (ImageSeries)
@@ -77,18 +77,18 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
         {
             // Read the image
             data::image_series::sptr image_series = data::dicom::series::convert_to_image_series(_dicom_series);
-            image_series->setDicomReference(_dicom_series);
+            image_series->set_dicom_reference(_dicom_series);
 
             // Create IOD Reader
-            io::dicom::reader::iod::CTMRImageIOD iod(_dicom_series, instance, m_logger,
-                                                     m_progressCallback, m_cancelRequestedCallback);
-            iod.setBufferRotationEnabled(m_enableBufferRotation);
+            io::dicom::reader::iod::ctmr_image_iod iod(_dicom_series, instance, m_logger,
+                                                       m_progress_callback, m_cancel_requested_callback);
+            iod.set_buffer_rotation_enabled(m_enable_buffer_rotation);
 
             try
             {
                 iod.read(image_series);
             }
-            catch(const io::dicom::exception::Failed& e)
+            catch(const io::dicom::exception::failed& e)
             {
                 // NOTE : if there is no image, reading is stopped.
                 m_logger->critical(e.what());
@@ -103,16 +103,16 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
                 == gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
             data::model_series::sptr model_series = data::dicom::series::convert_to_model_series(_dicom_series);
-            model_series->setDicomReference(_dicom_series);
+            model_series->set_dicom_reference(_dicom_series);
             // Create IOD Reader
-            io::dicom::reader::iod::SurfaceSegmentationIOD iod(_dicom_series, instance, m_logger,
-                                                               m_progressCallback, m_cancelRequestedCallback);
+            io::dicom::reader::iod::surface_segmentation_iod iod(_dicom_series, instance, m_logger,
+                                                                 m_progress_callback, m_cancel_requested_callback);
 
             try
             {
                 iod.read(model_series);
             }
-            catch(const io::dicom::exception::Failed& e)
+            catch(const io::dicom::exception::failed& e)
             {
                 // NOTE : if there is no image, reading is stopped.
                 m_logger->critical(e.what());
@@ -126,25 +126,25 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
         else if(gdcm::MediaStorage::GetMSType(sop_class_uid.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage)
         {
             // Retrieve referenced image instance
-            SPTR(io::dicom::container::DicomInstance) image_instance =
-                this->getSpatialFiducialsReferencedSeriesInstance(_dicom_series);
+            SPTR(io::dicom::container::dicom_instance) image_instance =
+                this->get_spatial_fiducials_referenced_series_instance(_dicom_series);
 
             if(image_instance)
             {
                 data::image_series::sptr image_series =
-                    std::dynamic_pointer_cast<data::image_series>(m_seriesContainerMap[image_instance]);
+                    std::dynamic_pointer_cast<data::image_series>(m_series_container_map[image_instance]);
 
-                image_series->setDicomReference(_dicom_series);
+                image_series->set_dicom_reference(_dicom_series);
 
                 // Create IOD Reader
-                io::dicom::reader::iod::SpatialFiducialsIOD iod(_dicom_series, instance, m_logger,
-                                                                m_progressCallback, m_cancelRequestedCallback);
+                io::dicom::reader::iod::spatial_fiducials_iod iod(_dicom_series, instance, m_logger,
+                                                                  m_progress_callback, m_cancel_requested_callback);
 
                 try
                 {
                     iod.read(image_series);
                 }
-                catch(const io::dicom::exception::Failed& e)
+                catch(const io::dicom::exception::failed& e)
                 {
                     //NOTE: no throw for reading error for SR and RT doc
                     m_logger->critical("Spatial Fiducials reading failed: " + std::string(e.what()));
@@ -153,7 +153,7 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
             else
             {
                 m_logger->critical(
-                    "The spatial fiducials series \"" + _dicom_series->getSeriesInstanceUID()
+                    "The spatial fiducials series \"" + _dicom_series->get_series_instance_uid()
                     + "\" could not be read as it refers to an unknown series UID."
                 );
             }
@@ -166,29 +166,29 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
                                                                      // == gdcm::MediaStorage::Comprehensive3DSR"
         {
             // Retrieve referenced image instance
-            SPTR(io::dicom::container::DicomInstance) referenced_instance =
-                this->getStructuredReportReferencedSeriesInstance(_dicom_series);
+            SPTR(io::dicom::container::dicom_instance) referenced_instance =
+                this->get_structured_report_referenced_series_instance(_dicom_series);
 
             data::image_series::sptr image_series;
-            const auto& iter = m_seriesContainerMap.find(referenced_instance);
-            if(iter != m_seriesContainerMap.end())
+            const auto& iter = m_series_container_map.find(referenced_instance);
+            if(iter != m_series_container_map.end())
             {
                 image_series = std::dynamic_pointer_cast<data::image_series>(iter->second);
             }
 
             if(referenced_instance && image_series)
             {
-                image_series->setDicomReference(_dicom_series);
+                image_series->set_dicom_reference(_dicom_series);
 
                 // Create readers
-                io::dicom::reader::iod::ComprehensiveSRIOD iod(_dicom_series, referenced_instance, m_logger,
-                                                               m_progressCallback, m_cancelRequestedCallback);
+                io::dicom::reader::iod::comprehensive_sriod iod(_dicom_series, referenced_instance, m_logger,
+                                                                m_progress_callback, m_cancel_requested_callback);
 
                 try
                 {
                     iod.read(image_series);
                 }
-                catch(const io::dicom::exception::Failed& e)
+                catch(const io::dicom::exception::failed& e)
                 {
                     //NOTE: no throw for reading error for SR and RT doc
                     m_logger->critical("Structured Report reading failed: " + std::string(e.what()));
@@ -197,7 +197,7 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
             else
             {
                 m_logger->critical(
-                    "The structured report series \"" + _dicom_series->getSeriesInstanceUID()
+                    "The structured report series \"" + _dicom_series->get_series_instance_uid()
                     + "\" could not be read as it refers to an unknown series UID."
                 );
             }
@@ -214,7 +214,7 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
     // Store series in instance map
     if(result)
     {
-        m_seriesContainerMap[instance] = result;
+        m_series_container_map[instance] = result;
     }
 
     return result;
@@ -222,14 +222,14 @@ data::series::sptr series::read(const data::dicom_series::csptr& _dicom_series)
 
 //------------------------------------------------------------------------------
 
-SPTR(io::dicom::container::DicomInstance) series::getSpatialFiducialsReferencedSeriesInstance(
+SPTR(io::dicom::container::dicom_instance) series::get_spatial_fiducials_referenced_series_instance(
     const data::dicom_series::csptr& _dicom_series
 )
 {
-    SPTR(io::dicom::container::DicomInstance) result;
+    SPTR(io::dicom::container::dicom_instance) result;
 
     // Dicom container
-    data::dicom_series::dicom_container_t dicom_container = _dicom_series->getDicomContainer();
+    data::dicom_series::dicom_container_t dicom_container = _dicom_series->get_dicom_container();
 
     // Create Reader
     std::shared_ptr<gdcm::Reader> reader =
@@ -260,16 +260,16 @@ SPTR(io::dicom::container::DicomInstance) series::getSpatialFiducialsReferencedS
 
                 // series Instance UID - Type 1
                 series_instance_uid =
-                    io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000E>(referenced_series_item_dataset);
+                    io::dicom::helper::dicom_data_reader::get_tag_value<0x0020, 0x000E>(referenced_series_item_dataset);
             }
         }
     }
 
     if(!series_instance_uid.empty())
     {
-        for(const series_container_map_t::value_type& v : m_seriesContainerMap)
+        for(const auto& v : m_series_container_map)
         {
-            if(v.first->getSeriesInstanceUID() == series_instance_uid)
+            if(v.first->get_series_instance_uid() == series_instance_uid)
             {
                 result = v.first;
                 break;
@@ -282,14 +282,14 @@ SPTR(io::dicom::container::DicomInstance) series::getSpatialFiducialsReferencedS
 
 //------------------------------------------------------------------------------
 
-SPTR(io::dicom::container::DicomInstance) series::getStructuredReportReferencedSeriesInstance(
+SPTR(io::dicom::container::dicom_instance) series::get_structured_report_referenced_series_instance(
     const data::dicom_series::csptr& _dicom_series
 )
 {
-    SPTR(io::dicom::container::DicomInstance) result;
+    SPTR(io::dicom::container::dicom_instance) result;
 
     // Dicom container
-    data::dicom_series::dicom_container_t dicom_container = _dicom_series->getDicomContainer();
+    data::dicom_series::dicom_container_t dicom_container = _dicom_series->get_dicom_container();
 
     // Create Reader
     std::shared_ptr<gdcm::Reader> reader =
@@ -329,7 +329,7 @@ SPTR(io::dicom::container::DicomInstance) series::getStructuredReportReferencedS
                     {
                         gdcm::Item series_item                   = series_sequence->GetItem(1);
                         const gdcm::DataSet& series_item_dataset = series_item.GetNestedDataSet();
-                        series_instance_uid = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000E>(
+                        series_instance_uid = io::dicom::helper::dicom_data_reader::get_tag_value<0x0020, 0x000E>(
                             series_item_dataset
                         );
                     }
@@ -340,9 +340,9 @@ SPTR(io::dicom::container::DicomInstance) series::getStructuredReportReferencedS
 
     if(!series_instance_uid.empty())
     {
-        for(const series_container_map_t::value_type& v : m_seriesContainerMap)
+        for(const auto& v : m_series_container_map)
         {
-            if(v.first->getSeriesInstanceUID() == series_instance_uid)
+            if(v.first->get_series_instance_uid() == series_instance_uid)
             {
                 result = v.first;
                 break;

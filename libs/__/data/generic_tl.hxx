@@ -32,7 +32,7 @@ namespace sight::data
 template<class BUFFER_TYPE>
 generic_tl<BUFFER_TYPE>::generic_tl() :
     buffer_tl(),
-    m_maxElementNum(~0U)
+    m_max_element_num(~0U)
 {
 }
 
@@ -59,29 +59,29 @@ void generic_tl<BUFFER_TYPE>::deep_copy(const object::csptr& _source, const std:
         !bool(other)
     );
 
-    this->clearTimeline();
-    this->initPoolSize(other->getMaxElementNum());
+    this->clear_timeline();
+    this->init_pool_size(other->get_max_element_num());
 
-    for(const timeline_t::value_type& elt : other->m_timeline)
+    for(const auto& elt : other->m_timeline)
     {
-        SPTR(buffer_t) tl_obj = this->createBuffer(elt.first);
+        SPTR(buffer_t) tl_obj = this->create_buffer(elt.first);
         tl_obj->deep_copy(*elt.second);
         m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
 CSPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
-generic_tl<BUFFER_TYPE>::getClosestBuffer(
+generic_tl<BUFFER_TYPE>::get_closest_buffer(
     core::hires_clock::type _timestamp,
     timeline::direction_t _direction
 ) const
 {
-    CSPTR(data::timeline::object) buffer = this->getClosestObject(_timestamp, _direction);
+    CSPTR(data::timeline::object) buffer = this->get_closest_object(_timestamp, _direction);
     return std::dynamic_pointer_cast<const buffer_t>(buffer);
 }
 
@@ -91,36 +91,36 @@ template<class BUFFER_TYPE>
 CSPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
 generic_tl<BUFFER_TYPE>::get_buffer(core::hires_clock::type _timestamp) const
 {
-    CSPTR(data::timeline::object) buffer = this->getObject(_timestamp);
+    CSPTR(data::timeline::object) buffer = this->get_object(_timestamp);
     return std::dynamic_pointer_cast<const buffer_t>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-void generic_tl<BUFFER_TYPE>::initPoolSize(unsigned int _max_element_num)
+void generic_tl<BUFFER_TYPE>::init_pool_size(unsigned int _max_element_num)
 {
-    m_maxElementNum = _max_element_num;
-    this->allocPoolSize(sizeof(BUFFER_TYPE) * m_maxElementNum);
+    m_max_element_num = _max_element_num;
+    this->alloc_pool_size(sizeof(BUFFER_TYPE) * m_max_element_num);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
 SPTR(data::timeline::object)
-generic_tl<BUFFER_TYPE>::createObject(core::hires_clock::type _timestamp)
+generic_tl<BUFFER_TYPE>::create_object(core::hires_clock::type _timestamp)
 {
-    return this->createBuffer(_timestamp);
+    return this->create_buffer(_timestamp);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
 SPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
-generic_tl<BUFFER_TYPE>::createBuffer(core::hires_clock::type _timestamp)
+generic_tl<BUFFER_TYPE>::create_buffer(core::hires_clock::type _timestamp)
 {
     SPTR(buffer_t) obj = std::make_shared<buffer_t>(
-        m_maxElementNum,
+        m_max_element_num,
         _timestamp,
         (data::timeline::buffer::buffer_data_t) m_pool->malloc(),
         m_pool->get_requested_size(),
@@ -131,7 +131,7 @@ generic_tl<BUFFER_TYPE>::createBuffer(core::hires_clock::type _timestamp)
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-bool generic_tl<BUFFER_TYPE>::isObjectValid(const CSPTR(data::timeline::object)& _obj) const
+bool generic_tl<BUFFER_TYPE>::is_object_valid(const CSPTR(data::timeline::object)& _obj) const
 {
     CSPTR(buffer_t) src_obj = std::dynamic_pointer_cast<const buffer_t>(_obj);
     return src_obj != nullptr;
@@ -140,9 +140,9 @@ bool generic_tl<BUFFER_TYPE>::isObjectValid(const CSPTR(data::timeline::object)&
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-unsigned int generic_tl<BUFFER_TYPE>::getMaxElementNum() const
+unsigned int generic_tl<BUFFER_TYPE>::get_max_element_num() const
 {
-    return m_maxElementNum;
+    return m_max_element_num;
 }
 
 //------------------------------------------------------------------------------
@@ -150,13 +150,13 @@ unsigned int generic_tl<BUFFER_TYPE>::getMaxElementNum() const
 template<class BUFFER_TYPE>
 bool generic_tl<BUFFER_TYPE>::operator==(const generic_tl& _other) const noexcept
 {
-    if(m_maxElementNum != _other.m_maxElementNum)
+    if(m_max_element_num != _other.m_max_element_num)
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

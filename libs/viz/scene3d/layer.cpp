@@ -74,16 +74,16 @@ const core::com::slots::key_t layer::RESET_CAMERA_SLOT = "resetCamera";
 
 //-----------------------------------------------------------------------------
 
-const std::string layer::s_DEFAULT_CAMERA_NAME      = "DefaultCam";
-const std::string layer::s_DEFAULT_LIGHT_NAME       = "DefaultLight";
-const std::string layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
+const std::string layer::DEFAULT_CAMERA_NAME      = "DefaultCam";
+const std::string layer::DEFAULT_LIGHT_NAME       = "DefaultLight";
+const std::string layer::DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 //-----------------------------------------------------------------------------
 
 struct layer::LayerCameraListener : public Ogre::Camera::Listener
 {
     layer* m_layer {nullptr};
-    int m_frameId {0};
+    int m_frame_id {0};
 
     //------------------------------------------------------------------------------
 
@@ -98,16 +98,16 @@ struct layer::LayerCameraListener : public Ogre::Camera::Listener
     {
         SIGHT_ASSERT("layer is not set", m_layer);
 
-        if(m_layer->getStereoMode() != viz::scene3d::compositor::core::stereo_mode_t::NONE)
+        if(m_layer->get_stereo_mode() != viz::scene3d::compositor::core::stereo_mode_t::none)
         {
-            const int frame_id = m_layer->getRenderService()->getInteractorManager()->getFrameId();
-            if(frame_id != m_frameId)
+            const int frame_id = m_layer->render_service()->get_interactor_manager()->get_frame_id();
+            if(frame_id != m_frame_id)
             {
                 auto& gpu_program_mgr = Ogre::GpuProgramManager::getSingleton();
 
-                for(std::uint8_t i = 0 ; i < m_layer->numCameras() ; ++i)
+                for(std::uint8_t i = 0 ; i < m_layer->num_cameras() ; ++i)
                 {
-                    Ogre::Matrix4 proj_mat = m_layer->getCameraProjMat(i);
+                    Ogre::Matrix4 proj_mat = m_layer->get_camera_proj_mat(i);
 
                     proj_mat[1][0] = -proj_mat[1][0];
                     proj_mat[1][1] = -proj_mat[1][1];
@@ -133,7 +133,7 @@ struct layer::LayerCameraListener : public Ogre::Camera::Listener
                     }
                 }
 
-                m_frameId = frame_id;
+                m_frame_id = frame_id;
             }
         }
     }
@@ -148,56 +148,56 @@ layer::layer()
     new_signal<camera_updated_signal_t>(CAMERA_RANGE_UPDATED_SIG);
 
     new_slot(INTERACTION_SLOT, &layer::interaction, this);
-    new_slot(RESET_CAMERA_SLOT, &layer::resetCameraCoordinates, this);
+    new_slot(RESET_CAMERA_SLOT, &layer::reset_camera_coordinates, this);
 }
 
 //-----------------------------------------------------------------------------
 
-Ogre::RenderTarget* layer::getRenderTarget() const
+Ogre::RenderTarget* layer::get_render_target() const
 {
-    return m_renderTarget;
+    return m_render_target;
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::setRenderTarget(Ogre::RenderTarget* _render_target)
+void layer::set_render_target(Ogre::RenderTarget* _render_target)
 {
-    m_renderTarget = _render_target;
+    m_render_target = _render_target;
 }
 
 //-----------------------------------------------------------------------------
 
 void layer::set_id(const std::string& _id)
 {
-    auto render_service = m_renderService.lock();
+    auto render_service = m_render_service.lock();
     SIGHT_ASSERT("Render service must be set before calling set_id().", render_service);
     m_id = _id;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string layer::getName() const
+std::string layer::get_name() const
 {
-    return m_sceneManager->getName();
+    return m_scene_manager->getName();
 }
 
 //-----------------------------------------------------------------------------
 
-const std::string& layer::getLayerID() const
+const std::string& layer::layer_id() const
 {
     return m_id;
 }
 
 //-----------------------------------------------------------------------------
 
-Ogre::SceneManager* layer::getSceneManager() const
+Ogre::SceneManager* layer::get_scene_manager() const
 {
-    return m_sceneManager;
+    return m_scene_manager;
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::createScene()
+void layer::create_scene()
 {
     if(initialized())
     {
@@ -206,25 +206,25 @@ void layer::createScene()
 
     namespace fwc = viz::scene3d::compositor;
     {
-        auto render_service = m_renderService.lock();
-        auto* root          = viz::scene3d::utils::getOgreRoot();
-        m_sceneManager = root->createSceneManager("DefaultSceneManager", render_service->get_id() + "_" + m_id);
+        auto render_service = m_render_service.lock();
+        auto* root          = viz::scene3d::utils::get_ogre_root();
+        m_scene_manager = root->createSceneManager("DefaultSceneManager", render_service->get_id() + "_" + m_id);
     }
 
-    SIGHT_ASSERT("scene manager must be initialized", m_sceneManager);
-    SIGHT_ASSERT("Render window must be initialized", m_renderTarget);
+    SIGHT_ASSERT("scene manager must be initialized", m_scene_manager);
+    SIGHT_ASSERT("Render window must be initialized", m_render_target);
 
-    m_sceneManager->setAmbientLight(Ogre::ColourValue(0.8F, 0.8F, 0.8F));
+    m_scene_manager->setAmbientLight(Ogre::ColourValue(0.8F, 0.8F, 0.8F));
 
     // Create the camera
-    m_camera = m_sceneManager->createCamera(layer::s_DEFAULT_CAMERA_NAME);
+    m_camera = m_scene_manager->createCamera(layer::DEFAULT_CAMERA_NAME);
     m_camera->setNearClipDistance(1);
 
-    const auto& [left, top, width, height] = m_viewportCfg;
-    auto* viewport = m_renderTarget->addViewport(m_camera, m_order, left, top, width, height);
+    const auto& [left, top, width, height] = m_viewport_cfg;
+    auto* viewport = m_render_target->addViewport(m_camera, m_order, left, top, width, height);
     SIGHT_ASSERT("Could not create a viewport", viewport);
 
-    m_compositorChainManager = std::make_unique<fwc::chain_manager>(this->get_sptr());
+    m_compositor_chain_manager = std::make_unique<fwc::chain_manager>(this->get_sptr());
 
     if(m_order != 0)
     {
@@ -235,38 +235,38 @@ void layer::createScene()
         // FIXME : background isn't shown when using compositor with a clear pass
         // We must blend the input previous in each compositor
         Ogre::MaterialPtr default_material = Ogre::MaterialManager::getSingleton().getByName(
-            m_backgroundMaterial.empty() ? "Background" : m_backgroundMaterial,
+            m_background_material.empty() ? "Background" : m_background_material,
             RESOURCE_GROUP
         );
         SIGHT_ASSERT("Could not find material ", default_material);
         Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create(
-            this->getName() + "backgroundMat",
+            this->get_name() + "backgroundMat",
             RESOURCE_GROUP
         );
         default_material.get()->copyDetailsTo(material);
 
-        if(m_backgroundMaterial.empty())
+        if(m_background_material.empty())
         {
             std::array<std::uint8_t, 4> color {};
             Ogre::Pass* pass                           = material->getTechnique(0)->getPass(0);
             Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
 
-            data::tools::color::hexaStringToRGBA(m_topColor, color);
+            data::tools::color::hexa_string_to_rgba(m_top_color, color);
             Ogre::ColourValue ogre_top_color(static_cast<float>(color[0]) / 255.F,
                                              static_cast<float>(color[1]) / 255.F,
                                              static_cast<float>(color[2]) / 255.F,
                                              1.F);
             params->setNamedConstant("topColour", ogre_top_color);
 
-            data::tools::color::hexaStringToRGBA(m_bottomColor, color);
+            data::tools::color::hexa_string_to_rgba(m_bottom_color, color);
             Ogre::ColourValue ogre_bot_color(static_cast<float>(color[0]) / 255.F,
                                              static_cast<float>(color[1]) / 255.F,
                                              static_cast<float>(color[2]) / 255.F,
                                              1.F);
             params->setNamedConstant("bottomColour", ogre_bot_color);
 
-            params->setNamedConstant("topScale", m_topScale);
-            params->setNamedConstant("bottomScale", m_bottomScale);
+            params->setNamedConstant("topScale", m_top_scale);
+            params->setNamedConstant("bottomScale", m_bottom_scale);
         }
 
         // Create background rectangle covering the whole screen
@@ -283,7 +283,7 @@ void layer::createScene()
         rect->setBoundingBox(aab_inf);
 
         // Attach background to the scene
-        Ogre::SceneNode* node = m_sceneManager->getRootSceneNode()->createChildSceneNode("Background");
+        Ogre::SceneNode* node = m_scene_manager->getRootSceneNode()->createChildSceneNode("Background");
         node->attachObject(rect);
     }
 
@@ -295,45 +295,45 @@ void layer::createScene()
     m_camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // Creating Camera scene Node
-    Ogre::SceneNode* camera_node = m_sceneManager->getRootSceneNode()->createChildSceneNode(
-        layer::s_DEFAULT_CAMERA_NODE_NAME
+    Ogre::SceneNode* camera_node = m_scene_manager->getRootSceneNode()->createChildSceneNode(
+        layer::DEFAULT_CAMERA_NODE_NAME
     );
     camera_node->setPosition(Ogre::Vector3(0, 0, 5));
     camera_node->lookAt(Ogre::Vector3(0, 0, 1), Ogre::Node::TS_WORLD);
 
     camera_node->attachObject(m_camera);
 
-    auto render_service = m_renderService.lock();
-    if(m_hasDefaultLight)
+    auto render_service = m_render_service.lock();
+    if(m_has_default_light)
     {
-        m_defaultLightDiffuseColor  = std::make_shared<data::color>();
-        m_defaultLightSpecularColor = std::make_shared<data::color>();
+        m_default_light_diffuse_color  = std::make_shared<data::color>();
+        m_default_light_specular_color = std::make_shared<data::color>();
 
-        m_lightAdaptor = viz::scene3d::light_adaptor::createLightAdaptor(
-            m_defaultLightDiffuseColor,
-            m_defaultLightSpecularColor
+        m_light_adaptor = viz::scene3d::light_adaptor::create_light_adaptor(
+            m_default_light_diffuse_color,
+            m_default_light_specular_color
         );
-        m_lightAdaptor->setName(layer::s_DEFAULT_LIGHT_NAME);
-        m_lightAdaptor->setType(Ogre::Light::LT_DIRECTIONAL);
-        m_lightAdaptor->setTransformId(camera_node->getName());
-        m_lightAdaptor->setLayerID(this->getLayerID());
-        m_lightAdaptor->setRenderService(render_service);
-        m_lightAdaptor->start();
+        m_light_adaptor->set_name(layer::DEFAULT_LIGHT_NAME);
+        m_light_adaptor->set_type(Ogre::Light::LT_DIRECTIONAL);
+        m_light_adaptor->set_transform_id(camera_node->getName());
+        m_light_adaptor->set_layer_id(this->layer_id());
+        m_light_adaptor->set_render_service(render_service);
+        m_light_adaptor->start();
     }
 
-    m_cameraListener = new LayerCameraListener(this);
-    m_camera->addListener(m_cameraListener);
+    m_camera_listener = new LayerCameraListener(this);
+    m_camera->addListener(m_camera_listener);
 
     // Setup transparency compositors
-    if(m_hasCoreCompositor)
+    if(m_has_core_compositor)
     {
-        this->setupCore();
+        this->setup_core();
     }
 
     // Setup custom compositors and autostereo
     {
         boost::char_separator<char> sep(";");
-        boost::tokenizer<boost::char_separator<char> > tok(m_rawCompositorChain, sep);
+        boost::tokenizer<boost::char_separator<char> > tok(m_raw_compositor_chain, sep);
         std::vector<fwc::chain_manager::compositor_id_t> compositor_chain;
 
         for(const auto& it : tok)
@@ -341,90 +341,90 @@ void layer::createScene()
             compositor_chain.push_back(it);
         }
 
-        if(m_stereoMode != compositor::core::stereo_mode_t::NONE)
+        if(m_stereo_mode != compositor::core::stereo_mode_t::none)
         {
-            m_autostereoListener = new compositor::listener::auto_stereo_compositor_listener(this->numCameras());
-            Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
+            m_autostereo_listener = new compositor::listener::auto_stereo_compositor_listener(this->num_cameras());
+            Ogre::MaterialManager::getSingleton().addListener(m_autostereo_listener);
         }
 
-        m_compositorChainManager->setCompositorChain(compositor_chain);
+        m_compositor_chain_manager->set_compositor_chain(compositor_chain);
     }
 
-    m_sceneCreated = true;
+    m_scene_created = true;
 
     this->signal<init_layer_signal_t>(INIT_LAYER_SIG)->async_emit(this->get_sptr());
 }
 
 // ----------------------------------------------------------------------------
 
-void layer::destroyScene()
+void layer::destroy_scene()
 {
     if(m_order == 0)
     {
         // Remove the background material for the first layer
         Ogre::MaterialManager::getSingleton().remove(
-            this->getName() + "backgroundMat",
+            this->get_name() + "backgroundMat",
             viz::scene3d::RESOURCE_GROUP
         );
     }
 
-    if(m_lightAdaptor)
+    if(m_light_adaptor)
     {
-        viz::scene3d::light_adaptor::destroyLightAdaptor(m_lightAdaptor);
-        m_lightAdaptor.reset();
+        viz::scene3d::light_adaptor::destroy_light_adaptor(m_light_adaptor);
+        m_light_adaptor.reset();
     }
 
-    if((m_camera != nullptr) && (m_cameraListener != nullptr))
+    if((m_camera != nullptr) && (m_camera_listener != nullptr))
     {
-        m_camera->removeListener(m_cameraListener);
-        delete m_cameraListener;
-        m_cameraListener = nullptr;
+        m_camera->removeListener(m_camera_listener);
+        delete m_camera_listener;
+        m_camera_listener = nullptr;
     }
 
-    if(m_autostereoListener != nullptr)
+    if(m_autostereo_listener != nullptr)
     {
-        Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
-        delete m_autostereoListener;
-        m_autostereoListener = nullptr;
+        Ogre::MaterialManager::getSingleton().removeListener(m_autostereo_listener);
+        delete m_autostereo_listener;
+        m_autostereo_listener = nullptr;
     }
 
-    if(m_sceneManager != nullptr)
+    if(m_scene_manager != nullptr)
     {
-        viz::scene3d::utils::getOgreRoot()->destroySceneManager(m_sceneManager);
-        m_sceneManager = nullptr;
+        viz::scene3d::utils::get_ogre_root()->destroySceneManager(m_scene_manager);
+        m_scene_manager = nullptr;
     }
 
-    m_compositorChainManager = nullptr;
+    m_compositor_chain_manager = nullptr;
 
     m_camera = nullptr;
 }
 
 // ----------------------------------------------------------------------------
 
-void layer::addAvailableCompositor(std::string _compositor_name)
+void layer::add_available_compositor(std::string _compositor_name)
 {
-    m_compositorChainManager->addAvailableCompositor(_compositor_name);
+    m_compositor_chain_manager->add_available_compositor(_compositor_name);
 }
 
 // ----------------------------------------------------------------------------
 
-void layer::updateCompositorState(std::string _compositor_name, bool _is_enabled)
+void layer::update_compositor_state(std::string _compositor_name, bool _is_enabled)
 {
-    auto render_service = m_renderService.lock();
+    auto render_service = m_render_service.lock();
 
-    render_service->makeCurrent();
-    m_compositorChainManager->updateCompositorState(_compositor_name, _is_enabled);
-    render_service->requestRender();
+    render_service->make_current();
+    m_compositor_chain_manager->update_compositor_state(_compositor_name, _is_enabled);
+    render_service->request_render();
 }
 
 // ----------------------------------------------------------------------------
 
-void layer::forAllInteractors(const std::function<void(const interactor::base::sptr&)>&& _f)
+void layer::for_all_interactors(const std::function<void(const interactor::base::sptr&)>&& _f)
 {
     const auto interactors_begin = m_interactors.begin();
     const auto interactors_end   = m_interactors.end();
 
-    for(auto it = interactors_begin ; it != interactors_end && !m_cancelFurtherInteraction ; ++it)
+    for(auto it = interactors_begin ; it != interactors_end && !m_cancel_further_interaction ; ++it)
     {
         const interactor::base::sptr interactor = it->second.lock();
         if(interactor)
@@ -440,143 +440,143 @@ void layer::forAllInteractors(const std::function<void(const interactor::base::s
 
 // ----------------------------------------------------------------------------
 
-void layer::interaction(viz::scene3d::window_interactor::InteractionInfo _info)
+void layer::interaction(viz::scene3d::window_interactor::interaction_info _info)
 {
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    switch(_info.interactionType)
+    switch(_info.interaction_type)
     {
-        case viz::scene3d::window_interactor::InteractionInfo::MOUSEMOVE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::mousemove:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->mouseMoveEvent(_info.button, _info.modifiers, _info.x, _info.y, _info.dx, _info.dy);
+                _i->mouse_move_event(_info.button, _info.modifiers, _info.x, _info.y, _info.dx, _info.dy);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::WHEELMOVE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::wheelmove:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->wheelEvent(_info.modifiers, _info.delta, _info.x, _info.y);
+                _i->wheel_event(_info.modifiers, _info.delta, _info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::RESIZE:
+        case viz::scene3d::window_interactor::interaction_info::resize:
         {
             auto sig = this->signal<resize_layer_signal_t>(RESIZE_LAYER_SIG);
             sig->async_emit(_info.x, _info.y);
 
-            this->forAllInteractors(
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
                 {
-                    _i->resizeEvent(_info.x, _info.y);
+                    _i->resize_event(_info.x, _info.y);
                 });
             break;
         }
 
-        case viz::scene3d::window_interactor::InteractionInfo::KEYPRESS:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::keypress:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->keyPressEvent(_info.key, _info.modifiers, _info.x, _info.y);
+                _i->key_press_event(_info.key, _info.modifiers, _info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::KEYRELEASE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::keyrelease:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->keyReleaseEvent(_info.key, _info.modifiers, _info.x, _info.y);
+                _i->key_release_event(_info.key, _info.modifiers, _info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::BUTTONRELEASE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::buttonrelease:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->buttonReleaseEvent(_info.button, _info.modifiers, _info.x, _info.y);
+                _i->button_release_event(_info.button, _info.modifiers, _info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::BUTTONPRESS:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::buttonpress:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->buttonPressEvent(_info.button, _info.modifiers, _info.x, _info.y);
+                _i->button_press_event(_info.button, _info.modifiers, _info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::BUTTONDOUBLEPRESS:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::buttondoublepress:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->buttonDoublePressEvent(_info.button, _info.modifiers, _info.x, _info.y);
+                _i->button_double_press_event(_info.button, _info.modifiers, _info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::PINCH_GESTURE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::pinch_gesture:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->pinchGestureEvent(_info.delta, _info.x, _info.y);
+                _i->pinch_gesture_event(_info.delta, _info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_MOVE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::pan_gesture_move:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->panGestureMoveEvent(_info.x, _info.y, _info.dx, _info.dy);
+                _i->pan_gesture_move_event(_info.x, _info.y, _info.dx, _info.dy);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_RELEASE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::pan_gesture_release:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->panGestureReleaseEvent(_info.x, _info.y, _info.dx, _info.dy);
+                _i->pan_gesture_release_event(_info.x, _info.y, _info.dx, _info.dy);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::LONG_TAP_GESTURE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::long_tap_gesture:
+            this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
             {
-                _i->longTapGestureEvent(_info.x, _info.y);
+                _i->long_tap_gesture_event(_info.x, _info.y);
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::LEAVE:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::leave:
+            this->for_all_interactors(
                 [](const interactor::base::sptr& _i)
             {
-                _i->leaveEvent();
+                _i->leave_event();
             });
             break;
 
-        case viz::scene3d::window_interactor::InteractionInfo::ENTER:
-            this->forAllInteractors(
+        case viz::scene3d::window_interactor::interaction_info::enter:
+            this->for_all_interactors(
                 [](const interactor::base::sptr& _i)
             {
-                _i->enterEvent();
+                _i->enter_event();
             });
             break;
     }
 
-    m_cancelFurtherInteraction = false;
+    m_cancel_further_interaction = false;
 }
 
 // ----------------------------------------------------------------------------
 
-int layer::getOrder() const
+int layer::get_order() const
 {
     return m_order;
 }
 
 // ----------------------------------------------------------------------------
 
-void layer::setOrder(int _order)
+void layer::set_order(int _order)
 {
     m_order = _order;
 }
@@ -590,23 +590,23 @@ void layer::set_worker(const core::thread::worker::sptr& _worker)
 
 // ----------------------------------------------------------------------------
 
-viz::scene3d::render::sptr layer::getRenderService() const
+viz::scene3d::render::sptr layer::render_service() const
 {
-    return m_renderService.lock();
+    return m_render_service.lock();
 }
 
 //------------------------------------------------------------------------------
 
-void layer::setRenderService(const viz::scene3d::render::sptr& _service)
+void layer::set_render_service(const viz::scene3d::render::sptr& _service)
 {
     SIGHT_ASSERT("service not instanced", _service);
 
-    m_renderService = _service;
+    m_render_service = _service;
 }
 
 // ----------------------------------------------------------------------------
 
-void layer::addInteractor(const viz::scene3d::interactor::base::sptr& _interactor, int _priority)
+void layer::add_interactor(const viz::scene3d::interactor::base::sptr& _interactor, int _priority)
 {
     using pair_t = typename decltype(m_interactors)::value_type;
     const pair_t pair = std::make_pair(_priority, _interactor);
@@ -625,7 +625,7 @@ void layer::addInteractor(const viz::scene3d::interactor::base::sptr& _interacto
 
 // ----------------------------------------------------------------------------
 
-void layer::removeInteractor(const viz::scene3d::interactor::base::sptr& _interactor)
+void layer::remove_interactor(const viz::scene3d::interactor::base::sptr& _interactor)
 {
     const auto interactor_equal = [&_interactor](typename decltype(m_interactors)::value_type _i)
                                   {
@@ -642,24 +642,24 @@ void layer::removeInteractor(const viz::scene3d::interactor::base::sptr& _intera
 
 //-----------------------------------------------------------------------------
 
-Ogre::AxisAlignedBox layer::computeWorldBoundingBox() const
+Ogre::AxisAlignedBox layer::compute_world_bounding_box() const
 {
     // Getting this render service scene manager
-    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
 
     // Needed to recompute world bounding boxes
     root_scene_node->_update(true, false);
 
-    return helper::scene::computeBoundingBox(root_scene_node);
+    return helper::scene::compute_bounding_box(root_scene_node);
 }
 
 //------------------------------------------------------------------------------
 
-compositor::transparencyTechnique layer::getTransparencyTechnique()
+compositor::transparency_technique layer::get_transparency_technique()
 {
-    if(m_coreCompositor)
+    if(m_core_compositor)
     {
-        return m_coreCompositor->getTransparencyTechnique();
+        return m_core_compositor->get_transparency_technique();
     }
 
     return compositor::DEFAULT;
@@ -667,11 +667,11 @@ compositor::transparencyTechnique layer::getTransparencyTechnique()
 
 //------------------------------------------------------------------------------
 
-int layer::getTransparencyDepth()
+int layer::get_transparency_depth()
 {
-    if(m_coreCompositor)
+    if(m_core_compositor)
     {
-        return m_coreCompositor->getTransparencyDepth();
+        return m_core_compositor->get_transparency_depth();
     }
 
     return 0;
@@ -679,17 +679,17 @@ int layer::getTransparencyDepth()
 
 //------------------------------------------------------------------------------
 
-bool layer::setTransparencyTechnique(compositor::transparencyTechnique _technique)
+bool layer::set_transparency_technique(compositor::transparency_technique _technique)
 {
     bool success = false;
-    if(m_coreCompositor)
+    if(m_core_compositor)
     {
         // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
         // need to explicitly switch to our OpenGL context
-        this->getRenderService()->makeCurrent();
-        success = m_coreCompositor->setTransparencyTechnique(_technique);
-        m_coreCompositor->update();
-        this->requestRender();
+        this->render_service()->make_current();
+        success = m_core_compositor->set_transparency_technique(_technique);
+        m_core_compositor->update();
+        this->request_render();
     }
 
     return success;
@@ -697,45 +697,45 @@ bool layer::setTransparencyTechnique(compositor::transparencyTechnique _techniqu
 
 //------------------------------------------------------------------------------
 
-void layer::setTransparencyDepth(int _depth)
+void layer::set_transparency_depth(int _depth)
 {
-    if(m_coreCompositor)
+    if(m_core_compositor)
     {
         // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
         // need to explicitly switch to our OpenGL context
-        this->getRenderService()->makeCurrent();
-        m_coreCompositor->setTransparencyDepth(_depth);
-        m_coreCompositor->update();
-        this->requestRender();
+        this->render_service()->make_current();
+        m_core_compositor->set_transparency_depth(_depth);
+        m_core_compositor->update();
+        this->request_render();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::setCameraCalibrations(const camera_calibrations_t& _calibrations)
+void layer::set_camera_calibrations(const camera_calibrations_t& _calibrations)
 {
-    m_stereoCameraCalibration = _calibrations;
+    m_stereo_camera_calibration = _calibrations;
 }
 
 //-----------------------------------------------------------------------------
 
-bool layer::isDefaultLight(const viz::scene3d::light_adaptor::csptr& _light) const
+bool layer::is_default_light(const viz::scene3d::light_adaptor::csptr& _light) const
 {
-    return m_lightAdaptor == _light;
+    return m_light_adaptor == _light;
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::removeDefaultLight()
+void layer::remove_default_light()
 {
-    SIGHT_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
-    viz::scene3d::light_adaptor::destroyLightAdaptor(m_lightAdaptor);
-    m_lightAdaptor.reset();
+    SIGHT_ASSERT("m_lightAdaptor must not be null", m_light_adaptor != nullptr);
+    viz::scene3d::light_adaptor::destroy_light_adaptor(m_light_adaptor);
+    m_light_adaptor.reset();
 }
 
 //------------------------------------------------------------------------------
 
-float layer::computeSceneLength(const Ogre::AxisAlignedBox& _world_bounding_box)
+float layer::compute_scene_length(const Ogre::AxisAlignedBox& _world_bounding_box)
 {
     // Arbitrary coefficient
     const Ogre::Real bounding_box_length = _world_bounding_box.getSize().length() > 0
@@ -744,10 +744,10 @@ float layer::computeSceneLength(const Ogre::AxisAlignedBox& _world_bounding_box)
     SIGHT_DEBUG("Zoom coefficient : " << bounding_box_length);
 
     // Update interactor's mouse scale
-    this->forAllInteractors(
+    this->for_all_interactors(
         [bounding_box_length](const interactor::base::sptr& _i)
         {
-            _i->setSceneLength(bounding_box_length);
+            _i->set_scene_length(bounding_box_length);
         });
 
     return bounding_box_length;
@@ -755,9 +755,9 @@ float layer::computeSceneLength(const Ogre::AxisAlignedBox& _world_bounding_box)
 
 //-----------------------------------------------------------------------------
 
-void layer::resetCameraCoordinates()
+void layer::reset_camera_coordinates()
 {
-    const Ogre::AxisAlignedBox world_bounding_box = this->computeWorldBoundingBox();
+    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box();
 
     if((m_camera != nullptr))
     {
@@ -771,7 +771,7 @@ void layer::resetCameraCoordinates()
         else
         {
             // Arbitrary coefficient
-            const float bounding_box_length = computeSceneLength(world_bounding_box);
+            const float bounding_box_length = compute_scene_length(world_bounding_box);
 
             // Set the direction of the camera
             Ogre::SceneNode* cam_node     = m_camera->getParentSceneNode();
@@ -786,9 +786,9 @@ void layer::resetCameraCoordinates()
 
 //-----------------------------------------------------------------------------
 
-void layer::computeCameraParameters()
+void layer::compute_camera_parameters()
 {
-    const Ogre::AxisAlignedBox world_bounding_box = this->computeWorldBoundingBox();
+    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box();
 
     if((m_camera != nullptr))
     {
@@ -796,16 +796,16 @@ void layer::computeCameraParameters()
         if(world_bounding_box != Ogre::AxisAlignedBox::EXTENT_NULL
            && world_bounding_box != Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
-            computeSceneLength(world_bounding_box);
+            compute_scene_length(world_bounding_box);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::resetCameraClippingRange() const
+void layer::reset_camera_clipping_range() const
 {
-    auto world_bounding_box = this->computeWorldBoundingBox();
+    auto world_bounding_box = this->compute_world_bounding_box();
 
     if((m_camera != nullptr) and world_bounding_box.isFinite())
     {
@@ -870,7 +870,7 @@ void layer::resetCameraClippingRange() const
         // Do not let the range behind the camera throw off the calculation.
         near = std::max(near, 0.1F);
 
-        const auto& chain            = this->getCompositorChain();
+        const auto& chain            = this->get_compositor_chain();
         const auto sao_compositor_it = std::find_if(
             chain.begin(),
             chain.end(),
@@ -886,7 +886,7 @@ void layer::resetCameraClippingRange() const
             far = 10000;
         }
 
-        if(m_cameraOrthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
+        if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
         {
             // Use height as the difference on y coordinates.
             const auto y1     = world_bounding_box.getMinimum().y;
@@ -909,94 +909,94 @@ void layer::resetCameraClippingRange() const
 
 //-----------------------------------------------------------------------------
 
-void layer::requestRender()
+void layer::request_render()
 {
-    m_renderService.lock()->requestRender();
+    m_render_service.lock()->request_render();
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::setStereoMode(compositor::core::stereo_mode_t _mode)
+void layer::set_stereo_mode(compositor::core::stereo_mode_t _mode)
 {
     // Disable the old compositor
-    if(m_stereoMode != compositor::core::stereo_mode_t::NONE)
+    if(m_stereo_mode != compositor::core::stereo_mode_t::none)
     {
-        Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
-        delete m_autostereoListener;
-        m_autostereoListener = nullptr;
+        Ogre::MaterialManager::getSingleton().removeListener(m_autostereo_listener);
+        delete m_autostereo_listener;
+        m_autostereo_listener = nullptr;
     }
 
     // Enable the new one
-    m_stereoMode = _mode;
+    m_stereo_mode = _mode;
 
-    this->getRenderService()->makeCurrent();
-    m_coreCompositor->setStereoMode(_mode);
-    m_coreCompositor->update();
+    this->render_service()->make_current();
+    m_core_compositor->set_stereo_mode(_mode);
+    m_core_compositor->update();
 
-    if(m_stereoMode != compositor::core::stereo_mode_t::NONE)
+    if(m_stereo_mode != compositor::core::stereo_mode_t::none)
     {
-        m_autostereoListener = new compositor::listener::auto_stereo_compositor_listener(this->numCameras());
-        Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
+        m_autostereo_listener = new compositor::listener::auto_stereo_compositor_listener(this->num_cameras());
+        Ogre::MaterialManager::getSingleton().addListener(m_autostereo_listener);
     }
 
-    this->restartAdaptors();
+    this->restart_adaptors();
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::setBackgroundColor(std::string _top_color, std::string _bot_color)
+void layer::set_background_color(std::string _top_color, std::string _bot_color)
 {
-    m_topColor    = _top_color;
-    m_bottomColor = _bot_color;
+    m_top_color    = _top_color;
+    m_bottom_color = _bot_color;
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::setBackgroundScale(float _top_scale, float _bot_scale)
+void layer::set_background_scale(float _top_scale, float _bot_scale)
 {
-    m_topScale    = _top_scale;
-    m_bottomScale = _bot_scale;
+    m_top_scale    = _top_scale;
+    m_bottom_scale = _bot_scale;
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::setBackgroundMaterial(const std::string& _background)
+void layer::set_background_material(const std::string& _background)
 {
-    m_backgroundMaterial = _background;
+    m_background_material = _background;
 }
 
 //-------------------------------------------------------------------------------------
 
-void layer::setCoreCompositorEnabled(
+void layer::set_core_compositor_enabled(
     bool _enabled,
     std::string _transparency_technique,
     std::string _num_peels,
     compositor::core::stereo_mode_t _stereo_mode
 )
 {
-    m_hasCoreCompositor = _enabled;
-    m_stereoMode        = _stereo_mode;
+    m_has_core_compositor = _enabled;
+    m_stereo_mode         = _stereo_mode;
     if(!_transparency_technique.empty())
     {
         if(_transparency_technique == "DepthPeeling")
         {
-            m_transparencyTechnique = viz::scene3d::compositor::DEPTHPEELING;
+            m_transparency_technique = viz::scene3d::compositor::depthpeeling;
         }
         else if(_transparency_technique == "CelShadingDepthPeeling")
         {
-            m_transparencyTechnique = viz::scene3d::compositor::CELLSHADING_DEPTHPEELING;
+            m_transparency_technique = viz::scene3d::compositor::cellshading_depthpeeling;
         }
         else if(_transparency_technique == "DualDepthPeeling")
         {
-            m_transparencyTechnique = viz::scene3d::compositor::DUALDEPTHPEELING;
+            m_transparency_technique = viz::scene3d::compositor::dualdepthpeeling;
         }
         else if(_transparency_technique == "WeightedBlended")
         {
-            m_transparencyTechnique = viz::scene3d::compositor::WEIGHTEDBLENDEDOIT;
+            m_transparency_technique = viz::scene3d::compositor::weightedblendedoit;
         }
         else if(_transparency_technique == "HybridTransparency" || _transparency_technique == "Default")
         {
-            m_transparencyTechnique = viz::scene3d::compositor::HYBRIDTRANSPARENCY;
+            m_transparency_technique = viz::scene3d::compositor::hybridtransparency;
         }
         else
         {
@@ -1006,80 +1006,80 @@ void layer::setCoreCompositorEnabled(
 
     if(!_num_peels.empty())
     {
-        m_numPeels = std::stoi(_num_peels);
+        m_num_peels = std::stoi(_num_peels);
     }
 }
 
 //-------------------------------------------------------------------------------------
 
-void layer::setCompositorChainEnabled(const std::string& _compositor_chain)
+void layer::set_compositor_chain_enabled(const std::string& _compositor_chain)
 {
-    m_hasCompositorChain = !_compositor_chain.empty();
+    m_has_compositor_chain = !_compositor_chain.empty();
 
-    if(m_hasCompositorChain)
+    if(m_has_compositor_chain)
     {
-        m_rawCompositorChain = _compositor_chain;
+        m_raw_compositor_chain = _compositor_chain;
     }
 }
 
 //-------------------------------------------------------------------------------------
 
-void layer::setViewportConfig(const viewport_config_t& _vp_cfg)
+void layer::set_viewport_config(const viewport_config_t& _vp_cfg)
 {
-    m_viewportCfg = _vp_cfg;
+    m_viewport_cfg = _vp_cfg;
 }
 
 //-------------------------------------------------------------------------------------
 
-bool layer::isCoreCompositorEnabled() const
+bool layer::is_core_compositor_enabled() const
 {
-    return m_hasCoreCompositor;
+    return m_has_core_compositor;
 }
 
 //-------------------------------------------------------------------------------------
 
-bool layer::isCompositorChainEnabled() const
+bool layer::is_compositor_chain_enabled() const
 {
-    return m_hasCompositorChain;
+    return m_has_compositor_chain;
 }
 
 //-------------------------------------------------------------------------------------
 
 bool layer::initialized() const
 {
-    return m_sceneManager != nullptr;
+    return m_scene_manager != nullptr;
 }
 
 //-------------------------------------------------------------------------------------
 
-compositor::core::stereo_mode_t layer::getStereoMode() const
+compositor::core::stereo_mode_t layer::get_stereo_mode() const
 {
-    return m_stereoMode;
+    return m_stereo_mode;
 }
 
 //-------------------------------------------------------------------------------------
 
-void layer::setupCore()
+void layer::setup_core()
 {
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
-    m_renderService.lock()->makeCurrent();
+    m_render_service.lock()->make_current();
 
-    m_coreCompositor = std::make_shared<viz::scene3d::compositor::core>(this->getViewport());
-    m_coreCompositor->setStereoMode(m_stereoMode);
-    m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
-    m_coreCompositor->setTransparencyDepth(m_numPeels);
-    m_coreCompositor->update();
+    m_core_compositor = std::make_shared<viz::scene3d::compositor::core>(this->get_viewport());
+    m_core_compositor->set_stereo_mode(m_stereo_mode);
+    m_core_compositor->set_transparency_technique(m_transparency_technique);
+    m_core_compositor->set_transparency_depth(m_num_peels);
+    m_core_compositor->update();
 }
 
 //-------------------------------------------------------------------------------------
 
-void layer::restartAdaptors()
+void layer::restart_adaptors()
 {
-    auto adaptors = this->getRenderService()->getAdaptors<adaptor>();
+    auto adaptors = this->render_service()->get_adaptors<adaptor>();
 
     auto not_in_layer = [this](const adaptor::sptr& _adapt)
                         {
-                            return _adapt->getLayerID() != this->m_id || _adapt == nullptr;
+                            return _adapt->layer_id() != this->m_id || _adapt == nullptr;
                         };
 
     // Only keep adaptors belonging to this layer.
@@ -1092,7 +1092,7 @@ void layer::restartAdaptors()
         SPTR(service::has_services) has_services = std::dynamic_pointer_cast<service::has_services>(adapt);
         if(has_services != nullptr)
         {
-            const auto& sub_services = has_services->getRegisteredServices();
+            const auto& sub_services = has_services->get_registered_services();
             std::copy(sub_services.begin(), sub_services.end(), std::back_inserter(sub_adaptors));
         }
     }
@@ -1121,18 +1121,18 @@ void layer::restartAdaptors()
 
 //-------------------------------------------------------------------------------------
 
-viz::scene3d::compositor::chain_manager::compositor_chain_t layer::getCompositorChain() const
+viz::scene3d::compositor::chain_manager::compositor_chain_t layer::get_compositor_chain() const
 {
-    return m_compositorChainManager->getCompositorChain();
+    return m_compositor_chain_manager->get_compositor_chain();
 }
 
 //-------------------------------------------------------------------------------------
 
-service::has_services::ServiceVector layer::getRegisteredAdaptors() const
+service::has_services::service_vector_t layer::get_registered_adaptors() const
 {
-    if(m_compositorChainManager)
+    if(m_compositor_chain_manager)
     {
-        return m_compositorChainManager->getRegisteredServices();
+        return m_compositor_chain_manager->get_registered_services();
     }
 
     return {};
@@ -1140,52 +1140,52 @@ service::has_services::ServiceVector layer::getRegisteredAdaptors() const
 
 //-------------------------------------------------------------------------------------
 
-Ogre::Viewport* layer::getViewport() const
+Ogre::Viewport* layer::get_viewport() const
 {
-    return m_renderTarget->getViewport(m_renderTarget->getNumViewports() - 1);
+    return m_render_target->getViewport(m_render_target->getNumViewports() - 1);
 }
 
 //-------------------------------------------------------------------------------------
 
-bool layer::isSceneCreated() const
+bool layer::is_scene_created() const
 {
-    return m_sceneCreated;
+    return m_scene_created;
 }
 
 //-------------------------------------------------------------------------------------
 
-Ogre::Camera* layer::getDefaultCamera() const
+Ogre::Camera* layer::get_default_camera() const
 {
     return m_camera;
 }
 
 //-------------------------------------------------------------------------------------
 
-Ogre::Matrix4 layer::getCameraProjMat(const uint8_t _camera_idx) const
+Ogre::Matrix4 layer::get_camera_proj_mat(const uint8_t _camera_idx) const
 {
     SIGHT_ASSERT(
         "Index exceeds the number of cameras used for this stereo mode",
-        _camera_idx < this->numCameras()
+        _camera_idx < this->num_cameras()
     );
     Ogre::Matrix4 extrinsic_transform(Ogre::Matrix4::IDENTITY);
 
-    if(m_stereoMode == viz::scene3d::compositor::core::stereo_mode_t::AUTOSTEREO_5)
+    if(m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::autostereo_5)
     {
         const float eye_angle = 0.02321F;
         const float angle     = eye_angle * (-2.F + float(_camera_idx));
 
-        extrinsic_transform = viz::scene3d::helper::camera::computeFrustumShearTransform(*m_camera, angle);
+        extrinsic_transform = viz::scene3d::helper::camera::compute_frustum_shear_transform(*m_camera, angle);
     }
-    else if(m_stereoMode == viz::scene3d::compositor::core::stereo_mode_t::AUTOSTEREO_8)
+    else if(m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::autostereo_8)
     {
         const float eye_angle = 0.01625F;
         const float angle     = eye_angle * (-3.5F + float(_camera_idx));
 
-        extrinsic_transform = viz::scene3d::helper::camera::computeFrustumShearTransform(*m_camera, angle);
+        extrinsic_transform = viz::scene3d::helper::camera::compute_frustum_shear_transform(*m_camera, angle);
     }
-    else if(m_stereoMode == viz::scene3d::compositor::core::stereo_mode_t::STEREO)
+    else if(m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::stereo)
     {
-        if(m_stereoCameraCalibration.size() < 2 && _camera_idx == 1)
+        if(m_stereo_camera_calibration.size() < 2 && _camera_idx == 1)
         {
             SIGHT_WARN("Only a single calibration was set but stereo rendering is set.");
             // Kept for compatibility purposes.
@@ -1208,9 +1208,9 @@ Ogre::Matrix4 layer::getCameraProjMat(const uint8_t _camera_idx) const
                 1
             );
         }
-        else if(!m_stereoCameraCalibration.empty())
+        else if(!m_stereo_camera_calibration.empty())
         {
-            return m_stereoCameraCalibration[_camera_idx];
+            return m_stereo_camera_calibration[_camera_idx];
         }
     }
 
@@ -1221,34 +1221,34 @@ Ogre::Matrix4 layer::getCameraProjMat(const uint8_t _camera_idx) const
 
 //-------------------------------------------------------------------------------------
 
-uint8_t layer::numCameras() const
+uint8_t layer::num_cameras() const
 {
-    return m_stereoMode == viz::scene3d::compositor::core::stereo_mode_t::AUTOSTEREO_8 ? 8
-                                                                                       : m_stereoMode
-           == viz::scene3d::compositor::core::stereo_mode_t::AUTOSTEREO_5 ? 5
+    return m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::autostereo_8 ? 8
+                                                                                        : m_stereo_mode
+           == viz::scene3d::compositor::core::stereo_mode_t::autostereo_5 ? 5
                                                                           :
-           m_stereoMode == viz::scene3d::compositor::core::stereo_mode_t::STEREO ? 2 : 1;
+           m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::stereo ? 2 : 1;
 }
 
 //-------------------------------------------------------------------------------------
 
-void layer::setHasDefaultLight(bool _has_default_light)
+void layer::set_has_default_light(bool _has_default_light)
 {
-    m_hasDefaultLight = _has_default_light;
+    m_has_default_light = _has_default_light;
 }
 
 //-------------------------------------------------------------------------------------
 
-int layer::getLightsNumber() const
+int layer::num_lights() const
 {
-    auto light_adaptors = this->getRenderService()->getAdaptors<viz::scene3d::light_adaptor>();
+    auto light_adaptors = this->render_service()->get_adaptors<viz::scene3d::light_adaptor>();
     int lights_number(0);
 
     std::ranges::for_each(
         light_adaptors,
         [&](viz::scene3d::light_adaptor::sptr _adaptor)
         {
-            if(_adaptor->getLayerID() == this->getLayerID())
+            if(_adaptor->layer_id() == this->layer_id())
             {
                 ++lights_number;
             }
@@ -1259,16 +1259,16 @@ int layer::getLightsNumber() const
 
 //-------------------------------------------------------------------------------------
 
-std::vector<viz::scene3d::light_adaptor::sptr> layer::getLightAdaptors() const
+std::vector<viz::scene3d::light_adaptor::sptr> layer::get_light_adaptors() const
 {
-    auto light_adaptors = this->getRenderService()->getAdaptors<viz::scene3d::light_adaptor>();
+    auto light_adaptors = this->render_service()->get_adaptors<viz::scene3d::light_adaptor>();
     std::vector<viz::scene3d::light_adaptor::sptr> layer_light_adaptors;
 
     std::ranges::for_each(
         light_adaptors,
         [&](viz::scene3d::light_adaptor::sptr _light_adaptor)
         {
-            if(_light_adaptor->getLayerID() == this->getLayerID())
+            if(_light_adaptor->layer_id() == this->layer_id())
             {
                 layer_light_adaptors.push_back(_light_adaptor);
             }
@@ -1279,23 +1279,23 @@ std::vector<viz::scene3d::light_adaptor::sptr> layer::getLightAdaptors() const
 
 //-----------------------------------------------------------------------------
 
-void layer::cancelFurtherInteraction()
+void layer::cancel_further_interaction()
 {
-    m_cancelFurtherInteraction = true;
+    m_cancel_further_interaction = true;
 }
 
 //-----------------------------------------------------------------------------
 
-void layer::setOrthographicCamera(bool _ortho)
+void layer::set_orthographic_camera(bool _ortho)
 {
-    m_cameraOrthographic = _ortho;
+    m_camera_orthographic = _ortho;
 }
 
 //-----------------------------------------------------------------------------
 
-bool layer::isOrthographicCameraForce() const
+bool layer::is_orthographic_camera_force() const
 {
-    return m_cameraOrthographic;
+    return m_camera_orthographic;
 }
 
 //-----------------------------------------------------------------------------

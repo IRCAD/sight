@@ -37,7 +37,7 @@ class ACTIVITY_CLASS_API message
 {
 public:
 
-    typedef activity::extension::activity_config_params_type parameters_t;
+    using parameters_t = activity::extension::activity_config_params_type;
 
     ACTIVITY_API message(
         const data::activity::sptr& _activity,
@@ -49,57 +49,57 @@ public:
     = default;
 
     /// Return if the activity can be closed
-    [[nodiscard]] bool isClosable() const
+    [[nodiscard]] bool is_closable() const
     {
         return m_closable;
     }
 
     /// Return activity title
-    [[nodiscard]] const std::string& getTitle() const
+    [[nodiscard]] const std::string& get_title() const
     {
         return m_title;
     }
 
     /// Return tab identifier
-    [[nodiscard]] const std::string& getTabID() const
+    [[nodiscard]] const std::string& get_tab_id() const
     {
-        return m_tabID;
+        return m_tab_id;
     }
 
     /// Return appConfig identifier
-    [[nodiscard]] const std::string& getAppConfigID() const
+    [[nodiscard]] const std::string& get_app_config_id() const
     {
-        return m_appConfigID;
+        return m_app_config_id;
     }
 
     /// Return tab information
-    [[nodiscard]] const std::string& getTabInfo() const
+    [[nodiscard]] const std::string& get_tab_info() const
     {
-        return m_tabInfo;
+        return m_tab_info;
     }
 
     /// Return activity icon path
-    [[nodiscard]] const std::string& getIconPath() const
+    [[nodiscard]] const std::string& get_icon_path() const
     {
-        return m_iconPath;
+        return m_icon_path;
     }
 
     /// Return tooltip
-    [[nodiscard]] const std::string& getToolTip() const
+    [[nodiscard]] const std::string& get_tool_tip() const
     {
         return m_tooltip;
     }
 
     /// Return activity
-    [[nodiscard]] const data::activity::sptr& getActivity() const
+    [[nodiscard]] const data::activity::sptr& get_activity() const
     {
         return m_activity;
     }
 
     /// Return the map of the string association to replace in config
-    [[nodiscard]] const std::map<std::string, std::string>& getReplacementMap() const
+    [[nodiscard]] const std::map<std::string, std::string>& get_replacement_map() const
     {
-        return m_replacementMap;
+        return m_replacement_map;
     }
 
 private:
@@ -111,16 +111,16 @@ private:
     std::string m_title;
 
     /// Tab identifier
-    std::string m_tabID;
+    std::string m_tab_id;
 
     /// config id
-    std::string m_appConfigID;
+    std::string m_app_config_id;
 
     /// tab information
-    std::string m_tabInfo;
+    std::string m_tab_info;
 
     /// icon path
-    std::string m_iconPath;
+    std::string m_icon_path;
 
     /// tab tooltip
     std::string m_tooltip;
@@ -129,7 +129,7 @@ private:
     data::activity::sptr m_activity;
 
     /// map containing string to replace in activity configuration.
-    std::map<std::string, std::string> m_replacementMap;
+    std::map<std::string, std::string> m_replacement_map;
 };
 
 } // namespace sight::activity

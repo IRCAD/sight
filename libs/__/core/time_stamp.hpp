@@ -41,7 +41,7 @@ public:
     /**
      * @brief Type used in logical typestamp.
      */
-    typedef core::hires_clock::type time_stamp_type;
+    using time_stamp_type = core::hires_clock::type;
 
     /**
      * @brief Update the timestamp to the current EPOCH time

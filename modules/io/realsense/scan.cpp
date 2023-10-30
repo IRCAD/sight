@@ -235,7 +235,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
 
     {
         const auto colorTimeline = m_frame.lock();
-        colorTimeline->initPoolSize(
+        colorTimeline->init_pool_size(
             colorStreamW,
             colorStreamH,
             core::type::UINT8,
@@ -248,7 +248,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
         const auto depthTimeline = m_depth.lock();
         if(depthTimeline)
         {
-            depthTimeline->initPoolSize(
+            depthTimeline->init_pool_size(
                 depthStreamW,
                 depthStreamH,
                 core::type::UINT16,
@@ -374,7 +374,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
     const data::mesh::size_t nbPoints = depthStreamW * depthStreamH;
 
     // Allocate mesh.
-    pointcloud->resize(nbPoints, nbPoints, data::mesh::cell_type_t::POINT, data::mesh::Attributes::POINT_COLORS);
+    pointcloud->resize(nbPoints, nbPoints, data::mesh::cell_type_t::POINT, data::mesh::attribute::point_colors);
 
     // to display the mesh, we need to create cells with one point.
     data::mesh::cell_t i = 0;
@@ -404,7 +404,7 @@ void scan::startCamera()
         const auto setPlaybackMode =
             [&](data::camera::csptr camera)
             {
-                if(camera->getCameraSource() == data::camera::FILE)
+                if(camera->getCameraSource() == data::camera::file)
                 {
                     m_playbackMode     = true;
                     m_playbackFileName = camera->getVideoFile().string();
@@ -687,7 +687,7 @@ void scan::record()
     if(std::filesystem::exists(m_recordingFileName))
     {
         sight::ui::dialog::message warnDial;
-        warnDial.setIcon(ui::dialog::message::WARNING);
+        warnDial.setIcon(ui::dialog::message::warning);
         warnDial.setTitle("File already exists");
         warnDial.setMessage(
             "File: " + m_recordingFileName
@@ -738,7 +738,7 @@ void scan::configureRecordingPath()
     // Ask user for a new file name.
     sight::ui::dialog::location dial;
     dial.setTitle("Name of recording file");
-    dial.setType(ui::dialog::location::SINGLE_FILE);
+    dial.setType(ui::dialog::location::single_file);
     dial.setOption(ui::dialog::location::WRITE);
 
     dial.addFilter("Bag files", "*.bag");
@@ -754,7 +754,7 @@ void scan::configureRecordingPath()
 
 //------------------------------------------------------------------------------
 
-void scan::setParameter(ui::parameter_t _value, std::string _key)
+void scan::set_parameter(ui::parameter_t _value, std::string _key)
 {
     try
     {
@@ -1195,7 +1195,7 @@ void scan::onCameraImage(const uint8_t* _buffer)
 
     {
         const auto colorTimeline = m_frame.lock();
-        const auto colorBuffer   = colorTimeline->createBuffer(timestamp);
+        const auto colorBuffer   = colorTimeline->create_buffer(timestamp);
 
         auto* destColorBuffer = reinterpret_cast<uint8_t*>(colorBuffer->addElement(0));
 
@@ -1220,7 +1220,7 @@ void scan::onCameraImageDepth(const std::uint16_t* _buffer)
 
     {
         const auto depthTimeline = m_depth.lock();
-        const auto depthTL       = depthTimeline->createBuffer(timestamp);
+        const auto depthTL       = depthTimeline->create_buffer(timestamp);
 
         const auto width  = depthTimeline->getWidth();
         const auto height = depthTimeline->getHeight();

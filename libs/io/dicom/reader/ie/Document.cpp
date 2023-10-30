@@ -32,41 +32,41 @@ namespace sight::io::dicom::reader::ie
 
 //------------------------------------------------------------------------------
 
-Document::Document(
+document::document(
     const data::dicom_series::csptr& _dicom_series,
     const SPTR(gdcm::Reader)& _reader,
-    const io::dicom::container::DicomInstance::sptr& _instance,
+    const io::dicom::container::dicom_instance::sptr& _instance,
     const data::image::sptr& _image,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::image>(_dicom_series, _reader, _instance, _image,
-                                                          _logger, _progress, _cancel)
+    io::dicom::reader::ie::information_entity<data::image>(_dicom_series, _reader, _instance, _image,
+                                                           _logger, _progress, _cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Document::~Document()
+document::~document()
 = default;
 
 //------------------------------------------------------------------------------
 
-void Document::readSR()
+void document::read_sr()
 {
     // Retrieve dataset
     const gdcm::DataSet& dataset_root = m_reader->GetFile().GetDataSet();
 
     // Create SR from Dataset
-    SPTR(io::dicom::container::sr::DicomSRContainerNode) root_container_node =
-        io::dicom::helper::StructuredReport::readSR(dataset_root);
+    SPTR(io::dicom::container::sr::dicom_sr_container_node) root_container_node =
+        io::dicom::helper::structured_report::read_sr(dataset_root);
 
     if(root_container_node)
     {
         // Try to read a measurement report
-        io::dicom::reader::tid::MeasurementReport report(m_dicomSeries, m_reader, m_instance, m_object, m_logger);
-        report.readSR(root_container_node);
+        io::dicom::reader::tid::measurement_report report(m_dicom_series, m_reader, m_instance, m_object, m_logger);
+        report.read_sr(root_container_node);
     }
 }
 

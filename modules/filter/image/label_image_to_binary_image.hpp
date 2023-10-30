@@ -104,13 +104,13 @@ protected:
 
 private:
 
-    boost::optional<std::string> m_labelSetFieldName;
+    boost::optional<std::string> m_label_set_field_name;
 
-    static constexpr std::string_view s_LABEL_IMAGE_INPUT = "labelImage";
-    static constexpr std::string_view s_BINARY_MASK_INOUT = "binaryMask";
+    static constexpr std::string_view LABEL_IMAGE_INPUT = "labelImage";
+    static constexpr std::string_view BINARY_MASK_INOUT = "binaryMask";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_labelImage {this, s_LABEL_IMAGE_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_binaryMask {this, s_BINARY_MASK_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_label_image {this, LABEL_IMAGE_INPUT};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_binary_mask {this, BINARY_MASK_INOUT};
 };
 
 } // namespace sight::module::filter::image.

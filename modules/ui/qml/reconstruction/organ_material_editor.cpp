@@ -62,52 +62,52 @@ void organ_material_editor::stopping()
 void organ_material_editor::updating()
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
-    data::material::sptr material = reconstruction->getMaterial();
+    data::material::sptr material = reconstruction->get_material();
 
     QColor color;
     color.setRgbF(material->diffuse()->red(), material->diffuse()->green(), material->diffuse()->blue());
 
     int alpha = static_cast<int>(material->diffuse()->alpha() * 100);
-    Q_EMIT materialChanged(color, alpha);
+    Q_EMIT material_changed(color, alpha);
 }
 
 //------------------------------------------------------------------------------
 
-void organ_material_editor::onColor(QColor _color)
+void organ_material_editor::on_color(QColor _color)
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
-    data::material::sptr material = reconstruction->getMaterial();
+    data::material::sptr material = reconstruction->get_material();
     material->diffuse()->red()   = static_cast<float>(_color.redF());
     material->diffuse()->green() = static_cast<float>(_color.greenF());
     material->diffuse()->blue()  = static_cast<float>(_color.blueF());
-    this->materialNotification();
+    this->material_notification();
 }
 
 //------------------------------------------------------------------------------
 
-void organ_material_editor::onOpacitySlider(int _value)
+void organ_material_editor::on_opacity_slider(int _value)
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
-    data::material::sptr material = reconstruction->getMaterial();
+    data::material::sptr material = reconstruction->get_material();
     material->diffuse()->alpha() = static_cast<float>(_value) / 100.0F;
-    this->materialNotification();
+    this->material_notification();
 }
 
 //------------------------------------------------------------------------------
 
-void organ_material_editor::materialNotification()
+void organ_material_editor::material_notification()
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::object::modified_signal_t::sptr sig;
-    sig = reconstruction->getMaterial()->signal<data::object::modified_signal_t>(
+    sig = reconstruction->get_material()->signal<data::object::modified_signal_t>(
         data::object::MODIFIED_SIG
     );
     sig->async_emit();
@@ -118,7 +118,7 @@ void organ_material_editor::materialNotification()
 service::connections_t organ_material_editor::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_RECONSTRUCTION_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(RECONSTRUCTION_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

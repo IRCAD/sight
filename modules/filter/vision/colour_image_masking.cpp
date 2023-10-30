@@ -46,17 +46,17 @@ const core::com::slots::key_t CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
 colour_image_masking::colour_image_masking() noexcept :
 
-    m_maskDownsize(cv::Size(0, 0)),
-    m_lowerColor(cv::Scalar(0, 0, 0)),
-    m_upperColor(cv::Scalar(255, 255, 255))
+    m_mask_downsize(cv::Size(0, 0)),
+    m_lower_color(cv::Scalar(0, 0, 0)),
+    m_upper_color(cv::Scalar(255, 255, 255))
 {
-    new_slot(SET_BACKGROUND_SLOT, &colour_image_masking::setBackground, this);
-    new_slot(SET_FOREGROUND_SLOT, &colour_image_masking::setForeground, this);
-    new_slot(SET_THRESHOLD_SLOT, &colour_image_masking::setThreshold, this);
-    new_slot(SET_NOISE_LEVEL_SLOT, &colour_image_masking::setNoiseLevel, this);
-    new_slot(SET_BACKGROUND_COMPONENTS_SLOT, &colour_image_masking::setBackgroundComponents, this);
-    new_slot(SET_FOREGROUND_COMPONENTS_SLOT, &colour_image_masking::setForegroundComponents, this);
-    new_slot(CLEAR_MASKTL_SLOT, &colour_image_masking::clearMaskTL, this);
+    new_slot(SET_BACKGROUND_SLOT, &colour_image_masking::set_background, this);
+    new_slot(SET_FOREGROUND_SLOT, &colour_image_masking::set_foreground, this);
+    new_slot(SET_THRESHOLD_SLOT, &colour_image_masking::set_threshold, this);
+    new_slot(SET_NOISE_LEVEL_SLOT, &colour_image_masking::set_noise_level, this);
+    new_slot(SET_BACKGROUND_COMPONENTS_SLOT, &colour_image_masking::set_background_components, this);
+    new_slot(SET_FOREGROUND_COMPONENTS_SLOT, &colour_image_masking::set_foreground_components, this);
+    new_slot(CLEAR_MASKTL_SLOT, &colour_image_masking::clear_mask_tl, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -70,27 +70,27 @@ void colour_image_masking::configuring()
 {
     const service::config_t config = this->get_config().get_child("config.<xmlattr>");
 
-    m_scaleFactor          = config.get<float>("scaleFactor", 1.0);
-    m_noise                = config.get<double>("noise", 0.0);
-    m_foregroundComponents = config.get<int>("foregroundComponents", 5);
-    m_backgroundComponents = config.get<int>("backgroundComponents", 5);
+    m_scale_factor          = config.get<float>("scaleFactor", 1.0);
+    m_noise                 = config.get<double>("noise", 0.0);
+    m_foreground_components = config.get<int>("foregroundComponents", 5);
+    m_background_components = config.get<int>("backgroundComponents", 5);
 
     SIGHT_ASSERT(
-        "Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
-        (m_scaleFactor > 0 && m_scaleFactor <= 1)
+        "Scale factor must be between 0 and 1. Current value: " << m_scale_factor,
+        (m_scale_factor > 0 && m_scale_factor <= 1)
     );
     SIGHT_ASSERT(
-        "The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
-        m_backgroundComponents > 0
+        "The number of background components must be greater than 0. Current value: " << m_background_components,
+        m_background_components > 0
     );
     SIGHT_ASSERT("Noise value must be >= 0. Current value:" << m_noise, m_noise >= 0);
     SIGHT_ASSERT(
-        "The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
-        m_foregroundComponents > 0
+        "The number of foreground components must be greater than 0. Current value: " << m_foreground_components,
+        m_foreground_components > 0
     );
 
-    m_lowerColor = cv::Scalar(0, 0, 0);
-    m_upperColor = cv::Scalar(255, 255, 255);
+    m_lower_color = cv::Scalar(0, 0, 0);
+    m_upper_color = cv::Scalar(255, 255, 255);
 
     const service::config_t hsv_config = this->get_config().get_child("HSV");
     std::string s_lower_value          = hsv_config.get<std::string>("lower", "");
@@ -105,7 +105,7 @@ void colour_image_masking::configuring()
         for(const auto& it : tok_lower)
         {
             SIGHT_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
-            m_lowerColor[i++] = boost::lexical_cast<double>(it);
+            m_lower_color[i++] = boost::lexical_cast<double>(it);
         }
     }
 
@@ -116,7 +116,7 @@ void colour_image_masking::configuring()
         for(const auto& it : tok_upper)
         {
             SIGHT_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
-            m_upperColor[i++] = boost::lexical_cast<double>(it);
+            m_upper_color[i++] = boost::lexical_cast<double>(it);
         }
     }
 }
@@ -126,10 +126,10 @@ void colour_image_masking::configuring()
 void colour_image_masking::starting()
 {
     namespace vision = sight::filter::vision;
-    m_masker         = std::make_unique<vision::masker>(vision::HSv, vision::LLRatio);
-    m_masker->setThreshold(1.);
+    m_masker         = std::make_unique<vision::masker>(vision::h_sv, vision::ll_ratio);
+    m_masker->set_threshold(1.);
 
-    m_lastVideoTimestamp = 0.;
+    m_last_video_timestamp = 0.;
 }
 
 // ------------------------------------------------------------------------------
@@ -144,8 +144,8 @@ service::connections_t colour_image_masking::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(s_VIDEO_TL_KEY, data::timeline::signals::PUSHED, service::slots::UPDATE);
-    connections.push(s_VIDEO_TL_KEY, data::timeline::signals::CLEARED, CLEAR_MASKTL_SLOT);
+    connections.push(VIDEO_TL_KEY, data::timeline::signals::PUSHED, service::slots::UPDATE);
+    connections.push(VIDEO_TL_KEY, data::timeline::signals::CLEARED, CLEAR_MASKTL_SLOT);
 
     return connections;
 }
@@ -154,23 +154,23 @@ service::connections_t colour_image_masking::auto_connections() const
 
 void colour_image_masking::updating()
 {
-    if(m_masker->isModelLearned())
+    if(m_masker->is_model_learned())
     {
         const auto mask     = m_mask.lock();
-        const auto video_tl = m_videoTL.lock();
-        auto video_mask_tl  = m_videoMaskTL.lock();
+        const auto video_tl = m_video_tl.lock();
+        auto video_mask_tl  = m_video_mask_tl.lock();
 
         // Sanity checks
-        SIGHT_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
-        SIGHT_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", video_tl);
-        SIGHT_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", video_mask_tl);
+        SIGHT_ASSERT("Missing input '" << MASK_KEY << "'.", mask);
+        SIGHT_ASSERT("Missing input '" << VIDEO_TL_KEY << "'.", video_tl);
+        SIGHT_ASSERT("Missing inout '" << VIDEO_MASK_TL_KEY << "'.", video_mask_tl);
         const auto mask_size = mask->size();
-        if(mask_size[0] != video_tl->getWidth() || mask_size[1] != video_tl->getHeight())
+        if(mask_size[0] != video_tl->get_width() || mask_size[1] != video_tl->get_height())
         {
             SIGHT_ERROR(
                 "Reference mask (" << mask_size[0] << ", " << mask_size[1]
-                << ") has different size as the video timeline (" << video_tl->getWidth() << ", "
-                << video_tl->getHeight() << ")."
+                << ") has different size as the video timeline (" << video_tl->get_width() << ", "
+                << video_tl->get_height() << ")."
             );
         }
 
@@ -182,10 +182,10 @@ void colour_image_masking::updating()
         core::com::connection::blocker blocker(sig->get_connection(slot(service::slots::UPDATE)));
 
         // Get the timestamp from the latest video frame
-        core::hires_clock::type current_timestamp = video_tl->getNewerTimestamp();
+        core::hires_clock::type current_timestamp = video_tl->get_newer_timestamp();
 
         // Get image from the video timeline
-        CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->getClosestBuffer(current_timestamp);
+        CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
 
         if(!video_buffer)
         {
@@ -193,22 +193,22 @@ void colour_image_masking::updating()
             return;
         }
 
-        const std::uint8_t* frame_buff_out_video = &video_buffer->getElement(0);
+        const std::uint8_t* frame_buff_out_video = &video_buffer->get_element(0);
 
-        core::hires_clock::type video_timestamp = video_buffer->getTimestamp();
-        if(video_timestamp <= m_lastVideoTimestamp)
+        core::hires_clock::type video_timestamp = video_buffer->get_timestamp();
+        if(video_timestamp <= m_last_video_timestamp)
         {
             SIGHT_WARN(
                 "Dropping frame with timestamp " << video_timestamp << " (previous frame had timestamp "
-                << m_lastVideoTimestamp << ")"
+                << m_last_video_timestamp << ")"
             );
             return;
         }
 
-        m_lastVideoTimestamp = video_timestamp;
+        m_last_video_timestamp = video_timestamp;
 
         // convert the ::fw::Data::image mask to an OpenCV image
-        cv::Mat mask_cv = io::opencv::image::copyToCv(mask.get_shared());
+        cv::Mat mask_cv = io::opencv::image::copy_to_cv(mask.get_shared());
 
         cv::cvtColor(mask_cv, mask_cv, cv::COLOR_BGR2GRAY);
 
@@ -218,19 +218,19 @@ void colour_image_masking::updating()
         const cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
 
         // Create image mask to put inside the timeline
-        SPTR(data::frame_tl::buffer_t) mask_buffer = video_mask_tl->createBuffer(current_timestamp);
-        std::uint8_t* frame_buff_out_mask = mask_buffer->addElement(0);
+        SPTR(data::frame_tl::buffer_t) mask_buffer = video_mask_tl->create_buffer(current_timestamp);
+        std::uint8_t* frame_buff_out_mask = mask_buffer->add_element(0);
 
         cv::Mat video_mask_cv = io::opencv::frame_tl::move_to_cv(video_mask_tl.get_shared(), frame_buff_out_mask);
 
         // Get the foreground mask
-        cv::Mat foreground_mask = m_masker->makeMask(video_cv, m_maskDownsize, mask_cv);
+        cv::Mat foreground_mask = m_masker->make_mask(video_cv, m_mask_downsize, mask_cv);
 
         // Create an openCV mat that aliases the buffer created from the output timeline
         video_cv.copyTo(video_mask_cv, foreground_mask);
 
         // Push the mask object in the timeline
-        video_mask_tl->pushObject(mask_buffer);
+        video_mask_tl->push_object(mask_buffer);
 
         auto sig_mask = video_mask_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
         sig_mask->async_emit(current_timestamp);
@@ -239,26 +239,26 @@ void colour_image_masking::updating()
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setBackground()
+void colour_image_masking::set_background()
 {
     const auto mask     = m_mask.lock();
-    const auto video_tl = m_videoTL.lock();
+    const auto video_tl = m_video_tl.lock();
 
     core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->getClosestBuffer(current_timestamp);
+    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {
         SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
         return;
     }
 
-    const std::uint8_t* frame_buff_out_video = &video_buffer->getElement(0);
+    const std::uint8_t* frame_buff_out_video = &video_buffer->get_element(0);
 
     //convert the data::frame_tl videoTL to an OpenCV image
     const cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
 
     // convert the data::image mask to an OpenCV image
-    cv::Mat mask_cv = io::opencv::image::copyToCv(mask.get_shared());
+    cv::Mat mask_cv = io::opencv::image::copy_to_cv(mask.get_shared());
 
     // Convert color mask to grayscale value
     cv::cvtColor(mask_cv, mask_cv, cv::COLOR_RGB2GRAY);
@@ -266,9 +266,9 @@ void colour_image_masking::setBackground()
     mask_cv = (mask_cv > 0);
 
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
-    m_maskDownsize = cv::Size(
-        static_cast<int>(static_cast<float>(mask_cv.size[1]) * m_scaleFactor),
-        static_cast<int>(static_cast<float>(mask_cv.size[0]) * m_scaleFactor)
+    m_mask_downsize = cv::Size(
+        static_cast<int>(static_cast<float>(mask_cv.size[1]) * m_scale_factor),
+        static_cast<int>(static_cast<float>(mask_cv.size[0]) * m_scale_factor)
     );
 
     // Erode a little bit the mask to avoid the borders
@@ -286,33 +286,33 @@ void colour_image_masking::setBackground()
     cv::erode(mask_cv, mask_cv, element_erode);
 
     // Learn background color model
-    m_masker->trainBackgroundModel(video_cv, mask_cv, unsigned(m_backgroundComponents));
+    m_masker->train_background_model(video_cv, mask_cv, unsigned(m_background_components));
 
     // Initialize the mask timeline
-    const auto video_mask_tl = m_videoMaskTL.lock();
-    video_mask_tl->initPoolSize(
-        video_tl->getWidth(),
-        video_tl->getHeight(),
+    const auto video_mask_tl = m_video_mask_tl.lock();
+    video_mask_tl->init_pool_size(
+        video_tl->get_width(),
+        video_tl->get_height(),
         core::type::UINT8,
-        data::frame_tl::PixelFormat::RGBA
+        data::frame_tl::pixel_format::rgba
     );
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setForeground()
+void colour_image_masking::set_foreground()
 {
-    const auto video_tl = m_videoTL.lock();
+    const auto video_tl = m_video_tl.lock();
 
     core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->getClosestBuffer(current_timestamp);
+    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {
         SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
         return;
     }
 
-    const std::uint8_t* frame_buff_out_video = &video_buffer->getElement(0);
+    const std::uint8_t* frame_buff_out_video = &video_buffer->get_element(0);
 
     //convert mask to an OpenCV image:
     cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
@@ -325,7 +325,7 @@ void colour_image_masking::setForeground()
 
     // Get the mask to learn the foreground model
     cv::Mat foreground_mask;
-    cv::inRange(video_hsv, m_lowerColor, m_upperColor, foreground_mask);
+    cv::inRange(video_hsv, m_lower_color, m_upper_color, foreground_mask);
 
     // Remove small objects by performing an opening
     cv::Mat open_foreground_mask;
@@ -343,49 +343,49 @@ void colour_image_masking::setForeground()
     cv::erode(foreground_mask, open_foreground_mask, element_erode);
 
     // Learn foreground color model
-    m_masker->trainForegroundModel(video_cv, open_foreground_mask, unsigned(m_foregroundComponents), m_noise);
+    m_masker->train_foreground_model(video_cv, open_foreground_mask, unsigned(m_foreground_components), m_noise);
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setThreshold(int _threshold)
+void colour_image_masking::set_threshold(int _threshold)
 {
     if(m_masker)
     {
-        m_masker->setThreshold(_threshold);
+        m_masker->set_threshold(_threshold);
     }
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setNoiseLevel(double _noise_level)
+void colour_image_masking::set_noise_level(double _noise_level)
 {
     m_noise = _noise_level;
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setBackgroundComponents(int _bg_components)
+void colour_image_masking::set_background_components(int _bg_components)
 {
-    m_backgroundComponents = _bg_components;
+    m_background_components = _bg_components;
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setForegroundComponents(int _fg_components)
+void colour_image_masking::set_foreground_components(int _fg_components)
 {
-    m_foregroundComponents = _fg_components;
+    m_foreground_components = _fg_components;
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::clearMaskTL()
+void colour_image_masking::clear_mask_tl()
 {
-    auto video_mask_tl = m_videoMaskTL.lock();
-    video_mask_tl->clearTimeline();
+    auto video_mask_tl = m_video_mask_tl.lock();
+    video_mask_tl->clear_timeline();
     auto sig_tl_cleared = video_mask_tl->signal<data::timeline::signals::cleared_t>(data::timeline::signals::CLEARED);
     sig_tl_cleared->async_emit();
-    m_lastVideoTimestamp = 0.;
+    m_last_video_timestamp = 0.;
 }
 
 // ------------------------------------------------------------------------------

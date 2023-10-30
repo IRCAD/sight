@@ -56,7 +56,7 @@ void contain_one_tool_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void contain_one_tool_test::testValidator()
+void contain_one_tool_test::test_validator()
 {
     auto validator = factory::make("sight::module::activity::validator::model_series::contain_one_tool");
     CPPUNIT_ASSERT(validator);
@@ -82,7 +82,7 @@ void contain_one_tool_test::testValidator()
     }
     {
         vect_rec.push_back(rec1);
-        model_series->setReconstructionDB(vect_rec);
+        model_series->set_reconstruction_db(vect_rec);
         validation = obj_validator->validate(model_series);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "ModelSeries with one non-Tool reconstruction should NOT be valid",
@@ -101,7 +101,7 @@ void contain_one_tool_test::testValidator()
     }
     {
         vect_rec.push_back(rec2);
-        model_series->setReconstructionDB(vect_rec);
+        model_series->set_reconstruction_db(vect_rec);
         validation = obj_validator->validate(model_series);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "ModelSeries with two reconstructions (only one Tool) should be valid",
@@ -111,7 +111,7 @@ void contain_one_tool_test::testValidator()
     }
     {
         vect_rec.push_back(rec3);
-        model_series->setReconstructionDB(vect_rec);
+        model_series->set_reconstruction_db(vect_rec);
         validation = obj_validator->validate(model_series);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "ModelSeries with three reconstructions (only one Tool) should be valid",
@@ -150,7 +150,7 @@ void contain_one_tool_test::testValidator()
 
 //------------------------------------------------------------------------------
 
-void contain_one_tool_test::testValidatorWithVector()
+void contain_one_tool_test::test_validator_with_vector()
 {
     auto validator = factory::make("sight::module::activity::validator::model_series::contain_one_tool");
     CPPUNIT_ASSERT(validator);
@@ -182,9 +182,9 @@ void contain_one_tool_test::testValidatorWithVector()
     vec_rec3.push_back(rec31);
     vec_rec3.push_back(rec32);
 
-    model_series1->setReconstructionDB(vec_rec1);
-    model_series2->setReconstructionDB(vec_rec2);
-    model_series3->setReconstructionDB(vec_rec3);
+    model_series1->set_reconstruction_db(vec_rec1);
+    model_series2->set_reconstruction_db(vec_rec2);
+    model_series3->set_reconstruction_db(vec_rec3);
 
     {
         validation = obj_validator->validate(vector);
@@ -280,7 +280,7 @@ void contain_one_tool_test::testValidatorWithVector()
 
 //------------------------------------------------------------------------------
 
-void contain_one_tool_test::testValidatorWithComposite()
+void contain_one_tool_test::test_validator_with_composite()
 {
     auto validator = factory::make("sight::module::activity::validator::model_series::contain_one_tool");
     CPPUNIT_ASSERT(validator);
@@ -312,9 +312,9 @@ void contain_one_tool_test::testValidatorWithComposite()
     vec_rec3.push_back(rec31);
     vec_rec3.push_back(rec32);
 
-    model_series1->setReconstructionDB(vec_rec1);
-    model_series2->setReconstructionDB(vec_rec2);
-    model_series3->setReconstructionDB(vec_rec3);
+    model_series1->set_reconstruction_db(vec_rec1);
+    model_series2->set_reconstruction_db(vec_rec2);
+    model_series3->set_reconstruction_db(vec_rec3);
 
     {
         validation = obj_validator->validate(composite);

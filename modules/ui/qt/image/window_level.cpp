@@ -59,7 +59,7 @@ static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTF";
 
 window_level::window_level() noexcept
 {
-    new_slot(UPDATE_TF_SLOT, &window_level::updateTF, this);
+    new_slot(UPDATE_TF_SLOT, &window_level::update_tf, this);
 }
 
 //------------------------------------------------------------------------------
@@ -73,9 +73,9 @@ void window_level::configuring()
 {
     const config_t config = this->get_config();
 
-    m_minimal        = config.get("config.<xmlattr>.minimal", m_minimal);
-    m_autoWindowing  = config.get("config.<xmlattr>.autoWindowing", m_autoWindowing);
-    m_enableSquareTF = config.get("config.<xmlattr>.enableSquareTF", m_enableSquareTF);
+    m_minimal          = config.get("config.<xmlattr>.minimal", m_minimal);
+    m_auto_windowing   = config.get("config.<xmlattr>.autoWindowing", m_auto_windowing);
+    m_enable_square_tf = config.get("config.<xmlattr>.enableSquareTF", m_enable_square_tf);
 }
 
 //------------------------------------------------------------------------------
@@ -85,35 +85,35 @@ void window_level::starting()
     this->initialize();
     {
         const auto image = m_image.lock();
-        SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
+        SIGHT_ASSERT("inout '" << IMAGE << "' does not exist.", image);
 
         this->create();
         auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-            this->getContainer()
+            this->get_container()
         );
 
         auto* const layout = new QGridLayout();
 
-        m_valueTextMin = new QLineEdit();
-        auto* const min_validator = new QDoubleValidator(m_valueTextMin);
-        m_valueTextMin->setValidator(min_validator);
+        m_value_text_min = new QLineEdit();
+        auto* const min_validator = new QDoubleValidator(m_value_text_min);
+        m_value_text_min->setValidator(min_validator);
 
-        m_valueTextMax = new QLineEdit();
-        auto* const max_validator = new QDoubleValidator(m_valueTextMax);
-        m_valueTextMax->setValidator(max_validator);
+        m_value_text_max = new QLineEdit();
+        auto* const max_validator = new QDoubleValidator(m_value_text_max);
+        m_value_text_max->setValidator(max_validator);
 
-        m_rangeSlider = new sight::ui::qt::widget::range_slider();
+        m_range_slider = new sight::ui::qt::widget::range_slider();
 
-        layout->addWidget(m_rangeSlider, 0, 0, 1, -1);
+        layout->addWidget(m_range_slider, 0, 0, 1, -1);
         QObject::connect(
-            m_rangeSlider,
-            SIGNAL(sliderRangeEdited(double,double)),
+            m_range_slider,
+            SIGNAL(slider_range_edited(double,double)),
             this,
-            SLOT(onWindowLevelWidgetChanged(double,double))
+            SLOT(on_window_level_widget_changed(double,double))
         );
         if(not m_minimal)
         {
-            m_toggleTFButton = new QToolButton();
+            m_toggle_tf_button = new QToolButton();
             QIcon ico;
             std::string square_icon(core::runtime::get_module_resource_file_path(
                                         "sight::module::ui::qt",
@@ -125,11 +125,11 @@ void window_level::starting()
             ).string());
             ico.addPixmap(QPixmap(QString::fromStdString(square_icon)), QIcon::Normal, QIcon::On);
             ico.addPixmap(QPixmap(QString::fromStdString(ramp_icon)), QIcon::Normal, QIcon::Off);
-            m_toggleTFButton->setIcon(ico);
-            m_toggleTFButton->setCheckable(true);
-            m_toggleTFButton->setToolTip("Function style");
+            m_toggle_tf_button->setIcon(ico);
+            m_toggle_tf_button->setCheckable(true);
+            m_toggle_tf_button->setToolTip("Function style");
 
-            m_toggleAutoButton = new QToolButton();
+            m_toggle_auto_button = new QToolButton();
             QIcon icon;
             std::string win(core::runtime::get_module_resource_file_path(
                                 "sight::module::ui::qt",
@@ -141,21 +141,21 @@ void window_level::starting()
                                     "nowindowing.svg"
             ).string());
             icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
-            m_toggleAutoButton->setIcon(icon);
-            m_toggleAutoButton->setToolTip("Automatic Windowing");
-            m_toggleAutoButton->setCheckable(true);
-            m_toggleAutoButton->setChecked(m_autoWindowing);
+            m_toggle_auto_button->setIcon(icon);
+            m_toggle_auto_button->setToolTip("Automatic Windowing");
+            m_toggle_auto_button->setCheckable(true);
+            m_toggle_auto_button->setChecked(m_auto_windowing);
 
-            m_dynamicRangeSelection = new QToolButton();
-            m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
+            m_dynamic_range_selection = new QToolButton();
+            m_dynamic_range_selection->setPopupMode(QToolButton::InstantPopup);
 
-            m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
-            QAction* const action1 = m_dynamicRangeMenu->addAction("-1024; 1023");
-            QAction* const action2 = m_dynamicRangeMenu->addAction("-100; 300");
-            QAction* const action3 = m_dynamicRangeMenu->addAction("Fit W/L");
-            QAction* const action4 = m_dynamicRangeMenu->addAction("Fit Data"); // TODO
+            m_dynamic_range_menu = new QMenu(m_dynamic_range_selection);
+            QAction* const action1 = m_dynamic_range_menu->addAction("-1024; 1023");
+            QAction* const action2 = m_dynamic_range_menu->addAction("-100; 300");
+            QAction* const action3 = m_dynamic_range_menu->addAction("Fit W/L");
+            QAction* const action4 = m_dynamic_range_menu->addAction("Fit Data"); // TODO
             //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
-            m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
+            m_dynamic_range_selection->setMenu(m_dynamic_range_menu);
 
             action1->setData(QVariant(1));
             action2->setData(QVariant(2));
@@ -163,28 +163,38 @@ void window_level::starting()
             action4->setData(QVariant(4));
             //action5->setData(QVariant(5));
 
-            layout->addWidget(m_valueTextMin, 1, 0);
-            layout->addWidget(m_toggleTFButton, 1, 1);
-            layout->addWidget(m_toggleAutoButton, 1, 2);
-            layout->addWidget(m_dynamicRangeSelection, 1, 3);
-            layout->addWidget(m_valueTextMax, 1, 4);
+            layout->addWidget(m_value_text_min, 1, 0);
+            layout->addWidget(m_toggle_tf_button, 1, 1);
+            layout->addWidget(m_toggle_auto_button, 1, 2);
+            layout->addWidget(m_dynamic_range_selection, 1, 3);
+            layout->addWidget(m_value_text_max, 1, 4);
 
             // Set the visibility after the layout is created so it doesn't open its own window.
-            m_toggleTFButton->setVisible(m_enableSquareTF);
+            m_toggle_tf_button->setVisible(m_enable_square_tf);
 
-            QObject::connect(m_valueTextMin, &::QLineEdit::editingFinished, this, &window_level::onTextEditingFinished);
-            QObject::connect(m_valueTextMax, &::QLineEdit::editingFinished, this, &window_level::onTextEditingFinished);
-            QObject::connect(m_toggleTFButton, &::QToolButton::toggled, this, &window_level::onToggleTF);
-            QObject::connect(m_toggleAutoButton, &::QToolButton::toggled, this, &window_level::onToggleAutoWL);
             QObject::connect(
-                m_dynamicRangeSelection,
+                m_value_text_min,
+                &::QLineEdit::editingFinished,
+                this,
+                &window_level::on_text_editing_finished
+            );
+            QObject::connect(
+                m_value_text_max,
+                &::QLineEdit::editingFinished,
+                this,
+                &window_level::on_text_editing_finished
+            );
+            QObject::connect(m_toggle_tf_button, &::QToolButton::toggled, this, &window_level::on_toggle_tf);
+            QObject::connect(m_toggle_auto_button, &::QToolButton::toggled, this, &window_level::on_toggle_auto_wl);
+            QObject::connect(
+                m_dynamic_range_selection,
                 &::QToolButton::triggered,
                 this,
-                &window_level::onDynamicRangeSelectionChanged
+                &window_level::on_dynamic_range_selection_changed
             );
         }
 
-        qt_container->setLayout(layout);
+        qt_container->set_layout(layout);
     }
     this->updating();
 }
@@ -194,24 +204,24 @@ void window_level::starting()
 void window_level::updating()
 {
     const auto image = m_image.lock();
-    SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
+    SIGHT_ASSERT("inout '" << IMAGE << "' does not exist.", image);
 
     const bool image_is_valid = data::helper::medical_image::check_image_validity(image.get_shared());
-    this->setEnabled(image_is_valid);
+    this->set_enabled(image_is_valid);
 
     if(image_is_valid)
     {
-        if(m_autoWindowing)
+        if(m_auto_windowing)
         {
             double min = NAN;
             double max = NAN;
             data::helper::medical_image::get_min_max(image.get_shared(), min, max);
-            this->updateImageWindowLevel(min, max);
+            this->update_image_window_level(min, max);
         }
 
         const auto tf                              = m_tf.const_lock();
-        data::transfer_function::min_max_t min_max = tf->windowMinMax();
-        this->onImageWindowLevelChanged(min_max.first, min_max.second);
+        data::transfer_function::min_max_t min_max = tf->window_min_max();
+        this->on_image_window_level_changed(min_max.first, min_max.second);
     }
 }
 
@@ -222,21 +232,31 @@ void window_level::stopping()
     if(not m_minimal)
     {
         QObject::disconnect(
-            m_dynamicRangeSelection,
+            m_dynamic_range_selection,
             &::QToolButton::triggered,
             this,
-            &window_level::onDynamicRangeSelectionChanged
+            &window_level::on_dynamic_range_selection_changed
         );
-        QObject::disconnect(m_toggleAutoButton, &::QToolButton::toggled, this, &window_level::onToggleAutoWL);
-        QObject::disconnect(m_toggleTFButton, &::QToolButton::toggled, this, &window_level::onToggleTF);
+        QObject::disconnect(m_toggle_auto_button, &::QToolButton::toggled, this, &window_level::on_toggle_auto_wl);
+        QObject::disconnect(m_toggle_tf_button, &::QToolButton::toggled, this, &window_level::on_toggle_tf);
         QObject::disconnect(
-            m_rangeSlider,
-            SIGNAL(sliderRangeEdited(double,double)),
+            m_range_slider,
+            SIGNAL(slider_range_edited(double,double)),
             this,
-            SLOT(onWindowLevelWidgetChanged(double,double))
+            SLOT(on_window_level_widget_changed(double,double))
         );
-        QObject::disconnect(m_valueTextMax, &::QLineEdit::editingFinished, this, &window_level::onTextEditingFinished);
-        QObject::disconnect(m_valueTextMin, &::QLineEdit::editingFinished, this, &window_level::onTextEditingFinished);
+        QObject::disconnect(
+            m_value_text_max,
+            &::QLineEdit::editingFinished,
+            this,
+            &window_level::on_text_editing_finished
+        );
+        QObject::disconnect(
+            m_value_text_min,
+            &::QLineEdit::editingFinished,
+            this,
+            &window_level::on_text_editing_finished
+        );
     }
 
     this->destroy();
@@ -244,7 +264,7 @@ void window_level::stopping()
 
 //------------------------------------------------------------------------------
 
-void window_level::updateTF()
+void window_level::update_tf()
 {
     this->updating();
 }
@@ -258,51 +278,51 @@ void window_level::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-window_level::WindowLevelMinMaxType window_level::getImageWindowMinMax()
+window_level::window_level_min_max_t window_level::get_image_window_min_max()
 {
     const auto tf = m_tf.const_lock();
     SIGHT_ASSERT("TransferFunction null pointer", tf);
-    return tf->windowMinMax();
+    return tf->window_min_max();
 }
 
 //------------------------------------------------------------------------------
-void window_level::updateWidgetMinMax(double _image_min, double _image_max)
+void window_level::update_widget_min_max(double _image_min, double _image_max)
 {
-    const double range_min = this->fromWindowLevel(_image_min);
-    const double range_max = this->fromWindowLevel(_image_max);
+    const double range_min = this->from_window_level(_image_min);
+    const double range_max = this->from_window_level(_image_max);
 
-    m_rangeSlider->setPos(range_min, range_max);
+    m_range_slider->set_pos(range_min, range_max);
 }
 
 //------------------------------------------------------------------------------
 
-double window_level::fromWindowLevel(double _val)
+double window_level::from_window_level(double _val)
 {
-    double val_min = m_widgetDynamicRangeMin;
-    double val_max = val_min + m_widgetDynamicRangeWidth;
+    double val_min = m_widget_dynamic_range_min;
+    double val_max = val_min + m_widget_dynamic_range_width;
 
     val_min = std::min(_val, val_min);
     val_max = std::max(_val, val_max);
 
-    this->setWidgetDynamicRange(val_min, val_max);
+    this->set_widget_dynamic_range(val_min, val_max);
 
-    const double res = (_val - m_widgetDynamicRangeMin) / m_widgetDynamicRangeWidth;
+    const double res = (_val - m_widget_dynamic_range_min) / m_widget_dynamic_range_width;
     return res;
 }
 
 //------------------------------------------------------------------------------
 
-double window_level::toWindowLevel(double _val) const
+double window_level::to_window_level(double _val) const
 {
-    return m_widgetDynamicRangeMin + m_widgetDynamicRangeWidth * _val;
+    return m_widget_dynamic_range_min + m_widget_dynamic_range_width * _val;
 }
 
 //------------------------------------------------------------------------------
 
-void window_level::updateImageWindowLevel(double _image_min, double _image_max)
+void window_level::update_image_window_level(double _image_min, double _image_max)
 {
     const auto tf = m_tf.lock();
-    tf->setWindowMinMax(
+    tf->set_window_min_max(
         data::transfer_function::min_max_t(
             _image_min,
             _image_max
@@ -319,25 +339,25 @@ void window_level::updateImageWindowLevel(double _image_min, double _image_max)
 
 //------------------------------------------------------------------------------
 
-void window_level::onWindowLevelWidgetChanged(double _min, double _max)
+void window_level::on_window_level_widget_changed(double _min, double _max)
 {
-    const double image_min = this->toWindowLevel(_min);
-    const double image_max = this->toWindowLevel(_max);
-    this->updateImageWindowLevel(image_min, image_max);
-    this->updateTextWindowLevel(image_min, image_max);
+    const double image_min = this->to_window_level(_min);
+    const double image_max = this->to_window_level(_max);
+    this->update_image_window_level(image_min, image_max);
+    this->update_text_window_level(image_min, image_max);
 }
 
 //------------------------------------------------------------------------------
 
-void window_level::onDynamicRangeSelectionChanged(QAction* _action)
+void window_level::on_dynamic_range_selection_changed(QAction* _action)
 {
-    WindowLevelMinMaxType wl = this->getImageWindowMinMax();
-    double min               = m_widgetDynamicRangeMin;
-    double max               = m_widgetDynamicRangeWidth + min;
-    int index                = _action->data().toInt();
+    window_level_min_max_t wl = this->get_image_window_min_max();
+    double min                = m_widget_dynamic_range_min;
+    double max                = m_widget_dynamic_range_width + min;
+    int index                 = _action->data().toInt();
 
     const auto image = m_image.lock();
-    SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
+    SIGHT_ASSERT("inout '" << IMAGE << "' does not exist.", image);
 
     switch(index)
     {
@@ -370,29 +390,29 @@ void window_level::onDynamicRangeSelectionChanged(QAction* _action)
             SIGHT_ASSERT("Unknown range selector index", 0);
     }
 
-    this->setWidgetDynamicRange(min, max);
-    this->updateWidgetMinMax(wl.first, wl.second);
+    this->set_widget_dynamic_range(min, max);
+    this->update_widget_min_max(wl.first, wl.second);
 }
 
 //------------------------------------------------------------------------------
 
-void window_level::onImageWindowLevelChanged(double _image_min, double _image_max)
+void window_level::on_image_window_level_changed(double _image_min, double _image_max)
 {
-    this->updateWidgetMinMax(_image_min, _image_max);
-    this->updateTextWindowLevel(_image_min, _image_max);
+    this->update_widget_min_max(_image_min, _image_max);
+    this->update_text_window_level(_image_min, _image_max);
 }
 
 //------------------------------------------------------------------------------
 
-void window_level::updateTextWindowLevel(double _image_min, double _image_max)
+void window_level::update_text_window_level(double _image_min, double _image_max)
 {
-    m_valueTextMin->setText(QString("%1").arg(_image_min));
-    m_valueTextMax->setText(QString("%1").arg(_image_max));
+    m_value_text_min->setText(QString("%1").arg(_image_min));
+    m_value_text_max->setText(QString("%1").arg(_image_max));
 }
 
 //------------------------------------------------------------------------------
 
-void window_level::onToggleTF(bool _square_tf)
+void window_level::on_toggle_tf(bool _square_tf)
 {
     const auto current_tf = m_tf.lock();
 
@@ -402,29 +422,29 @@ void window_level::onToggleTF(bool _square_tf)
     {
         new_tf = std::make_shared<data::transfer_function>();
         data::transfer_function::color_t color(1., 1., 1., 1.);
-        new_tf->setName("SquareTF");
+        new_tf->set_name("SquareTF");
 
         auto tf_data = new_tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
         tf_data->insert({0.0, color});
         tf_data->insert({1.0, color});
-        tf_data->setClamped(true);
+        tf_data->set_clamped(true);
     }
     else
     {
-        if(m_previousTF)
+        if(m_previous_tf)
         {
-            new_tf = m_previousTF;
+            new_tf = m_previous_tf;
         }
         else
         {
-            new_tf = data::transfer_function::createDefaultTF();
+            new_tf = data::transfer_function::create_default_tf();
         }
     }
 
-    new_tf->setWindow(current_tf->window());
-    new_tf->setLevel(current_tf->level());
+    new_tf->set_window(current_tf->window());
+    new_tf->set_level(current_tf->level());
 
-    m_previousTF = data::object::copy(current_tf.get_shared());
+    m_previous_tf = data::object::copy(current_tf.get_shared());
 
     current_tf->deep_copy(new_tf);
 
@@ -440,38 +460,38 @@ void window_level::onToggleTF(bool _square_tf)
 
 //------------------------------------------------------------------------------
 
-void window_level::onToggleAutoWL(bool _auto_wl)
+void window_level::on_toggle_auto_wl(bool _auto_wl)
 {
-    m_autoWindowing = _auto_wl;
+    m_auto_windowing = _auto_wl;
 
-    if(m_autoWindowing)
+    if(m_auto_windowing)
     {
         const auto image = m_image.lock();
-        SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
+        SIGHT_ASSERT("inout '" << IMAGE << "' does not exist.", image);
         double min = NAN;
         double max = NAN;
         data::helper::medical_image::get_min_max(image.get_shared(), min, max);
-        this->updateImageWindowLevel(min, max);
-        this->onImageWindowLevelChanged(min, max);
+        this->update_image_window_level(min, max);
+        this->on_image_window_level_changed(min, max);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void window_level::onTextEditingFinished()
+void window_level::on_text_editing_finished()
 {
     double min = NAN;
     double max = NAN;
-    if(getWidgetDoubleValue(m_valueTextMin, min) && getWidgetDoubleValue(m_valueTextMax, max))
+    if(get_widget_double_value(m_value_text_min, min) && get_widget_double_value(m_value_text_max, max))
     {
-        this->updateWidgetMinMax(min, max);
-        this->updateImageWindowLevel(min, max);
+        this->update_widget_min_max(min, max);
+        this->update_image_window_level(min, max);
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool window_level::getWidgetDoubleValue(QLineEdit* _widget, double& _val)
+bool window_level::get_widget_double_value(QLineEdit* _widget, double& _val)
 {
     bool ok = false;
     _val = _widget->text().toDouble(&ok);
@@ -492,16 +512,16 @@ bool window_level::getWidgetDoubleValue(QLineEdit* _widget, double& _val)
 
 //------------------------------------------------------------------------------
 
-void window_level::setWidgetDynamicRange(double _min, double _max)
+void window_level::set_widget_dynamic_range(double _min, double _max)
 {
     SIGHT_ASSERT("Maximum is not greater than minimum", _max >= _min);
 
-    m_widgetDynamicRangeMin   = _min;
-    m_widgetDynamicRangeWidth = std::max(1., _max - _min);
+    m_widget_dynamic_range_min   = _min;
+    m_widget_dynamic_range_width = std::max(1., _max - _min);
 
     if(not m_minimal)
     {
-        m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(_min).arg(_max));
+        m_dynamic_range_selection->setText(QString("%1, %2 ").arg(_min).arg(_max));
     }
 }
 
@@ -510,11 +530,11 @@ void window_level::setWidgetDynamicRange(double _min, double _max)
 service::connections_t window_level::auto_connections() const
 {
     return {
-        {s_IMAGE, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {s_IMAGE, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {s_TF, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT},
-        {s_TF, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
-        {s_TF, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
+        {IMAGE, data::image::MODIFIED_SIG, service::slots::UPDATE},
+        {IMAGE, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {TF, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT},
+        {TF, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
+        {TF, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
     };
 }
 

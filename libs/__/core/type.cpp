@@ -30,19 +30,19 @@ namespace sight::core
 //------------------------------------------------------------------------------
 
 const std::array<std::tuple<size_t, bool, std::string, type::type_t>,
-                 size_t(type::type_t::NONE) + 1> type::s_type_properties =
+                 size_t(type::type_t::none) + 1> type::TYPE_PROPERTIES =
 {{
-    {sizeof(std::int8_t), true, "int8", type_t::INT8},
-    {sizeof(std::int16_t), true, "int16", type_t::INT16},
-    {sizeof(std::int32_t), true, "int32", type_t::INT32},
-    {sizeof(std::int64_t), true, "int64", type_t::INT64},
-    {sizeof(std::uint8_t), false, "uint8", type_t::UINT8},
-    {sizeof(std::uint16_t), false, "uint16", type_t::UINT16},
-    {sizeof(std::uint32_t), false, "uint32", type_t::UINT32},
-    {sizeof(std::uint64_t), false, "uint64", type_t::UINT64},
+    {sizeof(std::int8_t), true, "int8", type_t::in_t8},
+    {sizeof(std::int16_t), true, "int16", type_t::in_t16},
+    {sizeof(std::int32_t), true, "int32", type_t::in_t32},
+    {sizeof(std::int64_t), true, "int64", type_t::in_t64},
+    {sizeof(std::uint8_t), false, "uint8", type_t::uin_t8},
+    {sizeof(std::uint16_t), false, "uint16", type_t::uin_t16},
+    {sizeof(std::uint32_t), false, "uint32", type_t::uin_t32},
+    {sizeof(std::uint64_t), false, "uint64", type_t::uin_t64},
     {sizeof(float), true, "float", type_t::FLOAT},
     {sizeof(double), true, "double", type_t::DOUBLE},
-    {0, false, "unspecified", type_t::NONE}
+    {0, false, "unspecified", type_t::none}
 }
 };
 
@@ -50,7 +50,7 @@ const std::array<std::tuple<size_t, bool, std::string, type::type_t>,
 
 type::type(const std::string& _str)
 {
-    for(const auto& [size, is_signed, name, type] : s_type_properties)
+    for(const auto& [size, is_signed, name, type] : TYPE_PROPERTIES)
     {
         if(name == _str)
         {
@@ -64,21 +64,21 @@ type::type(const std::string& _str)
 
 size_t type::size() const
 {
-    return std::get<0>(s_type_properties[size_t(m_type)]);
+    return std::get<0>(TYPE_PROPERTIES[size_t(m_type)]);
 }
 
 //------------------------------------------------------------------------------
 
 bool type::is_signed() const
 {
-    return std::get<1>(s_type_properties[size_t(m_type)]);
+    return std::get<1>(TYPE_PROPERTIES[size_t(m_type)]);
 }
 
 //------------------------------------------------------------------------------
 
 const std::string& type::name() const
 {
-    return std::get<2>(s_type_properties[size_t(m_type)]);
+    return std::get<2>(TYPE_PROPERTIES[size_t(m_type)]);
 }
 
 //------------------------------------------------------------------------------
@@ -87,49 +87,49 @@ std::string type::to_string(const void* _value) const
 {
     switch(m_type)
     {
-        case type_t::INT8:
+        case type_t::in_t8:
         {
             const auto& v = *(static_cast<const std::int8_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::INT16:
+        case type_t::in_t16:
         {
             const auto& v = *(static_cast<const std::int16_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::INT32:
+        case type_t::in_t32:
         {
             const auto& v = *(static_cast<const std::int32_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::INT64:
+        case type_t::in_t64:
         {
             const auto& v = *(static_cast<const std::int64_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::UINT8:
+        case type_t::uin_t8:
         {
             const auto& v = *(static_cast<const std::uint8_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::UINT16:
+        case type_t::uin_t16:
         {
             const auto& v = *(static_cast<const std::uint16_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::UINT32:
+        case type_t::uin_t32:
         {
             const auto& v = *(static_cast<const std::uint32_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::UINT64:
+        case type_t::uin_t64:
         {
             const auto& v = *(static_cast<const std::uint64_t*>(_value));
             return std::to_string(v);
@@ -147,7 +147,7 @@ std::string type::to_string(const void* _value) const
             return std::to_string(v);
         }
 
-        case type_t::NONE:
+        case type_t::none:
             return "";
     }
 

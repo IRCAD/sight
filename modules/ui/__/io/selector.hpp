@@ -79,19 +79,19 @@ class MODULE_UI_CLASS_API selector : public sight::ui::dialog_editor
 public:
 
     /// IOMode enum definition
-    typedef enum
+    enum io_mode
     {
-        READER_MODE, /**< this mode allows to configure the service as a reader */
-        WRITER_MODE  /**< this mode allows to configure the service as a writer */
-    } IOMode;
+        reader_mode, /**< this mode allows to configure the service as a reader */
+        writer_mode  /**< this mode allows to configure the service as a writer */
+    };
 
     SIGHT_DECLARE_SERVICE(selector, sight::ui::dialog_editor);
 
-    typedef core::com::signal<void (core::jobs::base::sptr)> job_created_signal_t;
-    typedef core::com::signal<void ()> job_failed_signal_t;
-    typedef core::com::signal<void ()> job_succeeded_signal_t;
+    using job_created_signal_t   = core::com::signal<void (core::jobs::base::sptr)>;
+    using job_failed_signal_t    = core::com::signal<void ()>;
+    using job_succeeded_signal_t = core::com::signal<void ()>;
 
-    typedef core::com::slot<void (core::jobs::base::sptr)> forward_job_slot_t;
+    using forward_job_slot_t = core::com::slot<void (core::jobs::base::sptr)>;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -108,7 +108,7 @@ public:
      *
      *@param[in] _mode the value can be selector::READER_MODE or selector::WRITER_MODE.
      */
-    MODULE_UI_API void setIOMode(IOMode _mode);
+    MODULE_UI_API void set_io_mode(io_mode _mode);
 
 protected:
 
@@ -135,34 +135,34 @@ protected:
 
 private:
 
-    void forwardJob(core::jobs::base::sptr _job);
+    void forward_job(core::jobs::base::sptr _job);
 
     /// Configure the service as writer or reader.
-    IOMode m_mode {READER_MODE};
+    io_mode m_mode {reader_mode};
 
     /// Configure if selected services are included or excluded.
-    bool m_servicesAreExcluded {true};
+    bool m_services_are_excluded {true};
 
     /**
      * @brief List of services to be included or excluded.
      *
      * @see selector::m_servicesAreExcluded.
      */
-    std::vector<std::string> m_selectedServices;
+    std::vector<std::string> m_selected_services;
 
     /// Map that specifies a configuration extension for a service
-    std::map<std::string, std::string> m_serviceToConfig;
+    std::map<std::string, std::string> m_service_to_config;
 
     /// classname of the read object (used if the data is set as output instead of inout)
-    std::string m_dataClassname;
+    std::string m_data_classname;
 
-    SPTR(job_created_signal_t) m_sigJobCreated;
-    SPTR(job_failed_signal_t) m_sigJobFailed;
-    SPTR(job_succeeded_signal_t) m_sigJobSucceeded;
+    SPTR(job_created_signal_t) m_sig_job_created;
+    SPTR(job_failed_signal_t) m_sig_job_failed;
+    SPTR(job_succeeded_signal_t) m_sig_job_succeeded;
 
-    SPTR(forward_job_slot_t) m_slotForwardJob;
+    SPTR(forward_job_slot_t) m_slot_forward_job;
 
-    data::ptr<data::object, data::Access::inout> m_data {this, sight::io::service::s_DATA_KEY};
+    data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 };
 
 } // namespace sight::module::ui::io

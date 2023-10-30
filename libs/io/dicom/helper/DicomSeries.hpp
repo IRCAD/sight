@@ -65,18 +65,18 @@ namespace sight::io::dicom::helper
  * - It can be used to complete DicomSeries that have been created using the
  *   DicomDir helper (using complete function).
  */
-class IO_DICOM_CLASS_API DicomSeries
+class IO_DICOM_CLASS_API dicom_series
 {
 public:
 
-    typedef std::vector<std::filesystem::path> filename_container_t;
-    typedef std::vector<SPTR(data::dicom_series)> dicom_series_container_t;
+    using filename_container_t     = std::vector<std::filesystem::path>;
+    using dicom_series_container_t = std::vector<std::shared_ptr<data::dicom_series> >;
 
     /// Constructor
-    IO_DICOM_API DicomSeries() noexcept = default;
+    IO_DICOM_API dicom_series() noexcept = default;
 
     /// Destructor
-    IO_DICOM_API ~DicomSeries() noexcept = default;
+    IO_DICOM_API ~dicom_series() noexcept = default;
 
     /**
      * @brief Read DicomSeries from paths.
@@ -107,7 +107,7 @@ protected:
      * @param[in,out] series_set List of DicomSeries that must be completed with information
      * @param[in] completeSeriesObserver complete series observer
      */
-    static void fillSeries(
+    static void fill_series(
         dicom_series_container_t& _series_container,
         const SPTR(core::jobs::observer)& _complete_series_observer
     );
@@ -118,7 +118,7 @@ protected:
      * @param[in] filenames List of files
      * @param[in] readerObserver reader observer
      */
-    static dicom_series_container_t splitFiles(
+    static dicom_series_container_t split_files(
         filename_container_t& _filenames,
         const SPTR(core::jobs::observer)& _reader_observer
     );
@@ -129,7 +129,7 @@ protected:
      * @param[in] scanner GDCM Scanner used to read information
      * @param[in] filename Filename from which the information must be read
      */
-    static void createSeries(
+    static void create_series(
         dicom_series_container_t& _series_container,
         const gdcm::Scanner& _scanner,
         const std::filesystem::path& _filename

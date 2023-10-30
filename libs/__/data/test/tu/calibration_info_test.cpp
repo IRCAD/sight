@@ -51,100 +51,100 @@ void calibration_info_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void calibration_info_test::calibrationInfoTest()
+void calibration_info_test::calibration_test()
 {
     data::calibration_info::sptr cal_info = std::make_shared<data::calibration_info>();
 
     data::image::sptr img = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(img, core::type::INT16);
+    utest_data::generator::image::generate_random_image(img, core::type::INT16);
 
     auto pl  = std::make_shared<data::point_list>();
     auto pt1 = std::make_shared<data::point>(1.0, 2.0, 3.0);
     auto pt2 = std::make_shared<data::point>(4.0, 5.0, 6.0);
     auto pt3 = std::make_shared<data::point>(7.0, 8.0, 9.0);
 
-    pl->getPoints().push_back(pt1);
-    pl->getPoints().push_back(pt2);
-    pl->getPoints().push_back(pt3);
+    pl->get_points().push_back(pt1);
+    pl->get_points().push_back(pt2);
+    pl->get_points().push_back(pt3);
 
-    cal_info->addRecord(img, pl);
+    cal_info->add_record(img, pl);
 
     //Testing values
 
-    const auto img_list = cal_info->getImageContainer();
+    const auto img_list = cal_info->get_image_container();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), img_list.size());
     CPPUNIT_ASSERT_EQUAL(img, img_list.front());
 
-    const auto pl_list = cal_info->getPointListContainer();
+    const auto pl_list = cal_info->get_point_list_container();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), pl_list.size());
     CPPUNIT_ASSERT_EQUAL(pl, pl_list.front());
 
-    data::point_list::csptr pl1 = cal_info->getPointList(img_list.front());
+    data::point_list::csptr pl1 = cal_info->get_point_list(img_list.front());
     CPPUNIT_ASSERT_EQUAL(data::point_list::csptr(pl), pl1);
 
-    data::image::csptr img1 = cal_info->getImage(pl_list.front());
+    data::image::csptr img1 = cal_info->get_image(pl_list.front());
     CPPUNIT_ASSERT_EQUAL(data::image::csptr(img), img1);
 
-    cal_info->removeRecord(0);
+    cal_info->remove_record(0);
 
-    data::point_list::csptr pl2 = cal_info->getPointList(img);
+    data::point_list::csptr pl2 = cal_info->get_point_list(img);
     CPPUNIT_ASSERT_EQUAL(data::point_list::csptr(), pl2);
 
-    data::image::csptr img2 = cal_info->getImage(pl);
+    data::image::csptr img2 = cal_info->get_image(pl);
     CPPUNIT_ASSERT_EQUAL(data::image::csptr(), img2);
 
-    CPPUNIT_ASSERT(cal_info->getImageContainer().empty());
-    CPPUNIT_ASSERT(cal_info->getPointListContainer().empty());
+    CPPUNIT_ASSERT(cal_info->get_image_container().empty());
+    CPPUNIT_ASSERT(cal_info->get_point_list_container().empty());
 }
 
 //------------------------------------------------------------------------------
 
-void calibration_info_test::shallow_copyTest()
+void calibration_info_test::shallow_copy_test()
 {
     data::calibration_info::sptr cal_info = std::make_shared<data::calibration_info>();
 
     data::image::sptr img = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(img, core::type::INT16);
+    utest_data::generator::image::generate_random_image(img, core::type::INT16);
 
     auto pl  = std::make_shared<data::point_list>();
     auto pt1 = std::make_shared<data::point>(1.0, 2.0, 3.0);
     auto pt2 = std::make_shared<data::point>(4.0, 5.0, 6.0);
     auto pt3 = std::make_shared<data::point>(7.0, 8.0, 9.0);
 
-    pl->getPoints().push_back(pt1);
-    pl->getPoints().push_back(pt2);
-    pl->getPoints().push_back(pt3);
+    pl->get_points().push_back(pt1);
+    pl->get_points().push_back(pt2);
+    pl->get_points().push_back(pt3);
 
-    cal_info->addRecord(img, pl);
+    cal_info->add_record(img, pl);
 
     data::calibration_info::sptr cal_info2 = std::make_shared<data::calibration_info>();
     cal_info2->shallow_copy(cal_info);
 
-    CPPUNIT_ASSERT(cal_info->getImageContainer() == cal_info2->getImageContainer());
-    CPPUNIT_ASSERT(cal_info->getPointListContainer() == cal_info2->getPointListContainer());
+    CPPUNIT_ASSERT(cal_info->get_image_container() == cal_info2->get_image_container());
+    CPPUNIT_ASSERT(cal_info->get_point_list_container() == cal_info2->get_point_list_container());
 }
 
 //------------------------------------------------------------------------------
 
-void calibration_info_test::deep_copyTest()
+void calibration_info_test::deep_copy_test()
 {
     data::calibration_info::sptr cal_info = std::make_shared<data::calibration_info>();
 
     data::image::sptr img = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(img, core::type::INT16);
+    utest_data::generator::image::generate_random_image(img, core::type::INT16);
 
     auto pl  = std::make_shared<data::point_list>();
     auto pt1 = std::make_shared<data::point>(1.0, 2.0, 3.0);
     auto pt2 = std::make_shared<data::point>(4.0, 5.0, 6.0);
     auto pt3 = std::make_shared<data::point>(7.0, 8.0, 9.0);
 
-    pl->getPoints().push_back(pt1);
-    pl->getPoints().push_back(pt2);
-    pl->getPoints().push_back(pt3);
+    pl->get_points().push_back(pt1);
+    pl->get_points().push_back(pt2);
+    pl->get_points().push_back(pt3);
 
-    cal_info->addRecord(img, pl);
+    cal_info->add_record(img, pl);
 
     data::calibration_info::sptr cal_info2 = std::make_shared<data::calibration_info>();
 
@@ -153,20 +153,20 @@ void calibration_info_test::deep_copyTest()
 
     cal_info2->deep_copy(cal_info);
 
-    CPPUNIT_ASSERT_EQUAL(cal_info2->getImageContainer().size(), cal_info2->getPointListContainer().size());
+    CPPUNIT_ASSERT_EQUAL(cal_info2->get_image_container().size(), cal_info2->get_point_list_container().size());
 
-    CPPUNIT_ASSERT_EQUAL(cal_info->getImageContainer().size(), cal_info2->getImageContainer().size());
-    CPPUNIT_ASSERT_EQUAL(cal_info->getPointListContainer().size(), cal_info2->getPointListContainer().size());
+    CPPUNIT_ASSERT_EQUAL(cal_info->get_image_container().size(), cal_info2->get_image_container().size());
+    CPPUNIT_ASSERT_EQUAL(cal_info->get_point_list_container().size(), cal_info2->get_point_list_container().size());
 
     std::list<data::image::sptr>::const_iterator iter_img1;
     std::list<data::image::sptr>::const_iterator iter_img2;
-    iter_img1 = cal_info->getImageContainer().begin();
-    iter_img2 = cal_info2->getImageContainer().begin();
+    iter_img1 = cal_info->get_image_container().begin();
+    iter_img2 = cal_info2->get_image_container().begin();
 
     std::list<data::point_list::sptr>::const_iterator iter_pl1;
     std::list<data::point_list::sptr>::const_iterator iter_pl2;
-    iter_pl1 = cal_info->getPointListContainer().begin();
-    iter_pl2 = cal_info2->getPointListContainer().begin();
+    iter_pl1 = cal_info->get_point_list_container().begin();
+    iter_pl2 = cal_info2->get_point_list_container().begin();
 
     /* TODO: fix
        while(iterImg1 != calInfo->getImageContainer().end())
@@ -191,23 +191,23 @@ void calibration_info_test::deep_copyTest()
 
 //------------------------------------------------------------------------------
 
-void calibration_info_test::getImageTest()
+void calibration_info_test::get_image_test()
 {
     auto cal_info = std::make_shared<data::calibration_info>();
 
     auto img1 = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(img1, core::type::INT16);
+    utest_data::generator::image::generate_random_image(img1, core::type::INT16);
     auto pl1 = std::make_shared<data::point_list>();
-    pl1->setPoints(
+    pl1->set_points(
         {std::make_shared<data::point>(1., 2., 3.), std::make_shared<data::point>(4., 5., 6.),
          std::make_shared<data::point>(.7, 8., 9.)
         });
-    cal_info->addRecord(img1, pl1);
+    cal_info->add_record(img1, pl1);
 
     auto img2 = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(img2, core::type::INT16);
+    utest_data::generator::image::generate_random_image(img2, core::type::INT16);
     auto pl2 = std::make_shared<data::point_list>();
-    pl2->setPoints(
+    pl2->set_points(
         {std::make_shared<data::point>(10., 11., 12.), std::make_shared<data::point>(
              13.,
              14.,
@@ -215,12 +215,12 @@ void calibration_info_test::getImageTest()
          ),
          std::make_shared<data::point>(16., 17., 18.)
         });
-    cal_info->addRecord(img2, pl2);
+    cal_info->add_record(img2, pl2);
 
-    CPPUNIT_ASSERT_EQUAL(std::const_pointer_cast<const data::image>(img1), cal_info->getImage(pl1));
-    CPPUNIT_ASSERT_EQUAL(std::const_pointer_cast<const data::image>(img2), cal_info->getImage(pl2));
-    CPPUNIT_ASSERT_EQUAL(img1, cal_info->getImage(0));
-    CPPUNIT_ASSERT_EQUAL(img2, cal_info->getImage(1));
+    CPPUNIT_ASSERT_EQUAL(std::const_pointer_cast<const data::image>(img1), cal_info->get_image(pl1));
+    CPPUNIT_ASSERT_EQUAL(std::const_pointer_cast<const data::image>(img2), cal_info->get_image(pl2));
+    CPPUNIT_ASSERT_EQUAL(img1, cal_info->get_image(0));
+    CPPUNIT_ASSERT_EQUAL(img2, cal_info->get_image(1));
 }
 
 } // namespace sight::data::ut

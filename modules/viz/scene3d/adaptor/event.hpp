@@ -32,7 +32,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor echoes the input events its scene got. The input events may be filtered in the configuration.
  *
  * @section Signals Signals
- * - \b triggered(sight::viz::scene3d::window_interactor::InteractionInfo): An event was triggered
+ * - \b triggered(sight::viz::scene3d::window_interactor::interaction_info): An event was triggered
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -68,43 +68,43 @@ public:
 
     event();
 
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
-        MouseButton _button,
-        Modifier _mods,
+    MODULE_VIZ_SCENE3D_API void mouse_move_event(
+        mouse_button _button,
+        modifier _mods,
         int _x,
         int _y,
         int _dx,
         int _dy
     ) final;
-    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier _mods, double _angle_delta, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y) final;
-    MODULE_VIZ_SCENE3D_API void keyReleaseEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y) final;
-    MODULE_VIZ_SCENE3D_API void resizeEvent(int _width, int _height) final;
-    MODULE_VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) final;
-    MODULE_VIZ_SCENE3D_API void panGestureMoveEvent(int _x, int _y, int _dx, int _dy) final;
-    MODULE_VIZ_SCENE3D_API void panGestureReleaseEvent(int _x, int _y, int _dx, int _dy) final;
-    MODULE_VIZ_SCENE3D_API void longTapGestureEvent(int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void wheel_event(modifier _mods, double _angle_delta, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void button_double_press_event(mouse_button _button, modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
+    MODULE_VIZ_SCENE3D_API void key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
+    MODULE_VIZ_SCENE3D_API void resize_event(int _width, int _height) final;
+    MODULE_VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
+    MODULE_VIZ_SCENE3D_API void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
+    MODULE_VIZ_SCENE3D_API void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
+    MODULE_VIZ_SCENE3D_API void long_tap_gesture_event(int _x, int _y) final;
 
     MODULE_VIZ_SCENE3D_API static const core::com::signals::key_t TRIGGERED;
-    typedef core::com::signal<void (sight::viz::scene3d::window_interactor::InteractionInfo)> TriggeredSignal;
+    using triggered_signal_t = core::com::signal<void (sight::viz::scene3d::window_interactor::interaction_info)>;
 
 private:
 
-    struct Filter
+    struct filter
     {
-        std::vector<sight::viz::scene3d::window_interactor::InteractionInfo::InteractionEnum> type;
+        std::vector<sight::viz::scene3d::window_interactor::interaction_info::interaction_enum> type;
         std::uint8_t buttons = 0;
-        std::optional<Modifier> modifiers;
+        std::optional<modifier> modifiers;
         std::vector<int> keys;
     };
 
     bool check(
-        sight::viz::scene3d::window_interactor::InteractionInfo::InteractionEnum _type,
-        std::optional<MouseButton> _button,
-        std::optional<Modifier> _modifiers,
+        sight::viz::scene3d::window_interactor::interaction_info::interaction_enum _type,
+        std::optional<mouse_button> _button,
+        std::optional<modifier> _modifiers,
         std::optional<int> _key
     );
 
@@ -113,7 +113,7 @@ private:
     MODULE_VIZ_SCENE3D_API void updating() final;
     MODULE_VIZ_SCENE3D_API void stopping() final;
 
-    std::vector<Filter> m_filters;
+    std::vector<filter> m_filters;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

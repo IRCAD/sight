@@ -52,7 +52,7 @@ public:
     = default;
 
     /// Adds a task at the back of the worker's task queue.
-    VIZ_SCENE3D_API virtual void pushTask(task_t _task) = 0;
+    VIZ_SCENE3D_API virtual void push_task(task_t _task) = 0;
 };
 
 //------------------------------------------------------------------------------

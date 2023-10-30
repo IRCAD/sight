@@ -40,21 +40,21 @@ namespace sight::ui::qml::dialog
 
 //------------------------------------------------------------------------------
 
-void logger::setTitle(const std::string& _title)
+void logger::set_title(const std::string& _title)
 {
     m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setMessage(const std::string& _message)
+void logger::set_message(const std::string& _message)
 {
     m_message = QString::fromStdString(_message);
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setLogger(const core::log::logger::sptr& _logger)
+void logger::set_logger(const core::log::logger::sptr& _logger)
 {
     m_logger = _logger;
 }
@@ -64,21 +64,21 @@ void logger::setLogger(const core::log::logger::sptr& _logger)
 bool logger::show()
 {
     // get the qml engine QmlApplicationEngine
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
+    SPTR(ui::qml::qml_engine) engine = ui::qml::qml_engine::get_default();
     // the model to set the data of a table
-    ui::qml::model::RoleTableModel model;
+    ui::qml::model::role_table_model model;
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialog_path =
         core::runtime::get_library_resource_file_path("ui_qml/dialog/logger.qml");
     // set the root context for the model
-    engine->getRootContext()->setContextProperty("loggerModel", &model);
+    engine->get_root_context()->setContextProperty("loggerModel", &model);
 
     // set the context for the new component
-    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->get_root_context()));
     context->setContextProperty("logger", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialog_path, context);
+    QObject* window = engine->create_component(dialog_path, context);
     SIGHT_ASSERT("The Qml File logger is not found or not loaded", window);
     // keep window to destroy it
     window->setProperty("title", m_title);
@@ -96,26 +96,26 @@ bool logger::show()
     auto critical =
         core::runtime::get_library_resource_file_path("fwGuiQml/critical.svg");
     SIGHT_ASSERT("The critical svg is not found", std::filesystem::exists(critical));
-    if(m_logger->count(core::log::log::CRITICAL) > 0)
+    if(m_logger->count(core::log::log::critical) > 0)
     {
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
+        emit_icon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
     }
-    else if(m_logger->count(core::log::log::WARNING) > 0)
+    else if(m_logger->count(core::log::log::warning) > 0)
     {
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(warning.string())));
+        emit_icon(QUrl::fromLocalFile(QString::fromStdString(warning.string())));
     }
     else
     {
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(information.string())));
+        emit_icon(QUrl::fromLocalFile(QString::fromStdString(information.string())));
     }
 
     // Create message
     std::stringstream ss;
     ss << m_message.toStdString()
-    << "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::log::CRITICAL) << " critical, "
-    << m_logger->count(core::log::log::WARNING) << " warning and "
-    << m_logger->count(core::log::log::INFORMATION) << " information messages.";
-    emitMessage(QString::fromStdString(ss.str()));
+    << "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::log::critical) << " critical, "
+    << m_logger->count(core::log::log::warning) << " warning and "
+    << m_logger->count(core::log::log::information) << " information messages.";
+    emit_message(QString::fromStdString(ss.str()));
 
     // get the icon of the details checkbox
     auto detailshidden =
@@ -124,8 +124,8 @@ bool logger::show()
     auto detailsshown =
         core::runtime::get_library_resource_file_path("fwGuiQml/details-shown.svg");
     SIGHT_ASSERT("The details-shown svg is not found", std::filesystem::exists(detailsshown));
-    emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
-    emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));
+    emit_hidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
+    emit_shown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));
 
     dialog->setProperty("information", QUrl::fromLocalFile(QString::fromStdString(information.string())));
     dialog->setProperty("warning", QUrl::fromLocalFile(QString::fromStdString(warning.string())));
@@ -133,34 +133,34 @@ bool logger::show()
 
     // Fill log table
     auto it = m_logger->begin();
-    model.addRole(Qt::UserRole + 1, "level");
-    model.addRole(Qt::UserRole + 2, "message");
+    model.add_role(Qt::UserRole + 1, "level");
+    model.add_role(Qt::UserRole + 2, "message");
     for( ; it != m_logger->end() ; ++it)
     {
         QString level_string = "Unkown";
         QHash<QByteArray, QVariant> data;
-        core::log::log::level_type level = it->get_level();
-        if(level == core::log::log::INFORMATION)
+        core::log::log::level_t level = it->get_level();
+        if(level == core::log::log::information)
         {
             level_string = "Information";
         }
-        else if(level == core::log::log::WARNING)
+        else if(level == core::log::log::warning)
         {
             level_string = "Warning";
         }
-        else if(level == core::log::log::CRITICAL)
+        else if(level == core::log::log::critical)
         {
             level_string = "Critical";
         }
 
         data.insert("level", level_string);
         data.insert("message", QString::fromStdString(it->get_message()));
-        model.addData(QHash<QByteArray, QVariant>(data));
+        model.add_data(QHash<QByteArray, QVariant>(data));
     }
 
-    SIGHT_ASSERT("The Logger need at least one error", !model.isEmpty());
+    SIGHT_ASSERT("The Logger need at least one error", !model.is_empty());
 
-    m_isOk = false;
+    m_is_ok = false;
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
@@ -171,46 +171,46 @@ bool logger::show()
     loop.exec();
 
     delete window;
-    return m_isOk;
+    return m_is_ok;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::resultDialog(bool _is_ok)
+void logger::result_dialog(bool _is_ok)
 {
-    m_isOk = _is_ok;
+    m_is_ok = _is_ok;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitHidden(const QUrl& _hidden)
+void logger::emit_hidden(const QUrl& _hidden)
 {
     m_hidden = _hidden;
-    Q_EMIT hiddenChanged();
+    Q_EMIT hidden_changed();
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitIcon(const QUrl& _path)
+void logger::emit_icon(const QUrl& _path)
 {
     m_icon = _path;
-    Q_EMIT iconChanged();
+    Q_EMIT icon_changed();
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitMessage(const QString& _message)
+void logger::emit_message(const QString& _message)
 {
     m_message = _message;
-    Q_EMIT messageChanged();
+    Q_EMIT message_changed();
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitShown(const QUrl& _shown)
+void logger::emit_shown(const QUrl& _shown)
 {
     m_shown = _shown;
-    Q_EMIT shownChanged();
+    Q_EMIT shown_changed();
 }
 
 //------------------------------------------------------------------------------

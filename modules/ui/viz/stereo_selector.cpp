@@ -60,32 +60,32 @@ void stereo_selector::starting()
     this->create();
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->getContainer()
+        this->get_container()
     );
 
-    m_layersBox = new QComboBox();
-    m_modeBox   = new QComboBox();
+    m_layers_box = new QComboBox();
+    m_mode_box   = new QComboBox();
 
     auto* layout = new QHBoxLayout();
-    layout->addWidget(m_layersBox);
-    layout->addWidget(m_modeBox);
+    layout->addWidget(m_layers_box);
+    layout->addWidget(m_mode_box);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
-    this->refreshRenderers();
+    this->refresh_renderers();
 
-    m_modeBox->addItem("Mono");
-    m_modeBox->addItem("Stereo 5 views");
-    m_modeBox->addItem("Stereo 8 views");
+    m_mode_box->addItem("Mono");
+    m_mode_box->addItem("Stereo 5 views");
+    m_mode_box->addItem("Stereo 8 views");
 
-    auto layer = m_currentLayer.lock();
+    auto layer = m_current_layer.lock();
     if(layer)
     {
-        m_modeBox->setCurrentIndex(static_cast<int>(m_currentLayer.lock()->getStereoMode()));
+        m_mode_box->setCurrentIndex(static_cast<int>(m_current_layer.lock()->get_stereo_mode()));
     }
 
-    QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-    QObject::connect(m_modeBox, SIGNAL(activated(int)), this, SLOT(onSelectedModeItem(int)));
+    QObject::connect(m_layers_box, SIGNAL(activated(int)), this, SLOT(on_selected_layer_item(int)));
+    QObject::connect(m_mode_box, SIGNAL(activated(int)), this, SLOT(on_selected_mode_item(int)));
 }
 
 //------------------------------------------------------------------------------
@@ -110,29 +110,29 @@ void stereo_selector::updating()
 
 //--------------------------------------------------------------------------C---
 
-void stereo_selector::onSelectedLayerItem(int _index)
+void stereo_selector::on_selected_layer_item(int _index)
 {
     // Update the current layer
-    m_currentLayer = m_layers[static_cast<std::size_t>(_index)];
+    m_current_layer = m_layers[static_cast<std::size_t>(_index)];
 }
 
 //------------------------------------------------------------------------------
 
-void stereo_selector::onSelectedModeItem(int _index)
+void stereo_selector::on_selected_mode_item(int _index)
 {
     using sight::viz::scene3d::compositor::core;
-    m_currentLayer.lock()->setStereoMode(
-        _index == 1 ? core::stereo_mode_t::AUTOSTEREO_5
-                    : _index == 2 ? core::stereo_mode_t::AUTOSTEREO_8
-                                  : core::stereo_mode_t::NONE
+    m_current_layer.lock()->set_stereo_mode(
+        _index == 1 ? core::stereo_mode_t::autostereo_5
+                    : _index == 2 ? core::stereo_mode_t::autostereo_8
+                                  : core::stereo_mode_t::none
     );
 }
 
 //------------------------------------------------------------------------------
 
-void stereo_selector::refreshRenderers()
+void stereo_selector::refresh_renderers()
 {
-    m_layersBox->clear();
+    m_layers_box->clear();
 
     // Fill layer box with all enabled layers
     const auto renderers = sight::service::get_services("sight::viz::scene3d::render");
@@ -141,12 +141,12 @@ void stereo_selector::refreshRenderers()
     {
         auto render = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
 
-        for(auto& layer_map : render->getLayers())
+        for(auto& layer_map : render->get_layers())
         {
             const std::string& id = layer_map.first;
-            if(id != sight::viz::scene3d::render::s_OGREBACKGROUNDID)
+            if(id != sight::viz::scene3d::render::OGREBACKGROUNDID)
             {
-                m_layersBox->addItem(QString::fromStdString(id));
+                m_layers_box->addItem(QString::fromStdString(id));
                 m_layers.push_back(layer_map.second);
             }
         }
@@ -154,7 +154,7 @@ void stereo_selector::refreshRenderers()
 
     if(!m_layers.empty())
     {
-        m_currentLayer = m_layers[0];
+        m_current_layer = m_layers[0];
     }
 }
 

@@ -80,9 +80,9 @@ protected:
 
 private:
 
-    std::vector<size_t> m_indexNumbers;
-    sight::data::ptr<sight::data::vector, sight::data::Access::in> m_vector {this, "vector"};
-    sight::data::ptr_vector<sight::data::object, sight::data::Access::out> m_objects {this, "objects"};
+    std::vector<size_t> m_index_numbers;
+    sight::data::ptr<sight::data::vector, sight::data::access::in> m_vector {this, "vector"};
+    sight::data::ptr_vector<sight::data::object, sight::data::access::out> m_objects {this, "objects"};
 };
 
 } // namespace sight::module::data

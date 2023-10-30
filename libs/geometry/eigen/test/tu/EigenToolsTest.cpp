@@ -29,28 +29,28 @@
 #include <Eigen/Geometry>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::eigen::ut::EigenToolsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::eigen::ut::eigen_tools_test);
 
 namespace sight::geometry::eigen::ut
 {
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::setUp()
+void eigen_tools_test::setUp()
 {
     // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::tearDown()
+void eigen_tools_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::from_eigen()
+void eigen_tools_test::from_eigen()
 {
     Eigen::Matrix<double, 4, 4> mat;
 
@@ -58,7 +58,7 @@ void EigenToolsTest::from_eigen()
     {
         for(unsigned int c = 0 ; c < 3 ; ++c)
         {
-            mat(r, c) = EigenToolsTest::random<double>(-1.F, 1.F);
+            mat(r, c) = eigen_tools_test::random<double>(-1.F, 1.F);
         }
     }
 
@@ -90,7 +90,7 @@ void EigenToolsTest::from_eigen()
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::f4sToEigen()
+void eigen_tools_test::f4s_to_eigen()
 {
     Eigen::Matrix<float, 4, 4> eigen_res;
 
@@ -136,7 +136,7 @@ void EigenToolsTest::f4sToEigen()
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::eigenMatToRvecTvec()
+void eigen_tools_test::eigen_mat_to_rvec_tvec()
 {
     Eigen::Matrix4d m         = Eigen::Matrix4d::Identity();
     Eigen::AngleAxisd rot_vec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
@@ -175,7 +175,7 @@ void EigenToolsTest::eigenMatToRvecTvec()
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::f4sMatToRvecTvec()
+void eigen_tools_test::f4s_mat_to_rvec_tvec()
 {
     Eigen::Matrix4d m         = Eigen::Matrix4d::Identity();
     Eigen::AngleAxisd rot_vec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
@@ -216,7 +216,7 @@ void EigenToolsTest::f4sMatToRvecTvec()
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::float16ToEigen()
+void eigen_tools_test::float16_to_eigen()
 {
     std::array<float, 16> mat16 = {{0.1F, 0.2F, 0.3F, 1.F,
         0.4F, 0.5F, 0.6F, 2.F,

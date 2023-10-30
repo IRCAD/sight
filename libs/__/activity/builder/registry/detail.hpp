@@ -37,11 +37,11 @@ class base;
 namespace registry
 {
 
-typedef std::string key_t;
+using key_t = std::string;
 
-typedef core::factory_registry<SPTR(activity::builder::base)(), key_t> Type;
+using type = core::factory_registry<std::shared_ptr<activity::builder::base>(), key_t>;
 
-ACTIVITY_API SPTR(Type) get();
+ACTIVITY_API SPTR(type) get();
 
 } // namespace builder::registry
 

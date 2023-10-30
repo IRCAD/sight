@@ -234,7 +234,7 @@
 
      <extension implements="sight::service::extension::factory">
           <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::metrics::Distance</service>
+          <service>sight::module::ui::qt::metrics::distance</service>
           <object>sight::data::image</object>
           <desc>Distance service is represented by a button. It allows to show distances in a generic scene.</desc>
      </extension>
@@ -260,7 +260,7 @@
 
      <extension implements="sight::service::extension::factory">
           <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::reconstruction::RepresentationEditor</service>
+          <service>sight::module::ui::qt::reconstruction::representation_editor</service>
           <object>sight::data::reconstruction</object>
           <desc>Display a widget to change the reconstruction representation (surface, point, edge, ...).</desc>
      </extension>
@@ -309,9 +309,9 @@
 
      <extension implements="sight::service::extension::factory">
           <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::viz::PointEditor</service>
+          <service>sight::module::ui::qt::viz::point_editor</service>
           <object>sight::data::composite</object>
-          <desc>PointEditor service allows to display point information.</desc>
+          <desc>point_editor service allows to display point information.</desc>
      </extension>
 
      <extension implements="sight::service::extension::factory">

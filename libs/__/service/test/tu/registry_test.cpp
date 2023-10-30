@@ -58,11 +58,11 @@ void registry_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void registry_test::registerKeyTest()
+void registry_test::register_key_test()
 {
     const std::string srv_type("sight::service::ut::test_srv");
-    const std::string srv_implementation1("sight::service::ut::STestNoData");
-    const std::string srv_implementation2("sight::service::ut::STestNoData2");
+    const std::string srv_implementation1("sight::service::ut::test_no_data");
+    const std::string srv_implementation2("sight::service::ut::test_no_data2");
 
     data::integer::sptr obj1 = std::make_shared<data::integer>();
     data::integer::sptr obj2 = std::make_shared<data::integer>();
@@ -85,19 +85,19 @@ void registry_test::registerKeyTest()
         CPPUNIT_ASSERT(std::equal(services_by_type.begin(), services_by_type.end(), services_by_template_type.begin()));
     }
 
-    // 2 services of type "sight::service::ut::STestNoData"
+    // 2 services of type "sight::service::ut::test_no_data"
     {
         auto services_by_type          = sight::service::get_services(srv_implementation1);
-        auto services_by_template_type = sight::service::get_services<service::ut::STestNoData>();
+        auto services_by_template_type = sight::service::get_services<service::ut::test_no_data>();
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), services_by_type.size());
         CPPUNIT_ASSERT(std::equal(services_by_type.begin(), services_by_type.end(), services_by_template_type.begin()));
     }
 
-    // 1 service of type "sight::service::ut::STestNoData2"
+    // 1 service of type "sight::service::ut::test_no_data2"
     {
         auto services_by_type          = sight::service::get_services(srv_implementation2);
-        auto services_by_template_type = sight::service::get_services<service::ut::STestNoData2>();
+        auto services_by_template_type = sight::service::get_services<service::ut::test_no_data2>();
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), services_by_type.size());
         CPPUNIT_ASSERT(std::equal(services_by_type.begin(), services_by_type.end(), services_by_template_type.begin()));

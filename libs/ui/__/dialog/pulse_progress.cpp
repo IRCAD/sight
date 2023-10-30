@@ -44,14 +44,14 @@ pulse_progress::pulse_progress(
             m_implementation         = std::dynamic_pointer_cast<ui::dialog::pulse_progress_base>(gui_obj);
             if(m_implementation)
             {
-                m_implementation->setStuff(_stuff);
-                m_implementation->setTitle(_title);
-                m_implementation->setMessage(_msg);
-                m_implementation->setFrequence(_frequence_refresh);
+                m_implementation->set_stuff(_stuff);
+                m_implementation->set_title(_title);
+                m_implementation->set_message(_msg);
+                m_implementation->set_frequence(_frequence_refresh);
             }
             else
             {
-                this->setStuff(_stuff);
+                this->set_stuff(_stuff);
             }
         })
     ).wait();
@@ -59,21 +59,21 @@ pulse_progress::pulse_progress(
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress::setTitle(const std::string& _title)
+void pulse_progress::set_title(const std::string& _title)
 {
     if(m_implementation)
     {
-        m_implementation->setTitle(_title);
+        m_implementation->set_title(_title);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress::setMessage(const std::string& _msg)
+void pulse_progress::set_message(const std::string& _msg)
 {
     if(m_implementation)
     {
-        m_implementation->setMessage(_msg);
+        m_implementation->set_message(_msg);
     }
 }
 

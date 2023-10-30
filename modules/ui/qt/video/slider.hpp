@@ -54,14 +54,14 @@ public:
     MODULE_UI_QT_API slider() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~slider() noexcept override;
+    MODULE_UI_QT_API ~slider() noexcept override = default;
 
     /**@name Signals API
      * @{
      */
 
     MODULE_UI_QT_API static const core::com::signals::key_t POSITION_CHANGED_SIG;
-    typedef core::com::signal<void (int64_t)> position_changed_signal_t;
+    using position_changed_signal_t = core::com::signal<void (int64_t)>;
 
     /** @} */
 
@@ -71,10 +71,10 @@ public:
      */
 
     MODULE_UI_QT_API static const core::com::slots::key_t SET_POSITION_SLIDER_SLOT;
-    typedef core::com::slot<void (int64_t)> change_position_slot_t;
+    using change_position_slot_t = core::com::slot<void (int64_t)>;
 
     MODULE_UI_QT_API static const core::com::slots::key_t SET_DURATION_SLIDER_SLOT;
-    typedef core::com::slot<void (int64_t)> change_duration_slot_t;
+    using change_duration_slot_t = core::com::slot<void (int64_t)>;
 
     ///@}
 
@@ -100,31 +100,31 @@ protected:
     void configuring() override;
 
     /// Signal when the position os the slider changed
-    position_changed_signal_t::sptr m_sigPositionChanged;
+    position_changed_signal_t::sptr m_sig_position_changed;
 
     /// SLOT : Call to set the video position.
-    void setPosition(int64_t _new_pos);
+    void set_position(int64_t _new_pos);
 
     /// SLOT : Call to set the video position.
-    void setDuration(int64_t _duration);
+    void set_duration(int64_t _duration);
 
 protected Q_SLOTS:
 
     /// Calls when the cursor is moved.
-    void changePosition();
+    void change_position();
 
     /// Calls when the cursor starts to move .
-    void sliderPressed();
+    void slider_pressed();
 
 private:
 
     /// Slider to show progress.
-    QPointer<QSlider> m_positionSlider;
-    QPointer<QLabel> m_currentPosition;
-    QPointer<QLabel> m_totalDuration;
+    QPointer<QSlider> m_position_slider;
+    QPointer<QLabel> m_current_position;
+    QPointer<QLabel> m_total_duration;
 
     /// Is the slider pressed ?
-    bool m_sliderPressed {false};
+    bool m_slider_pressed {false};
 };
 
 } // namespace sight::module::ui::qt::video

@@ -22,9 +22,10 @@
 
 #include "render.hpp"
 
+#include "graphics_view.hpp"
+
 #include "viz/scene2d/adaptor.hpp"
 #include "viz/scene2d/registry/adaptor.hpp"
-#include "viz/scene2d/Scene2DGraphicsView.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/com/slot.hxx>
@@ -46,8 +47,8 @@ namespace sight::viz::scene2d
 {
 
 render::render() noexcept :
-    m_sceneStart(-100., -100.),
-    m_sceneWidth(200., 200.),
+    m_scene_start(-100., -100.),
+    m_scene_width(200., 200.),
     m_background("#000000")
 {
 }
@@ -59,25 +60,25 @@ render::~render() noexcept =
 
 //-----------------------------------------------------------------------------
 
-QGraphicsScene* render::getScene() const
+QGraphicsScene* render::get_scene() const
 {
     return m_scene;
 }
 
 //-----------------------------------------------------------------------------
 
-Scene2DGraphicsView* render::getView() const
+graphics_view* render::get_view() const
 {
     return m_view;
 }
 
 //-----------------------------------------------------------------------------
 
-scene2d::data::Axis::sptr render::getAxis(const std::string& _id) const
+scene2d::data::axis::sptr render::get_axis(const std::string& _id) const
 {
-    scene2d::data::Axis::sptr axis;
-    const auto iter = m_axisMap.find(_id);
-    if(iter != m_axisMap.end())
+    scene2d::data::axis::sptr axis;
+    const auto iter = m_axis_map.find(_id);
+    if(iter != m_axis_map.end())
     {
         axis = iter->second;
     }
@@ -87,9 +88,9 @@ scene2d::data::Axis::sptr render::getAxis(const std::string& _id) const
 
 //-----------------------------------------------------------------------------
 
-void render::dispatchInteraction(scene2d::data::Event& _event)
+void render::dispatch_interaction(scene2d::data::event& _event)
 {
-    if(!_event.isAccepted())
+    if(!_event.is_accepted())
     {
         // Get all started adaptors.
         std::vector<viz::scene2d::adaptor::sptr> ordered_adaptors;
@@ -114,14 +115,14 @@ void render::dispatchInteraction(scene2d::data::Event& _event)
             ordered_adaptors.end(),
             [&](viz::scene2d::adaptor::sptr _a1, viz::scene2d::adaptor::sptr _a2)
             {
-                return _a1->getZValue() > _a2->getZValue();
+                return _a1->get_z_value() > _a2->get_z_value();
             });
 
         // Process interaction on all adaptors until one has accepted the event.
         for(const viz::scene2d::adaptor::sptr& adaptor : ordered_adaptors)
         {
-            adaptor->processInteraction(_event);
-            if(_event.isAccepted())
+            adaptor->process_interaction(_event);
+            if(_event.is_accepted())
             {
                 return;
             }
@@ -144,7 +145,7 @@ bool render::contains(const scene2d::vec2d_t& _coord) const
 
 //-----------------------------------------------------------------------------
 
-scene2d::vec2d_t render::mapToScene(const scene2d::vec2d_t& _coord, bool _clip) const
+scene2d::vec2d_t render::map_to_scene(const scene2d::vec2d_t& _coord, bool _clip) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
     const QPoint qp(static_cast<int>(_coord.x), static_cast<int>(_coord.y));
@@ -178,15 +179,15 @@ void render::configuring()
     {
         if(iter.first == "axis")
         {
-            this->configureAxis(iter.second.get_child("<xmlattr>"));
+            this->configure_axis(iter.second.get_child("<xmlattr>"));
         }
         else if(iter.first == "scene")
         {
-            this->configureScene(iter.second.get_child("<xmlattr>"));
+            this->configure_scene(iter.second.get_child("<xmlattr>"));
         }
         else if(iter.first == "adaptor")
         {
-            this->configureAdaptor(iter.second.get_child("<xmlattr>"));
+            this->configure_adaptor(iter.second.get_child("<xmlattr>"));
         }
         else
         {
@@ -201,7 +202,7 @@ void render::starting()
 {
     this->create();
 
-    this->startContext();
+    this->start_context();
 }
 
 //-----------------------------------------------------------------------------
@@ -214,45 +215,45 @@ void render::updating()
 
 void render::stopping()
 {
-    m_axisMap.clear();
+    m_axis_map.clear();
 
-    this->stopContext();
+    this->stop_context();
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void render::startContext()
+void render::start_context()
 {
-    auto qt_container = std::dynamic_pointer_cast<ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<ui::qt::container::widget>(this->get_container());
 
     // Convert the background color
     std::array<std::uint8_t, 4> color {};
-    sight::data::tools::color::hexaStringToRGBA(m_background, color);
+    sight::data::tools::color::hexa_string_to_rgba(m_background, color);
 
-    m_scene = new QGraphicsScene(m_sceneStart.x, m_sceneStart.y, m_sceneWidth.x, m_sceneWidth.y);
+    m_scene = new QGraphicsScene(m_scene_start.x, m_scene_start.y, m_scene_width.x, m_scene_width.y);
     m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));
     m_scene->setFocus(Qt::MouseFocusReason);
 
-    m_view = new Scene2DGraphicsView(m_scene, qt_container->getQtContainer());
-    m_view->setSceneRender(std::dynamic_pointer_cast<viz::scene2d::render>(this->get_sptr()));
+    m_view = new graphics_view(m_scene, qt_container->get_qt_container());
+    m_view->set_scene_render(std::dynamic_pointer_cast<viz::scene2d::render>(this->get_sptr()));
     m_view->setRenderHint(QPainter::Antialiasing, m_antialiasing);
 
     auto* layout = new QVBoxLayout;
     layout->addWidget(m_view);
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
-    viz::scene2d::data::Viewport init_viewport;
-    init_viewport.setX(m_sceneStart.x);
-    init_viewport.setY(m_sceneStart.y);
-    init_viewport.setWidth(m_sceneWidth.x);
-    init_viewport.setHeight(m_sceneWidth.y);
-    m_view->updateFromViewport(init_viewport);
+    viz::scene2d::data::viewport init_viewport;
+    init_viewport.set_x(m_scene_start.x);
+    init_viewport.set_y(m_scene_start.y);
+    init_viewport.set_width(m_scene_width.x);
+    init_viewport.set_height(m_scene_width.y);
+    m_view->update_from_viewport(init_viewport);
 }
 
 //-----------------------------------------------------------------------------
 
-void render::stopContext()
+void render::stop_context()
 {
     delete m_scene;
     delete m_view;
@@ -260,35 +261,35 @@ void render::stopContext()
 
 //-----------------------------------------------------------------------------
 
-Qt::AspectRatioMode render::getAspectRatioMode() const
+Qt::AspectRatioMode render::get_aspect_ratio_mode() const
 {
-    return m_aspectRatioMode;
+    return m_aspect_ratio_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-void render::configureAxis(const config_t& _conf)
+void render::configure_axis(const config_t& _conf)
 {
     const auto id         = _conf.get<std::string>("id");
     const auto scale_type = _conf.get<std::string>("scaleType");
     const auto origin     = _conf.get<float>("origin");
     const auto scale      = _conf.get<float>("scale");
 
-    scene2d::data::Axis::sptr axis = std::make_shared<scene2d::data::Axis>();
-    axis->setOrigin(origin);
-    axis->setScale(scale);
-    axis->set_scale_type(scale_type == "LINEAR" ? scene2d::data::Axis::LINEAR : scene2d::data::Axis::LOG);
-    m_axisMap[id] = axis;
+    scene2d::data::axis::sptr axis = std::make_shared<scene2d::data::axis>();
+    axis->set_origin(origin);
+    axis->set_scale(scale);
+    axis->set_scale_type(scale_type == "LINEAR" ? scene2d::data::axis::linear : scene2d::data::axis::log);
+    m_axis_map[id] = axis;
 }
 
 //-----------------------------------------------------------------------------
 
-void render::configureScene(const config_t& _conf)
+void render::configure_scene(const config_t& _conf)
 {
-    m_sceneStart.x = _conf.get<float>("x");
-    m_sceneStart.y = _conf.get<float>("y");
-    m_sceneWidth.x = _conf.get<float>("width");
-    m_sceneWidth.y = _conf.get<float>("height");
+    m_scene_start.x = _conf.get<float>("x");
+    m_scene_start.y = _conf.get<float>("y");
+    m_scene_width.x = _conf.get<float>("width");
+    m_scene_width.y = _conf.get<float>("height");
 
     m_antialiasing = _conf.get<bool>("antialiasing", m_antialiasing);
 
@@ -296,11 +297,11 @@ void render::configureScene(const config_t& _conf)
     {
         if(*aspect_ratio == "KeepAspectRatioByExpanding")
         {
-            m_aspectRatioMode = Qt::KeepAspectRatioByExpanding;
+            m_aspect_ratio_mode = Qt::KeepAspectRatioByExpanding;
         }
         else if(*aspect_ratio == "KeepAspectRatio")
         {
-            m_aspectRatioMode = Qt::KeepAspectRatio;
+            m_aspect_ratio_mode = Qt::KeepAspectRatio;
         }
         else
         {
@@ -310,7 +311,7 @@ void render::configureScene(const config_t& _conf)
                 << "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
                 *aspect_ratio != "IgnoreAspectRatio"
             );
-            m_aspectRatioMode = Qt::IgnoreAspectRatio;
+            m_aspect_ratio_mode = Qt::IgnoreAspectRatio;
         }
     }
 
@@ -328,7 +329,7 @@ void render::configureScene(const config_t& _conf)
 
 //-----------------------------------------------------------------------------
 
-void render::configureAdaptor(const config_t& _conf)
+void render::configure_adaptor(const config_t& _conf)
 {
     const auto adaptor_id = _conf.get<std::string>("uid");
 
@@ -338,7 +339,7 @@ void render::configureAdaptor(const config_t& _conf)
 
 //-----------------------------------------------------------------------------
 
-void render::updateSceneSize(float _ratio_percent)
+void render::update_scene_size(float _ratio_percent)
 {
     QRectF rec = m_scene->itemsBoundingRect();
     qreal x    = NAN;
@@ -358,10 +359,10 @@ void render::updateSceneSize(float _ratio_percent)
         rec.setRect(x, y, w, h);
     }
 
-    m_sceneStart.x = x;
-    m_sceneStart.y = y;
-    m_sceneWidth.x = w;
-    m_sceneWidth.y = h;
+    m_scene_start.x = x;
+    m_scene_start.y = y;
+    m_scene_width.x = w;
+    m_scene_width.y = h;
 
     m_scene->setSceneRect(rec);
 }

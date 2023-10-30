@@ -50,8 +50,8 @@ public:
     /// @brief Destructor.
     UI_QT_API_QT ~qt_main_frame() noexcept override;
 
-    typedef std::function<void ()> CloseCallback;
-    UI_QT_API_QT void setCloseCallback(CloseCallback _fct);
+    using CloseCallback = std::function<void ()>;
+    UI_QT_API_QT void set_close_callback(CloseCallback _fct);
 
 protected:
 
@@ -59,7 +59,7 @@ protected:
 
 private:
 
-    CloseCallback m_fctCloseCallback;
+    CloseCallback m_fct_close_callback;
 };
 
 } // namespace sight::ui::qt

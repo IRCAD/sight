@@ -47,7 +47,7 @@ const core::com::slots::key_t activity_view::LAUNCH_ACTIVITY_SLOT = "launchActiv
 
 activity_view::activity_view()
 {
-    new_slot(LAUNCH_ACTIVITY_SLOT, &activity_view::launchActivity, this);
+    new_slot(LAUNCH_ACTIVITY_SLOT, &activity_view::launch_activity, this);
 }
 
 //------------------------------------------------------------------------------
@@ -70,24 +70,24 @@ void activity_view::configuring()
                 inout_map.push_back(obj->get_id());
             }
         });
-    this->parseConfiguration(config, inout_map);
+    this->parse_configuration(config, inout_map);
 }
 
 //------------------------------------------------------------------------------
 
-bool activity_view::validateActivity(data::activity::sptr _activity) const
+bool activity_view::validate_activity(data::activity::sptr _activity) const
 {
     bool is_valid = false;
     std::string message;
 
-    std::tie(is_valid, message) = activity::launcher::validateActivity(_activity);
+    std::tie(is_valid, message) = activity::launcher::validate_activity(_activity);
 
     if(!is_valid)
     {
         ui::dialog::message::show(
             "Activity launch",
             message,
-            ui::dialog::message::CRITICAL
+            ui::dialog::message::critical
         );
     }
 
@@ -96,17 +96,17 @@ bool activity_view::validateActivity(data::activity::sptr _activity) const
 
 //------------------------------------------------------------------------------
 
-data::activity::sptr activity_view::createMainActivity() const
+data::activity::sptr activity_view::create_main_activity() const
 {
-    auto activity = this->activity::launcher::createMainActivity();
+    auto activity = this->activity::launcher::create_main_activity();
 
     if(!activity)
     {
         ui::dialog::message::show(
             "Main activity",
-            "The main activity " + m_mainActivityId + " can not be launched. \n"
-                                                      "This activity needs parameters that cannot be defined",
-            ui::dialog::message::INFO
+            "The main activity " + m_main_activity_id + " can not be launched. \n"
+                                                        "This activity needs parameters that cannot be defined",
+            ui::dialog::message::info
         );
     }
 

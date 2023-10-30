@@ -37,7 +37,7 @@ namespace sight::module::io::igtl
 //-----------------------------------------------------------------------------
 
 server_listener::server_listener() :
-    m_server(std::make_shared<sight::io::igtl::Server>())
+    m_server(std::make_shared<sight::io::igtl::server>())
 {
 }
 
@@ -52,7 +52,7 @@ void server_listener::configuring()
 {
     service::config_t config = this->get_config();
 
-    m_portConfig = config.get("port", "4242");
+    m_port_config = config.get("port", "4242");
 
     const config_t config_in_out = config.get_child("inout");
     const auto key_cfg           = config_in_out.equal_range("key");
@@ -60,11 +60,11 @@ void server_listener::configuring()
     {
         const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
         const std::string device_name = attr.get("deviceName", "Sight");
-        m_deviceNames.push_back(device_name);
-        m_server->addAuthorizedDevice(device_name);
+        m_device_names.push_back(device_name);
+        m_server->add_authorized_device(device_name);
     }
 
-    m_server->setFilteringByDeviceName(true);
+    m_server->set_filtering_by_device_name(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,13 +74,13 @@ void server_listener::starting()
     try
     {
         ui::preferences preferences;
-        const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
+        const auto port = preferences.delimited_get<std::uint16_t>(m_port_config);
 
         m_server->start(port);
 
-        m_serverFuture = std::async(std::launch::async, [this](auto&& ...){m_server->runServer();});
-        m_sigConnected->async_emit();
-        m_receiveFuture = std::async(std::launch::async, [this](auto&& ...){receiveObject();});
+        m_server_future = std::async(std::launch::async, [this](auto&& ...){m_server->run_server();});
+        m_sig_connected->async_emit();
+        m_receive_future = std::async(std::launch::async, [this](auto&& ...){receive_object();});
     }
     catch(core::exception& e)
     {
@@ -88,7 +88,7 @@ void server_listener::starting()
             "Error",
             "Cannot start the server: "
             + std::string(e.what()),
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SIGHT_ERROR(e.what());
@@ -107,9 +107,9 @@ void server_listener::stopping()
             m_server->stop();
         }
 
-        m_serverFuture.wait();
-        m_receiveFuture.wait();
-        m_sigDisconnected->async_emit();
+        m_server_future.wait();
+        m_receive_future.wait();
+        m_sig_disconnected->async_emit();
     }
     catch(core::exception& e)
     {
@@ -123,14 +123,14 @@ void server_listener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void server_listener::receiveObject()
+void server_listener::receive_object()
 {
     try
     {
         while(m_server->started())
         {
             std::vector<std::string> device_names_receive;
-            std::vector<data::object::sptr> receive_objects = m_server->receiveObjects(device_names_receive);
+            std::vector<data::object::sptr> receive_objects = m_server->receive_objects(device_names_receive);
 
             std::size_t client = 0;
             for(const auto& receive_object : receive_objects)
@@ -139,10 +139,10 @@ void server_listener::receiveObject()
                 {
                     const std::string device_name = device_names_receive[client];
 
-                    const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), device_name);
-                    if(iter != m_deviceNames.end())
+                    const auto& iter = std::find(m_device_names.begin(), m_device_names.end(), device_name);
+                    if(iter != m_device_names.end())
                     {
-                        const auto index_receive_object = std::distance(m_deviceNames.begin(), iter);
+                        const auto index_receive_object = std::distance(m_device_names.begin(), iter);
                         const auto obj                  =
                             m_objects[static_cast<std::size_t>(index_receive_object)].lock();
 
@@ -163,7 +163,7 @@ void server_listener::receiveObject()
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
-        if(this->status() == STARTED)
+        if(this->started())
         {
             sight::ui::dialog::message::show("Error", ex.what());
             this->slot(service::slots::STOP)->async_run();

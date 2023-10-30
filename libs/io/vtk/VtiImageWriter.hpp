@@ -47,23 +47,23 @@ namespace sight::io::vtk
  *
  * Write a VTK image using the VTK lib
  */
-class IO_VTK_CLASS_API VtiImageWriter : public writer::generic_object_writer<data::image>,
-                                        public core::location::single_file
+class IO_VTK_CLASS_API vti_image_writer : public writer::generic_object_writer<data::image>,
+                                          public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        VtiImageWriter,
+        vti_image_writer,
         io::writer::generic_object_writer<data::image>,
-        io::writer::factory::make<VtiImageWriter>
+        io::writer::factory::make<vti_image_writer>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
-    IO_VTK_API VtiImageWriter();
+    IO_VTK_API vti_image_writer();
 
     //! @brief Destructor.
-    IO_VTK_API ~VtiImageWriter() override;
+    IO_VTK_API ~vti_image_writer() override;
 
     //! @brief Writing operator.
     IO_VTK_API void write() override;
@@ -72,7 +72,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

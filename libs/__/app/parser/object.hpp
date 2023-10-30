@@ -48,17 +48,17 @@ public:
     APP_API object()           = default;
     APP_API ~object() override = default;
 
-    APP_API void createConfig(core::tools::object::sptr _obj) override;
-    APP_API void startConfig() override;
-    APP_API void updateConfig() override;
-    APP_API void stopConfig() override;
-    APP_API void destroyConfig() override;
+    APP_API void create_config(core::tools::object::sptr _obj) override;
+    APP_API void start_config() override;
+    APP_API void update_config() override;
+    APP_API void stop_config() override;
+    APP_API void destroy_config() override;
 
 protected:
 
     void updating() override;
 
-    std::vector<app::config_manager::sptr> m_ctmContainer;
+    std::vector<app::config_manager::sptr> m_ctm_container;
 };
 
 } // namespace sight::app::parser

@@ -28,6 +28,6 @@ namespace sight::io::writer::registry
 {
 
 #define SIGHT_REGISTER_IO_WRITER(classname) \
-    static sight::io::writer::object_writer::Registry<classname> s__factory__record__ ## __LINE__;
+    static sight::io::writer::object_writer::registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace sight::io::writer::registry

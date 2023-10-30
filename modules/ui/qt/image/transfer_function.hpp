@@ -127,7 +127,7 @@ private:
      * @param _name the name used to search.
      * @return True if the preset named _name is found.
      */
-    static bool hasPresetName(const sight::data::composite& _presets, const std::string& _name);
+    static bool has_preset_name(const sight::data::composite& _presets, const std::string& _name);
 
     /**
      * @brief Create a string that represents a TF preset name not already present in a preset list.
@@ -138,7 +138,7 @@ private:
      * @param _basename the name of the TF preset to create.
      * @return The new name of the TF preset.
      */
-    std::string createPresetName(const sight::data::composite& _presets, const std::string& _basename) const;
+    std::string create_preset_name(const sight::data::composite& _presets, const std::string& _basename) const;
 
     /**
      * @brief Initializes the composite.
@@ -146,39 +146,41 @@ private:
      * Add their names to m_presetComboBox. If the composite does not contain any TF (or only the default grey level TF,
      * the service creates a few from the resources of the module.
      */
-    void initializePresets(const std::string& _current_preset_name = sight::data::transfer_function::s_DEFAULT_TF_NAME);
+    void initialize_presets(
+        const std::string& _current_preset_name = sight::data::transfer_function::DEFAULT_TF_NAME
+    );
 
     /// Sets the current TF preset to the output of this service.
-    void setCurrentPreset();
+    void set_current_preset();
 
     /// Update the default transfer function according to the image
-    void updateDefaultPreset();
+    void update_default_preset();
 
 private Q_SLOTS:
 
     /// Changes the current selected TF preset.
-    void presetChoice(int _index);
+    void preset_choice(int _index);
 
     /// Deletes the current selected TF preset.
-    void deletePreset();
+    void delete_preset();
 
     /// Creates a new TF preset with a GreyLevel TF.
-    void createPreset();
+    void create_preset();
 
     /// Copies the current TF preset.
-    void copyPreset();
+    void copy_preset();
 
     /// Resets the composite.
-    void reinitializePresets();
+    void reinitialize_presets();
 
     /// Renames the current selected TF preset.
-    void renamePreset();
+    void rename_preset();
 
     /// Imports a TF preset.
-    void importPreset();
+    void import_preset();
 
     /// Exports the current selected TF preset.
-    void exportPreset();
+    void export_preset();
 
 private:
 
@@ -186,65 +188,65 @@ private:
     std::vector<std::filesystem::path> m_paths;
 
     /// Contains the list of all TF preset.
-    QComboBox* m_presetComboBox {nullptr};
+    QComboBox* m_preset_combo_box {nullptr};
 
     /// Contains the delete TF preset button.
-    QPushButton* m_deleteButton {nullptr};
+    QPushButton* m_delete_button {nullptr};
 
     /// Contains the new TF preset button.
-    QPushButton* m_newButton {nullptr};
+    QPushButton* m_new_button {nullptr};
 
     /// Contains the copy TF preset button.
-    QPushButton* m_copyButton {nullptr};
+    QPushButton* m_copy_button {nullptr};
 
     /// Contains the reset TF preset button.
-    QPushButton* m_reinitializeButton {nullptr};
+    QPushButton* m_reinitialize_button {nullptr};
 
     /// Contains the rename TF preset button.
-    QPushButton* m_renameButton {nullptr};
+    QPushButton* m_rename_button {nullptr};
 
     /// Contains the import TF button.
-    QPushButton* m_importButton {nullptr};
+    QPushButton* m_import_button {nullptr};
 
     /// Contains the export TF button.
-    QPushButton* m_exportButton {nullptr};
+    QPushButton* m_export_button {nullptr};
 
     /// Defines the path of the delete button icon.
-    std::filesystem::path m_deleteIcon;
+    std::filesystem::path m_delete_icon;
 
     /// Defines the path of the new button icon.
-    std::filesystem::path m_newIcon;
+    std::filesystem::path m_new_icon;
 
     /// Defines the path of the copy button icon.
-    std::filesystem::path m_copyIcon;
+    std::filesystem::path m_copy_icon;
 
     /// Defines the path of the reinitialize button icon.
-    std::filesystem::path m_reinitializeIcon;
+    std::filesystem::path m_reinitialize_icon;
 
     /// Defines the path of the rename button icon.
-    std::filesystem::path m_renameIcon;
+    std::filesystem::path m_rename_icon;
 
     /// Defines the path of the import button icon.
-    std::filesystem::path m_importIcon;
+    std::filesystem::path m_import_icon;
 
     /// Defines the path of the export button icon.
-    std::filesystem::path m_exportIcon;
+    std::filesystem::path m_export_icon;
 
     /// Defines icons width.
-    unsigned int m_iconWidth {16};
+    unsigned int m_icon_width {16};
 
     /// Defines icons height.
-    unsigned int m_iconHeight {16};
+    unsigned int m_icon_height {16};
 
     /// Working copy of the TF presets, can be internal or use the optional "presets" input
-    data::composite::sptr m_tfPresets;
+    data::composite::sptr m_tf_presets;
 
-    static constexpr std::string_view s_CURRENT_INPUT = "tf";
-    static constexpr std::string_view s_IMAGE_INPUT   = "image";
-    static constexpr std::string_view s_PRESETS_INOUT = "presets";
-    data::ptr<data::transfer_function, data::Access::inout> m_currentTF {this, s_CURRENT_INPUT, true};
-    data::ptr<data::composite, data::Access::inout> m_optPresets {this, s_PRESETS_INOUT, true, true};
-    data::ptr<data::image, data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
+    static constexpr std::string_view CURRENT_INPUT = "tf";
+    static constexpr std::string_view IMAGE_INPUT   = "image";
+    static constexpr std::string_view PRESETS_INOUT = "presets";
+    data::ptr<data::transfer_function, data::access::inout> m_current_tf {this, CURRENT_INPUT, true};
+    data::ptr<data::composite, data::access::inout> m_opt_presets {this, PRESETS_INOUT, true, true};
+    data::ptr<data::image, data::access::in> m_image {this, IMAGE_INPUT, true, true};
 };
 
 } // namespace sight::module::ui::qt::image.

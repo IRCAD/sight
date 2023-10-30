@@ -40,15 +40,15 @@ service::service(sight::service::base& _service) :
 
 service::~service()
 {
-    m_connections.disconnectStartSlot(m_service);
+    m_connections.disconnect_start_slot(m_service);
 }
 
 //-----------------------------------------------------------------------------
 
 void service::set_config(const config_t& _config)
 {
-    m_configuration      = _config;
-    m_configurationState = base::UNCONFIGURED;
+    m_configuration       = _config;
+    m_configuration_state = base::configuration_status::unconfigured;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,10 +62,10 @@ const config_t& service::get_config() const
 
 void service::configure()
 {
-    if(m_configurationState == base::UNCONFIGURED)
+    if(m_configuration_state == base::configuration_status::unconfigured)
     {
-        m_configurationState = base::CONFIGURING;
-        if(m_globalState == base::STOPPED)
+        m_configuration_state = base::configuration_status::configuring;
+        if(m_global_state == base::global_status::stopped)
         {
             try
             {
@@ -85,28 +85,31 @@ void service::configure()
                 throw; // Rethrow the error for unit tests
             }
         }
-        else if(m_globalState == base::STARTED)
+        else if(m_global_state == base::global_status::started)
         {
             SIGHT_ERROR(
                 "Error trying to configure the service '" + m_service.get_id() + "' whereas it is already started."
             );
         }
 
-        m_configurationState = base::CONFIGURED;
+        m_configuration_state = base::configuration_status::configured;
     }
 
-    m_connections.connectStartSlot(m_service);
+    m_connections.connect_start_slot(m_service);
 }
 
 //-----------------------------------------------------------------------------
 
 base::shared_future_t service::start(bool _async)
 {
-    SIGHT_FATAL_IF("service " << m_service.get_id() << " already started", m_globalState != base::STOPPED);
+    SIGHT_FATAL_IF(
+        "service " << m_service.get_id() << " already started",
+        m_global_state != base::global_status::stopped
+    );
 
     m_connections.connect(m_service);
 
-    m_globalState = base::STARTING;
+    m_global_state = base::global_status::starting;
 
     packaged_task_t task([this](auto&& ...){m_service.starting();});
     base::shared_future_t future = task.get_future();
@@ -121,7 +124,7 @@ base::shared_future_t service::start(bool _async)
     {
         SIGHT_ERROR("Error while STARTING service '" + m_service.get_id() + "' : " + e.what());
         SIGHT_ERROR("service '" + m_service.get_id() + "' is still STOPPED.");
-        m_globalState = base::STOPPED;
+        m_global_state = base::global_status::stopped;
         m_connections.disconnect(m_service);
 
         if(!_async)
@@ -133,7 +136,7 @@ base::shared_future_t service::start(bool _async)
         // Rethrow the same exception
         throw;
     }
-    m_globalState = base::STARTED;
+    m_global_state = base::global_status::started;
 
     this->auto_connect();
 
@@ -147,14 +150,17 @@ base::shared_future_t service::start(bool _async)
 
 base::shared_future_t service::stop(bool _async)
 {
-    SIGHT_FATAL_IF("service " << m_service.get_id() << " already stopped", m_globalState != base::STARTED);
+    SIGHT_FATAL_IF(
+        "service " << m_service.get_id() << " already stopped",
+        m_global_state != base::global_status::started
+    );
 
     this->auto_disconnect();
 
     packaged_task_t task([this](auto&& ...){m_service.stopping();});
     base::shared_future_t future = task.get_future();
 
-    m_globalState = base::STOPPING;
+    m_global_state = base::global_status::stopping;
     task();
 
     try
@@ -166,7 +172,7 @@ base::shared_future_t service::stop(bool _async)
     {
         SIGHT_ERROR("Error while STOPPING service '" + m_service.get_id() + "' : " + e.what());
         SIGHT_ERROR("service '" + m_service.get_id() + "' is still STARTED.");
-        m_globalState = base::STARTED;
+        m_global_state = base::global_status::started;
         this->auto_connect();
 
         if(!_async)
@@ -178,7 +184,7 @@ base::shared_future_t service::stop(bool _async)
         // Rethrow the same exception
         throw;
     }
-    m_globalState = base::STOPPED;
+    m_global_state = base::global_status::stopped;
 
     auto sig = m_service.signal<sight::service::signals::stopped_t>(sight::service::signals::STOPPED);
     sig->async_emit(m_service.get_sptr());
@@ -189,7 +195,7 @@ base::shared_future_t service::stop(bool _async)
     std::string object_keys;
     for(const auto& [key, ptr] : m_service.container())
     {
-        if(ptr->access() == data::Access::out)
+        if(ptr->access() == data::access::out)
         {
             const data::object::cwptr output = ptr->get();
             if(output.use_count() == 1)
@@ -221,7 +227,7 @@ base::shared_future_t service::swap_key(std::string_view _key, data::object::spt
     SIGHT_FATAL_IF(
         "service " << m_service.get_id() << " is not STARTED, no swapping with Object "
         << (_obj ? _obj->get_id() : "nullptr"),
-        m_globalState != base::STARTED
+        m_global_state != base::global_status::started
     );
 
     auto fn = [this, _key]{m_service.swapping(_key);};
@@ -230,9 +236,9 @@ base::shared_future_t service::swap_key(std::string_view _key, data::object::spt
 
     this->auto_disconnect();
 
-    m_globalState = base::SWAPPING;
+    m_global_state = base::global_status::swapping;
     task();
-    m_globalState = base::STARTED;
+    m_global_state = base::global_status::started;
 
     try
     {
@@ -265,24 +271,24 @@ base::shared_future_t service::swap_key(std::string_view _key, data::object::spt
 
 base::shared_future_t service::update(bool _async)
 {
-    if(m_globalState != base::STARTED)
+    if(m_global_state != base::global_status::started)
     {
         SIGHT_WARN(
-            "INVOKING update WHILE STOPPED (" << m_globalState << ") on service '" << m_service.get_id()
-            << "' of type '" << m_service.get_classname() << "': update is discarded."
+            "Update() called while not started: service '" << m_service.get_id() << "' of type '"
+            << m_service.get_classname() << "': update is discarded."
         );
         return {};
     }
 
     SIGHT_ASSERT(
-        "INVOKING update WHILE NOT IDLE (" << m_updatingState << ") on service '" << m_service.get_id()
+        "Update() called while already updating '" << m_service.get_id()
         << "' of type '" << m_service.get_classname() << "'",
-        m_updatingState == base::NOTUPDATING
+        m_updating_state == base::updating_status::notupdating
     );
 
     packaged_task_t task([this](auto&& ...){m_service.updating();});
     base::shared_future_t future = task.get_future();
-    m_updatingState = base::UPDATING;
+    m_updating_state = base::updating_status::updating;
     task();
 
     try
@@ -294,7 +300,7 @@ base::shared_future_t service::update(bool _async)
     {
         SIGHT_ERROR("Error while UPDATING service '" + m_service.get_id() + "' : " + e.what());
 
-        m_updatingState = base::NOTUPDATING;
+        m_updating_state = base::updating_status::notupdating;
         if(!_async)
         {
             // The future is shared, thus the caller can still catch the exception if needed with future.get()
@@ -304,7 +310,7 @@ base::shared_future_t service::update(bool _async)
         // Rethrow the same exception
         throw;
     }
-    m_updatingState = base::NOTUPDATING;
+    m_updating_state = base::updating_status::notupdating;
 
     auto sig = m_service.signal<sight::service::signals::updated_t>(sight::service::signals::UPDATED);
     sig->async_emit(m_service.get_sptr());
@@ -346,7 +352,7 @@ void service::auto_connect()
                 );
             }
 
-            m_autoConnections.connect(obj, m_service.get_sptr(), connections);
+            m_auto_connections.connect(obj, m_service.get_sptr(), connections);
         }
     }
 }
@@ -355,7 +361,7 @@ void service::auto_connect()
 
 void service::auto_disconnect()
 {
-    m_autoConnections.disconnect();
+    m_auto_connections.disconnect();
 }
 
 //------------------------------------------------------------------------------

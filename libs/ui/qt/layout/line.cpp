@@ -44,28 +44,28 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void line::createLayout(ui::container::widget::sptr _parent, const std::string& _id)
+void line::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
 {
-    m_parentContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
-    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parentContainer);
+    m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
+    SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
     const QString q_id = QString::fromStdString(_id);
-    m_parentContainer->getQtContainer()->setObjectName(q_id);
+    m_parent_container->get_qt_container()->setObjectName(q_id);
 
     auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    m_parentContainer->setLayout(layout);
+    m_parent_container->set_layout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    Orientation orientation = this->getOrientation();
+    orientation orientation = this->get_orientation();
 
-    if(orientation == VERTICAL)
+    if(orientation == vertical)
     {
         layout->setDirection(QBoxLayout::TopToBottom);
     }
 
-    const std::list<ViewInfo>& views = this->getViewsInfo();
-    for(std::size_t idx = 0 ; const ViewInfo& view_info : views)
+    const std::list<view_info>& views = this->get_views_info();
+    for(std::size_t idx = 0 ; const view_info& view_info : views)
     {
-        if(view_info.m_isSpacer)
+        if(view_info.m_is_spacer)
         {
             layout->addStretch();
         }
@@ -88,10 +88,10 @@ void line::createLayout(ui::container::widget::sptr _parent, const std::string& 
             }
             else
             {
-                left_border   = view_info.m_leftBorder;
-                top_border    = view_info.m_topBorder;
-                right_border  = view_info.m_rightBorder;
-                bottom_border = view_info.m_bottomBorder;
+                left_border   = view_info.m_left_border;
+                top_border    = view_info.m_top_border;
+                right_border  = view_info.m_right_border;
+                bottom_border = view_info.m_bottom_border;
             }
 
             if(view_info.m_caption.first)
@@ -111,30 +111,30 @@ void line::createLayout(ui::container::widget::sptr _parent, const std::string& 
                 panel->setObjectName(q_id + '/' + QString("%1").arg(idx));
             }
 
-            panel->setMinimumSize(std::max(view_info.m_minSize.first, 0), std::max(view_info.m_minSize.second, 0));
+            panel->setMinimumSize(std::max(view_info.m_min_size.first, 0), std::max(view_info.m_min_size.second, 0));
             panel->setMaximumSize(
-                std::min(view_info.m_maxSize.first, QWIDGETSIZE_MAX),
-                std::min(view_info.m_maxSize.second, QWIDGETSIZE_MAX)
+                std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
+                std::min(view_info.m_max_size.second, QWIDGETSIZE_MAX)
             );
             panel->setContentsMargins(left_border, top_border, right_border, bottom_border);
-            if(!view_info.m_toolTip.empty())
+            if(!view_info.m_tool_tip.empty())
             {
-                panel->setToolTip(QString::fromStdString(view_info.m_toolTip));
+                panel->setToolTip(QString::fromStdString(view_info.m_tool_tip));
             }
 
             ui::qt::container::widget::sptr sub_container = ui::qt::container::widget::make();
-            sub_container->setQtContainer(panel);
-            m_subViews.push_back(sub_container);
+            sub_container->set_qt_container(panel);
+            m_sub_views.push_back(sub_container);
 
-            if(!view_info.m_qssKey.empty())
+            if(!view_info.m_qss_key.empty())
             {
-                panel->setProperty("class", QString::fromStdString(view_info.m_qssKey));
+                panel->setProperty("class", QString::fromStdString(view_info.m_qss_key));
             }
 
-            if(!view_info.m_backgroundColor.empty())
+            if(!view_info.m_background_color.empty())
             {
                 std::array<std::uint8_t, 4> rgba {};
-                data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
+                data::tools::color::hexa_string_to_rgba(view_info.m_background_color, rgba);
                 std::stringstream ss;
                 ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                 << static_cast<std::int16_t>(rgba[1]) << ','
@@ -144,15 +144,15 @@ void line::createLayout(ui::container::widget::sptr _parent, const std::string& 
                 panel->setStyleSheet(style + qApp->styleSheet());
             }
 
-            if(view_info.m_useScrollBar)
+            if(view_info.m_use_scroll_bar)
             {
                 auto* scroll_area = new QScrollArea();
                 scroll_area->setWidget(panel);
                 scroll_area->setWidgetResizable(true);
-                if(!view_info.m_backgroundColor.empty())
+                if(!view_info.m_background_color.empty())
                 {
                     std::array<std::uint8_t, 4> rgba {};
-                    data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
+                    data::tools::color::hexa_string_to_rgba(view_info.m_background_color, rgba);
                     std::stringstream ss;
                     ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                     << static_cast<std::int16_t>(rgba[1]) << ','
@@ -173,7 +173,7 @@ void line::createLayout(ui::container::widget::sptr _parent, const std::string& 
 
             if(!view_info.m_visible)
             {
-                sub_container->setVisible(false);
+                sub_container->set_visible(false);
             }
         }
 
@@ -183,10 +183,10 @@ void line::createLayout(ui::container::widget::sptr _parent, const std::string& 
 
 //-----------------------------------------------------------------------------
 
-void line::destroyLayout()
+void line::destroy_layout()
 {
-    this->destroySubViews();
-    m_parentContainer->clean();
+    this->destroy_sub_views();
+    m_parent_container->clean();
 }
 
 //-----------------------------------------------------------------------------

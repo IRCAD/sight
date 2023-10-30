@@ -44,16 +44,16 @@ qt_main_frame::~qt_main_frame() noexcept =
 
 //------------------------------------------------------------------------------
 
-void qt_main_frame::setCloseCallback(CloseCallback _fct)
+void qt_main_frame::set_close_callback(CloseCallback _fct)
 {
-    m_fctCloseCallback = _fct;
+    m_fct_close_callback = _fct;
 }
 
 //------------------------------------------------------------------------------
 
 void qt_main_frame::closeEvent(QCloseEvent* _event)
 {
-    m_fctCloseCallback();
+    m_fct_close_callback();
     _event->ignore();
 }
 

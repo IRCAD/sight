@@ -37,11 +37,11 @@ class object_writer;
 namespace registry
 {
 
-typedef std::string key_t;
+using key_t = std::string;
 
-typedef core::factory_registry<SPTR(io::writer::object_writer)(), key_t> Type;
+using type = core::factory_registry<std::shared_ptr<io::writer::object_writer>(), key_t>;
 
-IO_API SPTR(Type) get();
+IO_API SPTR(type) get();
 
 } // namespace registry
 

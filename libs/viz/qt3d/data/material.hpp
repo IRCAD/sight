@@ -50,10 +50,10 @@ class VIZ_QT3D_CLASS_API_QT material : public Qt3DRender::QMaterial
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
-Q_PROPERTY(QColor ambient READ getAmbient WRITE setAmbient NOTIFY ambientChanged)
-Q_PROPERTY(QColor diffuse READ getDiffuse WRITE setDiffuse NOTIFY diffuseChanged)
-Q_PROPERTY(QVector3D specular READ getSpecular WRITE setSpecular NOTIFY specularChanged)
-Q_PROPERTY(float shininess READ getShininess WRITE setShininess NOTIFY shininessChanged)
+Q_PROPERTY(QColor ambient READ get_ambient WRITE set_ambient NOTIFY ambient_changed)
+Q_PROPERTY(QColor diffuse READ get_diffuse WRITE set_diffuse NOTIFY diffuse_changed)
+Q_PROPERTY(QVector3D specular READ get_specular WRITE set_specular NOTIFY specular_changed)
+Q_PROPERTY(float shininess READ get_shininess WRITE set_shininess NOTIFY shininess_changed)
 
 public:
 
@@ -64,34 +64,34 @@ public:
     VIZ_QT3D_API_QT ~material() override;
 
     /// @returns ambient color.
-    VIZ_QT3D_API_QT QColor getAmbient();
+    VIZ_QT3D_API_QT QColor get_ambient();
 
     /// @returns diffuse color.
-    VIZ_QT3D_API_QT QColor getDiffuse();
+    VIZ_QT3D_API_QT QColor get_diffuse();
 
     /// @returns specular color.
-    VIZ_QT3D_API_QT QVector3D getSpecular();
+    VIZ_QT3D_API_QT QVector3D get_specular();
 
     /// @returns shininess.
-    VIZ_QT3D_API_QT float getShininess();
+    VIZ_QT3D_API_QT float get_shininess();
 
     /// Updates ambient color.
-    VIZ_QT3D_API_QT void setAmbient(QColor _ambient);
+    VIZ_QT3D_API_QT void set_ambient(QColor _ambient);
 
     /// Updates diffuse color.
-    VIZ_QT3D_API_QT void setDiffuse(QColor _diffuse);
+    VIZ_QT3D_API_QT void set_diffuse(QColor _diffuse);
 
     /// Updates specular color.
-    VIZ_QT3D_API_QT void setSpecular(QVector3D _specular);
+    VIZ_QT3D_API_QT void set_specular(QVector3D _specular);
 
     /// Updates shininess.
-    VIZ_QT3D_API_QT void setShininess(float _shininess);
+    VIZ_QT3D_API_QT void set_shininess(float _shininess);
 
     /// Adds a new technique to the material.
-    VIZ_QT3D_API_QT void addTechnique(Qt3DRender::QTechnique* _technique);
+    VIZ_QT3D_API_QT void add_technique(Qt3DRender::QTechnique* _technique);
 
     /// Removes a technique from the material.
-    VIZ_QT3D_API_QT void removeTechnique(Qt3DRender::QTechnique* _technique);
+    VIZ_QT3D_API_QT void remove_technique(Qt3DRender::QTechnique* _technique);
 
     /// Adds a new parameter to the material.
     VIZ_QT3D_API_QT void addParameter(Qt3DRender::QParameter* _parameter);
@@ -100,45 +100,45 @@ public:
     VIZ_QT3D_API_QT void removeParameter(Qt3DRender::QParameter* _parameter);
 
     /// Updates material options mode (standard or point normals).
-    VIZ_QT3D_API_QT Q_INVOKABLE void updateOptionsMode(int _options_mode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void update_options_mode(int _options_mode);
 
     /// Updates material polygon mode (surface, point, wireframe or edge).
-    VIZ_QT3D_API_QT Q_INVOKABLE void updatePolygonMode(int _polygon_mode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void update_polygon_mode(int _polygon_mode);
 
     /// Updates material shading mode (ambient/flat/phong).
-    VIZ_QT3D_API_QT Q_INVOKABLE void updateShadingMode(int _shading_mode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void update_shading_mode(int _shading_mode);
 
     /// Updates material color.
-    VIZ_QT3D_API_QT Q_INVOKABLE void updateRGBAMode(sight::data::material::sptr _sight_material);
+    VIZ_QT3D_API_QT Q_INVOKABLE void update_rgba_mode(sight::data::material::sptr _sight_material);
 
 Q_SIGNALS:
 
     /// Signal emitted when ambient color is modified.
-    void ambientChanged();
+    void ambient_changed();
 
     /// Signal emitted when diffuse color is modified.
-    void diffuseChanged();
+    void diffuse_changed();
 
     /// Signal emitted when specular color is modified.
-    void specularChanged();
+    void specular_changed();
 
     /// Signal emitted when shininess is modified.
-    void shininessChanged();
+    void shininess_changed();
 
 private:
 
     /// Contains material ambient color.
-    QPointer<Qt3DRender::QParameter> m_ambientColor;
+    QPointer<Qt3DRender::QParameter> m_ambient_color;
 
     /// Contains material ambient color. Used in default fragment shader. Uses of another copy
     /// of the ambient color is needed due to incompatibilities between sheldon and qt3d rules.
-    QPointer<Qt3DRender::QParameter> m_ambientColorCopy;
+    QPointer<Qt3DRender::QParameter> m_ambient_color_copy;
 
     /// Contains material diffuse color.
-    QPointer<Qt3DRender::QParameter> m_diffuseColor;
+    QPointer<Qt3DRender::QParameter> m_diffuse_color;
 
     /// Contains material specular color.
-    QPointer<Qt3DRender::QParameter> m_specularColor;
+    QPointer<Qt3DRender::QParameter> m_specular_color;
 
     /// Contains material shininess.
     QPointer<Qt3DRender::QParameter> m_shininess;

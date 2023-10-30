@@ -25,12 +25,12 @@
 namespace sight::io::http::exceptions
 {
 
-HostNotFound::HostNotFound(const std::string& _message) :
-    io::http::exceptions::Base(_message)
+host_not_found::host_not_found(const std::string& _message) :
+    io::http::exceptions::base(_message)
 {
 }
 
-HostNotFound::~HostNotFound() noexcept =
+host_not_found::~host_not_found() noexcept =
     default;
 
 } // namespace sight::io::http::exceptions

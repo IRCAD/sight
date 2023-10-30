@@ -55,8 +55,8 @@
 namespace sight::data::detail
 {
 
-using SeriesDataset = std::pair<gdcm::DataSet, std::filesystem::path>;
-using FrameDatasets = std::vector<SeriesDataset>;
+using series_dataset = std::pair<gdcm::DataSet, std::filesystem::path>;
+using frame_datasets = std::vector<series_dataset>;
 
 static constexpr char SPACE_PADDING_CHAR  = ' ';
 static constexpr char NULL_PADDING_CHAR   = '\0';
@@ -74,17 +74,17 @@ static const std::string PRIVATE_CREATOR {"Sight"};
 
 /// Template matching utilities
 template<typename ... Ts>
-struct IsHelper {};
+struct is_helper {};
 
 template<typename T, typename = void>
-struct HasFixedMultiplicity : std::true_type {};
+struct has_fixed_multiplicity : std::true_type {};
 
 template<typename T>
-struct HasFixedMultiplicity<
+struct has_fixed_multiplicity<
     T,
     std::conditional_t<
         false,
-        IsHelper<
+        is_helper<
             typename T::ArrayType,
             decltype(std::declval<T>().SetValues(nullptr, 0, true))
         >,
@@ -329,7 +329,7 @@ public:
 
     /// Constructor
     inline explicit SeriesImpl(sight::data::series* const _series) noexcept :
-        M_SERIES(_series),
+        m_series(_series),
         m_frame_datasets(1)
     {
     }
@@ -339,14 +339,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline const SeriesDataset& getDataPair(std::size_t _instance = 0) const
+    [[nodiscard]] inline const series_dataset& get_data_pair(std::size_t _instance = 0) const
     {
         return m_frame_datasets[_instance];
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline SeriesDataset& getDataPair(std::size_t _instance = 0)
+    [[nodiscard]] inline series_dataset& get_data_pair(std::size_t _instance = 0)
     {
         if(_instance >= m_frame_datasets.size())
         {
@@ -358,36 +358,36 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline const auto& getDataSet(std::size_t _instance = 0) const
+    [[nodiscard]] inline const auto& get_data_set(std::size_t _instance = 0) const
     {
-        return getDataPair(_instance).first;
+        return get_data_pair(_instance).first;
     }
 
     //------------------------------------------------------------------------------
 
     [[nodiscard]] inline const auto& get_file(std::size_t _instance = 0) const
     {
-        return getDataPair(_instance).second;
+        return get_data_pair(_instance).second;
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline auto& getDataSet(std::size_t _instance = 0)
+    [[nodiscard]] inline auto& get_data_set(std::size_t _instance = 0)
     {
-        return getDataPair(_instance).first;
+        return get_data_pair(_instance).first;
     }
 
     //------------------------------------------------------------------------------
 
     [[nodiscard]] inline auto& get_file(std::size_t _instance = 0)
     {
-        return getDataPair(_instance).second;
+        return get_data_pair(_instance).second;
     }
 
     /// Retrieve a DICOM tag value. If the tag is not found, an null optional is returned.
     /// @{
     template<typename A>
-    auto getValue(std::optional<gdcm::DataElement> _element) const
+    auto get_value(std::optional<gdcm::DataElement> _element) const
     {
         using return_t = std::conditional_t<std::is_base_of_v<std::string, typename A::ArrayType>, std::string,
                                             typename A::ArrayType>;
@@ -425,31 +425,31 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename A>
-    auto getValue(
+    auto get_value(
         const gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {}) const
     {
-        return getValue<A>(getElement(A::GetTag(), _outer_data_set, _indices));
+        return get_value<A>(get_element(A::GetTag(), _outer_data_set, _indices));
     }
 
     template<typename A>
-    auto getValue(std::size_t _instance = 0, std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {}) const
+    auto get_value(std::size_t _instance = 0, std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {}) const
     {
-        return getValue<A>(getDataSet(_instance), _indices);
+        return get_value<A>(get_data_set(_instance), _indices);
     }
 
     /// @}
 
     /// Retrieve a string DICOM tag value. If the tag is not found, an empty string is returned.
     template<typename A>
-    [[nodiscard]] inline std::string getStringValue(std::size_t _instance = 0) const
+    [[nodiscard]] inline std::string get_string_value(std::size_t _instance = 0) const
     {
         if(_instance >= m_frame_datasets.size())
         {
             return {};
         }
 
-        const auto& value = getValue<A>(_instance);
+        const auto& value = get_value<A>(_instance);
 
         if(value)
         {
@@ -472,7 +472,7 @@ public:
     /// Retrieve multi-value DICOM tag. If the tag is not found, an empty vector is returned.
     /// @{
     template<typename A>
-    auto getValues(std::optional<gdcm::DataElement> _element) const
+    auto get_values(std::optional<gdcm::DataElement> _element) const
     {
         using return_t = std::conditional_t<std::is_base_of_v<std::string, typename A::ArrayType>, std::string,
                                             std::vector<typename A::ArrayType> >;
@@ -514,31 +514,31 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename A>
-    auto getValues(
+    auto get_values(
         const gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {}) const
     {
-        return getValues<A>(getElement(A::GetTag(), _outer_data_set, _indices));
+        return get_values<A>(get_element(A::GetTag(), _outer_data_set, _indices));
     }
 
     template<typename A>
-    auto getValues(std::size_t _instance = 0, std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {}) const
+    auto get_values(std::size_t _instance = 0, std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {}) const
     {
-        return getValues<A>(getDataSet(_instance), _indices);
+        return get_values<A>(get_data_set(_instance), _indices);
     }
 
     /// @}
 
     /// Retrieve multi-value DICOM tag as a single joined string. Use '\' as separator.
     template<typename A>
-    [[nodiscard]] inline std::string getJoinedValues(std::size_t _instance = 0) const noexcept
+    [[nodiscard]] inline std::string get_joined_values(std::size_t _instance = 0) const noexcept
     {
-        return boost::join(getStringValues<A>(_instance), BACKSLASH_SEPARATOR);
+        return boost::join(get_string_values<A>(_instance), BACKSLASH_SEPARATOR);
     }
 
     /// Retrieve a multi-value string DICOM tag. If the tag is not found, an empty vector is returned.
     template<typename A>
-    [[nodiscard]] inline std::vector<std::string> getStringValues(std::size_t _instance = 0) const noexcept
+    [[nodiscard]] inline std::vector<std::string> get_string_values(std::size_t _instance = 0) const noexcept
     {
         if(_instance >= m_frame_datasets.size())
         {
@@ -546,7 +546,7 @@ public:
         }
 
         A attribute;
-        attribute.SetFromDataSet(getDataSet(_instance));
+        attribute.SetFromDataSet(get_data_set(_instance));
 
         const auto values = attribute.GetValues();
 
@@ -573,9 +573,9 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename A>
-    [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> getSequence(std::size_t _instance = 0) const noexcept
+    [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> get_sequence(std::size_t _instance = 0) const noexcept
     {
-        gdcm::DataSet data_set = getDataSet(_instance);
+        gdcm::DataSet data_set = get_data_set(_instance);
         if(!data_set.FindDataElement(A::GetTag()))
         {
             return nullptr;
@@ -586,27 +586,27 @@ public:
 
     /// Set a DICOM tag value. If the value is null, the tag is replaced by and empty element.
     template<typename A>
-    constexpr void setValue(const std::optional<typename A::ArrayType>& _value, std::size_t _instance = 0)
+    constexpr void set_value(const std::optional<typename A::ArrayType>& _value, std::size_t _instance = 0)
     {
         if(_value)
         {
             A attribute {};
             attribute.SetValue(*_value);
-            getDataSet(_instance).Replace(attribute.GetAsDataElement());
+            get_data_set(_instance).Replace(attribute.GetAsDataElement());
         }
         else
         {
             // We need to put an "empty" value. Since GDCM doesn't allow us to do it with non string values, we need to
             // hack the system. Sorry GDCM, but an Integer String definitively could be "unknown" and an empty string
             // **IS** valid..
-            getDataSet(_instance).Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+            get_data_set(_instance).Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
         }
     }
 
     /// Set a string DICOM tag value. If the value is null, the tag is replaced by and empty element.
     /// @{
     template<typename A>
-    constexpr void setStringValue(const std::string& _value, gdcm::DataSet& _data_set)
+    constexpr void set_string_value(const std::string& _value, gdcm::DataSet& _data_set)
     {
         if(_value.empty())
         {
@@ -639,47 +639,47 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename A>
-    void setStringValue(
+    void set_string_value(
         const std::string& _value,
         gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag,
                               std::size_t> > _indices
 )
     {
-        setStringValue<A>(
+        set_string_value<A>(
             _value,
-            getOrCreateDataSet(_outer_data_set, _indices)
+            get_or_create_data_set(_outer_data_set, _indices)
         );
     }
 
     //------------------------------------------------------------------------------
 
     template<typename A>
-    void setStringValue(
+    void set_string_value(
         const std::string& _value,
         std::size_t _instance = 0,
         std::vector<std::pair<gdcm::Tag,
                               std::size_t> > _indices = {})
     {
-        setStringValue<A>(_value, getDataSet(_instance), _indices);
+        set_string_value<A>(_value, get_data_set(_instance), _indices);
     }
 
     /// @}
 
     /// Set a multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
     template<typename A>
-    constexpr void setValues(const std::vector<typename A::ArrayType>& _values, std::size_t _instance = 0)
+    constexpr void set_values(const std::vector<typename A::ArrayType>& _values, std::size_t _instance = 0)
     {
         if(_values.empty())
         {
             // Force a real emtpy value..
-            getDataSet(_instance).Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+            get_data_set(_instance).Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
         }
         else
         {
             A attribute;
 
-            if constexpr(HasFixedMultiplicity<A>::value)
+            if constexpr(has_fixed_multiplicity<A>::value)
             {
                 attribute.SetValues(_values.data(), std::uint32_t(_values.size()));
             }
@@ -688,24 +688,24 @@ public:
                 attribute.SetValues(_values.data(), std::uint32_t(_values.size()), true);
             }
 
-            getDataSet(_instance).Replace(attribute.GetAsDataElement());
+            get_data_set(_instance).Replace(attribute.GetAsDataElement());
         }
     }
 
     /// Set a multi-value DICOM tag from a single string. Use '\' as separator.
     template<typename A>
-    inline void setJoinedValues(const std::string& _values, std::size_t _instance = 0)
+    inline void set_joined_values(const std::string& _values, std::size_t _instance = 0)
     {
         // Split the original string
         std::vector<std::string> split;
         boost::split(split, _values, boost::is_any_of(BACKSLASH_SEPARATOR));
 
-        setStringValues<A>(split, _instance);
+        set_string_values<A>(split, _instance);
     }
 
     /// Set a string multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
     template<typename A>
-    constexpr void setStringValues(const std::vector<std::string>& _values, std::size_t _instance = 0)
+    constexpr void set_string_values(const std::vector<std::string>& _values, std::size_t _instance = 0)
     {
         if(!_values.empty())
         {
@@ -738,7 +738,7 @@ public:
             {
                 A attribute;
                 attribute.SetValues(array.data(), std::uint32_t(array.size()), true);
-                getDataSet(_instance).Replace(attribute.GetAsDataElement());
+                get_data_set(_instance).Replace(attribute.GetAsDataElement());
 
                 // Exit here...
                 return;
@@ -746,12 +746,12 @@ public:
         }
 
         // Default: force a real emtpy value..
-        getDataSet(_instance).Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+        get_data_set(_instance).Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
     }
 
     /// Little helper function for integral type. Used when tag/VR is not known at compile time.
     template<typename T>
-    inline void setArithmeticValue(
+    inline void set_arithmetic_value(
         const gdcm::Tag& _tag,
         const gdcm::VR& _vr,
         const T& _value,
@@ -763,12 +763,12 @@ public:
         gdcm::DataElement data_element(_tag);
         data_element.SetVR(_vr);
         data_element.SetByteValue(reinterpret_cast<const char*>(&_value), std::uint32_t(sizeof(_value)));
-        getDataSet(_instance).Replace(data_element);
+        get_data_set(_instance).Replace(data_element);
     }
 
     /// Little helper function for integral type. Used when tag/VR is not known at compile time.
     template<typename T>
-    [[nodiscard]] inline std::string getArithmeticValue(const gdcm::Tag& _tag, std::size_t _instance = 0) const
+    [[nodiscard]] inline std::string get_arithmetic_value(const gdcm::Tag& _tag, std::size_t _instance = 0) const
     {
         static_assert(std::is_arithmetic_v<T>, "The type must be arithmetic.");
 
@@ -777,7 +777,7 @@ public:
             return {};
         }
 
-        const auto& dataset = getDataSet(_instance);
+        const auto& dataset = get_data_set(_instance);
 
         if(dataset.FindDataElement(_tag))
         {
@@ -804,13 +804,13 @@ public:
     /// @param frameIndex index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
-    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameGroupSequence(
+    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_group_sequence(
         std::size_t _frame_index = 0
     ) const
     {
         /// @note We assume that multi-frame dicom have only one instance, IE no instance "Concatenation" here
         /// @note See "Concatenation" related attributes ((0020,9228) and (0020,9162))
-        const auto& dataset   = getDataSet(0);
+        const auto& dataset   = get_data_set(0);
         const auto& group_tag = G::GetTag();
 
         if(!dataset.FindDataElement(group_tag))
@@ -836,11 +836,11 @@ public:
     /// @param frameIndex index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G, typename S>
-    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(
+    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_sequence(
         std::size_t _frame_index = 0
     ) const
     {
-        const auto& group_sequence = getMultiFrameGroupSequence<G>(_frame_index);
+        const auto& group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
 
         if(!group_sequence || group_sequence->IsEmpty())
         {
@@ -877,9 +877,9 @@ public:
     /// @param frameIndex index of the frame
     /// @return attribute value. If the tag is not found, an empty vector is returned.
     template<typename G, typename S, typename A>
-    [[nodiscard]] inline std::optional<typename A::ArrayType> getMultiFrameValue(std::size_t _frame_index = 0) const
+    [[nodiscard]] inline std::optional<typename A::ArrayType> get_multi_frame_value(std::size_t _frame_index = 0) const
     {
-        const auto& attribute_sequence = getMultiFrameSequence<G, S>(_frame_index);
+        const auto& attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
 
         if(!attribute_sequence || attribute_sequence->IsEmpty())
         {
@@ -898,11 +898,11 @@ public:
     /// @param frameIndex index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
-    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameGroupSequence(std::size_t _frame_index = 0)
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_group_sequence(std::size_t _frame_index = 0)
     {
         /// @note We assume that multi-frame dicom have only one instance, IE no instance "Concatenation" here
         /// @note See "Concatenation" related attributes ((0020,9228) and (0020,9162))
-        auto& dataset         = getDataSet(0);
+        auto& dataset         = get_data_set(0);
         const auto& group_tag = G::GetTag();
 
         if(!dataset.FindDataElement(group_tag))
@@ -931,7 +931,7 @@ public:
         }
 
         // Adjust the number of frames
-        setValue<gdcm::Keywords::NumberOfFrames>(int(group_sequence->GetNumberOfItems()));
+        set_value<gdcm::Keywords::NumberOfFrames>(int(group_sequence->GetNumberOfItems()));
 
         return group_sequence;
     }
@@ -944,9 +944,9 @@ public:
     /// @param frameIndex index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G, typename S>
-    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(std::size_t _frame_index = 0)
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_sequence(std::size_t _frame_index = 0)
     {
-        auto group_sequence = getMultiFrameGroupSequence<G>(_frame_index);
+        auto group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
 
         // Retrieve the frame item and dataset
         auto& frame_item    = group_sequence->GetItem(_frame_index + 1);
@@ -989,9 +989,9 @@ public:
     /// @tparam A Attribute (like Frame Acquisition DateTime)
     /// @param frameIndex index of the frame
     template<typename G, typename S, typename A>
-    inline void setMultiFrameValue(const std::optional<typename A::ArrayType>& _value, std::size_t _frame_index = 0)
+    inline void set_multi_frame_value(const std::optional<typename A::ArrayType>& _value, std::size_t _frame_index = 0)
     {
-        auto attribute_sequence = getMultiFrameSequence<G, S>(_frame_index);
+        auto attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
         auto& attribute_dataset = attribute_sequence->GetItem(1).GetNestedDataSet();
 
         if(_value)
@@ -1017,9 +1017,9 @@ public:
     /// @param frameIndex index of the frame
     /// @return attribute value. If the tag is not found, an empty vector is returned.
     template<typename G, typename S, typename A>
-    [[nodiscard]] inline std::vector<typename A::ArrayType> getMultiFrameValues(std::size_t _frame_index = 0) const
+    [[nodiscard]] inline std::vector<typename A::ArrayType> get_multi_frame_values(std::size_t _frame_index = 0) const
     {
-        const auto& attribute_sequence = getMultiFrameSequence<G, S>(_frame_index);
+        const auto& attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
 
         if(!attribute_sequence || attribute_sequence->IsEmpty())
         {
@@ -1050,9 +1050,9 @@ public:
     /// @tparam A Attribute (like Frame Acquisition DateTime)
     /// @param frameIndex index of the frame
     template<typename G, typename S, typename A>
-    inline void setMultiFrameValues(const std::vector<typename A::ArrayType>& _values, std::size_t _frame_index = 0)
+    inline void set_multi_frame_values(const std::vector<typename A::ArrayType>& _values, std::size_t _frame_index = 0)
     {
-        auto attribute_sequence = getMultiFrameSequence<G, S>(_frame_index);
+        auto attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
         auto& attribute_dataset = attribute_sequence->GetItem(1).GetNestedDataSet();
 
         if(_values.empty())
@@ -1066,7 +1066,7 @@ public:
             A attribute {};
             attribute.SetFromDataSet(attribute_dataset);
 
-            if constexpr(HasFixedMultiplicity<A>::value)
+            if constexpr(has_fixed_multiplicity<A>::value)
             {
                 attribute.SetValues(_values.data(), std::uint32_t(_values.size()));
             }
@@ -1086,14 +1086,14 @@ public:
     /// @param[in] frameIndex index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
-    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFramePrivateSequence(
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_private_sequence(
         std::uint8_t _element,
         std::size_t _frame_index = 0
 )
     {
         SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", _element >= 0x10 && _element <= 0xFF);
 
-        auto group_sequence = getMultiFrameGroupSequence<G>(_frame_index);
+        auto group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
 
         // Retrieve the frame item and dataset
         auto& frame_item    = group_sequence->GetItem(_frame_index + 1);
@@ -1146,14 +1146,14 @@ public:
     /// @param[in] frameIndex index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
-    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFramePrivateSequence(
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_private_sequence(
         std::uint8_t _element,
         std::size_t _frame_index = 0
     ) const
     {
         SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", _element >= 0x10 && _element <= 0xFF);
 
-        const auto& group_sequence = getMultiFrameGroupSequence<G>(_frame_index);
+        const auto& group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
         if(!group_sequence)
         {
             return {};
@@ -1191,7 +1191,7 @@ public:
     ///                          (must be different from sequence_element)
     /// @return attribute value. If the tag is not found, an empty vector is returned.
     template<typename G>
-    [[nodiscard]] inline std::optional<std::string> getMultiFramePrivateValue(
+    [[nodiscard]] inline std::optional<std::string> get_multi_frame_private_value(
         std::uint8_t _sequence_element,
         std::uint8_t _value_element,
         std::size_t _frame_index = 0
@@ -1204,7 +1204,7 @@ public:
             && _sequence_element != _value_element
         );
 
-        const auto& attribute_sequence = getMultiFramePrivateSequence<G>(_sequence_element, _frame_index);
+        const auto& attribute_sequence = get_multi_frame_private_sequence<G>(_sequence_element, _frame_index);
 
         if(!attribute_sequence || attribute_sequence->IsEmpty())
         {
@@ -1231,7 +1231,7 @@ public:
     ///                          (must be different from sequence_element)
     /// @param[in] frameIndex index of the frame
     template<typename G>
-    inline void setMultiFramePrivateValue(
+    inline void set_multi_frame_private_value(
         const std::optional<std::string>& _value,
         std::uint8_t _sequence_element,
         std::uint8_t _value_element,
@@ -1245,7 +1245,7 @@ public:
             && _sequence_element != _value_element
         );
 
-        auto attribute_sequence = getMultiFramePrivateSequence<G>(_sequence_element, _frame_index);
+        auto attribute_sequence = get_multi_frame_private_sequence<G>(_sequence_element, _frame_index);
         auto& attribute_dataset = attribute_sequence->GetItem(1).GetNestedDataSet();
 
         // Get the tag
@@ -1257,7 +1257,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] static std::optional<gdcm::DataElement> getElement(
+    [[nodiscard]] static std::optional<gdcm::DataElement> get_element(
         gdcm::Tag _final_tag,
         const gdcm::DataSet& _data_set,
         const std::vector<std::pair<gdcm::Tag, std::size_t> >& _indices = {})
@@ -1292,22 +1292,22 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] std::optional<gdcm::DataElement> getElement(
+    [[nodiscard]] std::optional<gdcm::DataElement> get_element(
         gdcm::Tag _final_tag,
         std::size_t _instance,
         const std::vector<std::pair<gdcm::Tag, std::size_t> >& _indices
     ) const
     {
-        return getElement(
+        return get_element(
             _final_tag,
-            getDataSet(_instance),
+            get_data_set(_instance),
             _indices
         );
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] static std::optional<gdcm::DataSet> getDataSet(
+    [[nodiscard]] static std::optional<gdcm::DataSet> get_data_set(
         const gdcm::DataSet& _data_set,
         const std::vector<std::pair<gdcm::Tag,
                                     std::size_t> >& _indices = {})
@@ -1337,18 +1337,18 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] std::optional<gdcm::DataSet> getDataSet(
+    [[nodiscard]] std::optional<gdcm::DataSet> get_data_set(
         std::size_t _instance,
         const std::vector<std::pair<gdcm::Tag,
                                     std::size_t> >& _indices
     ) const
     {
-        return getDataSet(getDataSet(_instance), _indices);
+        return get_data_set(get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
-    static gdcm::DataSet& getOrCreateDataSet(
+    static gdcm::DataSet& get_or_create_data_set(
         gdcm::DataSet& _data_set,
         const std::vector<std::pair<gdcm::Tag, std::size_t> >& _indices = {})
     {
@@ -1385,21 +1385,21 @@ public:
 
     //------------------------------------------------------------------------------
 
-    gdcm::DataSet& getOrCreateDataSet(
+    gdcm::DataSet& get_or_create_data_set(
         std::size_t _instance                                           = 0,
         const std::vector<std::pair<gdcm::Tag, std::size_t> >& _indices = {})
     {
-        return getOrCreateDataSet(getDataSet(_instance), _indices);
+        return get_or_create_data_set(get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] static gdcm::SmartPointer<gdcm::SequenceOfItems> getSequence(
+    [[nodiscard]] static gdcm::SmartPointer<gdcm::SequenceOfItems> get_sequence(
         gdcm::Tag _final_tag,
         const gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        if(std::optional<gdcm::DataElement> data_element = getElement(_final_tag, _outer_data_set, _indices))
+        if(std::optional<gdcm::DataElement> data_element = get_element(_final_tag, _outer_data_set, _indices))
         {
             return *data_element->GetValueAsSQ();
         }
@@ -1409,22 +1409,22 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> getSequence(
+    [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> get_sequence(
         gdcm::Tag _final_tag,
         std::size_t _instance                                    = 0,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        return getSequence(_final_tag, getDataSet(_instance), _indices);
+        return get_sequence(_final_tag, get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
-    static std::optional<std::string> getPrivateValue(
+    static std::optional<std::string> get_private_value(
         std::uint8_t _value_element,
         const gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        std::optional<gdcm::DataSet> data_set = getDataSet(_outer_data_set, _indices);
+        std::optional<gdcm::DataSet> data_set = get_data_set(_outer_data_set, _indices);
         if(!data_set)
         {
             return std::nullopt;
@@ -1438,18 +1438,18 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::optional<std::string> getPrivateValue(
+    std::optional<std::string> get_private_value(
         std::uint8_t _value_element,
         std::size_t _instance                                    = 0,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        return getPrivateValue(_value_element, getDataSet(_instance), _indices);
+        return get_private_value(_value_element, get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
     template<typename A>
-    constexpr void setValue(const std::optional<typename A::ArrayType>& _value, gdcm::DataSet& _data_set)
+    constexpr void set_value(const std::optional<typename A::ArrayType>& _value, gdcm::DataSet& _data_set)
     {
         if(_value)
         {
@@ -1469,30 +1469,30 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename A>
-    void setValue(
+    void set_value(
         const auto& _value,
         gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices
 )
     {
-        setValue<A>(_value, getOrCreateDataSet(_outer_data_set, _indices));
+        set_value<A>(_value, get_or_create_data_set(_outer_data_set, _indices));
     }
 
     //------------------------------------------------------------------------------
 
     template<typename A>
-    void setValue(
+    void set_value(
         const auto& _value,
         std::size_t _instance                                    = 0,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        setValue<A>(_value, getDataSet(_instance), _indices);
+        set_value<A>(_value, get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
     template<typename A>
-    constexpr void setValues(const std::vector<typename A::ArrayType>& _values, gdcm::DataSet& _data_set)
+    constexpr void set_values(const std::vector<typename A::ArrayType>& _values, gdcm::DataSet& _data_set)
     {
         if(_values.empty())
         {
@@ -1503,7 +1503,7 @@ public:
         {
             A attribute;
 
-            if constexpr(HasFixedMultiplicity<A>::value)
+            if constexpr(has_fixed_multiplicity<A>::value)
             {
                 attribute.SetValues(_values.data(), std::uint32_t(_values.size()));
             }
@@ -1519,29 +1519,29 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename A>
-    void setValues(
+    void set_values(
         const auto& _values,
         gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices
 )
     {
-        setValues<A>(_values, getOrCreateDataSet(_outer_data_set, _indices));
+        set_values<A>(_values, get_or_create_data_set(_outer_data_set, _indices));
     }
 
     //------------------------------------------------------------------------------
 
     template<typename A>
-    void setValues(
+    void set_values(
         const auto& _values,
         std::size_t _instance                                    = 0,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        setValues<A>(_values, getDataSet(_instance), _indices);
+        set_values<A>(_values, get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
-    static void setSequence(gdcm::Tag _tag, gdcm::SmartPointer<gdcm::SequenceOfItems> _value, gdcm::DataSet& _data_set)
+    static void set_sequence(gdcm::Tag _tag, gdcm::SmartPointer<gdcm::SequenceOfItems> _value, gdcm::DataSet& _data_set)
     {
         if(_value != nullptr)
         {
@@ -1561,37 +1561,37 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static void setSequence(
+    static void set_sequence(
         gdcm::Tag _final_tag,
         gdcm::SmartPointer<gdcm::SequenceOfItems> _value,
         gdcm::DataSet& _outer_data_set,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices
 )
     {
-        setSequence(_final_tag, _value, getOrCreateDataSet(_outer_data_set, _indices));
+        set_sequence(_final_tag, _value, get_or_create_data_set(_outer_data_set, _indices));
     }
 
     //------------------------------------------------------------------------------
 
-    void setSequence(
+    void set_sequence(
         gdcm::Tag _final_tag,
         gdcm::SmartPointer<gdcm::SequenceOfItems> _value,
         std::size_t _instance                                    = 0,
         std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        setSequence(_final_tag, _value, getDataSet(_instance), _indices);
+        set_sequence(_final_tag, _value, get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
-    static void setPrivateValue(
+    static void set_private_value(
         std::uint8_t _value_element,
         const std::optional<std::string>& _value,
         gdcm::DataSet& _outer_data_set,
         const std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
         detail::set_private_value(
-            getOrCreateDataSet(_outer_data_set, _indices),
+            get_or_create_data_set(_outer_data_set, _indices),
             gdcm::Tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + _value_element),
             _value
         );
@@ -1599,26 +1599,26 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setPrivateValue(
+    void set_private_value(
         std::uint8_t _value_element,
         const std::optional<std::string>& _value,
         std::size_t _instance                                          = 0,
         const std::vector<std::pair<gdcm::Tag, std::size_t> > _indices = {})
     {
-        setPrivateValue(_value_element, _value, getDataSet(_instance), _indices);
+        set_private_value(_value_element, _value, get_data_set(_instance), _indices);
     }
 
     //------------------------------------------------------------------------------
 
     template<typename A>
-    inline void copyElement(const gdcm::DataSet& _source, std::size_t _instance = 0)
+    inline void copy_element(const gdcm::DataSet& _source, std::size_t _instance = 0)
     {
-        copyElement(_source, A::GetTag(), _instance);
+        copy_element(_source, A::GetTag(), _instance);
     }
 
     //------------------------------------------------------------------------------
 
-    inline void copyElement(const gdcm::DataSet& _source, const gdcm::Tag& _tag, std::size_t _instance = 0)
+    inline void copy_element(const gdcm::DataSet& _source, const gdcm::Tag& _tag, std::size_t _instance = 0)
     {
         if(_source.FindDataElement(_tag))
         {
@@ -1627,18 +1627,18 @@ public:
             gdcm::DataElement data_element(_source.GetDataElement(_tag));
 
             // Replace the element with the copy
-            getDataSet(_instance).Replace(data_element);
+            get_data_set(_instance).Replace(data_element);
         }
         else
         {
             // Tag not found, remove it
-            getDataSet(_instance).Remove(_tag);
+            get_data_set(_instance).Remove(_tag);
         }
     }
 
     //------------------------------------------------------------------------------
 
-    inline void copyFrameDatasets(const FrameDatasets& _source)
+    inline void copy_frame_datasets(const frame_datasets& _source)
     {
         m_frame_datasets = _source;
 
@@ -1659,7 +1659,7 @@ public:
 
     /// Shrink a multi-frame sequence attribute of a sequence group.
     /// @param size the new number of frames
-    inline void shrinkMultiFrame(std::size_t _size)
+    inline void shrink_multi_frame(std::size_t _size)
     {
         if(!m_frame_datasets.empty())
         {
@@ -1676,16 +1676,16 @@ public:
                 group_sequence->SetNumberOfItems(_size);
 
                 // Set the number of frames
-                setValue<gdcm::Keywords::NumberOfFrames>(std::int32_t(_size));
+                set_value<gdcm::Keywords::NumberOfFrames>(std::int32_t(_size));
             }
         }
     }
 
     /// Pointer to the public class
-    sight::data::series* const M_SERIES {nullptr};
+    sight::data::series* const m_series {nullptr};
 
     /// Dicom data set instances specific to a frame
-    FrameDatasets m_frame_datasets;
+    frame_datasets m_frame_datasets;
 };
 
 } // sight::data::detail

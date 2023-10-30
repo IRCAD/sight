@@ -39,12 +39,12 @@ namespace sight::filter::image
  * are available and when intensity values are close
  * - Mutual Information : The most generic metric, can be used to match images with different modalities.
  */
-typedef enum metric
+enum metric_t
 {
-    MEAN_SQUARES,
-    NORMALIZED_CORRELATION,
-    PATTERN_INTENSITY,
-    MUTUAL_INFORMATION
-} metric_t;
+    mean_squares,
+    normalized_correlation,
+    pattern_intensity,
+    mutual_information
+};
 
 } // namespace sight::filter::image

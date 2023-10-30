@@ -79,12 +79,12 @@ private:
 
     unsigned int m_reduction {0};
     unsigned int m_threshold {0};
-    void updateThreshold(int);
+    void update_threshold(int);
 
     /// Input image mask
-    data::ptr<data::image_series, data::Access::in> m_image {this, "imageSeries", false};
+    data::ptr<data::image_series, data::access::in> m_image {this, "imageSeries", false};
     /// Output segmentation
-    data::ptr<data::model_series, data::Access::out> m_model {this, "modelSeries", false};
+    data::ptr<data::model_series, data::access::out> m_model {this, "modelSeries", false};
 };
 
 } // namespace sight::module::filter::mesh

@@ -37,8 +37,8 @@ const core::com::slots::key_t switch_matrices::SWITCH_TO_SLOT = "switchToMatrix"
 
 switch_matrices::switch_matrices() noexcept
 {
-    new_slot(SWITCH_SLOT, &switch_matrices::switchMatrix, this);
-    new_slot(SWITCH_TO_SLOT, &switch_matrices::switchToMatrix, this);
+    new_slot(SWITCH_SLOT, &switch_matrices::switch_matrix, this);
+    new_slot(SWITCH_TO_SLOT, &switch_matrices::switch_to_matrix, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void switch_matrices::stopping()
 
 service::connections_t switch_matrices::auto_connections() const
 {
-    return {{s_MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
 }
 
 // ----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void switch_matrices::updating()
 {
     auto matrix = m_output.lock();
 
-    auto desired_matrix = m_matrix[m_indexOfDesiredMatrix].lock();
+    auto desired_matrix = m_matrix[m_index_of_desired_matrix].lock();
     matrix->shallow_copy(desired_matrix.get_shared());
 
     auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -85,12 +85,12 @@ void switch_matrices::updating()
 
 // ----------------------------------------------------------------------------
 
-void switch_matrices::switchMatrix()
+void switch_matrices::switch_matrix()
 {
-    ++m_indexOfDesiredMatrix;
-    if(m_indexOfDesiredMatrix >= m_matrix.size())
+    ++m_index_of_desired_matrix;
+    if(m_index_of_desired_matrix >= m_matrix.size())
     {
-        m_indexOfDesiredMatrix = 0;
+        m_index_of_desired_matrix = 0;
     }
 
     this->updating();
@@ -98,16 +98,16 @@ void switch_matrices::switchMatrix()
 
 // ----------------------------------------------------------------------------
 
-void switch_matrices::switchToMatrix(int _index)
+void switch_matrices::switch_to_matrix(int _index)
 {
     if(_index >= 0 && static_cast<std::size_t>(_index) < m_matrix.size())
     {
-        m_indexOfDesiredMatrix = static_cast<std::size_t>(_index);
+        m_index_of_desired_matrix = static_cast<std::size_t>(_index);
     }
     else
     {
         SIGHT_WARN("Desired index don't exists, switch to first matrix");
-        m_indexOfDesiredMatrix = 0;
+        m_index_of_desired_matrix = 0;
     }
 
     this->updating();

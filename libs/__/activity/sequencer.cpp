@@ -32,7 +32,7 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-int sequencer::parseActivities(data::activity_set& _activity_set)
+int sequencer::parse_activities(data::activity_set& _activity_set)
 {
     const auto scoped_emitter = _activity_set.scoped_emit();
     std::size_t index         = 0;
@@ -44,19 +44,19 @@ int sequencer::parseActivities(data::activity_set& _activity_set)
             SIGHT_ERROR("One activity is unknown, it will be removed");
             it = _activity_set.erase(it);
         }
-        else if(!(index < m_activityIds.size() && m_activityIds[index] == (*it)->getActivityConfigId()))
+        else if(!(index < m_activity_ids.size() && m_activity_ids[index] == (*it)->get_activity_config_id()))
         {
             // Remove the wrong data
-            SIGHT_ERROR("The activity '" + (*it)->getActivityConfigId() + "' is unknown, it will be removed");
+            SIGHT_ERROR("The activity '" + (*it)->get_activity_config_id() + "' is unknown, it will be removed");
             it = _activity_set.erase(it);
         }
-        else if(!sight::activity::sequencer::validateActivity(*it).first)
+        else if(!sight::activity::sequencer::validate_activity(*it).first)
         {
             break;
         }
         else
         {
-            this->storeActivityData(_activity_set, index++);
+            this->store_activity_data(_activity_set, index++);
         }
     }
 
@@ -65,7 +65,7 @@ int sequencer::parseActivities(data::activity_set& _activity_set)
 
 //------------------------------------------------------------------------------
 
-void sequencer::storeActivityData(
+void sequencer::store_activity_data(
     const data::activity_set& _activity_set,
     std::size_t _index,
     const data::composite::csptr& _overrides
@@ -88,7 +88,7 @@ void sequencer::storeActivityData(
 
 //------------------------------------------------------------------------------
 
-data::activity::sptr sequencer::getActivity(
+data::activity::sptr sequencer::get_activity(
     data::activity_set& _activity_set,
     std::size_t _index,
     const core::com::slot_base::sptr& _slot
@@ -96,8 +96,8 @@ data::activity::sptr sequencer::getActivity(
 {
     data::activity::sptr activity;
 
-    const auto& activity_id = m_activityIds[_index];
-    const auto& info        = activity::extension::activity::getDefault()->getInfo(activity_id);
+    const auto& activity_id = m_activity_ids[_index];
+    const auto& info        = activity::extension::activity::get_default()->get_info(activity_id);
 
     if(_activity_set.size() > _index) // The activity already exists, update the data
     {
@@ -119,14 +119,14 @@ data::activity::sptr sequencer::getActivity(
         // try to create the intermediate activities
         if(_index > 0 && (_index - 1) >= _activity_set.size())
         {
-            getActivity(_activity_set, _index - 1, _slot);
+            get_activity(_activity_set, _index - 1, _slot);
         }
 
         // Create the activity
         activity = std::make_shared<data::activity>();
 
-        activity->setActivityConfigId(info.id);
-        activity->setDescription(info.description);
+        activity->set_activity_config_id(info.id);
+        activity->set_description(info.description);
 
         for(const auto& req : info.requirements)
         {
@@ -135,14 +135,14 @@ data::activity::sptr sequencer::getActivity(
             {
                 activity->insert_or_assign(req.name, it->second);
             }
-            else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
+            else if(req.create || (req.min_occurs == 0 && req.max_occurs == 0))
             {
                 // Create the new data
-                auto object = sight::activity::detail::data::create(req.type, req.objectConfig);
+                auto object = sight::activity::detail::data::create(req.type, req.object_config);
                 activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }
-            else if(req.minOccurs == 0)
+            else if(req.min_occurs == 0)
             {
                 // Create an empty composite for optional data
                 auto object = std::make_shared<data::composite>();
@@ -169,7 +169,7 @@ data::activity::sptr sequencer::getActivity(
 
 //------------------------------------------------------------------------------
 
-void sequencer::removeLastActivities(data::activity_set& _activity_set, std::size_t _index)
+void sequencer::remove_last_activities(data::activity_set& _activity_set, std::size_t _index)
 {
     if(_activity_set.size() > _index)
     {
@@ -180,20 +180,20 @@ void sequencer::removeLastActivities(data::activity_set& _activity_set, std::siz
 
         // clear the requirements and parse the remaining activities to regereate the requirements
         m_requirements.clear();
-        this->parseActivities(_activity_set);
+        this->parse_activities(_activity_set);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::cleanRequirements(std::size_t _index)
+void sequencer::clean_requirements(std::size_t _index)
 {
     // For all registered activities at index and after
-    for(auto i = _index, end = m_activityIds.size() ; i < end ; ++i)
+    for(auto i = _index, end = m_activity_ids.size() ; i < end ; ++i)
     {
         // Get the information about the activity
-        const auto& id   = m_activityIds[i];
-        const auto& info = extension::activity::getDefault()->getInfo(id);
+        const auto& id   = m_activity_ids[i];
+        const auto& info = extension::activity::get_default()->get_info(id);
 
         // For all registered requirements of the current activity
         for(const auto& requirement : info.requirements)
@@ -206,12 +206,12 @@ void sequencer::cleanRequirements(std::size_t _index)
                 data::mt::locked_ptr locked_object(object);
 
                 // Reset the data object
-                if(requirement.create || (requirement.minOccurs == 0 && requirement.maxOccurs == 0))
+                if(requirement.create || (requirement.min_occurs == 0 && requirement.max_occurs == 0))
                 {
-                    const auto& clean_object = detail::data::create(requirement.type, requirement.objectConfig);
+                    const auto& clean_object = detail::data::create(requirement.type, requirement.object_config);
                     object->shallow_copy(clean_object);
                 }
-                else if(requirement.minOccurs == 0)
+                else if(requirement.min_occurs == 0)
                 {
                     const auto& composite = std::make_shared<data::composite>();
                     object->shallow_copy(composite);

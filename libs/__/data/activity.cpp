@@ -44,7 +44,7 @@ void activity::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_activityConfigId = other->m_activityConfigId;
+    m_activity_config_id = other->m_activity_config_id;
 
     data::composite::shallow_copy(other);
 }
@@ -63,7 +63,7 @@ void activity::deep_copy(const object::csptr& _source, const std::unique_ptr<dee
         !bool(other)
     );
 
-    m_activityConfigId = other->m_activityConfigId;
+    m_activity_config_id = other->m_activity_config_id;
 
     data::composite::deep_copy(other, _cache);
 }
@@ -72,7 +72,7 @@ void activity::deep_copy(const object::csptr& _source, const std::unique_ptr<dee
 
 bool activity::operator==(const activity& _other) const noexcept
 {
-    if(m_activityConfigId != _other.m_activityConfigId)
+    if(m_activity_config_id != _other.m_activity_config_id)
     {
         return false;
     }

@@ -52,7 +52,7 @@ public:
     /**
      * @brief Returns archive path.
      */
-    [[nodiscard]] virtual std::filesystem::path getArchivePath() const = 0;
+    [[nodiscard]] virtual std::filesystem::path get_archive_path() const = 0;
 
     [[nodiscard]] virtual read_archive::sptr clone() const = 0;
 };

@@ -34,15 +34,15 @@ namespace sight::navigation::openvslam::ut
 /**
  * @brief Intrinsic camera calibration conversion tests.
  */
-class HelperTest : public CPPUNIT_NS::TestFixture
+class helper_test : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    CPPUNIT_TEST_SUITE(HelperTest);
-    CPPUNIT_TEST(toSight);
-    CPPUNIT_TEST(fromSight);
-    CPPUNIT_TEST(createConfig);
-    CPPUNIT_TEST(writeReadConfig);
+    CPPUNIT_TEST_SUITE(helper_test);
+    CPPUNIT_TEST(to_sight);
+    CPPUNIT_TEST(from_sight);
+    CPPUNIT_TEST(create_config);
+    CPPUNIT_TEST(write_read_config);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,16 +50,16 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void toSight();
-    static void fromSight();
-    static void createConfig();
-    static void writeReadConfig();
+    static void to_sight();
+    static void from_sight();
+    static void create_config();
+    static void write_read_config();
 
     /// Comparision of camera, set _sightExpected to true if the expected values are sight camera, false otherwise.
-    static void compareCam(
-        const data::camera& _sightCam,
-        const ::openvslam::camera::perspective& _ovsCam,
-        bool _sightExpected = true
+    static void compare_cam(
+        const data::camera& _sight_cam,
+        const ::openvslam::camera::perspective& _ovs_cam,
+        bool _sight_expected = true
     );
 };
 

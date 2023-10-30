@@ -41,8 +41,8 @@ public:
 
     SIGHT_DECLARE_CLASS(structure_traits_dictionary, object);
 
-    typedef std::vector<std::string> StructureTypeNameContainer;
-    typedef std::map<std::string, structure_traits::sptr> structure_traits_map_t;
+    using StructureTypeNameContainer = std::vector<std::string>;
+    using structure_traits_map_t     = std::map<std::string, structure_traits::sptr>;
 
     /// Destructor. Does nothing.
     DATA_API ~structure_traits_dictionary() noexcept override = default;
@@ -55,20 +55,20 @@ public:
      * @pre Structure attachment must be of class 'Organ' and must exist in dictionary.
      * @pre Structure type cannot contain space.
      */
-    DATA_API void addStructure(structure_traits::sptr _structure_traits);
+    DATA_API void add_structure(structure_traits::sptr _structure_traits);
 
     /**
      * @brief Return the structure traits for given type
      * @pre given 'type' must exist in dictionary
      */
-    DATA_API structure_traits::sptr getStructure(std::string _type);
-    DATA_API structure_traits::csptr getStructure(std::string _type) const;
+    DATA_API structure_traits::sptr get_structure(std::string _type);
+    DATA_API structure_traits::csptr get_structure(std::string _type) const;
 
     /// Return all array names stock in the structureTraits-map
-    DATA_API StructureTypeNameContainer getStructureTypeNames() const;
+    DATA_API StructureTypeNameContainer get_structure_type_names() const;
 
     /// sets the entire structures map
-    DATA_API void setStructureTraitsMap(const structure_traits_map_t& _structure_traits_map);
+    DATA_API void set_structure_traits_map(const structure_traits_map_t& _structure_traits_map);
 
     /// Equality comparison operators
     /// @{
@@ -93,7 +93,7 @@ public:
 private:
 
     /// map to register structure traits. Map key is structure type.
-    structure_traits_map_t m_structureTraitsMap;
+    structure_traits_map_t m_structure_traits_map;
 };
 
 } // namespace sight::data

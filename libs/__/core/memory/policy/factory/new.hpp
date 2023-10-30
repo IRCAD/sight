@@ -33,7 +33,7 @@ namespace sight::core::memory::policy::factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  create();
 
-CORE_API SPTR(core::memory::policy::base) create(const core::memory::policy::registry::key_type& _classname);
+CORE_API SPTR(core::memory::policy::base) create(const core::memory::policy::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  create()

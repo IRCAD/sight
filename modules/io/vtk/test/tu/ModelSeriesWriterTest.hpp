@@ -30,11 +30,11 @@ namespace sight::module::io::vtk::ut
 /**
  * @brief Test the reader and the writer of Mesh/image using VTK.
  */
-class ModelSeriesWriterTest : public CPPUNIT_NS::TestFixture
+class model_series_writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ModelSeriesWriterTest);
-CPPUNIT_TEST(testWriteMeshes);
-CPPUNIT_TEST(testWriteReconstructions);
+CPPUNIT_TEST_SUITE(model_series_writer_test);
+CPPUNIT_TEST(test_write_meshes);
+CPPUNIT_TEST(test_write_reconstructions);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,8 +43,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testWriteMeshes();
-    static void testWriteReconstructions();
+    static void test_write_meshes();
+    static void test_write_reconstructions();
 };
 
 } // namespace sight::module::io::vtk::ut

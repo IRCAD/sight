@@ -72,10 +72,10 @@ void point_list_from_matrices::updating()
     const std::size_t num_matrices = m_matrices.size();
     SIGHT_ASSERT("no matrices found", num_matrices != 0);
 
-    auto point_list = m_pointList.lock();
+    auto point_list = m_point_list.lock();
     if(!m_append)
     {
-        point_list->getPoints().clear();
+        point_list->get_points().clear();
     }
 
     for(std::size_t j = 0 ; j < num_matrices ; ++j)
@@ -88,21 +88,21 @@ void point_list_from_matrices::updating()
         std::string label;
         if(m_append)
         {
-            label = std::to_string(point_list->getPoints().size());
+            label = std::to_string(point_list->get_points().size());
         }
         else
         {
             label = std::to_string(j);
         }
 
-        p->setLabel(label);
-        point_list->pushBack(p);
+        p->set_label(label);
+        point_list->push_back(p);
     }
 
     auto sig = point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
     sig->async_emit();
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //-----------------------------------------------------------------------------

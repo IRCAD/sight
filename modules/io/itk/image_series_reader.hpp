@@ -62,7 +62,7 @@ class MODULE_IO_ITK_CLASS_API image_series_reader : public sight::io::service::r
 {
 public:
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
+    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Constructor. Do nothing.
@@ -77,11 +77,11 @@ public:
     /**
      * @brief Configure the image path.
      */
-    MODULE_IO_ITK_API void openLocationDialog() override;
+    MODULE_IO_ITK_API void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_ITK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
@@ -122,9 +122,9 @@ protected:
 private:
 
     /// image path.
-    std::filesystem::path m_fsImgPath;
+    std::filesystem::path m_fs_img_path;
 
-    SPTR(job_created_signal_t) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::itk

@@ -38,7 +38,7 @@ namespace sight::io::dicom::writer::tid
  * @brief TemplateID base class used to write templates
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API TemplateID
+class IO_DICOM_CLASS_API template_id
 {
 public:
 
@@ -48,14 +48,14 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] object Sight data object
      */
-    IO_DICOM_API TemplateID(
+    IO_DICOM_API template_id(
         SPTR(gdcm::Writer)_writer,
-        SPTR(io::dicom::container::DicomInstance)_instance,
+        SPTR(io::dicom::container::dicom_instance)_instance,
         CSPTR(DATATYPE)_object
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~TemplateID();
+    IO_DICOM_API virtual ~template_id();
 
 protected:
 
@@ -63,7 +63,7 @@ protected:
     SPTR(gdcm::Writer) m_writer;
 
     /// DICOM Instance
-    SPTR(io::dicom::container::DicomInstance) m_instance;
+    SPTR(io::dicom::container::dicom_instance) m_instance;
 
     /// Sight Object
     CSPTR(DATATYPE) m_object;
@@ -72,9 +72,9 @@ protected:
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-TemplateID<DATATYPE>::TemplateID(
+template_id<DATATYPE>::template_id(
     SPTR(gdcm::Writer)_writer,
-    SPTR(io::dicom::container::DicomInstance)_instance,
+    SPTR(io::dicom::container::dicom_instance)_instance,
     CSPTR(DATATYPE)_object
 ) :
     m_writer(std::move(_writer)),
@@ -88,7 +88,7 @@ TemplateID<DATATYPE>::TemplateID(
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE> TemplateID<DATATYPE>::~TemplateID()
+template<class DATATYPE> template_id<DATATYPE>::~template_id()
 = default;
 
 //------------------------------------------------------------------------------

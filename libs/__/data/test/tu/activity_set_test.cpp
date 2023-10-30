@@ -45,21 +45,21 @@ void activity_set_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void activity_set_test::nominalTest()
+void activity_set_test::nominal_test()
 {
-    static const auto configId1 = core::tools::UUID::generate();
-    static const auto configId2 = core::tools::UUID::generate();
-    static const auto configId3 = core::tools::UUID::generate();
+    static const auto s_CONFIG_ID1 = core::tools::uuid::generate();
+    static const auto s_CONFIG_ID2 = core::tools::uuid::generate();
+    static const auto s_CONFIG_ID3 = core::tools::uuid::generate();
 
     // Create three activities
     const auto& activity1 = std::make_shared<activity>();
-    activity1->setActivityConfigId(configId1);
+    activity1->set_activity_config_id(s_CONFIG_ID1);
 
     const auto& activity2 = std::make_shared<activity>();
-    activity2->setActivityConfigId(configId2);
+    activity2->set_activity_config_id(s_CONFIG_ID2);
 
     const auto& activity3 = std::make_shared<activity>();
-    activity3->setActivityConfigId(configId3);
+    activity3->set_activity_config_id(s_CONFIG_ID3);
 
     // Create an activity set and add the three activities
     auto act_set = std::make_shared<activity_set>();
@@ -105,21 +105,21 @@ void activity_set_test::nominalTest()
 
 //------------------------------------------------------------------------------
 
-void activity_set_test::copyTest()
+void activity_set_test::copy_test()
 {
-    static const auto configId1 = core::tools::UUID::generate();
-    static const auto configId2 = core::tools::UUID::generate();
-    static const auto configId3 = core::tools::UUID::generate();
+    static const auto s_CONFIG_ID1 = core::tools::uuid::generate();
+    static const auto s_CONFIG_ID2 = core::tools::uuid::generate();
+    static const auto s_CONFIG_ID3 = core::tools::uuid::generate();
 
     // Create three activities
     const auto& activity1 = std::make_shared<activity>();
-    activity1->setActivityConfigId(configId1);
+    activity1->set_activity_config_id(s_CONFIG_ID1);
 
     const auto& activity2 = std::make_shared<activity>();
-    activity2->setActivityConfigId(configId2);
+    activity2->set_activity_config_id(s_CONFIG_ID2);
 
     const auto& activity3 = std::make_shared<activity>();
-    activity3->setActivityConfigId(configId3);
+    activity3->set_activity_config_id(s_CONFIG_ID3);
 
     // Create an activity set and add the three activities
     const auto& original_act_set = std::make_shared<activity_set>();

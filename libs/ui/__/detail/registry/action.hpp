@@ -51,19 +51,19 @@ public:
     ~action() override = default;
 
     /// Method called when the action service is stopping
-    void actionServiceStopping();
+    void action_service_stopping();
 
     /// Method called when the action service is starting
-    void actionServiceStarting();
+    void action_service_starting();
 
     /// Method called when the action service is activated or not
-    void actionServiceSetChecked(bool _is_checked);
+    void action_service_set_checked(bool _is_checked);
 
     /// Method called when the action service is enabled or not
-    void actionServiceSetEnabled(bool _is_enabled);
+    void action_service_set_enabled(bool _is_enabled);
 
     /// Method called when the action service is visible or not
-    void actionServiceSetVisible(bool _is_visible);
+    void action_service_set_visible(bool _is_visible);
 
 protected:
 

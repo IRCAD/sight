@@ -54,8 +54,8 @@ public:
     WriterImpl& operator=(WriterImpl&&)      = delete;
 
     /// Constructor
-    inline explicit WriterImpl(Writer* const _writer) :
-        M_WRITER(_writer)
+    inline explicit WriterImpl(writer* const _writer) :
+        m_writer(_writer)
     {
     }
 
@@ -64,10 +64,10 @@ public:
 
     /// Main write function
     template<typename O>
-    inline std::size_t write(O& _output, Backend _backend, Writer::Mode _mode)
+    inline std::size_t write(O& _output, backend _backend, writer::mode _mode)
     {
         // Get the image pointer
-        const auto& image = M_WRITER->getConcreteObject();
+        const auto& image = m_writer->get_concrete_object();
         SIGHT_THROW_IF("Source image is null", image == nullptr);
 
         /// @todo Should we split volume in 2D slices ?
@@ -78,16 +78,16 @@ public:
         const auto dump_lock = image->dump_lock();
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-        if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K)
+        if(nv_jpeg_2k() && _backend == backend::nvjpeg2k)
         {
             try
             {
-                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, _output, _mode);
+                return write<nv_jpe_g2_k_writer>(m_nv_jpe_g2_k, *image, _output, _mode);
             }
             catch(const std::exception& e)
             {
                 // Check if the rerror is because of unsupported pixel type
-                const auto& pixel_type = image->getType();
+                const auto& pixel_type = image->type();
                 if(pixel_type != core::type::UINT8
                    && pixel_type != core::type::UINT16)
                 {
@@ -95,18 +95,18 @@ public:
                 }
 
                 // Check if the rerror is because of unsupported pixel format
-                const auto& pixel_format = image->getPixelFormat();
-                if(pixel_format != data::image::PixelFormat::GRAY_SCALE
-                   && pixel_format != data::image::PixelFormat::RGB
-                   && pixel_format != data::image::PixelFormat::RGBA
-                   && pixel_format != data::image::PixelFormat::BGR
-                   && pixel_format != data::image::PixelFormat::BGRA)
+                const auto& pixel_format = image->pixel_format();
+                if(pixel_format != data::image::pixel_format::gray_scale
+                   && pixel_format != data::image::pixel_format::rgb
+                   && pixel_format != data::image::pixel_format::rgba
+                   && pixel_format != data::image::pixel_format::bgr
+                   && pixel_format != data::image::pixel_format::bgra)
                 {
                     throw;
                 }
 
                 /// @todo Check new version of nvjpeg2k (>0.6).
-                if((pixel_format == data::image::PixelFormat::RGBA || pixel_format == data::image::PixelFormat::BGRA)
+                if((pixel_format == data::image::pixel_format::rgba || pixel_format == data::image::pixel_format::bgra)
                    && pixel_type == core::type::UINT16)
                 {
                     throw;
@@ -116,58 +116,58 @@ public:
                 // This is obviously a bug in the encoder (reported and known by NVidia), although this should not
                 // happen with real data in the real world. To be in the safe side, we fallback to another backend.
                 SIGHT_ERROR("Failed to write image with nv_jpeg_2k: " << e.what() << ". Fallback to OpenJPEG.");
-                return write<OpenJPEGWriter>(m_openJPEG, *image, _output, _mode);
+                return write<open_jpeg_writer>(m_open_jpeg, *image, _output, _mode);
             }
         }
-        else if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K_J2K)
+        else if(nv_jpeg_2k() && _backend == backend::nvjpeg2k_j2k)
         {
             try
             {
-                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, _output, _mode, Flag::J2K_STREAM);
+                return write<nv_jpe_g2_k_writer>(m_nv_jpe_g2_k, *image, _output, _mode, flag::j2_k_stream);
             }
             catch(const std::exception& e)
             {
                 // Same as above...
                 SIGHT_ERROR("Failed to write image with nv_jpeg_2k: " << e.what() << ". Fallback to OpenJPEG.");
-                return write<OpenJPEGWriter>(m_openJPEG, *image, _output, _mode, Flag::J2K_STREAM);
+                return write<open_jpeg_writer>(m_open_jpeg, *image, _output, _mode, flag::j2_k_stream);
             }
         }
         else
 #endif
-        if(_backend == Backend::OPENJPEG)
+        if(_backend == backend::openjpeg)
         {
-            return write<OpenJPEGWriter>(m_openJPEG, *image, _output, _mode);
+            return write<open_jpeg_writer>(m_open_jpeg, *image, _output, _mode);
         }
-        else if(_backend == Backend::OPENJPEG_J2K)
+        else if(_backend == backend::openjpeg_j2_k)
         {
-            return write<OpenJPEGWriter>(
-                m_openJPEG,
+            return write<open_jpeg_writer>(
+                m_open_jpeg,
                 *image,
                 _output,
                 _mode,
-                Flag::J2K_STREAM
+                flag::j2_k_stream
             );
         }
         else
 
 #ifdef SIGHT_ENABLE_NVJPEG
-        if(nv_jpeg() && _backend == Backend::NVJPEG)
+        if(nv_jpeg() && _backend == backend::nvjpeg)
         {
-            return write<NvJPEGWriter>(m_nvJPEG, *image, _output, _mode);
+            return write<nv_jpeg_writer>(m_nv_jpeg, *image, _output, _mode);
         }
         else
 #endif
-        if(_backend == Backend::LIBJPEG)
+        if(_backend == backend::libjpeg)
         {
-            return write<LibJPEGWriter>(m_libJPEG, *image, _output, _mode);
+            return write<lib_jpeg_writer>(m_lib_jpeg, *image, _output, _mode);
         }
-        else if(_backend == Backend::LIBTIFF)
+        else if(_backend == backend::libtiff)
         {
-            return write<LibTIFFWriter>(m_libTIFF, *image, _output, _mode);
+            return write<lib_tiff_writer>(m_lib_tiff, *image, _output, _mode);
         }
-        else if(_backend == Backend::LIBPNG)
+        else if(_backend == backend::libpng)
         {
-            return write<LibPNGWriter>(m_libPNG, *image, _output, _mode);
+            return write<lib_png_writer>(m_lib_png, *image, _output, _mode);
         }
         else
         {
@@ -184,8 +184,8 @@ private:
         std::unique_ptr<W>& _backend,
         const data::image& _image,
         O& _output,
-        Writer::Mode _mode,
-        Flag _flag = Flag::NONE
+        writer::mode _mode,
+        flag _flag = flag::none
 )
     {
         if(_backend == nullptr)
@@ -198,20 +198,20 @@ private:
     }
 
     /// Pointer to the public interface
-    Writer* const M_WRITER;
+    writer* const m_writer;
 
 #ifdef SIGHT_ENABLE_NVJPEG
-    std::unique_ptr<NvJPEGWriter> m_nvJPEG;
+    std::unique_ptr<nv_jpeg_writer> m_nv_jpeg;
 #endif
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    std::unique_ptr<NvJPEG2KWriter> m_nvJPEG2K;
+    std::unique_ptr<nv_jpe_g2_k_writer> m_nv_jpe_g2_k;
 #endif
 
-    std::unique_ptr<LibJPEGWriter> m_libJPEG;
-    std::unique_ptr<LibTIFFWriter> m_libTIFF;
-    std::unique_ptr<LibPNGWriter> m_libPNG;
-    std::unique_ptr<OpenJPEGWriter> m_openJPEG;
+    std::unique_ptr<lib_jpeg_writer> m_lib_jpeg;
+    std::unique_ptr<lib_tiff_writer> m_lib_tiff;
+    std::unique_ptr<lib_png_writer> m_lib_png;
+    std::unique_ptr<open_jpeg_writer> m_open_jpeg;
 };
 
 } // namespace sight::io::bitmap::detail

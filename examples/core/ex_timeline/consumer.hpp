@@ -100,12 +100,12 @@ private:
     SPTR(sight::core::thread::timer) m_timer;
 
     /// Id of the receiver
-    unsigned int m_receiverId {};
+    unsigned int m_receiver_id {};
 
     /// A message will be read every m_uiPeriod milliseconds.
     unsigned int m_period {0};
 
-    sight::data::ptr<ex_timeline::message_tl, sight::data::Access::in> m_timeline {this, "timeline"};
+    sight::data::ptr<ex_timeline::message_tl, sight::data::access::in> m_timeline {this, "timeline"};
 };
 
 } // namespace ex_timeline

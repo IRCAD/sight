@@ -64,7 +64,7 @@ void composite_test::methode1()
         std::make_pair("integer", std::make_shared<data::integer>(value))
     };
 
-    data::composite::container_type stdmap;
+    data::composite::container_t stdmap;
 
     data::composite::sptr composite = std::make_shared<data::composite>();
 

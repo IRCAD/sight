@@ -90,7 +90,7 @@ private Q_SLOTS:
      * @brief Slot called when the slider is moved
      * @param[in] value Slider value
      */
-    void changeSliceIndex(int _value);
+    void change_slice_index(int _value);
 
 protected:
 
@@ -109,75 +109,75 @@ protected:
 private:
 
     /// Function called when a new slice must be displayed.
-    void triggerNewSlice();
+    void trigger_new_slice();
 
     /**
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    void readImage(sight::data::dicom_series& _dicom_series, std::size_t _selected_slice_index);
+    void read_image(sight::data::dicom_series& _dicom_series, std::size_t _selected_slice_index);
 
     /// Pull the selected slice from the Pacs
-    void pullInstance(sight::data::dicom_series& _dicom_series);
+    void pull_instance(sight::data::dicom_series& _dicom_series);
 
     /**
      * @brief Displays a dialog box with the error message
      */
-    static void displayErrorMessage(const std::string& _message);
+    static void display_error_message(const std::string& _message);
 
     /// Slice index slider
-    QPointer<QSlider> m_sliceIndexSlider;
+    QPointer<QSlider> m_slice_index_slider;
 
     /// Slice index line edit
-    QPointer<QLineEdit> m_sliceIndexLineEdit;
+    QPointer<QLineEdit> m_slice_index_line_edit;
 
     /// Number of instances
-    std::size_t m_numberOfSlices {};
+    std::size_t m_number_of_slices {};
 
     /// IODICOMWEB Reader
-    std::string m_dicomReaderType;
+    std::string m_dicom_reader_type;
 
     /// Reader
-    WPTR(sight::io::service::reader) m_dicomReader;
+    WPTR(sight::io::service::reader) m_dicom_reader;
 
     /// image Key
-    std::string m_imageKey;
+    std::string m_image_key;
 
     /// Temporary series_set
     SPTR(data::series_set) m_tmp_series_set;
 
     /// Axial slice index
-    SPTR(data::integer) m_axialIndex;
+    SPTR(data::integer) m_axial_index;
     /// Frontal slice index
-    SPTR(data::integer) m_frontalIndex;
+    SPTR(data::integer) m_frontal_index;
     /// Sagittal slice index
-    SPTR(data::integer) m_sagittalIndex;
+    SPTR(data::integer) m_sagittal_index;
 
     /// Series enquirer
-    sight::io::http::ClientQt m_clientQt;
+    sight::io::http::client_qt m_client_qt;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(core::thread::timer) m_delayTimer;
+    SPTR(core::thread::timer) m_delay_timer;
 
     /// Delay
     unsigned int m_delay {500};
 
     /// Optional configuration to set to reader implementation
-    service::config_t m_readerConfig;
+    service::config_t m_reader_config;
 
     /// Server hostname preference key
-    std::string m_serverHostnameKey;
+    std::string m_server_hostname_key;
 
     /// Server port preference key
-    std::string m_serverPortKey;
+    std::string m_server_port_key;
 
     /// Server hostname
-    std::string m_serverHostname {"localhost"};
+    std::string m_server_hostname {"localhost"};
 
     /// Server port
-    int m_serverPort {4242};
+    int m_server_port {4242};
 
-    sight::data::ptr<sight::data::dicom_series, sight::data::Access::inout> m_series {this, "series"};
+    sight::data::ptr<sight::data::dicom_series, sight::data::access::inout> m_series {this, "series"};
 };
 
 } // namespace sight::module::io::dicomweb

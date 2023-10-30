@@ -94,7 +94,7 @@ namespace sight::module::io::session
  *          - \b "default": uses the builtin default behavior which is "optimized"
  *
  * @see sight::io::service::writer
- * @see sight::io::session::SessionWriter
+ * @see sight::io::session::session_writer
  */
 
 class MODULE_IO_SESSION_CLASS_API writer final : public sight::io::service::writer
@@ -103,14 +103,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(writer, sight::io::service::writer);
 
-    using JobCreatedSignal = core::com::signal<void (core::jobs::base::sptr)>;
+    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
     MODULE_IO_SESSION_API writer() noexcept;
 
     MODULE_IO_SESSION_API ~writer() noexcept override;
 
     /// Propose to create a medical data file
-    MODULE_IO_SESSION_API void openLocationDialog() override;
+    MODULE_IO_SESSION_API void open_location_dialog() override;
 
 protected:
 
@@ -127,9 +127,9 @@ protected:
     MODULE_IO_SESSION_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_SESSION_API sight::io::service::IOPathType getIOPathType() const override
+    MODULE_IO_SESSION_API sight::io::service::path_type_t get_path_type() const override
     {
-        return sight::io::service::FILE;
+        return sight::io::service::file;
     }
 
 private:

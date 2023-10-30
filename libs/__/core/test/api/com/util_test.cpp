@@ -81,44 +81,44 @@ class C;
 
 void util_test::convert_function_type_test()
 {
-    using CM2C = void (C::*)(int, float) const;
-    using CM2  = void (C::*)(int, float);
+    using c_m2_c = void (C::*)(int, float) const;
+    using c_m2   = void (C::*)(int, float);
 
-    using BF2 = std::function<void (int, float)>;
+    using b_f2 = std::function<void (int, float)>;
 
-    using F2 = void (int, float);
+    using f2 = void (int, float);
 
-    CPPUNIT_ASSERT((std::is_same<F2, core::com::util::convert_function_type<CM2C>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F2, core::com::util::convert_function_type<CM2>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F2, core::com::util::convert_function_type<BF2>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F2, core::com::util::convert_function_type<F2*>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f2, core::com::util::convert_function_type<c_m2_c>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f2, core::com::util::convert_function_type<c_m2>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f2, core::com::util::convert_function_type<b_f2>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f2, core::com::util::convert_function_type<f2*>::type>::value));
 }
 
 //-----------------------------------------------------------------------------
 
 void util_test::remove_last_arg_test()
 {
-    using F9 = std::int64_t(int*, double, float, char, double*, float*, char*, int, const char*);
-    using F8 = std::int64_t(int*, double, float, char, double*, float*, char*, int);
-    using F7 = std::int64_t(int*, double, float, char, double*, float*, char*);
-    using F6 = std::int64_t(int*, double, float, char, double*, float*);
-    using F5 = std::int64_t(int*, double, float, char, double*);
-    using F4 = std::int64_t(int*, double, float, char);
-    using F3 = std::int64_t(int*, double, float);
-    using F2 = std::int64_t(int*, double);
-    using F1 = std::int64_t(int*);
-    using F0 = std::int64_t();
+    using f9 = std::int64_t(int*, double, float, char, double*, float*, char*, int, const char*);
+    using f8 = std::int64_t(int*, double, float, char, double*, float*, char*, int);
+    using f7 = std::int64_t(int*, double, float, char, double*, float*, char*);
+    using f6 = std::int64_t(int*, double, float, char, double*, float*);
+    using f5 = std::int64_t(int*, double, float, char, double*);
+    using f4 = std::int64_t(int*, double, float, char);
+    using f3 = std::int64_t(int*, double, float);
+    using f2 = std::int64_t(int*, double);
+    using f1 = std::int64_t(int*);
+    using f0 = std::int64_t();
 
-    CPPUNIT_ASSERT((std::is_same<F8, core::com::util::remove_last_arg<F9>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F7, core::com::util::remove_last_arg<F8>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F6, core::com::util::remove_last_arg<F7>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F5, core::com::util::remove_last_arg<F6>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F4, core::com::util::remove_last_arg<F5>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F3, core::com::util::remove_last_arg<F4>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F2, core::com::util::remove_last_arg<F3>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F1, core::com::util::remove_last_arg<F2>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F0, core::com::util::remove_last_arg<F1>::type>::value));
-    CPPUNIT_ASSERT((std::is_same<F0, core::com::util::remove_last_arg<F0>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f8, core::com::util::remove_last_arg<f9>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f7, core::com::util::remove_last_arg<f8>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f6, core::com::util::remove_last_arg<f7>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f5, core::com::util::remove_last_arg<f6>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f4, core::com::util::remove_last_arg<f5>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f3, core::com::util::remove_last_arg<f4>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f2, core::com::util::remove_last_arg<f3>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f1, core::com::util::remove_last_arg<f2>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f0, core::com::util::remove_last_arg<f1>::type>::value));
+    CPPUNIT_ASSERT((std::is_same<f0, core::com::util::remove_last_arg<f0>::type>::value));
 }
 
 //-----------------------------------------------------------------------------

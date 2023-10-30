@@ -101,16 +101,16 @@ private Q_SLOTS:
      * @brief onNewCalibration
      * @param cal
      */
-    void onNewCalibration(std::array<double, 12>& _cal);
+    void on_new_calibration(std::array<double, 12>& _cal);
 
 private:
 
-    void updateCalibration();
+    void update_calibration();
 
-    void readCalibration();
+    void read_calibration();
 
     std::array<double, 4> m_intrinsic {};
-    std::array<double, 5> m_distParameters {};
+    std::array<double, 5> m_dist_parameters {};
 
     double m_skew {};
     std::array<double, 2> m_resolution {};
@@ -119,8 +119,8 @@ private:
 
     update_intrinsic_dialog* m_dialog;
 
-    static constexpr std::string_view s_CAMERA = "camera";
-    data::ptr<data::camera, data::Access::inout> m_camera {this, s_CAMERA};
+    static constexpr std::string_view CAMERA = "camera";
+    data::ptr<data::camera, data::access::inout> m_camera {this, CAMERA};
 };
 
 } // namespace sight::module::ui::qt::calibration

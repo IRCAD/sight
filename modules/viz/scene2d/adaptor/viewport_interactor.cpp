@@ -24,7 +24,7 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene2d/Scene2DGraphicsView.hpp>
+#include <viz/scene2d/graphics_view.hpp>
 
 #include <cmath>
 
@@ -65,50 +65,50 @@ void viewport_interactor::updating()
 
 //-----------------------------------------------------------------------------
 
-void viewport_interactor::processInteraction(sight::viz::scene2d::data::Event& _event)
+void viewport_interactor::process_interaction(sight::viz::scene2d::data::event& _event)
 {
-    if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp
-       && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
+    if(_event.type() == sight::viz::scene2d::data::event::mouse_wheel_up
+       && _event.get_modifier() == sight::viz::scene2d::data::event::shift_modifier)
     {
         this->zoom(true);
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown
-            && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
+    else if(_event.type() == sight::viz::scene2d::data::event::mouse_wheel_down
+            && _event.get_modifier() == sight::viz::scene2d::data::event::shift_modifier)
     {
         this->zoom(false);
     }
-    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
-            && _event.getButton() == sight::viz::scene2d::data::Event::LeftButton
-            && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
+    else if(_event.type() == sight::viz::scene2d::data::event::mouse_button_press
+            && _event.get_button() == sight::viz::scene2d::data::event::left_button
+            && _event.get_modifier() == sight::viz::scene2d::data::event::shift_modifier)
     {
-        m_viewportIsTranslated = true;
-        m_lastCoordEvent       = _event.getCoord();
+        m_viewport_is_translated = true;
+        m_last_coord_event       = _event.get_coord();
     }
-    else if(m_viewportIsTranslated)
+    else if(m_viewport_is_translated)
     {
-        if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
+        if(_event.type() == sight::viz::scene2d::data::event::mouse_move)
         {
-            sight::viz::scene2d::vec2d_t coord = _event.getCoord();
+            sight::viz::scene2d::vec2d_t coord = _event.get_coord();
             const auto viewport                = m_viewport.lock();
 
-            const double dx      = coord.x - m_lastCoordEvent.x;
+            const double dx      = coord.x - m_last_coord_event.x;
             const double x_trans = dx * viewport->width()
-                                   / static_cast<double>(this->getScene2DRender()->getView()->width());
+                                   / static_cast<double>(this->get_scene_2d_render()->get_view()->width());
 
-            const double dy      = coord.y - m_lastCoordEvent.y;
+            const double dy      = coord.y - m_last_coord_event.y;
             const double y_trans = dy * viewport->height()
-                                   / static_cast<double>(this->getScene2DRender()->getView()->height());
+                                   / static_cast<double>(this->get_scene_2d_render()->get_view()->height());
 
-            viewport->setX(viewport->x() - x_trans);
-            viewport->setY(viewport->y() - y_trans);
+            viewport->set_x(viewport->x() - x_trans);
+            viewport->set_y(viewport->y() - y_trans);
 
-            this->getScene2DRender()->getView()->updateFromViewport(*viewport);
+            this->get_scene_2d_render()->get_view()->update_from_viewport(*viewport);
 
-            m_lastCoordEvent = coord;
+            m_last_coord_event = coord;
         }
-        else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        else if(_event.type() == sight::viz::scene2d::data::event::mouse_button_release)
         {
-            m_viewportIsTranslated = false;
+            m_viewport_is_translated = false;
         }
     }
 }
@@ -152,12 +152,12 @@ void viewport_interactor::zoom(bool _zoom_in)
     height = new_height;
 
     // Set viewport
-    scene_viewport->setX(x);
-    scene_viewport->setY(y);
-    scene_viewport->setWidth(width);
-    scene_viewport->setHeight(height);
+    scene_viewport->set_x(x);
+    scene_viewport->set_y(y);
+    scene_viewport->set_width(width);
+    scene_viewport->set_height(height);
     auto viewport_object = m_viewport.lock();
-    this->getScene2DRender()->getView()->updateFromViewport(*viewport_object);
+    this->get_scene_2d_render()->get_view()->update_from_viewport(*viewport_object);
 }
 
 //-----------------------------------------------------------------------------

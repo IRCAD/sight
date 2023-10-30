@@ -31,15 +31,15 @@ namespace sight::io::http::exceptions
 /**
  * @brief Implements exception for HTTP content not found errors.
  */
-class IO_HTTP_CLASS_API ContentNotFound : public sight::io::http::exceptions::Base
+class IO_HTTP_CLASS_API content_not_found : public sight::io::http::exceptions::base
 {
 public:
 
     /**
      * @name Constructor/Destructor.
      * @{ */
-    IO_HTTP_API ContentNotFound(const std::string& _message);
-    ~ContentNotFound() noexcept override;
+    IO_HTTP_API content_not_found(const std::string& _message);
+    ~content_not_found() noexcept override;
     /**  @} */
 };
 

@@ -28,7 +28,7 @@
 namespace sight::data
 {
 
-typedef std::string dicom_value_t;
-typedef std::vector<dicom_value_t> dicom_values_t;
+using dicom_value_t  = std::string;
+using dicom_values_t = std::vector<dicom_value_t>;
 
 } // namespace sight::data

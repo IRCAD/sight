@@ -39,9 +39,9 @@ namespace sight::module::ui::series
  * @note This action is not executable if the series already exists in the series_set.
  *
  * @section Slots Slots
- * - \b checkAddedObjects(data::series_set::container_type): make the action executable if the added series matches
+ * - \b checkAddedObjects(data::series_set::container_t): make the action executable if the added series matches
  * the series we want to export.
- * - \b checkRemovedObjects(data::series_set::container_type): make the action inexecutable if the added series matches
+ * - \b checkRemovedObjects(data::series_set::container_t): make the action inexecutable if the added series matches
  * the series we want to export.
 
  * @section XML XML Configuration

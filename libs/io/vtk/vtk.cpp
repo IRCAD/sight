@@ -99,27 +99,27 @@ static bool s_enable_log = init_vtk_log_file();
 
 // ------------------------------------------------------------------------------
 
-TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::fwToolsToVtkMap::key_type& _key
+type_translator::to_vtk_map_t::mapped_type type_translator::translate(
+    const type_translator::to_vtk_map_t::key_type& _key
 )
 {
-    auto it = s_toVtk.find(_key);
-    SIGHT_THROW_IF("Unknown Type: " << _key, it == s_toVtk.end());
+    auto it = TO_VTK.find(_key);
+    SIGHT_THROW_IF("Unknown Type: " << _key, it == TO_VTK.end());
     return it->second;
 }
 
 // ------------------------------------------------------------------------------
 
-TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::VtkTofwToolsMap::key_type& _key
+type_translator::from_vtk_map_t::mapped_type type_translator::translate(
+    const type_translator::from_vtk_map_t::key_type& _key
 )
 {
-    auto it = s_fromVtk.find(_key);
-    SIGHT_THROW_IF("Unknown Type: " << _key, it == s_fromVtk.end());
+    auto it = FROM_VTK.find(_key);
+    SIGHT_THROW_IF("Unknown Type: " << _key, it == FROM_VTK.end());
     return it->second;
 }
 
-const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
+const type_translator::to_vtk_map_t type_translator::TO_VTK = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
     {core::type::INT8, VTK_CHAR},
@@ -134,7 +134,7 @@ const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
     {core::type::DOUBLE, VTK_DOUBLE}
 };
 
-const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
+const type_translator::from_vtk_map_t type_translator::FROM_VTK = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
     {VTK_SIGNED_CHAR, core::type::INT8},
@@ -255,7 +255,7 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
 //    source->PropagateUpdateExtent();
 
     int dim = _source->GetDataDimension();
-    data::image::Size image_size;
+    data::image::size_t image_size;
 
     if(dim == 2)
     {
@@ -263,13 +263,13 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
                       static_cast<std::size_t>(_source->GetDimensions()[1]), 0
         };
 
-        const data::image::Spacing spacing = {_source->GetSpacing()[0], _source->GetSpacing()[1], 0.
+        const data::image::spacing_t spacing = {_source->GetSpacing()[0], _source->GetSpacing()[1], 0.
         };
-        _destination->setSpacing(spacing);
+        _destination->set_spacing(spacing);
 
-        const data::image::Origin origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], 0.
+        const data::image::origin_t origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], 0.
         };
-        _destination->setOrigin(origin);
+        _destination->set_origin(origin);
     }
     else
     {
@@ -278,14 +278,14 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
                       static_cast<std::size_t>(_source->GetDimensions()[2])
         };
 
-        const data::image::Spacing spacing =
+        const data::image::spacing_t spacing =
         {_source->GetSpacing()[0], _source->GetSpacing()[1], _source->GetSpacing()[2]
         };
-        _destination->setSpacing(spacing);
+        _destination->set_spacing(spacing);
 
-        const data::image::Origin origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], _source->GetOrigin()[2]
+        const data::image::origin_t origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], _source->GetOrigin()[2]
         };
-        _destination->setOrigin(origin);
+        _destination->set_origin(origin);
     }
 
     const int nb_components = _source->GetNumberOfScalarComponents();
@@ -303,34 +303,34 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
     {
         void* dest_buffer = nullptr;
 
-        sight::data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
+        enum sight::data::image::pixel_format format = data::image::pixel_format::gray_scale;
         if(nb_components == 1)
         {
-            format = data::image::PixelFormat::GRAY_SCALE;
+            format = data::image::pixel_format::gray_scale;
         }
         else if(nb_components == 2)
         {
-            format = data::image::PixelFormat::RG;
+            format = data::image::pixel_format::rg;
         }
         else if(nb_components == 3)
         {
-            format = data::image::PixelFormat::RGB;
+            format = data::image::pixel_format::rgb;
         }
         else if(nb_components == 4)
         {
-            format = data::image::PixelFormat::RGBA;
+            format = data::image::pixel_format::rgba;
         }
         else
         {
             SIGHT_FATAL("Unhandled pixel format");
         }
 
-        _destination->resize(image_size, TypeTranslator::translate(_source->GetScalarType()), format);
+        _destination->resize(image_size, type_translator::translate(_source->GetScalarType()), format);
 
         const auto dump_lock = _destination->dump_lock();
 
         dest_buffer = _destination->buffer();
-        const std::size_t size_in_bytes = _destination->getSizeInBytes();
+        const std::size_t size_in_bytes = _destination->size_in_bytes();
         std::memcpy(dest_buffer, input, size_in_bytes);
 
         sight::data::helper::medical_image::check_image_slice_index(_destination);
@@ -343,17 +343,17 @@ void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::cs
 {
     const auto dump_lock = _p_data_image->dump_lock();
 
-    if(_p_data_image->numDimensions() == 2)
+    if(_p_data_image->num_dimensions() == 2)
     {
         _p_image_import->SetDataSpacing(
-            _p_data_image->getSpacing()[0],
-            _p_data_image->getSpacing()[1],
+            _p_data_image->spacing()[0],
+            _p_data_image->spacing()[1],
             0
         );
 
         _p_image_import->SetDataOrigin(
-            _p_data_image->getOrigin()[0],
-            _p_data_image->getOrigin()[1],
+            _p_data_image->origin()[0],
+            _p_data_image->origin()[1],
             0
         );
 
@@ -369,15 +369,15 @@ void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::cs
     else
     {
         _p_image_import->SetDataSpacing(
-            _p_data_image->getSpacing()[0],
-            _p_data_image->getSpacing()[1],
-            _p_data_image->getSpacing()[2]
+            _p_data_image->spacing()[0],
+            _p_data_image->spacing()[1],
+            _p_data_image->spacing()[2]
         );
 
         _p_image_import->SetDataOrigin(
-            _p_data_image->getOrigin()[0],
-            _p_data_image->getOrigin()[1],
-            _p_data_image->getOrigin()[2]
+            _p_data_image->origin()[0],
+            _p_data_image->origin()[1],
+            _p_data_image->origin()[2]
         );
 
         _p_image_import->SetWholeExtent(
@@ -390,7 +390,7 @@ void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::cs
         );
     }
 
-    _p_image_import->SetNumberOfScalarComponents(static_cast<int>(_p_data_image->numComponents()));
+    _p_image_import->SetNumberOfScalarComponents(static_cast<int>(_p_data_image->num_components()));
 
     // copy WholeExtent to DataExtent
     _p_image_import->SetDataExtentToWholeExtent();
@@ -401,7 +401,7 @@ void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::cs
     _p_image_import->SetImportVoidPointer(const_cast<void*>(_p_data_image->buffer()));
 
     // used to set correct pixeltype to VtkImage
-    _p_image_import->SetDataScalarType(TypeTranslator::translate(_p_data_image->getType()));
+    _p_image_import->SetDataScalarType(type_translator::translate(_p_data_image->type()));
 }
 
 // -----------------------------------------------------------------------------

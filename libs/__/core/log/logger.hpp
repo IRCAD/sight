@@ -41,11 +41,11 @@ public:
 
     SIGHT_DECLARE_CLASS(logger, core::tools::object);
 
-    typedef std::vector<core::log::log> log_container_type;
-    typedef log_container_type::iterator iterator_type;
-    typedef log_container_type::const_iterator const_iterator_type;
-    typedef log_container_type::reverse_iterator reverse_iterator_type;
-    typedef log_container_type::const_reverse_iterator const_reverse_iterator_type;
+    using log_container_t             = std::vector<core::log::log>;
+    using iterator_type               = log_container_t::iterator;
+    using const_iterator_type         = log_container_t::const_iterator;
+    using reverse_iterator_type       = log_container_t::reverse_iterator;
+    using const_reverse_iterator_type = log_container_t::const_reverse_iterator;
 
     /// Constructor
     CORE_API logger();
@@ -84,7 +84,7 @@ public:
      * @brief Return the number of logs matching the specified level
      * @param[in] level Log level
      */
-    CORE_API std::size_t count(core::log::log::level_type _level) const;
+    CORE_API std::size_t count(core::log::log::level_t _level) const;
 
     /**
      * @brief Sort logs according to log levels
@@ -168,7 +168,7 @@ protected:
     static bool log_sorter(const core::log::log& _log_a, const core::log::log& _log_b);
 
     /// Log container
-    log_container_type m_log_container;
+    log_container_t m_log_container;
 }; // class logger
 
 } // namespace sight::core::log

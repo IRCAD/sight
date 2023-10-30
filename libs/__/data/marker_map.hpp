@@ -53,22 +53,22 @@ public:
     DATA_API ~marker_map() noexcept override = default;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    DATA_API const marker_t* getMarker(const key_t& _id) const;
+    DATA_API const marker_t* get_marker(const key_t& _id) const;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    DATA_API marker_t* getMarker(const key_t& _id);
+    DATA_API marker_t* get_marker(const key_t& _id);
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API const marker_t& getMarker(std::size_t _index) const;
+    DATA_API const marker_t& get_marker(std::size_t _index) const;
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API marker_t& getMarker(std::size_t _index);
+    DATA_API marker_t& get_marker(std::size_t _index);
 
     /// Returns the number of markers in the container
     DATA_API std::size_t count() const;
 
     /// Adds a new marker in the container
-    DATA_API void setMarker(const key_t& _id, const marker_t& _marker);
+    DATA_API void set_marker(const key_t& _id, const marker_t& _marker);
 
     /// Equality comparison operators
     /// @{
@@ -92,7 +92,7 @@ public:
 
 private:
 
-    typedef std::map<key_t, marker_t> container_t;
+    using container_t = std::map<key_t, marker_t>;
 
     /// Map containing the markers, sorted by their identifier
     container_t m_markers;

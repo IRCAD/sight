@@ -23,11 +23,11 @@
 
 #include "io/session/config.hpp"
 #include "io/session/detail/session.hpp"
-#include "io/session/SessionWriter.hpp"
+#include "io/session/session_writer.hpp"
 
 #include <core/crypto/password_keeper.hpp>
 
-#include <io/zip/Archive.hpp>
+#include <io/zip/archive.hpp>
 
 #include <filesystem>
 
@@ -56,26 +56,26 @@ public:
     /// Serializes a data::object to archive
     /// @param archivePath archive file path
     /// @param object root object to serialize
-    /// @param archiveFormat how files are stored in the archive @see sight::io::zip::Archive::ArchiveFormat
+    /// @param archiveFormat how files are stored in the archive @see sight::io::zip::archive::archiveFormat
     /// @param password password to use for optional encryption. Empty password means no encryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     void serialize(
         const std::filesystem::path& _archive_path,
         sight::data::object::csptr _object,
-        io::zip::Archive::ArchiveFormat _archive_format                     = io::zip::Archive::ArchiveFormat::DEFAULT,
+        io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::DEFAULT,
         const core::crypto::secure_string& _password                        = "",
-        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::encryption_policy::PASSWORD
+        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::encryption_policy::password
     ) const;
 
     /// Set a serialization function for an object
     /// @param className the name of the object to serialize
     /// @param serializer the function pointer to the serialization function
-    void setCustomSerializer(const std::string& _class_name, serializer_t _serializer = nullptr);
+    void set_custom_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
 
     /// Set a default serialization function for an object
     /// @param className the name of the object to serialize
     /// @param serializer the function pointer to the serialization function
-    static void setSerializer(const std::string& _class_name, serializer_t _serializer = nullptr);
+    static void set_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
 
     /// Return the registered serialization function for an object
     /// @param className the name of the object to serialize
@@ -85,11 +85,11 @@ public:
 private:
 
     /// Custom serializers that override default one
-    std::unordered_map<std::string, serializer_t> m_customSerializers;
+    std::unordered_map<std::string, serializer_t> m_custom_serializers;
 
     /// Return a serializer from a data object class name
     /// @param className the name of the object to find a serializer
-    serializer_t findSerializer(const std::string& _classname) const;
+    serializer_t find_serializer(const std::string& _classname) const;
 
     /// Serializes recursively a data::object to an opened archive using an initialized property tree
     /// @param cache ptree cache
@@ -98,9 +98,9 @@ private:
     /// @param object root object to serialize
     /// @param password password to use for optional encryption. Empty password means no encryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
-    void deepSerialize(
+    void deep_serialize(
         std::set<std::string>& _cache,
-        zip::ArchiveWriter& _archive,
+        zip::archive_writer& _archive,
         boost::property_tree::ptree& _tree,
         data::object::csptr _object,
         const core::crypto::secure_string& _password,

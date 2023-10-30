@@ -27,29 +27,29 @@
 /**
  * @brief Definition of a type for a vector of tree double.
  */
-typedef std::array<double, 3> fwVec3d;
+using fw_vec3d = std::array<double, 3>;
 
 /**
  * @brief Definition of a type for a line defined by a position and a direction
  */
-typedef std::pair<fwVec3d, fwVec3d> fwLine;
+using fw_line = std::pair<fw_vec3d, fw_vec3d>;
 
 /**
  * @brief Definition of type for a plane defined by a normal and a distance
  */
-typedef std::array<double, 4> fwPlane;
+using fw_plane = std::array<double, 4>;
 
 /**
  * @brief Definition of a type for a matrix 4*4
  */
-typedef std::array<std::array<double, 4>, 4> fwMatrix4x4;
+using fw_matrix4x4 = std::array<std::array<double, 4>, 4>;
 
 /**
  * @brief Definition of a type for vertex positions
  */
-typedef std::vector<std::vector<float> > fwVertexPosition;
+using fw_vertex_position = std::vector<std::vector<float> >;
 
 /**
  * @brief Definition of a type for vertex index
  */
-typedef std::vector<std::vector<int> > fwVertexIndex;
+using fw_vertex_index = std::vector<std::vector<int> >;

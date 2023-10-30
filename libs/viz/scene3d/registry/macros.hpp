@@ -34,23 +34,23 @@ namespace sight::viz::scene3d::registry
 {
 
 #define SIGHT_REGISTER_SCENE3D(OgreRenderInteractorMngClassname, FunctorKey) \
-    static sight::viz::scene3d::window_interactor::Registry<OgreRenderInteractorMngClassname> \
+    static sight::viz::scene3d::window_interactor::registry<OgreRenderInteractorMngClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_OFFSCREEN(OgreRenderInteractorMngClassname, FunctorKey) \
-    static sight::viz::scene3d::window_interactor::OffscreenMgrRegistry<OgreRenderInteractorMngClassname> \
+    static sight::viz::scene3d::window_interactor::offscreen_mgr_registry<OgreRenderInteractorMngClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_INTERACTOR(OgreInteractorClassname) \
-    static sight::viz::scene3d::interactor::base::Registry<OgreInteractorClassname> \
+    static sight::viz::scene3d::interactor::base::registry<OgreInteractorClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(OgreInteractorClassname));
 
 #define SIGHT_REGISTER_SCENE3D_LIGHT(OgreLightClassname, FunctorKey) \
-    static sight::viz::scene3d::light_adaptor::Registry<OgreLightClassname> \
+    static sight::viz::scene3d::light_adaptor::registry<OgreLightClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_TEXT(OgreTextClassname, FunctorKey) \
-    static sight::viz::scene3d::text::Registry<OgreTextClassname> \
+    static sight::viz::scene3d::text::registry<OgreTextClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 } // namespace sight::viz::scene3d::registry

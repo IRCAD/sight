@@ -43,12 +43,12 @@ namespace ex_notifications
  * @brief  This action displays test notifications by calling updating().
  *
  * @section Slots Slots
- * - \b setEnumParameter (std::string _value, std::string _key) : call this slot when changing the position or
+ * - \b set_enum_parameter (std::string _value, std::string _key) : call this slot when changing the position or
  * the type of displayed notification( accepted _key are 'position' & 'type').
  *   - Values for 'position' key : ALL, TOP_LEFT, TOP_RIGHT, CENTERED_TOP, CENTERED, BOTTOM_LEFT, BOTTOM_RIGHT,
  * CENTERED_BOTTOM.
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
- * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_usenotifier" behavior.
+ * - \b set_bool_parameterbool _val, std::string _key): call this slot when changing "m_usenotifier" behavior.
  */
 class EX_NOTIFICATIONS_CLASS_API display_test_notifications final :
     public sight::ui::action,
@@ -66,13 +66,13 @@ public:
     /// @}
 
     /// Slot: This method is used to set an enum parameter.
-    EX_NOTIFICATIONS_API void setEnumParameter(std::string _val, std::string _key);
+    EX_NOTIFICATIONS_API void set_enum_parameter(std::string _val, std::string _key);
 
     /// Slot: This method is used to set a bool parameter.
-    EX_NOTIFICATIONS_API void setBoolParameter(bool _val, std::string _key);
+    EX_NOTIFICATIONS_API void set_bool_parameter(bool _val, std::string _key);
 
     /// Slot: This method is used to set a bool parameter.
-    EX_NOTIFICATIONS_API void closeChannel1();
+    EX_NOTIFICATIONS_API void close_channel1();
 
 protected:
 
@@ -94,16 +94,16 @@ protected:
 private:
 
     /// Notification position, type, duration
-    sight::service::Notification m_notification;
+    sight::service::notification m_notification;
 
     /// Display notification at all position, default true.
-    bool m_displayAll {false};
+    bool m_display_all {false};
 
     /// Use centralized Mode.
     bool m_usenotifier {true};
 
     /// To test the "Read more..." option on Notification.
-    bool m_reachMaxCharacters {false};
+    bool m_reach_max_characters {false};
 };
 
 } // namespace ex_notifications

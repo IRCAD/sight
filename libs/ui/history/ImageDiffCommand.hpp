@@ -33,12 +33,12 @@
 namespace sight::ui::history
 {
 
-class UI_HISTORY_CLASS_API ImageDiffCommand : public command
+class UI_HISTORY_CLASS_API image_diff_command : public command
 {
 public:
 
     /// Constructor, uses an image and a change list for that image.
-    UI_HISTORY_API ImageDiffCommand(const data::image::sptr& _img, filter::image::image_diff _diff);
+    UI_HISTORY_API image_diff_command(const data::image::sptr& _img, filter::image::image_diff _diff);
 
     /// The diff size.
     [[nodiscard]] UI_HISTORY_API std::size_t size() const override;
@@ -50,13 +50,13 @@ public:
     UI_HISTORY_API bool undo() override;
 
     /// Returns "image_diff".
-    [[nodiscard]] UI_HISTORY_API std::string getDescription() const override;
+    [[nodiscard]] UI_HISTORY_API std::string get_description() const override;
 
 private:
 
     data::image::sptr m_img;
 
-    data::image::buffer_modified_signal_t::sptr m_modifiedSig;
+    data::image::buffer_modified_signal_t::sptr m_modified_sig;
 
     filter::image::image_diff m_diff;
 };

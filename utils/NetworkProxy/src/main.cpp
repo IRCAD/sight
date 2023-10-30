@@ -61,12 +61,12 @@
 /**
  * @brief The configuration struct to handle message parameters
  */
-struct Configuration
+struct configuration
 {
-    sight::io::igtl::Server::sptr server;
-    std::string deviceIn;
-    std::string deviceOut;
-    std::string deviceType;
+    sight::io::igtl::server::sptr server;
+    std::string device_in;
+    std::string device_out;
+    std::string device_type;
     std::uint16_t port {};
     sight::core::thread::worker::sptr worker;
 };
@@ -76,7 +76,7 @@ struct Configuration
  * @param path to configFile
  * @return  a map
  */
-std::map<std::string, Configuration> initialize(std::string _config_file)
+std::map<std::string, configuration> initialize(std::string _config_file)
 {
     SIGHT_INFO("Reading parameters...");
 
@@ -84,7 +84,7 @@ std::map<std::string, Configuration> initialize(std::string _config_file)
     std::vector<std::string> device_in_tab;
     std::vector<std::string> device_out_tab;
     std::vector<std::uint16_t> port_tab;
-    std::map<std::string, Configuration> association;
+    std::map<std::string, configuration> association;
 
     std::ifstream file_stream;
     file_stream.open(_config_file.c_str(), std::ios::in);
@@ -132,8 +132,8 @@ std::map<std::string, Configuration> initialize(std::string _config_file)
     for(unsigned int i = 0 ; i < message_type.size() ; i++)
     {
         //check if port num for this config isn't used
-        std::map<std::string, Configuration>::iterator it;
-        auto server                 = std::make_shared<sight::io::igtl::Server>();
+        std::map<std::string, configuration>::iterator it;
+        auto server                 = std::make_shared<sight::io::igtl::server>();
         auto worker                 = sight::core::thread::worker::make();
         bool server_already_started = false;
 
@@ -143,7 +143,7 @@ std::map<std::string, Configuration> initialize(std::string _config_file)
             if(it->second.port == port_tab[i])
             {
                 SIGHT_INFO(
-                    "Found that " << it->second.deviceIn << " and " << device_in_tab[i]
+                    "Found that " << it->second.device_in << " and " << device_in_tab[i]
                     << " have the same port (" << it->second.port << ")."
                 );
                 server                 = it->second.server;
@@ -152,19 +152,19 @@ std::map<std::string, Configuration> initialize(std::string _config_file)
             }
         }
 
-        Configuration config;
-        config.deviceIn   = device_in_tab[i];
-        config.deviceOut  = device_out_tab[i];
-        config.deviceType = message_type[i];
-        config.port       = port_tab[i];
-        config.worker     = worker;
+        configuration config;
+        config.device_in   = device_in_tab[i];
+        config.device_out  = device_out_tab[i];
+        config.device_type = message_type[i];
+        config.port        = port_tab[i];
+        config.worker      = worker;
 
         config.server = server;
         if(!server_already_started)
         {
             config.server->start(config.port);
 
-            std::function<void()> task = [object_ptr = config.server](auto&& ...){object_ptr->runServer();};
+            std::function<void()> task = [object_ptr = config.server](auto&& ...){object_ptr->run_server();};
             config.worker->post(task);
         }
 
@@ -195,14 +195,14 @@ int main(int argc, char** argv)
     std::string config_file(argv[2]);
 
     //Initialization of parameters
-    std::map<std::string, Configuration> association_device_server = initialize(config_file);
+    std::map<std::string, configuration> association_device_server = initialize(config_file);
 
-    auto receive_server = std::make_shared<sight::io::igtl::Server>();
+    auto receive_server = std::make_shared<sight::io::igtl::server>();
     auto worker         = sight::core::thread::worker::make();
     try
     {
         receive_server->start(port);
-        std::function<void()> task = [receive_server](auto&& ...){receive_server->runServer();};
+        std::function<void()> task = [receive_server](auto&& ...){receive_server->run_server();};
         worker->post(task);
     }
     catch(std::exception const& err)
@@ -221,7 +221,7 @@ int main(int argc, char** argv)
 
         std::vector< ::igtl::MessageBase::Pointer> header_msgs;
         // Initialize receive buffer
-        header_msgs = receive_server->receiveHeaders();
+        header_msgs = receive_server->receive_headers();
 
         for(unsigned int i = 0 ; i < header_msgs.size() ; ++i)
         {
@@ -234,30 +234,30 @@ int main(int argc, char** argv)
                 std::string device_name = header_msg->GetDeviceName();
                 std::string device_type = header_msg->GetDeviceType();
 
-                sight::io::igtl::Server::sptr sending_server;
+                sight::io::igtl::server::sptr sending_server;
 
                 if(association_device_server.find(device_name) != association_device_server.end())
                 {
-                    Configuration config = association_device_server.find(device_name)->second;
+                    configuration config = association_device_server.find(device_name)->second;
                     SIGHT_INFO("Received a '" << device_type << "' named '" << device_name);
 
                     sending_server = config.server;
 
-                    if(config.deviceType == device_type)
+                    if(config.device_type == device_type)
                     {
                         if(sending_server)
                         {
-                            msg = receive_server->receiveBody(header_msg, i);
+                            msg = receive_server->receive_body(header_msg, i);
 
                             if(msg.IsNotNull())
                             {
                                 SIGHT_DEBUG(
-                                    "Resending the message '" << device_name << "' with name '" << config.deviceOut
+                                    "Resending the message '" << device_name << "' with name '" << config.device_out
                                     << " to port : '" << config.port << "'."
                                 );
 
                                 //re-send the message with the correct server
-                                sending_server->setMessageDeviceName(config.deviceOut);
+                                sending_server->set_message_device_name(config.device_out);
                                 sending_server->broadcast(msg);
                             }
                         }

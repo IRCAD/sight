@@ -71,10 +71,10 @@ static const core::com::slots::key_t SHOW_RECONSTRUCTIONS_SLOT     = "showRecons
 
 model_series_list::model_series_list() noexcept
 {
-    m_sigReconstructionSelected = new_signal<reconstruction_selected_signal_t>(RECONSTRUCTION_SELECTED_SIG);
-    m_sigEmptiedSelection       = new_signal<emptied_selection_signal_t>(EMPTIED_SELECTION_SIG);
+    m_sig_reconstruction_selected = new_signal<reconstruction_selected_signal_t>(RECONSTRUCTION_SELECTED_SIG);
+    m_sig_emptied_selection       = new_signal<emptied_selection_signal_t>(EMPTIED_SELECTION_SIG);
 
-    new_slot(SHOW_RECONSTRUCTIONS_SLOT, &model_series_list::showReconstructions, this);
+    new_slot(SHOW_RECONSTRUCTIONS_SLOT, &model_series_list::show_reconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -88,8 +88,8 @@ void model_series_list::configuring()
 
     if(config)
     {
-        m_enableHideAll = config->get<bool>("enable_hide_all", m_enableHideAll);
-        m_enableDelete  = config->get<bool>("enableDelete", m_enableDelete);
+        m_enable_hide_all = config->get<bool>("enable_hide_all", m_enable_hide_all);
+        m_enable_delete   = config->get<bool>("enableDelete", m_enable_delete);
     }
 
     auto columns = config_t.get_child("columns");
@@ -107,8 +107,8 @@ void model_series_list::starting()
 
     const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    qt_container->getQtContainer()->setObjectName(service_id);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    qt_container->get_qt_container()->setObjectName(service_id);
 
     auto* layout        = new QVBoxLayout;
     auto* layout_button = new QHBoxLayout;
@@ -119,43 +119,43 @@ void model_series_list::starting()
     m_tree->setColumnCount(m_headers.size());
     m_tree->setHeaderLabels(m_headers);
 
-    if(m_enableHideAll)
+    if(m_enable_hide_all)
     {
         // check box "show"
-        m_showCheckBox = new QCheckBox(tr("Hide all organs"));
-        m_showCheckBox->setObjectName(service_id + "/" + m_showCheckBox->text());
-        m_showCheckBox->setToolTip(tr("Show or hide all organs"));
-        layout_button->addWidget(m_showCheckBox, 0);
-        QObject::connect(m_showCheckBox, &QCheckBox::stateChanged, this, &model_series_list::onShowReconstructions);
+        m_show_check_box = new QCheckBox(tr("Hide all organs"));
+        m_show_check_box->setObjectName(service_id + "/" + m_show_check_box->text());
+        m_show_check_box->setToolTip(tr("Show or hide all organs"));
+        layout_button->addWidget(m_show_check_box, 0);
+        QObject::connect(m_show_check_box, &QCheckBox::stateChanged, this, &self_t::on_show_reconstructions);
 
-        m_checkAllButton = new QPushButton(tr("Check all"));
-        m_checkAllButton->setObjectName(service_id + "/" + m_checkAllButton->text());
-        layout_button->addWidget(m_checkAllButton, 0);
-        QObject::connect(m_checkAllButton, &QPushButton::clicked, this, &model_series_list::onCheckAllCheckBox);
+        m_check_all_button = new QPushButton(tr("Check all"));
+        m_check_all_button->setObjectName(service_id + "/" + m_check_all_button->text());
+        layout_button->addWidget(m_check_all_button, 0);
+        QObject::connect(m_check_all_button, &QPushButton::clicked, this, &self_t::on_check_all_check_box);
 
-        m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
-        m_unCheckAllButton->setObjectName(service_id + "/" + m_unCheckAllButton->text());
-        layout_button->addWidget(m_unCheckAllButton, 0);
-        QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this, &model_series_list::onUnCheckAllCheckBox);
+        m_un_check_all_button = new QPushButton(tr("UnCheck all"));
+        m_un_check_all_button->setObjectName(service_id + "/" + m_un_check_all_button->text());
+        layout_button->addWidget(m_un_check_all_button, 0);
+        QObject::connect(m_un_check_all_button, &QPushButton::clicked, this, &self_t::on_un_check_all_check_box);
     }
 
-    if(m_enableDelete)
+    if(m_enable_delete)
     {
-        m_deleteAllButton = new QPushButton(tr("Delete all"));
-        m_deleteAllButton->setObjectName(service_id + "/" + m_deleteAllButton->text());
-        layout_button->addWidget(m_deleteAllButton, 0);
-        QObject::connect(m_deleteAllButton, &QPushButton::clicked, this, &model_series_list::onDeleteAllCheckBox);
+        m_delete_all_button = new QPushButton(tr("Delete all"));
+        m_delete_all_button->setObjectName(service_id + "/" + m_delete_all_button->text());
+        layout_button->addWidget(m_delete_all_button, 0);
+        QObject::connect(m_delete_all_button, &QPushButton::clicked, this, &self_t::on_delete_all_check_box);
     }
 
     layout->addWidget(m_tree, 1);
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
     QObject::connect(
         m_tree,
         SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
         this,
-        SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*))
+        SLOT(on_current_item_changed(QTreeWidgetItem*,QTreeWidgetItem*))
     );
 
     this->updating();
@@ -164,17 +164,17 @@ void model_series_list::starting()
         m_tree,
         SIGNAL(itemChanged(QTreeWidgetItem*,int)),
         this,
-        SLOT(onCurrentItemChanged(QTreeWidgetItem*,int))
+        SLOT(on_current_item_changed(QTreeWidgetItem*,int))
     );
 
-    if(m_enableDelete)
+    if(m_enable_delete)
     {
         m_tree->setContextMenuPolicy(Qt::CustomContextMenu);
         QObject::connect(
             m_tree,
             &QTreeWidget::customContextMenuRequested,
             this,
-            &model_series_list::onCustomContextMenuRequested
+            &model_series_list::on_custom_context_menu_requested
         );
     }
 }
@@ -184,9 +184,9 @@ void model_series_list::starting()
 service::connections_t model_series_list::auto_connections() const
 {
     return {
-        {s_MODEL_SERIES, data::model_series::MODIFIED_SIG, service::slots::UPDATE},
-        {s_MODEL_SERIES, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE},
-        {s_MODEL_SERIES, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE}
+        {MODEL_SERIES, data::model_series::MODIFIED_SIG, service::slots::UPDATE},
+        {MODEL_SERIES, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE},
+        {MODEL_SERIES, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE}
     };
 }
 
@@ -196,8 +196,8 @@ void model_series_list::updating()
 {
     m_tree->blockSignals(true);
 
-    this->updateReconstructions();
-    this->refreshVisibility();
+    this->update_reconstructions();
+    this->refresh_visibility();
 
     m_tree->blockSignals(false);
 }
@@ -206,21 +206,21 @@ void model_series_list::updating()
 
 void model_series_list::stopping()
 {
-    if(m_enableHideAll)
+    if(m_enable_hide_all)
     {
-        QObject::disconnect(m_showCheckBox, &QCheckBox::stateChanged, this, &model_series_list::onShowReconstructions);
-        QObject::disconnect(m_checkAllButton, &QPushButton::clicked, this, &model_series_list::onCheckAllCheckBox);
-        QObject::disconnect(m_unCheckAllButton, &QPushButton::clicked, this, &model_series_list::onUnCheckAllCheckBox);
+        QObject::disconnect(m_show_check_box, &QCheckBox::stateChanged, this, &self_t::on_show_reconstructions);
+        QObject::disconnect(m_check_all_button, &QPushButton::clicked, this, &self_t::on_check_all_check_box);
+        QObject::disconnect(m_un_check_all_button, &QPushButton::clicked, this, &self_t::on_un_check_all_check_box);
     }
 
-    if(m_enableDelete)
+    if(m_enable_delete)
     {
-        QObject::disconnect(m_deleteAllButton, &QPushButton::clicked, this, &model_series_list::onDeleteAllCheckBox);
+        QObject::disconnect(m_delete_all_button, &QPushButton::clicked, this, &self_t::on_delete_all_check_box);
         QObject::disconnect(
             m_tree,
             &QTreeWidget::customContextMenuRequested,
             this,
-            &model_series_list::onCustomContextMenuRequested
+            &self_t::on_custom_context_menu_requested
         );
     }
 
@@ -228,14 +228,14 @@ void model_series_list::stopping()
         m_tree,
         SIGNAL(itemChanged(QTreeWidgetItem*,int)),
         this,
-        SLOT(onCurrentItemChanged(QTreeWidgetItem*,int))
+        SLOT(on_current_item_changed(QTreeWidgetItem*,int))
     );
 
     QObject::disconnect(
         m_tree,
         SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
         this,
-        SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*))
+        SLOT(on_current_item_changed(QTreeWidgetItem*,QTreeWidgetItem*))
     );
 
     this->destroy();
@@ -243,40 +243,40 @@ void model_series_list::stopping()
 
 //------------------------------------------------------------------------------
 
-void model_series_list::updateReconstructions()
+void model_series_list::update_reconstructions()
 {
-    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    QWidget* const container = qt_container->getQtContainer();
+    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    QWidget* const container = qt_container->get_qt_container();
 
     SIGHT_ASSERT("container not instanced", container);
 
-    auto model_series        = m_modelSeries.lock();
-    bool has_reconstructions = !model_series->getReconstructionDB().empty();
+    auto model_series        = m_model_series.lock();
+    bool has_reconstructions = !model_series->get_reconstruction_db().empty();
     container->setEnabled(has_reconstructions);
 
-    this->fillTree(model_series);
+    this->fill_tree(model_series);
     if(has_reconstructions)
     {
-        if(m_showCheckBox != nullptr)
+        if(m_show_check_box != nullptr)
         {
-            m_showCheckBox->blockSignals(true);
+            m_show_check_box->blockSignals(true);
             const bool show_all_rec =
                 model_series->get_field("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
-            m_showCheckBox->setCheckState(show_all_rec ? Qt::Unchecked : Qt::Checked);
-            m_showCheckBox->blockSignals(false);
+            m_show_check_box->setCheckState(show_all_rec ? Qt::Unchecked : Qt::Checked);
+            m_show_check_box->blockSignals(false);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::fillTree(const data::mt::locked_ptr<data::model_series>& _model_series)
+void model_series_list::fill_tree(const data::mt::locked_ptr<data::model_series>& _model_series)
 {
-    const auto& reconstructions = _model_series->getReconstructionDB();
+    const auto& reconstructions = _model_series->get_reconstruction_db();
 
     if(!m_tree->selectedItems().empty())
     {
-        m_sigEmptiedSelection->async_emit();
+        m_sig_emptied_selection->async_emit();
     }
 
     m_tree->clear();
@@ -289,7 +289,7 @@ void model_series_list::fillTree(const data::mt::locked_ptr<data::model_series>&
         {
             if(column == "organ_name")
             {
-                info << QString::fromStdString(reconstruction->getOrganName());
+                info << QString::fromStdString(reconstruction->get_organ_name());
             }
             else if(column == "structure_type")
             {
@@ -297,7 +297,7 @@ void model_series_list::fillTree(const data::mt::locked_ptr<data::model_series>&
             }
             else if(column == "volume")
             {
-                auto volume = reconstruction->getComputedMaskVolume();
+                auto volume = reconstruction->get_computed_mask_volume();
                 info << (volume < 0 ? "unknown" : QString::fromStdString(std::to_string(volume)));
             }
         }
@@ -316,26 +316,26 @@ void model_series_list::fillTree(const data::mt::locked_ptr<data::model_series>&
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem* /*unused*/)
+void model_series_list::on_current_item_changed(QTreeWidgetItem* _current, QTreeWidgetItem* /*unused*/)
 {
     SIGHT_ASSERT("Current selected item is null", _current);
     std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
 
     data::reconstruction::sptr rec = std::dynamic_pointer_cast<data::reconstruction>(core::tools::id::get_object(id));
 
-    m_sigReconstructionSelected->async_emit(rec);
+    m_sig_reconstruction_selected->async_emit(rec);
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onCurrentItemChanged(QTreeWidgetItem* _current, int _column)
+void model_series_list::on_current_item_changed(QTreeWidgetItem* _current, int _column)
 {
-    sight::module::ui::qt::model::model_series_list::onOrganChoiceVisibility(_current, _column);
+    sight::module::ui::qt::model::model_series_list::on_organ_choice_visibility(_current, _column);
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*unused*/)
+void model_series_list::on_organ_choice_visibility(QTreeWidgetItem* _item, int /*unused*/)
 {
     std::string id                 = _item->data(0, Qt::UserRole).toString().toStdString();
     data::reconstruction::sptr rec = std::dynamic_pointer_cast<data::reconstruction>(core::tools::id::get_object(id));
@@ -343,9 +343,9 @@ void model_series_list::onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*un
 
     const bool item_is_checked = (_item->checkState(0) == Qt::Checked);
 
-    if(rec->getIsVisible() != item_is_checked)
+    if(rec->get_is_visible() != item_is_checked)
     {
-        rec->setIsVisible(item_is_checked);
+        rec->set_is_visible(item_is_checked);
 
         data::reconstruction::visibility_modified_signal_t::sptr sig;
         sig = rec->signal<data::reconstruction::visibility_modified_signal_t>(
@@ -357,24 +357,24 @@ void model_series_list::onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*un
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onShowReconstructions(int _state)
+void model_series_list::on_show_reconstructions(int _state)
 {
     const bool visible = static_cast<bool>(_state);
 
-    m_checkAllButton->setEnabled(!visible);
-    m_unCheckAllButton->setEnabled(!visible);
+    m_check_all_button->setEnabled(!visible);
+    m_un_check_all_button->setEnabled(!visible);
     m_tree->setEnabled(!visible);
 
     {
-        auto model_series = m_modelSeries.lock();
+        auto model_series = m_model_series.lock();
         data::helper::field helper(model_series.get_shared());
-        helper.addOrSwap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
+        helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::refreshVisibility()
+void model_series_list::refresh_visibility()
 {
     for(int i = 0 ; i < m_tree->topLevelItemCount() ; ++i)
     {
@@ -382,37 +382,37 @@ void model_series_list::refreshVisibility()
         std::string id                 = item->data(0, Qt::UserRole).toString().toStdString();
         data::reconstruction::sptr rec =
             std::dynamic_pointer_cast<data::reconstruction>(core::tools::id::get_object(id));
-        item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked);
+        item->setCheckState(0, rec->get_is_visible() ? Qt::Checked : Qt::Unchecked);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::showReconstructions(bool _show)
+void model_series_list::show_reconstructions(bool _show)
 {
-    if(m_showCheckBox != nullptr)
+    if(m_show_check_box != nullptr)
     {
-        m_showCheckBox->setCheckState(_show ? Qt::Unchecked : Qt::Checked);
+        m_show_check_box->setCheckState(_show ? Qt::Unchecked : Qt::Checked);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onCheckAllCheckBox()
+void model_series_list::on_check_all_check_box()
 {
-    this->onCheckAllBoxes(true);
+    this->on_check_all_boxes(true);
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onUnCheckAllCheckBox()
+void model_series_list::on_un_check_all_check_box()
 {
-    this->onCheckAllBoxes(false);
+    this->on_check_all_boxes(false);
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onCheckAllBoxes(bool _visible)
+void model_series_list::on_check_all_boxes(bool _visible)
 {
     for(int i = 0 ; i < m_tree->topLevelItemCount() ; ++i)
     {
@@ -423,13 +423,13 @@ void model_series_list::onCheckAllBoxes(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onDeleteAllCheckBox()
+void model_series_list::on_delete_all_check_box()
 {
-    auto model_series = m_modelSeries.lock();
+    auto model_series = m_model_series.lock();
 
     // Remove all reconstructions.
-    data::model_series::reconstruction_vector_t reconstructions = model_series->getReconstructionDB();
-    model_series->setReconstructionDB(data::model_series::reconstruction_vector_t());
+    data::model_series::reconstruction_vector_t reconstructions = model_series->get_reconstruction_db();
+    model_series->set_reconstruction_db(data::model_series::reconstruction_vector_t());
 
     // Send the signals.
     auto sig = model_series->signal<data::model_series::reconstructions_removed_signal_t>(
@@ -440,7 +440,7 @@ void model_series_list::onDeleteAllCheckBox()
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onCustomContextMenuRequested(const QPoint& _pos)
+void model_series_list::on_custom_context_menu_requested(const QPoint& _pos)
 {
     QModelIndex index = m_tree->indexAt(_pos);
     if(index.isValid())
@@ -452,18 +452,18 @@ void model_series_list::onCustomContextMenuRequested(const QPoint& _pos)
             this,
             [index, this]()
             {
-                auto model_series = m_modelSeries.lock();
+                auto model_series = m_model_series.lock();
 
                 data::model_series::reconstruction_vector_t deleted_reconstructions;
 
                 // Remove reconstruction.
                 data::model_series::reconstruction_vector_t reconstructions =
-                    model_series->getReconstructionDB();
+                    model_series->get_reconstruction_db();
                 const auto rec_it =
                     reconstructions.begin() + index.row();
                 const data::reconstruction::sptr reconstruction = *rec_it;
                 reconstructions.erase(rec_it);
-                model_series->setReconstructionDB(reconstructions);
+                model_series->set_reconstruction_db(reconstructions);
 
                 // Send the signals.
                 deleted_reconstructions.push_back(reconstruction);

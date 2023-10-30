@@ -88,7 +88,7 @@ private:
     int m_priority {0};
 
     /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant {true};
+    bool m_layer_order_dependant {true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

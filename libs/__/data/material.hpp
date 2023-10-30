@@ -59,7 +59,7 @@ public:
      *
      * @param ambient color
      */
-    DATA_API void setAmbient(const color::sptr& _ambient);
+    DATA_API void set_ambient(const color::sptr& _ambient);
 
     /**
      * @brief returns editable diffuse color
@@ -71,14 +71,14 @@ public:
      *
      * @param diffuse color
      */
-    DATA_API void setDiffuse(const color::sptr& _diffuse);
+    DATA_API void set_diffuse(const color::sptr& _diffuse);
 
     /**
      * @brief returns editable diffuse texture
      * @{
      */
-    DATA_API image::sptr getDiffuseTexture();
-    DATA_API image::csptr getDiffuseTexture() const;
+    DATA_API image::sptr get_diffuse_texture();
+    DATA_API image::csptr get_diffuse_texture() const;
     ///@}
 
     /**
@@ -86,95 +86,95 @@ public:
      *
      * @param diffuseTexture texture
      */
-    DATA_API void setDiffuseTexture(const image::sptr& _diffuse_texture);
+    DATA_API void set_diffuse_texture(const image::sptr& _diffuse_texture);
 
     /**
      * @brief Options
      */
-    typedef enum
+    enum options_t
     {
-        STANDARD      = 1,
-        NORMALS       = 2,
-        CELLS_NORMALS = 3
-    } options_t;
+        standard      = 1,
+        normals       = 2,
+        cells_normals = 3
+    };
 
     /**
      * @brief shading models
      */
-    typedef enum
+    enum class shading_t : int
     {
-        AMBIENT = 0,
-        FLAT    = 1,
-        PHONG   = 2
-    } shading_t;
+        ambient = 0,
+        flat    = 1,
+        phong   = 2
+    };
 
     /**
      * @brief Representation models
      */
-    typedef enum
+    enum representation_t
     {
-        SURFACE   = 1, //1
-        POINT     = 2, //SURFACE<<1 -> 10
-        WIREFRAME = 4, //SURFACE<<2 -> 100
-        EDGE      = 5  //SURFACE|WIREFRAME -> 101
-    } representation_t;
+        surface   = 1, //1
+        point     = 2, //SURFACE<<1 -> 10
+        wireframe = 4, //SURFACE<<2 -> 100
+        edge      = 5  //SURFACE|WIREFRAME -> 101
+    };
 
     /**
      * @brief texture filtering types
      */
-    typedef enum
+    enum filtering_t
     {
-        NEAREST,
-        LINEAR
-    } filtering_t;
+        nearest,
+        linear
+    };
 
     /**
      * @brief texture wrapping types
      */
-    typedef enum
+    enum wrapping_t
     {
-        CLAMP,
-        REPEAT
-    } wrapping_t;
+        clamp,
+        repeat
+    };
 
     /** @{
      *  @brief get/set the shading models(flat, phong)
      */
-    shading_t& getShadingMode();
-    const shading_t& getShadingMode() const;
-    void setShadingMode(shading_t _shading_mode);
+    shading_t& get_shading_mode();
+    const shading_t& get_shading_mode() const;
+    void set_shading_mode(shading_t _shading_mode);
     /// @}
 
     /** @{
      *  @brief get/set the representation models (edge, point, wireframe, surface)
      */
-    representation_t& getRepresentationMode();
-    const representation_t& getRepresentationMode() const;
-    void setRepresentationMode(representation_t _representation_mode);
+    representation_t& get_representation_mode();
+    const representation_t& get_representation_mode() const;
+    void set_representation_mode(representation_t _representation_mode);
     /// @}
 
     /** @{
      *  @brief get/set the option representation (Standard, normals)
      */
-    options_t& getOptionsMode();
-    const options_t& getOptionsMode() const;
-    void setOptionsMode(options_t _options_mode);
+    options_t& get_options_mode();
+    const options_t& get_options_mode() const;
+    void set_options_mode(options_t _options_mode);
     /// @}
 
     /** @{
      *  @brief get/set the texture filtering
      */
-    filtering_t& getDiffuseTextureFiltering();
-    const filtering_t& getDiffuseTextureFiltering() const;
-    void setDiffuseTextureFiltering(filtering_t _diffuse_texture_filtering);
+    filtering_t& get_diffuse_texture_filtering();
+    const filtering_t& get_diffuse_texture_filtering() const;
+    void set_diffuse_texture_filtering(filtering_t _diffuse_texture_filtering);
     /// @}
 
     /** @{
      *  @brief get/set the texture wrapping
      */
-    wrapping_t& getDiffuseTextureWrapping();
-    const wrapping_t& getDiffuseTextureWrapping() const;
-    void setDiffuseTextureWrapping(wrapping_t _diffuse_texture_wrapping);
+    wrapping_t& get_diffuse_texture_wrapping();
+    const wrapping_t& get_diffuse_texture_wrapping() const;
+    void set_diffuse_texture_wrapping(wrapping_t _diffuse_texture_wrapping);
     /// @}
 
     /**
@@ -182,11 +182,11 @@ public:
      * @{
      */
     /// Type of signal when a texture is added
-    typedef core::com::signal<void (image::sptr)> added_texture_signal_t;
+    using added_texture_signal_t = core::com::signal<void (image::sptr)>;
     DATA_API static const core::com::signals::key_t ADDED_TEXTURE_SIG;
 
     /// Type of signal when a texture is removed
-    typedef core::com::signal<void (image::sptr)> removed_texture_signal_t;
+    using removed_texture_signal_t = core::com::signal<void (image::sptr)>;
     DATA_API static const core::com::signals::key_t REMOVED_TEXTURE_SIG;
 /**
  * @}
@@ -215,13 +215,13 @@ public:
 protected:
 
     /// shading mode (flat, Phong)
-    shading_t m_shadingMode {PHONG};
+    shading_t m_shading_mode {shading_t::phong};
 
     /// Fill mode (flat, wireframe, point)
-    representation_t m_representationMode {SURFACE};
+    representation_t m_representation_mode {surface};
 
     /// Options mode (display normals or not)
-    options_t m_optionsMode {STANDARD};
+    options_t m_options_mode {standard};
 
     /// Ambient color
     color::sptr m_ambient;
@@ -230,118 +230,118 @@ protected:
     color::sptr m_diffuse;
 
     /// Diffuse texture
-    image::sptr m_diffuseTexture;
+    image::sptr m_diffuse_texture;
 
     /// Filtering for diffuse texture
-    filtering_t m_diffuseTextureFiltering {NEAREST};
+    filtering_t m_diffuse_texture_filtering {nearest};
 
     /// Wrapping for diffuse texture
-    wrapping_t m_diffuseTextureWrapping {REPEAT};
+    wrapping_t m_diffuse_texture_wrapping {repeat};
 };
 
 //-----------------------------------------------------------------------------
 
-inline material::shading_t& material::getShadingMode()
+inline material::shading_t& material::get_shading_mode()
 {
-    return this->m_shadingMode;
+    return this->m_shading_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const material::shading_t& material::getShadingMode() const
+inline const material::shading_t& material::get_shading_mode() const
 {
-    return this->m_shadingMode;
+    return this->m_shading_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void material::setShadingMode(shading_t _shading_mode)
+inline void material::set_shading_mode(shading_t _shading_mode)
 {
-    this->m_shadingMode = _shading_mode;
+    this->m_shading_mode = _shading_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline material::representation_t& material::getRepresentationMode()
+inline material::representation_t& material::get_representation_mode()
 {
-    return this->m_representationMode;
+    return this->m_representation_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const material::representation_t& material::getRepresentationMode() const
+inline const material::representation_t& material::get_representation_mode() const
 {
-    return this->m_representationMode;
+    return this->m_representation_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void material::setRepresentationMode(representation_t _representation_mode)
+inline void material::set_representation_mode(representation_t _representation_mode)
 {
-    this->m_representationMode = _representation_mode;
+    this->m_representation_mode = _representation_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline material::options_t& material::getOptionsMode()
+inline material::options_t& material::get_options_mode()
 {
-    return this->m_optionsMode;
+    return this->m_options_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const material::options_t& material::getOptionsMode() const
+inline const material::options_t& material::get_options_mode() const
 {
-    return this->m_optionsMode;
+    return this->m_options_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void material::setOptionsMode(options_t _options_mode)
+inline void material::set_options_mode(options_t _options_mode)
 {
-    this->m_optionsMode = _options_mode;
+    this->m_options_mode = _options_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline material::filtering_t& material::getDiffuseTextureFiltering()
+inline material::filtering_t& material::get_diffuse_texture_filtering()
 {
-    return this->m_diffuseTextureFiltering;
+    return this->m_diffuse_texture_filtering;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const material::filtering_t& material::getDiffuseTextureFiltering() const
+inline const material::filtering_t& material::get_diffuse_texture_filtering() const
 {
-    return this->m_diffuseTextureFiltering;
+    return this->m_diffuse_texture_filtering;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void material::setDiffuseTextureFiltering(filtering_t _diffuse_texture_filtering)
+inline void material::set_diffuse_texture_filtering(filtering_t _diffuse_texture_filtering)
 {
-    this->m_diffuseTextureFiltering = _diffuse_texture_filtering;
+    this->m_diffuse_texture_filtering = _diffuse_texture_filtering;
 }
 
 //-----------------------------------------------------------------------------
 
-inline material::wrapping_t& material::getDiffuseTextureWrapping()
+inline material::wrapping_t& material::get_diffuse_texture_wrapping()
 {
-    return this->m_diffuseTextureWrapping;
+    return this->m_diffuse_texture_wrapping;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const material::wrapping_t& material::getDiffuseTextureWrapping() const
+inline const material::wrapping_t& material::get_diffuse_texture_wrapping() const
 {
-    return this->m_diffuseTextureWrapping;
+    return this->m_diffuse_texture_wrapping;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void material::setDiffuseTextureWrapping(wrapping_t _diffuse_texture_wrapping)
+inline void material::set_diffuse_texture_wrapping(wrapping_t _diffuse_texture_wrapping)
 {
-    this->m_diffuseTextureWrapping = _diffuse_texture_wrapping;
+    this->m_diffuse_texture_wrapping = _diffuse_texture_wrapping;
 }
 
 //-----------------------------------------------------------------------------

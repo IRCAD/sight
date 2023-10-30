@@ -48,24 +48,24 @@ namespace sight::io::vtk
  *
  * Read a VTK image using the VTK lib
  */
-class IO_VTK_CLASS_API VtiImageReader : public reader::generic_object_reader<data::image>,
-                                        public core::location::single_file
+class IO_VTK_CLASS_API vti_image_reader : public reader::generic_object_reader<data::image>,
+                                          public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        VtiImageReader,
+        vti_image_reader,
         io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<VtiImageReader>
+        io::reader::factory::make<vti_image_reader>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
-    IO_VTK_API VtiImageReader();
+    IO_VTK_API vti_image_reader();
 
     //! @brief Destructor.
-    IO_VTK_API ~VtiImageReader() override;
+    IO_VTK_API ~vti_image_reader() override;
 
     //! @brief Reading operator.
     IO_VTK_API void read() override;
@@ -74,7 +74,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

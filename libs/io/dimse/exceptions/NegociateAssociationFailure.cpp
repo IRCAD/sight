@@ -25,14 +25,14 @@
 namespace sight::io::dimse::exceptions
 {
 
-NegociateAssociationFailure::NegociateAssociationFailure(const std::string& _message) :
-    io::dimse::exceptions::Base(_message)
+negociate_association_failure::negociate_association_failure(const std::string& _message) :
+    io::dimse::exceptions::base(_message)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-NegociateAssociationFailure::~NegociateAssociationFailure() noexcept =
+negociate_association_failure::~negociate_association_failure() noexcept =
     default;
 
 } // namespace sight::io::dimse::exceptions

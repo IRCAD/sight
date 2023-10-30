@@ -26,33 +26,33 @@
 
 #include <gdcmTag.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::TagsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::helper::ut::tags_test);
 
 namespace sight::io::dicom::helper::ut
 {
 
 //------------------------------------------------------------------------------
 
-void TagsTest::getGdcmTagNominalTest()
+void tags_test::get_gdcm_tag_nominal_test()
 {
     CPPUNIT_ASSERT_EQUAL((gdcm::Tag {0x10, 0x20}), helper::get_gdcm_tag("10", "20"));
 }
 
 //------------------------------------------------------------------------------
 
-void TagsTest::getGdcmTagNotANumberTest()
+void tags_test::get_gdcm_tag_not_a_number_test()
 {
-    CPPUNIT_ASSERT_THROW(helper::get_gdcm_tag("group", "element"), io::dicom::exception::InvalidTag);
+    CPPUNIT_ASSERT_THROW(helper::get_gdcm_tag("group", "element"), io::dicom::exception::invalid_tag);
 }
 
 //------------------------------------------------------------------------------
 
-void TagsTest::getGdcmTagTooBigTest()
+void tags_test::get_gdcm_tag_too_big_test()
 {
-    CPPUNIT_ASSERT_THROW(helper::get_gdcm_tag("100000", "20"), io::dicom::exception::InvalidTag);
+    CPPUNIT_ASSERT_THROW(helper::get_gdcm_tag("100000", "20"), io::dicom::exception::invalid_tag);
     CPPUNIT_ASSERT_THROW(
         helper::get_gdcm_tag("10", std::to_string(std::numeric_limits<std::uint64_t>::max())),
-        io::dicom::exception::InvalidTag
+        io::dicom::exception::invalid_tag
     );
 }
 

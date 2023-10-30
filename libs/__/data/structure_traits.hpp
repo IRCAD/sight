@@ -48,34 +48,34 @@ public:
     SIGHT_DECLARE_CLASS(structure_traits, object);
 
     /// Defines structure categories
-    typedef enum
+    enum category
     {
-        BODY,
-        HEAD,
-        NECK,
-        THORAX,
-        ABDOMEN,
-        PELVIS,
-        ARM,
-        LEG,
-        LIVER_SEGMENTS,
-        OTHER
-    } Category;
+        body,
+        head,
+        neck,
+        thorax,
+        abdomen,
+        pelvis,
+        arm,
+        leg,
+        liver_segments,
+        other
+    };
 
-    typedef std::vector<Category> CategoryContainer;
-    typedef std::string ROIExpression;
+    using category_container_t = std::vector<category>;
+    using roi_expression_t     = std::string;
 
     /// Defines structure class
-    typedef enum
+    enum structure_class
     {
-        TOOL,
-        ENVIRONMENT,
-        VESSEL,
-        LESION,
-        ORGAN,
-        FUNCTIONAL,
-        NO_CONSTRAINT
-    } StructureClass;
+        tool,
+        environment,
+        vessel,
+        lesion,
+        organ,
+        functional,
+        no_constraint
+    };
 
     /**
      * @brief Constructor
@@ -90,45 +90,45 @@ public:
      * @{
      * @brief Get/Set value of the structure type.
      */
-    std::string getType();
-    const std::string& getType() const;
-    void setType(const std::string& _type);
+    std::string type();
+    const std::string& type() const;
+    void set_type(const std::string& _type);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the categories.
      */
-    CategoryContainer getCategories();
-    const CategoryContainer& getCategories() const;
-    void setCategories(const CategoryContainer& _categories);
+    category_container_t get_categories();
+    const category_container_t& get_categories() const;
+    void set_categories(const category_container_t& _categories);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the class.
      */
-    StructureClass getClass();
-    const StructureClass& getClass() const;
-    void setClass(const StructureClass& _class);
+    structure_class get_class();
+    const structure_class& get_class() const;
+    void set_class(const structure_class& _class);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the nativeExp.
      */
-    ROIExpression getNativeExp();
-    const ROIExpression& getNativeExp() const;
-    void setNativeExp(const ROIExpression& _native_exp);
+    roi_expression_t get_native_exp();
+    const roi_expression_t& get_native_exp() const;
+    void set_native_exp(const roi_expression_t& _native_exp);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the nativeGeometricExp.
      */
-    ROIExpression getNativeGeometricExp();
-    const ROIExpression& getNativeGeometricExp() const;
-    void setNativeGeometricExp(const ROIExpression& _native_geometric_exp);
+    roi_expression_t get_native_geometric_exp();
+    const roi_expression_t& get_native_geometric_exp() const;
+    void set_native_geometric_exp(const roi_expression_t& _native_geometric_exp);
     /// @}
 
     /**
@@ -144,27 +144,27 @@ public:
      * @{
      * @brief Get/Set value of the color.
      */
-    color::sptr getColor();
-    color::csptr getColor() const;
-    void setColor(const color::sptr& _color);
+    color::sptr get_color();
+    color::csptr get_color() const;
+    void set_color(const color::sptr& _color);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the anatomicRegion.
      */
-    std::string getAnatomicRegion();
-    const std::string& getAnatomicRegion() const;
-    void setAnatomicRegion(const std::string& _anatomic_region);
+    std::string get_anatomic_region();
+    const std::string& get_anatomic_region() const;
+    void set_anatomic_region(const std::string& _anatomic_region);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the propertyCategory.
      */
-    std::string getPropertyCategory();
-    const std::string& getPropertyCategory() const;
-    void setPropertyCategory(const std::string& _property_category);
+    std::string get_property_category();
+    const std::string& get_property_category() const;
+    void set_property_category(const std::string& _property_category);
 
     /// @}
 
@@ -203,241 +203,241 @@ private:
     std::string m_type;
 
     /// structure categories (ie. abdomen, body, ...)
-    CategoryContainer m_categories;
+    category_container_t m_categories;
 
     /// structure default color
     color::sptr m_color;
 
     /// structure class (TOOL, ENVIRONMENT, VESSEL, LESION, ORGAN, FUNCTIONAL, NO_CONSTRAINT)
-    StructureClass m_class {NO_CONSTRAINT};
+    structure_class m_class {no_constraint};
 
     /// native ROI expression (can be empty)
-    ROIExpression m_nativeExp;
+    roi_expression_t m_native_exp;
 
     /// native geometric ROI expression
-    ROIExpression m_nativeGeometricExp;
+    roi_expression_t m_native_geometric_exp;
 
     /// structure attachment type if class is LESION or FUNCTIONAL (can be empty)
-    std::string m_attachmentType;
+    std::string m_attachment_type;
 
     /// Dicom designation of Anatomic region if unknown it must be set to "ToDefine"
-    std::string m_anatomicRegion;
+    std::string m_anatomic_region;
 
     /// Dicom property category of organ if unknown it must be set to "ToDefine"
-    std::string m_propertyCategory;
+    std::string m_property_category;
 
     /// Dicom property type of organ if unknown it must be set to "ToDefine"
-    std::string m_propertyType;
+    std::string m_property_type;
 };
 
 //-----------------------------------------------------------------------------
 
-inline std::string structure_traits::getType()
+inline std::string structure_traits::type()
 {
     return m_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& structure_traits::getType() const
+inline const std::string& structure_traits::type() const
 {
     return m_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setType(const std::string& _type)
+inline void structure_traits::set_type(const std::string& _type)
 {
     m_type = _type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline structure_traits::CategoryContainer structure_traits::getCategories()
+inline structure_traits::category_container_t structure_traits::get_categories()
 {
     return m_categories;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const structure_traits::CategoryContainer& structure_traits::getCategories() const
+inline const structure_traits::category_container_t& structure_traits::get_categories() const
 {
     return m_categories;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setCategories(const structure_traits::CategoryContainer& _categories)
+inline void structure_traits::set_categories(const structure_traits::category_container_t& _categories)
 {
     m_categories = _categories;
 }
 
 //-----------------------------------------------------------------------------
 
-inline structure_traits::StructureClass structure_traits::getClass()
+inline structure_traits::structure_class structure_traits::get_class()
 {
     return m_class;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const structure_traits::StructureClass& structure_traits::getClass() const
+inline const structure_traits::structure_class& structure_traits::get_class() const
 {
     return m_class;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setClass(const structure_traits::StructureClass& _class)
+inline void structure_traits::set_class(const structure_traits::structure_class& _class)
 {
     m_class = _class;
 }
 
 //-----------------------------------------------------------------------------
 
-inline structure_traits::ROIExpression structure_traits::getNativeExp()
+inline structure_traits::roi_expression_t structure_traits::get_native_exp()
 {
-    return m_nativeExp;
+    return m_native_exp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const structure_traits::ROIExpression& structure_traits::getNativeExp() const
+inline const structure_traits::roi_expression_t& structure_traits::get_native_exp() const
 {
-    return m_nativeExp;
+    return m_native_exp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setNativeExp(const structure_traits::ROIExpression& _native_exp)
+inline void structure_traits::set_native_exp(const structure_traits::roi_expression_t& _native_exp)
 {
-    m_nativeExp = _native_exp;
+    m_native_exp = _native_exp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline structure_traits::ROIExpression structure_traits::getNativeGeometricExp()
+inline structure_traits::roi_expression_t structure_traits::get_native_geometric_exp()
 {
-    return m_nativeGeometricExp;
+    return m_native_geometric_exp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const structure_traits::ROIExpression& structure_traits::getNativeGeometricExp() const
+inline const structure_traits::roi_expression_t& structure_traits::get_native_geometric_exp() const
 {
-    return m_nativeGeometricExp;
+    return m_native_geometric_exp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setNativeGeometricExp(const structure_traits::ROIExpression& _native_geometric_exp)
+inline void structure_traits::set_native_geometric_exp(const structure_traits::roi_expression_t& _native_geometric_exp)
 {
-    m_nativeGeometricExp = _native_geometric_exp;
+    m_native_geometric_exp = _native_geometric_exp;
 }
 
 //-----------------------------------------------------------------------------
 
 inline std::string structure_traits::get_attachment_type()
 {
-    return m_attachmentType;
+    return m_attachment_type;
 }
 
 //-----------------------------------------------------------------------------
 
 inline const std::string& structure_traits::get_attachment_type() const
 {
-    return m_attachmentType;
+    return m_attachment_type;
 }
 
 //-----------------------------------------------------------------------------
 
 inline void structure_traits::set_attachment_type(const std::string& _attachment_type)
 {
-    m_attachmentType = _attachment_type;
+    m_attachment_type = _attachment_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline color::sptr structure_traits::getColor()
+inline color::sptr structure_traits::get_color()
 {
     return m_color;
 }
 
 //-----------------------------------------------------------------------------
 
-inline color::csptr structure_traits::getColor() const
+inline color::csptr structure_traits::get_color() const
 {
     return m_color;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setColor(const color::sptr& _color)
+inline void structure_traits::set_color(const color::sptr& _color)
 {
     m_color = _color;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string structure_traits::getAnatomicRegion()
+inline std::string structure_traits::get_anatomic_region()
 {
-    return m_anatomicRegion;
+    return m_anatomic_region;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& structure_traits::getAnatomicRegion() const
+inline const std::string& structure_traits::get_anatomic_region() const
 {
-    return m_anatomicRegion;
+    return m_anatomic_region;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setAnatomicRegion(const std::string& _anatomic_region)
+inline void structure_traits::set_anatomic_region(const std::string& _anatomic_region)
 {
-    m_anatomicRegion = _anatomic_region;
+    m_anatomic_region = _anatomic_region;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string structure_traits::getPropertyCategory()
+inline std::string structure_traits::get_property_category()
 {
-    return m_propertyCategory;
+    return m_property_category;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& structure_traits::getPropertyCategory() const
+inline const std::string& structure_traits::get_property_category() const
 {
-    return m_propertyCategory;
+    return m_property_category;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setPropertyCategory(const std::string& _property_category)
+inline void structure_traits::set_property_category(const std::string& _property_category)
 {
-    m_propertyCategory = _property_category;
+    m_property_category = _property_category;
 }
 
 //-----------------------------------------------------------------------------
 
 inline std::string structure_traits::get_property_type()
 {
-    return m_propertyType;
+    return m_property_type;
 }
 
 //-----------------------------------------------------------------------------
 
 inline const std::string& structure_traits::get_property_type() const
 {
-    return m_propertyType;
+    return m_property_type;
 }
 
 //-----------------------------------------------------------------------------
 
 inline void structure_traits::set_property_type(const std::string& _property_type)
 {
-    m_propertyType = _property_type;
+    m_property_type = _property_type;
 }
 
 //-----------------------------------------------------------------------------

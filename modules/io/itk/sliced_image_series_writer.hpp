@@ -50,7 +50,7 @@ namespace sight::module::io::itk
  * @subsection Input Input
  * - \b data [sight::data::image_series]: image series to save.
  * @subsection Configuration Configuration
- * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
+ * - \b folder (optional): path of the folder, if it is not defined, 'open_location_dialog()' should be called to define
  * the path.
  */
 class MODULE_IO_ITK_CLASS_API sliced_image_series_writer : public sight::io::service::writer
@@ -81,10 +81,10 @@ protected:
     MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
 
     /// Configure using GUI.
-    MODULE_IO_ITK_API void openLocationDialog() override;
+    MODULE_IO_ITK_API void open_location_dialog() override;
 
     /// Return managed file type, here FOLDER
-    MODULE_IO_ITK_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::service::path_type_t get_path_type() const override;
 };
 
 } // namespace sight::module::io::itk

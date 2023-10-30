@@ -24,63 +24,63 @@
 namespace sight::ui::dialog
 {
 
-std::queue<sight::ui::dialog::message_dummy::Buttons> message_dummy::actions;
+std::queue<sight::ui::dialog::message_dummy::buttons> message_dummy::s_actions;
 
 //------------------------------------------------------------------------------
 
-void message_dummy::setTitle(const std::string& /*title*/)
+void message_dummy::set_title(const std::string& /*title*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void message_dummy::setMessage(const std::string& /*msg*/)
+void message_dummy::set_message(const std::string& /*msg*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void message_dummy::setIcon(Icons /*icon*/)
+void message_dummy::set_icon(icons /*icon*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void message_dummy::addButton(Buttons /*button*/)
+void message_dummy::add_button(buttons /*button*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void message_dummy::setDefaultButton(Buttons /*button*/)
+void message_dummy::set_default_button(buttons /*button*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void message_dummy::addCustomButton(const std::string& /*label*/, std::function<void()> /*clickedFn*/)
+void message_dummy::add_custom_button(const std::string& /*label*/, std::function<void()> /*clickedFn*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void message_dummy::pushAction(Buttons _action)
+void message_dummy::push_action(buttons _action)
 {
-    actions.push(_action);
+    s_actions.push(_action);
 }
 
 //------------------------------------------------------------------------------
 
 bool message_dummy::clear()
 {
-    if(actions.empty())
+    if(s_actions.empty())
     {
         return true;
     }
 
-    while(actions.empty())
+    while(s_actions.empty())
     {
-        actions.pop();
+        s_actions.pop();
     }
 
     return false;
@@ -88,13 +88,13 @@ bool message_dummy::clear()
 
 //------------------------------------------------------------------------------
 
-message_dummy::Buttons message_dummy::show()
+message_dummy::buttons message_dummy::show()
 {
-    message_dummy::Buttons res = NOBUTTON;
-    if(!actions.empty())
+    message_dummy::buttons res = nobutton;
+    if(!s_actions.empty())
     {
-        res = actions.front();
-        actions.pop();
+        res = s_actions.front();
+        s_actions.pop();
     }
 
     return res;

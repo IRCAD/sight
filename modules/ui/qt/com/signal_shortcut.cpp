@@ -87,7 +87,7 @@ void signal_shortcut::starting()
         {
             service::base::sptr service = service::get(m_sid);
             auto container_srv          = std::dynamic_pointer_cast<sight::ui::service>(service);
-            fwc = container_srv->getContainer();
+            fwc = container_srv->get_container();
         }
         else
         {
@@ -109,17 +109,17 @@ void signal_shortcut::starting()
         auto qtc = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(fwc);
         if(qtc != nullptr)
         {
-            if(m_shortcutObject == nullptr)
+            if(m_shortcut_object == nullptr)
             {
                 // Get the associated widget to use as parent for the shortcut
-                QWidget* widget = qtc->getQtContainer();
+                QWidget* widget = qtc->get_qt_container();
                 // Create a key sequence from the string and its associated QShortcut
                 QKeySequence shortcut_sequence = QKeySequence(QString::fromStdString(m_shortcut));
-                m_shortcutObject = new QShortcut(shortcut_sequence, widget);
+                m_shortcut_object = new QShortcut(shortcut_sequence, widget);
             }
 
             // Connect the activated signal to the onActivation method of this class
-            QObject::connect(m_shortcutObject, SIGNAL(activated()), this, SLOT(onActivation()));
+            QObject::connect(m_shortcut_object, &QShortcut::activated, this, &self_t::on_activation);
         }
     }
     else
@@ -135,10 +135,10 @@ void signal_shortcut::starting()
 
 void signal_shortcut::stopping()
 {
-    if(m_shortcutObject != nullptr)
+    if(m_shortcut_object != nullptr)
     {
         // Connect the activated signal to the onActivation method of this class
-        QObject::disconnect(m_shortcutObject, SIGNAL(activated()), this, SLOT(onActivation()));
+        QObject::disconnect(m_shortcut_object, &QShortcut::activated, this, &self_t::on_activation);
     }
 }
 
@@ -149,7 +149,7 @@ void signal_shortcut::updating()
 
 //------------------------------------------------------------------------------
 
-void signal_shortcut::onActivation()
+void signal_shortcut::on_activation()
 {
     this->signal<activated_shortcut_signal_t>(ACTIVATED_SIG)->async_emit();
 }

@@ -33,10 +33,10 @@ namespace sight::utest_data::ut
 class image_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(image_test);
-CPPUNIT_TEST(generator3DTest);
-CPPUNIT_TEST(generator2DTest);
-CPPUNIT_TEST(deep_copyTest);
-CPPUNIT_TEST(stressTest);
+CPPUNIT_TEST(generator_3d_test);
+CPPUNIT_TEST(generator_2d_test);
+CPPUNIT_TEST(deep_copy_test);
+CPPUNIT_TEST(stress_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,10 +45,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void generator3DTest();
-    static void generator2DTest();
-    static void deep_copyTest();
-    static void stressTest();
+    static void generator_3d_test();
+    static void generator_2d_test();
+    static void deep_copy_test();
+    static void stress_test();
 };
 
 } // namespace sight::utest_data::ut

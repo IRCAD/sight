@@ -64,20 +64,20 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType image_reader::getIOPathType() const
+sight::io::service::path_type_t image_reader::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
 
-void image_reader::openLocationDialog()
+void image_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     /* Initialize the available extensions for BitmapImageReader */
     std::vector<std::string> ext;
-    sight::io::vtk::BitmapImageReader::getAvailableExtensions(ext);
+    sight::io::vtk::bitmap_image_reader::get_available_extensions(ext);
     std::string available_extensions;
 
     if(!ext.empty())
@@ -90,25 +90,25 @@ void image_reader::openLocationDialog()
     }
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("Vtk", "*.vtk");
-    dialog_file.addFilter("Vti", "*.vti");
-    dialog_file.addFilter("MetaImage", "*.mhd");
-    dialog_file.addFilter("Bitmap image", available_extensions);
-    dialog_file.setOption(ui::dialog::location::READ);
-    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a file to load an image" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("Vtk", "*.vtk");
+    dialog_file.add_filter("Vti", "*.vti");
+    dialog_file.add_filter("MetaImage", "*.mhd");
+    dialog_file.add_filter("Bitmap image", available_extensions);
+    dialog_file.set_option(ui::dialog::location::read);
+    dialog_file.set_option(ui::dialog::location::file_must_exist);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -116,7 +116,7 @@ void image_reader::openLocationDialog()
 
 image_reader::image_reader() noexcept
 {
-    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
+    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -149,9 +149,9 @@ void image_reader::info(std::ostream& _sstream)
 
 void image_reader::updating()
 {
-    m_readFailed = true;
+    m_read_failed = true;
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         const auto locked = m_data.lock();
         const auto image  = std::dynamic_pointer_cast<data::image>(locked.get_shared());
@@ -160,7 +160,7 @@ void image_reader::updating()
             "The object is not a '"
             + data::image::classname()
             + "' or '"
-            + sight::io::service::s_DATA_KEY
+            + sight::io::service::DATA_KEY
             + "' is not correctly set.",
             image
         );
@@ -169,13 +169,13 @@ void image_reader::updating()
         // has been modified.
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
         try
         {
             // Notify other image services that a new image has been loaded.
-            if(image_reader::loadImage(this->get_file(), image, m_sigJobCreated))
+            if(image_reader::load_image(this->get_file(), image, m_sig_job_created))
             {
-                m_readFailed = false;
+                m_read_failed = false;
 
                 auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                 {
@@ -186,11 +186,11 @@ void image_reader::updating()
         }
         catch(core::tools::failed& e)
         {
-            cursor.setDefaultCursor();
+            cursor.set_default_cursor();
             SIGHT_THROW_EXCEPTION(e);
         }
 
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
 }
 
@@ -206,7 +206,7 @@ typename READER::sptr configure_reader(const std::filesystem::path& _img_file)
 
 //------------------------------------------------------------------------------
 
-bool image_reader::loadImage(
+bool image_reader::load_image(
     const std::filesystem::path& _img_file,
     std::shared_ptr<data::image> _img,
     const SPTR(job_created_signal_t)& _sig_job_created
@@ -220,21 +220,21 @@ bool image_reader::loadImage(
     sight::io::reader::object_reader::sptr image_reader;
     if(ext == ".vtk")
     {
-        image_reader = configure_reader<sight::io::vtk::ImageReader>(_img_file);
+        image_reader = configure_reader<sight::io::vtk::image_reader>(_img_file);
     }
     else if(ext == ".vti")
     {
-        image_reader = configure_reader<sight::io::vtk::VtiImageReader>(_img_file);
+        image_reader = configure_reader<sight::io::vtk::vti_image_reader>(_img_file);
     }
     else if(ext == ".mhd")
     {
-        image_reader = configure_reader<sight::io::vtk::MetaImageReader>(_img_file);
+        image_reader = configure_reader<sight::io::vtk::meta_image_reader>(_img_file);
     }
     else
     {
         /* Handle BitmapImageReader extensions */
         std::vector<std::string> available_extensions;
-        sight::io::vtk::BitmapImageReader::getAvailableExtensions(available_extensions);
+        sight::io::vtk::bitmap_image_reader::get_available_extensions(available_extensions);
 
         /* If we find the current extensions in the available readers, we use it */
         std::size_t i = 0;
@@ -242,7 +242,7 @@ bool image_reader::loadImage(
         {
             if(available_extensions.at(i) == ext)
             {
-                image_reader = configure_reader<sight::io::vtk::BitmapImageReader>(_img_file);
+                image_reader = configure_reader<sight::io::vtk::bitmap_image_reader>(_img_file);
                 break;
             }
         }
@@ -269,7 +269,7 @@ bool image_reader::loadImage(
     // Set the image (already created, but empty) that will be modified
     image_reader->set_object(_img);
 
-    _sig_job_created->emit(image_reader->getJob());
+    _sig_job_created->emit(image_reader->get_job());
 
     try
     {
@@ -283,7 +283,7 @@ bool image_reader::loadImage(
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
 
@@ -298,7 +298,7 @@ bool image_reader::loadImage(
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
     }
@@ -307,7 +307,7 @@ bool image_reader::loadImage(
         sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
     }

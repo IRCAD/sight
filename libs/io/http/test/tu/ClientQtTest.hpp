@@ -36,9 +36,9 @@
 namespace sight::io::http::ut
 {
 
-class ClientQtTest : public CPPUNIT_NS::TestFixture
+class client_qt_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ClientQtTest);
+CPPUNIT_TEST_SUITE(client_qt_test);
 CPPUNIT_TEST(get);
 CPPUNIT_TEST(post);
 CPPUNIT_TEST_SUITE_END();
@@ -62,7 +62,7 @@ private:
     // application thread
     core::thread::worker::sptr m_worker;
     // HTTP client
-    sight::io::http::ClientQt m_client;
+    sight::io::http::client_qt m_client;
     // Local server that will communicate with the client
     QTcpServer m_server;
     // Server thread

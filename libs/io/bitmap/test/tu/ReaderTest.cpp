@@ -25,7 +25,7 @@
 #include <io/bitmap/Reader.hpp>
 #include <core/os/temp_path.hpp>
 
-#include <utest/Filter.hpp>
+#include <utest/filter.hpp>
 #include <utest/profiling.hpp>
 
 #include <cstdlib>
@@ -37,7 +37,7 @@
 #include <stdlib.h>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::bitmap::ut::ReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::bitmap::ut::reader_test);
 
 namespace sight::io::bitmap::ut
 {
@@ -46,7 +46,7 @@ namespace sight::io::bitmap::ut
 
 inline static void test_backend(
     const std::filesystem::path& _file,
-    Backend _backend,
+    backend _backend,
     data::image::sptr _expected_image = data::image::sptr()
 )
 {
@@ -84,7 +84,7 @@ inline static void test_backend(
 
     // Read the image from disk
     {
-        auto reader = std::make_shared<Reader>();
+        auto reader = std::make_shared<io::bitmap::reader>();
         reader->set_object(actual_image);
         reader->set_file(filepath);
 
@@ -97,10 +97,10 @@ inline static void test_backend(
     CPPUNIT_ASSERT_EQUAL(expected_sizes[0], actual_sizes[0]);
     CPPUNIT_ASSERT_EQUAL(expected_sizes[1], actual_sizes[1]);
     CPPUNIT_ASSERT_EQUAL(expected_sizes[2], actual_sizes[2]);
-    CPPUNIT_ASSERT_EQUAL(_expected_image->getPixelFormat(), actual_image->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(_expected_image->getType(), actual_image->getType());
+    CPPUNIT_ASSERT_EQUAL(_expected_image->pixel_format(), actual_image->pixel_format());
+    CPPUNIT_ASSERT_EQUAL(_expected_image->type(), actual_image->type());
 
-    if(_backend == Backend::LIBJPEG || _backend == Backend::NVJPEG)
+    if(_backend == backend::libjpeg || _backend == backend::nvjpeg)
     {
         CPPUNIT_ASSERT(compute_psnr(_expected_image, actual_image) > 20.0);
     }
@@ -113,7 +113,7 @@ inline static void test_backend(
     {
         constexpr auto path = "<<[{:}]>>";
 
-        auto reader = std::make_shared<Reader>();
+        auto reader = std::make_shared<io::bitmap::reader>();
         reader->set_object(actual_image);
         reader->set_file(path);
 
@@ -126,7 +126,7 @@ inline static void test_backend(
         corrupted_file << "This is a corrupted file";
         corrupted_file.stream().close();
 
-        auto reader = std::make_shared<Reader>();
+        auto reader = std::make_shared<io::bitmap::reader>();
         reader->set_object(actual_image);
         reader->set_file(corrupted_file);
 
@@ -136,7 +136,7 @@ inline static void test_backend(
     // test file with bad extension
     if(std::filesystem::exists(filepath))
     {
-        auto reader = std::make_shared<Reader>();
+        auto reader = std::make_shared<io::bitmap::reader>();
         reader->set_object(actual_image);
         reader->set_file(filepath.replace_extension(".bad"));
 
@@ -148,16 +148,16 @@ inline static void test_backend(
 
 inline static void profile_reader(
     std::size_t _loop,
-    Backend _backend
+    backend _backend
 )
 {
-    auto reader = std::make_shared<Reader>();
+    auto reader = std::make_shared<io::bitmap::reader>();
 
     auto actual_image = std::make_shared<data::image>();
     reader->set_object(actual_image);
 
     const auto& filename = "wild" + extensions(_backend).front();
-    const auto& filepath = utest_data::Data::dir() / "sight" / "image" / "bitmap" / filename;
+    const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
     reader->set_file(filepath);
 
     const std::string backend_name =
@@ -165,22 +165,22 @@ inline static void profile_reader(
         {
             switch(_backend)
             {
-                case Backend::LIBTIFF:
+                case backend::libtiff:
                     return "libTIFF";
 
-                case Backend::LIBPNG:
+                case backend::libpng:
                     return "libPNG";
 
-                case Backend::NVJPEG:
+                case backend::nvjpeg:
                     return "nvJPEG";
 
-                case Backend::LIBJPEG:
+                case backend::libjpeg:
                     return "libjpeg";
 
-                case Backend::NVJPEG2K:
+                case backend::nvjpeg2k:
                     return "nv_jpeg_2k";
 
-                case Backend::OPENJPEG:
+                case backend::openjpeg:
                     return "openJPEG";
 
                 default:
@@ -201,7 +201,7 @@ inline static void profile_reader(
     );
 
     // Now profile openCV reading to compare
-    if(!utest::Filter::ignoreSlowTests() && _loop > 1)
+    if(!utest::filter::ignore_slow_tests() && _loop > 1)
     {
         const auto& opencv_label = "(openCV): " + filepath.extension().string();
         SIGHT_PROFILE_FUNC(
@@ -219,7 +219,7 @@ inline static void profile_reader(
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::setUp()
+void reader_test::setUp()
 {
     std::string jasper("OPENCV_IO_ENABLE_JASPER=1");
     putenv(jasper.data());
@@ -227,22 +227,22 @@ void ReaderTest::setUp()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::tearDown()
+void reader_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::basicTest()
+void reader_test::basic_test()
 {
-    auto reader = std::make_shared<Reader>();
+    auto reader = std::make_shared<io::bitmap::reader>();
 
-    CPPUNIT_ASSERT_EQUAL(io::bitmap::extensions(Backend::LIBTIFF).front(), reader->extension());
+    CPPUNIT_ASSERT_EQUAL(io::bitmap::extensions(backend::libtiff).front(), reader->extension());
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::extensionsTest()
+void reader_test::extensions_test()
 {
     std::vector<data::sequenced_set<std::string> > extensions {
         {".jpg", ".jpeg"},
@@ -252,12 +252,12 @@ void ReaderTest::extensionsTest()
         {".png"}
     };
 
-    std::vector<Backend> backends {
-        io::bitmap::nv_jpeg() ? Backend::NVJPEG : Backend::LIBJPEG,
-        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K : Backend::OPENJPEG,
-        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
-        Backend::LIBTIFF,
-        Backend::LIBPNG
+    std::vector<backend> backends {
+        io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
+        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
+        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2_k,
+        backend::libtiff,
+        backend::libpng
     };
 
     for(std::size_t i = 0 ; i < extensions.size() ; ++i)
@@ -277,43 +277,43 @@ void ReaderTest::extensionsTest()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::wildcardTest()
+void reader_test::wildcard_test()
 {
-    std::vector<Backend> backends {
-        io::bitmap::nv_jpeg() ? Backend::NVJPEG : Backend::LIBJPEG,
-        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K : Backend::OPENJPEG,
-        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
-        Backend::LIBTIFF,
-        Backend::LIBPNG
+    std::vector<backend> backends {
+        io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
+        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
+        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2_k,
+        backend::libtiff,
+        backend::libpng
     };
 
-    static constexpr auto JPEG_LABEL {"JPEG image"};
-    static constexpr auto TIFF_LABEL {"TIFF image"};
-    static constexpr auto PNG_LABEL {"PNG image"};
-    static constexpr auto J2K_LABEL {"JPEG2000 image"};
+    static constexpr auto s_JPEG_LABEL {"JPEG image"};
+    static constexpr auto s_TIFF_LABEL {"TIFF image"};
+    static constexpr auto s_PNG_LABEL {"PNG image"};
+    static constexpr auto s_J2_K_LABEL {"JPEG2000 image"};
 
     std::vector<std::string> labels {
-        JPEG_LABEL,
-        J2K_LABEL,
-        J2K_LABEL,
-        TIFF_LABEL,
-        PNG_LABEL
+        s_JPEG_LABEL,
+        s_J2_K_LABEL,
+        s_J2_K_LABEL,
+        s_TIFF_LABEL,
+        s_PNG_LABEL
     };
 
-    static constexpr auto JPEG_EXT {".jpeg"};
-    static constexpr auto JPG_EXT {".jpg"};
-    static constexpr auto TIF_EXT {".tif"};
-    static constexpr auto TIFF_EXT {".tiff"};
-    static constexpr auto PNG_EXT {".png"};
-    static constexpr auto JP2_EXT {".jp2"};
-    static constexpr auto J2K_EXT {".j2k"};
+    static constexpr auto s_JPEG_EXT {".jpeg"};
+    static constexpr auto s_JPG_EXT {".jpg"};
+    static constexpr auto s_TIF_EXT {".tif"};
+    static constexpr auto s_TIFF_EXT {".tiff"};
+    static constexpr auto s_PNG_EXT {".png"};
+    static constexpr auto s_J_P2_EXT {".jp2"};
+    static constexpr auto s_J2_K_EXT {".j2k"};
 
     std::vector<std::string> wildcards {
-        std::string("*") + JPG_EXT + " *" + JPEG_EXT,
-        std::string("*") + JP2_EXT,
-        std::string("*") + J2K_EXT,
-        std::string("*") + TIF_EXT + " *" + TIFF_EXT,
-        std::string("*") + PNG_EXT
+        std::string("*") + s_JPG_EXT + " *" + s_JPEG_EXT,
+        std::string("*") + s_J_P2_EXT,
+        std::string("*") + s_J2_K_EXT,
+        std::string("*") + s_TIF_EXT + " *" + s_TIFF_EXT,
+        std::string("*") + s_PNG_EXT
     };
 
     for(std::size_t index = 0 ; const auto& backend : backends)
@@ -328,19 +328,19 @@ void ReaderTest::wildcardTest()
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::nvJPEGTest()
+void reader_test::nv_jpeg_test()
 {
     if(!io::bitmap::nv_jpeg())
     {
         return;
     }
 
-    test_backend("nvJPEG.jpg", Backend::NVJPEG, get_synthetic_image(0));
+    test_backend("nvJPEG.jpg", backend::nvjpeg, get_synthetic_image(0));
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::nvJPEG2KTest()
+void reader_test::nv_jpe_g2_k_test()
 {
     if(!io::bitmap::nv_jpeg_2k())
     {
@@ -350,91 +350,91 @@ void ReaderTest::nvJPEG2KTest()
     test_backend(
         // Pure synthetic images cannot be read/written correctly with JASPER and openCV.
         // For that reason, we use a real image.
-        utest_data::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
-        Backend::NVJPEG2K
+        utest_data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
+        backend::nvjpeg2k
     );
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::libPNGTest()
+void reader_test::lib_png_test()
 {
-    test_backend("libPNG_RGB_UINT8.png", Backend::LIBPNG, get_synthetic_image(0));
+    test_backend("libPNG_RGB_UINT8.png", backend::libpng, get_synthetic_image(0));
 
     test_backend(
         "libPNG_RGBA_UINT8.png",
-        Backend::LIBPNG,
-        get_synthetic_image(1, core::type::UINT8, data::image::PixelFormat::RGBA)
+        backend::libpng,
+        get_synthetic_image(1, core::type::UINT8, data::image::pixel_format::rgba)
     );
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::libJPEGTest()
+void reader_test::lib_jpeg_test()
 {
-    test_backend("libJPEG.jpg", Backend::LIBJPEG, get_synthetic_image(0));
+    test_backend("libJPEG.jpg", backend::libjpeg, get_synthetic_image(0));
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::openJPEGTest()
+void reader_test::open_jpeg_test()
 {
     test_backend(
         // Pure synthetic images cannot be read/written correctly with JASPER and openCV.
         // For that reason, we use a real image.
-        utest_data::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
-        Backend::OPENJPEG
+        utest_data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
+        backend::openjpeg
     );
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::libTIFFTest()
+void reader_test::lib_tiff_test()
 {
-    test_backend("libTIFF_RGB_UINT8.tiff", Backend::LIBTIFF, get_synthetic_image(0));
+    test_backend("libTIFF_RGB_UINT8.tiff", backend::libtiff, get_synthetic_image(0));
 
     test_backend(
         "libTIFF_RGBA_UINT16.tiff",
-        Backend::LIBTIFF,
-        get_synthetic_image(1, core::type::UINT16, data::image::PixelFormat::RGBA)
+        backend::libtiff,
+        get_synthetic_image(1, core::type::UINT16, data::image::pixel_format::rgba)
     );
 
     test_backend(
         "libTIFF_GRAYSCALE_DOUBLE.tiff",
-        Backend::LIBTIFF,
-        get_synthetic_image(2, core::type::DOUBLE, data::image::PixelFormat::GRAY_SCALE)
+        backend::libtiff,
+        get_synthetic_image(2, core::type::DOUBLE, data::image::pixel_format::gray_scale)
     );
 }
 
 //------------------------------------------------------------------------------
 
-void ReaderTest::profilingTest()
+void reader_test::profiling_test()
 {
     // Check how many loop to perform
-    static const char* const env_loop   = std::getenv("PROFILETEST_LOOP");
-    static const std::size_t LOOP_COUNT =
-        env_loop != nullptr
-        ? std::stoull(env_loop)
+    static const char* const s_ENV_LOOP   = std::getenv("PROFILETEST_LOOP");
+    static const std::size_t s_LOOP_COUNT =
+        s_ENV_LOOP != nullptr
+        ? std::stoull(s_ENV_LOOP)
         : 1;
 
-    SIGHT_INFO("Loop: " << LOOP_COUNT);
+    SIGHT_INFO("Loop: " << s_LOOP_COUNT);
 
-    profile_reader(LOOP_COUNT, Backend::LIBJPEG);
+    profile_reader(s_LOOP_COUNT, backend::libjpeg);
 
     if(io::bitmap::nv_jpeg())
     {
-        profile_reader(LOOP_COUNT, Backend::NVJPEG);
+        profile_reader(s_LOOP_COUNT, backend::nvjpeg);
     }
 
-    profile_reader(LOOP_COUNT, Backend::OPENJPEG);
+    profile_reader(s_LOOP_COUNT, backend::openjpeg);
 
     if(io::bitmap::nv_jpeg_2k())
     {
-        profile_reader(LOOP_COUNT, Backend::NVJPEG2K);
+        profile_reader(s_LOOP_COUNT, backend::nvjpeg2k);
     }
 
-    profile_reader(LOOP_COUNT, Backend::LIBPNG);
-    profile_reader(LOOP_COUNT, Backend::LIBTIFF);
+    profile_reader(s_LOOP_COUNT, backend::libpng);
+    profile_reader(s_LOOP_COUNT, backend::libtiff);
 }
 
 } // namespace sight::io::bitmap::ut

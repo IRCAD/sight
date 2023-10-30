@@ -42,12 +42,12 @@ void application::exit(int _return_code, bool _async)
         []
         {
             ui::dialog::message dlg;
-            dlg.setTitle("Confirm exit");
-            dlg.setMessage("Do you really want to exit?");
-            dlg.setIcon(dialog::message::QUESTION);
-            dlg.addButton(dialog::message::YES_NO);
+            dlg.set_title("Confirm exit");
+            dlg.set_message("Do you really want to exit?");
+            dlg.set_icon(dialog::message::question);
+            dlg.add_button(dialog::message::yes_no);
 
-            return dlg.show() == dialog::message::YES;
+            return dlg.show() == dialog::message::yes;
         };
 
     if(!m_confirm || confirm())

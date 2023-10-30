@@ -82,21 +82,21 @@ private Q_SLOTS:
 
     /// Slot: called when a layer is selected
     /// Sets the current layer
-    void onSelectedLayerItem(int _index);
+    void on_selected_layer_item(int _index);
 
     /// Slot: called when a mode is selected
-    void onSelectedModeItem(int _index);
+    void on_selected_mode_item(int _index);
 
 private:
 
     /// Retrieves all the layers from the application thanks to the render services
-    void refreshRenderers();
+    void refresh_renderers();
 
-    QPointer<QComboBox> m_layersBox;
-    QPointer<QComboBox> m_modeBox;
+    QPointer<QComboBox> m_layers_box;
+    QPointer<QComboBox> m_mode_box;
 
     std::vector<sight::viz::scene3d::layer::wptr> m_layers;
-    sight::viz::scene3d::layer::wptr m_currentLayer;
+    sight::viz::scene3d::layer::wptr m_current_layer;
 };
 
 } // namespace sight::module::ui::viz

@@ -44,7 +44,7 @@ class UI_QML_CLASS_API selector : public QObject,
                                   public ui::dialog::selector_base
 {
 Q_OBJECT
-Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY message_changed)
 
 public:
 
@@ -57,7 +57,7 @@ public:
     UI_QML_API void set_choices_preset(choices_preset_t _selections) override;
 
     /// Sets the selector title.
-    UI_QML_API void setTitle(std::string _title) override;
+    UI_QML_API void set_title(std::string _title) override;
 
     /// Allows multiple selections (default = false).
     UI_QML_API void set_multiple(bool _multiple) override;
@@ -66,20 +66,20 @@ public:
     UI_QML_API selections_t show() override;
 
     /// Set the message
-    UI_QML_API void setMessage(const std::string& _msg) override;
+    UI_QML_API void set_message(const std::string& _msg) override;
 
     /// unimplemented
-    UI_QML_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
+    UI_QML_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 Q_SIGNALS:
 
     /// notify the qml of property change
-    void messageChanged();
+    void message_changed();
 
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(QVariant _selection);
+    void result_dialog(QVariant _selection);
 
 private:
 

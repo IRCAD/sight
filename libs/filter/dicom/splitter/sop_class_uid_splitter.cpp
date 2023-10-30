@@ -22,7 +22,7 @@
 
 #include "filter/dicom/splitter/sop_class_uid_splitter.hpp"
 
-#include "filter/dicom/exceptions/FilterFailure.hpp"
+#include "filter/dicom/exceptions/filter_failure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
 #include <dcmtk/config/osconfig.h>
@@ -38,15 +38,15 @@ SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::sop_class_uid_splitt
 namespace sight::filter::dicom::splitter
 {
 
-const std::string sop_class_uid_splitter::s_FILTER_NAME        = "sop_classUID splitter";
-const std::string sop_class_uid_splitter::s_FILTER_DESCRIPTION =
+const std::string sop_class_uid_splitter::FILTER_NAME        = "sop_classUID splitter";
+const std::string sop_class_uid_splitter::FILTER_DESCRIPTION =
     "Split instances according to <i>sop_classUID</i> tag.";
 
 //-----------------------------------------------------------------------------
 
 sop_class_uid_splitter::sop_class_uid_splitter()
 {
-    this->setTag(DCM_SOPClassUID);
+    this->set_tag(DCM_SOPClassUID);
 }
 
 //-----------------------------------------------------------------------------
@@ -56,21 +56,21 @@ sop_class_uid_splitter::~sop_class_uid_splitter()
 
 //-----------------------------------------------------------------------------
 
-std::string sop_class_uid_splitter::getName() const
+std::string sop_class_uid_splitter::get_name() const
 {
-    return sop_class_uid_splitter::s_FILTER_NAME;
+    return sop_class_uid_splitter::FILTER_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string sop_class_uid_splitter::getDescription() const
+std::string sop_class_uid_splitter::get_description() const
 {
-    return sop_class_uid_splitter::s_FILTER_DESCRIPTION;
+    return sop_class_uid_splitter::FILTER_DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
 
-bool sop_class_uid_splitter::isConfigurationRequired() const
+bool sop_class_uid_splitter::is_configuration_required() const
 {
     return false;
 }
@@ -82,7 +82,7 @@ sop_class_uid_splitter::dicom_series_container_t sop_class_uid_splitter::apply(
     const core::log::logger::sptr& _logger
 ) const
 {
-    dicom_series_container_t result = sight::filter::dicom::splitter::TagValueSplitter::apply(_series, _logger);
+    dicom_series_container_t result = sight::filter::dicom::splitter::tag_value_splitter::apply(_series, _logger);
 
     for(const data::dicom_series::sptr& dicom_series : result)
     {
@@ -92,7 +92,7 @@ sop_class_uid_splitter::dicom_series_container_t sop_class_uid_splitter::apply(
         OFString data;
 
         // Open first instance
-        const auto first_item                              = dicom_series->getDicomContainer().begin();
+        const auto first_item                              = dicom_series->get_dicom_container().begin();
         const core::memory::buffer_object::sptr buffer_obj = first_item->second;
         const std::size_t buff_size                        = buffer_obj->size();
         const std::string dicom_path                       = buffer_obj->get_stream_info().fs_file.string();
@@ -120,9 +120,9 @@ sop_class_uid_splitter::dicom_series_container_t sop_class_uid_splitter::apply(
         status  = dataset->findAndGetOFStringArray(DCM_SOPClassUID, data);
         SIGHT_THROW_IF("Unable to read tags: \"" + dicom_path + "\"", status.bad());
 
-        data::dicom_series::sop_classUIDContainerType sop_class_uid_container;
+        data::dicom_series::sop_class_uid_container_t sop_class_uid_container;
         sop_class_uid_container.insert(data.c_str());
-        dicom_series->setSOPClassUIDs(sop_class_uid_container);
+        dicom_series->set_sop_class_ui_ds(sop_class_uid_container);
     }
 
     if(result.size() > 1)

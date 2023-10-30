@@ -87,13 +87,13 @@ protected:
 
 private:
 
-    static constexpr std::string_view s_CAMERA_SET_INPUT   = "cameraSet";
-    static constexpr std::string_view s_ORIGIN_FRAME_INPUT = "originDepth";
-    static constexpr std::string_view s_SCALED_FRAME_INOUT = "scaledDepth";
+    static constexpr std::string_view CAMERA_SET_INPUT   = "cameraSet";
+    static constexpr std::string_view ORIGIN_FRAME_INPUT = "originDepth";
+    static constexpr std::string_view SCALED_FRAME_INOUT = "scaledDepth";
 
-    sight::data::ptr<sight::data::camera_set, sight::data::Access::in> m_camera_set {this, s_CAMERA_SET_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_originDepth {this, s_ORIGIN_FRAME_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::Access::inout> m_scaledDepth {this, s_SCALED_FRAME_INOUT};
+    sight::data::ptr<sight::data::camera_set, sight::data::access::in> m_camera_set {this, CAMERA_SET_INPUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_origin_depth {this, ORIGIN_FRAME_INPUT};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_scaled_depth {this, SCALED_FRAME_INOUT};
 };
 
 } // namespace sight::module::filter::vision

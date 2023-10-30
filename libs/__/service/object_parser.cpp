@@ -51,38 +51,38 @@ void object_parser::updating()
 
 //-----------------------------------------------------------------------------
 
-void object_parser::setObjectConfig(const service::config_t& _cfg_elem)
+void object_parser::set_object_config(const service::config_t& _cfg_elem)
 {
     m_cfg = _cfg_elem;
 }
 
 //-----------------------------------------------------------------------------
 
-void object_parser::createConfig(core::tools::object::sptr /*unused*/)
+void object_parser::create_config(core::tools::object::sptr /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void object_parser::startConfig()
+void object_parser::start_config()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void object_parser::updateConfig()
+void object_parser::update_config()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void object_parser::stopConfig()
+void object_parser::stop_config()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void object_parser::destroyConfig()
+void object_parser::destroy_config()
 {
 }
 

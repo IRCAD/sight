@@ -37,16 +37,16 @@
 namespace sight::io::itk
 {
 
-class LocalCommand : public ::itk::Command
+class local_command : public ::itk::Command
 {
 public:
 
-    LocalCommand()
+    local_command()
     = default;
 
-    typedef LocalCommand Self;
-    typedef ::itk::SmartPointer<LocalCommand> Pointer;
-    itkNewMacro(Self);
+    using self_t  = local_command;
+    using Pointer = ::itk::SmartPointer<local_command>;
+    itkNewMacro(self_t);
 
     //------------------------------------------------------------------------------
 
@@ -77,30 +77,30 @@ public:
 //------------------------------------------------------------------------------
 
 template<typename OBSERVEE>
-ProgressItkToFw<OBSERVEE>::ProgressItkToFw(
+progress_itk_to_fw<OBSERVEE>::progress_itk_to_fw(
     OBSERVEE observee,
     SPTR(core::tools::progress_adviser)observer,
     std::string msg
 ) :
     m_observee(observee),
-    m_obsTag(std::numeric_limits<std::uint64_t>::max())
+    m_obs_tag(std::numeric_limits<std::uint64_t>::max())
 {
-    typename LocalCommand::Pointer itk_call_back;
-    itk_call_back            = LocalCommand::New();
+    typename local_command::Pointer itk_call_back;
+    itk_call_back            = local_command::New();
     itk_call_back->m_msg     = msg;
     itk_call_back->m_adviser = observer;
-    m_obsTag                 = m_observee->AddObserver(::itk::ProgressEvent(), itk_call_back);
+    m_obs_tag                = m_observee->AddObserver(::itk::ProgressEvent(), itk_call_back);
     m_initialized            = true; // NOLINT(cppcoreguidelines-prefer-member-initializer)
 }
 
 //------------------------------------------------------------------------------
 
 template<typename OBSERVEE>
-ProgressItkToFw<OBSERVEE>::~ProgressItkToFw()
+progress_itk_to_fw<OBSERVEE>::~progress_itk_to_fw()
 {
     if(m_initialized)
     {
-        m_observee->RemoveObserver(m_obsTag);
+        m_observee->RemoveObserver(m_obs_tag);
     }
 }
 

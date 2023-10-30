@@ -32,34 +32,34 @@
 namespace sight::io::dicom::helper
 {
 
-DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
+dicom_series_anonymizer::dicom_series_anonymizer() :
     m_job(std::make_shared<core::jobs::aggregator>("Anonymization process"))
 {
-    m_writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
+    m_writer = std::make_shared<io::dicom::helper::dicom_series_writer>();
     m_reader = std::make_shared<io::dicom::reader::series_set>();
 }
 
 //------------------------------------------------------------------------------
 
-DicomSeriesAnonymizer::~DicomSeriesAnonymizer()
+dicom_series_anonymizer::~dicom_series_anonymizer()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(const data::dicom_series::sptr& _source)
+void dicom_series_anonymizer::anonymize(const data::dicom_series::sptr& _source)
 {
     this->anonymize(_source, _source);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(
+void dicom_series_anonymizer::anonymize(
     const data::dicom_series::sptr& _source,
     const data::dicom_series::sptr& _destination
 )
 {
-    auto writer_observer     = m_writer->getJob();
-    auto anonymizer_observer = m_anonymizer.getJob();
+    auto writer_observer     = m_writer->get_job();
+    auto anonymizer_observer = m_anonymizer.get_job();
 
     // Set up observer cancel callback
     m_job->add_simple_cancel_hook(
@@ -105,7 +105,7 @@ void DicomSeriesAnonymizer::anonymize(
     auto series_set = std::make_shared<data::series_set>();
     m_reader->set_object(series_set);
     m_reader->set_folder(dest);
-    m_reader->readDicomSeries();
+    m_reader->read_dicom_series();
 
     // Update DicomSeries
     auto anonymized_series = std::dynamic_pointer_cast<data::dicom_series>(series_set->front());
@@ -114,7 +114,7 @@ void DicomSeriesAnonymizer::anonymize(
 
 //------------------------------------------------------------------------------
 
-core::jobs::aggregator::sptr DicomSeriesAnonymizer::getJob() const
+core::jobs::aggregator::sptr dicom_series_anonymizer::get_job() const
 {
     return m_job;
 }

@@ -114,36 +114,36 @@ protected:
 private:
 
     /// Manages several video coordinate system.
-    typedef enum VideoReference
+    enum video_reference_t
     {
-        TOP_LEFT = 0,
-        CENTER
-    } video_reference_t;
+        top_left = 0,
+        center
+    };
 
     /// Adds a point in both pointlists.
-    void addPoint(const std::array<double, 3>& _current_point);
+    void add_point(const std::array<double, 3>& _current_point);
 
     /// Removes the last point in both pointlists.
-    void removeLastPoint();
+    void remove_last_point();
 
     /// Slot: retrieves the 2d coordinates from the interaction point.
-    void getInteraction(data::tools::picking_info _info);
+    void get_interaction(data::tools::picking_info _info);
 
     /// Map that handles conversion between xml configuration string and video_reference_t
-    std::map<std::string, video_reference_t> m_videoRefMap;
+    std::map<std::string, video_reference_t> m_video_ref_map;
 
     /// Manages video coordinate system
-    video_reference_t m_videoRef {video_reference_t::CENTER};
+    video_reference_t m_video_ref {video_reference_t::center};
 
     // Whether to require or not the use of the control modifier when clicking.
-    bool m_useCtrlModifier {true};
+    bool m_use_ctrl_modifier {true};
 
     // Whether to enable or not use of single point mode (see the service description for more information).
-    bool m_singlePointMode {false};
+    bool m_single_point_mode {false};
 
-    data::ptr<data::point_list, sight::data::Access::inout> m_pointList {this, "pointList"};
-    data::ptr<data::point_list, sight::data::Access::inout> m_pixelPointList {this, "pixelPointList"};
-    data::ptr<data::camera, sight::data::Access::in> m_camera {this, "camera"};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList"};
+    data::ptr<data::point_list, sight::data::access::inout> m_pixel_point_list {this, "pixelPointList"};
+    data::ptr<data::camera, sight::data::access::in> m_camera {this, "camera"};
 };
 
 } //namespace sight::module::ui::video

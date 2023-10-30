@@ -48,23 +48,23 @@ namespace sight::io::dicom::writer
 /**
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
-class IO_DICOM_CLASS_API SurfaceSegmentation :
+class IO_DICOM_CLASS_API surface_segmentation :
     public io::writer::generic_object_writer<data::model_series>,
     public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        SurfaceSegmentation,
+        surface_segmentation,
         io::writer::generic_object_writer<data::model_series>,
-        io::writer::factory::make<SurfaceSegmentation>
+        io::writer::factory::make<surface_segmentation>
     );
 
     /// Constructor
-    IO_DICOM_API SurfaceSegmentation();
+    IO_DICOM_API surface_segmentation();
 
     /// Destructor
-    IO_DICOM_API ~SurfaceSegmentation() override;
+    IO_DICOM_API ~surface_segmentation() override;
 
     /// Load and start appropriate writing tools.
     IO_DICOM_API void write() override;
@@ -73,10 +73,10 @@ public:
     IO_DICOM_API std::string extension() const override;
 
     /// Returns logger
-    IO_DICOM_API SPTR(core::log::logger) getLogger() const;
+    IO_DICOM_API SPTR(core::log::logger) get_logger() const;
 
     /// Getter for writer's job
-    IO_DICOM_API SPTR(core::jobs::base) getJob() const override;
+    IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 
@@ -84,7 +84,7 @@ private:
     core::log::logger::sptr m_logger;
 
     /// Writer job
-    SPTR(core::jobs::observer) m_writerJob;
+    SPTR(core::jobs::observer) m_writer_job;
 };
 
 } // namespace sight::io::dicom::writer

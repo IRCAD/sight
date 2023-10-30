@@ -44,15 +44,15 @@ void menubar::initialize(const ui::config_t& _configuration)
             hexa_color[0] == '#'
             && (hexa_color.length() == 7 || hexa_color.length() == 9)
         );
-        m_backgroundColor = hexa_color;
+        m_background_color = hexa_color;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-ui::container::menubar::sptr menubar::getMenuBar()
+ui::container::menubar::sptr menubar::get_menu_bar()
 {
-    return this->m_menuBar;
+    return this->m_menu_bar;
 }
 
 //-----------------------------------------------------------------------------

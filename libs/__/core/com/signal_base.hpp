@@ -40,8 +40,8 @@ struct CORE_CLASS_API signal_base : virtual core::base_object
     /**
      * @name Typedefs
      * @{ */
-    typedef SPTR(signal_base) sptr;
-    typedef WPTR(signal_base)   wptr;
+    using sptr = std::shared_ptr<signal_base>;
+    using wptr = std::weak_ptr<signal_base>;
     /**  @} */
 
     signal_base()

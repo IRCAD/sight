@@ -132,7 +132,7 @@ void proxy::disconnect(channel_key_type _channel, core::com::signal_base::sptr _
         _signal->disconnect(slot);
     }
 
-    sig_slots::signal_container_type::iterator sig_iter;
+    sig_slots::signal_container_t::iterator sig_iter;
     sig_iter = std::find(sigslots->m_signals.begin(), sigslots->m_signals.end(), _signal);
     SIGHT_ASSERT("Signal is not found", sig_iter != sigslots->m_signals.end());
     sigslots->m_signals.erase(sig_iter);
@@ -161,7 +161,7 @@ void proxy::disconnect(channel_key_type _channel, core::com::slot_base::sptr _sl
         signal->disconnect(_slot);
     }
 
-    sig_slots::slot_container_type::iterator slot_iter;
+    sig_slots::slot_container_t::iterator slot_iter;
     slot_iter = std::find(sigslots->m_slots.begin(), sigslots->m_slots.end(), _slot);
     SIGHT_ASSERT("Slot is not found", slot_iter != sigslots->m_slots.end());
     sigslots->m_slots.erase(slot_iter);

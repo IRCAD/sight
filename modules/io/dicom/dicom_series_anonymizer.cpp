@@ -42,7 +42,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 //------------------------------------------------------------------------------
 
 dicom_series_anonymizer::dicom_series_anonymizer() noexcept :
-    m_sigJobCreated(new_signal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
 }
 
@@ -73,34 +73,34 @@ void dicom_series_anonymizer::stopping()
 
 void dicom_series_anonymizer::updating()
 {
-    const auto vector = m_selectedSeries.lock();
+    const auto vector = m_selected_series.lock();
 
     sight::ui::dialog::message dialog;
-    dialog.setTitle("Series anonymization");
+    dialog.set_title("Series anonymization");
 
     // If the selection is not empty
     if(!vector->empty())
     {
-        dialog.setMessage("Are you sure you want to anonymize the selected series ?");
-        dialog.setIcon(ui::dialog::message::QUESTION);
-        dialog.addButton(ui::dialog::message::YES);
-        dialog.addButton(ui::dialog::message::CANCEL);
-        sight::ui::dialog::message::Buttons answer = dialog.show();
+        dialog.set_message("Are you sure you want to anonymize the selected series ?");
+        dialog.set_icon(ui::dialog::message::question);
+        dialog.add_button(ui::dialog::message::yes);
+        dialog.add_button(ui::dialog::message::cancel);
+        sight::ui::dialog::message::buttons answer = dialog.show();
 
-        if(answer == sight::ui::dialog::message::YES)
+        if(answer == sight::ui::dialog::message::yes)
         {
             sight::ui::cursor cursor;
-            cursor.setCursor(ui::cursor_base::BUSY);
+            cursor.set_cursor(ui::cursor_base::busy);
             this->anonymize(*vector);
-            cursor.setDefaultCursor();
+            cursor.set_default_cursor();
         }
     }
     // If the selection is empty
     else
     {
-        dialog.setMessage("Please select which series you want to anonymize.");
-        dialog.setIcon(ui::dialog::message::INFO);
-        dialog.addButton(ui::dialog::message::OK);
+        dialog.set_message("Please select which series you want to anonymize.");
+        dialog.set_icon(ui::dialog::message::info);
+        dialog.add_button(ui::dialog::message::ok);
         dialog.show();
     }
 }
@@ -119,8 +119,8 @@ void dicom_series_anonymizer::anonymize(sight::data::vector& _vector)
     const auto series_set     = m_series_set.lock();
     const auto scoped_emitter = series_set->scoped_emit();
 
-    auto anonymizer = std::make_shared<sight::io::dicom::helper::DicomSeriesAnonymizer>();
-    m_sigJobCreated->emit(anonymizer->getJob());
+    auto anonymizer = std::make_shared<sight::io::dicom::helper::dicom_series_anonymizer>();
+    m_sig_job_created->emit(anonymizer->get_job());
 
     std::vector<data::dicom_series::sptr> anonymized_dicom_series_vector;
 
@@ -131,7 +131,7 @@ void dicom_series_anonymizer::anonymize(sight::data::vector& _vector)
         anonymizer->anonymize(dicom_series, anonymized_dicom_series);
         anonymized_dicom_series_vector.push_back(anonymized_dicom_series);
 
-        m_cancelled = anonymizer->getJob()->cancel_requested();
+        m_cancelled = anonymizer->get_job()->cancel_requested();
         if(m_cancelled)
         {
             break;

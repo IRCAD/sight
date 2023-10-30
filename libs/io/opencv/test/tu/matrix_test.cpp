@@ -49,7 +49,7 @@ void matrix_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copy_from_cvFloat()
+void matrix_test::copy_from_cv_float()
 {
     cv::Matx44f cv_mat         = cv::Matx44f::eye();
     data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
@@ -107,13 +107,13 @@ void matrix_test::copy_from_cvFloat()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyToCvFloat()
+void matrix_test::copy_to_cv_float()
 {
     data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
     cv::Matx44f cv_mat         = cv::Matx44f::eye();
 
     //identity test
-    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
+    io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -128,7 +128,7 @@ void matrix_test::copyToCvFloat()
         }
     }
 
-    data::matrix4::container_type array = {{0.16, 0.15, 0.14, 0.1378942,
+    data::matrix4::container_t array = {{0.16, 0.15, 0.14, 0.1378942,
         12.0, 11.0, 10.0, 9.0,
         0.08, 0.07, 0.0645687, 0.05,
         40.0, 30.0, 20.0, 10.0
@@ -136,7 +136,7 @@ void matrix_test::copyToCvFloat()
     };
     (*fw_mat) = array;
 
-    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
+    io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -154,7 +154,7 @@ void matrix_test::copyToCvFloat()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copy_from_cvDouble()
+void matrix_test::copy_from_cv_double()
 {
     cv::Matx44d cv_mat         = cv::Matx44d::eye();
     data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
@@ -212,13 +212,13 @@ void matrix_test::copy_from_cvDouble()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyToCvDouble()
+void matrix_test::copy_to_cv_double()
 {
     data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
     cv::Matx44d cv_mat         = cv::Matx44d::eye();
 
     //identity test
-    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
+    io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -232,7 +232,7 @@ void matrix_test::copyToCvDouble()
         }
     }
 
-    data::matrix4::container_type array = {{0.16, 0.15, 0.14, 0.1378942,
+    data::matrix4::container_t array = {{0.16, 0.15, 0.14, 0.1378942,
         12.0, 11.0, 10.0, 9.0,
         0.08, 0.07, 0.0645687, 0.05,
         40.0, 30.0, 20.0, 10.0
@@ -241,7 +241,7 @@ void matrix_test::copyToCvDouble()
     (*fw_mat) = array;
 
     //values test
-    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
+    io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -258,7 +258,7 @@ void matrix_test::copyToCvDouble()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copy_from_cvMat()
+void matrix_test::copy_from_cv_mat()
 {
     // identity test
     data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
@@ -303,13 +303,13 @@ void matrix_test::copy_from_cvMat()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyToCvMat()
+void matrix_test::copy_to_cv_mat()
 {
     data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
     cv::Mat cv_mat             = cv::Mat::eye(4, 4, CV_64F);
 
     //identity test
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyToCv(fw_mat, cv_mat));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copy_to_cv(fw_mat, cv_mat));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -323,7 +323,7 @@ void matrix_test::copyToCvMat()
         }
     }
 
-    data::matrix4::container_type array = {
+    data::matrix4::container_t array = {
         0.16, 0.15, 0.14, 0.1378942,
         12.0, 11.0, 10.0, 9.0,
         0.08, 0.07, 0.0645687, 0.05,
@@ -332,7 +332,7 @@ void matrix_test::copyToCvMat()
     (*fw_mat) = array;
 
     //values test
-    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
+    io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -349,7 +349,7 @@ void matrix_test::copyToCvMat()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyFromRvecTvec()
+void matrix_test::copy_from_rvec_tvec()
 {
     // Identity test.
     cv::Mat cv_mat = cv::Mat::eye(4, 4, CV_64F);
@@ -422,7 +422,7 @@ void matrix_test::copyFromRvecTvec()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyToRvecTvec()
+void matrix_test::copy_to_rvec_tvec()
 {
     data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
     cv::Mat expected_rvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
@@ -431,7 +431,7 @@ void matrix_test::copyToRvecTvec()
     cv::Mat tvec;
 
     //identity test
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyToCv(fw_mat, rvec, tvec));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copy_to_cv(fw_mat, rvec, tvec));
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
@@ -450,7 +450,7 @@ void matrix_test::copyToRvecTvec()
         );
     }
 
-    data::matrix4::container_type array = {
+    data::matrix4::container_t array = {
         1., 0., 0., 4.,
         0., 0.86601905, -0.50001100, 8.,
         0., 0.50001100, 0.86601905, 12.,
@@ -459,7 +459,7 @@ void matrix_test::copyToRvecTvec()
     (*fw_mat) = array;
 
     //values test
-    io::opencv::matrix::copyToCv(fw_mat, rvec, tvec);
+    io::opencv::matrix::copy_to_cv(fw_mat, rvec, tvec);
     expected_rvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0., 0.);
     expected_tvec = (cv::Mat_<double>(3, 1) << 4., 8., 12.);
 

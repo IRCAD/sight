@@ -42,19 +42,19 @@ class SERVICE_CLASS_API has_services
 {
 public:
 
-    typedef std::vector<WPTR(service::base)> ServiceVector;
+    using service_vector_t = std::vector<std::weak_ptr<service::base> >;
 
     /**
      * @brief Get all subservices linked to this service
      * @return The vector of linked services
      */
-    [[nodiscard]] const ServiceVector& getRegisteredServices() const;
+    [[nodiscard]] const service_vector_t& get_registered_services() const;
 
     /**
      * @brief Return a specific registered service
      * @param[in] id Identifier of the service
      */
-    [[nodiscard]] SERVICE_API CSPTR(service::base) getRegisteredService(const core::tools::id::type& _id) const;
+    [[nodiscard]] SERVICE_API CSPTR(service::base) get_registered_service(const core::tools::id::type& _id) const;
 
 protected:
 
@@ -69,7 +69,7 @@ protected:
      * @param[in] _implType Type of the service
      * @param[in] id Optional identifier of the service
      */
-    SERVICE_API SPTR(service::base) registerService(
+    SERVICE_API SPTR(service::base) register_service(
         const std::string& _impl_type,
         const std::string& _id = ""
     );
@@ -80,46 +80,46 @@ protected:
      * @param[in] id Optional identifier of the service
      */
     template<class T>
-    SPTR(T) registerService(const std::string& _impl_type, const std::string& _id = "");
+    SPTR(T) register_service(const std::string& _impl_type, const std::string& _id = "");
 
     /**
      * @brief Unregister a specific service
      * @param id Identifier of the service
      */
-    SERVICE_API void unregisterService(const core::tools::id::type& _id);
+    SERVICE_API void unregister_service(const core::tools::id::type& _id);
 
     /**
      * @brief Unregister a specific service
      * @param service Pointer to the service
      */
-    SERVICE_API void unregisterService(const service::base::sptr& _service);
+    SERVICE_API void unregister_service(const service::base::sptr& _service);
 
     /**
      * @brief Unregister all services linked to this service, optionally matches only a given type of services
      * @param _implType Optional type of the services to unregister
      */
-    SERVICE_API void unregisterServices(const std::string& _impl_type = "");
+    SERVICE_API void unregister_services(const std::string& _impl_type = "");
 
 private:
 
     /// Sub services linked to this service
-    ServiceVector m_subServices;
+    service_vector_t m_sub_services;
 };
 
 //------------------------------------------------------------------------------
 
-inline const has_services::ServiceVector& has_services::getRegisteredServices() const
+inline const has_services::service_vector_t& has_services::get_registered_services() const
 {
-    return m_subServices;
+    return m_sub_services;
 }
 
 //------------------------------------------------------------------------------
 
 template<class T>
-SPTR(T) has_services::registerService(const std::string& _impl_type, const std::string& _id)
+SPTR(T) has_services::register_service(const std::string& _impl_type, const std::string& _id)
 {
     auto srv = service::add<T>(_impl_type, _id);
-    m_subServices.push_back(srv);
+    m_sub_services.push_back(srv);
 
     return srv;
 }

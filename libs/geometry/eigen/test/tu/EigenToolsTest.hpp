@@ -32,16 +32,16 @@
 namespace sight::geometry::eigen::ut
 {
 
-class EigenToolsTest : public CPPUNIT_NS::TestFixture
+class eigen_tools_test : public CPPUNIT_NS::TestFixture
 {
 private:
 
-    CPPUNIT_TEST_SUITE(EigenToolsTest);
-    CPPUNIT_TEST(f4sToEigen);
+    CPPUNIT_TEST_SUITE(eigen_tools_test);
+    CPPUNIT_TEST(f4s_to_eigen);
     CPPUNIT_TEST(from_eigen);
-    CPPUNIT_TEST(float16ToEigen);
-    CPPUNIT_TEST(eigenMatToRvecTvec);
-    CPPUNIT_TEST(f4sMatToRvecTvec);
+    CPPUNIT_TEST(float16_to_eigen);
+    CPPUNIT_TEST(eigen_mat_to_rvec_tvec);
+    CPPUNIT_TEST(f4s_mat_to_rvec_tvec);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,13 +50,13 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void f4sToEigen();
+    static void f4s_to_eigen();
     static void from_eigen();
 
-    static void float16ToEigen();
+    static void float16_to_eigen();
 
-    static void eigenMatToRvecTvec();
-    static void f4sMatToRvecTvec();
+    static void eigen_mat_to_rvec_tvec();
+    static void f4s_mat_to_rvec_tvec();
 
     //------------------------------------------------------------------------------
 

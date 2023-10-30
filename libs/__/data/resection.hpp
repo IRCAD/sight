@@ -44,8 +44,8 @@ public:
 
     SIGHT_DECLARE_CLASS(resection, object);
 
-    typedef std::vector<reconstruction::sptr> ResectionInputs;
-    typedef std::vector<reconstruction::sptr> ResectionOutputs;
+    using resection_inputs  = std::vector<reconstruction::sptr>;
+    using resection_outputs = std::vector<reconstruction::sptr>;
 
     /**
      * @brief Constructor
@@ -60,60 +60,60 @@ public:
      * @{
      * @brief Get/Set value of the planeList.
      */
-    plane_list::sptr& getPlaneList();
-    const plane_list::sptr& getPlaneList() const;
-    void setPlaneList(const plane_list::sptr& _plane_list);
+    plane_list::sptr& get_plane_list();
+    const plane_list::sptr& get_plane_list() const;
+    void set_plane_list(const plane_list::sptr& _plane_list);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the inputs.
      */
-    ResectionInputs& getInputs();
-    const ResectionInputs& getInputs() const;
-    void SetInputs(const ResectionInputs& _v_inputs);
+    resection_inputs& get_inputs();
+    const resection_inputs& get_inputs() const;
+    void set_inputs(const resection_inputs& _v_inputs);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the outputs.
      */
-    ResectionOutputs& getOutputs();
-    const ResectionOutputs& getOutputs() const;
-    void setOutputs(const ResectionOutputs& _v_outputs);
+    resection_outputs& get_outputs();
+    const resection_outputs& get_outputs() const;
+    void set_outputs(const resection_outputs& _v_outputs);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the IsSafePart.
      */
-    bool getIsSafePart() const;
-    void setIsSafePart(bool _is_safe_part);
+    bool get_is_safe_part() const;
+    void set_is_safe_part(bool _is_safe_part);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the name.
      */
-    std::string& getName();
-    const std::string& getName() const;
-    void setName(const std::string& _name);
+    std::string& get_name();
+    const std::string& get_name() const;
+    void set_name(const std::string& _name);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the IsVisible.
      */
-    bool getIsVisible() const;
-    void setIsVisible(bool _is_visible);
+    bool get_is_visible() const;
+    void set_is_visible(bool _is_visible);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the IsValid.
      */
-    bool getIsValid() const;
-    void setIsValid(bool _is_valid);
+    bool get_is_valid() const;
+    void set_is_valid(bool _is_valid);
     /// @}
 
     /***
@@ -122,13 +122,13 @@ public:
      */
 
     /// Type of signal when a reconstruction is added
-    typedef core::com::signal<void ()> reconstruction_added_signal_t;
+    using reconstruction_added_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigReconstructionAdded
     DATA_API static const core::com::signals::key_t RECONSTRUCTION_ADDED_SIG;
 
     /// Type of signal when the resection visibility is modified
-    typedef core::com::signal<void ()> visibility_modified_signal_t;
+    using visibility_modified_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
@@ -162,22 +162,22 @@ protected:
     std::string m_name;
 
     //! Planes list
-    plane_list::sptr m_planeList;
+    plane_list::sptr m_plane_list;
 
     //! Inputs (reconstructions)
-    ResectionInputs m_vInputs;
+    resection_inputs m_v_inputs;
 
     //! Outputs (reconstructions)
-    ResectionOutputs m_vOutputs;
+    resection_outputs m_v_outputs;
 
     //! flag if the part is safe
-    bool m_isSafePart {true};
+    bool m_is_safe_part {true};
 
     //! flag if the resection is valid
-    bool m_isValid {false};
+    bool m_is_valid {false};
 
     //! flag if the resection is visible
-    bool m_isVisible {true};
+    bool m_visible {true};
 
 private:
 
@@ -186,10 +186,10 @@ private:
      * @{
      */
     /// Signal emitted when a reconstruction is added
-    reconstruction_added_signal_t::sptr m_sigReconstructionAdded;
+    reconstruction_added_signal_t::sptr m_sig_reconstruction_added;
 
     /// Signal emitted when the resection visibility is modified
-    visibility_modified_signal_t::sptr m_sigVisibilityModified;
+    visibility_modified_signal_t::sptr m_sig_visibility_modified;
     /**
      * @}
      */
@@ -197,128 +197,128 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline plane_list::sptr& resection::getPlaneList()
+inline plane_list::sptr& resection::get_plane_list()
 {
-    return m_planeList;
+    return m_plane_list;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const plane_list::sptr& resection::getPlaneList() const
+inline const plane_list::sptr& resection::get_plane_list() const
 {
-    return m_planeList;
+    return m_plane_list;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setPlaneList(const plane_list::sptr& _plane_list)
+inline void resection::set_plane_list(const plane_list::sptr& _plane_list)
 {
-    m_planeList = _plane_list;
+    m_plane_list = _plane_list;
 }
 
 //-----------------------------------------------------------------------------
 
-inline resection::ResectionInputs& resection::getInputs()
+inline resection::resection_inputs& resection::get_inputs()
 {
-    return m_vInputs;
+    return m_v_inputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const resection::ResectionInputs& resection::getInputs() const
+inline const resection::resection_inputs& resection::get_inputs() const
 {
-    return m_vInputs;
+    return m_v_inputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection::SetInputs(const resection::ResectionInputs& _v_inputs)
+inline void resection::set_inputs(const resection::resection_inputs& _v_inputs)
 {
-    m_vInputs = _v_inputs;
+    m_v_inputs = _v_inputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline resection::ResectionOutputs& resection::getOutputs()
+inline resection::resection_outputs& resection::get_outputs()
 {
-    return m_vOutputs;
+    return m_v_outputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const resection::ResectionOutputs& resection::getOutputs() const
+inline const resection::resection_outputs& resection::get_outputs() const
 {
-    return m_vOutputs;
+    return m_v_outputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setOutputs(const resection::ResectionOutputs& _v_outputs)
+inline void resection::set_outputs(const resection::resection_outputs& _v_outputs)
 {
-    m_vOutputs = _v_outputs;
+    m_v_outputs = _v_outputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool resection::getIsSafePart() const
+inline bool resection::get_is_safe_part() const
 {
-    return m_isSafePart;
+    return m_is_safe_part;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setIsSafePart(const bool _is_safe_part)
+inline void resection::set_is_safe_part(const bool _is_safe_part)
 {
-    m_isSafePart = _is_safe_part;
+    m_is_safe_part = _is_safe_part;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string& resection::getName()
-{
-    return m_name;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const std::string& resection::getName() const
+inline std::string& resection::get_name()
 {
     return m_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setName(const std::string& _name)
+inline const std::string& resection::get_name() const
+{
+    return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void resection::set_name(const std::string& _name)
 {
     m_name = _name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool resection::getIsVisible() const
+inline bool resection::get_is_visible() const
 {
-    return m_isVisible;
+    return m_visible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setIsVisible(const bool _is_visible)
+inline void resection::set_is_visible(const bool _is_visible)
 {
-    m_isVisible = _is_visible;
+    m_visible = _is_visible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool resection::getIsValid() const
+inline bool resection::get_is_valid() const
 {
-    return m_isValid;
+    return m_is_valid;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setIsValid(const bool _is_valid)
+inline void resection::set_is_valid(const bool _is_valid)
 {
-    m_isValid = _is_valid;
+    m_is_valid = _is_valid;
 }
 
 //-----------------------------------------------------------------------------

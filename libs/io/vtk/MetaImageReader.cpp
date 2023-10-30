@@ -22,7 +22,7 @@
 
 #include "io/vtk/MetaImageReader.hpp"
 
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
@@ -35,40 +35,40 @@
 #include <vtkMetaImageReader.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER(sight::io::vtk::MetaImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::meta_image_reader);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-MetaImageReader::MetaImageReader() :
+meta_image_reader::meta_image_reader() :
     m_job(std::make_shared<core::jobs::observer>("Meta image reader"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-MetaImageReader::~MetaImageReader()
+meta_image_reader::~meta_image_reader()
 = default;
 
 //------------------------------------------------------------------------------
 
-void MetaImageReader::read()
+void meta_image_reader::read()
 {
-    using helper::vtkLambdaCommand;
+    using helper::vtk_lambda_command;
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::sptr p_image = this->getConcreteObject();
+    data::image::sptr p_image = this->get_concrete_object();
 
     vtkSmartPointer<vtkMetaImageReader> reader = vtkSmartPointer<vtkMetaImageReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
 
-    vtkSmartPointer<vtkLambdaCommand> progress_callback;
+    vtkSmartPointer<vtk_lambda_command> progress_callback;
 
-    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progress_callback->SetCallback(
+    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
+    progress_callback->set_callback(
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkMetaImageReader*>(_caller);
@@ -100,14 +100,14 @@ void MetaImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string MetaImageReader::extension() const
+std::string meta_image_reader::extension() const
 {
     return ".mhd";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr MetaImageReader::getJob() const
+core::jobs::base::sptr meta_image_reader::get_job() const
 {
     return m_job;
 }

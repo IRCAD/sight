@@ -31,15 +31,15 @@ namespace sight::io::http::exceptions
 /**
  * @brief Implements exception for an HTTP connection refused.
  */
-class IO_HTTP_CLASS_API ConnectionRefused : public sight::io::http::exceptions::Base
+class IO_HTTP_CLASS_API connection_refused : public sight::io::http::exceptions::base
 {
 public:
 
     /**
      * @name Constructor/Destructor.
      * @{ */
-    IO_HTTP_API ConnectionRefused(const std::string& _message);
-    ~ConnectionRefused() noexcept override;
+    IO_HTTP_API connection_refused(const std::string& _message);
+    ~connection_refused() noexcept override;
     /**  @} */
 };
 

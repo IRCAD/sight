@@ -75,7 +75,7 @@ public:
     MODULE_IO_DICOM_API ~surface_segmentation_writer() noexcept override;
 
     /// Propose a directory selection where to save the DICOM files.
-    MODULE_IO_DICOM_API void openLocationDialog() override;
+    MODULE_IO_DICOM_API void open_location_dialog() override;
 
 protected:
 
@@ -92,7 +92,7 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override;
 
 private:
 
@@ -101,7 +101,7 @@ private:
      * @param[in] filename DICOM file name
      * @param[in] model ModelSeries that must be written
      */
-    void saveSurfaceSegmentation(
+    void save_surface_segmentation(
         const std::filesystem::path _filename,
         const data::model_series::csptr& _model
     );

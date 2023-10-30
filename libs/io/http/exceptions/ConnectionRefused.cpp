@@ -25,12 +25,12 @@
 namespace sight::io::http::exceptions
 {
 
-ConnectionRefused::ConnectionRefused(const std::string& _message) :
-    io::http::exceptions::Base(_message)
+connection_refused::connection_refused(const std::string& _message) :
+    io::http::exceptions::base(_message)
 {
 }
 
-ConnectionRefused::~ConnectionRefused() noexcept =
+connection_refused::~connection_refused() noexcept =
     default;
 
 } // namespace sight::io::http::exceptions

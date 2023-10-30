@@ -89,7 +89,7 @@ void service_connection::connect(const sight::service::base& _service)
 
 //-----------------------------------------------------------------------------
 
-void service_connection::connectStartSlot(const sight::service::base& _service)
+void service_connection::connect_start_slot(const sight::service::base& _service)
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
@@ -183,7 +183,7 @@ void service_connection::disconnect(const sight::service::base& _service)
 
 //-----------------------------------------------------------------------------
 
-void service_connection::disconnectStartSlot(const sight::service::base& _service)
+void service_connection::disconnect_start_slot(const sight::service::base& _service)
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 

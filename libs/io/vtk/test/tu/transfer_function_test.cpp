@@ -51,20 +51,20 @@ void transfer_function_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-data::transfer_function::sptr transfer_function_test::createTFColor()
+data::transfer_function::sptr transfer_function_test::create_tf_color()
 {
     data::transfer_function::sptr tf = std::make_shared<data::transfer_function>();
 
-    tf->setBackgroundColor(data::transfer_function::color_t(1.0, 0.3, 0.6, 0.1));
-    tf->setName("color_t");
-    tf->setLevel(0.0);
-    tf->setWindow(400.0);
+    tf->set_background_color(data::transfer_function::color_t(1.0, 0.3, 0.6, 0.1));
+    tf->set_name("color_t");
+    tf->set_level(0.0);
+    tf->set_window(400.0);
 
     auto tf_data = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
-    tf_data->setClamped(false);
-    tf_data->setInterpolationMode(data::transfer_function::InterpolationMode::LINEAR);
-    tf_data->setLevel(0.0);
-    tf_data->setWindow(400.0);
+    tf_data->set_clamped(false);
+    tf_data->set_interpolation_mode(data::transfer_function::interpolation_mode::linear);
+    tf_data->set_level(0.0);
+    tf_data->set_window(400.0);
 
     tf_data->insert({-200, data::transfer_function::color_t(1.0, 0.0, 0.0, 0.0)});
     tf_data->insert({0, data::transfer_function::color_t(0.0, 1.0, 0.0, 0.0)});
@@ -76,16 +76,16 @@ data::transfer_function::sptr transfer_function_test::createTFColor()
 
 //------------------------------------------------------------------------------
 
-void transfer_function_test::toVtkLookupTableTest()
+void transfer_function_test::to_vtk_lookup_table_test()
 {
-    data::transfer_function::sptr tf   = this->createTFColor();
+    data::transfer_function::sptr tf   = this->create_tf_color();
     vtkSmartPointer<vtkLookupTable> lt = vtkSmartPointer<vtkLookupTable>::New();
 
     std::array<double, 3> color {};
     double opacity         = NAN;
     double color_tolerance = 1.0 / 255.0;
 
-    io::vtk::helper::transfer_function::toVtkLookupTable(tf, lt, true, 4096);
+    io::vtk::helper::transfer_function::to_vtk_lookup_table(tf, lt, true, 4096);
     lt->GetColor(0, color.data());
     opacity = lt->GetOpacity(0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], color_tolerance);
@@ -107,8 +107,8 @@ void transfer_function_test::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], color_tolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.75, opacity, color_tolerance);
 
-    tf->pieces()[0]->setInterpolationMode(data::transfer_function::InterpolationMode::NEAREST);
-    io::vtk::helper::transfer_function::toVtkLookupTable(tf, lt, true, 4096);
+    tf->pieces()[0]->set_interpolation_mode(data::transfer_function::interpolation_mode::nearest);
+    io::vtk::helper::transfer_function::to_vtk_lookup_table(tf, lt, true, 4096);
     lt->GetColor(120, color.data());
     opacity = lt->GetOpacity(120);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], color_tolerance);
@@ -116,8 +116,8 @@ void transfer_function_test::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], color_tolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, opacity, color_tolerance);
 
-    tf->setLevel(200);
-    io::vtk::helper::transfer_function::toVtkLookupTable(tf, lt, true, 4096);
+    tf->set_level(200);
+    io::vtk::helper::transfer_function::to_vtk_lookup_table(tf, lt, true, 4096);
     lt->GetColor(200, color.data());
     opacity = lt->GetOpacity(200);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], color_tolerance);
@@ -125,9 +125,9 @@ void transfer_function_test::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[2], color_tolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, opacity, color_tolerance);
 
-    tf->setLevel(0);
-    tf->setWindow(800);
-    io::vtk::helper::transfer_function::toVtkLookupTable(tf, lt, true, 4096);
+    tf->set_level(0);
+    tf->set_window(800);
+    io::vtk::helper::transfer_function::to_vtk_lookup_table(tf, lt, true, 4096);
     lt->GetColor(200, color.data());
     opacity = lt->GetOpacity(200);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], color_tolerance);
@@ -135,7 +135,7 @@ void transfer_function_test::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], color_tolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, opacity, color_tolerance);
 
-    io::vtk::helper::transfer_function::toVtkLookupTable(tf, lt, false, 4096);
+    io::vtk::helper::transfer_function::to_vtk_lookup_table(tf, lt, false, 4096);
     lt->GetColor(200, color.data());
     opacity = lt->GetOpacity(200);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], color_tolerance);
@@ -146,10 +146,10 @@ void transfer_function_test::toVtkLookupTableTest()
 
 //------------------------------------------------------------------------------
 
-void transfer_function_test::toBWVtkLookupTableTest()
+void transfer_function_test::to_bw_vtk_lookup_table_test()
 {
     vtkSmartPointer<vtkLookupTable> lt = vtkSmartPointer<vtkLookupTable>::New();
-    io::vtk::helper::transfer_function::toBWVtkLookupTable(0.0, 100.0, lt, 4096);
+    io::vtk::helper::transfer_function::to_bw_vtk_lookup_table(0.0, 100.0, lt, 4096);
 
     std::array<double, 3> color {};
     double opacity         = NAN;

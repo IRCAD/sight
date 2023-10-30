@@ -58,22 +58,22 @@ public:
     DATA_API ~reconstruction() noexcept override = default;
 
     /// Constant to inform that mask volume has not been computed yet.
-    DATA_API static const double s_NO_COMPUTED_MASK_VOLUME;
+    DATA_API static const double NO_COMPUTED_MASK_VOLUME;
 
     /**
      * @{
      * @brief Get/Set value of the bIsVisible.
      */
-    bool getIsVisible() const;
-    void setIsVisible(bool _b_is_visible);
+    bool get_is_visible() const;
+    void set_is_visible(bool _b_is_visible);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the organName.
      */
-    std::string getOrganName() const;
-    void setOrganName(const std::string& _s_organ_name);
+    std::string get_organ_name() const;
+    void set_organ_name(const std::string& _s_organ_name);
     /// @}
 
     /**
@@ -87,31 +87,31 @@ public:
     /**
      * @brief Get/Set the image associated with the acquisition
      */
-    image::sptr getImage();
-    image::csptr getImage() const;
-    void setImage(const image::sptr& _val);
+    image::sptr get_image();
+    image::csptr get_image() const;
+    void set_image(const image::sptr& _val);
 
     /**
      * @brief Get/Set the mesh associated with the acquisition
      */
-    mesh::sptr getMesh();
-    mesh::csptr getMesh() const;
-    void setMesh(const mesh::sptr& _val);
+    mesh::sptr get_mesh();
+    mesh::csptr get_mesh() const;
+    void set_mesh(const mesh::sptr& _val);
     /// @}
 
     /**
      * @brief Get/Set the material associated with the acquisition
      */
-    material::sptr getMaterial();
-    material::csptr getMaterial() const;
-    void setMaterial(const material::sptr& _val);
+    material::sptr get_material();
+    material::csptr get_material() const;
+    void set_material(const material::sptr& _val);
     /// @}
 
     /**
      * @brief Get/Set the volume from mask
      */
-    double getComputedMaskVolume() const;
-    void setComputedMaskVolume(double _val);
+    double get_computed_mask_volume() const;
+    void set_computed_mask_volume(double _val);
     /// @}
 
     /***
@@ -120,13 +120,13 @@ public:
      */
 
     /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
-    typedef core::com::signal<void (mesh::sptr)> mesh_changed_signal_t;
+    using mesh_changed_signal_t = core::com::signal<void (mesh::sptr)>;
 
     /// Key in m_signals map of signal m_sigMeshModified
     DATA_API static const core::com::signals::key_t MESH_CHANGED_SIG;
 
     /// Type of signal when mesh is modified
-    typedef core::com::signal<void (bool)> visibility_modified_signal_t;
+    using visibility_modified_signal_t = core::com::signal<void (bool)>;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
@@ -157,13 +157,13 @@ public:
 protected:
 
     //! true if this reconstruction is visible
-    bool m_bIsVisible {false};
+    bool m_b_is_visible {false};
 
     //! Organ name
-    std::string m_sOrganName;
+    std::string m_s_organ_name;
 
     //! Structure type
-    std::string m_sStructureType;
+    std::string m_s_structure_type;
 
     //--------------------------------------------------------------------------
 
@@ -177,7 +177,7 @@ protected:
     mesh::sptr m_mesh;
 
     //! reconstruction's mask volume
-    double m_computedMaskVolume;
+    double m_computed_mask_volume;
 
     /**
      * @name Signals
@@ -185,10 +185,10 @@ protected:
      */
 
     /// Signal emitted when mesh changed, mesh parameter is used to store old mesh
-    mesh_changed_signal_t::sptr m_sigMeshChanged;
+    mesh_changed_signal_t::sptr m_sig_mesh_changed;
 
     /// Signal emitted  when visibility is modified
-    visibility_modified_signal_t::sptr m_sigVisibilityModified;
+    visibility_modified_signal_t::sptr m_sig_visibility_modified;
     /**
      * @}
      */
@@ -196,121 +196,121 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline bool reconstruction::getIsVisible() const
+inline bool reconstruction::get_is_visible() const
 {
-    return m_bIsVisible;
+    return m_b_is_visible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setIsVisible(const bool _b_is_visible)
+inline void reconstruction::set_is_visible(const bool _b_is_visible)
 {
-    m_bIsVisible = _b_is_visible;
+    m_b_is_visible = _b_is_visible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string reconstruction::getOrganName() const
+inline std::string reconstruction::get_organ_name() const
 {
-    return m_sOrganName;
+    return m_s_organ_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setOrganName(const std::string& _s_organ_name)
+inline void reconstruction::set_organ_name(const std::string& _s_organ_name)
 {
-    m_sOrganName = _s_organ_name;
+    m_s_organ_name = _s_organ_name;
 }
 
 //-----------------------------------------------------------------------------
 
 inline std::string reconstruction::get_structure_type() const
 {
-    return this->m_sStructureType;
+    return this->m_s_structure_type;
 }
 
 //-----------------------------------------------------------------------------
 
 inline void reconstruction::set_structure_type(const std::string& _s_structure_type)
 {
-    this->m_sStructureType = _s_structure_type;
+    this->m_s_structure_type = _s_structure_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline image::sptr reconstruction::getImage()
+inline image::sptr reconstruction::get_image()
 {
     return m_image;
 }
 
 //-----------------------------------------------------------------------------
 
-inline image::csptr reconstruction::getImage() const
+inline image::csptr reconstruction::get_image() const
 {
     return m_image;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setImage(const image::sptr& _val)
+inline void reconstruction::set_image(const image::sptr& _val)
 {
     m_image = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline mesh::sptr reconstruction::getMesh()
+inline mesh::sptr reconstruction::get_mesh()
 {
     return m_mesh;
 }
 
 //-----------------------------------------------------------------------------
 
-inline mesh::csptr reconstruction::getMesh() const
+inline mesh::csptr reconstruction::get_mesh() const
 {
     return m_mesh;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setMesh(const mesh::sptr& _val)
+inline void reconstruction::set_mesh(const mesh::sptr& _val)
 {
     m_mesh = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline material::sptr reconstruction::getMaterial()
+inline material::sptr reconstruction::get_material()
 {
     return m_material;
 }
 
 //-----------------------------------------------------------------------------
 
-inline material::csptr reconstruction::getMaterial() const
+inline material::csptr reconstruction::get_material() const
 {
     return m_material;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setMaterial(const material::sptr& _val)
+inline void reconstruction::set_material(const material::sptr& _val)
 {
     m_material = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline double reconstruction::getComputedMaskVolume() const
+inline double reconstruction::get_computed_mask_volume() const
 {
-    return m_computedMaskVolume;
+    return m_computed_mask_volume;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setComputedMaskVolume(double _val)
+inline void reconstruction::set_computed_mask_volume(double _val)
 {
-    m_computedMaskVolume = _val;
+    m_computed_mask_volume = _val;
 }
 
 //-----------------------------------------------------------------------------

@@ -97,15 +97,15 @@ void spy_log_test::log_message_test()
 
 struct log_producer_thread
 {
-    using sptr               = std::shared_ptr<log_producer_thread>;
-    using log_container_type = std::vector<std::string>;
+    using sptr            = std::shared_ptr<log_producer_thread>;
+    using log_container_t = std::vector<std::string>;
 
     log_producer_thread()
     = default;
 
     //------------------------------------------------------------------------------
 
-    static void run(log_container_type& _logs, std::size_t _nb_logs, std::size_t _offset)
+    static void run(log_container_t& _logs, std::size_t _nb_logs, std::size_t _offset)
     {
         for(std::size_t i = _offset ; i < _nb_logs + _offset ; ++i)
         {
@@ -149,7 +149,7 @@ void spy_log_test::thread_safety_test()
 {
     const std::size_t nb_thread(20);
     const std::size_t nb_log(20);
-    log_producer_thread::log_container_type logs(nb_thread * nb_log, "test");
+    log_producer_thread::log_container_t logs(nb_thread * nb_log, "test");
     std::vector<std::thread> tg;
     for(std::size_t i = 0 ; i < nb_thread ; ++i)
     {
@@ -163,7 +163,7 @@ void spy_log_test::thread_safety_test()
         t.join();
     }
 
-    log_producer_thread::log_container_type log_messages = sight::core::log::ut::spy_log_test::log_to_vector(m_ostream);
+    log_producer_thread::log_container_t log_messages = sight::core::log::ut::spy_log_test::log_to_vector(m_ostream);
 
     std::sort(log_messages.begin(), log_messages.end(), regex_compare);
     sight::core::log::ut::spy_log_test::check_log(logs, log_messages);

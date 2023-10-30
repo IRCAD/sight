@@ -95,7 +95,7 @@ void frame_grabber::startCamera()
 
     const auto camera = m_camera.lock();
 
-    if(camera->getCameraSource() == data::camera::FILE)
+    if(camera->getCameraSource() == data::camera::file)
     {
         std::filesystem::path file = camera->getVideoFile();
         const std::filesystem::path videoDir(ui::preferences::getVideoDir());
@@ -214,7 +214,7 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
         if(width != 0 && height != 0)
         {
             const auto frameTL = m_frame.lock();
-            frameTL->initPoolSize(width, height, core::type::FLOAT, data::frame_tl::PixelFormat::RGB);
+            frameTL->init_pool_size(width, height, core::type::FLOAT, data::frame_tl::PixelFormat::RGB);
         }
         else
         {
@@ -283,7 +283,7 @@ void frame_grabber::grabImage()
             sigPosition->async_emit(static_cast<std::int64_t>(m_imageCount) * m_fps);
 
             // Get the buffer of the timeline to fill
-            SPTR(data::frame_tl::buffer_t) bufferOut = frameTL->createBuffer(timestamp);
+            SPTR(data::frame_tl::buffer_t) bufferOut = frameTL->create_buffer(timestamp);
             float* frameBuffOut = reinterpret_cast<float*>(bufferOut->addElement(0));
 
             for(const auto& pt : inputCloud.points)

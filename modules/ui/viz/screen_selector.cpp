@@ -41,7 +41,7 @@ static const core::com::signals::key_t SCREEN_SELECTED_SIG = "screenSelected";
 //------------------------------------------------------------------------------
 
 screen_selector::screen_selector() :
-    m_screenSelectedSig(new_signal<screen_selected_signal_t>(SCREEN_SELECTED_SIG))
+    m_screen_selected_sig(new_signal<screen_selected_signal_t>(SCREEN_SELECTED_SIG))
 {
 }
 
@@ -70,7 +70,7 @@ void screen_selector::configuring()
 
 void screen_selector::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void screen_selector::updating()
     int screen_num = -1;
     if(m_mode == "select")
     {
-        screen_num = sight::module::ui::viz::screen_selector::selectScreen();
+        screen_num = sight::module::ui::viz::screen_selector::select_screen();
     }
     else
     {
@@ -104,7 +104,7 @@ void screen_selector::updating()
 
     if(screen_num >= 0)
     {
-        m_screenSelectedSig->async_emit(screen_num);
+        m_screen_selected_sig->async_emit(screen_num);
     }
 }
 
@@ -112,12 +112,12 @@ void screen_selector::updating()
 
 void screen_selector::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //------------------------------------------------------------------------------
 
-int screen_selector::selectScreen()
+int screen_selector::select_screen()
 {
     QStringList screen_names;
     int screen_number = 0;

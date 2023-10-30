@@ -32,15 +32,15 @@ class plane_functions_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(plane_functions_test);
-    CPPUNIT_TEST(checkGetPlane);
-    CPPUNIT_TEST(checkSetValues);
-    CPPUNIT_TEST(checkDistance);
-    CPPUNIT_TEST(checkNormal);
+    CPPUNIT_TEST(check_get_plane);
+    CPPUNIT_TEST(check_set_values);
+    CPPUNIT_TEST(check_distance);
+    CPPUNIT_TEST(check_normal);
 //    CPPUNIT_TEST( checkIntersect );
-    CPPUNIT_TEST(checkIsInHalfSpace);
-    CPPUNIT_TEST(checkOffset);
-    CPPUNIT_TEST(checkTransform);
-    CPPUNIT_TEST(checkOperator);
+    CPPUNIT_TEST(check_is_in_half_space);
+    CPPUNIT_TEST(check_offset);
+    CPPUNIT_TEST(check_transform);
+    CPPUNIT_TEST(check_operator);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,15 +49,15 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void checkSetValues();
-    static void checkGetPlane();
-    static void checkDistance();
-    static void checkNormal();
-    static void checkIntersect();
-    static void checkIsInHalfSpace();
-    static void checkOffset();
-    static void checkTransform();
-    static void checkOperator();
+    static void check_set_values();
+    static void check_get_plane();
+    static void check_distance();
+    static void check_normal();
+    static void check_intersect();
+    static void check_is_in_half_space();
+    static void check_offset();
+    static void check_transform();
+    static void check_operator();
 };
 
 } // namespace sight::geometry::data::ut

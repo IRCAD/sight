@@ -28,7 +28,7 @@
 #include <gdcmDataSet.h>
 #include <gdcmSequenceOfItems.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::DicomSRNumNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::dicom_sr_num_node_test);
 
 #define VALUE 0x0008, 0x0100
 #define DESIGNATOR 0x0008, 0x0102
@@ -45,26 +45,26 @@ namespace sight::io::dicom::container::sr::ut
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNodeTest::basicTest()
+void dicom_sr_num_node_test::basic_test()
 {
     using namespace std::literals::string_literals;
 
     gdcm::DataSet dataset;
-    DicomSRNumNode({}, "friend", 42, {"value", "designator", "meaning", "version"}).write(dataset);
-    CPPUNIT_ASSERT_EQUAL("NUM"s, (io::dicom::helper::DicomDataReader::getTagValue<TYPE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::DicomDataReader::getTagValue<RELATIONSHIP>(dataset)));
+    dicom_sr_num_node({}, "friend", 42, {"value", "designator", "meaning", "version"}).write(dataset);
+    CPPUNIT_ASSERT_EQUAL("NUM"s, (io::dicom::helper::dicom_data_reader::get_tag_value<TYPE>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::dicom_data_reader::get_tag_value<RELATIONSHIP>(dataset)));
     gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
         dataset.GetDataElement(gdcm::Attribute<NUM_NODE>::GetTag()).GetValueAsSQ();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), sequence->GetNumberOfItems());
     gdcm::DataSet& item = sequence->GetItem(1).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL(42., (io::dicom::helper::DicomDataReader::getTagValue<NUM_VALUE, double>(item)));
+    CPPUNIT_ASSERT_EQUAL(42., (io::dicom::helper::dicom_data_reader::get_tag_value<NUM_VALUE, double>(item)));
     gdcm::SmartPointer<gdcm::SequenceOfItems> units_sequence =
         item.GetDataElement(gdcm::Attribute<UNITS>::GetTag()).GetValueAsSQ();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), units_sequence->GetNumberOfItems());
     gdcm::DataSet& units_item = units_sequence->GetItem(1).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("value"s, (io::dicom::helper::DicomDataReader::getTagValue<VALUE>(units_item)));
-    CPPUNIT_ASSERT_EQUAL("designator"s, (io::dicom::helper::DicomDataReader::getTagValue<DESIGNATOR>(units_item)));
-    CPPUNIT_ASSERT_EQUAL("meaning"s, (io::dicom::helper::DicomDataReader::getTagValue<MEANING>(units_item)));
+    CPPUNIT_ASSERT_EQUAL("value"s, (io::dicom::helper::dicom_data_reader::get_tag_value<VALUE>(units_item)));
+    CPPUNIT_ASSERT_EQUAL("designator"s, (io::dicom::helper::dicom_data_reader::get_tag_value<DESIGNATOR>(units_item)));
+    CPPUNIT_ASSERT_EQUAL("meaning"s, (io::dicom::helper::dicom_data_reader::get_tag_value<MEANING>(units_item)));
     // TODO: fix
     // CPPUNIT_ASSERT_EQUAL("version"s, (io::dicom::helper::DicomDataReader::getTagValue<VERSION>(unitsItem)));
 }

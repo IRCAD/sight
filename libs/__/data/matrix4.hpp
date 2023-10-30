@@ -40,7 +40,7 @@ class DATA_CLASS_API matrix4 final : public data::container<std::array<double,
 {
 public:
 
-    SIGHT_DECLARE_CLASS(matrix4, container<matrix4::container_type>);
+    SIGHT_DECLARE_CLASS(matrix4, container<matrix4::container_t>);
 
     /**
      * @brief Default constructor
@@ -52,8 +52,8 @@ public:
     DATA_API ~matrix4() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
-    using container<matrix4::container_type>::container;
-    using container<matrix4::container_type>::operator=;
+    using container<matrix4::container_t>::container;
+    using container<matrix4::container_t>::operator=;
 
     DATA_API matrix4& operator=(std::initializer_list<value_type> _init_list);
 
@@ -98,11 +98,11 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-    [[nodiscard]] static constexpr container_type identity() noexcept;
+    [[nodiscard]] static constexpr container_t identity() noexcept;
 
 protected:
 
-    static constexpr container_type s_IDENTITY = {
+    static constexpr container_t IDENTITY = {
         1., 0., 0., 0.,
         0., 1., 0., 0.,
         0., 0., 1., 0.,
@@ -128,9 +128,9 @@ constexpr const matrix4::value_type& matrix4::operator()(std::size_t _l, std::si
 
 //-----------------------------------------------------------------------------
 
-constexpr matrix4::container_type matrix4::identity() noexcept
+constexpr matrix4::container_t matrix4::identity() noexcept
 {
-    return matrix4::s_IDENTITY;
+    return matrix4::IDENTITY;
 }
 
 } // namespace sight::data

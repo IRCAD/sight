@@ -37,11 +37,10 @@ class object_reader;
 namespace registry
 {
 
-typedef std::string key_t;
+using key_t = std::string;
+using type  = core::factory_registry<std::shared_ptr<sight::io::reader::object_reader>(), key_t>;
 
-typedef core::factory_registry<SPTR(sight::io::reader::object_reader)(), key_t> Type;
-
-IO_API SPTR(Type) get();
+IO_API SPTR(type) get();
 
 } // namespace registry
 

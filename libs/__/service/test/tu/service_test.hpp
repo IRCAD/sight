@@ -36,14 +36,14 @@ namespace sight::service::ut
 class service_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(service_test);
-CPPUNIT_TEST(testServiceConfiguration);
-CPPUNIT_TEST(testServiceCreationWithMultipleData);
-CPPUNIT_TEST(testServiceCreationWithTemplateMethods);
-CPPUNIT_TEST(testServiceCreationWithUUID);
-CPPUNIT_TEST(testStartStopUpdate);
-CPPUNIT_TEST(testStartStopUpdateExceptions);
-CPPUNIT_TEST(testCommunication);
-CPPUNIT_TEST(testWithInAndOut);
+CPPUNIT_TEST(test_service_configuration);
+CPPUNIT_TEST(test_service_creation_with_multiple_data);
+CPPUNIT_TEST(test_service_creation_with_template_methods);
+CPPUNIT_TEST(test_service_creation_with_uuid);
+CPPUNIT_TEST(test_start_stop_update);
+CPPUNIT_TEST(test_start_stop_update_exceptions);
+CPPUNIT_TEST(test_communication);
+CPPUNIT_TEST(test_with_in_and_out);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,32 +53,32 @@ public:
     void tearDown() override;
 
     /// Test to configure a service
-    static void testServiceConfiguration();
+    static void test_service_configuration();
 
     /// Test add and remove service with multiple associated data
-    static void testServiceCreationWithMultipleData();
+    static void test_service_creation_with_multiple_data();
 
     /// Test add and remove service using template methods
-    static void testServiceCreationWithTemplateMethods();
+    static void test_service_creation_with_template_methods();
 
     /// Test add and remove service with UUID
-    static void testServiceCreationWithUUID();
+    static void test_service_creation_with_uuid();
 
     /// test start/stop/update service
-    static void testStartStopUpdate();
+    static void test_start_stop_update();
 
     /// test exceptions handling when starting/stopping/updating services
-    static void testStartStopUpdateExceptions();
+    static void test_start_stop_update_exceptions();
 
     /// test sending/receiving message
-    static void testCommunication();
+    static void test_communication();
 
     /// test service with an input and an output
-    static void testWithInAndOut();
+    static void test_with_in_and_out();
 
 private:
 
-    static void startStopUpdateExceptions(service::ut::test_service::sptr _service);
+    static void start_stop_update_exceptions(service::ut::test_service::sptr _service);
 };
 
 } // namespace sight::service::ut

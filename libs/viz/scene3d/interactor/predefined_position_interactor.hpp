@@ -78,9 +78,9 @@ public:
      *
      * @todo set to final when the vr interactor is deleted.
      */
-    VIZ_SCENE3D_API void mouseMoveEvent(
-        MouseButton _button,
-        Modifier /*_mods*/,
+    VIZ_SCENE3D_API void mouse_move_event(
+        mouse_button _button,
+        modifier /*_mods*/,
         int _x,
         int _y,
         int _dx,
@@ -91,7 +91,7 @@ public:
      * @brief Moves the camera towards or away from the focus point.
      * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
-    VIZ_SCENE3D_API void wheelEvent(Modifier /*_mods*/, double _delta, int /*x*/, int /*y*/) override;
+    VIZ_SCENE3D_API void wheel_event(modifier /*_mods*/, double _delta, int /*x*/, int /*y*/) override;
 
     /**
      * @brief Moves the camera towards or away the central point.
@@ -99,7 +99,7 @@ public:
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) override;
+    VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) override;
 
     /**
      * @brief Defines camera actions when the keyboard is pressed.
@@ -109,35 +109,35 @@ public:
      * @param _mouseX the mouse's width position at the time of the key press.
      * @param _mouseY the mouse's height position at the time of the key press.
      */
-    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouse_x, int _mouse_y) override;
+    VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int _mouse_x, int _mouse_y) override;
 
     /**
      * @brief Recomputes the camera's aspect ratio when the render window is resized.
      */
-    VIZ_SCENE3D_API void resizeEvent(int /*_width*/, int /*_height*/) override;
+    VIZ_SCENE3D_API void resize_event(int /*_width*/, int /*_height*/) override;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
-    VIZ_SCENE3D_API void setSceneLength(float _scene_length) override;
+    VIZ_SCENE3D_API void set_scene_length(float _scene_length) override;
 
     /// SLOT: Sets a parameter value with its key.
-    VIZ_SCENE3D_API void setParameter(ui::parameter_t _value, std::string _key);
+    VIZ_SCENE3D_API void set_parameter(ui::parameter_t _value, std::string _key);
 
     ///SLOT: Goes to the next predefined position (return to first one after the latest).
-    VIZ_SCENE3D_API void nextPosition();
+    VIZ_SCENE3D_API void next_position();
     ///SLOT: Goes to the previous predefined position (return to last one after the first).
-    VIZ_SCENE3D_API void previousPosition();
+    VIZ_SCENE3D_API void previous_position();
 
     /// Enables/disables the mouse rotation.
-    VIZ_SCENE3D_API void inline setMouseRotation(bool _enable);
+    VIZ_SCENE3D_API void inline set_mouse_rotation(bool _enable);
 
     /// Returns current state of mouse rotation.
-    VIZ_SCENE3D_API bool inline mouseRotation() const;
+    VIZ_SCENE3D_API bool inline mouse_rotation() const;
 
-    VIZ_SCENE3D_API void inline setTransform(const Ogre::Matrix4& _mat);
+    VIZ_SCENE3D_API void inline set_transform(const Ogre::Matrix4& _mat);
 
     VIZ_SCENE3D_API Ogre::Matrix4 inline transform() const;
 
-    VIZ_SCENE3D_API Ogre::Quaternion inline transformQuaternion() const;
+    VIZ_SCENE3D_API Ogre::Quaternion inline transform_quaternion() const;
 
 private:
 
@@ -145,33 +145,33 @@ private:
     void init();
 
     /// Internal function to rotate the camera in place (remove zoom level).
-    void rotateCamera(Ogre::SceneNode* const _cam, const Ogre::Quaternion& _quat) const;
+    void rotate_camera(Ogre::SceneNode* const _cam, const Ogre::Quaternion& _quat) const;
 
     /// Internal function to update camera position & orientation using m_transform (see @setTransform).
-    void followTransform();
+    void follow_transform();
 
     /**
      * @brief The camera's scene node will rotate around its point of interest (lookAt).
      * @param dx The mouse's X displacement
      * @param dy The mouse's Y displacement
      */
-    void cameraRotateByMouse(int _dx, int _dy);
+    void camera_rotate_by_mouse(int _dx, int _dy);
 
     /**
      * @brief Goes to the predefined position at index _idx
      * Does nothing if _idx >= vector size
      * @param _idx : the index in the vector of predefined positions
      */
-    void toPredefinedPosition(std::size_t _idx, bool _animate = true);
+    void to_predefined_position(std::size_t _idx, bool _animate = true);
 
     /// Resets the camera's focal length when the focus point changes.
-    void updateCameraFocalLength();
+    void update_camera_focal_length();
 
     /// Current distance from the camera to the point of interest.
-    float m_lookAtZ {300.F};
+    float m_look_at_z {300.F};
 
     /// Scale applied to mouse events.
-    float m_mouseScale {1.F};
+    float m_mouse_scale {1.F};
 
     /// Current zoom factor.
     float m_zoom {1.F};
@@ -180,17 +180,17 @@ private:
     static constexpr int MOUSE_SCALE_FACTOR = 200;
 
     /// Enables/disables mouse move events.
-    bool m_mouseMove {false};
+    bool m_mouse_move {false};
 
     /// Timer used to animate the camera.
     core::thread::timer::sptr m_timer;
 
     /// Stores the initial rotation.
-    const Ogre::Quaternion M_CAMERA_INIT_ROTATION {Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X)};
+    const Ogre::Quaternion m_camera_init_rotation {Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X)};
 
-    Ogre::Quaternion m_currentOrientation;
+    Ogre::Quaternion m_current_orientation;
 
-    Ogre::Quaternion m_lastOrientation;
+    Ogre::Quaternion m_last_orientation;
 
     /// Vector of predefined position to loop.
     std::vector<predefined_position_t> m_predefined_positions;
@@ -212,24 +212,24 @@ private:
 
 //------------------------------------------------------------------------------
 
-void inline predefined_position_interactor::setMouseRotation(bool _enable)
+void inline predefined_position_interactor::set_mouse_rotation(bool _enable)
 {
-    m_mouseMove = _enable;
+    m_mouse_move = _enable;
 }
 
 //------------------------------------------------------------------------------
 
-bool inline predefined_position_interactor::mouseRotation() const
+bool inline predefined_position_interactor::mouse_rotation() const
 {
-    return m_mouseMove;
+    return m_mouse_move;
 }
 
 //------------------------------------------------------------------------------
 
-void inline predefined_position_interactor::setTransform(const Ogre::Matrix4& _mat)
+void inline predefined_position_interactor::set_transform(const Ogre::Matrix4& _mat)
 {
     m_transform = _mat;
-    this->followTransform();
+    this->follow_transform();
 }
 
 //------------------------------------------------------------------------------
@@ -241,7 +241,7 @@ Ogre::Matrix4 predefined_position_interactor::transform() const
 
 //------------------------------------------------------------------------------
 
-Ogre::Quaternion predefined_position_interactor::transformQuaternion() const
+Ogre::Quaternion predefined_position_interactor::transform_quaternion() const
 {
     return Ogre::Quaternion(m_transform.linear());
 }

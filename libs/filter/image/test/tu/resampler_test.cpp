@@ -49,19 +49,19 @@ void resampler_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void resampler_test::identityTest()
+void resampler_test::identity_test()
 {
-    const data::image::Size size = {{32, 32, 32}};
+    const data::image::size_t size = {{32, 32, 32}};
 
     // TODO: make it work with an anisotropic spacing.
-    const data::image::Spacing spacing = {{0.5, 0.5, 0.5}};
-    const data::image::Origin origin   = {{0., 0., 0.}};
-    const core::type type              = core::type::INT16;
+    const data::image::spacing_t spacing = {{0.5, 0.5, 0.5}};
+    const data::image::origin_t origin   = {{0., 0., 0.}};
+    const core::type type                = core::type::INT16;
 
     data::image::sptr image_in = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
-    utest_data::generator::image::randomizeImage(image_in);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::randomize_image(image_in);
 
     data::image::sptr image_out = std::make_shared<data::image>();
 
@@ -72,12 +72,12 @@ void resampler_test::identityTest()
         data::image::csptr(image_in),
         image_out,
         data::matrix4::csptr(id_mat),
-        std::make_tuple(image_in->size(), image_in->getOrigin(), image_in->getSpacing())
+        std::make_tuple(image_in->size(), image_in->origin(), image_in->spacing())
     );
 
     CPPUNIT_ASSERT(image_out->size() == size);
-    CPPUNIT_ASSERT(image_out->getSpacing() == spacing);
-    CPPUNIT_ASSERT(image_out->getType() == type);
+    CPPUNIT_ASSERT(image_out->spacing() == spacing);
+    CPPUNIT_ASSERT(image_out->type() == type);
 
     const auto in_dump_lock  = image_in->dump_lock();
     const auto out_dump_lock = image_out->dump_lock();
@@ -101,18 +101,18 @@ void resampler_test::identityTest()
 
 //------------------------------------------------------------------------------
 
-void resampler_test::translateTest()
+void resampler_test::translate_test()
 {
     // Generate a simple image with a white cube at its center.
-    const data::image::Size size       = {{16, 16, 16}};
-    const data::image::Spacing spacing = {{1., 1., 1.}};
-    const data::image::Origin origin   = {{0., 0., 0.}};
-    const core::type type              = core::type::UINT8;
+    const data::image::size_t size       = {{16, 16, 16}};
+    const data::image::spacing_t spacing = {{1., 1., 1.}};
+    const data::image::origin_t origin   = {{0., 0., 0.}};
+    const core::type type                = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
 
     std::uint8_t value = 255;
 
@@ -165,22 +165,22 @@ void resampler_test::translateTest()
 
     // Check if size and spacing are the same as the input.
     CPPUNIT_ASSERT(image_out->size() == size);
-    CPPUNIT_ASSERT(image_out->getSpacing() == spacing);
+    CPPUNIT_ASSERT(image_out->spacing() == spacing);
 }
 
 //------------------------------------------------------------------------------
 
-void resampler_test::rotateTest()
+void resampler_test::rotate_test()
 {
-    const data::image::Size size       = {{64, 64, 64}};
-    const data::image::Spacing spacing = {{1., 1., 1.}};
-    const data::image::Origin origin   = {{0., 0., 0.}};
-    const core::type type              = core::type::FLOAT;
+    const data::image::size_t size       = {{64, 64, 64}};
+    const data::image::spacing_t spacing = {{1., 1., 1.}};
+    const data::image::origin_t origin   = {{0., 0., 0.}};
+    const core::type type                = core::type::FLOAT;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
 
     const float value = 1.F;
 

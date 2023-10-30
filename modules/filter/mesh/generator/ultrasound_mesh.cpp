@@ -44,23 +44,23 @@ static const char* s_width       = "width";
 static const char* s_delta_depth = "deltaDepth";
 static const char* s_shape       = "shape";
 
-static const core::com::slots::key_t SET_INT_PARAMETER_SLOT  = "setIntParameter";
-static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
+static const core::com::slots::key_t SET_INT_PARAMETER_SLOT  = "set_int_parameter";
+static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "set_bool_parameter";
 
-static const std::string s_RESOLUTION_X_CONFIG    = "resolutionX";
-static const std::string s_RESOLUTION_Y_CONFIG    = "resolutionY";
-static const std::string s_DEPTH_CONFIG           = "depth";
-static const std::string s_WIDTH_CONFIG           = "width";
-static const std::string s_ANGLE_CONFIG           = "angle";
-static const std::string s_DELTA_DEPTH_CONFIG     = "deltaDepth";
-static const std::string s_IS_CONVEX_SHAPE_CONFIG = "isConvexShape";
+static const std::string RESOLUTION_X_CONFIG    = "resolutionX";
+static const std::string RESOLUTION_Y_CONFIG    = "resolutionY";
+static const std::string DEPTH_CONFIG           = "depth";
+static const std::string WIDTH_CONFIG           = "width";
+static const std::string ANGLE_CONFIG           = "angle";
+static const std::string DELTA_DEPTH_CONFIG     = "deltaDepth";
+static const std::string IS_CONVEX_SHAPE_CONFIG = "isConvexShape";
 
 // -----------------------------------------------------------------------------
 
 ultrasound_mesh::ultrasound_mesh() noexcept
 {
-    new_slot(SET_INT_PARAMETER_SLOT, &ultrasound_mesh::setIntParameter, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &ultrasound_mesh::setBoolParameter, this);
+    new_slot(SET_INT_PARAMETER_SLOT, &ultrasound_mesh::set_int_parameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &ultrasound_mesh::set_bool_parameter, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -74,13 +74,13 @@ void ultrasound_mesh::configuring(const config_t& _config)
 {
     const auto config = _config.get_child("config.<xmlattr>");
 
-    m_resolutionX = config.get<std::size_t>(s_RESOLUTION_X_CONFIG, m_resolutionX);
-    m_resolutionY = config.get<std::size_t>(s_RESOLUTION_Y_CONFIG, m_resolutionY);
-    m_depth       = config.get<int>(s_DEPTH_CONFIG, m_depth);
-    m_width       = config.get<int>(s_WIDTH_CONFIG, m_width);
-    m_angle       = config.get<int>(s_ANGLE_CONFIG, m_angle);
-    m_deltaDepth  = config.get<int>(s_DELTA_DEPTH_CONFIG, m_deltaDepth);
-    m_shape       = config.get<bool>(s_IS_CONVEX_SHAPE_CONFIG, m_shape);
+    m_resolution_x = config.get<std::size_t>(RESOLUTION_X_CONFIG, m_resolution_x);
+    m_resolution_y = config.get<std::size_t>(RESOLUTION_Y_CONFIG, m_resolution_y);
+    m_depth        = config.get<int>(DEPTH_CONFIG, m_depth);
+    m_width        = config.get<int>(WIDTH_CONFIG, m_width);
+    m_angle        = config.get<int>(ANGLE_CONFIG, m_angle);
+    m_delta_depth  = config.get<int>(DELTA_DEPTH_CONFIG, m_delta_depth);
+    m_shape        = config.get<bool>(IS_CONVEX_SHAPE_CONFIG, m_shape);
 }
 
 // -----------------------------------------------------------------------------
@@ -88,15 +88,15 @@ void ultrasound_mesh::configuring(const config_t& _config)
 void ultrasound_mesh::starting()
 {
     // Allocate position array
-    const auto x = static_cast<std::int64_t>(m_resolutionX);
-    const auto y = static_cast<std::int64_t>(m_resolutionY);
-    m_meshPositionArray.resize(boost::extents[x][y][3]);
+    const auto x = static_cast<std::int64_t>(m_resolution_x);
+    const auto y = static_cast<std::int64_t>(m_resolution_y);
+    m_mesh_position_array.resize(boost::extents[x][y][3]);
 
     const auto mesh = m_mesh.lock();
 
     // Create mesh and notify
-    this->updateMeshPosition();
-    this->createQuadMesh(mesh.get_shared());
+    this->update_mesh_position();
+    this->create_quad_mesh(mesh.get_shared());
 }
 
 // -----------------------------------------------------------------------------
@@ -111,36 +111,36 @@ void ultrasound_mesh::updating()
 {
     const auto mesh = m_mesh.lock();
 
-    this->updateMeshPosition();
-    this->updateQuadMesh(mesh.get_shared());
+    this->update_mesh_position();
+    this->update_quad_mesh(mesh.get_shared());
 }
 
 // -----------------------------------------------------------------------------
 
-void ultrasound_mesh::updateMeshPosition()
+void ultrasound_mesh::update_mesh_position()
 {
     // compute delta angle
     const double theta_init  = (90. - m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
     const double theta_end   = (90. + m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
-    const double delta_theta = (theta_end - theta_init) / (double(m_resolutionX) - 1.);
+    const double delta_theta = (theta_end - theta_init) / (double(m_resolution_x) - 1.);
 
     // compute delta lengths
-    const double d_depth = m_depth / (double(m_resolutionY) - 1.);
-    const double d_width = m_width / (double(m_resolutionX) - 1.);
+    const double d_depth = m_depth / (double(m_resolution_y) - 1.);
+    const double d_width = m_width / (double(m_resolution_x) - 1.);
 
-    const fwVec3d center_position = {{0., 0., 0.}};
-    const fwVec3d direction       = {{0., 1., 0.}};
-    const fwVec3d normal          = {{1., 0., 0.}};
+    const fw_vec3d center_position = {{0., 0., 0.}};
+    const fw_vec3d direction       = {{0., 1., 0.}};
+    const fw_vec3d normal          = {{1., 0., 0.}};
 
     for(unsigned int width_grid = 0 ;
-        width_grid < m_resolutionX ;
+        width_grid < m_resolution_x ;
         ++width_grid)
     {
-        fwVec3d direction_live;
-        fwVec3d center_live;
+        fw_vec3d direction_live;
+        fw_vec3d center_live;
         if(m_shape)
         {
-            const double angle_live = theta_init + delta_theta * double(m_resolutionX - width_grid - 1);
+            const double angle_live = theta_init + delta_theta * double(m_resolution_x - width_grid - 1);
             direction_live = std::cos(angle_live) * normal + std::sin(angle_live) * direction;
             center_live    = center_position;
         }
@@ -151,24 +151,24 @@ void ultrasound_mesh::updateMeshPosition()
         }
 
         for(unsigned int depth_grid = 0 ;
-            depth_grid < m_resolutionY ;
+            depth_grid < m_resolution_y ;
             ++depth_grid)
         {
-            const fwVec3d pos_real = center_live + (depth_grid * d_depth + m_deltaDepth) * direction_live;
+            const fw_vec3d pos_real = center_live + (depth_grid * d_depth + m_delta_depth) * direction_live;
 
-            m_meshPositionArray[width_grid][depth_grid][0] = static_cast<float>(pos_real[0]);
-            m_meshPositionArray[width_grid][depth_grid][1] = static_cast<float>(pos_real[1]);
-            m_meshPositionArray[width_grid][depth_grid][2] = static_cast<float>(pos_real[2]);
+            m_mesh_position_array[width_grid][depth_grid][0] = static_cast<float>(pos_real[0]);
+            m_mesh_position_array[width_grid][depth_grid][1] = static_cast<float>(pos_real[1]);
+            m_mesh_position_array[width_grid][depth_grid][2] = static_cast<float>(pos_real[2]);
         }
     }
 }
 
 // -----------------------------------------------------------------------------
 
-void ultrasound_mesh::createQuadMesh(const data::mesh::sptr& _mesh) const
+void ultrasound_mesh::create_quad_mesh(const data::mesh::sptr& _mesh) const
 {
-    const std::size_t width  = m_meshPositionArray.shape()[0];
-    const std::size_t height = m_meshPositionArray.shape()[1];
+    const std::size_t width  = m_mesh_position_array.shape()[0];
+    const std::size_t height = m_mesh_position_array.shape()[1];
 
     const std::size_t num_points_total = width * height;
     const std::size_t num_quads        = (width - 1) * (height - 1);
@@ -176,13 +176,13 @@ void ultrasound_mesh::createQuadMesh(const data::mesh::sptr& _mesh) const
     _mesh->resize(
         data::mesh::size_t(num_points_total),
         data::mesh::size_t(num_quads),
-        data::mesh::cell_type_t::QUAD,
-        data::mesh::Attributes::POINT_TEX_COORDS
-        | data::mesh::Attributes::POINT_NORMALS
+        data::mesh::cell_type_t::quad,
+        data::mesh::attribute::point_tex_coords
+        | data::mesh::attribute::point_normals
     );
 
     // pointer on the positions buffer
-    const auto* points_in = static_cast<const float*>(m_meshPositionArray.data());
+    const auto* points_in = static_cast<const float*>(m_mesh_position_array.data());
 
     // points position
     auto points_itr = _mesh->zip_range<data::iterator::point::xyz, data::iterator::point::uv>().begin();
@@ -224,7 +224,7 @@ void ultrasound_mesh::createQuadMesh(const data::mesh::sptr& _mesh) const
         }
     }
 
-    geometry::data::mesh::generatePointNormals(_mesh);
+    geometry::data::mesh::generate_point_normals(_mesh);
 
     const auto sig = _mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -233,10 +233,10 @@ void ultrasound_mesh::createQuadMesh(const data::mesh::sptr& _mesh) const
 
 // -----------------------------------------------------------------------------
 
-void ultrasound_mesh::updateQuadMesh(const data::mesh::sptr& _mesh)
+void ultrasound_mesh::update_quad_mesh(const data::mesh::sptr& _mesh)
 {
-    const int width  = static_cast<int>(m_meshPositionArray.shape()[0]);
-    const int height = static_cast<int>(m_meshPositionArray.shape()[1]);
+    const int width  = static_cast<int>(m_mesh_position_array.shape()[0]);
+    const int height = static_cast<int>(m_mesh_position_array.shape()[1]);
 
     // check that values describe a matrix
     SIGHT_ASSERT("At least 2*2 points are needed", width > 1 && height > 2);
@@ -248,9 +248,9 @@ void ultrasound_mesh::updateQuadMesh(const data::mesh::sptr& _mesh)
     {
         for(int j = 0 ; j < height ; ++j)
         {
-            points_itr->x = m_meshPositionArray[i][j][0];
-            points_itr->y = m_meshPositionArray[i][j][1];
-            points_itr->z = m_meshPositionArray[i][j][2];
+            points_itr->x = m_mesh_position_array[i][j][0];
+            points_itr->y = m_mesh_position_array[i][j][1];
+            points_itr->z = m_mesh_position_array[i][j][2];
             ++points_itr;
         }
     }
@@ -263,7 +263,7 @@ void ultrasound_mesh::updateQuadMesh(const data::mesh::sptr& _mesh)
 
 // -----------------------------------------------------------------------------
 
-void ultrasound_mesh::setIntParameter(int _val, std::string _key)
+void ultrasound_mesh::set_int_parameter(int _val, std::string _key)
 {
     if(_key == s_depth)
     {
@@ -279,7 +279,7 @@ void ultrasound_mesh::setIntParameter(int _val, std::string _key)
     }
     else if(_key == s_delta_depth)
     {
-        m_deltaDepth = _val;
+        m_delta_depth = _val;
     }
 
     this->updating();
@@ -287,7 +287,7 @@ void ultrasound_mesh::setIntParameter(int _val, std::string _key)
 
 // -----------------------------------------------------------------------------
 
-void ultrasound_mesh::setBoolParameter(bool _val, std::string _key)
+void ultrasound_mesh::set_bool_parameter(bool _val, std::string _key)
 {
     if(_key == s_shape)
     {

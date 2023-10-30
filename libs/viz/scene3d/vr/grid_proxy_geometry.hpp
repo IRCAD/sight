@@ -64,7 +64,7 @@ public:
     static VIZ_SCENE3D_API grid_proxy_geometry* make(
         const std::string& _name,
         Ogre::SceneManager* _scene_manager,
-        const viz::scene3d::texture::sptr& _3_d_image_texture,
+        const viz::scene3d::texture::sptr& _3d_image_texture,
         const viz::scene3d::texture::sptr& _mask_texture,
         const transfer_function::sptr& _tf,
         const std::string& _mtl_name
@@ -77,23 +77,23 @@ public:
     VIZ_SCENE3D_API ~grid_proxy_geometry() override;
 
     /// Function to be called when the volume changed and its size too. Recomputes texture and geometry.
-    VIZ_SCENE3D_API void updateGridSize();
+    VIZ_SCENE3D_API void update_grid_size();
 
     /// Fills the grid texture and uses it to compute the grid geometry.
-    VIZ_SCENE3D_API void computeGrid();
+    VIZ_SCENE3D_API void compute_grid();
 
     /// Clip the proxy geometry. Recomputes the geometry.
     /// @pre Clipping box coordinates must be clamped to the volume boundaries.
-    VIZ_SCENE3D_API void clipGrid(const Ogre::AxisAlignedBox& _clipping_box);
+    VIZ_SCENE3D_API void clip_grid(const Ogre::AxisAlignedBox& _clipping_box);
 
     /// Get the object's type as a string.
     VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
-    VIZ_SCENE3D_API void set3DImageTexture(const viz::scene3d::texture::sptr& _texture);
+    VIZ_SCENE3D_API void set_3d_image_texture(const viz::scene3d::texture::sptr& _texture);
 
     /// Sets the mask texture for which the grid is computed. Doesn't recompute the grid.
-    VIZ_SCENE3D_API void setMaskTexture(const viz::scene3d::texture::sptr& _texture);
+    VIZ_SCENE3D_API void set_mask_texture(const viz::scene3d::texture::sptr& _texture);
 
 private:
 
@@ -101,49 +101,49 @@ private:
     void initialize();
 
     /// Allocates the grid texture, updates the R2VB source geometry and sets shader parameters.
-    void setupGrid();
+    void setup_grid();
 
     /// Allocates the source geometry structure for R2VB.
-    void initializeR2VBSource();
+    void initialize_r2_vb_source();
 
     /// Sets shader parameters and sets up the grid.
-    void initializeGridMaterials();
+    void initialize_grid_materials();
 
     /// Name of the texture used to store the transfer function
-    static inline const std::string s_TF_TEXUNIT_NAME = "transferFunction";
+    static inline const std::string TF_TEXUNIT_NAME = "transferFunction";
 
     /// Entity holding the source geometry used for proxy geometry rendering.
-    Ogre::Entity* m_r2vbSource {nullptr};
+    Ogre::Entity* m_r2vb_source {nullptr};
 
     /// GPU pass generating the geometry from the grid.
-    Ogre::Pass* m_geomGeneratorPass {nullptr};
+    Ogre::Pass* m_geom_generator_pass {nullptr};
 
     /// GPU pass filling the 3D texture grid.
-    Ogre::Pass* m_gridComputingPass {nullptr};
+    Ogre::Pass* m_grid_computing_pass {nullptr};
 
     /// Render operation used to compute the brick grid.
-    Ogre::RenderOperation m_gridRenderOp;
+    Ogre::RenderOperation m_grid_render_op;
 
     /// Grid defining the volume bricks.
-    Ogre::TexturePtr m_gridTexture {nullptr};
+    Ogre::TexturePtr m_grid_texture {nullptr};
 
     /// Grid volume dimensions. (i.e. the number of bricks along each dimension)
-    std::array<int, 3> m_gridSize {{2, 2, 2}};
+    std::array<int, 3> m_grid_size {{2, 2, 2}};
 
     /// Size of a volume brick.
-    static constexpr std::array<int, 3> s_brickSize {{8, 8, 8}};
+    static constexpr std::array<int, 3> BRICK_SIZE {{8, 8, 8}};
 
     /// image from which we define a grid.
-    viz::scene3d::texture::sptr m_3DImageTexture {nullptr};
+    viz::scene3d::texture::sptr m_3d_image_texture {nullptr};
 
     /// image from which we define a grid.
-    viz::scene3d::texture::sptr m_maskTexture {nullptr};
+    viz::scene3d::texture::sptr m_mask_texture {nullptr};
 
     /// Transfer function to be applied to the image.
-    transfer_function::wptr m_gpuTF;
+    transfer_function::wptr m_gpu_tf;
 
     /// Camera used to compute the grid volume image.
-    Ogre::Camera* m_gridViewportCamera {nullptr};
+    Ogre::Camera* m_grid_viewport_camera {nullptr};
 };
 
 //------------------------------------------------------------------------------
@@ -208,16 +208,16 @@ inline const Ogre::String& grid_proxy_geometry::getMovableType() const
 
 //------------------------------------------------------------------------------
 
-inline void grid_proxy_geometry::set3DImageTexture(const viz::scene3d::texture::sptr& _texture)
+inline void grid_proxy_geometry::set_3d_image_texture(const viz::scene3d::texture::sptr& _texture)
 {
-    m_3DImageTexture = _texture;
+    m_3d_image_texture = _texture;
 }
 
 //------------------------------------------------------------------------------
 
-inline void grid_proxy_geometry::setMaskTexture(const viz::scene3d::texture::sptr& _texture)
+inline void grid_proxy_geometry::set_mask_texture(const viz::scene3d::texture::sptr& _texture)
 {
-    m_maskTexture = _texture;
+    m_mask_texture = _texture;
 }
 
 } // namespace sight::viz::scene3d::vr

@@ -26,62 +26,62 @@
 
 #include <io/dicom/container/DicomSurface.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::ut::DicomSurfaceTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::ut::dicom_surface_test);
 
 namespace sight::io::dicom::container::ut
 {
 
 //------------------------------------------------------------------------------
 
-void DicomSurfaceTest::basicTest()
+void dicom_surface_test::basic_test()
 {
     auto mesh = std::make_shared<data::mesh>();
-    mesh->reserve(4, 3, data::mesh::cell_type_t::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
+    mesh->reserve(4, 3, data::mesh::cell_type_t::triangle, data::mesh::attribute::point_normals);
     {
         auto mesh_lock = mesh->dump_lock();
-        mesh->pushPoint(0, 1, 2);
-        mesh->pushPoint(3, 4, 5);
-        mesh->pushPoint(6, 7, 8);
-        mesh->pushPoint(9, 10, 11);
-        mesh->setPointNormal(0, 0, 1, 2);
-        mesh->setPointNormal(1, 3, 4, 5);
-        mesh->setPointNormal(2, 6, 7, 8);
-        mesh->setPointNormal(3, 9, 10, 11);
-        mesh->pushCell(0, 1, 2);
-        mesh->pushCell(3, 0, 1);
-        mesh->pushCell(2, 3, 0);
+        mesh->push_point(0, 1, 2);
+        mesh->push_point(3, 4, 5);
+        mesh->push_point(6, 7, 8);
+        mesh->push_point(9, 10, 11);
+        mesh->set_point_normal(0, 0, 1, 2);
+        mesh->set_point_normal(1, 3, 4, 5);
+        mesh->set_point_normal(2, 6, 7, 8);
+        mesh->set_point_normal(3, 9, 10, 11);
+        mesh->push_cell(0, 1, 2);
+        mesh->push_cell(3, 0, 1);
+        mesh->push_cell(2, 3, 0);
     }
     auto reconstruction = std::make_shared<data::reconstruction>();
-    reconstruction->setMesh(mesh);
+    reconstruction->set_mesh(mesh);
     auto mesh_lock = mesh->dump_lock(); // TODO: Fix failure because mesh isn't dump locked.
-    DicomSurface dicom_surface(reconstruction);
+    dicom_surface dicom_surface(reconstruction);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicom_surface.getPointBufferSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicom_surface.get_point_buffer_size());
     std::uint8_t i = 0;
-    for(float e : dicom_surface.getPointBuffer())
+    for(float e : dicom_surface.get_point_buffer())
     {
         CPPUNIT_ASSERT_EQUAL(float(i), e);
         i++;
     }
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicom_surface.getNormalBufferSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicom_surface.get_normal_buffer_size());
     i = 0;
-    for(float e : dicom_surface.getNormalBuffer())
+    for(float e : dicom_surface.get_normal_buffer())
     {
         CPPUNIT_ASSERT_EQUAL(float(i), e);
         i++;
     }
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3 * 3), dicom_surface.getCellBufferSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3 * 3), dicom_surface.get_cell_buffer_size());
     i = 0;
-    for(std::uint32_t e : dicom_surface.getCellBuffer())
+    for(std::uint32_t e : dicom_surface.get_cell_buffer())
     {
         // Indices start a 1 in DICOM, hence the "+ 1".
         CPPUNIT_ASSERT_EQUAL_MESSAGE("i=" + std::to_string(i), i % 4U + 1, e);
         i++;
     }
 
-    CPPUNIT_ASSERT(*mesh == *dicom_surface.convertToData());
+    CPPUNIT_ASSERT(*mesh == *dicom_surface.convert_to_data());
 }
 
 //------------------------------------------------------------------------------

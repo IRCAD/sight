@@ -110,20 +110,21 @@ protected:
 private:
 
     /// Defines the AET of the SCU (client name).
-    std::string m_SCUAppEntityTitle;
+    std::string m_scu_app_entity_title;
 
     /// Defines the AET of the SCP (server name).
-    std::string m_SCPAppEntityTitle;
+    std::string m_scp_app_entity_title;
 
     /// Defines the SCP host name (server address).
-    std::string m_SCPHostName;
+    std::string m_scp_host_name;
 
     /// Defines the SCP port (server port).
-    std::uint16_t m_SCPPort {0};
+    std::uint16_t m_scp_port {0};
 
     /// Defines the request mode, GET or MOVE. Usually, most SCU use the C-MOVE method.
-    sight::io::dimse::data::PacsConfiguration::RETRIEVE_METHOD m_retrieveMethod {sight::io::dimse::data::
-                                                                                 PacsConfiguration::MOVE_RETRIEVE_METHOD
+    sight::io::dimse::data::pacs_configuration::retrieve_method m_retrieve_method {sight::io::dimse::data::
+                                                                                   pacs_configuration::retrieve_method::
+                                                                                   move
     };
 
     /**
@@ -134,19 +135,19 @@ private:
      * For more information, see the link bellow:
      * https://book.orthanc-server.com/dicom-guide.html#dicom-network-protocol.
      */
-    std::string m_moveAppEntityTitle;
+    std::string m_move_app_entity_title;
 
     /// Defines the move port. This port is use to receive C-MOVE responses.
-    std::uint16_t m_movePort {0};
+    std::uint16_t m_move_port {0};
 
     /// Defines the key to save/load preferences.
-    std::string m_preferenceKey;
+    std::string m_preference_key;
 
     /// Return the canonical preference key
-    std::string getKey(const std::string& _sub_key) const noexcept;
+    std::string get_key(const std::string& _sub_key) const noexcept;
 
-    static constexpr std::string_view s_CONFIG_INOUT = "config";
-    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::inout> m_config {this, s_CONFIG_INOUT, true};
+    static constexpr std::string_view CONFIG_INOUT = "config";
+    data::ptr<sight::io::dimse::data::pacs_configuration, data::access::inout> m_config {this, CONFIG_INOUT, true};
 };
 
 } // namespace sight::module::io::dimse.

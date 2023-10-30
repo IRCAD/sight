@@ -33,23 +33,23 @@ static const core::com::signals::key_t PICKED_SIG = "picked";
 
 picker::picker() noexcept
 {
-    m_pickedSig = new_signal<sight::viz::scene3d::interactor::mesh_picker_interactor::point_clicked_sig_t>(PICKED_SIG);
+    m_picked_sig = new_signal<sight::viz::scene3d::interactor::mesh_picker_interactor::point_clicked_sig_t>(PICKED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
 void picker::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_PRIORITY_CONFIG              = s_CONFIG + "priority";
-    static const std::string s_QUERY_MASK_CONFIG            = s_CONFIG + "queryMask";
-    static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = s_CONFIG + "layerOrderDependant";
+    static const std::string s_PRIORITY_CONFIG              = CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG            = CONFIG + "queryMask";
+    static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = CONFIG + "layerOrderDependant";
 
-    m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
+    m_priority              = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_layer_order_dependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layer_order_dependant);
 
     const std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexa_mask.empty())
@@ -60,7 +60,7 @@ void picker::configuring()
             hexa_mask.length() > 2
             && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryMask = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
+        m_query_mask = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 }
 
@@ -70,15 +70,15 @@ void picker::starting()
 {
     this->initialize();
 
-    const auto layer = this->getLayer();
+    const auto layer = this->layer();
     m_interactor = std::make_shared<sight::viz::scene3d::interactor::mesh_picker_interactor>(
         layer,
-        m_layerOrderDependant
+        m_layer_order_dependant
     );
-    m_interactor->setQueryMask(m_queryMask);
-    m_interactor->setPointClickedSig(m_pickedSig);
+    m_interactor->set_query_mask(m_query_mask);
+    m_interactor->set_point_clicked_sig(m_picked_sig);
 
-    layer->addInteractor(m_interactor, m_priority);
+    layer->add_interactor(m_interactor, m_priority);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,8 +91,8 @@ void picker::updating() noexcept
 
 void picker::stopping()
 {
-    const auto layer = this->getLayer();
-    layer->removeInteractor(m_interactor);
+    const auto layer = this->layer();
+    layer->remove_interactor(m_interactor);
 }
 
 //-----------------------------------------------------------------------------

@@ -30,7 +30,7 @@ namespace sight::viz::scene3d::helper::ut
 class mesh_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(mesh_test);
-CPPUNIT_TEST(copyColors);
+CPPUNIT_TEST(copy_colors);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,7 +39,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void copyColors();
+    static void copy_colors();
 
 private:
 };

@@ -48,7 +48,7 @@ namespace sight::module::ui::qt
 
 show_about::show_about() noexcept :
 
-    m_fsAboutPath(""),
+    m_fs_about_path(""),
     m_title("About"),
     m_size(500, 300)
 {
@@ -76,10 +76,10 @@ void show_about::configuring()
 
     const auto filename = config.get<std::string>("filename.<xmlattr>.id");
     // Convert the path from a module location
-    m_fsAboutPath = core::runtime::get_module_resource_file_path(filename);
+    m_fs_about_path = core::runtime::get_module_resource_file_path(filename);
 
-    m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
-    SIGHT_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
+    m_b_service_is_configured = std::filesystem::exists(m_fs_about_path);
+    SIGHT_WARN_IF("About file " + filename + " doesn't exist", !m_b_service_is_configured);
 
     m_title = config.get<std::string>("title", m_title);
 
@@ -91,23 +91,23 @@ void show_about::configuring()
 
 void show_about::updating()
 {
-    SIGHT_ASSERT("The service 'show_about' isn't configured properly.", m_bServiceIsConfigured);
+    SIGHT_ASSERT("The service 'show_about' isn't configured properly.", m_b_service_is_configured);
 
     auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString::fromStdString(m_title));
-    QUrl url = QUrl::fromLocalFile(QString::fromStdString(m_fsAboutPath.string()));
+    QUrl url = QUrl::fromLocalFile(QString::fromStdString(m_fs_about_path.string()));
 #if defined(QT_WEBKIT)
     QWebView* htmlView = new QWebView(dialog);
     htmlView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     htmlView->load(url);
-    QObject::connect(htmlView, SIGNAL(linkClicked(const QUrl&)), this, SLOT(onUrlClicked(const QUrl&)));
+    QObject::connect(htmlView, SIGNAL(linkClicked(const QUrl&)), this, SLOT(on_url_clicked(const QUrl&)));
 #else
     auto* html_view = new QTextBrowser(dialog);
     html_view->setSource(url);
     html_view->setOpenExternalLinks(true);
     html_view->setMinimumSize(m_size);
     QStringList search_paths;
-    search_paths.append(QString::fromStdString(m_fsAboutPath.parent_path().string()));
+    search_paths.append(QString::fromStdString(m_fs_about_path.parent_path().string()));
     html_view->setSearchPaths(search_paths);
 #endif
     auto* ok_button = new QPushButton(QObject::tr("Ok"));
@@ -138,19 +138,19 @@ void show_about::updating()
 
 void show_about::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 }
 
 //------------------------------------------------------------------------------
 
 void show_about::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------
 
-void show_about::onUrlClicked(const QUrl& _url)
+void show_about::on_url_clicked(const QUrl& _url)
 {
     QDesktopServices::openUrl(_url);
 }

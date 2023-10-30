@@ -161,11 +161,11 @@ protected:
 private:
 
     /// Type of signal when parameters are updated.
-    typedef core::com::signal<void ()> parameters_modified_signal_t;
+    using parameters_modified_signal_t = core::com::signal<void ()>;
     static const core::com::signals::key_t PARAMETERS_MODIFIED_SIG;
 
     /// Generic changed signal type
-    typedef core::com::signal<void (sight::ui::parameter_t, std::string)> changed_signal_t;
+    using changed_signal_t = core::com::signal<void (sight::ui::parameter_t, std::string)>;
     static const core::com::signals::key_t PREFERENCE_CHANGED_SIG;
 
     /// Internal wrapper holding slots keys.
@@ -177,44 +177,44 @@ private:
 
     enum class preference_t : std::int8_t
     {
-        TEXT,
-        CHECKBOX,
-        U_INT,
-        PATH,
-        FILE,
-        COMBOBOX,
+        text,
+        checkbox,
+        u_int,
+        path,
+        file,
+        combobox,
         DOUBLE,
-        LIST
+        list
     };
 
-    struct PreferenceElt
+    struct preference_elt
     {
-        preference_t m_type {preference_t::TEXT};
-        QPointer<QLineEdit> m_lineEdit;
-        QPointer<QCheckBox> m_checkBox;
-        QPointer<QComboBox> m_comboBox;
-        std::string m_preferenceValue;
-        std::string m_preferenceKey;
+        preference_t m_type {preference_t::text};
+        QPointer<QLineEdit> m_line_edit;
+        QPointer<QCheckBox> m_check_box;
+        QPointer<QComboBox> m_combo_box;
+        std::string m_preference_value;
+        std::string m_preference_key;
         std::string m_name;
-        std::string m_defaultValue;
-        std::pair<int, int> m_iMinMax {0, 999999};
-        std::pair<double, double> m_dMinMax {-1000000.0, 1000000.0};
+        std::string m_default_value;
+        std::pair<int, int> m_i_min_max {0, 999999};
+        std::pair<double, double> m_d_min_max {-1000000.0, 1000000.0};
         std::string m_separator;
     };
 
     /// @brief Converts string value from PreferenceElt.m_preferenceValue to real type regarding PreferenceElt.m_type.
     /// @param _elt The preference element
     /// @return std::variant as defined by parameter_t.
-    static sight::ui::parameter_t convertValue(const PreferenceElt& _elt);
+    static sight::ui::parameter_t convert_value(const preference_elt& _elt);
 
-    static void onSelectDir(QPointer<QLineEdit> _line_edit);
+    static void on_select_dir(QPointer<QLineEdit> _line_edit);
 
-    static void onSelectFile(QPointer<QLineEdit> _line_edit);
+    static void on_select_file(QPointer<QLineEdit> _line_edit);
 
-    parameters_modified_signal_t::sptr m_sigParametersModified;
-    changed_signal_t::sptr m_sigPreferenceChanged;
+    parameters_modified_signal_t::sptr m_sig_parameters_modified;
+    changed_signal_t::sptr m_sig_preference_changed;
 
-    std::vector<PreferenceElt> m_preferences;
+    std::vector<preference_elt> m_preferences;
 };
 
 } // namespace sight::module::ui::qt

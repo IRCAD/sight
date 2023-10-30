@@ -51,24 +51,24 @@ void image_extruder::extrude(
     const data::matrix4::csptr& _transform
 )
 {
-    SIGHT_ASSERT("The image must be in 3 dimensions", _image->numDimensions() == 3);
-    SIGHT_ASSERT("Spacing should be set", _image->getSpacing() != data::image::Spacing({0., 0., 0.}));
+    SIGHT_ASSERT("The image must be in 3 dimensions", _image->num_dimensions() == 3);
+    SIGHT_ASSERT("Spacing should be set", _image->spacing() != data::image::spacing_t({0., 0., 0.}));
 
-    Parameters param;
+    parameters param;
     param.m_image     = _image;
     param.m_mesh      = _mesh;
     param.m_mesh      = _mesh;
     param.m_transform = _transform;
 
     // We use a dispatcher because we can't retrieve the image type without a dynamic_t.
-    core::type type = _image->getType();
+    core::type type = _image->type();
     core::tools::dispatcher<core::tools::supported_dispatcher_types, image_extruder>::invoke(type, param);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE>
-void image_extruder::operator()(Parameters& _param)
+void image_extruder::operator()(parameters& _param)
 {
     auto transform = glm::identity<glm::mat4>();
     if(_param.m_transform)
@@ -82,7 +82,7 @@ void image_extruder::operator()(Parameters& _param)
     const float min = std::numeric_limits<float>::lowest();
     const float max = std::numeric_limits<float>::max();
 
-    std::list<Triangle> triangles;
+    std::list<triangle> triangles;
     glm::vec3 min_bound(max, max, max);
     glm::vec3 max_bound(min, min, min);
 
@@ -108,7 +108,7 @@ void image_extruder::operator()(Parameters& _param)
             const glm::vec4 tri_b = _transform * glm::vec4(bx, by, bz, 1.0);
             const glm::vec4 tri_c = _transform * glm::vec4(cx, cy, cz, 1.0);
 
-            triangles.push_back(Triangle {tri_a, tri_b, tri_c});
+            triangles.push_back(triangle {tri_a, tri_b, tri_c});
 
             min_bound.x = std::min(std::min(std::min(min_bound.x, tri_a.x), tri_b.x), tri_c.x);
             min_bound.y = std::min(std::min(std::min(min_bound.y, tri_a.y), tri_b.y), tri_c.y);
@@ -121,7 +121,7 @@ void image_extruder::operator()(Parameters& _param)
 
     auto it_point = _param.m_mesh->cbegin<data::iterator::point::xyz>();
 
-    const auto cell_size = _param.m_mesh->getCellSize();
+    const auto cell_size = _param.m_mesh->cell_size();
     if(cell_size < 3)
     {
         SIGHT_FATAL("The extrusion works only with meshes of at least three points per cells");
@@ -158,9 +158,9 @@ void image_extruder::operator()(Parameters& _param)
     const auto dump_lock = _param.m_image->dump_lock();
 
     // Get image informations.
-    const data::image::Origin& origin   = _param.m_image->getOrigin();
-    const data::image::Size& size       = _param.m_image->size();
-    const data::image::Spacing& spacing = _param.m_image->getSpacing();
+    const data::image::origin_t& origin   = _param.m_image->origin();
+    const data::image::size_t& size       = _param.m_image->size();
+    const data::image::spacing_t& spacing = _param.m_image->spacing();
 
     // Loop over the bounding box intersection of the mesh and the image to increase performance.
     std::int64_t index_x_beg = 0;
@@ -205,16 +205,16 @@ void image_extruder::operator()(Parameters& _param)
             std::vector<glm::vec3>& _intersections) -> bool
         {
             bool inside = false;
-            for(const Triangle& tri : triangles)
+            for(const triangle& tri : triangles)
             {
                 glm::vec2 pos;
                 float distance = NAN;
                 if(glm::intersectRayTriangle(
                        _ray_orig,
                        _ray_dir,
-                       tri.A,
-                       tri.B,
-                       tri.C,
+                       tri.a,
+                       tri.b,
+                       tri.c,
                        pos,
                        distance
                 ))

@@ -45,7 +45,7 @@ namespace sight::io::dicom::helper
 
 // ----------------------------------------------------------------------------
 
-std::filesystem::path DicomDir::findDicomDir(const std::filesystem::path& _root)
+std::filesystem::path dicom_dir::find_dicom_dir(const std::filesystem::path& _root)
 {
     std::filesystem::path current = _root;
 
@@ -112,7 +112,7 @@ void process_dir_information(
     // Check the MediaStorageSOPClass
     const gdcm::FileMetaInformation& file_meta_information = gdcm_file.GetHeader();
     const std::string& media_storage_sop                   =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0002, 0x0002>(file_meta_information);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0002, 0x0002>(file_meta_information);
 
     if(media_storage_sop != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage))
     {
@@ -136,16 +136,16 @@ void process_dir_information(
 
                 // Directory Record Type
                 const std::string record_type =
-                    io::dicom::helper::DicomDataReader::getTagValue<0x0004, 0x1430>(item.GetNestedDataSet());
+                    io::dicom::helper::dicom_data_reader::get_tag_value<0x0004, 0x1430>(item.GetNestedDataSet());
 
                 // Check Referenced File ID
                 std::string ref_file_id =
-                    io::dicom::helper::DicomDataReader::getTagValue<0x0004, 0x1500>(item.GetNestedDataSet());
+                    io::dicom::helper::dicom_data_reader::get_tag_value<0x0004, 0x1500>(item.GetNestedDataSet());
 
                 if(record_type == "IMAGE")
                 {
                     // Read file path
-                    std::string file = io::dicom::helper::DicomDataReader::getTagValue<0x0004, 0x1500>(
+                    std::string file = io::dicom::helper::dicom_data_reader::get_tag_value<0x0004, 0x1500>(
                         item.GetNestedDataSet()
                     );
                     std::replace(file.begin(), file.end(), '\\', '/');
@@ -162,10 +162,10 @@ void process_dir_information(
                     else if(std::filesystem::exists(path))
                     {
                         auto instance_number = boost::lexical_cast<unsigned int>(
-                            io::dicom::helper::DicomDataReader::getTagValue<0x0020,
-                                                                            0x0013>(item.GetNestedDataSet())
+                            io::dicom::helper::dicom_data_reader::get_tag_value<0x0020,
+                                                                                0x0013>(item.GetNestedDataSet())
                         );
-                        _current_series->addDicomPath(instance_number, path);
+                        _current_series->add_dicom_path(instance_number, path);
                     }
                     else
                     {
@@ -178,11 +178,12 @@ void process_dir_information(
                     if(record_type == "SERIES")
                     {
                         const std::string& series_uid =
-                            io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000e>(item.GetNestedDataSet());
+                            io::dicom::helper::dicom_data_reader::get_tag_value<0x0020,
+                                                                                0x000e>(item.GetNestedDataSet());
                         if(_dicom_series_map.find(series_uid) == _dicom_series_map.end())
                         {
                             data::dicom_series::sptr series = std::make_shared<data::dicom_series>();
-                            series->setSeriesInstanceUID(series_uid);
+                            series->set_series_instance_uid(series_uid);
                             _dicom_series_map[series_uid] = series;
                         }
 
@@ -223,7 +224,7 @@ void process_dir_information(
 
 // ----------------------------------------------------------------------------
 
-void DicomDir::retrieveDicomSeries(
+void dicom_dir::retrieve_dicom_series(
     const std::filesystem::path& _dicomdir,
     std::vector<SPTR(data::dicom_series)>& _series_set,
     const core::log::logger::sptr& _logger,
@@ -260,7 +261,7 @@ void DicomDir::retrieveDicomSeries(
     // Check the MediaStorageSOPClass
     const gdcm::FileMetaInformation& file_meta_information = gdcm_file.GetHeader();
     const std::string& media_storage_sop                   =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0002, 0x0002>(file_meta_information);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0002, 0x0002>(file_meta_information);
 
     if(media_storage_sop != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage))
     {
@@ -313,15 +314,15 @@ void DicomDir::retrieveDicomSeries(
     for(const auto& entry : dicom_series_map)
     {
         auto series            = entry.second;
-        const std::size_t size = series->getDicomContainer().size();
+        const std::size_t size = series->get_dicom_container().size();
         if(size != 0U)
         {
-            series->setNumberOfInstances(size);
+            series->set_number_of_instances(size);
             _series_set.push_back(series);
         }
         else
         {
-            _logger->critical("Unable to retrieve instances for this series : " + series->getSeriesInstanceUID());
+            _logger->critical("Unable to retrieve instances for this series : " + series->get_series_instance_uid());
         }
     }
 }

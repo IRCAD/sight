@@ -41,8 +41,8 @@ namespace sight::module::ui::io::ut
 
 void folder_selector_test::setUp()
 {
-    m_folderSelector = service::add("sight::module::ui::io::folder_selector");
-    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::io::folder_selector'", m_folderSelector);
+    m_folder_selector = service::add("sight::module::ui::io::folder_selector");
+    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::io::folder_selector'", m_folder_selector);
 }
 
 //------------------------------------------------------------------------------
@@ -50,20 +50,20 @@ void folder_selector_test::setUp()
 void folder_selector_test::tearDown()
 {
     m_worker->stop();
-    if(!m_folderSelector->stopped())
+    if(!m_folder_selector->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_folderSelector->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_folder_selector->stop().get());
     }
 
-    service::remove(m_folderSelector);
+    service::remove(m_folder_selector);
 }
 
 //------------------------------------------------------------------------------
 
-void folder_selector_test::basicTest()
+void folder_selector_test::basic_test()
 {
-    CPPUNIT_ASSERT_NO_THROW(m_folderSelector->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_folderSelector->start().get());
+    CPPUNIT_ASSERT_NO_THROW(m_folder_selector->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_folder_selector->start().get());
 
     std::filesystem::path path;
     auto folder_selected_slot = core::com::new_slot(
@@ -73,11 +73,11 @@ void folder_selector_test::basicTest()
         });
     m_worker = core::thread::worker::make();
     folder_selected_slot->set_worker(m_worker);
-    m_folderSelector->signal("folderSelected")->connect(folder_selected_slot);
+    m_folder_selector->signal("folderSelected")->connect(folder_selected_slot);
 
-    sight::ui::dialog::location_dummy::setPaths({std::filesystem::temp_directory_path()});
+    sight::ui::dialog::location_dummy::set_paths({std::filesystem::temp_directory_path()});
 
-    CPPUNIT_ASSERT_NO_THROW(m_folderSelector->update().get());
+    CPPUNIT_ASSERT_NO_THROW(m_folder_selector->update().get());
     SIGHT_TEST_WAIT(std::filesystem::temp_directory_path() == path);
     CPPUNIT_ASSERT_EQUAL(std::filesystem::temp_directory_path(), path);
 

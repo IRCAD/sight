@@ -82,8 +82,8 @@ protected:
 
 private:
 
-    data::ptr<data::series_set, sight::data::Access::inout> m_series_set {this, "seriesSet"};
-    data::ptr<data::vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
+    data::ptr<data::series_set, sight::data::access::inout> m_series_set {this, "seriesSet"};
+    data::ptr<data::vector, sight::data::access::in> m_selected_series {this, "selectedSeries"};
 };
 
 } // namespace sight::module::ui::series

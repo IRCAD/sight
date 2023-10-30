@@ -30,31 +30,31 @@
 namespace sight::io::session::detail::camera
 {
 
-constexpr static auto s_Width {"Width"};
-constexpr static auto s_Height {"Height"};
-constexpr static auto s_Fx {"Fx"};
-constexpr static auto s_Fy {"Fy"};
-constexpr static auto s_Cx {"Cx"};
-constexpr static auto s_Cy {"Cy"};
-constexpr static auto s_K1 {"K1"};
-constexpr static auto s_K2 {"K2"};
-constexpr static auto s_P1 {"P1"};
-constexpr static auto s_P2 {"P2"};
-constexpr static auto s_K3 {"K3"};
-constexpr static auto s_Skew {"Skew"};
-constexpr static auto s_IsCalibrated {"IsCalibrated"};
-constexpr static auto s_cameraID {"cameraID"};
-constexpr static auto s_MaximumFrameRate {"MaximumFrameRate"};
-constexpr static auto s_PixelFormat {"PixelFormat"};
-constexpr static auto s_VideoFile {"VideoFile"};
-constexpr static auto s_StreamUrl {"StreamUrl"};
-constexpr static auto s_cameraSource {"cameraSource"};
-constexpr static auto s_Scale {"Scale"};
+constexpr static auto WIDTH {"Width"};
+constexpr static auto HEIGHT {"Height"};
+constexpr static auto FX {"Fx"};
+constexpr static auto FY {"Fy"};
+constexpr static auto CX {"Cx"};
+constexpr static auto CY {"Cy"};
+constexpr static auto K1 {"K1"};
+constexpr static auto K2 {"K2"};
+constexpr static auto P1 {"P1"};
+constexpr static auto P2 {"P2"};
+constexpr static auto K3 {"K3"};
+constexpr static auto SKEW {"Skew"};
+constexpr static auto IS_CALIBRATED {"IsCalibrated"};
+constexpr static auto CAMERA_ID {"cameraID"};
+constexpr static auto MAXIMUM_FRAME_RATE {"MaximumFrameRate"};
+constexpr static auto PIXEL_FORMAT {"PixelFormat"};
+constexpr static auto VIDEO_FILE {"VideoFile"};
+constexpr static auto STREAM_URL {"StreamUrl"};
+constexpr static auto CAMERA_SOURCE {"cameraSource"};
+constexpr static auto SCALE {"Scale"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
@@ -66,37 +66,37 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::camera>(_tree, 1);
 
-    _tree.put(s_Width, camera->getWidth());
-    _tree.put(s_Height, camera->getHeight());
+    _tree.put(WIDTH, camera->get_width());
+    _tree.put(HEIGHT, camera->get_height());
 
-    _tree.put(s_Fx, camera->getFx());
-    _tree.put(s_Fy, camera->getFy());
-    _tree.put(s_Cx, camera->getCx());
-    _tree.put(s_Cy, camera->getCy());
+    _tree.put(FX, camera->get_fx());
+    _tree.put(FY, camera->get_fy());
+    _tree.put(CX, camera->get_cx());
+    _tree.put(CY, camera->get_cy());
 
-    const auto& distortion_coefficient = camera->getDistortionCoefficient();
-    _tree.put(s_K1, distortion_coefficient[0]);
-    _tree.put(s_K2, distortion_coefficient[1]);
-    _tree.put(s_P1, distortion_coefficient[2]);
-    _tree.put(s_P2, distortion_coefficient[3]);
-    _tree.put(s_K3, distortion_coefficient[4]);
+    const auto& distortion_coefficient = camera->get_distortion_coefficient();
+    _tree.put(K1, distortion_coefficient[0]);
+    _tree.put(K2, distortion_coefficient[1]);
+    _tree.put(P1, distortion_coefficient[2]);
+    _tree.put(P2, distortion_coefficient[3]);
+    _tree.put(K3, distortion_coefficient[4]);
 
-    _tree.put(s_Skew, camera->getSkew());
+    _tree.put(SKEW, camera->get_skew());
 
-    _tree.put(s_IsCalibrated, camera->getIsCalibrated());
-    helper::write_string(_tree, s_cameraID, camera->getCameraID());
-    _tree.put(s_MaximumFrameRate, camera->getMaximumFrameRate());
-    _tree.put(s_PixelFormat, camera->getPixelFormat());
-    helper::write_string(_tree, s_VideoFile, camera->getVideoFile().string());
-    helper::write_string(_tree, s_StreamUrl, camera->getStreamUrl());
-    _tree.put(s_cameraSource, camera->getCameraSource());
-    _tree.put(s_Scale, camera->getScale());
+    _tree.put(IS_CALIBRATED, camera->get_is_calibrated());
+    helper::write_string(_tree, CAMERA_ID, camera->get_camera_id());
+    _tree.put(MAXIMUM_FRAME_RATE, camera->get_maximum_frame_rate());
+    _tree.put(PIXEL_FORMAT, camera->pixel_format());
+    helper::write_string(_tree, VIDEO_FILE, camera->get_video_file().string());
+    helper::write_string(_tree, STREAM_URL, camera->get_stream_url());
+    _tree.put(CAMERA_SOURCE, camera->get_camera_source());
+    _tree.put(SCALE, camera->get_scale());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::camera::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
     data::object::sptr _object,
@@ -109,32 +109,32 @@ inline static data::camera::sptr read(
     // Check version number. Not mandatory, but could help for future release
     helper::read_version<data::camera>(_tree, 0, 1);
 
-    camera->setWidth(_tree.get<std::size_t>(s_Width));
-    camera->setHeight(_tree.get<std::size_t>(s_Height));
+    camera->set_width(_tree.get<std::size_t>(WIDTH));
+    camera->set_height(_tree.get<std::size_t>(HEIGHT));
 
-    camera->setFx(_tree.get<double>(s_Fx));
-    camera->setFy(_tree.get<double>(s_Fy));
-    camera->setCx(_tree.get<double>(s_Cx));
-    camera->setCy(_tree.get<double>(s_Cy));
+    camera->set_fx(_tree.get<double>(FX));
+    camera->set_fy(_tree.get<double>(FY));
+    camera->set_cx(_tree.get<double>(CX));
+    camera->set_cy(_tree.get<double>(CY));
 
-    camera->setDistortionCoefficient(
-        _tree.get<double>(s_K1),
-        _tree.get<double>(s_K2),
-        _tree.get<double>(s_P1),
-        _tree.get<double>(s_P2),
-        _tree.get<double>(s_K3)
+    camera->set_distortion_coefficient(
+        _tree.get<double>(K1),
+        _tree.get<double>(K2),
+        _tree.get<double>(P1),
+        _tree.get<double>(P2),
+        _tree.get<double>(K3)
     );
 
-    camera->setSkew(_tree.get<double>(s_Skew));
+    camera->set_skew(_tree.get<double>(SKEW));
 
-    camera->setIsCalibrated(_tree.get<bool>(s_IsCalibrated));
-    camera->setCameraID(helper::read_string(_tree, s_cameraID));
-    camera->setMaximumFrameRate(_tree.get<float>(s_MaximumFrameRate));
-    camera->setPixelFormat(static_cast<data::camera::PixelFormat>(_tree.get<int>(s_PixelFormat)));
-    camera->setVideoFile(helper::read_string(_tree, s_VideoFile));
-    camera->setStreamUrl(helper::read_string(_tree, s_StreamUrl));
-    camera->setCameraSource(static_cast<data::camera::source_t>(_tree.get<int>(s_cameraSource)));
-    camera->setScale(_tree.get<double>(s_Scale));
+    camera->set_is_calibrated(_tree.get<bool>(IS_CALIBRATED));
+    camera->set_camera_id(helper::read_string(_tree, CAMERA_ID));
+    camera->set_maximum_frame_rate(_tree.get<float>(MAXIMUM_FRAME_RATE));
+    camera->set_pixel_format(static_cast<enum data::camera::pixel_format>(_tree.get<int>(PIXEL_FORMAT)));
+    camera->set_video_file(helper::read_string(_tree, VIDEO_FILE));
+    camera->set_stream_url(helper::read_string(_tree, STREAM_URL));
+    camera->set_camera_source(static_cast<data::camera::source_t>(_tree.get<int>(CAMERA_SOURCE)));
+    camera->set_scale(_tree.get<double>(SCALE));
 
     return camera;
 }

@@ -41,25 +41,25 @@ namespace sight::ui::qt::builder
 
 //-----------------------------------------------------------------------------
 
-void toolbar::createToolBar(ui::container::widget::sptr _parent)
+void toolbar::create_tool_bar(ui::container::widget::sptr _parent)
 {
     m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
-    auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    auto* window = qobject_cast<QMainWindow*>(m_parent->get_qt_container());
 
     auto* tool_bar = new QToolBar(QObject::tr("tool_bar"));
-    if(m_toolBitmapSize.first != -1)
+    if(m_tool_bitmap_size.first != -1)
     {
-        tool_bar->setIconSize(QSize(m_toolBitmapSize.first, m_toolBitmapSize.second));
+        tool_bar->setIconSize(QSize(m_tool_bitmap_size.first, m_tool_bitmap_size.second));
     }
 
     tool_bar->setFloatable(false);
 
     QString style;
-    if(!m_backgroundColor.empty())
+    if(!m_background_color.empty())
     {
         std::array<std::uint8_t, 4> rgba {};
-        data::tools::color::hexaStringToRGBA(m_backgroundColor, rgba);
+        data::tools::color::hexa_string_to_rgba(m_background_color, rgba);
         std::stringstream ss;
         ss << "QToolBar { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
         << static_cast<std::int16_t>(rgba[1]) << ','
@@ -72,12 +72,12 @@ void toolbar::createToolBar(ui::container::widget::sptr _parent)
     {
         switch(m_alignment)
         {
-            case TOP:
-            case BOTTOM:
+            case top:
+            case bottom:
                 style += QString("QToolButton{ padding-left: %1px; padding-right: %1px; }").arg(m_spacing);
                 break;
 
-            case RIGHT:
+            case right:
             default: // LEFT
                 style += QString("QToolButton{ padding-top: %1px; padding-bottom: %1px; }").arg(m_spacing);
                 break;
@@ -94,15 +94,15 @@ void toolbar::createToolBar(ui::container::widget::sptr _parent)
         Qt::ToolBarArea area {Qt::NoToolBarArea};
         switch(m_alignment)
         {
-            case TOP:
+            case top:
                 area = Qt::TopToolBarArea;
                 break;
 
-            case BOTTOM:
+            case bottom:
                 area = Qt::BottomToolBarArea;
                 break;
 
-            case RIGHT:
+            case right:
                 area = Qt::RightToolBarArea;
                 break;
 
@@ -118,28 +118,28 @@ void toolbar::createToolBar(ui::container::widget::sptr _parent)
     }
     else // parent is not a QMainWindow
     {
-        QWidget* widget = m_parent->getQtContainer();
+        QWidget* widget = m_parent->get_qt_container();
         SIGHT_ASSERT("Parent container must have a layout", widget->layout());
         auto* layout = qobject_cast<QBoxLayout*>(widget->layout());
 
         switch(m_alignment)
         {
-            case TOP:
+            case top:
                 layout->setDirection(QBoxLayout::TopToBottom);
                 tool_bar->setOrientation(Qt::Horizontal);
                 break;
 
-            case BOTTOM:
+            case bottom:
                 layout->setDirection(QBoxLayout::BottomToTop);
                 tool_bar->setOrientation(Qt::Horizontal);
                 break;
 
-            case RIGHT:
+            case right:
                 layout->setDirection(QBoxLayout::RightToLeft);
                 tool_bar->setOrientation(Qt::Vertical);
                 break;
 
-            case LEFT:
+            case left:
                 layout->setDirection(QBoxLayout::LeftToRight);
                 tool_bar->setOrientation(Qt::Vertical);
                 break;
@@ -150,27 +150,27 @@ void toolbar::createToolBar(ui::container::widget::sptr _parent)
         layout->insertWidget(0, tool_bar, 0);
     }
 
-    tool_bar_container->setQtToolBar(tool_bar);
-    m_toolBar = tool_bar_container;
+    tool_bar_container->set_qt_tool_bar(tool_bar);
+    m_tool_bar = tool_bar_container;
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::destroyToolBar()
+void toolbar::destroy_tool_bar()
 {
-    SIGHT_ASSERT("The tool_bar is not initialized", m_toolBar);
+    SIGHT_ASSERT("The tool_bar is not initialized", m_tool_bar);
     SIGHT_ASSERT("The parent's container is not a widget", m_parent);
-    auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    auto* window = qobject_cast<QMainWindow*>(m_parent->get_qt_container());
 
     if(window != nullptr)
     {
         ui::qt::container::toolbar::sptr qt_tool_bar =
-            std::dynamic_pointer_cast<ui::qt::container::toolbar>(m_toolBar);
-        QToolBar* toolbar = qt_tool_bar->getQtToolBar();
+            std::dynamic_pointer_cast<ui::qt::container::toolbar>(m_tool_bar);
+        QToolBar* toolbar = qt_tool_bar->get_qt_tool_bar();
         window->removeToolBar(toolbar);
     }
 
-    m_toolBar->destroyContainer();
+    m_tool_bar->destroy_container();
 }
 
 //-----------------------------------------------------------------------------

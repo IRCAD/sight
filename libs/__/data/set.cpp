@@ -44,21 +44,21 @@ void set::shallow_copy(const object::csptr& _source)
         !other
     );
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool set::operator==(const set& _other) const noexcept
 {
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
 bool set::operator!=(const set& _other) const noexcept
 {
-    return base_class::operator!=(_other);
+    return base_class_t::operator!=(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void set::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_cop
         !other
     );
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 } // namespace sight::data

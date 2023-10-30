@@ -31,22 +31,22 @@
 namespace sight::io::bitmap
 {
 
-Reader::Reader() :
+reader::reader() :
     m_pimpl(std::make_unique<detail::ReaderImpl>(this))
 {
 }
 
 // Defining the destructor here, allows us to use PImpl with a unique_ptr
-Reader::~Reader() = default;
+reader::~reader() = default;
 
 //------------------------------------------------------------------------------
 
-std::string Reader::extension() const
+std::string reader::extension() const
 {
     try
     {
         const auto& [backend, extensions] = detail::guess_backend_or_extension(
-            Backend::ANY,
+            backend::any,
             get_file().extension().string()
         );
 
@@ -54,20 +54,20 @@ std::string Reader::extension() const
     }
     catch(...)
     {
-        return extensions(Backend::LIBTIFF).front();
+        return extensions(backend::libtiff).front();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Reader::read()
+void reader::read()
 {
-    read(Backend::ANY);
+    read(backend::any);
 }
 
 //------------------------------------------------------------------------------
 
-void Reader::read(Backend _backend)
+void reader::read(backend _backend)
 {
     auto file = get_file();
 
@@ -106,7 +106,7 @@ void Reader::read(Backend _backend)
 
 //------------------------------------------------------------------------------
 
-void Reader::read(std::istream& _istream, Backend _backend)
+void reader::read(std::istream& _istream, backend _backend)
 {
     m_pimpl->read(_istream, _backend);
 }

@@ -47,36 +47,36 @@ namespace sight::module::ui::ut
 
 void export_set_test::setUp()
 {
-    m_exportSet = service::add("sight::module::ui::export_set");
-    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::export_set'", m_exportSet);
+    m_export_set = service::add("sight::module::ui::export_set");
+    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::export_set'", m_export_set);
 }
 
 //------------------------------------------------------------------------------
 
 void export_set_test::tearDown()
 {
-    if(!m_exportSet->stopped())
+    if(!m_export_set->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_exportSet->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_export_set->stop().get());
     }
 
-    service::remove(m_exportSet);
+    service::remove(m_export_set);
 }
 
 //------------------------------------------------------------------------------
 
-void export_set_test::basicTest()
+void export_set_test::basic_test()
 {
     data::string::sptr hello_world = std::make_shared<data::string>("Hello world!");
     data::set::sptr set            = std::make_shared<data::set>();
-    m_exportSet->set_inout(hello_world, "data");
-    m_exportSet->set_inout(set, "container");
+    m_export_set->set_inout(hello_world, "data");
+    m_export_set->set_inout(set, "container");
     CPPUNIT_ASSERT(set->empty());
-    CPPUNIT_ASSERT_NO_THROW(m_exportSet->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_exportSet->start().get());
-    sight::ui::dialog::input_dummy::pushInput("I don't care");
-    CPPUNIT_ASSERT_NO_THROW(m_exportSet->update().get());
-    CPPUNIT_ASSERT_NO_THROW(m_exportSet->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(m_export_set->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_export_set->start().get());
+    sight::ui::dialog::input_dummy::push_input("I don't care");
+    CPPUNIT_ASSERT_NO_THROW(m_export_set->update().get());
+    CPPUNIT_ASSERT_NO_THROW(m_export_set->stop().get());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), set->size());
     CPPUNIT_ASSERT((*set)[0] == hello_world);
 }

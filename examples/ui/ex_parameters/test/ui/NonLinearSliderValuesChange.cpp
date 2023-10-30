@@ -25,19 +25,19 @@
 
 #include <core/runtime/path.hpp>
 
-#include <ui/testCore/helper/Button.hpp>
-#include <ui/testCore/helper/Label.hpp>
-#include <ui/testCore/helper/PreferencesConfiguration.hpp>
-#include <ui/testCore/Tester.hpp>
+#include <ui/testCore/helper/button.hpp>
+#include <ui/testCore/helper/label.hpp>
+#include <ui/testCore/helper/preferences_configuration.hpp>
+#include <ui/testCore/tester.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::examples::ui::exsparameters::test::ui::NonLinearSliderValuesChange);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::examples::ui::exsparameters::test::ui::non_linear_slider_values_change);
 
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path NonLinearSliderValuesChange::getProfilePath()
+std::filesystem::path non_linear_slider_values_change::get_profile_path()
 {
     const std::filesystem::path cwd = sight::core::runtime::working_path();
     return cwd / "share/sight/ex_parameters/profile.xml";
@@ -45,25 +45,53 @@ std::filesystem::path NonLinearSliderValuesChange::getProfilePath()
 
 //------------------------------------------------------------------------------
 
-void NonLinearSliderValuesChange::test()
+void non_linear_slider_values_change::test()
 {
     start(
         "NonLinearSliderValuesChange",
-        [](sight::ui::test_core::Tester& _tester)
+        [](sight::ui::test_core::tester& _tester)
         {
-            _tester.getMainWindow()->dumpObjectTree();
+            _tester.get_main_window()->dumpObjectTree();
 
             namespace helper = sight::ui::test_core::helper;
-            using Select     = helper::Select;
+            using selector   = helper::selector;
 
-            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/minValueLabel"), "25");
-            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/maxValueLabel"), "150");
+            helper::label::exactly_match(
+                _tester,
+                selector::from_parent(
+                    "parameters1Srv",
+                    "nonlin/minValueLabel"
+                ),
+                "25"
+            );
+            helper::label::exactly_match(
+                _tester,
+                selector::from_parent(
+                    "parameters1Srv",
+                    "nonlin/maxValueLabel"
+                ),
+                "150"
+            );
 
-            helper::Button::pushMenuBarItem(_tester, "menuPreferencesView/Preference sync test");
-            helper::PreferencesConfiguration::fill(_tester, {{"nonlin", "37,70,105,135,160"}});
+            helper::button::push_menu_bar_item(_tester, "menuPreferencesView/Preference sync test");
+            helper::preferences_configuration::fill(_tester, {{"nonlin", "37,70,105,135,160"}});
 
-            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/minValueLabel"), "37");
-            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/maxValueLabel"), "160");
+            helper::label::exactly_match(
+                _tester,
+                selector::from_parent(
+                    "parameters1Srv",
+                    "nonlin/minValueLabel"
+                ),
+                "37"
+            );
+            helper::label::exactly_match(
+                _tester,
+                selector::from_parent(
+                    "parameters1Srv",
+                    "nonlin/maxValueLabel"
+                ),
+                "160"
+            );
         },
         true
     );

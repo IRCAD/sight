@@ -38,7 +38,7 @@ static const core::com::slots::key_t ADD_RECONSTRUCTIONS_SLOT = "addReconstructi
 
 image_extruder::image_extruder()
 {
-    new_slot(ADD_RECONSTRUCTIONS_SLOT, &image_extruder::addReconstructions, this);
+    new_slot(ADD_RECONSTRUCTIONS_SLOT, &image_extruder::add_reconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -63,13 +63,13 @@ void image_extruder::starting()
 service::connections_t image_extruder::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_MESHES_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_MESHES_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, ADD_RECONSTRUCTIONS_SLOT);
-    connections.push(s_MESHES_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(MESHES_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MESHES_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, ADD_RECONSTRUCTIONS_SLOT);
+    connections.push(MESHES_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
 
-    connections.push(s_IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -84,20 +84,20 @@ void image_extruder::updating()
     {
         // Initializes the mask
         {
-            const auto image_out = m_extrudedImage.lock();
-            SIGHT_ASSERT("The image must be in 3 dimensions", image->numDimensions() == 3);
+            const auto image_out = m_extruded_image.lock();
+            SIGHT_ASSERT("The image must be in 3 dimensions", image->num_dimensions() == 3);
 
-            image_out->resize(image->size(), core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
-            image_out->setSpacing(image->getSpacing());
-            image_out->setOrigin(image->getOrigin());
+            image_out->resize(image->size(), core::type::UINT8, data::image::pixel_format::gray_scale);
+            image_out->set_spacing(image->spacing());
+            image_out->set_origin(image->origin());
             std::fill(image_out->begin(), image_out->end(), std::uint8_t(255));
         }
 
         const auto meshes = m_meshes.lock();
 
-        data::model_series::reconstruction_vector_t reconstructions = meshes->getReconstructionDB();
+        data::model_series::reconstruction_vector_t reconstructions = meshes->get_reconstruction_db();
 
-        this->addReconstructions(reconstructions);
+        this->add_reconstructions(reconstructions);
     }
 }
 
@@ -109,9 +109,9 @@ void image_extruder::stopping()
 
 //------------------------------------------------------------------------------
 
-void image_extruder::addReconstructions(data::model_series::reconstruction_vector_t _reconstructions) const
+void image_extruder::add_reconstructions(data::model_series::reconstruction_vector_t _reconstructions) const
 {
-    const auto image_out = m_extrudedImage.lock();
+    const auto image_out = m_extruded_image.lock();
 
     if(data::helper::medical_image::check_image_validity(image_out.get_shared()))
     {
@@ -119,7 +119,7 @@ void image_extruder::addReconstructions(data::model_series::reconstruction_vecto
         {
             data::mt::locked_ptr locked_reconstruction(reconstruction);
 
-            const data::mesh::csptr mesh = locked_reconstruction->getMesh();
+            const data::mesh::csptr mesh = locked_reconstruction->get_mesh();
 
             data::mt::locked_ptr locked_mesh(mesh);
 
@@ -137,7 +137,7 @@ void image_extruder::addReconstructions(data::model_series::reconstruction_vecto
     const auto sig = image_out->signal<data::image::buffer_modified_signal_t>(data::image::MODIFIED_SIG);
     sig->async_emit();
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //------------------------------------------------------------------------------

@@ -30,24 +30,24 @@
 namespace sight::io::bitmap::detail
 {
 
-class LibJPEGReader final
+class lib_jpeg_reader final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibJPEGReader(const LibJPEGReader&)            = delete;
-    LibJPEGReader& operator=(const LibJPEGReader&) = delete;
+    lib_jpeg_reader(const lib_jpeg_reader&)            = delete;
+    lib_jpeg_reader& operator=(const lib_jpeg_reader&) = delete;
 
     /// Constructor
-    inline LibJPEGReader() noexcept
+    inline lib_jpeg_reader() noexcept
     {
         try
         {
             m_cinfo.err = jpeg_std_error(&m_jerr);
 
             // Do it after jpeg_std_error() which clears the error handlers
-            m_jerr.error_exit     = jpegErrorExit;
-            m_jerr.output_message = jpegOutputMessage;
+            m_jerr.error_exit     = jpeg_error_exit;
+            m_jerr.output_message = jpeg_output_message;
 
             // Initialize the JPEG decompression object
             jpeg_create_decompress(&m_cinfo);
@@ -65,13 +65,13 @@ public:
     }
 
     /// Destructor
-    inline ~LibJPEGReader() noexcept
+    inline ~lib_jpeg_reader() noexcept
     {
         free();
     }
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, Flag /*flag*/)
+    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
     {
         // Get input size
         _istream.seekg(0, std::ios::end);
@@ -136,54 +136,54 @@ public:
                     case JCS_GRAYSCALE:
                     {
                         SIGHT_THROW_IF(
-                            "data::image::PixelFormat::GRAY_SCALE must have exactly one component.",
+                            "data::image::pixel_format::gray_scale must have exactly one component.",
                             m_cinfo.num_components != 1
                         );
 
-                        return data::image::PixelFormat::GRAY_SCALE;
+                        return data::image::pixel_format::gray_scale;
                     }
 
                     case JCS_RGB:
                     case JCS_EXT_RGB:
                     {
                         SIGHT_THROW_IF(
-                            "data::image::PixelFormat::RGB must have exactly three components.",
+                            "data::image::pixel_format::rgb must have exactly three components.",
                             m_cinfo.num_components != 3
                         );
 
-                        return data::image::PixelFormat::RGB;
+                        return data::image::pixel_format::rgb;
                     }
 
                     case JCS_EXT_BGR:
                     {
                         SIGHT_THROW_IF(
-                            "data::image::PixelFormat::BGR must have exactly three components.",
+                            "data::image::pixel_format::bgr must have exactly three components.",
                             m_cinfo.num_components != 3
                         );
 
-                        return data::image::PixelFormat::BGR;
+                        return data::image::pixel_format::bgr;
                     }
 
                     case JCS_EXT_RGBA:
                     case JCS_EXT_RGBX:
                     {
                         SIGHT_THROW_IF(
-                            "data::image::PixelFormat::RGBA must have exactly four components.",
+                            "data::image::pixel_format::rgba must have exactly four components.",
                             m_cinfo.num_components != 4
                         );
 
-                        return data::image::PixelFormat::RGBA;
+                        return data::image::pixel_format::rgba;
                     }
 
                     case JCS_EXT_BGRA:
                     case JCS_EXT_BGRX:
                     {
                         SIGHT_THROW_IF(
-                            "data::image::PixelFormat::BGRA must have exactly four components.",
+                            "data::image::pixel_format::bgra must have exactly four components.",
                             m_cinfo.num_components != 4
                         );
 
-                        return data::image::PixelFormat::BGRA;
+                        return data::image::pixel_format::bgra;
                     }
 
                     default:
@@ -205,7 +205,7 @@ public:
         {
             // jpeg_read_scanlines expects an array of pointers to scanlines.
             row_pointer[0] = reinterpret_cast<unsigned char*>(
-                _image.getPixel(m_cinfo.output_scanline * m_cinfo.image_width)
+                _image.get_pixel(m_cinfo.output_scanline * m_cinfo.image_width)
             );
 
             SIGHT_THROW_IF(
@@ -241,7 +241,7 @@ private:
     }
 
     /// Error handler for libJPEG
-    inline static void jpegErrorExit(j_common_ptr _cinfo)
+    inline static void jpeg_error_exit(j_common_ptr _cinfo)
     {
         char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 
@@ -254,7 +254,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void jpegOutputMessage(j_common_ptr _cinfo)
+    inline static void jpeg_output_message(j_common_ptr _cinfo)
     {
         char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 

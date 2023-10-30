@@ -140,28 +140,28 @@ protected:
     void info(std::ostream& _sstream) override;
 
     /// SLOT : change label color
-    void changeToGreen();
+    void change_to_green();
 
     /// SLOT : change label color
-    void changeToRed();
+    void change_to_red();
 
     /// SLOT : change label color
-    void changeToOrange();
+    void change_to_orange();
 
     /// SLOT : change label color (true = green, false = red)
-    void toggleGreenRed(bool _green);
+    void toggle_green_red(bool _green);
 
     /// SLOT : change nth label color
-    void changeNthToGreen(int _index);
+    void change_nth_to_green(int _index);
 
     /// SLOT : change nth label color
-    void changeNthToRed(int _index);
+    void change_nth_to_red(int _index);
 
     /// SLOT : change nth label color
-    void changeNthToOrange(int _index);
+    void change_nth_to_orange(int _index);
 
     /// SLOT : change nth label color (true = green, false = red)
-    void toggleNthGreenRed(int _index, bool _green);
+    void toggle_nth_green_red(int _index, bool _green);
 
 private:
 
@@ -169,15 +169,15 @@ private:
     std::size_t m_count {1};
 
     QVector<QPointer<QLabel> > m_indicator;
-    QVector<QPointer<QLabel> > m_labelStatus;
+    QVector<QPointer<QLabel> > m_label_status;
 
-    std::string m_greenTooltip;  ///< Tooltip for green status
-    std::string m_redTooltip;    ///< Tooltip for red status
-    std::string m_orangeTooltip; ///< Tooltip for orange status
-    std::string m_layout;        ///< Layout orientation
+    std::string m_green_tooltip;  ///< Tooltip for green status
+    std::string m_red_tooltip;    ///< Tooltip for red status
+    std::string m_orange_tooltip; ///< Tooltip for orange status
+    std::string m_layout;         ///< Layout orientation
 
-    bool m_isCircular {false}; ///< label is a circle if true (else it's a square)
-    QString m_borderRadius = "0";
+    bool m_is_circular {false}; ///< label is a circle if true (else it's a square)
+    QString m_border_radius = "0";
 
     std::size_t m_width {20};  ///< width of indicator
     std::size_t m_height {20}; ///< height of indicator

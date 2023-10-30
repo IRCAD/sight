@@ -60,16 +60,16 @@ protected:
 
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     MODULE_VIZ_SCENE2D_API void zoom(bool _zoom_in);
 
 private:
 
-    bool m_viewportIsTranslated {};
-    sight::viz::scene2d::vec2d_t m_lastCoordEvent {};
+    bool m_viewport_is_translated {};
+    sight::viz::scene2d::vec2d_t m_last_coord_event {};
 
-    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, "viewport"};
+    sight::data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::inout> m_viewport {this, "viewport"};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

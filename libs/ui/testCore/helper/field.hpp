@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include "Select.hpp"
+#include "select.hpp"
 
-#include <ui/testCore/Tester.hpp>
+#include <ui/testCore/tester.hpp>
 
 namespace sight::ui::test_core::helper
 {
@@ -38,7 +38,7 @@ public:
      * @param field How to get the field to fill
      * @param text The text to put in the field
      */
-    GUITEST_API static void fill(Tester& _tester, const Select& _field, const std::string& _text);
+    GUITEST_API static void fill(tester& _tester, const selector& _field, const std::string& _text);
 };
 
 }

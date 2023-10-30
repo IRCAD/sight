@@ -121,7 +121,7 @@ protected Q_SLOTS:
      * @param _selection series to add in selection vector.
      * @param _deselection series to remove from selection vector.
      */
-    void onSelectedSeries(
+    void on_selected_series(
         QVector<data::series::sptr> _selection,
         QVector<data::series::sptr> _deselection
     );
@@ -131,62 +131,62 @@ protected Q_SLOTS:
      * @param _index index of the clicked item in the selector.
      * @todo Manages double click on a study.
      */
-    void onDoubleClick(const QModelIndex& _index);
+    void on_double_click(const QModelIndex& _index);
 
     /**
      * @brief Removes series from series_set and notify.
      * @param _selection series to remove from series_set.
      */
-    void onRemoveSeries(QVector<data::series::sptr> _selection);
+    void on_remove_series(QVector<data::series::sptr> _selection);
 
 private:
 
-    typedef core::com::slot<void (data::series_set::container_type)> remove_series_slot_t;
+    using remove_series_slot_t = core::com::slot<void (data::series_set::container_t)>;
 
-    typedef core::com::signal<void (SPTR(data::series))> SeriesDoubleClickedSignalType;
+    using series_double_clicked_signal_t = core::com::signal<void (std::shared_ptr<data::series>)>;
 
     /// SLOT: adds series into the selector.
-    void addSeries(data::series_set::container_type _added_series);
+    void add_series(data::series_set::container_t _added_series);
 
     /// SLOT: removes series from the selector.
-    void removeSeries(data::series_set::container_type _removed_series);
+    void remove_series(data::series_set::container_t _removed_series);
 
     /// Contains the slot used to remove series from the selector.
-    remove_series_slot_t::sptr m_slotRemoveSeries;
+    remove_series_slot_t::sptr m_slot_remove_series;
 
     /// Contains the selector widget.
-    QPointer<sight::ui::qt::series::selector> m_selectorWidget {nullptr};
+    QPointer<sight::ui::qt::series::selector> m_selector_widget {nullptr};
 
     /// Contains the signal emitted when there is a double click on a series.
-    SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked {nullptr};
+    series_double_clicked_signal_t::sptr m_sig_series_double_clicked {nullptr};
 
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
-    sight::ui::qt::series::selector::series_icon_t m_seriesIcons;
+    sight::ui::qt::series::selector::series_icon_t m_series_icons;
 
     /// Defines if series can be removed.
-    bool m_removeAllowed {true};
+    bool m_remove_allowed {true};
 
     /// Defines the behaviour of the treeview selection mode.
-    QAbstractItemView::SelectionMode m_selectionMode {QAbstractItemView::ExtendedSelection};
+    QAbstractItemView::SelectionMode m_selection_mode {QAbstractItemView::ExtendedSelection};
 
     /// Allows selection of module::ui::qt::InsertSeries only.
-    bool m_insertMode {false};
+    bool m_insert_mode {false};
 
     /// Defines the path of the remove study button icon.
-    std::filesystem::path m_removeStudyIcon;
+    std::filesystem::path m_remove_study_icon;
 
     /// Defines the path of the remove series button icon.
-    std::filesystem::path m_removeSeriesIcon;
+    std::filesystem::path m_remove_series_icon;
 
     /// Defines the columns to be displayed in the widget
-    std::string m_displayedColumns =
+    std::string m_displayed_columns =
         "PatientName/SeriesInstanceUID,PatientSex,PatientBirthDate/Icon,Modality,StudyDescription/SeriesDescription,StudyDate/SeriesDate,StudyTime/SeriesTime,PatientAge,BodyPartExamined,PatientPositionString,ContrastBolusAgent,AcquisitionTime,ContrastBolusStartTime";
 
-    static constexpr std::string_view s_SERIES_SET = "seriesSet";
-    static constexpr std::string_view s_SELECTION  = "selection";
+    static constexpr std::string_view SERIES_SET = "seriesSet";
+    static constexpr std::string_view SELECTION  = "selection";
 
-    data::ptr<data::series_set, data::Access::inout> m_series_set {this, s_SERIES_SET, true};
-    data::ptr<data::vector, data::Access::inout> m_selection {this, s_SELECTION};
+    data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET, true};
+    data::ptr<data::vector, data::access::inout> m_selection {this, SELECTION};
 };
 
 } // namespace sight::module::ui::qt::series

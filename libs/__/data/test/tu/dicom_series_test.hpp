@@ -29,11 +29,11 @@
 namespace sight::data::ut
 {
 
-class dicom_seriesTest : public CPPUNIT_NS::TestFixture
+class dicom_series_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(dicom_seriesTest);
-CPPUNIT_TEST(dicomTest);
-CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST_SUITE(dicom_series_test);
+CPPUNIT_TEST(dicom_test);
+CPPUNIT_TEST(equality_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,8 +42,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void dicomTest();
-    static void equalityTest();
+    void dicom_test();
+    static void equality_test();
 
 private:
 

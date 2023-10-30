@@ -45,14 +45,14 @@ plugin::~plugin() noexcept =
 
 void plugin::start()
 {
-    m_ogreRoot = sight::viz::scene3d::utils::getOgreRoot();
+    m_ogre_root = sight::viz::scene3d::utils::get_ogre_root();
 
     Ogre::NameValuePairList const params {
         {"hidden", "true"},
     };
 
     // Use a size > 120 because windows will anyway switch to a larger size
-    auto* window = m_ogreRoot->createRenderWindow(
+    auto* window = m_ogre_root->createRenderWindow(
         "test",
         static_cast<unsigned int>(200),
         static_cast<unsigned int>(200),
@@ -71,8 +71,8 @@ void plugin::start()
 
 void plugin::stop() noexcept
 {
-    m_ogreRoot = nullptr;
-    sight::viz::scene3d::utils::destroyOgreRoot();
+    m_ogre_root = nullptr;
+    sight::viz::scene3d::utils::destroy_ogre_root();
 }
 
 //-----------------------------------------------------------------------------

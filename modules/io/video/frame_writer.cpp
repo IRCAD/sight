@@ -63,13 +63,13 @@ frame_writer::frame_writer() noexcept :
 
     m_format(".tiff")
 {
-    new_slot(SAVE_FRAME, &frame_writer::saveFrame, this);
-    new_slot(START_RECORD, &frame_writer::startRecord, this);
-    new_slot(STOP_RECORD, &frame_writer::stopRecord, this);
+    new_slot(SAVE_FRAME, &frame_writer::save_frame, this);
+    new_slot(START_RECORD, &frame_writer::start_record, this);
+    new_slot(STOP_RECORD, &frame_writer::stop_record, this);
     new_slot(RECORD, &frame_writer::record, this);
-    new_slot(TOGGLE_RECORDING, &frame_writer::toggleRecording, this);
+    new_slot(TOGGLE_RECORDING, &frame_writer::toggle_recording, this);
     new_slot(WRITE, &frame_writer::write, this);
-    new_slot(SET_FORMAT_PARAMETER, &frame_writer::setFormatParameter, this);
+    new_slot(SET_FORMAT_PARAMETER, &frame_writer::set_format_parameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -79,9 +79,9 @@ frame_writer::~frame_writer() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType frame_writer::getIOPathType() const
+sight::io::service::path_type_t frame_writer::get_path_type() const
 {
-    return sight::io::service::FOLDER;
+    return sight::io::service::folder;
 }
 
 //------------------------------------------------------------------------------
@@ -103,25 +103,25 @@ void frame_writer::starting()
 
 //------------------------------------------------------------------------------
 
-void frame_writer::openLocationDialog()
+void frame_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::WRITE);
-    dialog_file.setType(ui::dialog::location::FOLDER);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a folder to save the frames" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::write);
+    dialog_file.set_type(ui::dialog::location::folder);
 
     auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
         this->set_folder(result->get_folder());
         default_directory->set_folder(result->get_folder().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -129,7 +129,7 @@ void frame_writer::openLocationDialog()
 
 void frame_writer::stopping()
 {
-    this->stopRecord();
+    this->stop_record();
 }
 
 //------------------------------------------------------------------------------
@@ -137,23 +137,23 @@ void frame_writer::stopping()
 void frame_writer::updating()
 {
     core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
-    this->saveFrame(timestamp);
+    this->save_frame(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void frame_writer::saveFrame(core::hires_clock::type _timestamp)
+void frame_writer::save_frame(core::hires_clock::type _timestamp)
 {
-    this->startRecord();
+    this->start_record();
     this->write(_timestamp);
-    this->stopRecord();
+    this->stop_record();
 }
 
 //------------------------------------------------------------------------------
 
 void frame_writer::write(core::hires_clock::type _timestamp)
 {
-    if(m_isRecording)
+    if(m_is_recording)
     {
         // Retrieve dataStruct associated with this service
         const auto locked   = m_data.lock();
@@ -168,17 +168,17 @@ void frame_writer::write(core::hires_clock::type _timestamp)
         core::com::connection::blocker write_blocker(sig->get_connection(m_slots[WRITE]));
 
         // Get the buffer of the copied timeline
-        const auto buffer = frame_tl->getClosestBuffer(_timestamp);
+        const auto buffer = frame_tl->get_closest_buffer(_timestamp);
 
         if(buffer)
         {
-            _timestamp = buffer->getTimestamp();
-            const int width  = static_cast<int>(frame_tl->getWidth());
-            const int height = static_cast<int>(frame_tl->getHeight());
+            _timestamp = buffer->get_timestamp();
+            const int width  = static_cast<int>(frame_tl->get_width());
+            const int height = static_cast<int>(frame_tl->get_height());
 
-            const std::uint8_t* image_buffer = &buffer->getElement(0);
+            const std::uint8_t* image_buffer = &buffer->get_element(0);
 
-            cv::Mat image(cv::Size(width, height), m_imageType, (void*) image_buffer, cv::Mat::AUTO_STEP);
+            cv::Mat image(cv::Size(width, height), m_image_type, (void*) image_buffer, cv::Mat::AUTO_STEP);
 
             const auto time = static_cast<std::size_t>(_timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
@@ -208,14 +208,14 @@ void frame_writer::write(core::hires_clock::type _timestamp)
 
 //------------------------------------------------------------------------------
 
-void frame_writer::startRecord()
+void frame_writer::start_record()
 {
-    if(!this->hasLocationDefined())
+    if(!this->has_location_defined())
     {
-        this->openLocationDialog();
+        this->open_location_dialog();
     }
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         // Retrieve dataStruct associated with this service
         const auto locked   = m_data.lock();
@@ -225,32 +225,32 @@ void frame_writer::startRecord()
             "The object is not a '"
             + data::frame_tl::classname()
             + "' or '"
-            + sight::io::service::s_DATA_KEY
+            + sight::io::service::DATA_KEY
             + "' is not correctly set.",
             frame_tl
         );
 
-        if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 3)
+        if(frame_tl->type() == core::type::UINT8 && frame_tl->num_components() == 3)
         {
-            m_imageType = CV_8UC3;
+            m_image_type = CV_8UC3;
         }
-        else if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 4)
+        else if(frame_tl->type() == core::type::UINT8 && frame_tl->num_components() == 4)
         {
-            m_imageType = CV_8UC4;
+            m_image_type = CV_8UC4;
         }
-        else if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 1)
+        else if(frame_tl->type() == core::type::UINT8 && frame_tl->num_components() == 1)
         {
-            m_imageType = CV_8UC1;
+            m_image_type = CV_8UC1;
         }
-        else if(frame_tl->getType() == core::type::UINT16 && frame_tl->numComponents() == 1)
+        else if(frame_tl->type() == core::type::UINT16 && frame_tl->num_components() == 1)
         {
-            m_imageType = CV_16UC1;
+            m_image_type = CV_16UC1;
         }
         else
         {
             SIGHT_ERROR(
-                "This type of frame : " + frame_tl->getType().name() + " with "
-                + std::to_string(frame_tl->numComponents()) + " is not supported"
+                "This type of frame : " + frame_tl->type().name() + " with "
+                + std::to_string(frame_tl->num_components()) + " is not supported"
             );
             return;
         }
@@ -262,28 +262,28 @@ void frame_writer::startRecord()
             std::filesystem::create_directories(path);
         }
 
-        m_isRecording = true;
+        m_is_recording = true;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void frame_writer::stopRecord()
+void frame_writer::stop_record()
 {
-    m_isRecording = false;
+    m_is_recording = false;
 }
 
 //------------------------------------------------------------------------------
 
-void frame_writer::toggleRecording()
+void frame_writer::toggle_recording()
 {
-    if(m_isRecording)
+    if(m_is_recording)
     {
-        this->stopRecord();
+        this->stop_record();
     }
     else
     {
-        this->startRecord();
+        this->start_record();
     }
 }
 
@@ -293,17 +293,17 @@ void frame_writer::record(bool _state)
 {
     if(_state)
     {
-        this->startRecord();
+        this->start_record();
     }
     else
     {
-        this->stopRecord();
+        this->stop_record();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void frame_writer::setFormatParameter(std::string _val, std::string _key)
+void frame_writer::set_format_parameter(std::string _val, std::string _key)
 {
     if(_key == "format")
     {
@@ -331,7 +331,7 @@ void frame_writer::setFormatParameter(std::string _val, std::string _key)
 service::connections_t frame_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::s_DATA_KEY, data::timeline::signals::PUSHED, WRITE);
+    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, WRITE);
     return connections;
 }
 

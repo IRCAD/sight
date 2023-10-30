@@ -76,28 +76,28 @@ void slice_index_dicom_puller_editor::configuring()
 
     const auto& config = this->get_config();
 
-    m_dicomReaderType = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
-    m_delay           = config.get<unsigned int>("config.<xmlattr>.delay", m_delay);
+    m_dicom_reader_type = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicom_reader_type);
+    m_delay             = config.get<unsigned int>("config.<xmlattr>.delay", m_delay);
 
     if(const auto reader_config = config.get_child_optional("readerConfig"); reader_config.has_value())
     {
-        m_readerConfig = reader_config.value();
+        m_reader_config = reader_config.value();
     }
 
-    if(m_delayTimer && m_delayTimer->is_running())
+    if(m_delay_timer && m_delay_timer->is_running())
     {
-        m_delayTimer->stop();
-        m_delayTimer.reset();
+        m_delay_timer->stop();
+        m_delay_timer.reset();
     }
 
-    m_delayTimer = this->worker()->create_timer();
-    m_delayTimer->set_function(
+    m_delay_timer = this->worker()->create_timer();
+    m_delay_timer->set_function(
         [this]()
         {
-            this->triggerNewSlice();
+            this->trigger_new_slice();
         });
 
-    m_delayTimer->set_one_shot(true);
+    m_delay_timer->set_one_shot(true);
 }
 
 //------------------------------------------------------------------------------
@@ -105,71 +105,76 @@ void slice_index_dicom_puller_editor::configuring()
 void slice_index_dicom_puller_editor::starting()
 {
     sight::ui::service::create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     auto* layout = new QHBoxLayout();
 
     const auto dicom_series = m_series.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicom_series);
-    m_numberOfSlices = dicom_series->numInstances();
+    m_number_of_slices = dicom_series->num_instances();
 
     // Slider
-    m_sliceIndexSlider = new QSlider(Qt::Horizontal);
-    layout->addWidget(m_sliceIndexSlider, 1);
-    m_sliceIndexSlider->setRange(0, static_cast<int>(m_numberOfSlices - 1));
-    m_sliceIndexSlider->setValue(static_cast<int>(m_numberOfSlices / 2));
+    m_slice_index_slider = new QSlider(Qt::Horizontal);
+    layout->addWidget(m_slice_index_slider, 1);
+    m_slice_index_slider->setRange(0, static_cast<int>(m_number_of_slices - 1));
+    m_slice_index_slider->setValue(static_cast<int>(m_number_of_slices / 2));
 
     // Line Edit
-    m_sliceIndexLineEdit = new QLineEdit();
-    layout->addWidget(m_sliceIndexLineEdit, 0);
-    m_sliceIndexLineEdit->setReadOnly(true);
-    m_sliceIndexLineEdit->setMaximumWidth(80);
+    m_slice_index_line_edit = new QLineEdit();
+    layout->addWidget(m_slice_index_line_edit, 0);
+    m_slice_index_line_edit->setReadOnly(true);
+    m_slice_index_line_edit->setMaximumWidth(80);
 
     std::stringstream ss;
-    ss << m_sliceIndexSlider->value() << " / " << (m_numberOfSlices - 1);
-    m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
+    ss << m_slice_index_slider->value() << " / " << (m_number_of_slices - 1);
+    m_slice_index_line_edit->setText(std::string(ss.str()).c_str());
 
-    qt_container->setLayout(layout);
+    qt_container->set_layout(layout);
 
     // Connect the signals
-    QObject::connect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
+    QObject::connect(
+        m_slice_index_slider,
+        &QSlider::valueChanged,
+        this,
+        &slice_index_dicom_puller_editor::change_slice_index
+    );
 
     // Create temporary series_set
     m_tmp_series_set = std::make_shared<data::series_set>();
 
     // Create reader
-    auto dicom_reader = sight::service::add<sight::io::service::reader>(m_dicomReaderType);
+    auto dicom_reader = sight::service::add<sight::io::service::reader>(m_dicom_reader_type);
     SIGHT_ASSERT(
-        "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-                                                                      "sight::module::io::dicomweb::slice_index_dicom_puller_editor.",
+        "Unable to create a reader of type: \"" + m_dicom_reader_type + "\" in "
+                                                                        "sight::module::io::dicomweb::slice_index_dicom_puller_editor.",
         dicom_reader
     );
-    dicom_reader->set_inout(m_tmp_series_set, sight::io::service::s_DATA_KEY);
-    dicom_reader->set_config(m_readerConfig);
+    dicom_reader->set_inout(m_tmp_series_set, sight::io::service::DATA_KEY);
+    dicom_reader->set_config(m_reader_config);
     dicom_reader->configure();
     dicom_reader->start();
 
-    m_dicomReader = dicom_reader;
+    m_dicom_reader = dicom_reader;
 
     // image Indexes
-    m_axialIndex    = std::make_shared<data::integer>(0);
-    m_frontalIndex  = std::make_shared<data::integer>(0);
-    m_sagittalIndex = std::make_shared<data::integer>(0);
+    m_axial_index    = std::make_shared<data::integer>(0);
+    m_frontal_index  = std::make_shared<data::integer>(0);
+    m_sagittal_index = std::make_shared<data::integer>(0);
 
     // Load a slice
-    if(m_delayTimer)
+    if(m_delay_timer)
     {
-        if(m_delayTimer->is_running())
+        if(m_delay_timer->is_running())
         {
-            m_delayTimer->stop();
+            m_delay_timer->stop();
         }
 
-        m_delayTimer->set_duration(std::chrono::milliseconds(m_delay));
-        m_delayTimer->start();
+        m_delay_timer->set_duration(std::chrono::milliseconds(m_delay));
+        m_delay_timer->start();
     }
     else
     {
-        this->triggerNewSlice();
+        this->trigger_new_slice();
     }
 }
 
@@ -177,16 +182,16 @@ void slice_index_dicom_puller_editor::starting()
 
 void slice_index_dicom_puller_editor::stopping()
 {
-    if(m_delayTimer && m_delayTimer->is_running())
+    if(m_delay_timer && m_delay_timer->is_running())
     {
-        m_delayTimer->stop();
+        m_delay_timer->stop();
     }
 
     // Stop dicom reader
-    if(!m_dicomReader.expired())
+    if(!m_dicom_reader.expired())
     {
-        m_dicomReader.lock()->stop();
-        sight::service::remove(m_dicomReader.lock());
+        m_dicom_reader.lock()->stop();
+        sight::service::remove(m_dicom_reader.lock());
     }
 
     this->destroy();
@@ -200,60 +205,60 @@ void slice_index_dicom_puller_editor::updating()
 
 //------------------------------------------------------------------------------
 
-void slice_index_dicom_puller_editor::changeSliceIndex(int /*unused*/)
+void slice_index_dicom_puller_editor::change_slice_index(int /*unused*/)
 {
     // Update text
     std::stringstream ss;
-    ss << m_sliceIndexSlider->value() << " / " << (m_numberOfSlices - 1);
-    m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
+    ss << m_slice_index_slider->value() << " / " << (m_number_of_slices - 1);
+    m_slice_index_line_edit->setText(std::string(ss.str()).c_str());
 
     // Get the new slice if there is no change for m_delay milliseconds
-    if(m_delayTimer)
+    if(m_delay_timer)
     {
-        if(m_delayTimer->is_running())
+        if(m_delay_timer->is_running())
         {
-            m_delayTimer->stop();
+            m_delay_timer->stop();
         }
 
-        m_delayTimer->start();
+        m_delay_timer->start();
     }
     else
     {
-        this->triggerNewSlice();
+        this->trigger_new_slice();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slice_index_dicom_puller_editor::triggerNewSlice()
+void slice_index_dicom_puller_editor::trigger_new_slice()
 {
     // DicomSeries
     const auto dicom_series = m_series.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicom_series);
 
     // Compute slice index
-    const std::size_t selected_slice_index = static_cast<std::size_t>(m_sliceIndexSlider->value())
-                                             + dicom_series->getFirstInstanceNumber();
-    if(!dicom_series->isInstanceAvailable(selected_slice_index))
+    const std::size_t selected_slice_index = static_cast<std::size_t>(m_slice_index_slider->value())
+                                             + dicom_series->get_first_instance_number();
+    if(!dicom_series->is_instance_available(selected_slice_index))
     {
-        this->pullInstance(*dicom_series);
+        this->pull_instance(*dicom_series);
     }
     else
     {
-        this->readImage(*dicom_series, selected_slice_index);
+        this->read_image(*dicom_series, selected_slice_index);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slice_index_dicom_puller_editor::readImage(
+void slice_index_dicom_puller_editor::read_image(
     sight::data::dicom_series& _dicom_series,
     std::size_t _selected_slice_index
 )
 {
     // DicomSeries
-    if(_dicom_series.getModality() != "CT" && _dicom_series.getModality() != "MR"
-       && _dicom_series.getModality() != "XA")
+    if(_dicom_series.get_modality() != "CT" && _dicom_series.get_modality() != "MR"
+       && _dicom_series.get_modality() != "XA")
     {
         return;
     }
@@ -265,7 +270,7 @@ void slice_index_dicom_puller_editor::readImage(
     SIGHT_INFO("Create " + tmp_path.string());
     std::filesystem::create_directories(tmp_path);
 
-    const auto& binaries = _dicom_series.getDicomContainer();
+    const auto& binaries = _dicom_series.get_dicom_container();
     auto iter            = binaries.find(_selected_slice_index);
     SIGHT_ASSERT("Index '" << _selected_slice_index << "' is not found in DicomSeries", iter != binaries.end());
 
@@ -282,12 +287,12 @@ void slice_index_dicom_puller_editor::readImage(
     fs.close();
 
     // Read image
-    m_dicomReader.lock()->set_folder(tmp_path);
-    if(!m_dicomReader.expired())
+    m_dicom_reader.lock()->set_folder(tmp_path);
+    if(!m_dicom_reader.expired())
     {
-        m_dicomReader.lock()->update();
+        m_dicom_reader.lock()->update();
 
-        if(m_dicomReader.expired() || m_dicomReader.lock()->stopped())
+        if(m_dicom_reader.expired() || m_dicom_reader.lock()->stopped())
         {
             return;
         }
@@ -307,25 +312,25 @@ void slice_index_dicom_puller_editor::readImage(
 
     if(image_series)
     {
-        const data::image::Size new_size = image_series->size();
+        const data::image::size_t new_size = image_series->size();
 
-        m_frontalIndex->setValue(static_cast<int>(new_size[0] / 2));
-        m_sagittalIndex->setValue(static_cast<int>(new_size[1] / 2));
+        m_frontal_index->set_value(static_cast<int>(new_size[0] / 2));
+        m_sagittal_index->set_value(static_cast<int>(new_size[1] / 2));
 
         data::helper::medical_image::set_slice_index(
             *image_series,
-            data::helper::medical_image::orientation_t::AXIAL,
-            m_axialIndex->value()
+            data::helper::medical_image::orientation_t::axial,
+            m_axial_index->value()
         );
         data::helper::medical_image::set_slice_index(
             *image_series,
-            data::helper::medical_image::orientation_t::AXIAL,
-            m_frontalIndex->value()
+            data::helper::medical_image::orientation_t::axial,
+            m_frontal_index->value()
         );
         data::helper::medical_image::set_slice_index(
             *image_series,
-            data::helper::medical_image::orientation_t::AXIAL,
-            m_sagittalIndex->value()
+            data::helper::medical_image::orientation_t::axial,
+            m_sagittal_index->value()
         );
 
         this->set_output("image", image_series);
@@ -334,7 +339,7 @@ void slice_index_dicom_puller_editor::readImage(
 
 //------------------------------------------------------------------------------
 
-void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _dicom_series)
+void slice_index_dicom_puller_editor::pull_instance(sight::data::dicom_series& _dicom_series)
 {
     service::config_t configuration = this->get_config();
     //Parse server port and hostname
@@ -344,8 +349,8 @@ void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _d
         const std::string::size_type split_position = server_info.find(':');
         SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_serverHostnameKey = server_info.substr(0, split_position);
-        m_serverPortKey     = server_info.substr(split_position + 1, server_info.size());
+        m_server_hostname_key = server_info.substr(0, split_position);
+        m_server_port_key     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -356,7 +361,7 @@ void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _d
 
     try
     {
-        m_serverPort = preferences.delimited_get(m_serverPortKey, m_serverPort);
+        m_server_port = preferences.delimited_get(m_server_port_key, m_server_port);
     }
     catch(...)
     {
@@ -365,7 +370,7 @@ void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _d
 
     try
     {
-        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
+        m_server_hostname = preferences.delimited_get(m_server_hostname_key, m_server_hostname);
     }
     catch(...)
     {
@@ -376,10 +381,10 @@ void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _d
     try
     {
         // Get selected slice
-        std::size_t selected_slice_index = static_cast<std::size_t>(m_sliceIndexSlider->value())
-                                           + _dicom_series.getFirstInstanceNumber();
+        std::size_t selected_slice_index = static_cast<std::size_t>(m_slice_index_slider->value())
+                                           + _dicom_series.get_first_instance_number();
 
-        std::string series_instance_uid = _dicom_series.getSeriesInstanceUID();
+        std::string series_instance_uid = _dicom_series.get_series_instance_uid();
 
         // Find Series according to SeriesInstanceUID
         QJsonObject query;
@@ -391,26 +396,26 @@ void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _d
         body.insert("Limit", 0);
 
         /// Url PACS
-        const std::string pacs_server("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+        const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-        sight::io::http::Request::sptr request = sight::io::http::Request::New(
+        sight::io::http::request::sptr request = sight::io::http::request::New(
             pacs_server + "/tools/find"
         );
         QByteArray series_answer;
         try
         {
-            series_answer = m_clientQt.post(request, QJsonDocument(body).toJson());
+            series_answer = m_client_qt.post(request, QJsonDocument(body).toJson());
         }
-        catch(sight::io::http::exceptions::HostNotFound& exception)
+        catch(sight::io::http::exceptions::host_not_found& exception)
         {
             std::stringstream ss;
             ss << "Host not found:\n"
             << " Please check your configuration: \n"
-            << "Pacs host name: " << m_serverHostname << "\n"
-            << "Pacs port: " << m_serverPort << "\n";
+            << "Pacs host name: " << m_server_hostname << "\n"
+            << "Pacs port: " << m_server_port << "\n";
 
-            sight::module::io::dicomweb::slice_index_dicom_puller_editor::displayErrorMessage(ss.str());
+            sight::module::io::dicomweb::slice_index_dicom_puller_editor::display_error_message(ss.str());
             SIGHT_WARN(exception.what());
         }
         QJsonDocument json_response    = QJsonDocument::fromJson(series_answer);
@@ -421,7 +426,7 @@ void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _d
         // GET all Instances by Series.
         const std::string instances_url(pacs_server + "/series/" + series_uid);
 
-        const QByteArray& instances_answer = m_clientQt.get(sight::io::http::Request::New(instances_url));
+        const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::New(instances_url));
         json_response = QJsonDocument::fromJson(instances_answer);
         const QJsonObject& json_obj       = json_response.object();
         const QJsonArray& instances_array = json_obj["Instances"].toArray();
@@ -433,41 +438,41 @@ void slice_index_dicom_puller_editor::pullInstance(sight::data::dicom_series& _d
         const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/file");
         try
         {
-            instance_path = m_clientQt.get_file(sight::io::http::Request::New(instance_url));
+            instance_path = m_client_qt.get_file(sight::io::http::request::New(instance_url));
         }
-        catch(sight::io::http::exceptions::ContentNotFound& exception)
+        catch(sight::io::http::exceptions::content_not_found& exception)
         {
             std::stringstream ss;
             ss << "Content not found:  \n"
             << "Unable download the DICOM instance. \n";
 
-            sight::module::io::dicomweb::slice_index_dicom_puller_editor::displayErrorMessage(ss.str());
+            sight::module::io::dicomweb::slice_index_dicom_puller_editor::display_error_message(ss.str());
             SIGHT_WARN(exception.what());
         }
 
         // Add path and trigger reading
-        _dicom_series.addDicomPath(selected_slice_index, instance_path);
-        this->readImage(_dicom_series, selected_slice_index);
+        _dicom_series.add_dicom_path(selected_slice_index, instance_path);
+        this->read_image(_dicom_series, selected_slice_index);
     }
-    catch(sight::io::http::exceptions::Base& exception)
+    catch(sight::io::http::exceptions::base& exception)
     {
         std::stringstream ss;
         ss << "Unknown error.";
-        sight::module::io::dicomweb::slice_index_dicom_puller_editor::displayErrorMessage(ss.str());
+        sight::module::io::dicomweb::slice_index_dicom_puller_editor::display_error_message(ss.str());
         SIGHT_WARN(exception.what());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slice_index_dicom_puller_editor::displayErrorMessage(const std::string& _message)
+void slice_index_dicom_puller_editor::display_error_message(const std::string& _message)
 {
     SIGHT_WARN("Error: " + _message);
     sight::ui::dialog::message message_box;
-    message_box.setTitle("Error");
-    message_box.setMessage(_message);
-    message_box.setIcon(ui::dialog::message::CRITICAL);
-    message_box.addButton(ui::dialog::message::OK);
+    message_box.set_title("Error");
+    message_box.set_message(_message);
+    message_box.set_icon(ui::dialog::message::critical);
+    message_box.add_button(ui::dialog::message::ok);
     message_box.show();
 }
 

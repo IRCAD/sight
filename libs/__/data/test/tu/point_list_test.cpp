@@ -47,7 +47,7 @@ void point_list_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void point_list_test::copyTest()
+void point_list_test::copy_test()
 {
     data::point_list::sptr pl1 = std::make_shared<data::point_list>();
     data::point_list::sptr pl2 = std::make_shared<data::point_list>();
@@ -55,63 +55,38 @@ void point_list_test::copyTest()
 
     data::point::sptr point1 = std::make_shared<data::point>(1.0F, 2.0F, 3.0F);
 
-    pl1->pushBack(point1);
+    pl1->push_back(point1);
 
     CPPUNIT_ASSERT_NO_THROW(pl2->shallow_copy(pl1));
 
-    CPPUNIT_ASSERT_EQUAL(pl1->getPoints()[0], pl2->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(pl1->get_points()[0], pl2->get_points()[0]);
 }
 
 //------------------------------------------------------------------------------
 
-void point_list_test::getterTest()
+void point_list_test::getter_test()
 {
     data::point_list::sptr pl1 = std::make_shared<data::point_list>();
     data::point::sptr point1   = std::make_shared<data::point>(1.0F, 2.0F, 3.0F);
 
-    pl1->pushBack(point1);
+    pl1->push_back(point1);
 
-    data::point::sptr point2 = pl1->getPoints()[0];
+    data::point::sptr point2 = pl1->get_points()[0];
 
-    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[0], point2->getCoord()[0]);
-    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[1], point2->getCoord()[1]);
-    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[2], point2->getCoord()[2]);
+    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[0], point2->get_coord()[0]);
+    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[1], point2->get_coord()[1]);
+    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[2], point2->get_coord()[2]);
 
-    data::point_list::PointListContainer& container = pl1->getPoints();
+    data::point_list::container_t& container = pl1->get_points();
 
-    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0]);
-    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1]);
-    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[2], container[0]->getCoord()[2]);
+    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[0], container[0]->get_coord()[0]);
+    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[1], container[0]->get_coord()[1]);
+    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[2], container[0]->get_coord()[2]);
 }
 
 //------------------------------------------------------------------------------
 
-void point_list_test::setterTest()
-{
-    data::point_list::sptr pl1 = std::make_shared<data::point_list>();
-    data::point::sptr point1   = std::make_shared<data::point>(1.0F, 2.0F, 3.0F);
-    data::point::sptr point2   = std::make_shared<data::point>(4.0F, 5.0F, 6.0F);
-
-    std::vector<data::point::sptr> vec;
-    vec.push_back(point1);
-    vec.push_back(point2);
-
-    CPPUNIT_ASSERT_NO_THROW(pl1->setPoints(vec));
-
-    data::point_list::PointListContainer& container = pl1->getPoints();
-
-    for(unsigned p = 0 ; p < vec.size() ; ++p)
-    {
-        for(unsigned int i = 0 ; i < 3 ; ++i)
-        {
-            CPPUNIT_ASSERT_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i]);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void point_list_test::pushTest()
+void point_list_test::setter_test()
 {
     data::point_list::sptr pl1 = std::make_shared<data::point_list>();
     data::point::sptr point1   = std::make_shared<data::point>(1.0F, 2.0F, 3.0F);
@@ -121,23 +96,48 @@ void point_list_test::pushTest()
     vec.push_back(point1);
     vec.push_back(point2);
 
-    CPPUNIT_ASSERT_NO_THROW(pl1->pushBack(point1));
-    CPPUNIT_ASSERT_NO_THROW(pl1->pushBack(point2));
+    CPPUNIT_ASSERT_NO_THROW(pl1->set_points(vec));
 
-    data::point_list::PointListContainer& container = pl1->getPoints();
+    data::point_list::container_t& container = pl1->get_points();
 
     for(unsigned p = 0 ; p < vec.size() ; ++p)
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i]);
+            CPPUNIT_ASSERT_EQUAL(vec[p]->get_coord()[i], container[p]->get_coord()[i]);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void point_list_test::removeTest()
+void point_list_test::push_test()
+{
+    data::point_list::sptr pl1 = std::make_shared<data::point_list>();
+    data::point::sptr point1   = std::make_shared<data::point>(1.0F, 2.0F, 3.0F);
+    data::point::sptr point2   = std::make_shared<data::point>(4.0F, 5.0F, 6.0F);
+
+    std::vector<data::point::sptr> vec;
+    vec.push_back(point1);
+    vec.push_back(point2);
+
+    CPPUNIT_ASSERT_NO_THROW(pl1->push_back(point1));
+    CPPUNIT_ASSERT_NO_THROW(pl1->push_back(point2));
+
+    data::point_list::container_t& container = pl1->get_points();
+
+    for(unsigned p = 0 ; p < vec.size() ; ++p)
+    {
+        for(unsigned int i = 0 ; i < 3 ; ++i)
+        {
+            CPPUNIT_ASSERT_EQUAL(vec[p]->get_coord()[i], container[p]->get_coord()[i]);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void point_list_test::remove_test()
 {
     const std::size_t nb_points = 42;
     data::point_list::sptr pl   = std::make_shared<data::point_list>();
@@ -148,19 +148,19 @@ void point_list_test::removeTest()
         for(std::size_t i = 0 ; i < nb_points ; ++i)
         {
             const auto p = std::make_shared<data::point>(.0F, .0F, .0F);
-            pl->pushBack(p);
+            pl->push_back(p);
         }
 
         // remove the first
         std::size_t size = nb_points;
-        while(!pl->getPoints().empty())
+        while(!pl->get_points().empty())
         {
             pl->remove(0);
-            CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
+            CPPUNIT_ASSERT_EQUAL(--size, pl->get_points().size());
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), pl->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), pl->get_points().size());
 
     // Remove last
     {
@@ -168,20 +168,20 @@ void point_list_test::removeTest()
         for(std::size_t i = 0 ; i < nb_points ; ++i)
         {
             const auto p = std::make_shared<data::point>(.0F, .0F, .0F);
-            pl->pushBack(p);
+            pl->push_back(p);
         }
 
         // remove the last
         std::size_t size = nb_points;
-        while(!pl->getPoints().empty())
+        while(!pl->get_points().empty())
         {
-            const std::size_t index = pl->getPoints().size() - 1;
+            const std::size_t index = pl->get_points().size() - 1;
             pl->remove(index);
-            CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
+            CPPUNIT_ASSERT_EQUAL(--size, pl->get_points().size());
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), pl->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), pl->get_points().size());
 
     // Check that the correct one is removed
     {
@@ -189,19 +189,19 @@ void point_list_test::removeTest()
         for(std::size_t i = 0 ; i < nb_points ; ++i)
         {
             const auto p = std::make_shared<data::point>(static_cast<float>(i), .0F, .0F);
-            pl->pushBack(p);
+            pl->push_back(p);
         }
 
         std::size_t size = nb_points;
-        while(!pl->getPoints().empty())
+        while(!pl->get_points().empty())
         {
             const std::size_t index = size / 2;
-            const auto ref          = pl->getPoints()[index];
+            const auto ref          = pl->get_points()[index];
             pl->remove(index);
-            CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
-            for(const auto& p : pl->getPoints())
+            CPPUNIT_ASSERT_EQUAL(--size, pl->get_points().size());
+            for(const auto& p : pl->get_points())
             {
-                CPPUNIT_ASSERT(ref->getCoord()[0] != p->getCoord()[0]);
+                CPPUNIT_ASSERT(ref->get_coord()[0] != p->get_coord()[0]);
             }
         }
     }
@@ -209,25 +209,25 @@ void point_list_test::removeTest()
 
 //------------------------------------------------------------------------------
 
-void point_list_test::clearTest()
+void point_list_test::clear_test()
 {
     const std::size_t nb_points = 42;
     data::point_list::sptr pl   = std::make_shared<data::point_list>();
 
-    CPPUNIT_ASSERT(pl->getPoints().empty());
+    CPPUNIT_ASSERT(pl->get_points().empty());
     pl->clear();
-    CPPUNIT_ASSERT(pl->getPoints().empty());
+    CPPUNIT_ASSERT(pl->get_points().empty());
 
     // Build a list
     for(std::size_t i = 0 ; i < nb_points ; i++)
     {
         const auto p = std::make_shared<data::point>(.0F, .0F, .0F);
-        pl->pushBack(p);
+        pl->push_back(p);
     }
 
-    CPPUNIT_ASSERT(pl->getPoints().size() == nb_points);
+    CPPUNIT_ASSERT(pl->get_points().size() == nb_points);
     pl->clear();
-    CPPUNIT_ASSERT(pl->getPoints().empty());
+    CPPUNIT_ASSERT(pl->get_points().empty());
 }
 
 } // namespace sight::data::ut

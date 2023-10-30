@@ -51,11 +51,11 @@ void matrix4_reader::read()
     while(!in_file.eof() && read_value < 16)
     {
         in_file >> value;
-        (*this->getConcreteObject())[static_cast<std::size_t>(read_value)] = value;
+        (*this->get_concrete_object())[static_cast<std::size_t>(read_value)] = value;
         read_value++;
     }
 
-    SIGHT_ASSERT("Wrong matrix size", this->getConcreteObject()->size() == 16);
+    SIGHT_ASSERT("Wrong matrix size", this->get_concrete_object()->size() == 16);
 }
 
 //------------------------------------------------------------------------------

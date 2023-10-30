@@ -32,7 +32,7 @@
 namespace sight::io::dicom::helper
 {
 
-const Encoding::DefinedTermToCharset_map_type Encoding::s_DEFINED_TERM_TO_CHARSET = {
+const encoding::defined_term_to_charset_map_t encoding::DEFINED_TERM_TO_CHARSET = {
     // ASCII
     {"ISO_IR 6", ""},
     {"ISO 2022 IR 6", ""},
@@ -103,7 +103,7 @@ const Encoding::DefinedTermToCharset_map_type Encoding::s_DEFINED_TERM_TO_CHARSE
     {"GBK", "GBK"},
 };
 
-const Encoding::EscapeSequenceToCharset_map_type Encoding::s_ESCAPE_SEQUENCE_TO_CHARSET = {
+const encoding::escape_sequence_to_charset_map_t encoding::ESCAPE_SEQUENCE_TO_CHARSET = {
     {{char(0x28), char(0x42)}, {"ISO 2022 IR 6", ""}},             // ASCII
     {{char(0x2d), char(0x41)}, {"ISO 2022 IR 100", "ISO-8859-1"}}, // Latin alphabet No. 1
     {{char(0x2d), char(0x42)}, {"ISO 2022 IR 101", "ISO-8859-2"}}, // Latin alphabet No. 2
@@ -122,7 +122,7 @@ const Encoding::EscapeSequenceToCharset_map_type Encoding::s_ESCAPE_SEQUENCE_TO_
 
 //------------------------------------------------------------------------------
 
-std::string Encoding::convertString(
+std::string encoding::convert_string(
     const std::string& _source,
     const std::string& _defined_charset_term,
     const core::log::logger::sptr& _logger
@@ -140,7 +140,7 @@ std::string Encoding::convertString(
     // Only one charset without code extension techniques is used
     if(_defined_charset_term.empty() || defined_term_list.size() == 1)
     {
-        return convertStringWithoutCodeExtensions(_source, _defined_charset_term, _logger);
+        return convert_string_without_code_extensions(_source, _defined_charset_term, _logger);
     }
 
     // Several charsets with code extension techniques are used
@@ -161,18 +161,18 @@ std::string Encoding::convertString(
     // Add the first part
     if(_source[0] != '\033')
     {
-        result += convertStringWithoutCodeExtensions(sequence_list[0], defined_term_list[0], _logger);
+        result += convert_string_without_code_extensions(sequence_list[0], defined_term_list[0], _logger);
     }
     else
     {
-        result += Encoding::convertSequenceWithCodeExtensions(sequence_list[0], defined_term_list, _logger);
+        result += encoding::convert_sequence_with_code_extensions(sequence_list[0], defined_term_list, _logger);
     }
 
     // Convert remaining sequences according to specific charsets
     auto it = ++sequence_list.begin();
     for( ; it != sequence_list.end() ; ++it)
     {
-        result += convertSequenceWithCodeExtensions(*it, defined_term_list, _logger);
+        result += convert_sequence_with_code_extensions(*it, defined_term_list, _logger);
     }
 
     return result;
@@ -180,7 +180,7 @@ std::string Encoding::convertString(
 
 //------------------------------------------------------------------------------
 
-std::string Encoding::convertStringWithoutCodeExtensions(
+std::string encoding::convert_string_without_code_extensions(
     const std::string& _source,
     const std::string& _defined_term,
     const core::log::logger::sptr& _logger
@@ -200,9 +200,9 @@ std::string Encoding::convertStringWithoutCodeExtensions(
         );
 
         // Check that the defined term is known
-        if(s_DEFINED_TERM_TO_CHARSET.find(_defined_term) != s_DEFINED_TERM_TO_CHARSET.end())
+        if(DEFINED_TERM_TO_CHARSET.find(_defined_term) != DEFINED_TERM_TO_CHARSET.end())
         {
-            charset = s_DEFINED_TERM_TO_CHARSET.at(_defined_term);
+            charset = DEFINED_TERM_TO_CHARSET.at(_defined_term);
         }
         else
         {
@@ -251,7 +251,7 @@ void check_defined_term_declaration(
 
 //------------------------------------------------------------------------------
 
-std::string Encoding::convertSequenceWithCodeExtensions(
+std::string encoding::convert_sequence_with_code_extensions(
     const std::string& _sequence,
     const std::vector<std::string>& _defined_term_list,
     const core::log::logger::sptr& _logger
@@ -266,11 +266,11 @@ std::string Encoding::convertSequenceWithCodeExtensions(
     std::uint16_t escape_size = 2;
 
     escape_sequence_t escape_sequence                        = std::make_pair(c1, c2);
-    DefinedTermAndCharset_pair_type defined_term_and_charset = std::make_pair("", "");
+    defined_term_and_charset_pair_t defined_term_and_charset = std::make_pair("", "");
 
-    if(s_ESCAPE_SEQUENCE_TO_CHARSET.find(escape_sequence) != s_ESCAPE_SEQUENCE_TO_CHARSET.end())
+    if(auto it = ESCAPE_SEQUENCE_TO_CHARSET.find(escape_sequence); it != ESCAPE_SEQUENCE_TO_CHARSET.end())
     {
-        defined_term_and_charset = s_ESCAPE_SEQUENCE_TO_CHARSET.at(escape_sequence);
+        defined_term_and_charset = it->second;
     }
     else if((c1 == 0x24) && (c2 == 0x28)) // Japanese (multi-byte)
     {

@@ -30,7 +30,7 @@ namespace sight::app::parser
 
 //------------------------------------------------------------------------------
 
-void image::createConfig(core::tools::object::sptr _obj)
+void image::create_config(core::tools::object::sptr _obj)
 {
     const auto image = std::dynamic_pointer_cast<data::image>(_obj);
     SIGHT_ASSERT("image does not exist.", image);
@@ -40,12 +40,12 @@ void image::createConfig(core::tools::object::sptr _obj)
         const auto color_str = m_cfg.get<std::string>("color");
 
         std::array<std::uint8_t, 4> color {};
-        data::tools::color::hexaStringToRGBA(color_str, color);
+        data::tools::color::hexa_string_to_rgba(color_str, color);
 
         // Initialize with a dummy 4x4 black image
-        image->setSpacing({1, 1, 1});
-        image->setOrigin({0, 0, 0});
-        image->resize({4, 4, 1}, core::type::UINT8, data::image::RGBA);
+        image->set_spacing({1, 1, 1});
+        image->set_origin({0, 0, 0});
+        image->resize({4, 4, 1}, core::type::UINT8, data::image::rgba);
 
         const auto dump_lock = image->dump_lock();
         auto itr             = image->begin<sight::data::iterator::rgba>();
@@ -64,9 +64,9 @@ void image::createConfig(core::tools::object::sptr _obj)
         const auto value = m_cfg.get<std::uint8_t>("gray", 0);
 
         // Initialize with a dummy 4x4 black image
-        image->setSpacing({1, 1, 1});
-        image->setOrigin({0, 0, 0});
-        image->resize({4, 4, 1}, core::type::UINT8, data::image::GRAY_SCALE);
+        image->set_spacing({1, 1, 1});
+        image->set_origin({0, 0, 0});
+        image->resize({4, 4, 1}, core::type::UINT8, data::image::gray_scale);
 
         const auto dump_lock = image->dump_lock();
         auto itr             = image->begin<std::uint8_t>();

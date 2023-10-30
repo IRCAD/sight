@@ -157,7 +157,7 @@ std::size_t valve_dump<TOOL>::dump(std::size_t nb_of_bytes)
 
         buffer_vector_type buffers;
 
-        for(const core::memory::buffer_manager::buffer_info_map_t::value_type& elt : buffer_infos)
+        for(const auto& elt : buffer_infos)
         {
             const core::memory::buffer_info& info = elt.second;
             if(!(info.size == 0 || info.lock_count() > 0 || !info.loaded))
@@ -241,8 +241,8 @@ bool valve_dump<TOOL>::set_param(const std::string& name, const std::string& val
 template<typename TOOL>
 const core::memory::policy::base::param_names_type& valve_dump<TOOL>::get_param_names() const
 {
-    static const core::memory::policy::base::param_names_type params {"min_free_mem", "hysteresis_offset"};
-    return params;
+    static const core::memory::policy::base::param_names_type s_PARAMS {"min_free_mem", "hysteresis_offset"};
+    return s_PARAMS;
 }
 
 //------------------------------------------------------------------------------

@@ -42,7 +42,7 @@ public:
      * @param _numPoints[in] number of points
      * @param _numComponents[in] number of components, must be 3 or 4
      */
-    VIZ_SCENE3D_API static void copyColors(
+    VIZ_SCENE3D_API static void copy_colors(
         Ogre::RGBA* _dest,
         const std::uint8_t* _src,
         std::size_t _num_points,

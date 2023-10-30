@@ -51,46 +51,46 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType mesh_reader::getIOPathType() const
+sight::io::service::path_type_t mesh_reader::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
 
 mesh_reader::mesh_reader() noexcept
 {
-    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
+    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_reader::openLocationDialog()
+void mesh_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
-    dialog_file.addFilter("OBJ File(.obj)", "*.obj");
-    dialog_file.addFilter("PLY File(.ply)", "*.ply");
-    dialog_file.addFilter("STL File(.stl)", "*.stl");
-    dialog_file.addFilter("VTK Legacy File(.vtk)", "*.vtk");
-    dialog_file.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialog_file.setOption(ui::dialog::location::READ);
-    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a vtk file to load Mesh" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
+    dialog_file.add_filter("OBJ File(.obj)", "*.obj");
+    dialog_file.add_filter("PLY File(.ply)", "*.ply");
+    dialog_file.add_filter("STL File(.stl)", "*.stl");
+    dialog_file.add_filter("VTK Legacy File(.vtk)", "*.vtk");
+    dialog_file.add_filter("VTK Polydata File(.vtp)", "*.vtp");
+    dialog_file.set_option(ui::dialog::location::read);
+    dialog_file.set_option(ui::dialog::location::file_must_exist);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         this->set_file(result->get_file());
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -132,7 +132,7 @@ typename READER::sptr configure_reader(const std::filesystem::path& _file)
 
 //------------------------------------------------------------------------------
 
-bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
+bool mesh_reader::load_mesh(const std::filesystem::path& _vtk_file)
 {
     bool ok = true;
 
@@ -144,7 +144,7 @@ bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
         "The object is not a '"
         + data::mesh::classname()
         + "' or '"
-        + sight::io::service::s_DATA_KEY
+        + sight::io::service::DATA_KEY
         + "' is not correctly set.",
         mesh
     );
@@ -154,23 +154,23 @@ bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
 
     if(_vtk_file.extension() == ".vtk")
     {
-        mesh_reader = configure_reader<sight::io::vtk::MeshReader>(_vtk_file);
+        mesh_reader = configure_reader<sight::io::vtk::mesh_reader>(_vtk_file);
     }
     else if(_vtk_file.extension() == ".vtp")
     {
-        mesh_reader = configure_reader<sight::io::vtk::VtpMeshReader>(_vtk_file);
+        mesh_reader = configure_reader<sight::io::vtk::vtp_mesh_reader>(_vtk_file);
     }
     else if(_vtk_file.extension() == ".obj")
     {
-        mesh_reader = configure_reader<sight::io::vtk::ObjMeshReader>(_vtk_file);
+        mesh_reader = configure_reader<sight::io::vtk::obj_mesh_reader>(_vtk_file);
     }
     else if(_vtk_file.extension() == ".stl")
     {
-        mesh_reader = configure_reader<sight::io::vtk::StlMeshReader>(_vtk_file);
+        mesh_reader = configure_reader<sight::io::vtk::stl_mesh_reader>(_vtk_file);
     }
     else if(_vtk_file.extension() == ".ply")
     {
-        mesh_reader = configure_reader<sight::io::vtk::PlyMeshReader>(_vtk_file);
+        mesh_reader = configure_reader<sight::io::vtk::ply_mesh_reader>(_vtk_file);
     }
     else
     {
@@ -182,7 +182,7 @@ bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
         );
     }
 
-    m_sigJobCreated->emit(mesh_reader->getJob());
+    m_sig_job_created->emit(mesh_reader->get_job());
 
     mesh_reader->set_object(mesh);
 
@@ -198,7 +198,7 @@ bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
 
@@ -213,7 +213,7 @@ bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
     }
@@ -224,7 +224,7 @@ bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
         sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
     }
@@ -236,21 +236,21 @@ bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
 
 void mesh_reader::updating()
 {
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
-        this->loadMesh(this->get_file());
-        this->notificationOfUpdate();
+        this->load_mesh(this->get_file());
+        this->notification_of_update();
 
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_reader::notificationOfUpdate()
+void mesh_reader::notification_of_update()
 {
     const auto locked = m_data.lock();
     const auto mesh   = std::dynamic_pointer_cast<data::mesh>(locked.get_shared());

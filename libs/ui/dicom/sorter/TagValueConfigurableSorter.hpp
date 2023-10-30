@@ -26,49 +26,49 @@
 
 #include <data/dicom_series.hpp>
 
-#include <filter/dicom/sorter/TagValueSorter.hpp>
+#include <filter/dicom/sorter/tag_value_sorter.hpp>
 
 namespace sight::ui::dicom::sorter
 {
 
 /**
- * @brief Filter that uses a tag to sort the instances.
+ * @brief filter that uses a tag to sort the instances.
  */
-class UI_DICOM_CLASS_API TagValueConfigurableSorter : public sight::filter::dicom::sorter::TagValueSorter
+class UI_DICOM_CLASS_API tag_value_configurable_sorter : public sight::filter::dicom::sorter::tag_value_sorter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        TagValueConfigurableSorter,
-        sight::filter::dicom::sorter::TagValueSorter,
-        sight::filter::dicom::factory::make<TagValueConfigurableSorter>
+        tag_value_configurable_sorter,
+        sight::filter::dicom::sorter::tag_value_sorter,
+        sight::filter::dicom::factory::make<tag_value_configurable_sorter>
     );
 
     /// Destructor
-    UI_DICOM_API ~TagValueConfigurableSorter() override = default;
+    UI_DICOM_API ~tag_value_configurable_sorter() override = default;
 
     /// Return the name of the filter
-    UI_DICOM_API std::string getName() const override;
+    UI_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    UI_DICOM_API std::string getDescription() const override;
+    UI_DICOM_API std::string get_description() const override;
 
     /// Return true if a configuration is required
-    UI_DICOM_API bool isConfigurationRequired() const override;
+    UI_DICOM_API bool is_configuration_required() const override;
 
     /// Return true if the filter is configurable using GUI
-    UI_DICOM_API bool isConfigurableWithGUI() const override;
+    UI_DICOM_API bool is_configurable_with_gui() const override;
 
     /// Configure the filter using GUI dialog
-    UI_DICOM_API void configureWithGUI() override;
+    UI_DICOM_API void configure_with_gui() override;
 
 protected:
 
-    /// Filter name
-    UI_DICOM_API static const std::string s_FILTER_NAME;
+    /// filter name
+    UI_DICOM_API static const std::string FILTER_NAME;
 
-    /// Filter description
-    UI_DICOM_API static const std::string s_FILTER_DESCRIPTION;
+    /// filter description
+    UI_DICOM_API static const std::string FILTER_DESCRIPTION;
 };
 
 } // namespace sight::ui::dicom::sorter

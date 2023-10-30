@@ -46,13 +46,13 @@ plugin::~plugin() noexcept =
 void plugin::start()
 {
     // get the qml engine
-    auto engine = sight::ui::qml::QmlEngine::getDefault();
+    auto engine = sight::ui::qml::qml_engine::get_default();
 
     // get the path of the qml ui file
     auto path = sight::core::runtime::get_module_resource_file_path("tuto01_basic_qml", "ui.qml");
 
     // load the qml ui
-    engine->loadMainComponent(path);
+    engine->load_main_component(path);
 }
 
 //------------------------------------------------------------------------------

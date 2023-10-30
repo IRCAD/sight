@@ -40,7 +40,7 @@ void composite::updating()
 
 //------------------------------------------------------------------------------
 
-void composite::createConfig(core::tools::object::sptr _obj)
+void composite::create_config(core::tools::object::sptr _obj)
 {
     // Declaration of attributes values
     const std::string object_build_mode = "src";
@@ -80,11 +80,11 @@ void composite::createConfig(core::tools::object::sptr _obj)
 
                 // Create and manage object config
                 auto ctm = app::config_manager::make();
-                ctm->app::config_manager::setConfig(elem.second);
+                ctm->app::config_manager::set_config(elem.second);
 
-                m_ctmContainer.push_back(ctm);
+                m_ctm_container.push_back(ctm);
                 ctm->create();
-                data::object::sptr local_obj = ctm->getConfigRoot();
+                data::object::sptr local_obj = ctm->get_config_root();
 
                 // Add object
                 SIGHT_ASSERT("A data::composite can contain only data::object", local_obj);
@@ -100,9 +100,9 @@ void composite::createConfig(core::tools::object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-void composite::startConfig()
+void composite::start_config()
 {
-    for(const app::config_manager::sptr& ctm : m_ctmContainer)
+    for(const app::config_manager::sptr& ctm : m_ctm_container)
     {
         ctm->start();
     }
@@ -110,9 +110,9 @@ void composite::startConfig()
 
 //------------------------------------------------------------------------------
 
-void composite::updateConfig()
+void composite::update_config()
 {
-    for(const app::config_manager::sptr& ctm : m_ctmContainer)
+    for(const app::config_manager::sptr& ctm : m_ctm_container)
     {
         ctm->update();
     }
@@ -120,9 +120,9 @@ void composite::updateConfig()
 
 //------------------------------------------------------------------------------
 
-void composite::stopConfig()
+void composite::stop_config()
 {
-    for(auto& ctm : std::views::reverse(m_ctmContainer))
+    for(auto& ctm : std::views::reverse(m_ctm_container))
     {
         ctm->stop();
     }
@@ -130,14 +130,14 @@ void composite::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void composite::destroyConfig()
+void composite::destroy_config()
 {
-    for(auto& ctm : std::views::reverse(m_ctmContainer))
+    for(auto& ctm : std::views::reverse(m_ctm_container))
     {
         ctm->destroy();
     }
 
-    m_ctmContainer.clear();
+    m_ctm_container.clear();
 }
 
 //------------------------------------------------------------------------------

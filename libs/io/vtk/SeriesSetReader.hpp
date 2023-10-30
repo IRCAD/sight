@@ -48,24 +48,24 @@ namespace sight::io::vtk
  *
  * Read VTK Mesh or image files using the VTK lib, convert to ModelSeries or ImageSeries and push to series_set.
  */
-class IO_VTK_CLASS_API SeriesSetReader :
+class IO_VTK_CLASS_API series_set_reader :
     public io::reader::generic_object_reader<data::series_set>,
     public core::location::multiple_files
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        SeriesSetReader,
+        series_set_reader,
         io::reader::generic_object_reader<data::series_set>,
-        io::reader::factory::make<SeriesSetReader>
+        io::reader::factory::make<series_set_reader>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API SeriesSetReader();
+    IO_VTK_API series_set_reader();
 
     /// @brief Destructor.
-    IO_VTK_API ~SeriesSetReader() override = default;
+    IO_VTK_API ~series_set_reader() override = default;
 
     /// @brief Reading operator.
     IO_VTK_API void read() override;
@@ -75,20 +75,20 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setLazyMode(bool _lazy_mode)
+    void set_lazy_mode(bool _lazy_mode)
     {
-        m_lazyMode = _lazy_mode;
+        m_lazy_mode = _lazy_mode;
     }
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 
     ///Internal job
     SPTR(core::jobs::observer) m_job;
 
-    bool m_lazyMode;
+    bool m_lazy_mode;
 };
 
 } // namespace sight::io::vtk

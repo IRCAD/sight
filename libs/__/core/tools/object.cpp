@@ -74,7 +74,7 @@ std::string object::get_uuid() const
     // Almost impossible, but possible
     do
     {
-        uuid = UUID::generate();
+        uuid = uuid::generate();
     }
     while(s_uuid_to_wptr.find(uuid) != s_uuid_to_wptr.end());
 

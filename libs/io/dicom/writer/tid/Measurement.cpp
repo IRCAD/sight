@@ -48,25 +48,25 @@ namespace sight::io::dicom::writer::tid
 
 //------------------------------------------------------------------------------
 
-Measurement::Measurement(
+measurement::measurement(
     const SPTR(gdcm::Writer)& _writer,
-    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const SPTR(io::dicom::container::dicom_instance)& _instance,
     const data::image::csptr& _image
 ) :
-    io::dicom::writer::tid::TemplateID<data::image>(_writer, _instance, _image)
+    io::dicom::writer::tid::template_id<data::image>(_writer, _instance, _image)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Measurement::~Measurement()
+measurement::~measurement()
 = default;
 
 //------------------------------------------------------------------------------
 
-void Measurement::createNodes(
-    const SPTR(io::dicom::container::sr::DicomSRNode)& _parent,
-    bool _use_s_coord3_d
+void measurement::create_nodes(
+    const SPTR(io::dicom::container::sr::dicom_sr_node)& _parent,
+    bool _use_s_coord_3d
 )
 {
     data::vector::sptr distance_vector = data::helper::medical_image::get_distances(*m_object);
@@ -78,7 +78,7 @@ void Measurement::createNodes(
             data::point_list::sptr point_list = std::dynamic_pointer_cast<data::point_list>(object);
             if(point_list)
             {
-                this->createMeasurement(_parent, point_list, id++, _use_s_coord3_d);
+                this->create_measurement(_parent, point_list, id++, _use_s_coord_3d);
             }
         }
     }
@@ -86,23 +86,23 @@ void Measurement::createNodes(
 
 //------------------------------------------------------------------------------
 
-void Measurement::createMeasurement(
-    const SPTR(io::dicom::container::sr::DicomSRNode)& _parent,
+void measurement::create_measurement(
+    const SPTR(io::dicom::container::sr::dicom_sr_node)& _parent,
     const data::point_list::csptr& _point_list,
     unsigned int /*id*/,
-    bool _use_s_coord3_d
+    bool _use_s_coord_3d
 )
 {
-    const data::point::sptr point1 = _point_list->getPoints()[0];
-    const data::point::sptr point2 = _point_list->getPoints()[1];
+    const data::point::sptr point1 = _point_list->get_points()[0];
+    const data::point::sptr point2 = _point_list->get_points()[1];
 
     std::array coordinates {
-        point1->getCoord()[0],
-        point1->getCoord()[1],
-        point1->getCoord()[2],
-        point2->getCoord()[0],
-        point2->getCoord()[1],
-        point2->getCoord()[2]
+        point1->get_coord()[0],
+        point1->get_coord()[1],
+        point1->get_coord()[2],
+        point2->get_coord()[0],
+        point2->get_coord()[1],
+        point2->get_coord()[2]
     };
 
     const double distance = sqrt(
@@ -112,73 +112,76 @@ void Measurement::createMeasurement(
     );
 
     // Retrieve Frame Numbers
-    const std::size_t frame_number1 = io::dicom::helper::DicomDataTools::convertPointToFrameNumber(m_object, point1);
+    const std::size_t frame_number1 = io::dicom::helper::dicom_data_tools::convert_point_to_frame_number(
+        m_object,
+        point1
+    );
 
     // Create Measurement Node
     // cspell: ignore UCUM
-    SPTR(io::dicom::container::sr::DicomSRNumNode) num_node =
-        std::make_shared<io::dicom::container::sr::DicomSRNumNode>(
-            io::dicom::container::DicomCodedAttribute("121206", "DCM", "Distance"),
+    SPTR(io::dicom::container::sr::dicom_sr_num_node) num_node =
+        std::make_shared<io::dicom::container::sr::dicom_sr_num_node>(
+            io::dicom::container::dicom_coded_attribute("121206", "DCM", "Distance"),
             "CONTAINS",
             distance,
-            io::dicom::container::DicomCodedAttribute("mm", "UCUM", "millimeter", "1.4")
+            io::dicom::container::dicom_coded_attribute("mm", "UCUM", "millimeter", "1.4")
         );
-    _parent->addSubNode(num_node);
+    _parent->add_sub_node(num_node);
 
-    if(_use_s_coord3_d)
+    if(_use_s_coord_3d)
     {
         // Create SCoord Node
         std::vector<float> scoord_vector {
-            static_cast<float>(point1->getCoord()[0]),
-            static_cast<float>(point1->getCoord()[1]),
-            static_cast<float>(point1->getCoord()[2]),
-            static_cast<float>(point2->getCoord()[0]),
-            static_cast<float>(point2->getCoord()[1]),
-            static_cast<float>(point2->getCoord()[2])
+            static_cast<float>(point1->get_coord()[0]),
+            static_cast<float>(point1->get_coord()[1]),
+            static_cast<float>(point1->get_coord()[2]),
+            static_cast<float>(point2->get_coord()[0]),
+            static_cast<float>(point2->get_coord()[1]),
+            static_cast<float>(point2->get_coord()[2])
         };
-        SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord_node =
-            std::make_shared<io::dicom::container::sr::DicomSRSCoord3DNode>(
-                io::dicom::container::DicomCodedAttribute("121230", "DCM", "Path"),
+        SPTR(io::dicom::container::sr::dicom_srs_coord3_d_node) scoord_node =
+            std::make_shared<io::dicom::container::sr::dicom_srs_coord3_d_node>(
+                io::dicom::container::dicom_coded_attribute("121230", "DCM", "Path"),
                 "INFERRED FROM",
                 "POLYLINE",
                 scoord_vector,
-                m_instance->getSOPInstanceUIDContainer()[0]
+                m_instance->get_sop_instance_uid_container()[0]
             );
-        num_node->addSubNode(scoord_node);
+        num_node->add_sub_node(scoord_node);
     }
     else
     {
         SIGHT_ASSERT(
             "Unable to save a 3D distance using a SCOORD object.",
-            frame_number1 == io::dicom::helper::DicomDataTools::convertPointToFrameNumber(m_object, point2)
+            frame_number1 == io::dicom::helper::dicom_data_tools::convert_point_to_frame_number(m_object, point2)
         );
 
         // Create SCoord Node
         std::vector<float> scoord_vector {
-            static_cast<float>(point1->getCoord()[0]),
-            static_cast<float>(point1->getCoord()[1]),
-            static_cast<float>(point2->getCoord()[0]),
-            static_cast<float>(point2->getCoord()[1])
+            static_cast<float>(point1->get_coord()[0]),
+            static_cast<float>(point1->get_coord()[1]),
+            static_cast<float>(point2->get_coord()[0]),
+            static_cast<float>(point2->get_coord()[1])
         };
-        SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoord_node =
-            std::make_shared<io::dicom::container::sr::DicomSRSCoordNode>(
-                io::dicom::container::DicomCodedAttribute("121230", "DCM", "Path"),
+        SPTR(io::dicom::container::sr::dicom_srs_coord_node) scoord_node =
+            std::make_shared<io::dicom::container::sr::dicom_srs_coord_node>(
+                io::dicom::container::dicom_coded_attribute("121230", "DCM", "Path"),
                 "INFERRED FROM",
                 "POLYLINE",
                 scoord_vector
             );
-        num_node->addSubNode(scoord_node);
+        num_node->add_sub_node(scoord_node);
 
         // Create Image Node
-        SPTR(io::dicom::container::sr::DicomSRImageNode) image_node =
-            std::make_shared<io::dicom::container::sr::DicomSRImageNode>(
-                io::dicom::container::DicomCodedAttribute(),
+        SPTR(io::dicom::container::sr::dicom_sr_image_node) image_node =
+            std::make_shared<io::dicom::container::sr::dicom_sr_image_node>(
+                io::dicom::container::dicom_coded_attribute(),
                 "SELECTED FROM",
-                m_instance->getSOPClassUID(),
-                m_instance->getSOPInstanceUIDContainer()[frame_number1 - 1],
+                m_instance->get_sop_class_uid(),
+                m_instance->get_sop_instance_uid_container()[frame_number1 - 1],
                 int(frame_number1)
             );
-        scoord_node->addSubNode(image_node);
+        scoord_node->add_sub_node(image_node);
     }
 }
 

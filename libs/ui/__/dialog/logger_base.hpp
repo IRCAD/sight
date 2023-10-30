@@ -43,7 +43,7 @@ public:
 
     SIGHT_DECLARE_CLASS(logger_base, ui::object);
 
-    typedef std::string factory_registry_key_t;
+    using factory_registry_key_t = std::string;
 
     /// This *unique* key should  be used *for all* factory for specific selector(qt,wx,...)
     UI_API static const factory_registry_key_t REGISTRY_KEY;
@@ -60,19 +60,19 @@ public:
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    UI_API virtual void setTitle(const std::string& _title) = 0;
+    UI_API virtual void set_title(const std::string& _title) = 0;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    UI_API virtual void setMessage(const std::string& _message) = 0;
+    UI_API virtual void set_message(const std::string& _message) = 0;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    UI_API virtual void setLogger(const core::log::logger::sptr& _logger) = 0;
+    UI_API virtual void set_logger(const core::log::logger::sptr& _logger) = 0;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button

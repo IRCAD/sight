@@ -94,18 +94,18 @@ protected:
 private:
 
     /// Updates the view when the matrix changes
-    void updateFromMatrix();
+    void update_from_matrix();
 
     /// Clears matrix values
-    void clearLabels();
+    void clear_labels();
 
     std::string m_title; ///< Title of the matrix that will be displayed
 
-    QVector<QPointer<QLabel> > m_matrixLabels; ///< Labels for matrix's elements
+    QVector<QPointer<QLabel> > m_matrix_labels; ///< Labels for matrix's elements
 
-    static constexpr std::string_view s_MATRIX = "matrix";
+    static constexpr std::string_view MATRIX = "matrix";
 
-    data::ptr<data::matrix4, data::Access::in> m_matrix {this, s_MATRIX, true};
+    data::ptr<data::matrix4, data::access::in> m_matrix {this, MATRIX, true};
 };
 
 } // namespace sight::module::ui::qt::viz

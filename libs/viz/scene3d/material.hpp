@@ -40,7 +40,7 @@ class VIZ_SCENE3D_CLASS_API material
 {
 public:
 
-    typedef std::unique_ptr<material> uptr;
+    using uptr = std::unique_ptr<material>;
 
     /// Name of the default used as a base for the instance created by this adaptor
     VIZ_SCENE3D_API static const std::string DEFAULT_MATERIAL_TEMPLATE_NAME;
@@ -52,118 +52,118 @@ public:
     VIZ_SCENE3D_API ~material();
 
     /// Updates material options mode (standard, point normals or cells normals)
-    VIZ_SCENE3D_API void updateOptionsMode(int _options_mode);
+    VIZ_SCENE3D_API void update_options_mode(int _options_mode);
 
     /// Updates material polygon mode (surface, point or wireframe)
-    VIZ_SCENE3D_API void updatePolygonMode(int _polygon_mode);
+    VIZ_SCENE3D_API void update_polygon_mode(int _polygon_mode);
 
     /// Update material shading mode (flat/phong)
-    VIZ_SCENE3D_API void updateShadingMode(
-        int _shading_mode,
+    VIZ_SCENE3D_API void update_shading_mode(
+        data::material::shading_t _shading_mode,
         int _num_lights,
         bool _has_diffuse_texture,
         bool _use_texture_alpha
     );
 
     /// Update material color
-    VIZ_SCENE3D_API void updateRGBAMode(data::material::sptr _sight_material);
+    VIZ_SCENE3D_API void update_rgba_mode(data::material::sptr _sight_material);
 
-    void setHasMeshNormal(bool _has_mesh_normal);
-    void setHasUV(bool _has_uv);
-    void setHasVertexColor(bool _has_vertex_color);
-    void setHasPrimitiveColor(bool _has_primitive_color, const std::string& _texture_name);
+    void set_has_mesh_normal(bool _has_mesh_normal);
+    void set_has_uv(bool _has_uv);
+    void set_has_vertex_color(bool _has_vertex_color);
+    void set_has_primitive_color(bool _has_primitive_color, const std::string& _texture_name);
 
     /// Set the type of primitive
     void set_primitive_type(data::mesh::cell_type_t _type);
 
     /// Sets the size of the mesh. This is used either to adjust the size of normals or to expand billboards
-    void setMeshSize(float _size);
+    void set_mesh_size(float _size);
 
     /// Set the diffuse texture
-    VIZ_SCENE3D_API void setDiffuseTexture(const Ogre::TexturePtr& _texture);
+    VIZ_SCENE3D_API void set_diffuse_texture(const Ogre::TexturePtr& _texture);
 
     /// Set the material template used
-    VIZ_SCENE3D_API void setTemplate(const std::string& _template_name);
+    VIZ_SCENE3D_API void set_template(const std::string& _template_name);
 
 private:
 
     /// Remove a rendering pass in all techniques on the current material
-    void removePass(const std::string& _name);
+    void remove_pass(const std::string& _name);
 
     /// Remove all techniques related to order independent transparency support
     /// Each time we have to modify the shader programs, we clean everything
     /// and we let the material_mgr_listener generate the techniques from the basic techniques defined in the .material
-    void cleanTransparencyTechniques();
+    void clean_transparency_techniques();
 
     /// Associated Ogre material
     Ogre::MaterialPtr m_material;
 
     /// Defines if the associated mesh has a normal layer
-    bool m_hasMeshNormal {true};
+    bool m_has_mesh_normal {true};
 
     /// Defines if the associated mesh has a a texture coordinates layer
-    bool m_hasUV {false};
+    bool m_has_uv {false};
 
     /// Defines if the associated mesh has a a per vertex color layer
-    bool m_hasVertexColor {false};
+    bool m_has_vertex_color {false};
 
     /// Defines if the associated mesh has a a per primitive color layer
-    bool m_hasPrimitiveColor {false};
+    bool m_has_primitive_color {false};
 
     /// Primitive type of the associated mesh
-    data::mesh::cell_type_t m_primitiveType {data::mesh::cell_type_t::TRIANGLE};
+    data::mesh::cell_type_t m_primitive_type {data::mesh::cell_type_t::triangle};
 
     /// Name of the texture used to store per-primitive color
-    std::string m_perPrimitiveColorTextureName;
+    std::string m_per_primitive_color_texture_name;
 
     /// Size of the mesh, used either to adjust the size of normals or to expand billboards
-    Ogre::Real m_meshSize {1.F};
+    Ogre::Real m_mesh_size {1.F};
 
     /// Name of the material template
-    std::string m_templateName;
+    std::string m_template_name;
 };
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasMeshNormal(bool _has_mesh_normal)
+inline void material::set_has_mesh_normal(bool _has_mesh_normal)
 {
-    m_hasMeshNormal = _has_mesh_normal;
+    m_has_mesh_normal = _has_mesh_normal;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasUV(bool _has_uv)
+inline void material::set_has_uv(bool _has_uv)
 {
-    m_hasUV = _has_uv;
+    m_has_uv = _has_uv;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasVertexColor(bool _has_vertex_color)
+inline void material::set_has_vertex_color(bool _has_vertex_color)
 {
-    m_hasVertexColor = _has_vertex_color;
+    m_has_vertex_color = _has_vertex_color;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasPrimitiveColor(bool _has_primitive_color, const std::string& _texture_name)
+inline void material::set_has_primitive_color(bool _has_primitive_color, const std::string& _texture_name)
 {
-    m_hasPrimitiveColor            = _has_primitive_color;
-    m_perPrimitiveColorTextureName = _texture_name;
+    m_has_primitive_color              = _has_primitive_color;
+    m_per_primitive_color_texture_name = _texture_name;
 }
 
 //------------------------------------------------------------------------------
 
 inline void material::set_primitive_type(data::mesh::cell_type_t _type)
 {
-    m_primitiveType = _type;
+    m_primitive_type = _type;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setMeshSize(const float _size)
+inline void material::set_mesh_size(const float _size)
 {
-    m_meshSize = _size;
+    m_mesh_size = _size;
 }
 
 //------------------------------------------------------------------------------

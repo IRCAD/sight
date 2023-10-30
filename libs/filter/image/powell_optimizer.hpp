@@ -40,11 +40,11 @@ class FILTER_IMAGE_CLASS_API powell_optimizer
 {
 public:
 
-    typedef itk::PowellOptimizerv4<double> powell_optimizer_t;
+    using powell_optimizer_t = itk::PowellOptimizerv4<double>;
 
-    typedef typename powell_optimizer_t::ParametersType function_parameters_t;
+    using function_parameters_t = typename powell_optimizer_t::ParametersType;
 
-    typedef std::function<double (const function_parameters_t&)> optimized_function_t;
+    using optimized_function_t = std::function<double (const function_parameters_t&)>;
 
     /**
      * @brief Constructor. Initializes the ITK optimizer.
@@ -72,7 +72,7 @@ public:
 private:
 
     /// ITK Powell optimization algorithm.
-    typename powell_optimizer_t::Pointer m_powellOptimizer;
+    typename powell_optimizer_t::Pointer m_powell_optimizer;
 
     /// Function whose local minimum is computed.
     const optimized_function_t& m_function;

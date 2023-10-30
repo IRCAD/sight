@@ -104,7 +104,7 @@ public:
 
     /// Convenience function that mimics std::dynamic_pointer_cast()
     template<class CASTED_DATATYPE>
-    inline shared_ptr<CASTED_DATATYPE> dynamicPointerCast() const noexcept
+    inline shared_ptr<CASTED_DATATYPE> dynamic_pointer_cast() const noexcept
     {
         return shared_ptr<CASTED_DATATYPE>(std::dynamic_pointer_cast<CASTED_DATATYPE>(m_data));
     }

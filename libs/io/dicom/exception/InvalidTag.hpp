@@ -32,7 +32,7 @@ namespace sight::io::dicom::exception
 /**
  * @brief InvalidTag exception
  */
-class IO_DICOM_CLASS_API InvalidTag : public core::exception
+class IO_DICOM_CLASS_API invalid_tag : public core::exception
 {
 public:
 
@@ -40,10 +40,10 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DICOM_API InvalidTag(const std::string& _message);
+    IO_DICOM_API invalid_tag(const std::string& _message);
 
     /// Destructor
-    IO_DICOM_API ~InvalidTag() noexcept override;
+    IO_DICOM_API ~invalid_tag() noexcept override;
 };
 
 } // namespace sight::io::dicom::exception

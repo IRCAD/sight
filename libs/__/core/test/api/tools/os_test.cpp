@@ -170,7 +170,7 @@ void os::get_user_config_dir_test()
 
     // With an application name
     {
-        const std::filesystem::path application_name = core::tools::UUID::generate();
+        const std::filesystem::path application_name = core::tools::uuid::generate();
         const std::filesystem::path company_name     = "sight";
         const auto& suffix                           = company_name / application_name;
         const auto& expected_config_dir              = get_user_dir(variable) / suffix;
@@ -185,8 +185,8 @@ void os::get_user_config_dir_test()
 
     // With a Company, an application name, without creating dir
     {
-        const std::filesystem::path application_name = core::tools::UUID::generate();
-        const std::filesystem::path company_name     = core::tools::UUID::generate();
+        const std::filesystem::path application_name = core::tools::uuid::generate();
+        const std::filesystem::path company_name     = core::tools::uuid::generate();
         const auto& suffix                           = company_name / application_name;
         const auto& expected_config_dir              = get_user_dir(variable) / suffix;
         const auto& config_dir                       = core::tools::os::get_user_config_dir(
@@ -222,7 +222,7 @@ void os::get_user_data_dir_test()
 
     // With an application name
     {
-        const std::filesystem::path application_name = core::tools::UUID::generate();
+        const std::filesystem::path application_name = core::tools::uuid::generate();
         const std::filesystem::path company_name     = "sight";
         const auto& suffix                           = company_name / application_name;
         const auto& expected_data_dir                = get_user_dir(variable) / suffix;
@@ -237,8 +237,8 @@ void os::get_user_data_dir_test()
 
     // With a Company, an application name, without creating dir
     {
-        const std::filesystem::path application_name = core::tools::UUID::generate();
-        const std::filesystem::path company_name     = core::tools::UUID::generate();
+        const std::filesystem::path application_name = core::tools::uuid::generate();
+        const std::filesystem::path company_name     = core::tools::uuid::generate();
         const auto& suffix                           = company_name / application_name;
         const auto& expected_data_dir                = get_user_dir(variable) / suffix;
         const auto& data_dir                         = core::tools::os::get_user_data_dir(
@@ -274,7 +274,7 @@ void os::get_user_cache_dir_test()
 
     // With an application name
     {
-        const std::filesystem::path application_name = core::tools::UUID::generate();
+        const std::filesystem::path application_name = core::tools::uuid::generate();
         const std::filesystem::path company_name     = "sight";
         const auto& suffix                           = company_name / application_name;
         const auto& expected_cache_dir               = get_user_dir(variable) / suffix;
@@ -289,8 +289,8 @@ void os::get_user_cache_dir_test()
 
     // With a Company, an application name, without creating dir
     {
-        const std::filesystem::path application_name = core::tools::UUID::generate();
-        const std::filesystem::path company_name     = core::tools::UUID::generate();
+        const std::filesystem::path application_name = core::tools::uuid::generate();
+        const std::filesystem::path company_name     = core::tools::uuid::generate();
         const auto& suffix                           = company_name / application_name;
         const auto& expected_cache_dir               = get_user_dir(variable) / suffix;
         const auto& cache_dir                        = core::tools::os::get_user_cache_dir(

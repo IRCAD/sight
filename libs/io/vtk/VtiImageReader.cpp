@@ -22,7 +22,7 @@
 
 #include "io/vtk/VtiImageReader.hpp"
 
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
@@ -36,40 +36,40 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLImageDataReader.h>
 
-SIGHT_REGISTER_IO_READER(sight::io::vtk::VtiImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::vti_image_reader);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-VtiImageReader::VtiImageReader() :
+vti_image_reader::vti_image_reader() :
     m_job(std::make_shared<core::jobs::observer>("Vti image reader"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-VtiImageReader::~VtiImageReader()
+vti_image_reader::~vti_image_reader()
 = default;
 
 //------------------------------------------------------------------------------
 
-void VtiImageReader::read()
+void vti_image_reader::read()
 {
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::sptr p_image = getConcreteObject();
+    data::image::sptr p_image = get_concrete_object();
 
     vtkSmartPointer<vtkXMLImageDataReader> reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
 
-    using helper::vtkLambdaCommand;
-    vtkSmartPointer<vtkLambdaCommand> progress_callback;
+    using helper::vtk_lambda_command;
+    vtkSmartPointer<vtk_lambda_command> progress_callback;
 
-    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progress_callback->SetCallback(
+    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
+    progress_callback->set_callback(
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
@@ -101,14 +101,14 @@ void VtiImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string VtiImageReader::extension() const
+std::string vti_image_reader::extension() const
 {
     return ".vti";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr VtiImageReader::getJob() const
+core::jobs::base::sptr vti_image_reader::get_job() const
 {
     return m_job;
 }

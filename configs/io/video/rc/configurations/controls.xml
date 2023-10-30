@@ -118,14 +118,14 @@ Usage:
 
         <service uid="containerViewSrv" type="sight::module::ui::view" >
             <gui>
-                <toolBar />
+                <toolbar />
                 <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${TOOLBAR}" />
-                <toolBar sid="toolbarViewSrv" start="true" />
+                <toolbar sid="toolbarViewSrv" start="true" />
             </registry>
         </service>
 
@@ -134,7 +134,7 @@ Usage:
             <videoSupport>${videoSupport}</videoSupport>
         </service>
 
-        <service uid="toolbarViewSrv" type="sight::module::ui::tool_bar" >
+        <service uid="toolbarViewSrv" type="sight::module::ui::toolbar" >
             <gui>
                 <layout>
                     <editor/>
@@ -269,7 +269,7 @@ Usage:
         </connect>
 
         <connect channel="${parameterChannelIn}" >
-            <slot>grabberProxySrv/setParameter</slot>
+            <slot>grabberProxySrv/set_parameter</slot>
         </connect>
 
         <connect channel="${parameterChannelOut}" >

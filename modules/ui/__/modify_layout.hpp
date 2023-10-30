@@ -56,10 +56,10 @@ protected:
 
     enum class visibility_t : std::uint8_t
     {
-        SHOW,
-        HIDE,
-        SHOW_OR_HIDE,
-        TOGGLE
+        show,
+        hide,
+        show_or_hide,
+        toggle
     };
 
     /**
@@ -109,22 +109,22 @@ protected:
 private:
 
     /// < fwID, WIDContainer>
-    typedef std::vector<std::pair<std::string, std::string> > move_srv_vect_t;
+    using move_srv_vect_t = std::vector<std::pair<std::string, std::string> >;
     /// map representing fwID's services and new associated wid parent container
-    move_srv_vect_t m_moveSrv;
+    move_srv_vect_t m_move_srv;
 
     /// < wid, showState>
-    typedef std::vector<std::pair<std::string, visibility_t> > show_srv_vect_t;
+    using show_srv_vect_t = std::vector<std::pair<std::string, visibility_t> >;
     /// map representing wid container and show state
-    show_srv_vect_t m_showSrvWid;
+    show_srv_vect_t m_show_srv_wid;
 
     /// map representing sid container and show state
-    show_srv_vect_t m_showSrvSid;
+    show_srv_vect_t m_show_srv_sid;
 
     /// < fwID, enableState>
-    typedef std::vector<std::pair<std::string, bool> > enable_srv_vect_t;
+    using enable_srv_vect_t = std::vector<std::pair<std::string, bool> >;
     /// map representing fwID's services and enable state
-    enable_srv_vect_t m_enableSrv;
+    enable_srv_vect_t m_enable_srv;
 };
 
 } // namespace sight::module::ui

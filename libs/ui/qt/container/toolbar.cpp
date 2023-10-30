@@ -33,32 +33,32 @@ namespace sight::ui::qt::container
 
 void toolbar::clean()
 {
-    SIGHT_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
+    SIGHT_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_tool_bar);
 
-    m_toolBar->clear();
+    m_tool_bar->clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::destroyContainer()
+void toolbar::destroy_container()
 {
-    SIGHT_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
+    SIGHT_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_tool_bar);
 
-    delete m_toolBar;
+    delete m_tool_bar;
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::setQtToolBar(QToolBar* _tool_bar)
+void toolbar::set_qt_tool_bar(QToolBar* _tool_bar)
 {
-    this->m_toolBar = _tool_bar;
+    this->m_tool_bar = _tool_bar;
 }
 
 //-----------------------------------------------------------------------------
 
-QToolBar* toolbar::getQtToolBar()
+QToolBar* toolbar::get_qt_tool_bar()
 {
-    return this->m_toolBar;
+    return this->m_tool_bar;
 }
 
 //-----------------------------------------------------------------------------

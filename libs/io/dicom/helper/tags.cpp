@@ -56,7 +56,7 @@ gdcm::Tag get_gdcm_tag(const std::string& _group, const std::string& _element)
     catch(std::out_of_range& e)
     {
         SIGHT_THROW_EXCEPTION(
-            io::dicom::exception::InvalidTag(
+            io::dicom::exception::invalid_tag(
                 std::string("Unable to read DICOM tag from '") + _group + "," + _element + "' : " + e.what()
             )
 
@@ -65,7 +65,7 @@ gdcm::Tag get_gdcm_tag(const std::string& _group, const std::string& _element)
     catch(std::invalid_argument& e)
     {
         SIGHT_THROW_EXCEPTION(
-            io::dicom::exception::InvalidTag(
+            io::dicom::exception::invalid_tag(
                 std::string("Unable to read DICOM tag from '") + _group + "," + _element + "' : " + e.what()
             )
 
@@ -74,7 +74,7 @@ gdcm::Tag get_gdcm_tag(const std::string& _group, const std::string& _element)
     catch(boost::bad_numeric_cast& e)
     {
         SIGHT_THROW_EXCEPTION(
-            io::dicom::exception::InvalidTag(
+            io::dicom::exception::invalid_tag(
                 std::string("Unable to read DICOM tag from '") + _group + "," + _element + "' : " + e.what()
             )
 
@@ -95,7 +95,7 @@ private_tag_vec_t load_private_tags(const std::filesystem::path& _tags_path)
 
     private_tag_vec_t private_tags;
     io::reader::csv_reader reader(_tags_path);
-    io::reader::csv_reader::token_container_t tag = reader.getLine();
+    io::reader::csv_reader::token_container_t tag = reader.get_line();
 
     while(!tag.empty())
     {
@@ -106,7 +106,7 @@ private_tag_vec_t load_private_tags(const std::filesystem::path& _tags_path)
         SIGHT_THROW_IF("Unable to read private tag file", tag.size() < 2);
 
         private_tags.push_back(io::dicom::helper::get_gdcm_tag(tag[0], tag[1]));
-        tag = reader.getLine();
+        tag = reader.get_line();
     }
 
     return private_tags;

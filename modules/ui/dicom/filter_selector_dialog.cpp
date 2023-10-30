@@ -52,12 +52,12 @@ filter_selector_dialog::~filter_selector_dialog() noexcept =
 
 void filter_selector_dialog::configuring()
 {
-    m_selectedFilters.clear();
+    m_selected_filters.clear();
 
     //  config Elem
     //  <selection mode="exclude">
-    //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
-    //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
+    //  <addSelection filter="sight::filter::dicom::composite::ct_image_storage_default_composite" />
+    //  <addSelection filter="sight::filter::dicom::composite::ct_image_storage_default_composite" />
 
     for(const auto& config : this->get_config())
     {
@@ -66,7 +66,7 @@ void filter_selector_dialog::configuring()
         if(config.first == "selection")
         {
             const auto mode = config.second.get<std::string>("<xmlattr>.mode");
-            m_filtersAreExcluded = (mode == "exclude");
+            m_filters_are_excluded = (mode == "exclude");
             SIGHT_ASSERT(
                 "The xml attribute <mode> must be either 'exclude' or 'include'.",
                 mode == "exclude"
@@ -77,7 +77,7 @@ void filter_selector_dialog::configuring()
 
         if(config.first == "addSelection")
         {
-            m_selectedFilters.push_back(config.second.get<std::string>("<xmlattr>.filter"));
+            m_selected_filters.push_back(config.second.get<std::string>("<xmlattr>.filter"));
         }
     }
 }
@@ -106,26 +106,26 @@ void filter_selector_dialog::updating()
         registred_filters.push_back(filter);
     }
 
-    // Filter available extensions and replace id by service description
+    // filter available extensions and replace id by service description
     std::map<std::string, sight::filter::dicom::filter::sptr> available_filters_map;
     std::vector<std::string> available_filter_names;
 
     for(const sight::filter::dicom::filter::sptr& filter : registred_filters)
     {
         const bool filter_is_selected_by_user = std::find(
-            m_selectedFilters.begin(),
-            m_selectedFilters.end(),
+            m_selected_filters.begin(),
+            m_selected_filters.end(),
             filter->get_classname()
-                                                ) != m_selectedFilters.end();
+                                                ) != m_selected_filters.end();
 
         // Test if the filter is considered here as available by users
         // excluded mode => add filters that are not selected by users
         // included mode => add filters selected by users
-        if((m_filtersAreExcluded && !filter_is_selected_by_user)
-           || (!m_filtersAreExcluded && filter_is_selected_by_user))
+        if((m_filters_are_excluded && !filter_is_selected_by_user)
+           || (!m_filters_are_excluded && filter_is_selected_by_user))
         {
             // Add this filter
-            std::string filter_name = filter->getName();
+            std::string filter_name = filter->get_name();
             filter_name                        = (filter_name.empty()) ? filter->get_classname() : filter_name;
             available_filters_map[filter_name] = filter;
             available_filter_names.push_back(filter_name);
@@ -146,7 +146,7 @@ void filter_selector_dialog::updating()
         {
             sight::ui::dialog::selector selector;
 
-            selector.setTitle("Filter to use");
+            selector.set_title("filter to use");
             selector.set_choices(available_filter_names);
 
             if(const auto& choices = selector.show(); choices.empty())
@@ -172,7 +172,7 @@ void filter_selector_dialog::updating()
             auto obj = m_filter.lock();
             SIGHT_ASSERT("The inout key 'filter' is not correctly set.", obj);
 
-            obj->setValue(filter->get_classname());
+            obj->set_value(filter->get_classname());
 
             auto sig =
                 obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -186,10 +186,10 @@ void filter_selector_dialog::updating()
     {
         SIGHT_WARN("filter_selector_dialog::load : availableFilters is empty.");
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Filter not found");
-        message_box.setMessage("There is no available filter for this reader.");
-        message_box.setIcon(sight::ui::dialog::message::WARNING);
-        message_box.addButton(sight::ui::dialog::message::OK);
+        message_box.set_title("filter not found");
+        message_box.set_message("There is no available filter for this reader.");
+        message_box.set_icon(sight::ui::dialog::message::warning);
+        message_box.add_button(sight::ui::dialog::message::ok);
         message_box.show();
     }
 }

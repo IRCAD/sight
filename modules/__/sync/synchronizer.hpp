@@ -163,30 +163,30 @@ public:
     };
 
     /// Internal wrapper holding configuration keys.
-    struct configKey
+    struct config_key
     {
-        static inline const std::string s_OUTVAR_TL_INDEX      = "<xmlattr>.tl";
-        static inline const std::string s_OUTVAR_ELEMENT_INDEX = "<xmlattr>.index";
-        static inline const std::string s_OUTVAR_SEND_STATUS   = "<xmlattr>.sendStatus";
-        static inline const std::string s_TL_DELAY             = "<xmlattr>.delay";
-        static inline const std::string s_KEY                  = "key";
+        static inline const std::string OUTVAR_TL_INDEX      = "<xmlattr>.tl";
+        static inline const std::string OUTVAR_ELEMENT_INDEX = "<xmlattr>.index";
+        static inline const std::string OUTVAR_SEND_STATUS   = "<xmlattr>.sendStatus";
+        static inline const std::string TL_DELAY             = "<xmlattr>.delay";
+        static inline const std::string KEY                  = "key";
 
-        static inline const std::string s_FRAMETL_INPUT     = "frameTL";
-        static inline const std::string s_FRAME_INOUT       = "frames";
-        static inline const std::string s_MATRIXTL_INPUT    = "matrixTL";
-        static inline const std::string s_MATRIX_INOUT      = "matrix";
-        static inline const std::string s_TOLERANCE         = "tolerance";
-        static inline const std::string s_LEGACY_AUTO_SYNCH = "legacyAutoSync";
+        static inline const std::string FRAMETL_INPUT     = "frameTL";
+        static inline const std::string FRAME_INOUT       = "frames";
+        static inline const std::string MATRIXTL_INPUT    = "matrixTL";
+        static inline const std::string MATRIX_INOUT      = "matrix";
+        static inline const std::string TOLERANCE         = "tolerance";
+        static inline const std::string LEGACY_AUTO_SYNCH = "legacyAutoSync";
     };
 
     /// Internal wrapper used for out variable association with TLs
-    struct outVarParameter
+    struct out_var_parameter
     {
-        std::size_t outVarIndex {0};
-        std::size_t tlIndex {0};
-        unsigned int tlElementIndex {0};
-        bool isSynchronized {false};
-        bool signalSynchronization {false};
+        std::size_t out_var_index {0};
+        std::size_t tl_index {0};
+        unsigned int tl_element_index {0};
+        bool is_synchronized {false};
+        bool signal_synchronization {false};
         int delay {0};
     };
 
@@ -238,7 +238,7 @@ protected:
     /**
      * @brief SLOT: Resets the last timestamp stored
      */
-    MODULE_SYNC_API void resetTimeline();
+    MODULE_SYNC_API void reset_timeline();
 
     /**
      * @brief SLOT: Changes the association between a frame timeline, its element index and the outputVar
@@ -247,7 +247,7 @@ protected:
      * @param _elementIndex : the element index in the configuration
      * @param _outputVarIndex : the output var to update
      */
-    MODULE_SYNC_API void setFrameBinding(
+    MODULE_SYNC_API void set_frame_binding(
         std::size_t _tl_index,
         unsigned int _element_index,
         std::size_t _output_var_index
@@ -260,7 +260,7 @@ protected:
      * @param _elementIndex : the element index in the configuration
      * @param _outputVarIndex : the output var to update
      */
-    MODULE_SYNC_API void setMatrixBinding(
+    MODULE_SYNC_API void set_matrix_binding(
         std::size_t _tl_index,
         unsigned int _element_index,
         std::size_t _output_var_index
@@ -283,7 +283,7 @@ protected:
      * @param key : needs to be either frameDelay_i or matrixDelay_i
      * where i is the index of the timeline in the input vector
      */
-    MODULE_SYNC_API void setDelay(int _val, std::string _key);
+    MODULE_SYNC_API void set_delay(int _val, std::string _key);
 
 private:
 
@@ -292,7 +292,7 @@ private:
      *
      * @param frameTLIndex : the index of the frameTL to treat
      */
-    std::vector<outVarParameter> getFrameTlOutputVarIndex(std::size_t _frame_tl_index);
+    std::vector<out_var_parameter> get_frame_tl_output_var_index(std::size_t _frame_tl_index);
 
     /**
      * @brief Copy the synchronized frame from the tl toward the corresponding output variables.
@@ -300,7 +300,7 @@ private:
      * @param frameTLIndex : the index of the frameTL to treat
      * @param synchronizationTimestamp : the synchronization timestamp
      */
-    void copyFrameFromTLtoOutput(
+    void copy_frame_from_t_lto_output(
         std::size_t _frame_tl_index,
         core::hires_clock::type _synchronization_timestamp
     );
@@ -310,7 +310,7 @@ private:
      *
      * @param matrixTLIndex : the index of the matrixTL to treat
      */
-    std::vector<outVarParameter> getMatrixTlOutputVarIndex(std::size_t _matrix_tl_index);
+    std::vector<out_var_parameter> get_matrix_tl_output_var_index(std::size_t _matrix_tl_index);
 
     /**
      * @brief Copy the synchronized matrix from the tl toward the corresponding output variables.
@@ -318,7 +318,7 @@ private:
      * @param matrixTLIndex : the index of the matrixTL to treat
      * @param synchronizationTimestamp : the synchronization timestamp
      */
-    void copyMatrixFromTLtoOutput(
+    void copy_matrix_from_t_lto_output(
         std::size_t _matrix_tl_index,
         core::hires_clock::type _synchronization_timestamp
     );
@@ -328,22 +328,22 @@ private:
      *
      * @param synchFrameTLIndex : vector of index of the frameTl which have just been synchronized
      */
-    void sendFrameVarStatus(const std::vector<std::size_t>& _synch_frame_tl_index);
+    void send_frame_var_status(const std::vector<std::size_t>& _synch_frame_tl_index);
 
     /**
      * @brief send signals for the frame variables which required it, each time that the synchronization state changes
      *
      * @param synchFrameTLIndex : vector of index of the matrixTl which have just been synchronized
      */
-    void sendMatrixVarStatus(const std::vector<std::size_t>& _synch_matrix_tl_index);
+    void send_matrix_var_status(const std::vector<std::size_t>& _synch_matrix_tl_index);
 
     /// @brief vector which store the input/output variable associations for frames and matrix
-    std::vector<outVarParameter> m_frameOutVarParameters {};
-    std::vector<outVarParameter> m_matrixOutVarParameters {};
+    std::vector<out_var_parameter> m_frame_out_var_parameters {};
+    std::vector<out_var_parameter> m_matrix_out_var_parameters {};
 
     /// @brief vector which store the delay to apply to each timeline
-    std::vector<int> m_matrixTLDelay;
-    std::vector<int> m_frameTLDelay;
+    std::vector<int> m_matrix_tl_delay;
+    std::vector<int> m_frame_tl_delay;
 
     ///Synchronisation timing mechanism has two possible behaviour differentiated through m_legacyAutoSync
     // => m_legacyAutoSync = true
@@ -366,15 +366,15 @@ private:
     // And it changes back when the synchronisation method is called.
 
     // specify if the synchronization is called automatically or only when the slot synchronize is called.
-    bool m_legacyAutoSync {false};
+    bool m_legacy_auto_sync {false};
 
     // enum values for the update/synchronize mask
     enum : std::uint8_t
     {
-        OBJECT_RECEIVED = 0x1,
-        SYNC_REQUESTED  = 0x2
+        object_received = 0x1,
+        sync_requested  = 0x2
     };
-    std::uint8_t m_updateMask {SYNC_REQUESTED};
+    std::uint8_t m_update_mask {sync_requested};
 
     /// Timer used for the update
     core::thread::timer::sptr m_timer;
@@ -383,24 +383,24 @@ private:
     core::thread::worker::sptr m_worker;
 
     /// Time step used for the update, in ms
-    unsigned int m_timeStep {15};
+    unsigned int m_time_step {15};
 
     /// Tolerance to take into account matrix
     core::hires_clock::type m_tolerance {500.};
 
-    core::hires_clock::type m_lastTimeStamp {0.};
+    core::hires_clock::type m_last_time_stamp {0.};
 
     /// Contains the input video timelines.
-    data::ptr_vector<data::frame_tl, data::Access::in> m_frameTLs {this, configKey::s_FRAMETL_INPUT, true};
+    data::ptr_vector<data::frame_tl, data::access::in> m_frame_t_ls {this, config_key::FRAMETL_INPUT, true};
 
     /// Contains the output images.
-    data::ptr_vector<data::image, data::Access::inout> m_frames {this, configKey::s_FRAME_INOUT, false};
+    data::ptr_vector<data::image, data::access::inout> m_frames {this, config_key::FRAME_INOUT, false};
 
     /// Contains the input matrix timelines.
-    data::ptr_vector<data::matrix_tl, data::Access::in> m_matrixTLs {this, configKey::s_MATRIXTL_INPUT, true};
+    data::ptr_vector<data::matrix_tl, data::access::in> m_matrix_t_ls {this, config_key::MATRIXTL_INPUT, true};
 
     /// Contains the output matrices.
-    data::ptr_vector<data::matrix4, data::Access::inout> m_matrix {this, configKey::s_MATRIX_INOUT, false};
+    data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, config_key::MATRIX_INOUT, false};
 };
 
 } // namespace sight::module

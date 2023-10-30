@@ -46,7 +46,7 @@ public:
      * @param[in] _polyData vtkPolyData.
      * @param[out] _mesh data::mesh::sptr.
      */
-    IO_VTK_API static void fromVTKMesh(vtkSmartPointer<vtkPolyData> _poly_data, data::mesh::sptr _mesh);
+    IO_VTK_API static void from_vtk_mesh(vtkSmartPointer<vtkPolyData> _poly_data, data::mesh::sptr _mesh);
     /*!
      * @brief Convert a vtkUnstructuredGrid to a data::mesh::sptr.
      *
@@ -54,7 +54,7 @@ public:
      * @param[out] mesh data::mesh::sptr.
      */
 
-    IO_VTK_API static void fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> _grid, data::mesh::sptr _mesh);
+    IO_VTK_API static void from_vtk_grid(vtkSmartPointer<vtkUnstructuredGrid> _grid, data::mesh::sptr _mesh);
 
     /*!
      * @brief Convert a data::mesh::csptr to a vtkUnstructuredGrid.
@@ -62,7 +62,7 @@ public:
      * @param[in] mesh data::mesh::csptr.
      * @param[out] grid vtkUnstructuredGrid.
      */
-    IO_VTK_API static void toVTKGrid(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkUnstructuredGrid> _grid);
+    IO_VTK_API static void to_vtk_grid(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkUnstructuredGrid> _grid);
 
     /*!
      * @brief Convert a data::mesh::csptr to a vtkPolyData.
@@ -70,14 +70,14 @@ public:
      * @param[in] _mesh data::mesh::csptr.
      * @param[out] _polyData vtkPolyData.
      */
-    IO_VTK_API static void toVTKMesh(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _poly_data);
+    IO_VTK_API static void to_vtk_mesh(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _poly_data);
 
     /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class
      * @param[in] mesh current mesh
      * @return volume of the mesh
      */
-    IO_VTK_API static double computeVolume(const data::mesh::csptr& _mesh);
+    IO_VTK_API static double compute_volume(const data::mesh::csptr& _mesh);
 };
 
 } // namespace sight::io::vtk::helper

@@ -41,37 +41,37 @@ widget::~widget()
 
 //-----------------------------------------------------------------------------
 
-void widget::createContainer(ui::container::widget::sptr _parent)
+void widget::create_container(ui::container::widget::sptr _parent)
 {
     m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
 
     ui::qt::container::widget::sptr qt_container = ui::qt::container::widget::make();
     auto* widget                                 = new QWidget();
-    qt_container->setQtContainer(widget);
+    qt_container->set_qt_container(widget);
 
     auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(widget);
 
-    m_parent->setLayout(layout);
+    m_parent->set_layout(layout);
 
     m_container = qt_container;
 }
 
 //-----------------------------------------------------------------------------
 
-void widget::destroyContainer()
+void widget::destroy_container()
 {
     SIGHT_ASSERT("The Container is not initialized", m_container);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
 
-    m_container->destroyContainer();
+    m_container->destroy_container();
 }
 
 //-----------------------------------------------------------------------------
 
-void widget::setParent(ui::container::widget::sptr _parent)
+void widget::set_parent(ui::container::widget::sptr _parent)
 {
     SIGHT_ASSERT("The widget is not yet initialized, cleaning is thus impossible", m_container);
     ui::qt::container::widget::sptr parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(
@@ -83,12 +83,12 @@ void widget::setParent(ui::container::widget::sptr _parent)
     );
     SIGHT_ASSERT("dynamicCast widget to widget failed", container);
 
-    QWidget* qt_container = container->getQtContainer();
+    QWidget* qt_container = container->get_qt_container();
     SIGHT_ASSERT("The widget is not yet initialized", qt_container);
-    QWidget* qt_parent = parent_container->getQtContainer();
+    QWidget* qt_parent = parent_container->get_qt_container();
     SIGHT_ASSERT("The parent's widget is not yet initialized", qt_parent);
 
-    if(qt_parent != m_parent->getQtContainer())
+    if(qt_parent != m_parent->get_qt_container())
     {
         if(qt_parent->layout() == nullptr)
         {

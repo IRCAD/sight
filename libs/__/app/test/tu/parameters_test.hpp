@@ -33,8 +33,8 @@ namespace sight::app::ut
 class parameters_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(parameters_test);
-CPPUNIT_TEST(appConfigParametersTest);
-CPPUNIT_TEST(concurentAccessToparameters_test);
+CPPUNIT_TEST(app_config_parameters_test);
+CPPUNIT_TEST(concurent_access_toparameters_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,8 +43,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void appConfigParametersTest();
-    static void concurentAccessToparameters_test();
+    static void app_config_parameters_test();
+    static void concurent_access_toparameters_test();
 };
 
 } // namespace sight::app::ut

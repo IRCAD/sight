@@ -32,24 +32,24 @@
 namespace sight::io::bitmap::detail
 {
 
-class LibJPEGWriter final
+class lib_jpeg_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibJPEGWriter(const LibJPEGWriter&)            = delete;
-    LibJPEGWriter& operator=(const LibJPEGWriter&) = delete;
+    lib_jpeg_writer(const lib_jpeg_writer&)            = delete;
+    lib_jpeg_writer& operator=(const lib_jpeg_writer&) = delete;
 
     /// Constructor
-    inline LibJPEGWriter() noexcept
+    inline lib_jpeg_writer() noexcept
     {
         try
         {
             m_cinfo.err = jpeg_std_error(&m_jerr);
 
             // Do it after jpeg_std_error() which clears the error handlers
-            m_jerr.error_exit     = jpegErrorExit;
-            m_jerr.output_message = jpegOutputMessage;
+            m_jerr.error_exit     = jpeg_error_exit;
+            m_jerr.output_message = jpeg_output_message;
 
             // Initialize the JPEG compression object
             jpeg_create_compress(&m_cinfo);
@@ -67,7 +67,7 @@ public:
     }
 
     /// Destructor
-    inline ~LibJPEGWriter() noexcept
+    inline ~lib_jpeg_writer() noexcept
     {
         free();
     }
@@ -86,20 +86,20 @@ public:
     inline std::size_t write(
         const data::image& _image,
         O& _output,
-        Writer::Mode _mode,
-        Flag = Flag::NONE
+        writer::mode _mode,
+        flag = flag::none
 )
     {
         //  JCS_EXT_RGBA is not yet fully supported by libjpeg-turbo, at least for writing
-        const auto& pixel_format = _image.getPixelFormat();
+        const auto& pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format == data::image::PixelFormat::RG
-            || pixel_format == data::image::PixelFormat::RGBA
-            || pixel_format == data::image::PixelFormat::BGRA
+            pixel_format == data::image::pixel_format::rg
+            || pixel_format == data::image::pixel_format::rgba
+            || pixel_format == data::image::pixel_format::bgra
         );
 
-        const auto& pixel_type = _image.getType();
+        const auto& pixel_type = _image.type();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << pixel_type,
             pixel_type != core::type::UINT8
@@ -107,7 +107,7 @@ public:
 
         // Prepare the output buffers
         // LibJPEG will realloc memory, as needed, but its upon to the caller to free it...
-        const auto image_byte_size = _image.getSizeInBytes();
+        const auto image_byte_size = _image.size_in_bytes();
         if(image_byte_size > m_output_initial_buffer_size)
         {
             m_output_buffer              = reinterpret_cast<unsigned char*>(realloc(m_output_buffer, image_byte_size));
@@ -125,31 +125,31 @@ public:
         m_cinfo.image_width  = JDIMENSION(sizes[0]);
         m_cinfo.image_height = JDIMENSION(sizes[1]);
 
-        m_cinfo.input_components = int(_image.numComponents());
+        m_cinfo.input_components = int(_image.num_components());
         m_cinfo.in_color_space   =
             [pixel_format]
             {
-                if(pixel_format == data::image::PixelFormat::RGB)
+                if(pixel_format == data::image::pixel_format::rgb)
                 {
                     return JCS_RGB;
                 }
 
-                if(pixel_format == data::image::PixelFormat::RGBA)
+                if(pixel_format == data::image::pixel_format::rgba)
                 {
                     return JCS_EXT_RGBA;
                 }
 
-                if(pixel_format == data::image::PixelFormat::BGR)
+                if(pixel_format == data::image::pixel_format::bgr)
                 {
                     return JCS_EXT_BGR;
                 }
 
-                if(pixel_format == data::image::PixelFormat::BGRA)
+                if(pixel_format == data::image::pixel_format::bgra)
                 {
                     return JCS_EXT_BGRA;
                 }
 
-                if(pixel_format == data::image::PixelFormat::GRAY_SCALE)
+                if(pixel_format == data::image::pixel_format::gray_scale)
                 {
                     return JCS_GRAYSCALE;
                 }
@@ -166,7 +166,7 @@ public:
         // Optimize or not huffman code. 10% slower - 20% smaller
         switch(_mode)
         {
-            case Writer::Mode::BEST:
+            case writer::mode::best:
                 m_cinfo.optimize_coding = true;
                 break;
 
@@ -187,7 +187,7 @@ public:
             // libjpeg API is old -> const_cast
             row_pointer[0] = reinterpret_cast<unsigned char*>(
                 const_cast<void*>(
-                    _image.getPixel(m_cinfo.next_scanline * m_cinfo.image_width)
+                    _image.get_pixel(m_cinfo.next_scanline * m_cinfo.image_width)
                 )
             );
 
@@ -264,7 +264,7 @@ private:
     }
 
     /// Error handler for libJPEG
-    inline static void jpegErrorExit(j_common_ptr _cinfo)
+    inline static void jpeg_error_exit(j_common_ptr _cinfo)
     {
         char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 
@@ -277,7 +277,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void jpegOutputMessage(j_common_ptr _cinfo)
+    inline static void jpeg_output_message(j_common_ptr _cinfo)
     {
         char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 

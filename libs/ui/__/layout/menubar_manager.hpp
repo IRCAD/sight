@@ -56,14 +56,14 @@ public:
     /**
      * @brief Returns the vector of menu managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu::sptr> getMenus();
+    UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
 
     /**
      * @brief Initialize layout managers.
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="ui::menu_bar" impl="sight::module::ui::menu_bar"
+       <service uid="menubar" type="ui::menubar" impl="sight::module::ui::menubar"
      * auto_connect="false"
      *>
           <gui>
@@ -87,40 +87,40 @@ public:
     UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
-     * @brief Instantiate menu with parent menuBar.
+     * @brief Instantiate menu with parent menubar.
      * @pre layout must be initialized before.
-     * @pre parent menuBar must be instanced.
+     * @pre parent menubar must be instanced.
      */
-    UI_API virtual void createLayout(ui::container::menubar::sptr _parent, const std::string& _id) = 0;
+    UI_API virtual void create_layout(ui::container::menubar::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local menus.
      * @pre services using this menus must be stopped before.
      */
-    UI_API virtual void destroyLayout() = 0;
+    UI_API virtual void destroy_layout() = 0;
 
     /**
      * @brief Set the menu visibility.
      */
-    UI_API virtual void menuIsVisible(ui::container::menu::sptr, bool _is_visible) = 0;
+    UI_API virtual void menu_is_visible(ui::container::menu::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the menu enable or not.
      */
-    UI_API virtual void menuIsEnabled(ui::container::menu::sptr, bool _is_enabled) = 0;
+    UI_API virtual void menu_is_enabled(ui::container::menu::sptr, bool _is_enabled) = 0;
 
 protected:
 
     /**
      * @brief Helper to destroy local sub views.
      */
-    UI_API virtual void destroyMenus();
+    UI_API virtual void destroy_menus();
 
     /// All sub containers managed by this layout.
     std::vector<ui::container::menu::sptr> m_menus;
 
     /// Save menu name from configuration.
-    std::vector<std::string> m_menuNames;
+    std::vector<std::string> m_menu_names;
 };
 
 } // namespace sight::ui::layout

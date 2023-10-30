@@ -30,32 +30,32 @@ namespace sight::ui::qml::model
 /**
  * @brief   RoleListModel allowing the creation of a ListModel with customizable role
  */
-class RoleListModel : public QAbstractListModel
+class role_list_model : public QAbstractListModel
 {
 Q_OBJECT
 
 public:
 
     /// Constructor
-    explicit RoleListModel(QObject* _parent = nullptr);
+    explicit role_list_model(QObject* _parent = nullptr);
 
     /**
      * @brief Add data to the ListModel and call the reset function to emit changes to Qml.
      * @param[in] data One data row with role name as key inside the QHash
      */
-    void addData(const QHash<QByteArray, QVariant>& _data);
+    void add_data(const QHash<QByteArray, QVariant>& _data);
 
     /**
      * @brief Add role to the ListModel that can only be called before any data added
      * @param[in] enumNb the key of the QHash that carry the roles that need to be at least Qt::UserRole +1
      * @param[in] role the value of the string role in qml
      */
-    void addRole(const int& _enum_nb, const QByteArray& _role);
+    void add_role(const int& _enum_nb, const QByteArray& _role);
 
     /**
      * @brief Return if data isEmpty
      */
-    bool isEmpty() noexcept;
+    bool is_empty() noexcept;
 
     /// override
     [[nodiscard]] int rowCount(const QModelIndex& _parent = QModelIndex()) const Q_DECL_OVERRIDE;

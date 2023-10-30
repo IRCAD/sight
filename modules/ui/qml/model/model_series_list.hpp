@@ -23,7 +23,7 @@
 #pragma once
 
 #include "modules/ui/qml/config.hpp"
-#include "modules/ui/qml/model/OrganListModel.hpp"
+#include "modules/ui/qml/model/organ_list_model.hpp"
 
 #include <ui/qml/editor.hpp>
 
@@ -70,7 +70,7 @@ namespace sight::module::ui::qml::model
 class MODULE_UI_QML_CLASS_API model_series_list : public sight::ui::qml::editor
 {
 Q_OBJECT
-Q_PROPERTY(OrganListModel * listModel MEMBER m_listModel)
+Q_PROPERTY(organ_list_model * list_model MEMBER m_list_model)
 
 public:
 
@@ -107,39 +107,39 @@ protected:
     connections_t auto_connections() const override;
 
     static const core::com::signals::key_t RECONSTRUCTION_SELECTED_SIG;
-    typedef core::com::signal<void (data::object::sptr)> reconstruction_selected_signal_t;
+    using reconstruction_selected_signal_t = core::com::signal<void (data::object::sptr)>;
 
     static const core::com::signals::key_t EMPTIED_SELECTION_SIG;
-    typedef core::com::signal<void ()> emptied_selection_signal_t;
+    using emptied_selection_signal_t = core::com::signal<void ()>;
 
 protected Q_SLOTS:
 
     /// Called when an organ is selected, the index represents the index of the selected reconstruction into the
     // modelSeries
-    void onOrganSelected(int _index);
+    void on_organ_selected(int _index);
 
     /// Called when the reconstruction should be shown/hidden
-    void onShowReconstructions(int _state);
+    void on_show_reconstructions(int _state);
 
     /// Called when the visibility of an organ should change
-    void onOrganVisibilityChanged(int _index, bool _visible);
+    void on_organ_visibility_changed(int _index, bool _visible);
 
     /// Called when all the reconstruction are checked/unchecked, and
-    void onCheckAllBoxes(bool _checked);
+    void on_check_all_boxes(bool _checked);
 
 private:
 
     /// Signal emitted when a reconstruction is selected
-    reconstruction_selected_signal_t::sptr m_sigReconstructionSelected;
+    reconstruction_selected_signal_t::sptr m_sig_reconstruction_selected;
 
     /// Signal emitted when we clean the list
-    emptied_selection_signal_t::sptr m_sigEmptiedSelection;
+    emptied_selection_signal_t::sptr m_sig_emptied_selection;
 
-    OrganListModel* m_listModel {nullptr};
+    organ_list_model* m_list_model {nullptr};
 
     /// Model series data
-    static constexpr std::string_view s_MODEL_SERIES_INOUT = "modelSeries";
-    data::ptr<data::model_series, data::Access::inout> m_modelSeries {this, s_MODEL_SERIES_INOUT, true};
+    static constexpr std::string_view MODEL_SERIES_INOUT = "modelSeries";
+    data::ptr<data::model_series, data::access::inout> m_model_series {this, MODEL_SERIES_INOUT, true};
 };
 
 } // namespace sight::module::ui::qml::model

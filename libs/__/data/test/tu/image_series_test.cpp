@@ -27,14 +27,14 @@
 #include <utest_data/generator/image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::image_seriesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::image_series_test);
 
 namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
 
-void image_seriesTest::setUp()
+void image_series_test::setUp()
 {
     // Set up context before running a test.
     m_series = std::make_shared<data::image_series>();
@@ -42,7 +42,7 @@ void image_seriesTest::setUp()
 
 //------------------------------------------------------------------------------
 
-void image_seriesTest::tearDown()
+void image_series_test::tearDown()
 {
     // Clean up after the test run.
     m_series.reset();
@@ -50,11 +50,11 @@ void image_seriesTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void image_seriesTest::imageTest()
+void image_series_test::image_test()
 {
     CPPUNIT_ASSERT(m_series);
 
-    utest_data::generator::image::generateRandomImage(m_series, core::type::FLOAT);
+    utest_data::generator::image::generate_random_image(m_series, core::type::FLOAT);
 
     auto series2 = std::make_shared<data::image_series>();
     CPPUNIT_ASSERT(*series2 != *m_series);
@@ -65,66 +65,66 @@ void image_seriesTest::imageTest()
 
 //------------------------------------------------------------------------------
 
-void image_seriesTest::equalityTest()
+void image_series_test::equality_test()
 {
     auto series1 = std::make_shared<data::image_series>();
     auto series2 = std::make_shared<data::image_series>();
 
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setModality("1");
+    series1->set_modality("1");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setModality(series1->getModality());
+    series2->set_modality(series1->get_modality());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setSeriesInstanceUID("2");
+    series1->set_series_instance_uid("2");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setSeriesInstanceUID(series1->getSeriesInstanceUID());
+    series2->set_series_instance_uid(series1->get_series_instance_uid());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setSeriesNumber(3);
+    series1->set_series_number(3);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setSeriesNumber(series1->getSeriesNumber());
+    series2->set_series_number(series1->get_series_number());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setLaterality("4");
+    series1->set_laterality("4");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setLaterality(series1->getLaterality());
+    series2->set_laterality(series1->get_laterality());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setSeriesDate("5");
+    series1->set_series_date("5");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setSeriesDate(series1->getSeriesDate());
+    series2->set_series_date(series1->get_series_date());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setSeriesTime("6");
+    series1->set_series_time("6");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setSeriesTime(series1->getSeriesTime());
+    series2->set_series_time(series1->get_series_time());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPerformingPhysicianName("7\\8\\9");
+    series1->set_performing_physician_name("7\\8\\9");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPerformingPhysicianName(series1->getPerformingPhysicianName());
+    series2->set_performing_physician_name(series1->get_performing_physician_name());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setProtocolName("10");
+    series1->set_protocol_name("10");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setProtocolName(series1->getProtocolName());
+    series2->set_protocol_name(series1->get_protocol_name());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setSeriesDescription("11");
+    series1->set_series_description("11");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setSeriesDescription(series1->getSeriesDescription());
+    series2->set_series_description(series1->get_series_description());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setBodyPartExamined("12");
+    series1->set_body_part_examined("12");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setBodyPartExamined(series1->getBodyPartExamined());
+    series2->set_body_part_examined(series1->get_body_part_examined());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPatientPosition("13");
+    series1->set_patient_position("13");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPatientPosition(series1->getPatientPosition());
+    series2->set_patient_position(series1->get_patient_position());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     series1->set_anatomical_orientation_type("14");
@@ -132,147 +132,147 @@ void image_seriesTest::equalityTest()
     series2->set_anatomical_orientation_type(series1->get_anatomical_orientation_type());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPerformedProcedureStepID("15");
+    series1->set_performed_procedure_step_id("15");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPerformedProcedureStepID(series1->getPerformedProcedureStepID());
+    series2->set_performed_procedure_step_id(series1->get_performed_procedure_step_id());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPerformedProcedureStepStartDate("16");
+    series1->set_performed_procedure_step_start_date("16");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPerformedProcedureStepStartDate(series1->getPerformedProcedureStepStartDate());
+    series2->set_performed_procedure_step_start_date(series1->get_performed_procedure_step_start_date());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPerformedProcedureStepStartTime("17");
+    series1->set_performed_procedure_step_start_time("17");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPerformedProcedureStepStartTime(series1->getPerformedProcedureStepStartTime());
+    series2->set_performed_procedure_step_start_time(series1->get_performed_procedure_step_start_time());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPerformedProcedureStepEndDate("18");
+    series1->set_performed_procedure_step_end_date("18");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPerformedProcedureStepEndDate(series1->getPerformedProcedureStepEndDate());
+    series2->set_performed_procedure_step_end_date(series1->get_performed_procedure_step_end_date());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPerformedProcedureStepEndTime("19");
+    series1->set_performed_procedure_step_end_time("19");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPerformedProcedureStepEndTime(series1->getPerformedProcedureStepEndTime());
+    series2->set_performed_procedure_step_end_time(series1->get_performed_procedure_step_end_time());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPerformedProcedureStepDescription("20");
+    series1->set_performed_procedure_step_description("20");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPerformedProcedureStepDescription(series1->getPerformedProcedureStepDescription());
+    series2->set_performed_procedure_step_description(series1->get_performed_procedure_step_description());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setCommentsOnThePerformedProcedureStep("21");
+    series1->set_comments_on_the_performed_procedure_step("21");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setCommentsOnThePerformedProcedureStep(series1->getCommentsOnThePerformedProcedureStep());
+    series2->set_comments_on_the_performed_procedure_step(series1->get_comments_on_the_performed_procedure_step());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setPatientID("22");
+    series1->set_patient_id("22");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setPatientID(series1->getPatientID());
+    series2->set_patient_id(series1->get_patient_id());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setStudyInstanceUID("23");
+    series1->set_study_instance_uid("23");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setStudyInstanceUID(series1->getStudyInstanceUID());
+    series2->set_study_instance_uid(series1->get_study_instance_uid());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setInstitutionName("24");
+    series1->set_institution_name("24");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setInstitutionName(series1->getInstitutionName());
+    series2->set_institution_name(series1->get_institution_name());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    utest_data::generator::image::generateRandomImage(series1, core::type::FLOAT);
+    utest_data::generator::image::generate_random_image(series1, core::type::FLOAT);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->shallow_copy(series1);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     auto dicom_series = std::make_shared<data::dicom_series>();
-    dicom_series->setSeriesInstanceUID("25");
-    dicom_series->setNumberOfInstances(1);
-    series1->setDicomReference(dicom_series);
+    dicom_series->set_series_instance_uid("25");
+    dicom_series->set_number_of_instances(1);
+    series1->set_dicom_reference(dicom_series);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setDicomReference(dicom_series);
+    series2->set_dicom_reference(dicom_series);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusAgent("26");
+    series1->set_contrast_bolus_agent("26");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusAgent(series1->getContrastBolusAgent());
+    series2->set_contrast_bolus_agent(series1->get_contrast_bolus_agent());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusRoute("27");
+    series1->set_contrast_bolus_route("27");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusRoute(series1->getContrastBolusRoute());
+    series2->set_contrast_bolus_route(series1->get_contrast_bolus_route());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusVolume(28.0);
+    series1->set_contrast_bolus_volume(28.0);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusVolume(series1->getContrastBolusVolume());
+    series2->set_contrast_bolus_volume(series1->get_contrast_bolus_volume());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusStartTime("29");
+    series1->set_contrast_bolus_start_time("29");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusStartTime(series1->getContrastBolusStartTime());
+    series2->set_contrast_bolus_start_time(series1->get_contrast_bolus_start_time());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusStopTime("30");
+    series1->set_contrast_bolus_stop_time("30");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusStopTime(series1->getContrastBolusStopTime());
+    series2->set_contrast_bolus_stop_time(series1->get_contrast_bolus_stop_time());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusTotalDose(31.0);
+    series1->set_contrast_bolus_total_dose(31.0);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusTotalDose(series1->getContrastBolusTotalDose());
+    series2->set_contrast_bolus_total_dose(series1->get_contrast_bolus_total_dose());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastFlowRate("32.0\\32.1\\32.2");
+    series1->set_contrast_flow_rate("32.0\\32.1\\32.2");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastFlowRate(series1->getContrastFlowRate());
+    series2->set_contrast_flow_rate(series1->get_contrast_flow_rate());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastFlowDuration("33.0\\33.1\\33.2");
+    series1->set_contrast_flow_duration("33.0\\33.1\\33.2");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastFlowDuration(series1->getContrastFlowDuration());
+    series2->set_contrast_flow_duration(series1->get_contrast_flow_duration());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusIngredient("34");
+    series1->set_contrast_bolus_ingredient("34");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusIngredient(series1->getContrastBolusIngredient());
+    series2->set_contrast_bolus_ingredient(series1->get_contrast_bolus_ingredient());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setContrastBolusIngredientConcentration(35.0);
+    series1->set_contrast_bolus_ingredient_concentration(35.0);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setContrastBolusIngredientConcentration(series1->getContrastBolusIngredientConcentration());
+    series2->set_contrast_bolus_ingredient_concentration(series1->get_contrast_bolus_ingredient_concentration());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setAcquisitionDate("36");
+    series1->set_acquisition_date("36");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setAcquisitionDate(series1->getAcquisitionDate());
+    series2->set_acquisition_date(series1->get_acquisition_date());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setAcquisitionTime("37");
+    series1->set_acquisition_time("37");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setAcquisitionTime(series1->getAcquisitionTime());
+    series2->set_acquisition_time(series1->get_acquisition_time());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setWindowCenter({38, 39});
+    series1->set_window_center({38, 39});
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setWindowCenter(series1->getWindowCenter());
+    series2->set_window_center(series1->window_center());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setWindowWidth({40, 41});
+    series1->set_window_width({40, 41});
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setWindowWidth(series1->getWindowWidth());
+    series2->set_window_width(series1->window_width());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setRows(std::uint16_t(42));
+    series1->set_rows(std::uint16_t(42));
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setRows(series1->getRows());
+    series2->set_rows(series1->get_rows());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setColumns(std::uint16_t(43));
+    series1->set_columns(std::uint16_t(43));
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setColumns(series1->getColumns());
+    series2->set_columns(series1->get_columns());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     // Test also deepcopy, just for fun
@@ -283,13 +283,13 @@ void image_seriesTest::equalityTest()
 
 //------------------------------------------------------------------------------
 
-void image_seriesTest::resizeTest()
+void image_series_test::resize_test()
 {
     auto series1 = std::make_shared<data::image_series>();
-    series1->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+    series1->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
     do
     {
-        utest_data::generator::image::generateRandomImage(series1, core::type::INT8);
+        utest_data::generator::image::generate_random_image(series1, core::type::INT8);
     }
     while(series1->size()[2] <= 2);
 
@@ -297,9 +297,9 @@ void image_seriesTest::resizeTest()
 
     for(std::size_t i = 0, end = size[2] ; i < end ; ++i)
     {
-        series1->setImagePositionPatient({0.1 * double(i), 0.2 * double(i), 0.3 * double(i)}, i);
-        series1->setFrameComments("Comments" + std::to_string(i), i);
-        series1->setFrameLabel("Label" + std::to_string(i), i);
+        series1->set_image_position_patient({0.1 * double(i), 0.2 * double(i), 0.3 * double(i)}, i);
+        series1->set_frame_comments("Comments" + std::to_string(i), i);
+        series1->set_frame_label("Label" + std::to_string(i), i);
     }
 
     auto series2 = std::make_shared<data::image_series>();
@@ -310,24 +310,24 @@ void image_seriesTest::resizeTest()
 
     // Resize to 2 slices
     size[2] = 2;
-    series1->resize(size, series1->getType(), series1->getPixelFormat());
+    series1->resize(size, series1->type(), series1->pixel_format());
 
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
 
-    CPPUNIT_ASSERT(series2->getImagePositionPatient(0) == series1->getImagePositionPatient(0));
-    CPPUNIT_ASSERT(series2->getImagePositionPatient(1) == series1->getImagePositionPatient(1));
+    CPPUNIT_ASSERT(series2->get_image_position_patient(0) == series1->get_image_position_patient(0));
+    CPPUNIT_ASSERT(series2->get_image_position_patient(1) == series1->get_image_position_patient(1));
     CPPUNIT_ASSERT(
-        series2->getImagePositionPatient(2) != series1->getImagePositionPatient(2)
-        && series1->getImagePositionPatient(2).empty()
+        series2->get_image_position_patient(2) != series1->get_image_position_patient(2)
+        && series1->get_image_position_patient(2).empty()
     );
 
-    CPPUNIT_ASSERT_EQUAL(*series2->getFrameComments(0), *series1->getFrameComments(0));
-    CPPUNIT_ASSERT_EQUAL(*series2->getFrameComments(1), *series1->getFrameComments(1));
-    CPPUNIT_ASSERT(series2->getFrameComments(2) && !series1->getFrameComments(2));
+    CPPUNIT_ASSERT_EQUAL(*series2->get_frame_comments(0), *series1->get_frame_comments(0));
+    CPPUNIT_ASSERT_EQUAL(*series2->get_frame_comments(1), *series1->get_frame_comments(1));
+    CPPUNIT_ASSERT(series2->get_frame_comments(2) && !series1->get_frame_comments(2));
 
-    CPPUNIT_ASSERT_EQUAL(*series2->getFrameLabel(0), *series1->getFrameLabel(0));
-    CPPUNIT_ASSERT_EQUAL(*series2->getFrameLabel(1), *series1->getFrameLabel(1));
-    CPPUNIT_ASSERT(series2->getFrameLabel(2) && !series1->getFrameLabel(2));
+    CPPUNIT_ASSERT_EQUAL(*series2->get_frame_label(0), *series1->get_frame_label(0));
+    CPPUNIT_ASSERT_EQUAL(*series2->get_frame_label(1), *series1->get_frame_label(1));
+    CPPUNIT_ASSERT(series2->get_frame_label(2) && !series1->get_frame_label(2));
 
     series2->deep_copy(series1);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));

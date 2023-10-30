@@ -55,7 +55,7 @@ void stereo_camera_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void stereo_camera_test::testValidator()
+void stereo_camera_test::test_validator()
 {
     auto validator = factory::make("sight::module::activity::validator::camera_set::stereo_camera");
     CPPUNIT_ASSERT(validator);
@@ -94,7 +94,7 @@ void stereo_camera_test::testValidator()
         );
     }
     {
-        camera1->setIsCalibrated(true);
+        camera1->set_is_calibrated(true);
         validation = obj_validator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "CameraSet with one calibrated camera should NOT be valid",
@@ -103,7 +103,7 @@ void stereo_camera_test::testValidator()
         );
     }
     {
-        camera2->setIsCalibrated(true);
+        camera2->set_is_calibrated(true);
         camera_set->add_camera(camera2);
         validation = obj_validator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -123,7 +123,7 @@ void stereo_camera_test::testValidator()
         );
     }
     {
-        camera2->setIsCalibrated(false);
+        camera2->set_is_calibrated(false);
         validation = obj_validator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "CameraSet with two cameras (first calibrated and second not calibrated) "
@@ -133,8 +133,8 @@ void stereo_camera_test::testValidator()
         );
     }
     {
-        camera1->setIsCalibrated(false);
-        camera2->setIsCalibrated(true);
+        camera1->set_is_calibrated(false);
+        camera2->set_is_calibrated(true);
         validation = obj_validator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "CameraSet with two cameras (first not calibrated and second calibrated) "

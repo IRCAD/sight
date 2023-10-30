@@ -64,7 +64,7 @@ void material_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void material_test::initializeMaterial()
+void material_test::initialize_material()
 {
     test_application app;
 
@@ -72,49 +72,49 @@ void material_test::initializeMaterial()
     auto* qt3d_material = new viz::qt3d::data::material();
 
     // Initializes qt3dMaterial according to sightMaterial.
-    qt3d_material->updatePolygonMode(sight_material->getRepresentationMode());
-    qt3d_material->updateOptionsMode(sight_material->getOptionsMode());
-    qt3d_material->updateShadingMode(sight_material->getShadingMode());
-    qt3d_material->updateRGBAMode(sight_material);
+    qt3d_material->update_polygon_mode(sight_material->get_representation_mode());
+    qt3d_material->update_options_mode(sight_material->get_options_mode());
+    qt3d_material->update_shading_mode(static_cast<int>(sight_material->get_shading_mode()));
+    qt3d_material->update_rgba_mode(sight_material);
 
     // Asserts qt3dMaterial RBG is equal to sightMaterial RGB (Approximately equal due to float comparaison).
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sight_material->ambient()->red()),
-        qt3d_material->getAmbient().redF(),
+        qt3d_material->get_ambient().redF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sight_material->ambient()->green()),
-        qt3d_material->getAmbient().greenF(),
+        qt3d_material->get_ambient().greenF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sight_material->ambient()->blue()),
-        qt3d_material->getAmbient().blueF(),
+        qt3d_material->get_ambient().blueF(),
         0.01F
     );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sight_material->diffuse()->red()),
-        qt3d_material->getDiffuse().redF(),
+        qt3d_material->get_diffuse().redF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sight_material->diffuse()->green()),
-        qt3d_material->getDiffuse().greenF(),
+        qt3d_material->get_diffuse().greenF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sight_material->diffuse()->blue()),
-        qt3d_material->getDiffuse().blueF(),
+        qt3d_material->get_diffuse().blueF(),
         0.01F
     );
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->getSpecular().x(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->getSpecular().y(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->getSpecular().z(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->get_specular().x(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->get_specular().y(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->get_specular().z(), 0.00001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(25.0F, qt3d_material->getShininess(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(25.0F, qt3d_material->get_shininess(), 0.00001);
 
     CPPUNIT_ASSERT_EQUAL(1, qt3d_material->effect()->techniques().size());
     auto* tech = qt3d_material->effect()->techniques()[0];
@@ -141,7 +141,7 @@ void material_test::initializeMaterial()
 
     //Default lightingMode must be set to PHONG.
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<int>(sight_material->getShadingMode()),
+        static_cast<int>(sight_material->get_shading_mode()),
         qvariant_cast<int>(tech->parameters()[2]->value())
     );
 

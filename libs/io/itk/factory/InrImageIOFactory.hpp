@@ -32,40 +32,39 @@ namespace itk
  * \class InrImageIOFactory
  * \brief Create instances of InrImageIO objects using an object factory.
  */
-class ITK_EXPORT InrImageIOFactory : public ObjectFactoryBase
+class ITK_EXPORT inr_image_io_factory : public ObjectFactoryBase
 {
 public:
 
     /** Standard class typedefs. */
-    typedef InrImageIOFactory Self;
-    typedef ObjectFactoryBase Superclass;
-    typedef SmartPointer<Self> Pointer;
-    typedef SmartPointer<const Self> ConstPointer;
+    using self_t       = inr_image_io_factory;
+    using superclass_t = ObjectFactoryBase;
+    using Pointer      = SmartPointer<self_t>;
 
-    InrImageIOFactory(const Self&) = delete; //purposely not implemented
-    void operator=(const Self&)    = delete; //purposely not implemented
+    inr_image_io_factory(const self_t&) = delete; //purposely not implemented
+    void operator=(const self_t&)       = delete; //purposely not implemented
 
     /** Class methods used to interface with the registered factories. */
     const char* GetITKSourceVersion() const override;
     const char* GetDescription() const override;
 
     /** Method for class instantiation. */
-    itkFactorylessNewMacro(Self)
+    itkFactorylessNewMacro(self_t)
 
     /** Run-time type information (and related methods). */
     itkTypeMacro(InrImageIOFactory, ObjectFactoryBase)
 
     /** Register one factory of this type  */
-    static void RegisterOneFactory()
+    static void register_one_factory()
     {
-        InrImageIOFactory::Pointer meta_factory = InrImageIOFactory::New();
+        inr_image_io_factory::Pointer meta_factory = inr_image_io_factory::New();
         ObjectFactoryBase::RegisterFactory(meta_factory);
     }
 
 protected:
 
-    InrImageIOFactory();
-    ~InrImageIOFactory() override;
+    inr_image_io_factory();
+    ~inr_image_io_factory() override;
     void PrintSelf(std::ostream& _os, Indent _indent) const override;
 };
 

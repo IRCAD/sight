@@ -53,18 +53,18 @@ void structure_traits::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_type               = other->m_type;
-    m_categories         = other->m_categories;
-    m_color              = other->m_color;
-    m_class              = other->m_class;
-    m_nativeExp          = other->m_nativeExp;
-    m_nativeGeometricExp = other->m_nativeGeometricExp;
-    m_attachmentType     = other->m_attachmentType;
-    m_anatomicRegion     = other->m_anatomicRegion;
-    m_propertyCategory   = other->m_propertyCategory;
-    m_propertyType       = other->m_propertyType;
+    m_type                 = other->m_type;
+    m_categories           = other->m_categories;
+    m_color                = other->m_color;
+    m_class                = other->m_class;
+    m_native_exp           = other->m_native_exp;
+    m_native_geometric_exp = other->m_native_geometric_exp;
+    m_attachment_type      = other->m_attachment_type;
+    m_anatomic_region      = other->m_anatomic_region;
+    m_property_category    = other->m_property_category;
+    m_property_type        = other->m_property_type;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -81,18 +81,18 @@ void structure_traits::deep_copy(const object::csptr& _source, const std::unique
         !bool(other)
     );
 
-    m_type               = other->m_type;
-    m_categories         = other->m_categories;
-    m_color              = data::object::copy(other->m_color, _cache);
-    m_class              = other->m_class;
-    m_nativeExp          = other->m_nativeExp;
-    m_nativeGeometricExp = other->m_nativeGeometricExp;
-    m_attachmentType     = other->m_attachmentType;
-    m_anatomicRegion     = other->m_anatomicRegion;
-    m_propertyCategory   = other->m_propertyCategory;
-    m_propertyType       = other->m_propertyType;
+    m_type                 = other->m_type;
+    m_categories           = other->m_categories;
+    m_color                = data::object::copy(other->m_color, _cache);
+    m_class                = other->m_class;
+    m_native_exp           = other->m_native_exp;
+    m_native_geometric_exp = other->m_native_geometric_exp;
+    m_attachment_type      = other->m_attachment_type;
+    m_anatomic_region      = other->m_anatomic_region;
+    m_property_category    = other->m_property_category;
+    m_property_type        = other->m_property_type;
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -101,12 +101,12 @@ bool structure_traits::operator==(const structure_traits& _other) const noexcept
 {
     if(m_type != _other.m_type
        || m_class != _other.m_class
-       || m_nativeExp != _other.m_nativeExp
-       || m_nativeGeometricExp != _other.m_nativeGeometricExp
-       || m_attachmentType != _other.m_attachmentType
-       || m_anatomicRegion != _other.m_anatomicRegion
-       || m_propertyCategory != _other.m_propertyCategory
-       || m_propertyType != _other.m_propertyType
+       || m_native_exp != _other.m_native_exp
+       || m_native_geometric_exp != _other.m_native_geometric_exp
+       || m_attachment_type != _other.m_attachment_type
+       || m_anatomic_region != _other.m_anatomic_region
+       || m_property_category != _other.m_property_category
+       || m_property_type != _other.m_property_type
        || !core::tools::is_equal(m_categories, _other.m_categories)
        || !core::tools::is_equal(m_color, _other.m_color))
     {
@@ -114,7 +114,7 @@ bool structure_traits::operator==(const structure_traits& _other) const noexcept
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

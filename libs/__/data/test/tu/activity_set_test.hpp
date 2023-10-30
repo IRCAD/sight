@@ -29,8 +29,8 @@ namespace sight::data::ut
 class activity_set_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(activity_set_test);
-CPPUNIT_TEST(nominalTest);
-CPPUNIT_TEST(copyTest);
+CPPUNIT_TEST(nominal_test);
+CPPUNIT_TEST(copy_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,8 +39,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void nominalTest();
-    static void copyTest();
+    static void nominal_test();
+    static void copy_test();
 };
 
 } // namespace sight::data::ut

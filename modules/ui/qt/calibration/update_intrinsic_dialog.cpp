@@ -113,10 +113,10 @@ update_intrinsic_dialog::update_intrinsic_dialog() :
     this->setLayout(main_layout);
     this->setWindowTitle("Calibration Edition");
 
-    QObject::connect(compute_button, SIGNAL(clicked()), this, SLOT(onPushCompute()));
-    QObject::connect(reset_button, SIGNAL(clicked()), this, SLOT(onPushReset()));
-    QObject::connect(validate_button, SIGNAL(clicked()), this, SLOT(onValidate()));
-    QObject::connect(cancel_button, SIGNAL(clicked()), this, SLOT(close()));
+    QObject::connect(compute_button, &QPushButton::clicked, this, &update_intrinsic_dialog::on_push_compute);
+    QObject::connect(reset_button, &QPushButton::clicked, this, &update_intrinsic_dialog::on_push_reset);
+    QObject::connect(validate_button, &QPushButton::clicked, this, &update_intrinsic_dialog::on_validate);
+    QObject::connect(cancel_button, &QPushButton::clicked, this, &update_intrinsic_dialog::close);
 }
 
 //-----------------------------------------------------------------------------
@@ -126,28 +126,28 @@ update_intrinsic_dialog::~update_intrinsic_dialog()
 
 //-----------------------------------------------------------------------------
 
-void update_intrinsic_dialog::setParameters(std::array<double, 12>& _parameters)
+void update_intrinsic_dialog::set_parameters(std::array<double, 12>& _parameters)
 {
-    m_calibration       = _parameters;
-    m_originCalibration = _parameters;
+    m_calibration        = _parameters;
+    m_origin_calibration = _parameters;
 
     m_ratio = m_calibration[0] / m_calibration[1];
 
-    this->updateInfos();
+    this->update_infos();
 }
 
 //-----------------------------------------------------------------------------
 
-void update_intrinsic_dialog::onValidate()
+void update_intrinsic_dialog::on_validate()
 {
-    Q_EMIT newCalibration(m_calibration);
+    Q_EMIT new_calibration(m_calibration);
 
     this->close();
 }
 
 //-----------------------------------------------------------------------------
 
-void update_intrinsic_dialog::onPushCompute()
+void update_intrinsic_dialog::on_push_compute()
 {
     double height = m_height->text().toDouble();
     double width  = m_width->text().toDouble();
@@ -163,14 +163,14 @@ void update_intrinsic_dialog::onPushCompute()
             "Warning",
             "The new resolution don't respect the original resolution ratio !"
             ,
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         return;
     }
 
     //alpha : original resolution / new resolution (!! Ratio should be kept (16/9, 4/3 ...) !!!)
 
-    double alpha = m_originCalibration[1] / height;
+    double alpha = m_origin_calibration[1] / height;
 
     double fx_new = NAN;
     double fy_new = NAN;
@@ -211,24 +211,24 @@ void update_intrinsic_dialog::onPushCompute()
     m_calibration[8] = p1_new;
     m_calibration[9] = p2_new;
 
-    this->updateInfos();
+    this->update_infos();
 }
 
 //-----------------------------------------------------------------------------
 
-void update_intrinsic_dialog::onPushReset()
+void update_intrinsic_dialog::on_push_reset()
 {
-    for(unsigned int i = 0 ; i < m_originCalibration.size() ; ++i)
+    for(unsigned int i = 0 ; i < m_origin_calibration.size() ; ++i)
     {
-        m_calibration[i] = m_originCalibration[i];
+        m_calibration[i] = m_origin_calibration[i];
     }
 
-    this->updateInfos();
+    this->update_infos();
 }
 
 //-----------------------------------------------------------------------------
 
-void update_intrinsic_dialog::updateInfos()
+void update_intrinsic_dialog::update_infos()
 {
     std::stringstream out;
 

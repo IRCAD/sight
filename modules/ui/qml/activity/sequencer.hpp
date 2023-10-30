@@ -91,7 +91,7 @@ class MODULE_UI_QML_CLASS_API sequencer : public sight::ui::qml::editor,
                                           public sight::activity::sequencer
 {
 Q_OBJECT
-Q_PROPERTY(QStringList activityIds MEMBER m_qActivityIds)
+Q_PROPERTY(QStringList activityIds MEMBER m_activity_list)
 
 public:
 
@@ -108,8 +108,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::signal<void (data::activity::sptr)> activity_created_signal_t;
-    typedef core::com::signal<void (data::activity::sptr)> data_required_signal_t;
+    using activity_created_signal_t = core::com::signal<void (data::activity::sptr)>;
+    using data_required_signal_t    = core::com::signal<void (data::activity::sptr)>;
 /**
  * @}
  */
@@ -123,7 +123,7 @@ Q_SIGNALS:
 public Q_SLOTS:
 
     /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
-    void goTo(int _index);
+    void go_to(int _index);
 
 protected:
 
@@ -151,7 +151,7 @@ protected:
 private:
 
     /// Slot: Check if the next activities can be enabled
-    void checkNext();
+    void check_next();
 
     /// Slot: Create the next activity, emit 'dataRequired' signal if the activity require additional data
     void next();
@@ -159,14 +159,14 @@ private:
     /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
     void previous();
 
-    activity_created_signal_t::sptr m_sigActivityCreated;
-    data_required_signal_t::sptr m_sigDataRequired;
+    activity_created_signal_t::sptr m_sig_activity_created;
+    data_required_signal_t::sptr m_sig_data_required;
 
     /// List of activity ids
-    QStringList m_qActivityIds;
+    QStringList m_activity_list;
 
-    static constexpr std::string_view s_ACTIVITY_SET_INOUT = "activitySet";
-    data::ptr<data::activity_set, data::Access::inout> m_activity_set {this, s_ACTIVITY_SET_INOUT, true};
+    static constexpr std::string_view ACTIVITY_SET_INOUT = "activitySet";
+    data::ptr<data::activity_set, data::access::inout> m_activity_set {this, ACTIVITY_SET_INOUT, true};
 };
 
 } // namespace sight::module::ui::qml::activity

@@ -30,9 +30,9 @@ namespace sight::viz::scene3d::ut
 class utils_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(utils_test);
-CPPUNIT_TEST(convertOgreColorToFwColor);
-CPPUNIT_TEST(convertOgreMatrixToTM3D);
-CPPUNIT_TEST(worldToSliceTest);
+CPPUNIT_TEST(from_ogre_color);
+CPPUNIT_TEST(convert_ogre_matrix_to_t_m_3d);
+CPPUNIT_TEST(world_to_slice_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,9 +41,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void convertOgreColorToFwColor();
-    static void convertOgreMatrixToTM3D();
-    static void worldToSliceTest();
+    static void from_ogre_color();
+    static void convert_ogre_matrix_to_t_m_3d();
+    static void world_to_slice_test();
 };
 
 } // namespace sight::viz::scene3d::ut

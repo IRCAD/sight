@@ -36,10 +36,10 @@ class IO_DICOM_CLASS_API series
 {
 public:
 
-    typedef std::map<SPTR(io::dicom::container::DicomInstance), data::series::sptr> series_container_map_t;
+    using series_container_map_t = std::map<std::shared_ptr<io::dicom::container::dicom_instance>, data::series::sptr>;
 
-    typedef std::function<void (std::uint64_t)> ProgressCallback;
-    typedef std::function<bool ()> CancelRequestedCallback;
+    using progress_callback         = std::function<void (std::uint64_t)>;
+    using cancel_requested_callback = std::function<bool ()>;
 
     /// Constructor
     IO_DICOM_API series();
@@ -55,13 +55,13 @@ public:
     IO_DICOM_API data::series::sptr read(const data::dicom_series::csptr& _dicom_series);
 
     /// Get Logger
-    [[nodiscard]] const core::log::logger::sptr& getLogger() const
+    [[nodiscard]] const core::log::logger::sptr& get_logger() const
     {
         return m_logger;
     }
 
     /// Set Logger
-    void setLogger(const core::log::logger::sptr& _logger)
+    void set_logger(const core::log::logger::sptr& _logger)
     {
         m_logger = _logger;
     }
@@ -70,52 +70,52 @@ public:
      * @brief Set progress callback
      * @param[in] callback Progress callback
      */
-    void setProgressCallback(ProgressCallback _callback)
+    void set_progress_callback(progress_callback _callback)
     {
-        m_progressCallback = _callback;
+        m_progress_callback = _callback;
     }
 
     /**
      * @brief Set cancel callback
      * @param[in] callback Cancel callback
      */
-    void setCancelRequestedCallback(CancelRequestedCallback _callback)
+    void set_cancel_requested_callback(cancel_requested_callback _callback)
     {
-        m_cancelRequestedCallback = _callback;
+        m_cancel_requested_callback = _callback;
     }
 
     /// Enable buffer rotation
-    void setBufferRotationEnabled(bool _enabled)
+    void set_buffer_rotation_enabled(bool _enabled)
     {
-        m_enableBufferRotation = _enabled;
+        m_enable_buffer_rotation = _enabled;
     }
 
 protected:
 
     /// Get referenced series when dealing with Spatial Fiducials
-    SPTR(io::dicom::container::DicomInstance) getSpatialFiducialsReferencedSeriesInstance(
+    SPTR(io::dicom::container::dicom_instance) get_spatial_fiducials_referenced_series_instance(
         const data::dicom_series::csptr& _dicom_series
     );
 
     /// Get referenced series when dealing with Structured Report
-    SPTR(io::dicom::container::DicomInstance) getStructuredReportReferencedSeriesInstance(
+    SPTR(io::dicom::container::dicom_instance) get_structured_report_referenced_series_instance(
         const data::dicom_series::csptr& _dicom_series
     );
 
     /// series Container Map
-    series_container_map_t m_seriesContainerMap;
+    series_container_map_t m_series_container_map;
 
     /// Logger
     core::log::logger::sptr m_logger;
 
     /// Progress callback for jobs
-    ProgressCallback m_progressCallback;
+    progress_callback m_progress_callback;
 
     /// Cancel information for jobs
-    CancelRequestedCallback m_cancelRequestedCallback;
+    cancel_requested_callback m_cancel_requested_callback;
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation {true};
+    bool m_enable_buffer_rotation {true};
 };
 
 } // namespace sight::io::dicom::reader

@@ -51,52 +51,52 @@ const core::com::slots::key_t material::SWAP_TEXTURE_SLOT   = "swapTexture";
 const core::com::slots::key_t material::ADD_TEXTURE_SLOT    = "addTexture";
 const core::com::slots::key_t material::REMOVE_TEXTURE_SLOT = "removeTexture";
 
-const std::string material::s_MATERIAL_INOUT = "material";
+const std::string material::MATERIAL_INOUT = "material";
 
 //------------------------------------------------------------------------------
 
 material::material() noexcept
 {
-    new_slot(UPDATE_FIELD_SLOT, &material::updateField, this);
-    new_slot(SWAP_TEXTURE_SLOT, &material::swapTexture, this);
-    new_slot(ADD_TEXTURE_SLOT, &material::createTextureAdaptor, this);
-    new_slot(REMOVE_TEXTURE_SLOT, &material::removeTextureAdaptor, this);
+    new_slot(UPDATE_FIELD_SLOT, &material::update_field, this);
+    new_slot(SWAP_TEXTURE_SLOT, &material::swap_texture, this);
+    new_slot(ADD_TEXTURE_SLOT, &material::create_texture_adaptor, this);
+    new_slot(REMOVE_TEXTURE_SLOT, &material::remove_texture_adaptor, this);
 
-    m_representationDict["SURFACE"]   = data::material::SURFACE;
-    m_representationDict["POINT"]     = data::material::POINT;
-    m_representationDict["WIREFRAME"] = data::material::WIREFRAME;
-    m_representationDict["EDGE"]      = data::material::EDGE;
+    m_representation_dict["SURFACE"]   = data::material::surface;
+    m_representation_dict["POINT"]     = data::material::point;
+    m_representation_dict["WIREFRAME"] = data::material::wireframe;
+    m_representation_dict["EDGE"]      = data::material::edge;
 }
 
 //------------------------------------------------------------------------------
 
 void material::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = s_CONFIG + "materialTemplate";
-    static const std::string s_MATERIAL_NAME_CONFIG          = s_CONFIG + "materialName";
-    static const std::string s_TEXTURE_NAME_CONFIG           = s_CONFIG + "textureName";
-    static const std::string s_SHADING_MODE_CONFIG           = s_CONFIG + "shadingMode";
-    static const std::string s_REPRESENTATION_MODE_CONFIG    = s_CONFIG + "representationMode";
+    static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = CONFIG + "materialTemplate";
+    static const std::string s_MATERIAL_NAME_CONFIG          = CONFIG + "materialName";
+    static const std::string s_TEXTURE_NAME_CONFIG           = CONFIG + "textureName";
+    static const std::string s_SHADING_MODE_CONFIG           = CONFIG + "shadingMode";
+    static const std::string s_REPRESENTATION_MODE_CONFIG    = CONFIG + "representationMode";
 
-    m_materialTemplateName = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_materialTemplateName);
-    m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->get_id());
-    m_textureName          = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
-    m_shadingMode          = config.get(s_SHADING_MODE_CONFIG, m_shadingMode);
-    m_representationMode   = config.get(s_REPRESENTATION_MODE_CONFIG, m_representationMode);
+    m_material_template_name = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_material_template_name);
+    m_material_name          = config.get(s_MATERIAL_NAME_CONFIG, this->get_id());
+    m_texture_name           = config.get(s_TEXTURE_NAME_CONFIG, m_texture_name);
+    m_shading_mode           = config.get(s_SHADING_MODE_CONFIG, m_shading_mode);
+    m_representation_mode    = config.get(s_REPRESENTATION_MODE_CONFIG, m_representation_mode);
 
-    auto it = m_representationDict.find(m_representationMode);
-    if(it == m_representationDict.end())
+    auto it = m_representation_dict.find(m_representation_mode);
+    if(it == m_representation_dict.end())
     {
         SIGHT_ERROR(
-            "Value: " + m_representationMode + " is not valid for 'representationMode'."
-                                               " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
-                                               "'representationMode' is reset to default value (SURFACE). "
+            "Value: " + m_representation_mode + " is not valid for 'representationMode'."
+                                                " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
+                                                "'representationMode' is reset to default value (SURFACE). "
         );
-        m_representationMode = "SURFACE";
+        m_representation_mode = "SURFACE";
     }
 }
 
@@ -112,11 +112,11 @@ void material::configure(
 )
 {
     this->set_id(_id);
-    this->setMaterialName(_name);
-    this->setRenderService(_service);
-    this->setLayerID(_layer);
-    this->setShadingMode(_shading_mode);
-    this->setMaterialTemplateName(_template);
+    this->set_material_name(_name);
+    this->set_render_service(_service);
+    this->set_layer_id(_layer);
+    this->set_shading_mode(_shading_mode);
+    this->set_material_template_name(_template);
 }
 
 //------------------------------------------------------------------------------
@@ -125,67 +125,67 @@ void material::starting()
 {
     this->initialize();
     {
-        const auto material = m_materialData.lock();
+        const auto material = m_material_data.lock();
 
-        if(!m_shadingMode.empty())
+        if(!m_shading_mode.empty())
         {
-            data::material::shading_t shading_mode = data::material::PHONG;
-            if(m_shadingMode == "ambient")
+            data::material::shading_t shading_mode = data::material::shading_t::phong;
+            if(m_shading_mode == "ambient")
             {
-                shading_mode = data::material::AMBIENT;
+                shading_mode = data::material::shading_t::ambient;
             }
-            else if(m_shadingMode == "flat")
+            else if(m_shading_mode == "flat")
             {
-                shading_mode = data::material::FLAT;
+                shading_mode = data::material::shading_t::flat;
             }
 
             // Force the shading mode of the material if it has been set in the configuration of the adaptor
-            material->setShadingMode(shading_mode);
+            material->set_shading_mode(shading_mode);
         }
 
-        material->setRepresentationMode(m_representationDict[m_representationMode]);
+        material->set_representation_mode(m_representation_dict[m_representation_mode]);
 
-        m_materialFw = std::make_unique<sight::viz::scene3d::material>(m_materialName, m_materialTemplateName);
+        m_material_fw = std::make_unique<sight::viz::scene3d::material>(m_material_name, m_material_template_name);
 
         data::string::sptr string = std::make_shared<data::string>();
-        string->setValue(m_materialTemplateName);
+        string->set_value(m_material_template_name);
 
         data::helper::field helper(material.get_shared());
         helper.set_field("ogreMaterial", string);
         helper.notify();
     }
 
-    this->createShaderParameterAdaptors();
+    this->create_shader_parameter_adaptors();
 
     // A texture adaptor is configured in the XML scene, we can retrieve it
-    if(!m_textureName.empty())
+    if(!m_texture_name.empty())
     {
-        if(!m_texAdaptor)
+        if(!m_tex_adaptor)
         {
-            this->setTextureName(m_textureName);
+            this->set_texture_name(m_texture_name);
         }
 
-        if(m_texAdaptor->getTextureName().empty())
+        if(m_tex_adaptor->get_texture_name().empty())
         {
-            m_texAdaptor->setRenderService(this->getRenderService());
-            m_texAdaptor->setLayerID(m_layerID);
+            m_tex_adaptor->set_render_service(this->render_service());
+            m_tex_adaptor->set_layer_id(m_layer_id);
         }
 
-        m_textureConnection.connect(
-            m_texAdaptor,
+        m_texture_connection.connect(
+            m_tex_adaptor,
             module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
             this->get_sptr(),
             module::viz::scene3d::adaptor::material::SWAP_TEXTURE_SLOT
         );
 
-        if(m_texAdaptor->started())
+        if(m_tex_adaptor->started())
         {
-            this->swapTexture();
+            this->swap_texture();
         }
     }
     else
     {
-        this->createTextureAdaptor();
+        this->create_texture_adaptor();
     }
 
     const auto config_tree = this->get_config();
@@ -201,11 +201,11 @@ void material::starting()
 service::connections_t material::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_MATERIAL_INOUT, data::material::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_MATERIAL_INOUT, data::material::ADDED_FIELDS_SIG, UPDATE_FIELD_SLOT);
-    connections.push(s_MATERIAL_INOUT, data::material::CHANGED_FIELDS_SIG, UPDATE_FIELD_SLOT);
-    connections.push(s_MATERIAL_INOUT, data::material::ADDED_TEXTURE_SIG, ADD_TEXTURE_SLOT);
-    connections.push(s_MATERIAL_INOUT, data::material::REMOVED_TEXTURE_SIG, REMOVE_TEXTURE_SLOT);
+    connections.push(MATERIAL_INOUT, data::material::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATERIAL_INOUT, data::material::ADDED_FIELDS_SIG, UPDATE_FIELD_SLOT);
+    connections.push(MATERIAL_INOUT, data::material::CHANGED_FIELDS_SIG, UPDATE_FIELD_SLOT);
+    connections.push(MATERIAL_INOUT, data::material::ADDED_TEXTURE_SIG, ADD_TEXTURE_SLOT);
+    connections.push(MATERIAL_INOUT, data::material::REMOVED_TEXTURE_SIG, REMOVE_TEXTURE_SLOT);
     return connections;
 }
 
@@ -213,35 +213,35 @@ service::connections_t material::auto_connections() const
 
 void material::updating()
 {
-    const auto material = m_materialData.lock();
+    const auto material = m_material_data.lock();
 
-    if(m_r2vbObject != nullptr)
+    if(m_r2vb_object != nullptr)
     {
-        m_materialFw->set_primitive_type(m_r2vbObject->get_input_primitive_type());
+        m_material_fw->set_primitive_type(m_r2vb_object->get_input_primitive_type());
     }
 
     // Set up representation mode
-    m_materialFw->updatePolygonMode(material->getRepresentationMode());
-    m_materialFw->updateOptionsMode(material->getOptionsMode());
-    m_materialFw->updateShadingMode(
-        material->getShadingMode(),
-        this->getLayer()->getLightsNumber(),
-        this->hasDiffuseTexture(),
-        m_texAdaptor ? m_texAdaptor->getUseAlpha() : false
+    m_material_fw->update_polygon_mode(material->get_representation_mode());
+    m_material_fw->update_options_mode(material->get_options_mode());
+    m_material_fw->update_shading_mode(
+        material->get_shading_mode(),
+        this->layer()->num_lights(),
+        this->has_diffuse_texture(),
+        m_tex_adaptor ? m_tex_adaptor->get_use_alpha() : false
     );
-    m_materialFw->updateRGBAMode(material.get_shared());
-    this->requestRender();
+    m_material_fw->update_rgba_mode(material.get_shared());
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
 void material::stopping()
 {
-    m_materialFw.reset();
-    m_textureConnection.disconnect();
-    this->unregisterServices();
+    m_material_fw.reset();
+    m_texture_connection.disconnect();
+    this->unregister_services();
 
-    const auto material = m_materialData.lock();
+    const auto material = m_material_data.lock();
 
     if(material->get_field("shaderParameters"))
     {
@@ -251,20 +251,23 @@ void material::stopping()
 
 //------------------------------------------------------------------------------
 
-void material::createShaderParameterAdaptors()
+void material::create_shader_parameter_adaptors()
 {
-    auto material = this->getMaterial();
+    auto material = this->get_material();
 
-    SIGHT_ASSERT("Material '" + m_materialTemplateName + "'' not found", material);
+    SIGHT_ASSERT("Material '" + m_material_template_name + "'' not found", material);
 
-    const auto constants = sight::viz::scene3d::helper::shading::findMaterialConstants(*material);
+    const auto constants = sight::viz::scene3d::helper::shading::find_material_constants(*material);
     for(const auto& constant : constants)
     {
         const std::string& constant_name = std::get<0>(constant);
         const auto& constant_type        = std::get<1>(constant);
         const auto& constant_value       = std::get<3>(constant);
 
-        auto obj = sight::viz::scene3d::helper::shading::createObjectFromShaderParameter(constant_type, constant_value);
+        auto obj = sight::viz::scene3d::helper::shading::create_object_from_shader_parameter(
+            constant_type,
+            constant_value
+        );
         if(obj != nullptr)
         {
             const auto shader_type            = std::get<2>(constant);
@@ -278,27 +281,27 @@ void material::createShaderParameterAdaptors()
 
             // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =
-                this->registerService<sight::module::viz::scene3d::adaptor::shader_parameter>(
+                this->register_service<sight::module::viz::scene3d::adaptor::shader_parameter>(
                     "sight::module::viz::scene3d::adaptor::shader_parameter",
                     id
                 );
             srv->set_inout(obj, "parameter", true);
 
             // Naming convention for shader parameters
-            srv->setRenderService(this->getRenderService());
+            srv->set_render_service(this->render_service());
 
             service::config_t config;
             config.add("config.<xmlattr>.parameter", constant_name);
             config.add("config.<xmlattr>.shaderType", shader_type_str);
-            config.add("config.<xmlattr>.materialName", m_materialName);
+            config.add("config.<xmlattr>.materialName", m_material_name);
 
-            srv->setLayerID(m_layerID);
+            srv->set_layer_id(m_layer_id);
             srv->set_config(config);
             srv->configure();
             srv->start();
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
-            const auto material_data = m_materialData.lock();
+            const auto material_data = m_material_data.lock();
 
             data::composite::sptr composite = material_data->set_default_field(
                 "shaderParameters",
@@ -311,72 +314,71 @@ void material::createShaderParameterAdaptors()
 
 //------------------------------------------------------------------------------
 
-void material::setTextureName(const std::string& _texture_name)
+void material::set_texture_name(const std::string& _texture_name)
 {
     if(_texture_name.empty())
     {
-        m_texAdaptor = nullptr;
+        m_tex_adaptor = nullptr;
     }
     else
     {
-        auto texture_adaptors =
-            this->getRenderService()->getAdaptors<sight::module::viz::scene3d::adaptor::texture>();
-        auto result =
+        auto texture_adaptors = this->render_service()->get_adaptors<sight::module::viz::scene3d::adaptor::texture>();
+        auto result           =
             std::find_if(
                 texture_adaptors.begin(),
                 texture_adaptors.end(),
                 [_texture_name](const module::viz::scene3d::adaptor::texture::sptr& _srv)
             {
-                return _srv->getTextureName() == _texture_name;
+                return _srv->get_texture_name() == _texture_name;
             });
 
         SIGHT_ASSERT(
             "texture adaptor managing texture '" + _texture_name + "' is not found",
             result != texture_adaptors.end()
         );
-        m_texAdaptor = *result;
+        m_tex_adaptor = *result;
     }
 
-    m_textureName = _texture_name;
+    m_texture_name = _texture_name;
 }
 
 //------------------------------------------------------------------------------
 
-void material::updateField(data::object::fields_container_t _fields)
+void material::update_field(data::object::fields_container_t _fields)
 {
     for(const auto& elt : _fields)
     {
         if(elt.first == "ogreMaterial")
         {
-            this->unregisterServices("sight::module::viz::scene3d::adaptor::shader_parameter");
+            this->unregister_services("sight::module::viz::scene3d::adaptor::shader_parameter");
             {
-                const auto material = m_materialData.lock();
+                const auto material = m_material_data.lock();
 
                 data::string::csptr string = std::dynamic_pointer_cast<data::string>(elt.second);
-                if(string->value() == m_materialTemplateName)
+                if(string->value() == m_material_template_name)
                 {
                     // Avoid useless update if this is the same template material
                     continue;
                 }
 
-                this->setMaterialTemplateName(string->getValue());
+                this->set_material_template_name(string->get_value());
 
-                m_materialFw->setTemplate(m_materialTemplateName);
+                m_material_fw->set_template(m_material_template_name);
 
                 if(material->get_field("shaderParameters"))
                 {
                     material->remove_field("shaderParameters");
                 }
             }
-            this->createShaderParameterAdaptors();
+            this->create_shader_parameter_adaptors();
             this->updating();
 
             // When resetting the material template, all techniques and passes will be destroyed,
             // so we need to reset the texture unit states
-            Ogre::TexturePtr current_texture = m_texAdaptor->getTexture();
+            Ogre::TexturePtr current_texture = m_tex_adaptor->get_texture();
             if(current_texture)
             {
-                m_materialFw->setDiffuseTexture(current_texture);
+                m_material_fw->set_diffuse_texture(current_texture);
             }
         }
     }
@@ -384,90 +386,90 @@ void material::updateField(data::object::fields_container_t _fields)
 
 //------------------------------------------------------------------------------
 
-void material::swapTexture()
+void material::swap_texture()
 {
-    SIGHT_ASSERT("Missing texture adaptor", m_texAdaptor);
+    SIGHT_ASSERT("Missing texture adaptor", m_tex_adaptor);
 
-    Ogre::TexturePtr current_texture = m_texAdaptor->getTexture();
+    Ogre::TexturePtr current_texture = m_tex_adaptor->get_texture();
     SIGHT_ASSERT("texture not set in texture adaptor", current_texture);
 
-    m_materialFw->setDiffuseTexture(current_texture);
+    m_material_fw->set_diffuse_texture(current_texture);
 
     // Update the shaders
-    const auto material = m_materialData.lock();
+    const auto material = m_material_data.lock();
 
-    m_materialFw->updateShadingMode(
-        material->getShadingMode(),
-        this->getLayer()->getLightsNumber(),
-        this->hasDiffuseTexture(),
-        m_texAdaptor->getUseAlpha()
+    m_material_fw->update_shading_mode(
+        material->get_shading_mode(),
+        this->layer()->num_lights(),
+        this->has_diffuse_texture(),
+        m_tex_adaptor->get_use_alpha()
     );
 
-    this->requestRender();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
-void material::createTextureAdaptor()
+void material::create_texture_adaptor()
 {
-    SIGHT_ASSERT("texture adaptor already configured in XML", m_textureName.empty());
+    SIGHT_ASSERT("texture adaptor already configured in XML", m_texture_name.empty());
 
-    const auto material = m_materialData.lock();
+    const auto material = m_material_data.lock();
 
     // If the associated material has a texture, we have to create a texture adaptor to handle it
-    if(material->getDiffuseTexture())
+    if(material->get_diffuse_texture())
     {
         // Creates an Ogre adaptor and associates it with the Sight texture object
-        auto texture = material->getDiffuseTexture();
-        m_texAdaptor = this->registerService<module::viz::scene3d::adaptor::texture>(
+        auto texture = material->get_diffuse_texture();
+        m_tex_adaptor = this->register_service<module::viz::scene3d::adaptor::texture>(
             "sight::module::viz::scene3d::adaptor::texture"
         );
-        m_texAdaptor->set_input(texture, "image", true);
+        m_tex_adaptor->set_input(texture, "image", true);
 
-        m_texAdaptor->set_id(this->get_id() + "_" + m_texAdaptor->get_id());
-        m_texAdaptor->setRenderService(this->getRenderService());
-        m_texAdaptor->setLayerID(m_layerID);
+        m_tex_adaptor->set_id(this->get_id() + "_" + m_tex_adaptor->get_id());
+        m_tex_adaptor->set_render_service(this->render_service());
+        m_tex_adaptor->set_layer_id(m_layer_id);
 
         const std::string material_name = material->get_id();
-        m_texAdaptor->setTextureName(material_name + "_Texture");
+        m_tex_adaptor->set_texture_name(material_name + "_Texture");
 
-        m_textureConnection.connect(
-            m_texAdaptor,
+        m_texture_connection.connect(
+            m_tex_adaptor,
             module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
             this->get_sptr(),
             module::viz::scene3d::adaptor::material::SWAP_TEXTURE_SLOT
         );
 
-        m_texAdaptor->start();
+        m_tex_adaptor->start();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void material::removeTextureAdaptor()
+void material::remove_texture_adaptor()
 {
-    SIGHT_ASSERT("Missing texture adaptor", m_texAdaptor);
-    SIGHT_ASSERT("texture adaptor already configured in XML", m_textureName.empty());
+    SIGHT_ASSERT("Missing texture adaptor", m_tex_adaptor);
+    SIGHT_ASSERT("texture adaptor already configured in XML", m_texture_name.empty());
 
-    this->getRenderService()->makeCurrent();
+    this->render_service()->make_current();
 
-    m_materialFw->setDiffuseTexture(Ogre::TexturePtr());
+    m_material_fw->set_diffuse_texture(Ogre::TexturePtr());
 
-    m_textureConnection.disconnect();
-    this->unregisterServices("sight::module::viz::scene3d::adaptor::texture");
-    m_texAdaptor.reset();
+    m_texture_connection.disconnect();
+    this->unregister_services("sight::module::viz::scene3d::adaptor::texture");
+    m_tex_adaptor.reset();
 
     // Update the shaders
-    const auto material = m_materialData.lock();
+    const auto material = m_material_data.lock();
 
-    m_materialFw->updateShadingMode(
-        material->getShadingMode(),
-        this->getLayer()->getLightsNumber(),
-        this->hasDiffuseTexture(),
+    m_material_fw->update_shading_mode(
+        material->get_shading_mode(),
+        this->layer()->num_lights(),
+        this->has_diffuse_texture(),
         false
     );
 
-    this->requestRender();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------

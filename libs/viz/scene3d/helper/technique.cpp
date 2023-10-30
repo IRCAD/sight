@@ -29,7 +29,7 @@ namespace sight::viz::scene3d::helper
 
 //------------------------------------------------------------------------------
 
-Ogre::Technique* technique::copyToMaterial(
+Ogre::Technique* technique::copy_to_material(
     const Ogre::Technique* _tech,
     const std::string& _scheme_name,
     Ogre::Material* _mtl

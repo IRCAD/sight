@@ -7,7 +7,7 @@ The generic element cover background size, position, viewports, scenes and mouse
 
 * **adaptor**: root class for the 2D scene adaptors. Needs to be extended to get the sight::viz::scene2D elements. 
 
-* **Scene2DGraphicsView**: contains the view dedicated element: viewport, as well as all the mouse interaction methods. 
+* **graphics_view**: contains the view dedicated element: viewport, as well as all the mouse interaction methods. 
 
 * **render**: renders the QT scene. 
  

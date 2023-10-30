@@ -44,11 +44,11 @@ void copy::configuring()
         const auto& mode = mode_config.value();
         if(mode == "copyOnStart")
         {
-            m_mode = mode_t::START;
+            m_mode = mode_t::start;
         }
         else if(mode == "copyOnUpdate")
         {
-            m_mode = mode_t::UPDATE;
+            m_mode = mode_t::update;
         }
         else
         {
@@ -61,7 +61,7 @@ void copy::configuring()
 
 void copy::starting()
 {
-    if(m_mode == mode_t::START)
+    if(m_mode == mode_t::start)
     {
         this->make_copy();
     }
@@ -71,7 +71,7 @@ void copy::starting()
 
 void copy::updating()
 {
-    if(m_mode == mode_t::UPDATE)
+    if(m_mode == mode_t::update)
     {
         this->make_copy();
     }
@@ -86,7 +86,7 @@ void copy::updating()
 void copy::stopping()
 {
     // Unregister output
-    m_outTarget = nullptr;
+    m_out_target = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void copy::make_copy()
                 {
                     // Set the data as output.
                     sight::data::object::sptr target = sight::data::object::copy(source);
-                    m_outTarget = target;
+                    m_out_target = target;
                 }
                 else
                 {

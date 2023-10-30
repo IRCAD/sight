@@ -51,11 +51,11 @@ struct CORE_CLASS_API slot_call<R(A ...)>: slot_run<void(A ...)>
     /**
      * @name Typedefs
      * @{ */
-    typedef R signature_type(A ...);
-    typedef slot_call<signature_type> self_type;
-    typedef SPTR(self_type) sptr;
-    typedef WPTR(self_type) wptr;
-    typedef std::shared_future<R> shared_future_type;
+    using signature_type     = R(A ...);
+    using self_t             = slot_call<signature_type>;
+    using sptr               = std::shared_ptr<self_t>;
+    using wptr               = std::weak_ptr<self_t>;
+    using shared_future_type = std::shared_future<R>;
     /**  @} */
 
     slot_call() :

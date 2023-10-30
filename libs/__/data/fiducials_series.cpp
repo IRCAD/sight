@@ -45,32 +45,32 @@ namespace
 
 //------------------------------------------------------------------------------
 
-std::string shape_to_string(fiducials_series::Shape _shape)
+std::string shape_to_string(fiducials_series::shape _shape)
 {
     switch(_shape)
     {
-        case fiducials_series::Shape::POINT:
+        case fiducials_series::shape::point:
             return "POINT";
 
-        case fiducials_series::Shape::LINE:
+        case fiducials_series::shape::line:
             return "LINE";
 
-        case fiducials_series::Shape::PLANE:
+        case fiducials_series::shape::plane:
             return "PLANE";
 
-        case fiducials_series::Shape::SURFACE:
+        case fiducials_series::shape::surface:
             return "SURFACE";
 
-        case fiducials_series::Shape::RULER:
+        case fiducials_series::shape::ruler:
             return "RULER";
 
-        case fiducials_series::Shape::L_SHAPE:
+        case fiducials_series::shape::l_shape:
             return "L_SHAPE";
 
-        case fiducials_series::Shape::T_SHAPE:
+        case fiducials_series::shape::t_shape:
             return "T_SHAPE";
 
-        case fiducials_series::Shape::SHAPE:
+        case fiducials_series::shape::shape:
             return "SHAPE";
 
         default:
@@ -94,7 +94,7 @@ std::optional<std::string> color_to_string(const std::optional<std::array<float,
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> private_shape_to_string(const std::optional<fiducials_series::PrivateShape>& _private_shape)
+std::optional<std::string> private_shape_to_string(const std::optional<fiducials_series::private_shape>& _private_shape)
 {
     if(!_private_shape.has_value())
     {
@@ -103,10 +103,10 @@ std::optional<std::string> private_shape_to_string(const std::optional<fiducials
 
     switch(*_private_shape)
     {
-        case fiducials_series::PrivateShape::SPHERE:
+        case fiducials_series::private_shape::sphere:
             return "SPHERE";
 
-        case fiducials_series::PrivateShape::CUBE:
+        case fiducials_series::private_shape::cube:
             return "CUBE";
 
         default:
@@ -116,11 +116,11 @@ std::optional<std::string> private_shape_to_string(const std::optional<fiducials
 
 //------------------------------------------------------------------------------
 
-std::vector<float> to_floats(const std::vector<fiducials_series::Point2>& _points)
+std::vector<float> to_floats(const std::vector<fiducials_series::point2>& _points)
 {
     std::vector<float> res;
     res.reserve(_points.size() * 2);
-    for(const fiducials_series::Point2& point : _points)
+    for(const fiducials_series::point2& point : _points)
     {
         res.push_back(static_cast<float>(point.x));
         res.push_back(static_cast<float>(point.y));
@@ -131,11 +131,11 @@ std::vector<float> to_floats(const std::vector<fiducials_series::Point2>& _point
 
 //------------------------------------------------------------------------------
 
-std::vector<double> to_floats(const std::vector<fiducials_series::Point3>& _points)
+std::vector<double> to_floats(const std::vector<fiducials_series::point3>& _points)
 {
     std::vector<double> res;
     res.reserve(_points.size() * 3);
-    for(const fiducials_series::Point3& point : _points)
+    for(const fiducials_series::point3& point : _points)
     {
         res.push_back(point.x);
         res.push_back(point.y);
@@ -147,56 +147,56 @@ std::vector<double> to_floats(const std::vector<fiducials_series::Point3>& _poin
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::ReferencedImage _referenced_image)
+gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::referenced_image _referenced_image)
 {
     gdcm::DataSet data_set;
-    _pimpl.setStringValue<kw::ReferencedSOPClassUID>(_referenced_image.referencedSOPClassUID, data_set);
-    _pimpl.setStringValue<kw::ReferencedSOPInstanceUID>(_referenced_image.referencedSOPInstanceUID, data_set);
-    _pimpl.setValues<kw::ReferencedFrameNumber>(_referenced_image.referencedFrameNumber, data_set);
-    _pimpl.setValues<kw::ReferencedSegmentNumber>(_referenced_image.referencedSegmentNumber, data_set);
+    _pimpl.set_string_value<kw::ReferencedSOPClassUID>(_referenced_image.referenced_sop_class_uid, data_set);
+    _pimpl.set_string_value<kw::ReferencedSOPInstanceUID>(_referenced_image.referenced_sop_instance_uid, data_set);
+    _pimpl.set_values<kw::ReferencedFrameNumber>(_referenced_image.referenced_frame_number, data_set);
+    _pimpl.set_values<kw::ReferencedSegmentNumber>(_referenced_image.referenced_segment_number, data_set);
     return data_set;
 }
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::GraphicCoordinatesData _graphic_coordinates_data)
+gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::graphic_coordinates_data _graphic_coordinates_data)
 {
     gdcm::DataSet data_set;
     auto referenced_image_sequence = gdcm::SequenceOfItems::New();
     gdcm::Item item;
-    item.SetNestedDataSet(to_gdcm(_pimpl, _graphic_coordinates_data.referencedImageSequence));
+    item.SetNestedDataSet(to_gdcm(_pimpl, _graphic_coordinates_data.referenced_image_sequence));
     referenced_image_sequence->AddItem(item);
-    detail::SeriesImpl::setSequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
-    _pimpl.setValues<kw::GraphicData>(to_floats(_graphic_coordinates_data.graphicData), data_set);
+    detail::SeriesImpl::set_sequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
+    _pimpl.set_values<kw::GraphicData>(to_floats(_graphic_coordinates_data.graphic_data), data_set);
     return data_set;
 }
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::Fiducial _fiducial)
+gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial _fiducial)
 {
     gdcm::DataSet data_set;
-    _pimpl.setStringValue<kw::ShapeType>(shape_to_string(_fiducial.shapeType), data_set);
-    _pimpl.setStringValue<kw::FiducialDescription>(_fiducial.fiducialDescription, data_set);
-    _pimpl.setStringValue<kw::FiducialIdentifier>(_fiducial.fiducialIdentifier, data_set);
-    if(_fiducial.graphicCoordinatesDataSequence)
+    _pimpl.set_string_value<kw::ShapeType>(shape_to_string(_fiducial.shape_type), data_set);
+    _pimpl.set_string_value<kw::FiducialDescription>(_fiducial.fiducial_description, data_set);
+    _pimpl.set_string_value<kw::FiducialIdentifier>(_fiducial.fiducial_identifier, data_set);
+    if(_fiducial.graphic_coordinates_data_sequence)
     {
         auto gcds = gdcm::SequenceOfItems::New();
-        for(const fiducials_series::GraphicCoordinatesData& gcd : *_fiducial.graphicCoordinatesDataSequence)
+        for(const fiducials_series::graphic_coordinates_data& gcd : *_fiducial.graphic_coordinates_data_sequence)
         {
             gdcm::Item item;
             item.SetNestedDataSet(to_gdcm(_pimpl, gcd));
             gcds->AddItem(item);
         }
 
-        detail::SeriesImpl::setSequence(kw::GraphicCoordinatesDataSequence::GetTag(), gcds, data_set);
+        detail::SeriesImpl::set_sequence(kw::GraphicCoordinatesDataSequence::GetTag(), gcds, data_set);
     }
 
-    _pimpl.setStringValue<kw::FiducialUID>(_fiducial.fiducialUID.value_or(""), data_set);
-    if(!_fiducial.contourData.empty())
+    _pimpl.set_string_value<kw::FiducialUID>(_fiducial.fiducial_uid.value_or(""), data_set);
+    if(!_fiducial.contour_data.empty())
     {
-        _pimpl.setValue<kw::NumberOfContourPoints>(static_cast<int>(_fiducial.contourData.size()), data_set);
-        _pimpl.setValues<kw::ContourData>(to_floats(_fiducial.contourData), data_set);
+        _pimpl.set_value<kw::NumberOfContourPoints>(static_cast<int>(_fiducial.contour_data.size()), data_set);
+        _pimpl.set_values<kw::ContourData>(to_floats(_fiducial.contour_data), data_set);
     }
 
     return data_set;
@@ -204,49 +204,49 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::Fiducial _fi
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::FiducialSet _fiducial_set)
+gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial_set _fiducial_set)
 {
     gdcm::DataSet data_set;
-    if(_fiducial_set.referencedImageSequence)
+    if(_fiducial_set.referenced_image_sequence)
     {
         auto referenced_image_sequence = gdcm::SequenceOfItems::New();
-        for(const fiducials_series::ReferencedImage& referenced_image : *_fiducial_set.referencedImageSequence)
+        for(const fiducials_series::referenced_image& referenced_image : *_fiducial_set.referenced_image_sequence)
         {
             gdcm::Item item;
             item.SetNestedDataSet(to_gdcm(_pimpl, referenced_image));
             referenced_image_sequence->AddItem(item);
         }
 
-        detail::SeriesImpl::setSequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
+        detail::SeriesImpl::set_sequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
     }
 
-    if(_fiducial_set.frameOfReferenceUID)
+    if(_fiducial_set.frame_of_reference_uid)
     {
-        _pimpl.setStringValue<kw::FrameOfReferenceUID>(*_fiducial_set.frameOfReferenceUID, data_set);
+        _pimpl.set_string_value<kw::FrameOfReferenceUID>(*_fiducial_set.frame_of_reference_uid, data_set);
     }
 
     auto fiducial_sequence = gdcm::SequenceOfItems::New();
-    for(const fiducials_series::Fiducial& fiducial : _fiducial_set.fiducialSequence)
+    for(const fiducials_series::fiducial& fiducial : _fiducial_set.fiducial_sequence)
     {
         gdcm::Item item;
         item.SetNestedDataSet(to_gdcm(_pimpl, fiducial));
         fiducial_sequence->AddItem(item);
     }
 
-    detail::SeriesImpl::setSequence(kw::FiducialSequence::GetTag(), fiducial_sequence, data_set);
-    detail::SeriesImpl::setPrivateValue(0, _fiducial_set.groupName, data_set);
-    detail::SeriesImpl::setPrivateValue(1, color_to_string(_fiducial_set.color), data_set);
+    detail::SeriesImpl::set_sequence(kw::FiducialSequence::GetTag(), fiducial_sequence, data_set);
+    detail::SeriesImpl::set_private_value(0, _fiducial_set.group_name, data_set);
+    detail::SeriesImpl::set_private_value(1, color_to_string(_fiducial_set.color), data_set);
     std::optional<std::string> size;
     if(_fiducial_set.size.has_value())
     {
         size = std::to_string(*_fiducial_set.size);
     }
 
-    detail::SeriesImpl::setPrivateValue(2, size, data_set);
-    detail::SeriesImpl::setPrivateValue(3, private_shape_to_string(_fiducial_set.shape), data_set);
+    detail::SeriesImpl::set_private_value(2, size, data_set);
+    detail::SeriesImpl::set_private_value(3, private_shape_to_string(_fiducial_set.shape), data_set);
     if(_fiducial_set.visibility.has_value())
     {
-        detail::SeriesImpl::setPrivateValue(4, *_fiducial_set.visibility ? "true" : "false", data_set);
+        detail::SeriesImpl::set_private_value(4, *_fiducial_set.visibility ? "true" : "false", data_set);
     }
 
     return data_set;
@@ -277,7 +277,7 @@ void append_in_sequence(
     T _element,
     const std::vector<std::pair<gdcm::Tag, std::size_t> >& _indices = {})
 {
-    _pimpl.setSequence(_tag, append_in_sequence(_pimpl, _pimpl.getSequence(_tag, 0, _indices), _element));
+    _pimpl.set_sequence(_tag, append_in_sequence(_pimpl, _pimpl.get_sequence(_tag, 0, _indices), _element));
 }
 
 } // namespace
@@ -296,7 +296,7 @@ void fiducials_series::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -313,94 +313,95 @@ void fiducials_series::deep_copy(const object::csptr& _source, const std::unique
         !bool(other)
     );
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::Point2::operator==(Point2 _other) const
+bool fiducials_series::point2::operator==(point2 _other) const
 {
     return x == _other.x && y == _other.y;
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::Point3::operator==(Point3 _other) const
+bool fiducials_series::point3::operator==(point3 _other) const
 {
     return x == _other.x && y == _other.y && z == _other.z;
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::ReferencedImage::operator==(const ReferencedImage& _other) const
+bool fiducials_series::referenced_image::operator==(const referenced_image& _other) const
 {
-    return referencedSOPClassUID == _other.referencedSOPClassUID
-           && referencedSOPInstanceUID == _other.referencedSOPInstanceUID
-           && referencedFrameNumber == _other.referencedFrameNumber
-           && referencedSegmentNumber == _other.referencedSegmentNumber;
+    return referenced_sop_class_uid == _other.referenced_sop_class_uid
+           && referenced_sop_instance_uid == _other.referenced_sop_instance_uid
+           && referenced_frame_number == _other.referenced_frame_number
+           && referenced_segment_number == _other.referenced_segment_number;
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::ReferencedImage::operator!=(const ReferencedImage& _other) const
+bool fiducials_series::referenced_image::operator!=(const referenced_image& _other) const
 {
     return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::GraphicCoordinatesData::operator==(const GraphicCoordinatesData& _other) const
+bool fiducials_series::graphic_coordinates_data::operator==(const graphic_coordinates_data& _other) const
 {
-    return referencedImageSequence == _other.referencedImageSequence && graphicData == _other.graphicData;
+    return referenced_image_sequence == _other.referenced_image_sequence && graphic_data == _other.graphic_data;
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::GraphicCoordinatesData::operator!=(const GraphicCoordinatesData& _other) const
+bool fiducials_series::graphic_coordinates_data::operator!=(const graphic_coordinates_data& _other) const
 {
     return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::Fiducial::operator==(const Fiducial& _other) const
+bool fiducials_series::fiducial::operator==(const fiducial& _other) const
 {
-    return shapeType == _other.shapeType && fiducialDescription == _other.fiducialDescription
-           && fiducialIdentifier == _other.fiducialIdentifier
-           && graphicCoordinatesDataSequence == _other.graphicCoordinatesDataSequence
-           && fiducialUID == _other.fiducialUID
-           && contourData == _other.contourData;
+    return shape_type == _other.shape_type && fiducial_description == _other.fiducial_description
+           && fiducial_identifier == _other.fiducial_identifier
+           && graphic_coordinates_data_sequence == _other.graphic_coordinates_data_sequence
+           && fiducial_uid == _other.fiducial_uid
+           && contour_data == _other.contour_data;
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::Fiducial::operator!=(const Fiducial& _other) const
+bool fiducials_series::fiducial::operator!=(const fiducial& _other) const
 {
     return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------
 
-bool fiducials_series::FiducialSet::operator==(const FiducialSet& _other) const
+bool fiducials_series::fiducial_set::operator==(const fiducial_set& _other) const
 {
-    return referencedImageSequence == _other.referencedImageSequence
-           && frameOfReferenceUID == _other.frameOfReferenceUID
-           && fiducialSequence == _other.fiducialSequence && groupName == _other.groupName;
+    return referenced_image_sequence == _other.referenced_image_sequence
+           && frame_of_reference_uid == _other.frame_of_reference_uid
+           && fiducial_sequence == _other.fiducial_sequence && group_name == _other.group_name;
 }
 
 fiducials_series::fiducials_series()
 {
-    setSOPKeyword(dicom::sop::Keyword::SpatialFiducialsStorage);
+    set_sop_keyword(dicom::sop::Keyword::SpatialFiducialsStorage);
 }
 
 //------------------------------------------------------------------------------
 
 bool fiducials_series::operator==(const fiducials_series& _other) const
 {
-    return getContentDate() == _other.getContentDate() && getContentLabel() == _other.getContentLabel()
-           && getContentDescription() == _other.getContentDescription()
-           && getContentCreatorName() == _other.getContentCreatorName() && getFiducialSets() == _other.getFiducialSets()
-           && base_class::operator==(_other);
+    return get_content_date() == _other.get_content_date() && get_content_label() == _other.get_content_label()
+           && get_content_description() == _other.get_content_description()
+           && get_content_creator_name() == _other.get_content_creator_name()
+           && get_fiducial_sets() == _other.get_fiducial_sets()
+           && base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -412,79 +413,81 @@ bool fiducials_series::operator!=(const fiducials_series& _other) const
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getContentDate() const noexcept
+std::string fiducials_series::get_content_date() const noexcept
 {
-    return m_pimpl->getStringValue<kw::ContentDate>();
+    return m_pimpl->get_string_value<kw::ContentDate>();
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setContentDate(const std::string& _content_date)
+void fiducials_series::set_content_date(const std::string& _content_date)
 {
-    m_pimpl->setStringValue<kw::ContentDate>(_content_date);
+    m_pimpl->set_string_value<kw::ContentDate>(_content_date);
 }
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getContentLabel() const noexcept
+std::string fiducials_series::get_content_label() const noexcept
 {
-    return m_pimpl->getStringValue<kw::ContentLabel>();
+    return m_pimpl->get_string_value<kw::ContentLabel>();
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setContentLabel(const std::string& _content_label)
+void fiducials_series::set_content_label(const std::string& _content_label)
 {
-    m_pimpl->setStringValue<kw::ContentLabel>(_content_label);
+    m_pimpl->set_string_value<kw::ContentLabel>(_content_label);
 }
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getContentDescription() const noexcept
+std::string fiducials_series::get_content_description() const noexcept
 {
-    return m_pimpl->getStringValue<kw::ContentDescription>();
+    return m_pimpl->get_string_value<kw::ContentDescription>();
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setContentDescription(const std::string& _content_description)
+void fiducials_series::set_content_description(const std::string& _content_description)
 {
-    m_pimpl->setStringValue<kw::ContentDescription>(_content_description);
+    m_pimpl->set_string_value<kw::ContentDescription>(_content_description);
 }
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getContentCreatorName() const noexcept
+std::string fiducials_series::get_content_creator_name() const noexcept
 {
-    return m_pimpl->getStringValue<kw::ContentCreatorName>();
+    return m_pimpl->get_string_value<kw::ContentCreatorName>();
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setContentCreatorName(const std::string& _content_creator_name)
+void fiducials_series::set_content_creator_name(const std::string& _content_creator_name)
 {
-    m_pimpl->setStringValue<kw::ContentCreatorName>(_content_creator_name);
+    m_pimpl->set_string_value<kw::ContentCreatorName>(_content_creator_name);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::FiducialSet> fiducials_series::getFiducialSets() const noexcept
+std::vector<fiducials_series::fiducial_set> fiducials_series::get_fiducial_sets() const noexcept
 {
-    return toVector<FiducialSet>(m_pimpl->getSequence<kw::FiducialSetSequence>()).value_or(std::vector<FiducialSet> {});
+    return to_vector<fiducial_set>(m_pimpl->get_sequence<kw::FiducialSetSequence>()).value_or(
+        std::vector<fiducial_set> {
+        });
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFiducialSets(const std::vector<FiducialSet>& _fiducial_sets)
+void fiducials_series::set_fiducial_sets(const std::vector<fiducial_set>& _fiducial_sets)
 {
-    m_pimpl->setSequence(kw::FiducialSetSequence::GetTag(), toSequence(_fiducial_sets));
+    m_pimpl->set_sequence(kw::FiducialSetSequence::GetTag(), to_sequence(_fiducial_sets));
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFiducialSet(std::size_t _fiducial_set_number, FiducialSet _fiducial_set)
+void fiducials_series::set_fiducial_set(std::size_t _fiducial_set_number, fiducial_set _fiducial_set)
 {
-    m_pimpl->getOrCreateDataSet(0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}}) = to_gdcm(
+    m_pimpl->get_or_create_data_set(0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}}) = to_gdcm(
         *m_pimpl,
         _fiducial_set
     );
@@ -492,19 +495,19 @@ void fiducials_series::setFiducialSet(std::size_t _fiducial_set_number, Fiducial
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::appendFiducialSet(FiducialSet _fiducial_set)
+void fiducials_series::append_fiducial_set(fiducial_set _fiducial_set)
 {
     append_in_sequence(*m_pimpl, kw::FiducialSetSequence::GetTag(), _fiducial_set);
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<std::vector<fiducials_series::ReferencedImage> > fiducials_series::getReferencedImages(
+std::optional<std::vector<fiducials_series::referenced_image> > fiducials_series::get_referenced_images(
     std::size_t _fiducial_set_number
 ) const noexcept
 {
-    return toVector<ReferencedImage>(
-        m_pimpl->getSequence(
+    return to_vector<referenced_image>(
+        m_pimpl->get_sequence(
             kw::ReferencedImageSequence::GetTag(),
             0,
             {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -515,14 +518,14 @@ std::optional<std::vector<fiducials_series::ReferencedImage> > fiducials_series:
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedImages(
+void fiducials_series::set_referenced_images(
     std::size_t _fiducial_set_number,
-    const std::optional<std::vector<ReferencedImage> >& _referenced_images
+    const std::optional<std::vector<referenced_image> >& _referenced_images
 )
 {
-    m_pimpl->setSequence(
+    m_pimpl->set_sequence(
         kw::ReferencedImageSequence::GetTag(),
-        toSequence(
+        to_sequence(
             _referenced_images
         ),
         0,
@@ -533,13 +536,13 @@ void fiducials_series::setReferencedImages(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedImage(
+void fiducials_series::set_referenced_image(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number,
-    ReferencedImage _referenced_image
+    referenced_image _referenced_image
 )
 {
-    m_pimpl->getOrCreateDataSet(
+    m_pimpl->get_or_create_data_set(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::ReferencedImageSequence::GetTag(), _referenced_image_number
@@ -549,7 +552,7 @@ void fiducials_series::setReferencedImage(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::appendReferencedImage(std::size_t _fiducial_set_number, ReferencedImage _referenced_image)
+void fiducials_series::append_referenced_image(std::size_t _fiducial_set_number, referenced_image _referenced_image)
 {
     append_in_sequence(
         *m_pimpl,
@@ -562,12 +565,12 @@ void fiducials_series::appendReferencedImage(std::size_t _fiducial_set_number, R
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> fiducials_series::getReferencedSOPClassUID(
+std::optional<std::string> fiducials_series::get_referenced_sop_class_uid(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number
 ) const noexcept
 {
-    return m_pimpl->getValue<kw::ReferencedSOPClassUID>(
+    return m_pimpl->get_value<kw::ReferencedSOPClassUID>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::ReferencedImageSequence::GetTag(), _referenced_image_number
@@ -577,13 +580,13 @@ std::optional<std::string> fiducials_series::getReferencedSOPClassUID(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedSOPClassUID(
+void fiducials_series::set_referenced_sop_class_uid(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number,
     const std::string& _referenced_sop_class_uid
 )
 {
-    m_pimpl->setStringValue<kw::ReferencedSOPClassUID>(
+    m_pimpl->set_string_value<kw::ReferencedSOPClassUID>(
         _referenced_sop_class_uid,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -594,12 +597,12 @@ void fiducials_series::setReferencedSOPClassUID(
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> fiducials_series::getReferencedSOPInstanceUID(
+std::optional<std::string> fiducials_series::get_referenced_sop_instance_uid(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number
 ) const noexcept
 {
-    return m_pimpl->getValue<kw::ReferencedSOPInstanceUID>(
+    return m_pimpl->get_value<kw::ReferencedSOPInstanceUID>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         },
@@ -610,13 +613,13 @@ std::optional<std::string> fiducials_series::getReferencedSOPInstanceUID(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedSOPInstanceUID(
+void fiducials_series::set_referenced_sop_instance_uid(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number,
     const std::string& _referenced_sop_instance_uid
 )
 {
-    m_pimpl->setStringValue<kw::ReferencedSOPInstanceUID>(
+    m_pimpl->set_string_value<kw::ReferencedSOPInstanceUID>(
         _referenced_sop_instance_uid,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -628,12 +631,12 @@ void fiducials_series::setReferencedSOPInstanceUID(
 
 //------------------------------------------------------------------------------
 
-std::vector<std::int32_t> fiducials_series::getReferencedFrameNumber(
+std::vector<std::int32_t> fiducials_series::get_referenced_frame_number(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number
 ) const noexcept
 {
-    return m_pimpl->getValues<kw::ReferencedFrameNumber>(
+    return m_pimpl->get_values<kw::ReferencedFrameNumber>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         },
@@ -644,13 +647,13 @@ std::vector<std::int32_t> fiducials_series::getReferencedFrameNumber(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedFrameNumber(
+void fiducials_series::set_referenced_frame_number(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number,
     std::vector<std::int32_t> _referenced_frame_number
 )
 {
-    m_pimpl->setValues<kw::ReferencedFrameNumber>(
+    m_pimpl->set_values<kw::ReferencedFrameNumber>(
         _referenced_frame_number,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -661,12 +664,12 @@ void fiducials_series::setReferencedFrameNumber(
 
 //------------------------------------------------------------------------------
 
-std::vector<std::uint16_t> fiducials_series::getReferencedSegmentNumber(
+std::vector<std::uint16_t> fiducials_series::get_referenced_segment_number(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number
 ) const noexcept
 {
-    return m_pimpl->getValues<kw::ReferencedSegmentNumber>(
+    return m_pimpl->get_values<kw::ReferencedSegmentNumber>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         },
@@ -677,13 +680,13 @@ std::vector<std::uint16_t> fiducials_series::getReferencedSegmentNumber(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedSegmentNumber(
+void fiducials_series::set_referenced_segment_number(
     std::size_t _fiducial_set_number,
     std::size_t _referenced_image_number,
     std::vector<std::uint16_t> _referenced_segment_number
 )
 {
-    m_pimpl->setValues<kw::ReferencedSegmentNumber>(
+    m_pimpl->set_values<kw::ReferencedSegmentNumber>(
         _referenced_segment_number,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -694,9 +697,9 @@ void fiducials_series::setReferencedSegmentNumber(
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> fiducials_series::getFrameOfReferenceUID(std::size_t _fiducial_set_number) const noexcept
+std::optional<std::string> fiducials_series::get_frame_of_reference_uid(std::size_t _fiducial_set_number) const noexcept
 {
-    return m_pimpl->getValue<kw::FrameOfReferenceUID>(
+    return m_pimpl->get_value<kw::FrameOfReferenceUID>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }
@@ -705,12 +708,12 @@ std::optional<std::string> fiducials_series::getFrameOfReferenceUID(std::size_t 
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFrameOfReferenceUID(
+void fiducials_series::set_frame_of_reference_uid(
     std::size_t _fiducial_set_number,
     const std::optional<std::string>& _frame_of_reference_uid
 )
 {
-    m_pimpl->setStringValue<kw::FrameOfReferenceUID>(
+    m_pimpl->set_string_value<kw::FrameOfReferenceUID>(
         _frame_of_reference_uid.value_or(
             ""
         ),
@@ -722,25 +725,25 @@ void fiducials_series::setFrameOfReferenceUID(
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::Fiducial> fiducials_series::getFiducials(std::size_t _fiducial_set_number) const noexcept
+std::vector<fiducials_series::fiducial> fiducials_series::get_fiducials(std::size_t _fiducial_set_number) const noexcept
 {
-    return toVector<Fiducial>(
-        m_pimpl->getSequence(
+    return to_vector<fiducial>(
+        m_pimpl->get_sequence(
             kw::FiducialSequence::GetTag(),
             0,
             {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
             }
             })
-    ).value_or(std::vector<Fiducial> {});
+    ).value_or(std::vector<fiducial> {});
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFiducials(std::size_t _fiducial_set_number, const std::vector<Fiducial>& _fiducials)
+void fiducials_series::set_fiducials(std::size_t _fiducial_set_number, const std::vector<fiducial>& _fiducials)
 {
-    m_pimpl->setSequence(
+    m_pimpl->set_sequence(
         kw::FiducialSequence::GetTag(),
-        toSequence(_fiducials),
+        to_sequence(_fiducials),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }
@@ -749,9 +752,9 @@ void fiducials_series::setFiducials(std::size_t _fiducial_set_number, const std:
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFiducial(std::size_t _fiducial_set_number, std::size_t _fiducial_number, Fiducial _fiducial)
+void fiducials_series::set_fiducial(std::size_t _fiducial_set_number, std::size_t _fiducial_number, fiducial _fiducial)
 {
-    m_pimpl->getOrCreateDataSet(
+    m_pimpl->get_or_create_data_set(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -761,7 +764,7 @@ void fiducials_series::setFiducial(std::size_t _fiducial_set_number, std::size_t
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::appendFiducial(std::size_t _fiducial_set_number, Fiducial _fiducial)
+void fiducials_series::append_fiducial(std::size_t _fiducial_set_number, fiducial _fiducial)
 {
     append_in_sequence(
         *m_pimpl,
@@ -774,13 +777,13 @@ void fiducials_series::appendFiducial(std::size_t _fiducial_set_number, Fiducial
 
 //------------------------------------------------------------------------------
 
-fiducials_series::Shape fiducials_series::get_shape_type(
+fiducials_series::shape fiducials_series::get_shape_type(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number
 ) const noexcept
 {
-    return stringToShape(
-        m_pimpl->getValue<kw::ShapeType>(
+    return string_to_shape(
+        m_pimpl->get_value<kw::ShapeType>(
             0,
             {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
             }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -794,10 +797,10 @@ fiducials_series::Shape fiducials_series::get_shape_type(
 void fiducials_series::set_shape_type(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
-    fiducials_series::Shape _shape_type
+    fiducials_series::shape _shape_type
 )
 {
-    m_pimpl->setValue<kw::ShapeType>(
+    m_pimpl->set_value<kw::ShapeType>(
         shape_to_string(_shape_type),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -808,12 +811,12 @@ void fiducials_series::set_shape_type(
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getFiducialDescription(
+std::string fiducials_series::get_fiducial_description(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number
 ) const noexcept
 {
-    return m_pimpl->getValue<kw::FiducialDescription>(
+    return m_pimpl->get_value<kw::FiducialDescription>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -823,13 +826,13 @@ std::string fiducials_series::getFiducialDescription(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFiducialDescription(
+void fiducials_series::set_fiducial_description(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     const std::string& _fiducial_description
 )
 {
-    m_pimpl->setStringValue<kw::FiducialDescription>(
+    m_pimpl->set_string_value<kw::FiducialDescription>(
         _fiducial_description,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -840,12 +843,12 @@ void fiducials_series::setFiducialDescription(
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getFiducialIdentifier(
+std::string fiducials_series::get_fiducial_identifier(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number
 ) const noexcept
 {
-    return m_pimpl->getValue<kw::FiducialIdentifier>(
+    return m_pimpl->get_value<kw::FiducialIdentifier>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -855,13 +858,13 @@ std::string fiducials_series::getFiducialIdentifier(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFiducialIdentifier(
+void fiducials_series::set_fiducial_identifier(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     const std::string& _fiducial_identifier
 )
 {
-    m_pimpl->setStringValue<kw::FiducialIdentifier>(
+    m_pimpl->set_string_value<kw::FiducialIdentifier>(
         _fiducial_identifier,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -872,14 +875,14 @@ void fiducials_series::setFiducialIdentifier(
 
 //------------------------------------------------------------------------------
 
-std::optional<std::vector<fiducials_series::GraphicCoordinatesData> > fiducials_series::
-getGraphicCoordinatesDataSequence(
+std::optional<std::vector<fiducials_series::graphic_coordinates_data> > fiducials_series::
+get_graphic_coordinates_data_sequence(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number
 ) const noexcept
 {
-    return toVector<GraphicCoordinatesData>(
-        m_pimpl->getSequence(
+    return to_vector<graphic_coordinates_data>(
+        m_pimpl->get_sequence(
             kw::GraphicCoordinatesDataSequence::GetTag(),
             0,
             {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -891,15 +894,15 @@ getGraphicCoordinatesDataSequence(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setGraphicCoordinatesDataSequence(
+void fiducials_series::set_graphic_coordinates_data_sequence(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
-    const std::optional<std::vector<GraphicCoordinatesData> >& _graphic_coordinates_data_sequence
+    const std::optional<std::vector<graphic_coordinates_data> >& _graphic_coordinates_data_sequence
 )
 {
-    m_pimpl->setSequence(
+    m_pimpl->set_sequence(
         kw::GraphicCoordinatesDataSequence::GetTag(),
-        toSequence(
+        to_sequence(
             _graphic_coordinates_data_sequence
         ),
         0,
@@ -911,14 +914,14 @@ void fiducials_series::setGraphicCoordinatesDataSequence(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setGraphicCoordinatesData(
+void fiducials_series::set_graphic_coordinates_data(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number,
-    GraphicCoordinatesData _graphic_coordinates_data
+    graphic_coordinates_data _graphic_coordinates_data
 )
 {
-    m_pimpl->getOrCreateDataSet(
+    m_pimpl->get_or_create_data_set(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -929,10 +932,10 @@ void fiducials_series::setGraphicCoordinatesData(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::appendGraphicCoordinatesData(
+void fiducials_series::append_graphic_coordinates_data(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
-    GraphicCoordinatesData _graphic_coordinates_data
+    graphic_coordinates_data _graphic_coordinates_data
 )
 {
     append_in_sequence(
@@ -947,13 +950,13 @@ void fiducials_series::appendGraphicCoordinatesData(
 
 //------------------------------------------------------------------------------
 
-fiducials_series::ReferencedImage fiducials_series::getReferencedImage(
+fiducials_series::referenced_image fiducials_series::get_referenced_image(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number
 ) const noexcept
 {
-    std::optional<gdcm::DataSet> data_set = m_pimpl->getDataSet(
+    std::optional<gdcm::DataSet> data_set = m_pimpl->get_data_set(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -967,19 +970,19 @@ fiducials_series::ReferencedImage fiducials_series::getReferencedImage(
         return {};
     }
 
-    return toReferencedImage(*data_set);
+    return to_referenced_image(*data_set);
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedImage(
+void fiducials_series::set_referenced_image(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number,
-    ReferencedImage _referenced_image
+    referenced_image _referenced_image
 )
 {
-    m_pimpl->getOrCreateDataSet(
+    m_pimpl->get_or_create_data_set(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -991,13 +994,13 @@ void fiducials_series::setReferencedImage(
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getReferencedSOPClassUID(
+std::string fiducials_series::get_referenced_sop_class_uid(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number
 ) const noexcept
 {
-    return m_pimpl->getValue<kw::ReferencedSOPClassUID>(
+    return m_pimpl->get_value<kw::ReferencedSOPClassUID>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -1010,14 +1013,14 @@ std::string fiducials_series::getReferencedSOPClassUID(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedSOPClassUID(
+void fiducials_series::set_referenced_sop_class_uid(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number,
     const std::string& _referenced_sop_class_uid
 )
 {
-    m_pimpl->setStringValue<kw::ReferencedSOPClassUID>(
+    m_pimpl->set_string_value<kw::ReferencedSOPClassUID>(
         _referenced_sop_class_uid,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1031,13 +1034,13 @@ void fiducials_series::setReferencedSOPClassUID(
 
 //------------------------------------------------------------------------------
 
-std::string fiducials_series::getReferencedSOPInstanceUID(
+std::string fiducials_series::get_referenced_sop_instance_uid(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number
 ) const noexcept
 {
-    return m_pimpl->getValue<kw::ReferencedSOPInstanceUID>(
+    return m_pimpl->get_value<kw::ReferencedSOPInstanceUID>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -1050,14 +1053,14 @@ std::string fiducials_series::getReferencedSOPInstanceUID(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedSOPInstanceUID(
+void fiducials_series::set_referenced_sop_instance_uid(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number,
     const std::string& _referenced_sop_instance_uid
 )
 {
-    m_pimpl->setStringValue<kw::ReferencedSOPInstanceUID>(
+    m_pimpl->set_string_value<kw::ReferencedSOPInstanceUID>(
         _referenced_sop_instance_uid,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1071,13 +1074,13 @@ void fiducials_series::setReferencedSOPInstanceUID(
 
 //------------------------------------------------------------------------------
 
-std::vector<std::int32_t> fiducials_series::getReferencedFrameNumber(
+std::vector<std::int32_t> fiducials_series::get_referenced_frame_number(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number
 ) const noexcept
 {
-    return m_pimpl->getValues<kw::ReferencedFrameNumber>(
+    return m_pimpl->get_values<kw::ReferencedFrameNumber>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -1090,14 +1093,14 @@ std::vector<std::int32_t> fiducials_series::getReferencedFrameNumber(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedFrameNumber(
+void fiducials_series::set_referenced_frame_number(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number,
     std::vector<std::int32_t> _referenced_frame_number
 )
 {
-    m_pimpl->setValues<kw::ReferencedFrameNumber>(
+    m_pimpl->set_values<kw::ReferencedFrameNumber>(
         _referenced_frame_number,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1111,13 +1114,13 @@ void fiducials_series::setReferencedFrameNumber(
 
 //------------------------------------------------------------------------------
 
-std::vector<std::uint16_t> fiducials_series::getReferencedSegmentNumber(
+std::vector<std::uint16_t> fiducials_series::get_referenced_segment_number(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number
 ) const noexcept
 {
-    return m_pimpl->getValues<kw::ReferencedSegmentNumber>(
+    return m_pimpl->get_values<kw::ReferencedSegmentNumber>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -1130,14 +1133,14 @@ std::vector<std::uint16_t> fiducials_series::getReferencedSegmentNumber(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setReferencedSegmentNumber(
+void fiducials_series::set_referenced_segment_number(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number,
     std::vector<std::uint16_t> _referenced_segment_number
 )
 {
-    m_pimpl->setValues<kw::ReferencedSegmentNumber>(
+    m_pimpl->set_values<kw::ReferencedSegmentNumber>(
         _referenced_segment_number,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1151,13 +1154,13 @@ void fiducials_series::setReferencedSegmentNumber(
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::Point2> fiducials_series::getGraphicData(
+std::vector<fiducials_series::point2> fiducials_series::get_graphic_data(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number
 ) const noexcept
 {
-    std::optional<std::vector<float> > graphic_data = m_pimpl->getValues<kw::GraphicData>(
+    std::optional<std::vector<float> > graphic_data = m_pimpl->get_values<kw::GraphicData>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         },
@@ -1171,19 +1174,19 @@ std::vector<fiducials_series::Point2> fiducials_series::getGraphicData(
         return {};
     }
 
-    return toPoint2(*graphic_data);
+    return to_point2(*graphic_data);
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setGraphicData(
+void fiducials_series::set_graphic_data(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     std::size_t _graphic_coordinates_data_number,
-    const std::vector<fiducials_series::Point2>& _graphic_data
+    const std::vector<fiducials_series::point2>& _graphic_data
 )
 {
-    m_pimpl->setValues<kw::GraphicData>(
+    m_pimpl->set_values<kw::GraphicData>(
         to_floats(_graphic_data),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1196,12 +1199,12 @@ void fiducials_series::setGraphicData(
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> fiducials_series::getFiducialUID(
+std::optional<std::string> fiducials_series::get_fiducial_uid(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number
 ) const noexcept
 {
-    return m_pimpl->getValue<kw::FiducialUID>(
+    return m_pimpl->get_value<kw::FiducialUID>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -1211,13 +1214,13 @@ std::optional<std::string> fiducials_series::getFiducialUID(
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setFiducialUID(
+void fiducials_series::set_fiducial_uid(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
     const std::optional<std::string>& _fiducial_uid
 )
 {
-    m_pimpl->setStringValue<kw::FiducialUID>(
+    m_pimpl->set_string_value<kw::FiducialUID>(
         _fiducial_uid.value_or(""),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1228,12 +1231,12 @@ void fiducials_series::setFiducialUID(
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::Point3> fiducials_series::getContourData(
+std::vector<fiducials_series::point3> fiducials_series::get_contour_data(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number
 ) const noexcept
 {
-    std::optional<std::vector<double> > contour_data = m_pimpl->getValues<kw::ContourData>(
+    std::optional<std::vector<double> > contour_data = m_pimpl->get_values<kw::ContourData>(
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         },
@@ -1245,18 +1248,18 @@ std::vector<fiducials_series::Point3> fiducials_series::getContourData(
         return {};
     }
 
-    return toPoint3(*contour_data);
+    return to_point3(*contour_data);
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setContourData(
+void fiducials_series::set_contour_data(
     std::size_t _fiducial_set_number,
     std::size_t _fiducial_number,
-    const std::vector<fiducials_series::Point3>& _contour_data
+    const std::vector<fiducials_series::point3>& _contour_data
 )
 {
-    m_pimpl->setValues<kw::ContourData>(
+    m_pimpl->set_values<kw::ContourData>(
         to_floats(_contour_data),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1267,30 +1270,37 @@ void fiducials_series::setContourData(
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> fiducials_series::getGroupName(std::size_t _fiducial_set_number) const noexcept
+std::optional<std::string> fiducials_series::get_group_name(std::size_t _fiducial_set_number) const noexcept
 {
-    return m_pimpl->getPrivateValue(0, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}});
+    return m_pimpl->get_private_value(0, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}});
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setGroupName(std::size_t _fiducial_set_number, const std::string& _group_name)
+void fiducials_series::set_group_name(std::size_t _fiducial_set_number, const std::string& _group_name)
 {
-    m_pimpl->setPrivateValue(0, _group_name, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}});
+    m_pimpl->set_private_value(0, _group_name, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}});
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<std::array<float, 4> > fiducials_series::getColor(std::size_t _fiducial_set_number) const noexcept
+std::optional<std::array<float, 4> > fiducials_series::get_color(std::size_t _fiducial_set_number) const noexcept
 {
-    return stringToColor(m_pimpl->getPrivateValue(1, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}}));
+    return string_to_color(
+        m_pimpl->get_private_value(
+            1,
+            0,
+            {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
+            }
+            })
+    );
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setColor(std::size_t _fiducial_set_number, const std::array<float, 4>& _color)
+void fiducials_series::set_color(std::size_t _fiducial_set_number, const std::array<float, 4>& _color)
 {
-    m_pimpl->setPrivateValue(
+    m_pimpl->set_private_value(
         1,
         color_to_string(_color),
         0,
@@ -1301,9 +1311,9 @@ void fiducials_series::setColor(std::size_t _fiducial_set_number, const std::arr
 
 //------------------------------------------------------------------------------
 
-std::optional<float> fiducials_series::getSize(std::size_t _fiducial_set_number) const noexcept
+std::optional<float> fiducials_series::get_size(std::size_t _fiducial_set_number) const noexcept
 {
-    std::optional<std::string> private_value = m_pimpl->getPrivateValue(
+    std::optional<std::string> private_value = m_pimpl->get_private_value(
         2,
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1319,26 +1329,32 @@ std::optional<float> fiducials_series::getSize(std::size_t _fiducial_set_number)
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setSize(std::size_t _fiducial_set_number, float _size)
+void fiducials_series::set_size(std::size_t _fiducial_set_number, float _size)
 {
-    m_pimpl->setPrivateValue(2, std::to_string(_size), 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}});
+    m_pimpl->set_private_value(
+        2,
+        std::to_string(_size),
+        0,
+        {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
+        }
+        });
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<fiducials_series::PrivateShape> fiducials_series::getShape(std::size_t _fiducial_set_number) const
+std::optional<fiducials_series::private_shape> fiducials_series::get_shape(std::size_t _fiducial_set_number) const
 noexcept
 {
-    return stringToPrivateShape(
-        m_pimpl->getPrivateValue(3, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}})
+    return string_to_private_shape(
+        m_pimpl->get_private_value(3, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}})
     );
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setShape(std::size_t _fiducial_set_number, PrivateShape _shape)
+void fiducials_series::set_shape(std::size_t _fiducial_set_number, private_shape _shape)
 {
-    m_pimpl->setPrivateValue(
+    m_pimpl->set_private_value(
         3,
         private_shape_to_string(_shape),
         0,
@@ -1349,9 +1365,9 @@ void fiducials_series::setShape(std::size_t _fiducial_set_number, PrivateShape _
 
 //------------------------------------------------------------------------------
 
-std::optional<bool> fiducials_series::getVisibility(std::size_t _fiducial_set_number) const noexcept
+std::optional<bool> fiducials_series::get_visibility(std::size_t _fiducial_set_number) const noexcept
 {
-    if(std::optional<std::string> visibility = m_pimpl->getPrivateValue(
+    if(std::optional<std::string> visibility = m_pimpl->get_private_value(
            4,
            0,
            {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1366,9 +1382,9 @@ std::optional<bool> fiducials_series::getVisibility(std::size_t _fiducial_set_nu
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setVisibility(std::size_t _fiducial_set_number, bool _visibility)
+void fiducials_series::set_visibility(std::size_t _fiducial_set_number, bool _visibility)
 {
-    m_pimpl->setPrivateValue(
+    m_pimpl->set_private_value(
         4,
         _visibility ? "true" : "false",
         0,
@@ -1379,20 +1395,20 @@ void fiducials_series::setVisibility(std::size_t _fiducial_set_number, bool _vis
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::setGroupNamesForPointFiducials()
+void fiducials_series::set_group_names_for_point_fiducials()
 {
-    std::vector<FiducialSet> fiducial_sets = getFiducialSets();
-    for(FiducialSet& fiducial_set : fiducial_sets)
+    std::vector<fiducial_set> fiducial_sets = get_fiducial_sets();
+    for(auto& fiducial_set : fiducial_sets)
     {
-        if(fiducial_set.groupName.has_value() && !fiducial_set.groupName->empty())
+        if(fiducial_set.group_name.has_value() && !fiducial_set.group_name->empty())
         {
             continue;
         }
 
         bool contains_a_point_fiducial = false;
-        for(const Fiducial& fiducial : fiducial_set.fiducialSequence)
+        for(const fiducial& fiducial : fiducial_set.fiducial_sequence)
         {
-            if(fiducial.shapeType == Shape::POINT)
+            if(fiducial.shape_type == shape::point)
             {
                 contains_a_point_fiducial = true;
                 break;
@@ -1405,48 +1421,48 @@ void fiducials_series::setGroupNamesForPointFiducials()
             std::string group_name = "Group_" + std::to_string(i);
             while(std::ranges::find_if(
                       fiducial_sets,
-                      [&group_name](const FiducialSet& _fiducial_set)
+                      [&group_name](const struct fiducial_set& _fiducial_set)
                 {
-                    return _fiducial_set.groupName.value_or("") == group_name;
+                    return _fiducial_set.group_name.value_or("") == group_name;
                 }) != fiducial_sets.end())
             {
                 i++;
                 group_name = "Group_" + std::to_string(i);
             }
 
-            fiducial_set.groupName = group_name;
+            fiducial_set.group_name = group_name;
         }
     }
 
-    setFiducialSets(fiducial_sets);
+    set_fiducial_sets(fiducial_sets);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<std::string> fiducials_series::getPointFiducialsGroupNames() const
+std::vector<std::string> fiducials_series::get_point_fiducials_group_names() const
 {
     std::vector<std::string> res;
-    std::vector<FiducialSet> fiducial_sets = getFiducialSets();
+    std::vector<fiducial_set> fiducial_sets = get_fiducial_sets();
     res.reserve(fiducial_sets.size());
     // Ignore fiducial sets which doesn't contain fiducials with shape_t == POINT (= Landmarks)
-    std::vector<FiducialSet> point_fiducial_sets;
+    std::vector<fiducial_set> point_fiducial_sets;
     std::ranges::copy_if(
         fiducial_sets,
         std::back_inserter(point_fiducial_sets),
-        [](const FiducialSet& _fiducial_set)
+        [](const fiducial_set& _fiducial_set)
         {
-            return _fiducial_set.fiducialSequence.empty() || std::ranges::find_if(
-                _fiducial_set.fiducialSequence,
+            return _fiducial_set.fiducial_sequence.empty() || std::ranges::find_if(
+                _fiducial_set.fiducial_sequence,
                 [](
-                    const Fiducial& _fiducial){return _fiducial.shapeType == Shape::POINT;}) != _fiducial_set.fiducialSequence.end();
+                    const fiducial& _fiducial){return _fiducial.shape_type == shape::point;}) != _fiducial_set.fiducial_sequence.end();
         });
     std::ranges::for_each(
         point_fiducial_sets,
-        [&res](const FiducialSet& _fs)
+        [&res](const fiducial_set& _fs)
         {
-            if(_fs.groupName.has_value())
+            if(_fs.group_name.has_value())
             {
-                res.push_back(*_fs.groupName);
+                res.push_back(*_fs.group_name);
             }
         });
     return res;
@@ -1454,14 +1470,14 @@ std::vector<std::string> fiducials_series::getPointFiducialsGroupNames() const
 
 //------------------------------------------------------------------------------
 
-std::optional<std::pair<fiducials_series::FiducialSet, std::size_t> > fiducials_series::getFiducialSetAndIndex(
+std::optional<std::pair<fiducials_series::fiducial_set, std::size_t> > fiducials_series::get_fiducial_set_and_index(
     const std::string& _group_name
 ) const
 {
     for(std::size_t index = 0 ;
-        const FiducialSet& fiducial_set : getFiducialSets())
+        const fiducial_set& fiducial_set : get_fiducial_sets())
     {
-        if(fiducial_set.groupName == _group_name)
+        if(fiducial_set.group_name == _group_name)
         {
             return {{fiducial_set, index}};
         }
@@ -1474,9 +1490,9 @@ std::optional<std::pair<fiducials_series::FiducialSet, std::size_t> > fiducials_
 
 //------------------------------------------------------------------------------
 
-std::optional<std::size_t> fiducials_series::getNumberOfPointsInGroup(const std::string& _group_name) const
+std::optional<std::size_t> fiducials_series::get_number_of_points_in_group(const std::string& _group_name) const
 {
-    std::optional<std::pair<FiducialSet, std::size_t> > fiducial_set = getFiducialSetAndIndex(_group_name);
+    std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
     if(!fiducial_set.has_value())
     {
         SIGHT_ASSERT("The group name '" << _group_name << "' doesn't exist", false);
@@ -1484,45 +1500,45 @@ std::optional<std::size_t> fiducials_series::getNumberOfPointsInGroup(const std:
     }
 
     return std::size_t(std::ranges::count_if(
-                           fiducial_set->first.fiducialSequence,
-                           [](const Fiducial& _fiducial)
+                           fiducial_set->first.fiducial_sequence,
+                           [](const fiducial& _fiducial)
         {
-            return _fiducial.shapeType == Shape::POINT;
+            return _fiducial.shape_type == shape::point;
         }));
 }
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] std::vector<fiducials_series::Fiducial> fiducials_series::getPointFiducials(
-    const fiducials_series::FiducialSet& _fiducial_set
+[[nodiscard]] std::vector<fiducials_series::fiducial> fiducials_series::get_point_fiducials(
+    const fiducials_series::fiducial_set& _fiducial_set
 )
 {
-    std::vector<Fiducial> point_fiducials;
+    std::vector<fiducial> point_fiducials;
     std::ranges::copy_if(
-        _fiducial_set.fiducialSequence,
+        _fiducial_set.fiducial_sequence,
         std::back_inserter(point_fiducials),
         [](const auto _f)
         {
-            return _f.shapeType == Shape::POINT;
+            return _f.shape_type == shape::point;
         });
     return point_fiducials;
 }
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] std::optional<std::array<double, 3> > fiducials_series::getPoint(
-    const fiducials_series::Fiducial& _fiducial
+[[nodiscard]] std::optional<std::array<double, 3> > fiducials_series::get_point(
+    const fiducials_series::fiducial& _fiducial
 )
 {
-    if(_fiducial.shapeType != Shape::POINT)
+    if(_fiducial.shape_type != shape::point)
     {
         // Only point fiducials are supported
         return std::nullopt;
     }
 
-    if(!_fiducial.contourData.empty())
+    if(!_fiducial.contour_data.empty())
     {
-        data::fiducials_series::Point3 point = _fiducial.contourData[0];
+        data::fiducials_series::point3 point = _fiducial.contour_data[0];
         return {{point.x, point.y, point.z}};
     }
 
@@ -1532,24 +1548,24 @@ std::optional<std::size_t> fiducials_series::getNumberOfPointsInGroup(const std:
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] std::optional<std::array<double, 3> > fiducials_series::getPoint(
+[[nodiscard]] std::optional<std::array<double, 3> > fiducials_series::get_point(
     const std::string& _group_name,
     std::size_t _index
 ) const
 {
-    std::optional<std::pair<FiducialSet, std::size_t> > fiducial_set = getFiducialSetAndIndex(_group_name);
+    std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
     if(!fiducial_set.has_value())
     {
         return std::nullopt;
     }
 
-    for(std::size_t i = 0 ; const Fiducial& fiducial : fiducial_set->first.fiducialSequence)
+    for(std::size_t i = 0 ; const fiducial& fiducial : fiducial_set->first.fiducial_sequence)
     {
-        if(fiducial.shapeType == Shape::POINT)
+        if(fiducial.shape_type == shape::point)
         {
             if(i == _index)
             {
-                return getPoint(fiducial);
+                return get_point(fiducial);
             }
 
             i++;
@@ -1561,9 +1577,10 @@ std::optional<std::size_t> fiducials_series::getNumberOfPointsInGroup(const std:
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] std::optional<landmarks::LandmarksGroup> fiducials_series::getGroup(const std::string& _group_name) const
+[[nodiscard]] std::optional<landmarks::landmarks_group> fiducials_series::get_group(const std::string& _group_name)
+const
 {
-    std::optional<std::pair<FiducialSet, std::size_t> > fiducial_set = getFiducialSetAndIndex(_group_name);
+    std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
     if(!fiducial_set.has_value())
     {
         return std::nullopt;
@@ -1572,17 +1589,17 @@ std::optional<std::size_t> fiducials_series::getNumberOfPointsInGroup(const std:
     landmarks::color_t color = fiducial_set->first.color.value_or(
         std::array {1.F, 1.F, 1.F, 1.F
         });
-    landmarks::size_t size                                = fiducial_set->first.size.value_or(10);
-    fiducials_series::PrivateShape fiducial_private_shape = fiducial_set->first.shape.value_or(PrivateShape::SPHERE);
-    landmarks::Shape shape                                = landmarks::Shape::SPHERE;
+    landmarks::size_t size                                 = fiducial_set->first.size.value_or(10);
+    fiducials_series::private_shape fiducial_private_shape = fiducial_set->first.shape.value_or(private_shape::sphere);
+    landmarks::shape shape                                 = landmarks::shape::sphere;
     switch(fiducial_private_shape)
     {
-        case PrivateShape::SPHERE:
-            shape = landmarks::Shape::SPHERE;
+        case private_shape::sphere:
+            shape = landmarks::shape::sphere;
             break;
 
-        case PrivateShape::CUBE:
-            shape = landmarks::Shape::CUBE;
+        case private_shape::cube:
+            shape = landmarks::shape::cube;
 
         default:
             break;
@@ -1590,12 +1607,12 @@ std::optional<std::size_t> fiducials_series::getNumberOfPointsInGroup(const std:
 
     bool visibility = fiducial_set->first.visibility.value_or(true);
 
-    landmarks::LandmarksGroup group(color, size, shape, visibility);
+    landmarks::landmarks_group group(color, size, shape, visibility);
     std::ranges::for_each(
-        getPointFiducials(fiducial_set->first),
-        [&group](const data::fiducials_series::Fiducial& _fiducial)
+        get_point_fiducials(fiducial_set->first),
+        [&group](const data::fiducials_series::fiducial& _fiducial)
         {
-            if(auto point = getPoint(_fiducial))
+            if(auto point = get_point(_fiducial))
             {
                 group.m_points.push_back(*point);
             }
@@ -1605,24 +1622,24 @@ std::optional<std::size_t> fiducials_series::getNumberOfPointsInGroup(const std:
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::removePoint(const std::string& _group_name, std::size_t _index)
+void fiducials_series::remove_point(const std::string& _group_name, std::size_t _index)
 {
-    std::optional<std::pair<FiducialSet, std::size_t> > fiducial_set = getFiducialSetAndIndex(_group_name);
+    std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
     if(!fiducial_set.has_value())
     {
         return;
     }
 
     std::size_t point_index = 0;
-    for(auto it = fiducial_set->first.fiducialSequence.begin() ;
-        it < fiducial_set->first.fiducialSequence.end() ;
+    for(auto it = fiducial_set->first.fiducial_sequence.begin() ;
+        it < fiducial_set->first.fiducial_sequence.end() ;
         ++it)
     {
-        if(it->shapeType == data::fiducials_series::Shape::POINT)
+        if(it->shape_type == data::fiducials_series::shape::point)
         {
             if(point_index == _index)
             {
-                fiducial_set->first.fiducialSequence.erase(it);
+                fiducial_set->first.fiducial_sequence.erase(it);
                 break;
             }
 
@@ -1630,76 +1647,76 @@ void fiducials_series::removePoint(const std::string& _group_name, std::size_t _
         }
     }
 
-    setFiducialSet(fiducial_set->second, fiducial_set->first);
+    set_fiducial_set(fiducial_set->second, fiducial_set->first);
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::removeGroup(const std::string& _group_name)
+void fiducials_series::remove_group(const std::string& _group_name)
 {
-    std::vector<FiducialSet> fiducial_sets = getFiducialSets();
-    std::erase_if(fiducial_sets, [&_group_name](const FiducialSet& _fs){return _fs.groupName == _group_name;});
-    setFiducialSets(fiducial_sets);
+    std::vector<fiducial_set> fiducial_sets = get_fiducial_sets();
+    std::erase_if(fiducial_sets, [&_group_name](const fiducial_set& _fs){return _fs.group_name == _group_name;});
+    set_fiducial_sets(fiducial_sets);
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::addGroup(const std::string& _group_name, const std::array<float, 4>& _color, float _size)
+void fiducials_series::add_group(const std::string& _group_name, const std::array<float, 4>& _color, float _size)
 {
-    FiducialSet fiducial_set;
-    fiducial_set.groupName = _group_name;
-    fiducial_set.color     = _color;
-    fiducial_set.size      = _size;
-    fiducial_set.shape     = PrivateShape::SPHERE;
-    appendFiducialSet(fiducial_set);
+    fiducial_set fiducial_set;
+    fiducial_set.group_name = _group_name;
+    fiducial_set.color      = _color;
+    fiducial_set.size       = _size;
+    fiducial_set.shape      = private_shape::sphere;
+    append_fiducial_set(fiducial_set);
 }
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::addPoint(const std::string& _group_name, const std::array<double, 3>& _pos)
+void fiducials_series::add_point(const std::string& _group_name, const std::array<double, 3>& _pos)
 {
-    std::optional<std::pair<FiducialSet, std::size_t> > fiducial_set = getFiducialSetAndIndex(_group_name);
+    std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
     if(!fiducial_set.has_value())
     {
         SIGHT_WARN("Couldn't add point in fiducial set '" << _group_name << "', the group doesn't exist.");
         return;
     }
 
-    std::string fiducial_name = _group_name + '_' + std::to_string(getPointFiducials(fiducial_set->first).size());
-    Fiducial fiducial;
-    fiducial.shapeType           = Shape::POINT;
-    fiducial.fiducialDescription = fiducial_name;
-    fiducial.fiducialIdentifier  = fiducial_name;
-    fiducial.fiducialUID         = core::tools::UUID::generate();
-    fiducial.contourData         = {{.x = _pos[0], .y = _pos[1], .z = _pos[2]}};
-    appendFiducial(fiducial_set->second, fiducial);
+    std::string fiducial_name = _group_name + '_' + std::to_string(get_point_fiducials(fiducial_set->first).size());
+    fiducial fiducial;
+    fiducial.shape_type           = shape::point;
+    fiducial.fiducial_description = fiducial_name;
+    fiducial.fiducial_identifier  = fiducial_name;
+    fiducial.fiducial_uid         = core::tools::uuid::generate();
+    fiducial.contour_data         = {{.x = _pos[0], .y = _pos[1], .z = _pos[2]}};
+    append_fiducial(fiducial_set->second, fiducial);
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::Shape fiducials_series::stringToShape(const std::optional<std::string>& _string)
+fiducials_series::shape fiducials_series::string_to_shape(const std::optional<std::string>& _string)
 {
-    static const std::map<std::string, Shape> stringToShapeMap {{"POINT", Shape::POINT
-    }, {"LINE", Shape::LINE
-        }, {"PLANE", Shape::POINT
-        }, {"SURFACE", Shape::SURFACE
-        }, {"RULER", Shape::RULER
-        }, {"L_SHAPE", Shape::L_SHAPE
-        }, {"T_SHAPE", Shape::T_SHAPE
-        }, {"SHAPE", Shape::SHAPE
+    static const std::map<std::string, shape> s_STRING_TO_SHAPE_MAP {{"POINT", shape::point
+    }, {"LINE", shape::line
+        }, {"PLANE", shape::point
+        }, {"SURFACE", shape::surface
+        }, {"RULER", shape::ruler
+        }, {"L_SHAPE", shape::l_shape
+        }, {"T_SHAPE", shape::t_shape
+        }, {"SHAPE", shape::shape
         }
     };
-    if(!_string || !stringToShapeMap.contains(*_string))
+    if(!_string || !s_STRING_TO_SHAPE_MAP.contains(*_string))
     {
-        return Shape::INVALID;
+        return shape::invalid;
     }
 
-    return stringToShapeMap.at(*_string);
+    return s_STRING_TO_SHAPE_MAP.at(*_string);
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<std::array<float, 4> > fiducials_series::stringToColor(const std::optional<std::string>& _string)
+std::optional<std::array<float, 4> > fiducials_series::string_to_color(const std::optional<std::string>& _string)
 {
     if(!_string.has_value())
     {
@@ -1720,59 +1737,59 @@ std::optional<std::array<float, 4> > fiducials_series::stringToColor(const std::
 
 //------------------------------------------------------------------------------
 
-std::optional<fiducials_series::PrivateShape> fiducials_series::stringToPrivateShape(
+std::optional<fiducials_series::private_shape> fiducials_series::string_to_private_shape(
     const std::optional<std::string>& _string
 )
 {
-    static const std::map<std::string, PrivateShape> stringToPrivateShapeMap {
-        {"SPHERE", PrivateShape::SPHERE},
-        {"CUBE", PrivateShape::CUBE}
+    static const std::map<std::string, private_shape> s_STRING_TO_PRIVATE_SHAPE_MAP {
+        {"SPHERE", private_shape::sphere},
+        {"CUBE", private_shape::cube}
     };
     if(!_string.has_value())
     {
         return std::nullopt;
     }
 
-    if(!stringToPrivateShapeMap.contains(*_string))
+    if(!s_STRING_TO_PRIVATE_SHAPE_MAP.contains(*_string))
     {
         return std::nullopt;
     }
 
-    return stringToPrivateShapeMap.at(*_string);
+    return s_STRING_TO_PRIVATE_SHAPE_MAP.at(*_string);
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::FiducialSet fiducials_series::toFiducialSet(const gdcm::DataSet& _data_set) const
+fiducials_series::fiducial_set fiducials_series::to_fiducial_set(const gdcm::DataSet& _data_set) const
 {
-    FiducialSet fiducial_set;
-    if(auto ris = m_pimpl->getSequence(kw::ReferencedImageSequence::GetTag(), _data_set))
+    fiducial_set fiducial_set;
+    if(auto ris = m_pimpl->get_sequence(kw::ReferencedImageSequence::GetTag(), _data_set))
     {
-        fiducial_set.referencedImageSequence = std::vector<ReferencedImage> {};
+        fiducial_set.referenced_image_sequence = std::vector<referenced_image> {};
         for(std::size_t i = 1 ; i <= ris->GetNumberOfItems() ; i++) // GDCM Sequence of Items is 1-indexed
         {
-            fiducial_set.referencedImageSequence->push_back(toReferencedImage(ris->GetItem(i).GetNestedDataSet()));
+            fiducial_set.referenced_image_sequence->push_back(to_referenced_image(ris->GetItem(i).GetNestedDataSet()));
         }
     }
 
-    fiducial_set.frameOfReferenceUID = m_pimpl->getValue<kw::FrameOfReferenceUID>(_data_set);
-    if(auto fiducial_sequence = m_pimpl->getSequence(kw::FiducialSequence::GetTag(), _data_set))
+    fiducial_set.frame_of_reference_uid = m_pimpl->get_value<kw::FrameOfReferenceUID>(_data_set);
+    if(auto fiducial_sequence = m_pimpl->get_sequence(kw::FiducialSequence::GetTag(), _data_set))
     {
         for(std::size_t i = 1 ; i <= fiducial_sequence->GetNumberOfItems() ; i++) // GDCM Sequence of Items is 1-indexed
         {
-            fiducial_set.fiducialSequence.push_back(toFiducial(fiducial_sequence->GetItem(i).GetNestedDataSet()));
+            fiducial_set.fiducial_sequence.push_back(to_fiducial(fiducial_sequence->GetItem(i).GetNestedDataSet()));
         }
     }
 
-    fiducial_set.groupName = m_pimpl->getPrivateValue(0, _data_set);
-    fiducial_set.color     = stringToColor(m_pimpl->getPrivateValue(1, _data_set));
-    if(std::optional<std::string> size = m_pimpl->getPrivateValue(2, _data_set))
+    fiducial_set.group_name = m_pimpl->get_private_value(0, _data_set);
+    fiducial_set.color      = string_to_color(m_pimpl->get_private_value(1, _data_set));
+    if(std::optional<std::string> size = m_pimpl->get_private_value(2, _data_set))
     {
         fiducial_set.size = std::stof(*size);
     }
 
-    fiducial_set.shape = stringToPrivateShape(m_pimpl->getPrivateValue(3, _data_set));
-    if(std::optional<std::string> visibility = m_pimpl->getPrivateValue(4, _data_set))
+    fiducial_set.shape = string_to_private_shape(m_pimpl->get_private_value(3, _data_set));
+    if(std::optional<std::string> visibility = m_pimpl->get_private_value(4, _data_set))
     {
         fiducial_set.visibility = (*visibility == "true");
     }
@@ -1783,22 +1800,23 @@ fiducials_series::FiducialSet fiducials_series::toFiducialSet(const gdcm::DataSe
 //------------------------------------------------------------------------------
 
 template<>
-fiducials_series::FiducialSet fiducials_series::to<fiducials_series::FiducialSet>(const gdcm::DataSet& _data_set) const
+fiducials_series::fiducial_set fiducials_series::to<fiducials_series::fiducial_set>(const gdcm::DataSet& _data_set)
+const
 {
-    return toFiducialSet(_data_set);
+    return to_fiducial_set(_data_set);
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::ReferencedImage fiducials_series::toReferencedImage(const gdcm::DataSet& _data_set) const
+fiducials_series::referenced_image fiducials_series::to_referenced_image(const gdcm::DataSet& _data_set) const
 {
-    return ReferencedImage {
-        .referencedSOPClassUID    = m_pimpl->getValue<kw::ReferencedSOPClassUID>(_data_set).value_or(""),
-        .referencedSOPInstanceUID = m_pimpl->getValue<kw::ReferencedSOPInstanceUID>(_data_set).value_or(""),
-        .referencedFrameNumber    = m_pimpl->getValues<kw::ReferencedFrameNumber>(_data_set).value_or(
+    return referenced_image {
+        .referenced_sop_class_uid    = m_pimpl->get_value<kw::ReferencedSOPClassUID>(_data_set).value_or(""),
+        .referenced_sop_instance_uid = m_pimpl->get_value<kw::ReferencedSOPInstanceUID>(_data_set).value_or(""),
+        .referenced_frame_number     = m_pimpl->get_values<kw::ReferencedFrameNumber>(_data_set).value_or(
             std::vector<std::int32_t> {
             }),
-        .referencedSegmentNumber = m_pimpl->getValues<kw::ReferencedSegmentNumber>(_data_set).value_or(
+        .referenced_segment_number = m_pimpl->get_values<kw::ReferencedSegmentNumber>(_data_set).value_or(
             std::vector<std::uint16_t> {
             })
     };
@@ -1807,29 +1825,29 @@ fiducials_series::ReferencedImage fiducials_series::toReferencedImage(const gdcm
 //------------------------------------------------------------------------------
 
 template<>
-fiducials_series::ReferencedImage fiducials_series::to<fiducials_series::ReferencedImage>(
+fiducials_series::referenced_image fiducials_series::to<fiducials_series::referenced_image>(
     const gdcm::DataSet& _data_set
 )
 const
 {
-    return toReferencedImage(_data_set);
+    return to_referenced_image(_data_set);
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::Fiducial fiducials_series::toFiducial(const gdcm::DataSet& _data_set) const
+fiducials_series::fiducial fiducials_series::to_fiducial(const gdcm::DataSet& _data_set) const
 {
-    Fiducial fiducial;
-    fiducial.shapeType           = stringToShape(m_pimpl->getValue<kw::ShapeType>(_data_set));
-    fiducial.fiducialDescription = m_pimpl->getValue<kw::FiducialDescription>(_data_set).value_or("");
-    fiducial.fiducialIdentifier  = m_pimpl->getValue<kw::FiducialIdentifier>(_data_set).value_or("");
-    if(auto gcds = m_pimpl->getSequence(kw::GraphicCoordinatesDataSequence::GetTag(), _data_set))
+    fiducial fiducial;
+    fiducial.shape_type           = string_to_shape(m_pimpl->get_value<kw::ShapeType>(_data_set));
+    fiducial.fiducial_description = m_pimpl->get_value<kw::FiducialDescription>(_data_set).value_or("");
+    fiducial.fiducial_identifier  = m_pimpl->get_value<kw::FiducialIdentifier>(_data_set).value_or("");
+    if(auto gcds = m_pimpl->get_sequence(kw::GraphicCoordinatesDataSequence::GetTag(), _data_set))
     {
-        fiducial.graphicCoordinatesDataSequence = std::vector<GraphicCoordinatesData> {};
+        fiducial.graphic_coordinates_data_sequence = std::vector<graphic_coordinates_data> {};
         for(std::size_t i = 1 ; i <= gcds->GetNumberOfItems() ; i++) // GDCM Sequence of Items is 1-indexed
         {
-            fiducial.graphicCoordinatesDataSequence->push_back(
-                toGraphicCoordinatesData(
+            fiducial.graphic_coordinates_data_sequence->push_back(
+                to_graphic_coordinates_data(
                     gcds->GetItem(i).
                     GetNestedDataSet()
                 )
@@ -1837,10 +1855,10 @@ fiducials_series::Fiducial fiducials_series::toFiducial(const gdcm::DataSet& _da
         }
     }
 
-    fiducial.fiducialUID = m_pimpl->getValue<kw::FiducialUID>(_data_set);
-    if(auto contour_data = m_pimpl->getValues<kw::ContourData>(_data_set))
+    fiducial.fiducial_uid = m_pimpl->get_value<kw::FiducialUID>(_data_set);
+    if(auto contour_data = m_pimpl->get_values<kw::ContourData>(_data_set))
     {
-        fiducial.contourData = toPoint3(*contour_data);
+        fiducial.contour_data = to_point3(*contour_data);
     }
 
     return fiducial;
@@ -1849,27 +1867,27 @@ fiducials_series::Fiducial fiducials_series::toFiducial(const gdcm::DataSet& _da
 //------------------------------------------------------------------------------
 
 template<>
-fiducials_series::Fiducial fiducials_series::to<fiducials_series::Fiducial>(const gdcm::DataSet& _data_set) const
+fiducials_series::fiducial fiducials_series::to<fiducials_series::fiducial>(const gdcm::DataSet& _data_set) const
 {
-    return toFiducial(_data_set);
+    return to_fiducial(_data_set);
 }
 
 //------------------------------------------------------------------------------
 
-fiducials_series::GraphicCoordinatesData fiducials_series::toGraphicCoordinatesData(const gdcm::DataSet& _data_set)
+fiducials_series::graphic_coordinates_data fiducials_series::to_graphic_coordinates_data(const gdcm::DataSet& _data_set)
 const
 {
-    GraphicCoordinatesData gcd;
-    if(auto ris = m_pimpl->getSequence(kw::ReferencedImageSequence::GetTag(), _data_set);
+    graphic_coordinates_data gcd;
+    if(auto ris = m_pimpl->get_sequence(kw::ReferencedImageSequence::GetTag(), _data_set);
        ris != nullptr && ris->GetNumberOfItems() > 0)
     {
         // GDCM Sequence of Items is 1-indexed
-        gcd.referencedImageSequence = toReferencedImage(ris->GetItem(1).GetNestedDataSet());
+        gcd.referenced_image_sequence = to_referenced_image(ris->GetItem(1).GetNestedDataSet());
     }
 
-    if(auto graphic_data = m_pimpl->getValues<kw::GraphicData>(_data_set))
+    if(auto graphic_data = m_pimpl->get_values<kw::GraphicData>(_data_set))
     {
-        gcd.graphicData = toPoint2(*graphic_data);
+        gcd.graphic_data = to_point2(*graphic_data);
     }
 
     return gcd;
@@ -1878,19 +1896,19 @@ const
 //------------------------------------------------------------------------------
 
 template<>
-fiducials_series::GraphicCoordinatesData fiducials_series::to<fiducials_series::GraphicCoordinatesData>(
+fiducials_series::graphic_coordinates_data fiducials_series::to<fiducials_series::graphic_coordinates_data>(
     const gdcm::DataSet& _data_set
 ) const
 {
-    return toGraphicCoordinatesData(_data_set);
+    return to_graphic_coordinates_data(_data_set);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::Point2> fiducials_series::toPoint2(const std::vector<float>& _floats)
+std::vector<fiducials_series::point2> fiducials_series::to_point2(const std::vector<float>& _floats)
 {
     SIGHT_ASSERT("The number of elements must be a multiple of 2", (_floats.size() % 2) == 0);
-    std::vector<Point2> res;
+    std::vector<point2> res;
     res.reserve(_floats.size() / 2);
     for(std::size_t i = 0 ; i < _floats.size() ; i += 2)
     {
@@ -1902,10 +1920,10 @@ std::vector<fiducials_series::Point2> fiducials_series::toPoint2(const std::vect
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::Point3> fiducials_series::toPoint3(const std::vector<double>& _floats)
+std::vector<fiducials_series::point3> fiducials_series::to_point3(const std::vector<double>& _floats)
 {
     SIGHT_ASSERT("The number of elements must be a multiple of 3", (_floats.size() % 3) == 0);
-    std::vector<Point3> res;
+    std::vector<point3> res;
     res.reserve(_floats.size() / 3);
     for(std::size_t i = 0 ; i < _floats.size() ; i += 3)
     {
@@ -1918,18 +1936,18 @@ std::vector<fiducials_series::Point3> fiducials_series::toPoint3(const std::vect
 //------------------------------------------------------------------------------
 
 template<typename T>
-std::optional<std::vector<T> > fiducials_series::toVector(gdcm::SmartPointer<gdcm::SequenceOfItems> sequence) const
+std::optional<std::vector<T> > fiducials_series::to_vector(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence) const
 {
-    if(sequence == nullptr)
+    if(_sequence == nullptr)
     {
         return std::nullopt;
     }
 
     std::vector<T> res;
-    res.reserve(sequence->GetNumberOfItems());
-    for(std::size_t i = 1 ; i <= sequence->GetNumberOfItems() ; i++) // GDCM Sequence of Items is 1-indexed
+    res.reserve(_sequence->GetNumberOfItems());
+    for(std::size_t i = 1 ; i <= _sequence->GetNumberOfItems() ; i++) // GDCM Sequence of Items is 1-indexed
     {
-        res.push_back(to<T>(sequence->GetItem(i).GetNestedDataSet()));
+        res.push_back(to<T>(_sequence->GetItem(i).GetNestedDataSet()));
     }
 
     return res;
@@ -1938,16 +1956,16 @@ std::optional<std::vector<T> > fiducials_series::toVector(gdcm::SmartPointer<gdc
 //------------------------------------------------------------------------------
 
 template<typename T>
-gdcm::SmartPointer<gdcm::SequenceOfItems> fiducials_series::toSequence(const std::optional<std::vector<T> >& vector)
+gdcm::SmartPointer<gdcm::SequenceOfItems> fiducials_series::to_sequence(const std::optional<std::vector<T> >& _vector)
 const
 {
-    if(!vector)
+    if(!_vector)
     {
         return nullptr;
     }
 
     auto sequence = gdcm::SequenceOfItems::New();
-    for(const T& element : *vector)
+    for(const T& element : *_vector)
     {
         gdcm::Item item;
         item.SetNestedDataSet(to_gdcm(*m_pimpl, element));
@@ -1960,9 +1978,9 @@ const
 //------------------------------------------------------------------------------
 
 template<typename T>
-gdcm::SmartPointer<gdcm::SequenceOfItems> fiducials_series::toSequence(const std::vector<T>& vector) const
+gdcm::SmartPointer<gdcm::SequenceOfItems> fiducials_series::to_sequence(const std::vector<T>& _vector) const
 {
-    return toSequence(std::optional {vector});
+    return to_sequence(std::optional {_vector});
 }
 
 } // namespace sight::data

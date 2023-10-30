@@ -85,12 +85,12 @@ protected:
 
 private:
 
-    std::vector<std::size_t> m_cameraIndexNumbers;
-    std::vector<std::size_t> m_extrinsicIndexNumbers;
+    std::vector<std::size_t> m_camera_index_numbers;
+    std::vector<std::size_t> m_extrinsic_index_numbers;
 
-    sight::data::ptr<sight::data::camera_set, sight::data::Access::inout> m_camera_set {this, "cameraSet"};
-    sight::data::ptr_vector<sight::data::camera, sight::data::Access::out> m_camera {this, "camera"};
-    sight::data::ptr_vector<sight::data::matrix4, sight::data::Access::out> m_extrinsic {this, "extrinsic"};
+    sight::data::ptr<sight::data::camera_set, sight::data::access::inout> m_camera_set {this, "cameraSet"};
+    sight::data::ptr_vector<sight::data::camera, sight::data::access::out> m_camera {this, "camera"};
+    sight::data::ptr_vector<sight::data::matrix4, sight::data::access::out> m_extrinsic {this, "extrinsic"};
 };
 
 } // namespace sight::module::data

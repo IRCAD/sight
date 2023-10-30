@@ -68,10 +68,10 @@ class collision_tools
 public:
 
     /// Use for querying along the ray.
-    Ogre::RaySceneQuery* mRaySceneQuery {nullptr};
+    Ogre::RaySceneQuery* m_ray_scene_query {nullptr};
 
     /// The scene manager where launch the ray.
-    Ogre::SceneManager& mSceneMgr;
+    Ogre::SceneManager& m_scene_mgr;
 
     /**
      * @brief Create the ray scene query.
@@ -92,7 +92,7 @@ public:
      * @param _rayHeightLevel The height level of the ray.
      * @return True if an entity collide the ray.
      */
-    [[nodiscard]] bool collidesWithEntity(
+    [[nodiscard]] bool collides_with_entity(
         const Ogre::Vector3& _from_point,
         const Ogre::Vector3& _to_point,
         Ogre::uint32 _query_mask,
@@ -109,7 +109,7 @@ public:
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
-    std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
+    std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast_from_camera(
         Ogre::RenderWindow* _rw,
         Ogre::Camera* _camera,
         const Ogre::Vector2& _mousecoords,
@@ -124,7 +124,7 @@ public:
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
-    [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
+    [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast_from_point(
         const Ogre::Vector3& _point,
         const Ogre::Vector3& _normal,
         Ogre::uint32 _query_mask

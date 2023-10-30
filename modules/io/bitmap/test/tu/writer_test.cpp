@@ -63,7 +63,7 @@ inline static void runwriter(
     // Check the result...
     CPPUNIT_ASSERT_EQUAL(
         _should_fail,
-        std::dynamic_pointer_cast<sight::io::service::writer>(swriter)->hasFailed()
+        std::dynamic_pointer_cast<sight::io::service::writer>(swriter)->has_failed()
     );
 }
 
@@ -71,12 +71,12 @@ inline static void runwriter(
 
 inline static data::image::csptr get_synthetic_image()
 {
-    static const data::image::csptr generated =
+    static const data::image::csptr s_GENERATED =
         []
         {
             auto image           = std::make_shared<data::image>();
             const auto dump_lock = image->dump_lock();
-            image->resize({800, 600, 0}, core::type::UINT8, data::image::RGB);
+            image->resize({800, 600, 0}, core::type::UINT8, data::image::rgb);
 
             auto it        = image->begin<data::iterator::rgb>();
             const auto end = image->end<data::iterator::rgb>();
@@ -118,7 +118,7 @@ inline static data::image::csptr get_synthetic_image()
             return image;
         }();
 
-    return generated;
+    return s_GENERATED;
 }
 
 //------------------------------------------------------------------------------
@@ -126,18 +126,18 @@ inline static data::image::csptr get_synthetic_image()
 inline static void test_enable(
     const std::filesystem::path& _temp_folder,
     const data::image::csptr& _expected_image,
-    const std::vector<sight::io::bitmap::Backend>& _backends,
-    const std::vector<sight::io::bitmap::Writer::Mode>& _modes,
+    const std::vector<sight::io::bitmap::backend>& _backends,
+    const std::vector<sight::io::bitmap::writer::mode>& _modes,
     const std::string _enabled
 )
 {
     for(const auto& backend : _backends)
     {
-        std::map<sight::io::bitmap::Writer::Mode, std::size_t> sizes;
+        std::map<sight::io::bitmap::writer::mode, std::size_t> sizes;
 
         for(const auto& mode : _modes)
         {
-            const std::string mode_string(mode == sight::io::bitmap::Writer::Mode::BEST ? "best" : "fast");
+            const std::string mode_string(mode == sight::io::bitmap::writer::mode::best ? "best" : "fast");
             const auto& file_path = _temp_folder / (
                 "config_" + mode_string + sight::io::bitmap::extensions(backend).front()
             );
@@ -166,29 +166,29 @@ inline static void test_enable(
         // Sizes should be bigger than 0..
         CPPUNIT_ASSERT_GREATER(
             std::size_t(0),
-            sizes[sight::io::bitmap::Writer::Mode::BEST]
+            sizes[sight::io::bitmap::writer::mode::best]
         );
 
         CPPUNIT_ASSERT_GREATER(
             std::size_t(0),
-            sizes[sight::io::bitmap::Writer::Mode::FAST]
+            sizes[sight::io::bitmap::writer::mode::fast]
         );
 
         // openJPEG have no "BEST" or "FAST" mode and nvJPEG2000 can be equal
-        if(backend == sight::io::bitmap::Backend::OPENJPEG
-           || backend == sight::io::bitmap::Backend::NVJPEG2K)
+        if(backend == sight::io::bitmap::backend::openjpeg
+           || backend == sight::io::bitmap::backend::nvjpeg2k)
         {
             CPPUNIT_ASSERT_LESSEQUAL(
-                sizes[sight::io::bitmap::Writer::Mode::FAST],
-                sizes[sight::io::bitmap::Writer::Mode::BEST]
+                sizes[sight::io::bitmap::writer::mode::fast],
+                sizes[sight::io::bitmap::writer::mode::best]
             );
         }
         else
         {
             // Best should compress better
             CPPUNIT_ASSERT_LESSEQUAL(
-                sizes[sight::io::bitmap::Writer::Mode::FAST],
-                sizes[sight::io::bitmap::Writer::Mode::BEST]
+                sizes[sight::io::bitmap::writer::mode::fast],
+                sizes[sight::io::bitmap::writer::mode::best]
             );
         }
     }
@@ -208,7 +208,7 @@ void writer_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void writer_test::basicTest()
+void writer_test::basic_test()
 {
     core::os::temp_dir tmp_dir;
     const auto& file_path = tmp_dir / "basic.tiff";
@@ -230,34 +230,34 @@ void writer_test::basicTest()
 
 //------------------------------------------------------------------------------
 
-void writer_test::configTest()
+void writer_test::config_test()
 {
     core::os::temp_dir tmp_dir;
 
     // Build backend list
     std::vector backends {
-        sight::io::bitmap::Backend::LIBPNG,
-        sight::io::bitmap::Backend::LIBTIFF
+        sight::io::bitmap::backend::libpng,
+        sight::io::bitmap::backend::libtiff
     };
 
     if(sight::io::bitmap::nv_jpeg())
     {
-        backends.push_back(sight::io::bitmap::Backend::NVJPEG);
+        backends.push_back(sight::io::bitmap::backend::nvjpeg);
     }
 
-    backends.push_back(sight::io::bitmap::Backend::LIBJPEG);
+    backends.push_back(sight::io::bitmap::backend::libjpeg);
 
     if(sight::io::bitmap::nv_jpeg_2k())
     {
-        backends.push_back(sight::io::bitmap::Backend::NVJPEG2K);
+        backends.push_back(sight::io::bitmap::backend::nvjpeg2k);
     }
 
-    backends.push_back(sight::io::bitmap::Backend::OPENJPEG);
+    backends.push_back(sight::io::bitmap::backend::openjpeg);
 
     // Build mode list
     const std::vector modes {
-        sight::io::bitmap::Writer::Mode::BEST,
-        sight::io::bitmap::Writer::Mode::FAST
+        sight::io::bitmap::writer::mode::best,
+        sight::io::bitmap::writer::mode::fast
     };
 
     const auto& expected_image = get_synthetic_image();
@@ -278,16 +278,16 @@ void writer_test::configTest()
     if(sight::io::bitmap::nv_jpeg()
        || sight::io::bitmap::nv_jpeg_2k())
     {
-        std::vector<sight::io::bitmap::Backend> gpu_backend;
+        std::vector<sight::io::bitmap::backend> gpu_backend;
 
         if(sight::io::bitmap::nv_jpeg())
         {
-            gpu_backend.push_back(sight::io::bitmap::Backend::NVJPEG);
+            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg);
         }
 
         if(sight::io::bitmap::nv_jpeg_2k())
         {
-            gpu_backend.push_back(sight::io::bitmap::Backend::NVJPEG2K);
+            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg2k);
         }
 
         // For each backend and each mode ("cpu" means ".jpeg, .jp2")
@@ -298,11 +298,11 @@ void writer_test::configTest()
     {
         for(const auto& backend : backends)
         {
-            std::map<sight::io::bitmap::Writer::Mode, std::size_t> sizes;
+            std::map<sight::io::bitmap::writer::mode, std::size_t> sizes;
 
             for(const auto& mode : modes)
             {
-                const std::string mode_string(mode == sight::io::bitmap::Writer::Mode::BEST ? "best" : "fast");
+                const std::string mode_string(mode == sight::io::bitmap::writer::mode::best ? "best" : "fast");
                 const auto& file_path = tmp_dir / (
                     "config_" + mode_string + sight::io::bitmap::extensions(backend).front()
                 );
@@ -323,8 +323,8 @@ void writer_test::configTest()
                 backends_tree.add_child("libpng", png_backend_tree);
                 config.add_child("backends", backends_tree);
 
-                if(backend == sight::io::bitmap::Backend::LIBTIFF
-                   || backend == sight::io::bitmap::Backend::LIBPNG)
+                if(backend == sight::io::bitmap::backend::libtiff
+                   || backend == sight::io::bitmap::backend::libpng)
                 {
                     // Run the service
                     runwriter(config, expected_image);
@@ -344,7 +344,7 @@ void writer_test::configTest()
 
                     auto tiff_file_path = file_path;
                     tiff_file_path.replace_extension(
-                        sight::io::bitmap::extensions(sight::io::bitmap::Backend::LIBTIFF).front()
+                        sight::io::bitmap::extensions(sight::io::bitmap::backend::libtiff).front()
                     );
 
                     CPPUNIT_ASSERT_MESSAGE(
@@ -354,24 +354,24 @@ void writer_test::configTest()
                 }
             }
 
-            if(backend == sight::io::bitmap::Backend::LIBTIFF
-               || backend == sight::io::bitmap::Backend::LIBPNG)
+            if(backend == sight::io::bitmap::backend::libtiff
+               || backend == sight::io::bitmap::backend::libpng)
             {
                 // Sizes should be bigger than 0..
                 CPPUNIT_ASSERT_GREATER(
                     std::size_t(0),
-                    sizes[sight::io::bitmap::Writer::Mode::BEST]
+                    sizes[sight::io::bitmap::writer::mode::best]
                 );
 
                 CPPUNIT_ASSERT_GREATER(
                     std::size_t(0),
-                    sizes[sight::io::bitmap::Writer::Mode::FAST]
+                    sizes[sight::io::bitmap::writer::mode::fast]
                 );
 
                 // Best should compress better
                 CPPUNIT_ASSERT_LESSEQUAL(
-                    sizes[sight::io::bitmap::Writer::Mode::FAST],
-                    sizes[sight::io::bitmap::Writer::Mode::BEST]
+                    sizes[sight::io::bitmap::writer::mode::fast],
+                    sizes[sight::io::bitmap::writer::mode::best]
                 );
             }
         }

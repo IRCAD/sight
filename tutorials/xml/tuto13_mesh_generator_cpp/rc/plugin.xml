@@ -28,17 +28,17 @@
                         <name>tuto13_mesh_generator_cpp</name>
                         <icon>tuto13_mesh_generator_cpp/tuto.ico</icon>
                     </frame>
-                    <menuBar />
+                    <menubar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
                     <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
             <service uid="progressBarView" type="sight::module::ui::job_bar" />
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />

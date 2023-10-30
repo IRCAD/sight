@@ -58,23 +58,23 @@ void resampler::starting()
 
 void resampler::updating()
 {
-    const auto in_img    = m_imageIn.lock();
-    auto out_img         = m_imageOut.lock();
-    const auto target    = m_targetIn.lock();
-    const auto transform = m_transformIn.lock();
+    const auto in_img    = m_image_in.lock();
+    auto out_img         = m_image_out.lock();
+    const auto target    = m_target_in.lock();
+    const auto transform = m_transform_in.lock();
 
-    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", in_img);
-    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", out_img);
-    SIGHT_ASSERT("No '" << s_TRANSFORM_IN << "' found !", transform);
+    SIGHT_ASSERT("No '" << IMAGE_IN << "' found !", in_img);
+    SIGHT_ASSERT("No '" << IMAGE_IN << "' found !", out_img);
+    SIGHT_ASSERT("No '" << TRANSFORM_IN << "' found !", transform);
 
     sight::filter::image::resampler::resample(
         in_img.get_shared(),
         out_img.get_shared(),
         transform.get_shared(),
-        std::make_tuple(target->size(), target->getOrigin(), target->getSpacing())
+        std::make_tuple(target->size(), target->origin(), target->spacing())
     );
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 
     auto img_buf_modified_sig = out_img->signal<data::image::buffer_modified_signal_t>
                                     (data::image::BUFFER_MODIFIED_SIG);
@@ -98,10 +98,10 @@ void resampler::stopping()
 service::connections_t resampler::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_TRANSFORM_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_TARGET_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TRANSFORM_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TARGET_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

@@ -30,8 +30,8 @@
 namespace ex_notifications
 {
 
-static const sight::core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
-static const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
+static const sight::core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "set_enum_parameter";
+static const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "set_bool_parameter";
 static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "closeChannel1";
 
 //------------------------------------------------------------------------------
@@ -39,49 +39,49 @@ static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "closeChan
 display_test_notifications::display_test_notifications() noexcept :
     notifier(m_signals)
 {
-    new_slot(SET_ENUM_PARAMETER_SLOT, &display_test_notifications::setEnumParameter, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &display_test_notifications::setBoolParameter, this);
-    new_slot(CLOSE_CHANNEL1_SLOT, &display_test_notifications::closeChannel1, this);
+    new_slot(SET_ENUM_PARAMETER_SLOT, &display_test_notifications::set_enum_parameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &display_test_notifications::set_bool_parameter, this);
+    new_slot(CLOSE_CHANNEL1_SLOT, &display_test_notifications::close_channel1, this);
 }
 
 //------------------------------------------------------------------------------
 
-void display_test_notifications::setEnumParameter(std::string _val, std::string _key)
+void display_test_notifications::set_enum_parameter(std::string _val, std::string _key)
 {
     if(_key == "position")
     {
-        m_displayAll = false;
+        m_display_all = false;
         if(_val == "ALL")
         {
-            m_displayAll = true;
+            m_display_all = true;
         }
         else if(_val == "TOP_LEFT")
         {
-            m_notification.position = ::dial::notification::Position::TOP_LEFT;
+            m_notification.position = ::dial::notification::position::top_left;
         }
         else if(_val == "TOP_RIGHT")
         {
-            m_notification.position = ::dial::notification::Position::TOP_RIGHT;
+            m_notification.position = ::dial::notification::position::top_right;
         }
         else if(_val == "CENTERED_TOP")
         {
-            m_notification.position = ::dial::notification::Position::CENTERED_TOP;
+            m_notification.position = ::dial::notification::position::centered_top;
         }
         else if(_val == "CENTERED")
         {
-            m_notification.position = ::dial::notification::Position::CENTERED;
+            m_notification.position = ::dial::notification::position::centered;
         }
         else if(_val == "BOTTOM_LEFT")
         {
-            m_notification.position = ::dial::notification::Position::BOTTOM_LEFT;
+            m_notification.position = ::dial::notification::position::bottom_left;
         }
         else if(_val == "BOTTOM_RIGHT")
         {
-            m_notification.position = ::dial::notification::Position::BOTTOM_RIGHT;
+            m_notification.position = ::dial::notification::position::bottom_right;
         }
         else if(_val == "CENTERED_BOTTOM")
         {
-            m_notification.position = ::dial::notification::Position::CENTERED_BOTTOM;
+            m_notification.position = ::dial::notification::position::centered_bottom;
         }
         else
         {
@@ -92,15 +92,15 @@ void display_test_notifications::setEnumParameter(std::string _val, std::string 
     {
         if(_val == "SUCCESS")
         {
-            m_notification.type = ::dial::notification::Type::SUCCESS;
+            m_notification.type = ::dial::notification::type::success;
         }
         else if(_val == "INFO")
         {
-            m_notification.type = ::dial::notification::Type::INFO;
+            m_notification.type = ::dial::notification::type::info;
         }
         else if(_val == "FAILURE")
         {
-            m_notification.type = ::dial::notification::Type::FAILURE;
+            m_notification.type = ::dial::notification::type::failure;
         }
         else
         {
@@ -154,7 +154,7 @@ void display_test_notifications::setEnumParameter(std::string _val, std::string 
 
 //------------------------------------------------------------------------------
 
-void display_test_notifications::setBoolParameter(bool _val, std::string _key)
+void display_test_notifications::set_bool_parameter(bool _val, std::string _key)
 {
     if(_key == "usenotifier")
     {
@@ -162,7 +162,7 @@ void display_test_notifications::setBoolParameter(bool _val, std::string _key)
     }
     else if(_key == "reachMaxCharacters")
     {
-        m_reachMaxCharacters = _val;
+        m_reach_max_characters = _val;
     }
     else
     {
@@ -172,9 +172,9 @@ void display_test_notifications::setBoolParameter(bool _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void display_test_notifications::closeChannel1()
+void display_test_notifications::close_channel1()
 {
-    closeNotification("CHANNEL1");
+    close_notification("CHANNEL1");
 }
 
 //------------------------------------------------------------------------------
@@ -239,7 +239,7 @@ void display_test_notifications::updating()
         // Notification will always be displayed at the same place,
         // and will be queued if several notifications are displayed at the same time.
 
-        if(m_reachMaxCharacters)
+        if(m_reach_max_characters)
         {
             message = "This notification "
                       + std::to_string(count)
@@ -266,22 +266,22 @@ void display_test_notifications::updating()
     else
     {
         // Mode 2: Standalone, you decide where to pop the notification by calling directly the notification.
-        if(m_displayAll)
+        if(m_display_all)
         {
-            using Position = sight::service::Notification::Position;
+            using position_t = enum sight::service::notification::position;
 
             for(const auto& position : {
-                    Position::TOP_LEFT,
-                    Position::TOP_RIGHT,
-                    Position::CENTERED_TOP,
-                    Position::CENTERED,
-                    Position::BOTTOM_LEFT,
-                    Position::BOTTOM_RIGHT,
-                    Position::CENTERED_BOTTOM
+                    position_t::top_left,
+                    position_t::top_right,
+                    position_t::centered_top,
+                    position_t::centered,
+                    position_t::bottom_left,
+                    position_t::bottom_right,
+                    position_t::centered_bottom
                 })
             {
                 ::dial::notification::show(
-                    sight::service::Notification
+                    sight::service::notification
                     {
                         .type     = m_notification.type,
                         .position = position,
@@ -295,7 +295,7 @@ void display_test_notifications::updating()
         else
         {
             ::dial::notification::show(
-                sight::service::Notification
+                sight::service::notification
                 {
                     .type     = m_notification.type,
                     .position = m_notification.position,
@@ -320,14 +320,14 @@ void display_test_notifications::updating()
 
 void display_test_notifications::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 }
 
 //------------------------------------------------------------------------------
 
 void display_test_notifications::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------

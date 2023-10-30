@@ -34,29 +34,29 @@
 namespace sight::module::filter::image
 {
 
-struct AndImageFilterParameters
+struct and_image_filter_parameters
 {
-    data::image::csptr inputImage;
+    data::image::csptr input_image;
     data::image::csptr mask;
-    data::image::sptr outputImage;
+    data::image::sptr output_image;
 };
 
 //------------------------------------------------------------------------------
 
 template<typename PIXELTYPE>
-struct AndImageFilter
+struct and_image_filter
 {
     //------------------------------------------------------------------------------
 
     template<class MASK_PIXELTYPE>
-    void operator()(AndImageFilterParameters& _params)
+    void operator()(and_image_filter_parameters& _params)
     {
-        data::image::csptr input_image = _params.inputImage;
+        data::image::csptr input_image = _params.input_image;
         data::image::csptr mask        = _params.mask;
-        data::image::sptr output_image = _params.outputImage;
+        data::image::sptr output_image = _params.output_image;
 
         const unsigned int dimension = 3;
-        SIGHT_ASSERT("Only image dimension 3 managed.", input_image->numDimensions() == dimension);
+        SIGHT_ASSERT("Only image dimension 3 managed.", input_image->num_dimensions() == dimension);
 
         using input_image_t  = typename itk::Image<PIXELTYPE, dimension>;
         using mask_image_t   = typename itk::Image<MASK_PIXELTYPE, dimension>;
@@ -82,8 +82,8 @@ struct AndImageFilter
 
         typename input_image_t::Pointer itk_mask_image_casted = rescaler->GetOutput();
 
-        using ITKFilterType = typename itk::AndImageFilter<input_image_t, input_image_t, output_image_t>;
-        typename ITKFilterType::Pointer filter = ITKFilterType::New();
+        using itk_filter_type_t = typename itk::AndImageFilter<input_image_t, input_image_t, output_image_t>;
+        auto filter = itk_filter_type_t::New();
         filter->SetInput1(itk_input_image);
         filter->SetInput2(itk_mask_image_casted);
         itk_output_image = filter->GetOutput();
@@ -96,15 +96,15 @@ struct AndImageFilter
 
 //------------------------------------------------------------------------------
 
-struct AndImageFilterCaller
+struct and_image_filter_caller
 {
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(AndImageFilterParameters& _params)
+    void operator()(and_image_filter_parameters& _params)
     {
-        const auto mask_type = _params.mask->getType();
-        core::tools::dispatcher<core::tools::integer_types, AndImageFilter<PIXELTYPE> >::invoke(mask_type, _params);
+        const auto mask_type = _params.mask->type();
+        core::tools::dispatcher<core::tools::integer_types, and_image_filter<PIXELTYPE> >::invoke(mask_type, _params);
     }
 };
 
@@ -142,17 +142,17 @@ void bitwise_and::updating()
 
     data::image::sptr output_image = std::make_shared<data::image>();
 
-    AndImageFilterParameters params;
-    params.inputImage  = image.get_shared();
-    params.mask        = mask.get_shared();
-    params.outputImage = output_image;
+    and_image_filter_parameters params;
+    params.input_image  = image.get_shared();
+    params.mask         = mask.get_shared();
+    params.output_image = output_image;
 
-    const auto type = image->getType();
-    core::tools::dispatcher<core::tools::integer_types, AndImageFilterCaller>::invoke(type, params);
+    const auto type = image->type();
+    core::tools::dispatcher<core::tools::integer_types, and_image_filter_caller>::invoke(type, params);
 
-    this->set_output(s_OUTPUTIMAGE_OUT, output_image);
+    this->set_output(OUTPUTIMAGE_OUT, output_image);
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //-----------------------------------------------------------------------------

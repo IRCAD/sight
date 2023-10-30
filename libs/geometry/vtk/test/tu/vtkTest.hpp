@@ -32,12 +32,12 @@
 namespace sight::geometry::vtk::ut
 {
 
-class vtkTest : public CPPUNIT_NS::TestFixture
+class vtk_test : public CPPUNIT_NS::TestFixture
 {
 private:
 
-    CPPUNIT_TEST_SUITE(vtkTest);
-    CPPUNIT_TEST(computeCenterOfMass);
+    CPPUNIT_TEST_SUITE(vtk_test);
+    CPPUNIT_TEST(compute_center_of_mass);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,7 +46,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void computeCenterOfMass();
+    static void compute_center_of_mass();
 
     //------------------------------------------------------------------------------
 

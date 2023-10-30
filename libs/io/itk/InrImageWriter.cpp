@@ -35,24 +35,24 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::itk::InrImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::itk::inr_image_writer);
 
 namespace sight::io::itk
 {
 
-struct InrSaverFunctor
+struct inr_saver_functor
 {
-    struct Parameter
+    struct parameter
     {
         std::string m_filename;
-        data::image::csptr m_dataImage;
-        io::itk::InrImageWriter::sptr m_fwWriter;
+        data::image::csptr m_data_image;
+        io::itk::inr_image_writer::sptr m_fw_writer;
     };
 
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(const Parameter& _param)
+    void operator()(const parameter& _param)
     {
         SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
@@ -64,17 +64,17 @@ struct InrSaverFunctor
         assert(image_io_write.IsNotNull());
 
         // create writer
-        using itkImageType = ::itk::Image<PIXELTYPE, 3>;
-        using writer_t     = typename ::itk::ImageFileWriter<itkImageType>;
+        using itk_image_type = ::itk::Image<PIXELTYPE, 3>;
+        using writer_t       = typename ::itk::ImageFileWriter<itk_image_type>;
         typename writer_t::Pointer writer = writer_t::New();
 
         // set observation (*2*)
         ::itk::LightProcessObject::Pointer cast_helper = (::itk::LightProcessObject*) (image_io_write.GetPointer());
         assert(cast_helper.IsNotNull());
-        Progressor progress(cast_helper, _param.m_fwWriter, _param.m_filename);
+        progressor progress(cast_helper, _param.m_fw_writer, _param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itk_image = io::itk::move_to_itk<itkImageType>(_param.m_dataImage);
+        typename itk_image_type::Pointer itk_image = io::itk::move_to_itk<itk_image_type>(_param.m_data_image);
 
         writer->SetFileName(_param.m_filename.c_str());
         writer->SetInput(itk_image);
@@ -87,26 +87,26 @@ struct InrSaverFunctor
 
 //------------------------------------------------------------------------------
 
-void InrImageWriter::write()
+void inr_image_writer::write()
 {
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    InrSaverFunctor::Parameter saver_param;
-    saver_param.m_filename  = this->get_file().string();
-    saver_param.m_dataImage = getConcreteObject();
-    saver_param.m_fwWriter  = this->get_sptr();
-    assert(saver_param.m_dataImage);
+    inr_saver_functor::parameter saver_param;
+    saver_param.m_filename   = this->get_file().string();
+    saver_param.m_data_image = get_concrete_object();
+    saver_param.m_fw_writer  = this->get_sptr();
+    assert(saver_param.m_data_image);
 
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, InrSaverFunctor>::invoke(
-        saver_param.m_dataImage->getType(),
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, inr_saver_functor>::invoke(
+        saver_param.m_data_image->type(),
         saver_param
     );
 }
 
 //------------------------------------------------------------------------------
 
-std::string InrImageWriter::extension() const
+std::string inr_image_writer::extension() const
 {
     if(get_file().empty() || (get_file().string().find(".inr.gz") != std::string::npos))
     {

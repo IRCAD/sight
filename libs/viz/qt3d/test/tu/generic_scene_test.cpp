@@ -24,7 +24,7 @@
 
 #include "test_application.hpp"
 
-#include "viz/qt3d/core/GenericScene.hpp"
+#include "viz/qt3d/core/generic_scene.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3d_test::ut::generic_scene_test);
@@ -56,29 +56,32 @@ void generic_scene_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void generic_scene_test::initializeEmptyScene()
+void generic_scene_test::initialize_empty_scene()
 {
     test_application app;
 
-    auto* scene     = new sight::viz::qt3d::core::GenericScene(false);
-    auto* scene_qml = new sight::viz::qt3d::core::GenericScene(true);
+    auto* scene     = new sight::viz::qt3d::core::generic_scene(false);
+    auto* scene_qml = new sight::viz::qt3d::core::generic_scene(true);
 
     CPPUNIT_ASSERT(scene != nullptr);
-    CPPUNIT_ASSERT(scene->getCamera() != nullptr);
-    CPPUNIT_ASSERT(scene->getCameraController() != nullptr);
-    CPPUNIT_ASSERT(scene->getFrameGraph() != nullptr);
-    CPPUNIT_ASSERT(scene->getInputSettings() == nullptr);
-    CPPUNIT_ASSERT(scene->getRenderSettings() == nullptr);
+    CPPUNIT_ASSERT(scene->get_camera() != nullptr);
+    CPPUNIT_ASSERT(scene->get_camera_controller() != nullptr);
+    CPPUNIT_ASSERT(scene->get_frame_graph() != nullptr);
+    CPPUNIT_ASSERT(scene->get_input_settings() == nullptr);
+    CPPUNIT_ASSERT(scene->get_render_settings() == nullptr);
 
     CPPUNIT_ASSERT(scene_qml != nullptr);
-    CPPUNIT_ASSERT(scene_qml->getCamera() != nullptr);
-    CPPUNIT_ASSERT(scene_qml->getCameraController() != nullptr);
-    CPPUNIT_ASSERT(scene_qml->getFrameGraph() != nullptr);
-    CPPUNIT_ASSERT(scene_qml->getInputSettings() != nullptr);
-    CPPUNIT_ASSERT(scene_qml->getRenderSettings() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->get_camera() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->get_camera_controller() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->get_frame_graph() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->get_input_settings() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->get_render_settings() != nullptr);
 
-    CPPUNIT_ASSERT_EQUAL(scene->getCameraController()->camera(), scene->getCamera());
-    CPPUNIT_ASSERT_EQUAL(qobject_cast<Qt3DRender::QCamera*>(scene->getFrameGraph()->getCamera()), scene->getCamera());
+    CPPUNIT_ASSERT_EQUAL(scene->get_camera_controller()->camera(), scene->get_camera());
+    CPPUNIT_ASSERT_EQUAL(
+        qobject_cast<Qt3DRender::QCamera*>(scene->get_frame_graph()->get_camera()),
+        scene->get_camera()
+    );
 
     delete scene;
     delete scene_qml;

@@ -80,19 +80,19 @@ public:
     MODULE_VIZ_SCENE3D_API ~texture() noexcept final = default;
 
     /// Gets the Ogre texture.
-    MODULE_VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
+    MODULE_VIZ_SCENE3D_API Ogre::TexturePtr get_texture() const;
 
     /// Gets the textures name.
-    MODULE_VIZ_SCENE3D_API std::string getTextureName() const;
+    MODULE_VIZ_SCENE3D_API std::string get_texture_name() const;
 
     /// Sets the texture name.
-    MODULE_VIZ_SCENE3D_API void setTextureName(std::string _tex_name);
+    MODULE_VIZ_SCENE3D_API void set_texture_name(std::string _tex_name);
 
     /// Gets if 1.0 is used as the alpha value.
-    MODULE_VIZ_SCENE3D_API bool getUseAlpha() const;
+    MODULE_VIZ_SCENE3D_API bool get_use_alpha() const;
 
     /// Return true if a valid image is stored in this texture
-    MODULE_VIZ_SCENE3D_API bool isValid() const;
+    MODULE_VIZ_SCENE3D_API bool is_valid() const;
 
 protected:
 
@@ -123,7 +123,7 @@ private:
     sight::viz::scene3d::texture::sptr m_texture;
 
     /// Defines the texture's name in the Ogre resource manager.
-    std::string m_textureName;
+    std::string m_texture_name;
 
     /// Defines the filtering method.
     std::string m_filtering {"linear"};
@@ -132,45 +132,45 @@ private:
     std::string m_wrapping {"repeat"};
 
     /// Defines if 1.0 is used as the alpha value (no transparency) or another value.
-    bool m_useAlpha {true};
+    bool m_use_alpha {true};
 
     /// Defines if the texture changes dynamically, defined in m_configuration.
-    bool m_isDynamic {false};
+    bool m_is_dynamic {false};
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
-    typedef core::com::signal<void ()> texture_swapped_signal_t;
-    texture_swapped_signal_t::sptr m_sigTextureSwapped;
+    using texture_swapped_signal_t = core::com::signal<void ()>;
+    texture_swapped_signal_t::sptr m_sig_texture_swapped;
 
-    static constexpr std::string_view s_TEXTURE_INOUT = "image";
-    data::ptr<data::image, data::Access::in> m_image {this, s_TEXTURE_INOUT, true};
+    static constexpr std::string_view TEXTURE_INOUT = "image";
+    data::ptr<data::image, data::access::in> m_image {this, TEXTURE_INOUT, true};
 };
 
 //------------------------------------------------------------------------------
 
-inline Ogre::TexturePtr texture::getTexture() const
+inline Ogre::TexturePtr texture::get_texture() const
 {
     return m_texture->get();
 }
 
 //------------------------------------------------------------------------------
 
-inline std::string texture::getTextureName() const
+inline std::string texture::get_texture_name() const
 {
-    return m_textureName;
+    return m_texture_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void texture::setTextureName(std::string _tex_name)
+inline void texture::set_texture_name(std::string _tex_name)
 {
-    m_textureName = _tex_name;
+    m_texture_name = _tex_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline bool texture::getUseAlpha() const
+inline bool texture::get_use_alpha() const
 {
-    return m_useAlpha;
+    return m_use_alpha;
 }
 
 //------------------------------------------------------------------------------

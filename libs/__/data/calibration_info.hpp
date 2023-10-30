@@ -48,24 +48,24 @@ public:
     SIGHT_DECLARE_CLASS(calibration_info, object);
 
     ///typedefs
-    typedef std::list<image::sptr> image_container_t;
-    typedef std::list<point_list::sptr> point_list_container_t;
+    using image_container_t      = std::list<image::sptr>;
+    using point_list_container_t = std::list<point_list::sptr>;
 
     /**
      * @name Signals API
      * @{
      */
     DATA_API static const core::com::signals::key_t ADDED_RECORD_SIG;
-    typedef core::com::signal<void ()> added_record_signal_t;
+    using added_record_signal_t = core::com::signal<void ()>;
 
     DATA_API static const core::com::signals::key_t REMOVED_RECORD_SIG;
-    typedef core::com::signal<void ()> removed_record_signal_t;
+    using removed_record_signal_t = core::com::signal<void ()>;
 
     DATA_API static const core::com::signals::key_t RESET_RECORD_SIG;
-    typedef core::com::signal<void ()> Reset_record_signal_type;
+    using reset_record_signal_t = core::com::signal<void ()>;
 
     DATA_API static const core::com::signals::key_t GET_RECORD_SIG;
-    typedef core::com::signal<void (std::size_t)> get_record_signal_t;
+    using get_record_signal_t = core::com::signal<void (std::size_t)>;
 
     /**
      * @}
@@ -82,27 +82,27 @@ public:
      * @param[in] img the new image
      * @param[in] pl the corresponding point list
      */
-    DATA_API void addRecord(const image::sptr& _img, const point_list::sptr& _pl);
+    DATA_API void add_record(const image::sptr& _img, const point_list::sptr& _pl);
 
     /**
      * @brief remove the desired record (both image and pointList)
      * @param[in] idx index of the record to be removed
      */
-    DATA_API void removeRecord(std::size_t _idx);
+    DATA_API void remove_record(std::size_t _idx);
 
     /// Reset all records
-    DATA_API void resetRecords();
+    DATA_API void reset_records();
 
     ///Get all the images
     ///@{
-    DATA_API std::list<image::sptr> getImageContainer();
-    DATA_API std::list<image::csptr> getImageContainer() const;
+    DATA_API std::list<image::sptr> get_image_container();
+    DATA_API std::list<image::csptr> get_image_container() const;
     ///@}
 
     ///Get all the pointLists
     ///@{
-    DATA_API std::list<point_list::sptr> getPointListContainer();
-    DATA_API std::list<point_list::csptr> getPointListContainer() const;
+    DATA_API std::list<point_list::sptr> get_point_list_container();
+    DATA_API std::list<point_list::csptr> get_point_list_container() const;
     ///@}
 
     /**
@@ -112,7 +112,7 @@ public:
      * @return pointList corresponding to the image
      *
      */
-    DATA_API point_list::csptr getPointList(const image::csptr& _img) const;
+    DATA_API point_list::csptr get_point_list(const image::csptr& _img) const;
 
     /**
      * @brief Get the image corresponding to the specified pointList, if the specified pointList is not found
@@ -120,7 +120,7 @@ public:
      * @param[in] pl the pointList
      * @return image corresponding to the pointList
      */
-    DATA_API image::csptr getImage(const point_list::csptr& _pl) const;
+    DATA_API image::csptr get_image(const point_list::csptr& _pl) const;
 
     /**
      * @brief Get the image corresponding to the specified index, if the index is not found
@@ -129,8 +129,8 @@ public:
      * @return image corresponding to the index
      * @{
      */
-    DATA_API image::sptr getImage(std::size_t _idx);
-    DATA_API image::csptr getImage(std::size_t _idx) const;
+    DATA_API image::sptr get_image(std::size_t _idx);
+    DATA_API image::csptr get_image(std::size_t _idx) const;
     /// @}
 
     /// Equality comparison operators
@@ -157,17 +157,17 @@ public:
 protected:
 
     ///List of Image
-    std::list<image::sptr> m_imageContainer;
+    std::list<image::sptr> m_image_container;
     ///List of pointList
-    std::list<point_list::sptr> m_pointListContainer;
+    std::list<point_list::sptr> m_point_list_container_t;
     ///added record signal
-    added_record_signal_t::sptr m_sigAddedRecord;
+    added_record_signal_t::sptr m_sig_added_record;
     /// removed record signal
-    removed_record_signal_t::sptr m_sigRemovedRecord;
+    removed_record_signal_t::sptr m_sig_removed_record;
     ///reset records signal
-    Reset_record_signal_type::sptr m_sigResetRecord;
+    reset_record_signal_t::sptr m_sig_reset_record;
     ///get record signal
-    get_record_signal_t::sptr m_sigGetRecord;
+    get_record_signal_t::sptr m_sig_get_record;
 };
 
 } // namespace sight::data

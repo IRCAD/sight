@@ -39,7 +39,7 @@
 #include <opencv2/imgproc.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vision::ut::helperTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vision::ut::helper_test);
 
 namespace sight::geometry::vision::ut
 {
@@ -65,12 +65,12 @@ static inline void compare_chessboards(
     const sight::data::point_list::csptr& _detected
 )
 {
-    CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected->get_points().size());
 
     for(std::uint32_t i = 0 ; i < _expected.size() ; ++i)
     {
         const auto& expected_coords = _expected[i];
-        const auto& detected_coords = _detected->getPoints()[i]->getCoord();
+        const auto& detected_coords = _detected->get_points()[i]->get_coord();
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[0], detected_coords[0], 0.01);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[1], detected_coords[1], 0.01);
@@ -80,19 +80,19 @@ static inline void compare_chessboards(
 
 //------------------------------------------------------------------------------
 
-void helperTest::setUp()
+void helper_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void helperTest::tearDown()
+void helper_test::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void helperTest::reprojectionIdentity()
+void helper_test::reprojection_identity()
 {
     std::vector<cv::Point3f> object_points;
     object_points.emplace_back(-30.F, 30.F, 0.F);
@@ -149,7 +149,7 @@ void helperTest::reprojectionIdentity()
 
 //------------------------------------------------------------------------------
 
-void helperTest::reprojectionRealDatasetTest1()
+void helper_test::reprojection_real_dataset_test1()
 {
     std::vector<cv::Point3f> object_points;
     object_points.emplace_back(-30.F, 30.F, 0.F);
@@ -236,7 +236,7 @@ void helperTest::reprojectionRealDatasetTest1()
 
 //------------------------------------------------------------------------------
 
-void helperTest::reprojectionRealDatasetTest2()
+void helper_test::reprojection_real_dataset_test2()
 {
     std::vector<cv::Point3f> object_points;
     object_points.emplace_back(-30.F, 30.F, 0.F);
@@ -323,7 +323,7 @@ void helperTest::reprojectionRealDatasetTest2()
 
 //------------------------------------------------------------------------------
 
-void helperTest::toolCalibrationBasic()
+void helper_test::tool_calibration_basic()
 {
     const std::uint8_t nb_matrices = 34;
     auto matrices_vector           = std::make_shared<sight::data::vector>();
@@ -398,7 +398,7 @@ void helperTest::toolCalibrationBasic()
 
 //------------------------------------------------------------------------------
 
-void helperTest::toolCalibration()
+void helper_test::tool_calibration()
 {
     const std::uint8_t nb_matrices = 46;
     auto matrices_vector           = std::make_shared<sight::data::vector>();
@@ -470,9 +470,9 @@ void helperTest::toolCalibration()
 
 //------------------------------------------------------------------------------
 
-void helperTest::chessboardDetectionTest()
+void helper_test::chessboard_detection_test()
 {
-    const auto calib_data_dir = utest_data::Data::dir() / "sight" / "calibration";
+    const auto calib_data_dir = utest_data::dir() / "sight" / "calibration";
     {
         const cv::Mat chess_rgb0 = read_rgb_image((calib_data_dir / "chessboardRGB0.tiff").string());
 
@@ -667,9 +667,9 @@ void helperTest::chessboardDetectionTest()
 
 //------------------------------------------------------------------------------
 
-void helperTest::chessboardDetectionScaleTest()
+void helper_test::chessboard_detection_scale_test()
 {
-    const auto calib_data_dir = utest_data::Data::dir() / "sight" / "calibration";
+    const auto calib_data_dir = utest_data::dir() / "sight" / "calibration";
 
     const cv::Mat chess_rgb0 = read_rgb_image((calib_data_dir / "chessboardRGB0.tiff").string());
 
@@ -680,14 +680,14 @@ void helperTest::chessboardDetectionScaleTest()
         geometry::vision::helper::detect_chessboard(chess_rgb0, 9, 6, 0.25F);
 
     CPPUNIT_ASSERT_EQUAL(
-        detected_chess_full_scale->getPoints().size(),
-        detected_chess_quarter_scale->getPoints().size()
+        detected_chess_full_scale->get_points().size(),
+        detected_chess_quarter_scale->get_points().size()
     );
 
-    for(std::uint32_t i = 0 ; i < detected_chess_full_scale->getPoints().size() ; ++i)
+    for(std::uint32_t i = 0 ; i < detected_chess_full_scale->get_points().size() ; ++i)
     {
-        const auto& full_scale_coords    = detected_chess_full_scale->getPoints()[i]->getCoord();
-        const auto& quarter_scale_coords = detected_chess_quarter_scale->getPoints()[i]->getCoord();
+        const auto& full_scale_coords    = detected_chess_full_scale->get_points()[i]->get_coord();
+        const auto& quarter_scale_coords = detected_chess_quarter_scale->get_points()[i]->get_coord();
 
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {

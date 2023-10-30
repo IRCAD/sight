@@ -42,10 +42,10 @@ static const core::com::signals::key_t ENDED_SIGNAL   = "ended";
 
 job_bar::job_bar() noexcept
 {
-    new_slot(SHOW_JOB_SLOT, &job_bar::showJob, this);
+    new_slot(SHOW_JOB_SLOT, &job_bar::show_job, this);
 
-    m_sigStarted = new_signal<started_signal_t>(STARTED_SIGNAL);
-    m_sigEnded   = new_signal<ended_signal_t>(ENDED_SIGNAL);
+    m_sig_started = new_signal<started_signal_t>(STARTED_SIGNAL);
+    m_sig_ended   = new_signal<ended_signal_t>(ENDED_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,14 +86,14 @@ void job_bar::configuring()
 
 //-----------------------------------------------------------------------------
 
-void job_bar::showJob(core::jobs::base::sptr _job)
+void job_bar::show_job(core::jobs::base::sptr _job)
 {
     auto progress_dialog = std::make_shared<sight::ui::dialog::progress>();
-    progress_dialog->setTitle(_job->name());
+    progress_dialog->set_title(_job->name());
 
     if(!_job->is_cancelable())
     {
-        progress_dialog->hideCancelButton();
+        progress_dialog->hide_cancel_button();
     }
 
     _job->add_done_work_hook(
@@ -106,23 +106,23 @@ void job_bar::showJob(core::jobs::base::sptr _job)
     _job->add_state_hook(
         [progress_dialog, this](core::jobs::base::state _state)
         {
-            if(_state == core::jobs::base::CANCELED || _state == core::jobs::base::FINISHED)
+            if(_state == core::jobs::base::canceled || _state == core::jobs::base::finished)
             {
-                m_sigEnded->emit();
+                m_sig_ended->emit();
                 this->worker()->post_task<void>(
                     [progress_dialog, this]
                 {
-                    m_progressDialogs.erase(progress_dialog);
+                    m_progress_dialogs.erase(progress_dialog);
                 });
             }
-            else if(_state == core::jobs::base::RUNNING)
+            else if(_state == core::jobs::base::running)
             {
-                m_sigStarted->emit();
+                m_sig_started->emit();
             }
         });
 
     core::jobs::base::wptr w_i_job = _job;
-    progress_dialog->setCancelCallback(
+    progress_dialog->set_cancel_callback(
         [ = ]
         {
             core::jobs::base::sptr job = w_i_job.lock();
@@ -132,7 +132,7 @@ void job_bar::showJob(core::jobs::base::sptr _job)
             }
         });
 
-    m_progressDialogs.insert(progress_dialog);
+    m_progress_dialogs.insert(progress_dialog);
 }
 
 //-----------------------------------------------------------------------------

@@ -38,27 +38,27 @@ public:
     SIGHT_DECLARE_CLASS(cursor_base, ui::object);
 
     /// cursor type
-    typedef enum
+    enum state_t
     {
         DEFAULT,
-        BUSY,
-        WAIT,
-        CROSS,
-        OPEN_HAND,
-        CLOSED_HAND
-    } state_t;
+        busy,
+        wait,
+        cross,
+        open_hand,
+        closed_hand
+    };
 
     /// Destructor. Do nothing.
     UI_API ~cursor_base() override = default;
 
-    typedef std::string factory_registry_key_t;
+    using factory_registry_key_t = std::string;
     UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the cursor
-    UI_API virtual void setCursor(state_t _cursor, bool _set_overriden_as_default = true) = 0;
+    UI_API virtual void set_cursor(state_t _cursor, bool _set_overriden_as_default = true) = 0;
 
     /// Set the default cursor
-    UI_API virtual void setDefaultCursor() = 0;
+    UI_API virtual void set_default_cursor() = 0;
 };
 
 } // namespace sight::ui

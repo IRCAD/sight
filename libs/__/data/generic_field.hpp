@@ -49,7 +49,7 @@ public:
 
     SIGHT_DECLARE_CLASS(generic_field<T>, generic_field_base);
 
-    typedef T value_t;
+    using value_t = T;
 
     /// @brief Get the value (mutable version).
     T& value() noexcept
@@ -64,13 +64,13 @@ public:
     }
 
     /// @brief set the value
-    void setValue(const T& _new_value) noexcept
+    void set_value(const T& _new_value) noexcept
     {
         m_value = _new_value;
     }
 
     /// @brief get the value
-    T getValue() const noexcept
+    T get_value() const noexcept
     {
         return m_value;
     }
@@ -104,8 +104,8 @@ public:
             }
 
             // Do not forget to call superclass == operator
-            // base_class have a pure virtual == operator, so we call the base class from base_class
-            using base = typename base_class::base_class;
+            // base_class_t have a pure virtual == operator, so we call the base class from base_class_t
+            using base = typename base_class_t::base_class_t;
             return base::operator==(_other);
         }
         catch([[maybe_unused]] const std::bad_cast& exp)
@@ -198,14 +198,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::string toString() const override
+    std::string to_string() const override
     {
         return boost::lexical_cast<std::string>(this->m_value);
     }
 
     //------------------------------------------------------------------------------
 
-    void fromString(const std::string& _value) override
+    void from_string(const std::string& _value) override
     {
         this->m_value = boost::lexical_cast<T>(_value);
     }
@@ -213,9 +213,9 @@ public:
 protected:
 
     template<typename GT>
-    static typename GT::sptr GenericFieldFactory(typename GT::value_t _value);
+    static typename GT::sptr generic_field_factory(typename GT::value_t _value);
 
-    static sptr GenericFieldFactory(T _value);
+    static sptr generic_field_factory(T _value);
 
     /**
      * @brief Constructor.
@@ -234,7 +234,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    std::ostream& toOStream(std::ostream& _os) const override
+    std::ostream& to_o_stream(std::ostream& _os) const override
     {
         return _os << this->value();
     }
@@ -247,7 +247,7 @@ protected:
 
 template<typename T>
 template<typename GT>
-typename GT::sptr generic_field<T>::GenericFieldFactory(const typename GT::value_t _value)
+typename GT::sptr generic_field<T>::generic_field_factory(const typename GT::value_t _value)
 {
     typename GT::sptr field;
     field          = std::make_shared<GT>();
@@ -258,7 +258,7 @@ typename GT::sptr generic_field<T>::GenericFieldFactory(const typename GT::value
 //------------------------------------------------------------------------------
 
 template<typename T>
-typename generic_field<T>::sptr generic_field<T>::GenericFieldFactory(const T _value)
+typename generic_field<T>::sptr generic_field<T>::generic_field_factory(const T _value)
 {
     typename generic_field<T>::sptr field;
     field          = GenericFieldFactory<generic_field<T> >(_value);

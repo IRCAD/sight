@@ -55,14 +55,14 @@ public:
     UI_QT_API ~toolbar() noexcept override = default;
 
     UI_QT_API void clean() override;
-    UI_QT_API void destroyContainer() override;
+    UI_QT_API void destroy_container() override;
 
-    UI_QT_API virtual void setQtToolBar(QToolBar* _tool_bar);
-    UI_QT_API virtual QToolBar* getQtToolBar();
+    UI_QT_API virtual void set_qt_tool_bar(QToolBar* _tool_bar);
+    UI_QT_API virtual QToolBar* get_qt_tool_bar();
 
 private:
 
-    QPointer<QToolBar> m_toolBar;
+    QPointer<QToolBar> m_tool_bar;
 };
 
 } // namespace sight::ui::qt::container

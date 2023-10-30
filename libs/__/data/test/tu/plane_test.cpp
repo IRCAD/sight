@@ -30,7 +30,7 @@ namespace sight::data::ut
 
 //------------------------------------------------------------------------------
 
-void plane_test::equalityTest()
+void plane_test::equality_test()
 {
     auto plane1 = std::make_shared<data::plane>();
     auto plane2 = std::make_shared<data::plane>();
@@ -51,12 +51,12 @@ void plane_test::equalityTest()
     );
 
     TEST(
-        setPoints(
+        set_points(
             {std::make_shared<data::point>(1., 2., 3.), std::make_shared<data::point>(4., 5., 6.),
              std::make_shared<data::point>(7., 8., 9.)
             })
     );
-    TEST(setIsIntersection(false));
+    TEST(set_is_intersection(false));
 
     #undef TEST
 }

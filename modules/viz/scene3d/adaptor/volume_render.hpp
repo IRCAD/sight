@@ -48,18 +48,18 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b updateImage(): called when the image is updated.
  * - \b toggleWidgets(bool): toggles widget visibility.
  * - \b bufferImage(): called when the image buffer is modified, copies it into the texture buffer.
- * - \b updateVisibility(bool): shows or hides the volume.
+ * - \b update_visibility(bool): shows or hides the volume.
  * - \b toggleVisibility(): toggle whether the volume is shown or not.
  * - \b show(): shows the volume.
  * - \b hide(): hides the volume.
  * - \b updateClippingBox(): updates the cropping widget from the clipping matrix.
- * - \b setBoolParameter(bool, string): calls a bool parameter slot according to the given key.
+ * - \b set_bool_parameter(bool, string): calls a bool parameter slot according to the given key.
  *  - preIntegration: toggles the pre-integration.
  *  - ambientOcclusion: toggles the ambient occlusion.
  *  - colorBleeding: toggles the color bleeding.
  *  - shadows: toggles soft shadows.
  *  - widgets: toggles the clipping box widget's visibility.
- * - \b setIntParameter(int, string): calls an int parameter slot according to the given key.
+ * - \b set_int_parameter(int, string): calls an int parameter slot according to the given key.
  *  - sampling: sets the number of volume samples used by the renderer. More samples yield more details but slow down
  *    rendering.
  *  - opacityCorrection: sets the volume opacity correction factor.
@@ -68,7 +68,7 @@ namespace sight::module::viz::scene3d::adaptor
  *  - satShellRadius: sets the SAT shell radius and computes the SAT.
  *  - satConeAngle: sets the SAT cone angle and computes the SAT.
  *  - satConeSamples: sets the SAT cone samples number and computes the SAT.
- * - \b setDoubleParameter(double, string): calls a double parameter slot according to the given key.
+ * - \b set_double_parameter(double, string): calls a double parameter slot according to the given key.
  *  - aoFactor: sets the ambient occlusion factor and computes the SAT.
  *  - colorBleedingFactor: sets the color bleeding factor and computes the SAT.
  *
@@ -139,9 +139,9 @@ protected:
     static inline const sight::core::com::slots::key_t BUFFER_IMAGE_SLOT         = "bufferImage";
     static inline const sight::core::com::slots::key_t UPDATE_IMAGE_SLOT         = "updateImage";
     static inline const sight::core::com::slots::key_t TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
-    static inline const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-    static inline const sight::core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "setIntParameter";
-    static inline const sight::core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+    static inline const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "set_bool_parameter";
+    static inline const sight::core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "set_int_parameter";
+    static inline const sight::core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
     static inline const sight::core::com::slots::key_t UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
     static inline const sight::core::com::slots::key_t UPDATE_TF_SLOT            = "updateTF";
     static inline const sight::core::com::slots::key_t UPDATE_MASK_SLOT          = "updateMask";
@@ -149,23 +149,23 @@ protected:
     ///@brief Internal wrapper holding config defines.
     struct config
     {
-        static inline const std::string AUTORESET_CAMERA      = s_CONFIG + "autoresetcamera";
-        static inline const std::string PREINTEGRATION        = s_CONFIG + "preintegration";
-        static inline const std::string DYNAMIC               = s_CONFIG + "dynamic";
-        static inline const std::string WIDGETS               = s_CONFIG + "widgets";
-        static inline const std::string PRIORITY              = s_CONFIG + "priority";
-        static inline const std::string LAYER_ORDER_DEPENDANT = s_CONFIG + "layerOrderDependant";
-        static inline const std::string SAMPLES               = s_CONFIG + "samples";
-        static inline const std::string SAT_SIZE_RATIO        = s_CONFIG + "satSizeRatio";
-        static inline const std::string SAT_SHELLS            = s_CONFIG + "satShells";
-        static inline const std::string SAT_SHELL_RADIUS      = s_CONFIG + "satShellRadius";
-        static inline const std::string SAT_CONE_ANGLE        = s_CONFIG + "satConeAngle";
-        static inline const std::string SAT_CONE_SAMPLES      = s_CONFIG + "satConeSamples";
-        static inline const std::string AO_FACTOR             = s_CONFIG + "aoFactor";
-        static inline const std::string COLOR_BLEEDING_FACTOR = s_CONFIG + "colorBleedingFactor";
-        static inline const std::string AO                    = s_CONFIG + "ao";
-        static inline const std::string COLOR_BLEEDING        = s_CONFIG + "colorBleeding";
-        static inline const std::string SHADOWS               = s_CONFIG + "shadows";
+        static inline const std::string AUTORESET_CAMERA      = CONFIG + "autoresetcamera";
+        static inline const std::string PREINTEGRATION        = CONFIG + "preintegration";
+        static inline const std::string DYNAMIC               = CONFIG + "dynamic";
+        static inline const std::string WIDGETS               = CONFIG + "widgets";
+        static inline const std::string PRIORITY              = CONFIG + "priority";
+        static inline const std::string LAYER_ORDER_DEPENDANT = CONFIG + "layerOrderDependant";
+        static inline const std::string SAMPLES               = CONFIG + "samples";
+        static inline const std::string SAT_SIZE_RATIO        = CONFIG + "satSizeRatio";
+        static inline const std::string SAT_SHELLS            = CONFIG + "satShells";
+        static inline const std::string SAT_SHELL_RADIUS      = CONFIG + "satShellRadius";
+        static inline const std::string SAT_CONE_ANGLE        = CONFIG + "satConeAngle";
+        static inline const std::string SAT_CONE_SAMPLES      = CONFIG + "satConeSamples";
+        static inline const std::string AO_FACTOR             = CONFIG + "aoFactor";
+        static inline const std::string COLOR_BLEEDING_FACTOR = CONFIG + "colorBleedingFactor";
+        static inline const std::string AO                    = CONFIG + "ao";
+        static inline const std::string COLOR_BLEEDING        = CONFIG + "colorBleeding";
+        static inline const std::string SHADOWS               = CONFIG + "shadows";
     };
 
     /// Internal wrapper holding the inital config
@@ -237,7 +237,7 @@ protected:
      * @brief Sets the volume visibility.
      * @param _visible the visibility status of the volume.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
     ///@brief Configuration loaded.
     config_data_t m_config {};
@@ -245,27 +245,27 @@ protected:
 private:
 
     /// Defines volume rendering effects.
-    enum class VREffectType
+    enum class vr_effect_type
     {
-        VR_AMBIENT_OCCLUSION,
-        VR_COLOR_BLEEDING,
-        VR_SHADOWS
+        vr_ambient_occlusion,
+        vr_color_bleeding,
+        vr_shadows
     };
 
     /// Updates the transfer function applied to the volume.
-    void updateVolumeTF();
+    void update_volume_tf();
 
     /// Sets a new image.
-    void newImage();
+    void new_image();
 
     /// Updates renderer and the GPU volume texture with the new input image data.
-    void updateImage();
+    void update_image();
 
     /// Updates renderer and the GPU volume texture with the new mask data.
-    void updateMask();
+    void update_mask();
 
     /// Starts a parallel task to copy the updated image buffer into the texture buffer.
-    void bufferImage();
+    void buffer_image();
 
     /**
      * @brief Updates the sampling.
@@ -273,91 +273,91 @@ private:
      *
      * @pre _nbSamples must fit in a 16 bit unsigned int.
      */
-    void updateSampling(unsigned _nb_samples);
+    void update_sampling(unsigned _nb_samples);
 
     /**
      * @brief Sets the opacity correction.
      * @param _opacityCorrection value of the opacity correction.
      */
-    void updateOpacityCorrection(unsigned _opacity_correction);
+    void update_opacity_correction(unsigned _opacity_correction);
 
     /**
      * @brief Sets the ambient occlusion factor.
      * @param _aoFactor value of the ambient occlusion factor.
      */
-    void updateAOFactor(float _ao_factor);
+    void update_ao_factor(float _ao_factor);
 
     /**
      * @brief Sets the color bleeding factor.
      * @param _colorBleedingFactor value of the color bleeding factor.
      */
-    void updateColorBleedingFactor(float _color_bleeding_factor);
+    void update_color_bleeding_factor(float _color_bleeding_factor);
 
     /**
      * @brief Sets the SAT size ratio.
      * @param _sizeRatio value of the SAT size ratio.
      */
-    void updateSatSizeRatio(unsigned _size_ratio);
+    void update_sat_size_ratio(unsigned _size_ratio);
 
     /**
      * @brief Sets the SAT shells number.
      * @param _shellsNumber the number of shells used by the SAT.
      */
-    void updateSatShellsNumber(unsigned _shells_number);
+    void update_sat_shells_number(unsigned _shells_number);
 
     /**
      * @brief Sets the SAT shells radius.
      * @param _shellRadius the shells radius used by the SAT.
      */
-    void updateSatShellRadius(unsigned _shell_radius);
+    void update_sat_shell_radius(unsigned _shell_radius);
 
     /**
      * @brief Sets the SAT cone angle.
      * @param _coneAngle the cone angle size of the SAT. Cones ares used to compute soft shadows.
      */
-    void updateSatConeAngle(float _cone_angle);
+    void update_sat_cone_angle(float _cone_angle);
 
     /**
      * @brief Sets the SAT cone samples.
      * @param _nbConeSamples the cone sample number of the SAT. Cones ares used to compute soft shadows.
      */
-    void updateSatConeSamples(unsigned _nb_cone_samples);
+    void update_sat_cone_samples(unsigned _nb_cone_samples);
 
     /**
      * @brief Enables/disables the pre integration table.
      * @param _preintegration state of the pre integration.
      */
-    void togglePreintegration(bool _preintegration);
+    void toggle_preintegration(bool _preintegration);
 
     /**
      * @brief Enables/disables the ambient occlusion.
      * @param _ambientOcclusion state of the ambient occlusion.
      */
-    void toggleAmbientOcclusion(bool _ambient_occlusion);
+    void toggle_ambient_occlusion(bool _ambient_occlusion);
 
     /**
      * @brief Enables/disables the color bleeding.
      * @param _colorBleeding state of the color bleeding.
      */
-    void toggleColorBleeding(bool _color_bleeding);
+    void toggle_color_bleeding(bool _color_bleeding);
 
     /**
      * @brief Enables/disables the volume self-shadowing.
      * @param _shadows state of soft shadows computation.
      */
-    void toggleShadows(bool _shadows);
+    void toggle_shadows(bool _shadows);
 
     /**
      * @brief Displays/Hides the widget.
      * @param _visible state of the widget visibility.
      */
-    void toggleWidgets(bool _visible);
+    void toggle_widgets(bool _visible);
 
     /**
      * @brief Sets the focal distance.
      * @param _focalDistance value of the focal distance.
      */
-    void setFocalDistance(int _focal_distance);
+    void set_focal_distance(int _focal_distance);
 
     /**
      * @brief Updates a bool parameter.
@@ -375,7 +375,7 @@ private:
      * @see toggleShadows(bool)
      * @see toggleWidgets(bool)
      */
-    void setBoolParameter(bool _val, std::string _key);
+    void set_bool_parameter(bool _val, std::string _key);
 
     /**
      * @brief Updates a int parameter.
@@ -398,7 +398,7 @@ private:
      * @see updateSatConeAngle(int)
      * @see updateSatConeSamples(int)
      */
-    void setIntParameter(int _val, std::string _key);
+    void set_int_parameter(int _val, std::string _key);
 
     /**
      * @brief Updates a double parameter.
@@ -410,49 +410,49 @@ private:
      * @see updateAOFactor(double)
      * @see updateColorBleedingFactor(double)
      */
-    void setDoubleParameter(double _val, std::string _key);
+    void set_double_parameter(double _val, std::string _key);
 
     /// Creates widgets and connects its slots to interactor signals.
-    void createWidget();
+    void create_widget();
 
     /// Removes the widgets from the interactor and deletes it.
-    void destroyWidget();
+    void destroy_widget();
 
     /**
      * @brief Updates or creates the illumination volume according to the given VR effect.
      * @param _vrEffect volume rendering effects.
      * @param _enable enable that effect or not.
      */
-    void toggleVREffect(VREffectType _vr_effect, bool _enable);
+    void toggle_vr_effect(vr_effect_type _vr_effect, bool _enable);
 
     /// Updates the clipping box position from the inout clipping matrix.
-    void updateClippingBox();
+    void update_clipping_box();
 
     /// Updates the inout clipping matrix from the clipping box positions.
-    void updateClippingTM3D();
+    void update_clipping_t_m_3d();
 
     ///Prevents concurrent access on certain operations (texture update, etc.)
     std::mutex m_mutex;
 
     /// Implements a simple GPU ray-tracing renderer.
-    std::unique_ptr<sight::viz::scene3d::vr::ray_tracing_volume_renderer> m_volumeRenderer {nullptr};
+    std::unique_ptr<sight::viz::scene3d::vr::ray_tracing_volume_renderer> m_volume_renderer {nullptr};
 
     /// Fills the incoming image texture in a parallel thread.
-    std::unique_ptr<sight::viz::scene3d::graphics_worker> m_bufferingWorker;
+    std::unique_ptr<sight::viz::scene3d::graphics_worker> m_buffering_worker;
 
     /// Stores the scene manager.
-    Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_scene_manager {nullptr};
 
     /// Stores the scene node of the volume.
-    Ogre::SceneNode* m_volumeSceneNode {nullptr};
+    Ogre::SceneNode* m_volume_scene_node {nullptr};
 
     /// Stores the widgets used for clipping.
     std::shared_ptr<sight::viz::scene3d::interactor::clipping_box_interactor> m_widget;
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, objects::IMAGE_IN, true};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_mask {this, objects::MASK_IN, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::Access::in> m_tf {this, objects::VOLUME_TF_IN, true};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::inout> m_clippingMatrix
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, objects::IMAGE_IN, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, objects::MASK_IN, true};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, objects::VOLUME_TF_IN, true};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_clipping_matrix
     {
         this,
         objects::CLIPPING_MATRIX_INOUT,

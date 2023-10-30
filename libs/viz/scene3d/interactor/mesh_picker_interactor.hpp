@@ -49,16 +49,16 @@ public:
     VIZ_SCENE3D_API ~mesh_picker_interactor() noexcept override;
 
     /// Runs a picking query when a mouse button is released @see mesh_picker_interactor::pick().
-    VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
+    VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mods, int _x, int _y) override;
 
     /// Runs a picking query when a mouse button is pressed @see mesh_picker_interactor::pick().
-    VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
+    VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mods, int _x, int _y) override;
 
     /// Sets the signal to be called when picking succeeded.
-    VIZ_SCENE3D_API void setPointClickedSig(const point_clicked_sig_t::sptr& _sig);
+    VIZ_SCENE3D_API void set_point_clicked_sig(const point_clicked_sig_t::sptr& _sig);
 
     /// Sets the mask to filter out entities with mismathing query flags.
-    VIZ_SCENE3D_API void setQueryMask(std::uint32_t _query_mask);
+    VIZ_SCENE3D_API void set_query_mask(std::uint32_t _query_mask);
 
 private:
 
@@ -71,13 +71,13 @@ private:
      * @param _y height coordinate of the mouse.
      * @param _pressed whether the button is pressed (true) or released (false).
      */
-    void pick(MouseButton _button, Modifier _mods, int _x, int _y, bool _pressed);
+    void pick(mouse_button _button, modifier _mods, int _x, int _y, bool _pressed);
 
     /// Picking query mask. Filters out objects with mismatching flags.
-    std::uint32_t m_queryMask {0xffffffff};
+    std::uint32_t m_query_mask {0xffffffff};
 
     /// Defines the signal sent when picking succeeded.
-    point_clicked_sig_t::sptr m_pointClickedSig;
+    point_clicked_sig_t::sptr m_point_clicked_sig;
 };
 
 } //namespace sight::viz::scene3d::interactor.

@@ -32,22 +32,22 @@
 namespace ex_timeline
 {
 
-struct MsgData
+struct msg_data
 {
     /// Defines the maximum size of a message.
     static const std::size_t MAX_MSG_SIZE = 255;
 
     /// Defines the identifier of the sender.
-    unsigned int uidSender;
+    unsigned int uid_sender;
 
     /// Stores the message as a std::array.
-    std::array<char, MAX_MSG_SIZE> szMsg;
+    std::array<char, MAX_MSG_SIZE> sz_msg;
 };
 
 /**
  * @brief Defines a timeline that stores string messages.
  */
-class message_tl : public sight::data::generic_tl<MsgData>
+class message_tl : public sight::data::generic_tl<msg_data>
 {
 public:
 
@@ -58,7 +58,7 @@ public:
      * @param _key private construction key.
      */
     message_tl() :
-        generic_tl<MsgData>()
+        generic_tl<msg_data>()
     {
     }
 };

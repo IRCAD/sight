@@ -35,7 +35,7 @@ SIGHT_REGISTER_PLUGIN("sight::module::service::plugin");
 void plugin::start()
 {
     sight::service::extension::factory::get()->parse_plugin_infos();
-    sight::service::extension::config::getDefault()->parse_plugin_infos();
+    sight::service::extension::config::get_default()->parse_plugin_infos();
 }
 
 //-----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ void plugin::start()
 void plugin::stop() noexcept
 {
     // Clear all service configs
-    sight::service::extension::config::getDefault()->clear_registry();
+    sight::service::extension::config::get_default()->clear_registry();
 
     // Clear all service factories
     sight::service::extension::factory::get()->clear_factory();

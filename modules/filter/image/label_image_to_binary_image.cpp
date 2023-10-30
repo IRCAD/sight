@@ -44,14 +44,14 @@ namespace sight::module::filter::image
 
 using function_t = std::function<std::uint8_t(const std::uint8_t&)>;
 
-class LambdaFunctor
+class lambda_functor
 {
 public:
 
-    LambdaFunctor()
+    lambda_functor()
     = default;
 
-    explicit LambdaFunctor(function_t _f) :
+    explicit lambda_functor(function_t _f) :
         m_function(std::move(_f))
     {
     }
@@ -65,7 +65,7 @@ public:
 
     // Needs to be implemented because it is called by the itkUnaryFunctorImageFilter when setting the functor.
     // Always return true to force-set the functor.
-    inline bool operator!=(const LambdaFunctor& /*unused*/)
+    inline bool operator!=(const lambda_functor& /*unused*/)
     {
         return true;
     }
@@ -91,7 +91,7 @@ void label_image_to_binary_image::configuring()
 {
     const config_t config = this->get_config();
 
-    m_labelSetFieldName = config.get_optional<std::string>("config.<xmlattr>.labelsField");
+    m_label_set_field_name = config.get_optional<std::string>("config.<xmlattr>.labelsField");
 }
 
 //------------------------------------------------------------------------------
@@ -106,26 +106,26 @@ void label_image_to_binary_image::updating()
 {
     using image_t = typename itk::Image<std::uint8_t, 3>;
 
-    const auto label_image = m_labelImage.lock();
-    SIGHT_ASSERT("No " << s_LABEL_IMAGE_INPUT << " input.", label_image);
+    const auto label_image = m_label_image.lock();
+    SIGHT_ASSERT("No " << LABEL_IMAGE_INPUT << " input.", label_image);
 
-    const auto mask_image = m_binaryMask.lock();
-    SIGHT_ASSERT("No " << s_BINARY_MASK_INOUT << " inout.", mask_image);
+    const auto mask_image = m_binary_mask.lock();
+    SIGHT_ASSERT("No " << BINARY_MASK_INOUT << " inout.", mask_image);
 
     SIGHT_ASSERT(
         "The label image must be a greyscale image with uint8 values.",
-        label_image->getType() == core::type::UINT8 && label_image->numComponents() == 1
+        label_image->type() == core::type::UINT8 && label_image->num_components() == 1
     );
 
-    LambdaFunctor functor;
-    if(m_labelSetFieldName)
+    lambda_functor functor;
+    if(m_label_set_field_name)
     {
-        data::vector::csptr labels = label_image->get_field<data::vector>(m_labelSetFieldName.value());
+        data::vector::csptr labels = label_image->get_field<data::vector>(m_label_set_field_name.value());
 
         if(!labels)
         {
             SIGHT_INFO(
-                "No field named '" + m_labelSetFieldName.value()
+                "No field named '" + m_label_set_field_name.value()
                 + "' in 'labelImage'. No binary mask generated."
             );
             return;
@@ -145,7 +145,7 @@ void label_image_to_binary_image::updating()
                 label_set.set(static_cast<std::uint8_t>(val), true);
             });
 
-        functor = LambdaFunctor(
+        functor = lambda_functor(
             function_t(
                 [label_set](const std::uint8_t& _in)
             {
@@ -155,7 +155,7 @@ void label_image_to_binary_image::updating()
     }
     else
     {
-        functor = LambdaFunctor(
+        functor = lambda_functor(
             function_t(
                 [](const std::uint8_t& _in)
             {
@@ -166,8 +166,8 @@ void label_image_to_binary_image::updating()
 
     typename image_t::Pointer itk_label_img = io::itk::move_to_itk<image_t>(label_image.get_shared());
 
-    itk::UnaryFunctorImageFilter<image_t, image_t, LambdaFunctor>::Pointer label_to_mask_filter =
-        itk::UnaryFunctorImageFilter<image_t, image_t, LambdaFunctor>::New();
+    itk::UnaryFunctorImageFilter<image_t, image_t, lambda_functor>::Pointer label_to_mask_filter =
+        itk::UnaryFunctorImageFilter<image_t, image_t, lambda_functor>::New();
 
     label_to_mask_filter->SetFunctor(functor);
     label_to_mask_filter->SetInput(itk_label_img);
@@ -180,7 +180,7 @@ void label_image_to_binary_image::updating()
 
     modified_sig->async_emit();
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -194,8 +194,8 @@ void label_image_to_binary_image::stopping()
 service::connections_t label_image_to_binary_image::auto_connections() const
 {
     return {
-        {s_LABEL_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {s_LABEL_IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE}
+        {LABEL_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {LABEL_IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

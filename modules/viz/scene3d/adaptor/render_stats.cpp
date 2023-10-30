@@ -39,7 +39,7 @@ class PostWindowRenderListener : public Ogre::RenderTargetListener
 public:
 
     explicit PostWindowRenderListener(render_stats& _render_stats_adaptor) :
-        m_renderStatsAdaptor(_render_stats_adaptor)
+        m_render_stats_adaptor(_render_stats_adaptor)
     {
     }
 
@@ -48,7 +48,7 @@ public:
     void postRenderTargetUpdate(const Ogre::RenderTargetEvent& _evt) override
     {
         // update text every 100th frame
-        if(m_frameCount++ > 100)
+        if(m_frame_count++ > 100)
         {
             auto frame_stats = _evt.source->getStatistics();
 
@@ -56,17 +56,17 @@ public:
             stat_stream << "FPS=" << static_cast<int>(frame_stats.lastFPS) << std::endl
             << "Triangle count=" << frame_stats.triangleCount << std::endl;
 
-            m_renderStatsAdaptor.m_statsText->setText(stat_stream.str());
+            m_render_stats_adaptor.m_stats_text->set_text(stat_stream.str());
 
-            m_frameCount = 1;
+            m_frame_count = 1;
         }
     }
 
 private:
 
-    render_stats& m_renderStatsAdaptor;
+    render_stats& m_render_stats_adaptor;
 
-    std::uint8_t m_frameCount {100}; // Start at 100 to trigger text creation after the first frame.
+    std::uint8_t m_frame_count {100}; // Start at 100 to trigger text creation after the first frame.
 };
 
 //------------------------------------------------------------------------------
@@ -78,20 +78,20 @@ render_stats::~render_stats() noexcept = default;
 
 void render_stats::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_COLOR_CONFIG     = s_CONFIG + "color";
-    static const std::string s_FONT_SIZE_CONFIG = s_CONFIG + "fontSize";
+    static const std::string s_COLOR_CONFIG     = CONFIG + "color";
+    static const std::string s_FONT_SIZE_CONFIG = CONFIG + "fontSize";
 
     const std::string color       = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     data::color::sptr sight_color = std::make_shared<data::color>();
-    sight_color->setRGBA(color);
+    sight_color->set_rgba(color);
 
-    m_textColor = Ogre::ColourValue(sight_color->red(), sight_color->green(), sight_color->blue());
+    m_text_color = Ogre::ColourValue(sight_color->red(), sight_color->green(), sight_color->blue());
 
-    m_fontSize = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_font_size = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
 }
 
 //------------------------------------------------------------------------------
@@ -100,16 +100,16 @@ void render_stats::starting()
 {
     this->initialize();
 
-    sight::viz::scene3d::render::sptr render_srv = this->getRenderService();
-    render_srv->makeCurrent();
+    sight::viz::scene3d::render::sptr render_srv = this->render_service();
+    render_srv->make_current();
 
-    m_statsText = sight::viz::scene3d::text::make(this->getLayer());
-    m_statsText->setFontSize(m_fontSize);
-    m_statsText->setPosition(0.01F, 0.01F);
-    m_statsText->setTextColor(m_textColor);
+    m_stats_text = sight::viz::scene3d::text::make(this->layer());
+    m_stats_text->set_font_size(m_font_size);
+    m_stats_text->set_position(0.01F, 0.01F);
+    m_stats_text->set_text_color(m_text_color);
 
-    const sight::viz::scene3d::layer::sptr layer = this->getLayer();
-    auto* render_window                          = layer->getRenderTarget();
+    const sight::viz::scene3d::layer::sptr layer = this->layer();
+    auto* render_window                          = layer->get_render_target();
 
     m_listener = std::make_unique<module::viz::scene3d::adaptor::PostWindowRenderListener>(*this);
     render_window->addListener(m_listener.get());
@@ -125,15 +125,15 @@ void render_stats::updating()
 
 void render_stats::stopping()
 {
-    sight::viz::scene3d::render::sptr render_srv = this->getRenderService();
-    render_srv->makeCurrent();
+    sight::viz::scene3d::render::sptr render_srv = this->render_service();
+    render_srv->make_current();
 
-    const sight::viz::scene3d::layer::sptr layer = this->getLayer();
-    auto* render_window                          = layer->getRenderTarget();
+    const sight::viz::scene3d::layer::sptr layer = this->layer();
+    auto* render_window                          = layer->get_render_target();
     render_window->removeListener(m_listener.get());
 
     m_listener.reset();
-    m_statsText = nullptr;
+    m_stats_text = nullptr;
 }
 
 //------------------------------------------------------------------------------

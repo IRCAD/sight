@@ -23,7 +23,7 @@
 #include "io/vtk/PlyMeshWriter.hpp"
 
 #include "io/vtk/helper/mesh.hpp"
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 
 #include <core/base.hpp>
 #include <core/jobs/base.hpp>
@@ -35,28 +35,28 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::vtk::PlyMeshWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::ply_mesh_writer);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-PlyMeshWriter::PlyMeshWriter() :
+ply_mesh_writer::ply_mesh_writer() :
     m_job(std::make_shared<core::jobs::observer>("PLY Mesh writer"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-PlyMeshWriter::~PlyMeshWriter()
+ply_mesh_writer::~ply_mesh_writer()
 = default;
 
 //------------------------------------------------------------------------------
 
-void PlyMeshWriter::write()
+void ply_mesh_writer::write()
 {
-    using helper::vtkLambdaCommand;
+    using helper::vtk_lambda_command;
 
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -64,19 +64,19 @@ void PlyMeshWriter::write()
 
     SIGHT_ASSERT("Object Lock null.", object_lock);
 
-    const data::mesh::csptr p_mesh = getConcreteObject();
+    const data::mesh::csptr p_mesh = get_concrete_object();
 
     vtkSmartPointer<vtkPLYWriter> writer  = vtkSmartPointer<vtkPLYWriter>::New();
     vtkSmartPointer<vtkPolyData> vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(p_mesh, vtk_mesh);
+    io::vtk::helper::mesh::to_vtk_mesh(p_mesh, vtk_mesh);
     writer->SetInputData(vtk_mesh);
     writer->SetFileName(this->get_file().string().c_str());
     writer->SetFileTypeToBinary();
 
-    vtkSmartPointer<vtkLambdaCommand> progress_callback;
+    vtkSmartPointer<vtk_lambda_command> progress_callback;
 
-    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progress_callback->SetCallback(
+    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
+    progress_callback->set_callback(
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* const filter = static_cast<vtkPLYWriter*>(_caller);
@@ -93,14 +93,14 @@ void PlyMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string PlyMeshWriter::extension() const
+std::string ply_mesh_writer::extension() const
 {
     return ".ply";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr PlyMeshWriter::getJob() const
+core::jobs::base::sptr ply_mesh_writer::get_job() const
 {
     return m_job;
 }

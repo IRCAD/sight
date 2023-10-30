@@ -38,13 +38,13 @@ class mesh
 {
 public:
 
-    typedef std::map<std::array<float, 3>, data::mesh::point_t> points_map_t;
+    using points_map_t = std::map<std::array<float, 3>, data::mesh::point_t>;
 
     /**
      * @brief Generate a mesh.
      * @param mesh mesh to generate
      */
-    UTEST_DATA_API static void generateMesh(const data::mesh::sptr& _mesh);
+    UTEST_DATA_API static void generate_mesh(const data::mesh::sptr& _mesh);
 
     /**
      * @brief Generate a quad mesh.
@@ -52,11 +52,11 @@ public:
      * This method generates synthetic mesh with quads (two faces of a cube).
      *
      * @param[out]  mesh data::mesh empty mesh structure to fill with quad cells.
-     * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
+     * @param[in]  attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
-    UTEST_DATA_API static void generateQuadMesh(
+    UTEST_DATA_API static void generate_quad_mesh(
         const data::mesh::sptr& _mesh,
-        data::mesh::Attributes _attributes = data::mesh::Attributes::NONE
+        data::mesh::attribute _attributes = data::mesh::attribute::none
     );
 
     /**
@@ -65,11 +65,11 @@ public:
      * This method generates synthetic mesh with triangles (two faces of a cube).
      *
      * @param[out]  mesh data::mesh empty mesh structure to fill with triangle cell.
-     * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
+     * @param[in]  attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
-    UTEST_DATA_API static void generateTriangleMesh(
+    UTEST_DATA_API static void generate_triangle_mesh(
         const data::mesh::sptr& _mesh,
-        data::mesh::Attributes _attributes = data::mesh::Attributes::NONE
+        data::mesh::attribute _attributes = data::mesh::attribute::none
     );
 
     /**
@@ -78,11 +78,11 @@ public:
      * This method generates synthetic mesh with triangles and quads (four faces of a cube).
      *
      * @param[out]  mesh data::mesh empty mesh structure to fill with quad and triangle cells.
-     * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
+     * @param[in]  attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
-    UTEST_DATA_API static void generateTriangleQuadMesh(
+    UTEST_DATA_API static void generate_triangle_quad_mesh(
         const data::mesh::sptr& _mesh,
-        data::mesh::Attributes _attributes = data::mesh::Attributes::NONE
+        data::mesh::attribute _attributes = data::mesh::attribute::none
     );
 
 private:
@@ -96,7 +96,7 @@ private:
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
 
-    static void addQuadMesh(
+    static void add_quad_mesh(
         const data::mesh::sptr& _mesh,
         points_map_t& _points,
         std::size_t _nb_points_by_edge = 10,
@@ -111,14 +111,14 @@ private:
      * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
-    static void addTriangleMesh(
+    static void add_triangle_mesh(
         const data::mesh::sptr& _mesh,
         points_map_t& _points,
         std::size_t _nb_points_by_edge = 10,
         float _edge_dim                = 100.F
     );
 
-    static data::mesh::point_t addPoint(
+    static data::mesh::point_t add_point(
         const data::mesh::position_t* _pt,
         const data::mesh::sptr& _mesh,
         points_map_t& _points
@@ -128,7 +128,7 @@ private:
      *
      * @param[out]  mesh data::mesh structure to shake.
      */
-    static void shakePoints(const data::mesh::sptr& _mesh);
+    static void shake_points(const data::mesh::sptr& _mesh);
 };
 
 } // namespace sight::utest_data::generator

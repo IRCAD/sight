@@ -43,13 +43,13 @@ namespace sight::module::ui::qt
 
 //------------------------------------------------------------------------------
 /** @brief Help browser */
-class HelpBrowser : public QTextBrowser
+class help_browser : public QTextBrowser
 {
 public:
 
-    explicit HelpBrowser(QHelpEngine* _help_engine, QWidget* _parent = nullptr) :
+    explicit help_browser(QHelpEngine* _help_engine, QWidget* _parent = nullptr) :
         QTextBrowser(_parent),
-        m_helpEngine(_help_engine)
+        m_help_engine(_help_engine)
     {
     }
 
@@ -59,7 +59,7 @@ public:
     {
         if(_url.scheme() == "qthelp")
         {
-            return {m_helpEngine->fileData(_url)};
+            return {m_help_engine->fileData(_url)};
         }
 
         return QTextBrowser::loadResource(_type, _url);
@@ -67,7 +67,7 @@ public:
 
 private:
 
-    QHelpEngine* m_helpEngine;
+    QHelpEngine* m_help_engine;
 };
 //------------------------------------------------------------------------------
 
@@ -90,37 +90,37 @@ void show_help::configuring()
 
     const auto configuration = this->get_config();
     const auto filename      = configuration.get<std::string>("filename.<xmlattr>.id");
-    m_fsHelpPath           = std::filesystem::path(filename);
-    m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);
-    SIGHT_WARN_IF("Help file " << filename << " doesn't exist", !m_bServiceIsConfigured);
+    m_fs_help_path            = std::filesystem::path(filename);
+    m_b_service_is_configured = std::filesystem::exists(m_fs_help_path);
+    SIGHT_WARN_IF("Help file " << filename << " doesn't exist", !m_b_service_is_configured);
 }
 
 //------------------------------------------------------------------------------
 
 void show_help::updating()
 {
-    SIGHT_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
+    SIGHT_ASSERT("The Help service isn't configured properly.", m_b_service_is_configured);
 
     auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Help"));
-    auto* help_engine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
+    auto* help_engine = new QHelpEngine(QString::fromStdString(m_fs_help_path.string()), dialog);
     if(!help_engine->setupData())
     {
         SIGHT_ERROR("HelpEngine error: " << help_engine->error().toStdString());
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Warning");
-        message_box.setMessage("Help file is missing or not correct.");
-        message_box.setIcon(sight::ui::dialog::message::WARNING);
-        message_box.addButton(sight::ui::dialog::message::OK);
+        message_box.set_title("Warning");
+        message_box.set_message("Help file is missing or not correct.");
+        message_box.set_icon(sight::ui::dialog::message::warning);
+        message_box.add_button(sight::ui::dialog::message::ok);
         message_box.show();
         // Setup help engine information failed.
         // qhc (Qt Help Collection) or qch (Qt Compressed Help) file is not correct.
     }
     else
     {
-        auto* help_panel   = new QSplitter(Qt::Horizontal);
-        auto* help_browser = new HelpBrowser(help_engine, dialog);
-        help_panel->insertWidget(0, help_engine->contentWidget());
+        auto* help_panel = new QSplitter(Qt::Horizontal);
+        auto* help_browser = new class help_browser (help_engine, dialog) ;
+                                 help_panel->insertWidget(0, help_engine->contentWidget());
         help_panel->insertWidget(1, help_browser);
         help_panel->setStretchFactor(1, 1);
 
@@ -142,14 +142,14 @@ void show_help::updating()
 
 void show_help::starting()
 {
-    this->sight::ui::action::actionServiceStarting();
+    this->sight::ui::action::action_service_starting();
 }
 
 //------------------------------------------------------------------------------
 
 void show_help::stopping()
 {
-    this->sight::ui::action::actionServiceStopping();
+    this->sight::ui::action::action_service_stopping();
 }
 
 //------------------------------------------------------------------------------

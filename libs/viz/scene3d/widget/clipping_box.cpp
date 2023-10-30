@@ -56,47 +56,47 @@ clipping_box::clipping_box(
     const std::string& _box_mtl_name,
     const std::string& _handle_mtl_name
 ) :
-    M_ID(std::move(_id)),
-    m_sceneManager(_scene_manager),
+    m_id(std::move(_id)),
+    m_scene_manager(_scene_manager),
     m_camera(_camera),
-    m_volumeSceneNode(_parent_scene_node),
-    m_widgetSceneNode(m_volumeSceneNode->createChildSceneNode()),
-    m_handleMtl(Ogre::MaterialManager::getSingleton().getByName(_handle_mtl_name, RESOURCE_GROUP)),
-    m_boxMtl(Ogre::MaterialManager::getSingleton().getByName(_box_mtl_name, RESOURCE_GROUP)),
-    m_clippingUpdateCallback(std::move(_clipping_update_callback))
+    m_volume_scene_node(_parent_scene_node),
+    m_widget_scene_node(m_volume_scene_node->createChildSceneNode()),
+    m_handle_mtl(Ogre::MaterialManager::getSingleton().getByName(_handle_mtl_name, RESOURCE_GROUP)),
+    m_box_mtl(Ogre::MaterialManager::getSingleton().getByName(_box_mtl_name, RESOURCE_GROUP)),
+    m_clipping_update_callback(std::move(_clipping_update_callback))
 {
-    SIGHT_ASSERT("Missing '" + _box_mtl_name + "' material.", m_boxMtl);
-    SIGHT_ASSERT("Missing '" + _handle_mtl_name + "' material.", m_handleMtl);
+    SIGHT_ASSERT("Missing '" + _box_mtl_name + "' material.", m_box_mtl);
+    SIGHT_ASSERT("Missing '" + _handle_mtl_name + "' material.", m_handle_mtl);
 
-    this->initWidgets();
-    this->applyTransform(_clipping_matrix);
+    this->init_widgets();
+    this->apply_transform(_clipping_matrix);
 }
 
 //-----------------------------------------------------------------------------
 
 clipping_box::~clipping_box()
 {
-    m_widgetSceneNode->detachAllObjects();
+    m_widget_scene_node->detachAllObjects();
 
-    m_sceneManager->destroyManualObject(m_selectedFace);
-    m_sceneManager->destroyManualObject(m_boundingBox);
+    m_scene_manager->destroyManualObject(m_selected_face);
+    m_scene_manager->destroyManualObject(m_bounding_box);
 
     for(auto& widget : m_widgets)
     {
         const Ogre::MovableObject* mo = widget.first;
-        m_sceneManager->destroyMovableObject(mo->getName(), mo->getMovableType());
+        m_scene_manager->destroyMovableObject(mo->getName(), mo->getMovableType());
     }
 
-    Ogre::MaterialManager::getSingleton().remove(m_handleHightlightMtl->getHandle());
-    Ogre::MaterialManager::getSingleton().remove(m_boxHighlightMtl->getHandle());
-    Ogre::MaterialManager::getSingleton().remove(m_boxFaceMtl->getHandle());
+    Ogre::MaterialManager::getSingleton().remove(m_handle_hightlight_mtl->getHandle());
+    Ogre::MaterialManager::getSingleton().remove(m_box_highlight_mtl->getHandle());
+    Ogre::MaterialManager::getSingleton().remove(m_box_face_mtl->getHandle());
 
-    m_sceneManager->destroySceneNode(m_widgetSceneNode);
+    m_scene_manager->destroySceneNode(m_widget_scene_node);
 }
 
 //-----------------------------------------------------------------------------
 
-bool clipping_box::belongsToWidget(const Ogre::MovableObject* const _object) const
+bool clipping_box::belongs_to_widget(const Ogre::MovableObject* const _object) const
 {
     return m_widgets.find(_object) != m_widgets.end();
 }
@@ -104,13 +104,12 @@ bool clipping_box::belongsToWidget(const Ogre::MovableObject* const _object) con
 //-----------------------------------------------------------------------------
 
 std::array<Ogre::Vector3,
-           4> clipping_box::getFacePositions(viz::scene3d::vr::volume_renderer::CubeFace _face_name) const
+           4> clipping_box::get_face_positions(viz::scene3d::vr::volume_renderer::cube_face _face_name) const
 {
-    const vr::volume_renderer::CubeFacePositionList position_indices =
-        vr::volume_renderer::s_cubeFaces.at(_face_name);
+    auto position_indices = vr::volume_renderer::CUBE_FACES.at(_face_name);
     std::array<Ogre::Vector3, 4> face_positions;
 
-    const auto bb_positions = this->clipping_boxPositions();
+    const auto bb_positions = this->clipping_box_positions();
 
     std::transform(
         position_indices.begin(),
@@ -123,63 +122,63 @@ std::array<Ogre::Vector3,
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 clipping_box::getFaceCenter(viz::scene3d::vr::volume_renderer::CubeFace _face_name) const
+Ogre::Vector3 clipping_box::get_face_center(viz::scene3d::vr::volume_renderer::cube_face _face_name) const
 {
-    const auto face_positions = this->getFacePositions(_face_name);
+    const auto face_positions = this->get_face_positions(_face_name);
     return std::accumulate(face_positions.cbegin() + 1, face_positions.cend(), face_positions[0]) / 4.F;
 }
 
 //-----------------------------------------------------------------------------
 
-std::array<Ogre::Vector3, 8> clipping_box::clipping_boxPositions() const
+std::array<Ogre::Vector3, 8> clipping_box::clipping_box_positions() const
 {
     return {{
-        Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[1].z),
-        Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[1].z),
-        Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[0].z),
-        Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[1].z),
-        Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[1].z),
-        Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[0].z),
-        Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[0].z),
-        Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[0].z)
+        Ogre::Vector3(m_clipping_cube[1].x, m_clipping_cube[1].y, m_clipping_cube[1].z),
+        Ogre::Vector3(m_clipping_cube[1].x, m_clipping_cube[0].y, m_clipping_cube[1].z),
+        Ogre::Vector3(m_clipping_cube[1].x, m_clipping_cube[1].y, m_clipping_cube[0].z),
+        Ogre::Vector3(m_clipping_cube[0].x, m_clipping_cube[1].y, m_clipping_cube[1].z),
+        Ogre::Vector3(m_clipping_cube[0].x, m_clipping_cube[0].y, m_clipping_cube[1].z),
+        Ogre::Vector3(m_clipping_cube[1].x, m_clipping_cube[0].y, m_clipping_cube[0].z),
+        Ogre::Vector3(m_clipping_cube[0].x, m_clipping_cube[1].y, m_clipping_cube[0].z),
+        Ogre::Vector3(m_clipping_cube[0].x, m_clipping_cube[0].y, m_clipping_cube[0].z)
     }
     };
 }
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::updateWidgets()
+void clipping_box::update_widgets()
 {
-    const auto clipping_box_positions = this->clipping_boxPositions();
+    const auto clipping_box_positions = this->clipping_box_positions();
 
-    m_boundingBox->beginUpdate(0);
+    m_bounding_box->beginUpdate(0);
     {
         // Box
         for(unsigned i = 0 ; i < 12 ; ++i)
         {
-            const auto cube_edge = vr::volume_renderer::s_cubeEdges[i];
+            const auto cube_edge = vr::volume_renderer::CUBE_EDGES[i];
 
-            m_boundingBox->position(clipping_box_positions[cube_edge.first]);
-            m_boundingBox->position(clipping_box_positions[cube_edge.second]);
+            m_bounding_box->position(clipping_box_positions[cube_edge.first]);
+            m_bounding_box->position(clipping_box_positions[cube_edge.second]);
         }
 
         // Cross
         for(unsigned i = 0 ; i < 6 ; i += 2)
         {
-            const auto face_center          = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i));
-            const auto opposite_face_center = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i + 1));
+            const auto face_center          = this->get_face_center(static_cast<vr::volume_renderer::cube_face>(i));
+            const auto opposite_face_center = this->get_face_center(static_cast<vr::volume_renderer::cube_face>(i + 1));
 
-            m_boundingBox->position(face_center);
-            m_boundingBox->position(opposite_face_center);
+            m_bounding_box->position(face_center);
+            m_bounding_box->position(opposite_face_center);
         }
     }
-    m_boundingBox->end();
+    m_bounding_box->end();
 
     // Recenter widgets
     for(auto& widget : m_widgets)
     {
         const auto& widget_face_node_pair = widget.second;
-        const Ogre::Vector3 face_center   = this->getFaceCenter(widget_face_node_pair.first);
+        const Ogre::Vector3 face_center   = this->get_face_center(widget_face_node_pair.first);
 
         auto* widget_scene_node = widget_face_node_pair.second;
         widget_scene_node->setPosition(face_center);
@@ -189,93 +188,93 @@ void clipping_box::updateWidgets()
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::initWidgets()
+void clipping_box::init_widgets()
 {
     // Create widget materials
     {
-        m_handleMtl->setAmbient(0.1F, 0.1F, 0.1F);
-        m_handleMtl->setDiffuse(1.F, 1.F, 1.F, 1.F);
-        m_handleMtl->setSpecular(0.F, 0.F, 0.F, 1.F);
-        m_handleMtl->setShininess(1.F);
+        m_handle_mtl->setAmbient(0.1F, 0.1F, 0.1F);
+        m_handle_mtl->setDiffuse(1.F, 1.F, 1.F, 1.F);
+        m_handle_mtl->setSpecular(0.F, 0.F, 0.F, 1.F);
+        m_handle_mtl->setShininess(1.F);
 
-        m_handleHightlightMtl = m_handleMtl->clone(M_ID + "_SphereHighlight", true, RESOURCE_GROUP);
-        m_handleHightlightMtl->setAmbient(0.3F, 0.F, 0.F);
-        m_handleHightlightMtl->setDiffuse(0.5F, 0.1F, 0.1F, 1.F);
+        m_handle_hightlight_mtl = m_handle_mtl->clone(m_id + "_SphereHighlight", true, RESOURCE_GROUP);
+        m_handle_hightlight_mtl->setAmbient(0.3F, 0.F, 0.F);
+        m_handle_hightlight_mtl->setDiffuse(0.5F, 0.1F, 0.1F, 1.F);
 
-        m_boxMtl->setAmbient(1.F, 1.F, 1.F);
-        m_boxMtl->setDiffuse(0.F, 0.F, 0.F, 1.F);
-        m_boxMtl->setSpecular(0.F, 0.F, 0.F, 1.F);
+        m_box_mtl->setAmbient(1.F, 1.F, 1.F);
+        m_box_mtl->setDiffuse(0.F, 0.F, 0.F, 1.F);
+        m_box_mtl->setSpecular(0.F, 0.F, 0.F, 1.F);
 
-        m_boxHighlightMtl = m_boxMtl->clone(M_ID + "_FrameHighlight", true, RESOURCE_GROUP);
-        m_boxHighlightMtl->setAmbient(0.F, 1.F, 0.F);
+        m_box_highlight_mtl = m_box_mtl->clone(m_id + "_FrameHighlight", true, RESOURCE_GROUP);
+        m_box_highlight_mtl->setAmbient(0.F, 1.F, 0.F);
 
-        m_boxFaceMtl = m_boxMtl->clone(M_ID + "_FaceHighlight", true, RESOURCE_GROUP);
-        m_boxFaceMtl->setAmbient(1.F, 1.F, 0.F);
-        m_boxFaceMtl->setDiffuse(0.F, 0.F, 0.F, 0.6F);
-        m_boxFaceMtl->setSpecular(0.F, 0.F, 0.F, 0.6F);
-        m_boxFaceMtl->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-        m_boxFaceMtl->setDepthWriteEnabled(false);
+        m_box_face_mtl = m_box_mtl->clone(m_id + "_FaceHighlight", true, RESOURCE_GROUP);
+        m_box_face_mtl->setAmbient(1.F, 1.F, 0.F);
+        m_box_face_mtl->setDiffuse(0.F, 0.F, 0.F, 0.6F);
+        m_box_face_mtl->setSpecular(0.F, 0.F, 0.F, 0.6F);
+        m_box_face_mtl->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+        m_box_face_mtl->setDepthWriteEnabled(false);
     }
 
-    m_boundingBox  = m_sceneManager->createManualObject(M_ID + "_VolumeBB");
-    m_selectedFace = m_sceneManager->createManualObject(M_ID + "_VRSelectedFace");
+    m_bounding_box  = m_scene_manager->createManualObject(m_id + "_VolumeBB");
+    m_selected_face = m_scene_manager->createManualObject(m_id + "_VRSelectedFace");
 
-    const auto clipping_box_positions = this->clipping_boxPositions();
+    const auto clipping_box_positions = this->clipping_box_positions();
 
-    m_boundingBox->begin(m_boxMtl->getName(), Ogre::RenderOperation::OT_LINE_LIST, RESOURCE_GROUP);
+    m_bounding_box->begin(m_box_mtl->getName(), Ogre::RenderOperation::OT_LINE_LIST, RESOURCE_GROUP);
     {
         for(unsigned i = 0 ; i < 12 ; ++i)
         {
-            const auto cube_edge = vr::volume_renderer::s_cubeEdges[i];
+            const auto cube_edge = vr::volume_renderer::CUBE_EDGES[i];
 
-            m_boundingBox->position(clipping_box_positions[cube_edge.first]);
-            m_boundingBox->position(clipping_box_positions[cube_edge.second]);
+            m_bounding_box->position(clipping_box_positions[cube_edge.first]);
+            m_bounding_box->position(clipping_box_positions[cube_edge.second]);
         }
 
         // Cross
         for(unsigned i = 0 ; i < 6 ; i += 2)
         {
-            const auto face_center          = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i));
-            const auto opposite_face_center = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i + 1));
+            const auto face_center          = this->get_face_center(static_cast<vr::volume_renderer::cube_face>(i));
+            const auto opposite_face_center = this->get_face_center(static_cast<vr::volume_renderer::cube_face>(i + 1));
 
-            m_boundingBox->position(face_center);
-            m_boundingBox->position(opposite_face_center);
+            m_bounding_box->position(face_center);
+            m_bounding_box->position(opposite_face_center);
         }
     }
-    m_boundingBox->end();
+    m_bounding_box->end();
 
-    m_widgetSceneNode->attachObject(m_boundingBox);
+    m_widget_scene_node->attachObject(m_bounding_box);
 
-    m_selectedFace->begin(m_boxFaceMtl->getName(), Ogre::RenderOperation::OT_TRIANGLE_STRIP, RESOURCE_GROUP);
+    m_selected_face->begin(m_box_face_mtl->getName(), Ogre::RenderOperation::OT_TRIANGLE_STRIP, RESOURCE_GROUP);
     {
         for(unsigned i = 0 ; i < 4 ; ++i)
         {
-            m_selectedFace->position(0, 0, 0);
+            m_selected_face->position(0, 0, 0);
         }
     }
-    m_selectedFace->end();
+    m_selected_face->end();
 
     // Render highlighted faces after other surfaces but before volumes.
-    m_selectedFace->setRenderQueueGroup(viz::scene3d::rq::s_SURFACE_ID + 1);
+    m_selected_face->setRenderQueueGroup(viz::scene3d::rq::SURFACE_ID + 1);
 
     // Create a pickable sphere for each cube face
     for(unsigned i = 0 ; i < 6 ; ++i)
     {
-        const auto current_face = static_cast<vr::volume_renderer::CubeFace>(i);
+        const auto current_face = static_cast<vr::volume_renderer::cube_face>(i);
 
-        Ogre::Entity* new_widget = m_sceneManager->createEntity(Ogre::SceneManager::PT_SPHERE);
-        new_widget->setMaterial(m_handleMtl);
+        Ogre::Entity* new_widget = m_scene_manager->createEntity(Ogre::SceneManager::PT_SPHERE);
+        new_widget->setMaterial(m_handle_mtl);
 
-        Ogre::SceneNode* sphere_scene_node = m_widgetSceneNode->createChildSceneNode();
+        Ogre::SceneNode* sphere_scene_node = m_widget_scene_node->createChildSceneNode();
 
         m_widgets[new_widget] = std::make_pair(current_face, sphere_scene_node);
 
-        const Ogre::Vector3 face_center = this->getFaceCenter(current_face);
+        const Ogre::Vector3 face_center = this->get_face_center(current_face);
 
         sphere_scene_node->setPosition(face_center);
         sphere_scene_node->setInheritScale(false);
 
-        const auto vol_scale       = m_volumeSceneNode->getScale();
+        const auto vol_scale       = m_volume_scene_node->getScale();
         const Ogre::Real scale_min = std::min(vol_scale[0], std::min(vol_scale[1], vol_scale[2]));
 
         // Scale the handle to be 1/100th of the volume's initial size.
@@ -288,81 +287,82 @@ void clipping_box::initWidgets()
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::selectFace(viz::scene3d::vr::volume_renderer::CubeFace _face_name)
+void clipping_box::select_face(viz::scene3d::vr::volume_renderer::cube_face _face_name)
 {
-    m_selectedFace->beginUpdate(0);
+    m_selected_face->beginUpdate(0);
     {
-        const std::array<Ogre::Vector3, 4> face_positions = this->getFacePositions(_face_name);
-        m_selectedFace->position(face_positions[1]);
-        m_selectedFace->position(face_positions[0]);
-        m_selectedFace->position(face_positions[2]);
-        m_selectedFace->position(face_positions[3]);
+        const std::array<Ogre::Vector3, 4> face_positions = this->get_face_positions(_face_name);
+        m_selected_face->position(face_positions[1]);
+        m_selected_face->position(face_positions[0]);
+        m_selected_face->position(face_positions[2]);
+        m_selected_face->position(face_positions[3]);
     }
-    m_selectedFace->end();
+    m_selected_face->end();
 
-    m_widgetSceneNode->attachObject(m_selectedFace);
+    m_widget_scene_node->attachObject(m_selected_face);
 }
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::deselectFace()
+void clipping_box::deselect_face()
 {
-    if(m_selectedFace->isAttached())
+    if(m_selected_face->isAttached())
     {
-        m_widgetSceneNode->detachObject(m_selectedFace->getName());
+        m_widget_scene_node->detachObject(m_selected_face->getName());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::widgetPicked(Ogre::MovableObject* _picked_widget, int _screen_x, int _screen_y)
+void clipping_box::widget_picked(Ogre::MovableObject* _picked_widget, int _screen_x, int _screen_y)
 {
-    SIGHT_ASSERT("The picked widget does not belong to this widget.", this->belongsToWidget(_picked_widget));
+    SIGHT_ASSERT("The picked widget does not belong to this widget.", this->belongs_to_widget(_picked_widget));
     const auto face = m_widgets.at(_picked_widget);
 
-    this->deselectFace();
+    this->deselect_face();
 
-    if(this->getVisibility())
+    if(this->get_visibility())
     {
-        const viz::scene3d::vr::volume_renderer::CubeFace widget_face = face.first;
-        const Ogre::SceneNode* widget_scene_node                      = face.second;
+        const viz::scene3d::vr::volume_renderer::cube_face widget_face = face.first;
+        const Ogre::SceneNode* widget_scene_node                       = face.second;
 
-        const auto vp_pos = helper::camera::convertFromWindowToViewportSpace(*m_camera, _screen_x, _screen_y);
+        const auto vp_pos = helper::camera::convert_from_window_to_viewport_space(*m_camera, _screen_x, _screen_y);
 
         const Ogre::Ray mouse_ray = m_camera->getCameraToViewportRay(vp_pos.x, vp_pos.y);
 
-        const Ogre::Vector3 old_pos = m_volumeSceneNode->convertLocalToWorldPosition(widget_scene_node->getPosition());
+        const Ogre::Vector3 old_pos =
+            m_volume_scene_node->convertLocalToWorldPosition(widget_scene_node->getPosition());
 
         const Ogre::Real distance = mouse_ray.getOrigin().distance(old_pos);
 
-        const Ogre::Vector3 new_pos = m_volumeSceneNode->convertWorldToLocalPosition(mouse_ray.getPoint(distance));
+        const Ogre::Vector3 new_pos = m_volume_scene_node->convertWorldToLocalPosition(mouse_ray.getPoint(distance));
 
         std::array<Ogre::Vector3, 2> tmp_clipping_cube;
-        std::copy(m_clippingCube.begin(), m_clippingCube.end(), tmp_clipping_cube.begin());
+        std::copy(m_clipping_cube.begin(), m_clipping_cube.end(), tmp_clipping_cube.begin());
 
         switch(widget_face)
         {
-            case vr::volume_renderer::X_NEGATIVE:
+            case vr::volume_renderer::x_negative:
                 tmp_clipping_cube[0].x = new_pos.x;
                 break;
 
-            case vr::volume_renderer::X_POSITIVE:
+            case vr::volume_renderer::x_positive:
                 tmp_clipping_cube[1].x = new_pos.x;
                 break;
 
-            case vr::volume_renderer::Y_NEGATIVE:
+            case vr::volume_renderer::y_negative:
                 tmp_clipping_cube[0].y = new_pos.y;
                 break;
 
-            case vr::volume_renderer::Y_POSITIVE:
+            case vr::volume_renderer::y_positive:
                 tmp_clipping_cube[1].y = new_pos.y;
                 break;
 
-            case vr::volume_renderer::Z_NEGATIVE:
+            case vr::volume_renderer::z_negative:
                 tmp_clipping_cube[0].z = new_pos.z;
                 break;
 
-            case vr::volume_renderer::Z_POSITIVE:
+            case vr::volume_renderer::z_positive:
                 tmp_clipping_cube[1].z = new_pos.z;
                 break;
         }
@@ -371,67 +371,67 @@ void clipping_box::widgetPicked(Ogre::MovableObject* _picked_widget, int _screen
         const float eps = 0.001F;
         for(std::size_t i = 0 ; i < 3 ; ++i)
         {
-            if(tmp_clipping_cube[0][i] > m_clippingCube[1][i])
+            if(tmp_clipping_cube[0][i] > m_clipping_cube[1][i])
             {
-                tmp_clipping_cube[0][i] = m_clippingCube[1][i] - eps;
+                tmp_clipping_cube[0][i] = m_clipping_cube[1][i] - eps;
             }
 
-            if(tmp_clipping_cube[1][i] < m_clippingCube[0][i])
+            if(tmp_clipping_cube[1][i] < m_clipping_cube[0][i])
             {
-                tmp_clipping_cube[1][i] = m_clippingCube[0][i] + eps;
+                tmp_clipping_cube[1][i] = m_clipping_cube[0][i] + eps;
             }
         }
 
-        std::copy(tmp_clipping_cube.begin(), tmp_clipping_cube.end(), m_clippingCube.begin());
+        std::copy(tmp_clipping_cube.begin(), tmp_clipping_cube.end(), m_clipping_cube.begin());
 
-        this->updateWidgets();
-        this->selectFace(widget_face);
+        this->update_widgets();
+        this->select_face(widget_face);
 
-        m_selectedWidget = dynamic_cast<Ogre::Entity*>(_picked_widget);
-        m_selectedWidget->setMaterialName(M_ID + "_SphereHighlight", RESOURCE_GROUP);
-        m_selectedWidget->setRenderQueueGroupAndPriority(viz::scene3d::rq::s_SURFACE_ID, 65535);
+        m_selected_widget = dynamic_cast<Ogre::Entity*>(_picked_widget);
+        m_selected_widget->setMaterialName(m_id + "_SphereHighlight", RESOURCE_GROUP);
+        m_selected_widget->setRenderQueueGroupAndPriority(viz::scene3d::rq::SURFACE_ID, 65535);
 
-        m_clippingUpdateCallback();
+        m_clipping_update_callback();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::widgetReleased()
+void clipping_box::widget_released()
 {
-    if(m_selectedWidget != nullptr)
+    if(m_selected_widget != nullptr)
     {
-        this->deselectFace();
-        m_selectedWidget->setMaterial(m_handleMtl);
-        m_selectedWidget = nullptr;
+        this->deselect_face();
+        m_selected_widget->setMaterial(m_handle_mtl);
+        m_selected_widget = nullptr;
     }
 
-    if(m_selectionMode == BOX)
+    if(m_selection_mode == box)
     {
-        m_boundingBox->setMaterialName(0, m_boxMtl->getName(), RESOURCE_GROUP);
+        m_bounding_box->setMaterialName(0, m_box_mtl->getName(), RESOURCE_GROUP);
     }
 
-    m_selectionMode = NONE;
+    m_selection_mode = none;
 
-    m_clippingUpdateCallback();
+    m_clipping_update_callback();
 }
 
 //-----------------------------------------------------------------------------
 
 bool clipping_box::move_clipping_box(int _x, int _y, int _dx, int _dy)
 {
-    const auto vp_pos = helper::camera::convertFromWindowToViewportSpace(*m_camera, _x, _y);
+    const auto vp_pos = helper::camera::convert_from_window_to_viewport_space(*m_camera, _x, _y);
 
     const Ogre::Ray old_pos_ray = m_camera->getCameraToViewportRay(vp_pos.x, vp_pos.y);
 
     // Get ray in image space.
     const Ogre::Ray mouse_ray_img_space(
-        m_volumeSceneNode->convertWorldToLocalPosition(old_pos_ray.getOrigin()),
-        m_volumeSceneNode->convertWorldToLocalDirection(old_pos_ray.getDirection(), true)
+        m_volume_scene_node->convertWorldToLocalPosition(old_pos_ray.getOrigin()),
+        m_volume_scene_node->convertWorldToLocalDirection(old_pos_ray.getDirection(), true)
     );
 
-    const Ogre::Vector3 min = m_clippingCube[0];
-    const Ogre::Vector3 max = m_clippingCube[1];
+    const Ogre::Vector3 min = m_clipping_cube[0];
+    const Ogre::Vector3 max = m_clipping_cube[1];
 
     // Ray clipping box intersection
     const std::pair<bool, float> inter = mouse_ray_img_space.intersects(Ogre::AxisAlignedBox(min, max));
@@ -441,34 +441,34 @@ bool clipping_box::move_clipping_box(int _x, int _y, int _dx, int _dy)
     Ogre::Vector3 old_pos;
     Ogre::Plane intersection_plane;
 
-    if(m_selectionMode == NONE)
+    if(m_selection_mode == none)
     {
-        if(inter.first && this->getVisibility())
+        if(inter.first && this->get_visibility())
         {
             // Get picked point in box space.
-            m_pickedBoxPoint = (mouse_ray_img_space.getPoint(inter.second) - min) / (max - min);
-            m_selectionMode  = BOX;
+            m_picked_box_point = (mouse_ray_img_space.getPoint(inter.second) - min) / (max - min);
+            m_selection_mode   = box;
 
-            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName(), RESOURCE_GROUP);
+            m_bounding_box->setMaterialName(0, m_box_highlight_mtl->getName(), RESOURCE_GROUP);
         }
         else
         {
-            m_selectionMode = CAMERA;
+            m_selection_mode = camera;
         }
     }
 
-    const bool box_selected = (m_selectionMode == BOX);
+    const bool box_selected = (m_selection_mode == box);
 
     if(box_selected)
     {
         // Box to image space.
-        const Ogre::Vector3 box_pos = m_pickedBoxPoint * (max - min) + min;
+        const Ogre::Vector3 box_pos = m_picked_box_point * (max - min) + min;
 
         // Image to world space.
-        old_pos            = m_volumeSceneNode->convertLocalToWorldPosition(box_pos);
+        old_pos            = m_volume_scene_node->convertLocalToWorldPosition(box_pos);
         intersection_plane = Ogre::Plane(cam_dir, old_pos);
 
-        const auto new_vp_pos = helper::camera::convertFromWindowToViewportSpace(*m_camera, _x + _dx, _y + _dy);
+        const auto new_vp_pos = helper::camera::convert_from_window_to_viewport_space(*m_camera, _x + _dx, _y + _dy);
 
         const Ogre::Ray new_pos_ray = m_camera->getCameraToViewportRay(new_vp_pos.x, new_vp_pos.y);
 
@@ -479,14 +479,14 @@ bool clipping_box::move_clipping_box(int _x, int _y, int _dx, int _dy)
         Ogre::Vector3 d = new_pos - old_pos;
 
         // Translate clipping box in image space.
-        d = m_volumeSceneNode->convertWorldToLocalDirection(d, true);
+        d = m_volume_scene_node->convertWorldToLocalDirection(d, true);
 
-        m_clippingCube[0] += d;
-        m_clippingCube[1] += d;
+        m_clipping_cube[0] += d;
+        m_clipping_cube[1] += d;
 
-        this->updateWidgets();
+        this->update_widgets();
 
-        m_clippingUpdateCallback();
+        m_clipping_update_callback();
     }
 
     return box_selected;
@@ -496,41 +496,41 @@ bool clipping_box::move_clipping_box(int _x, int _y, int _dx, int _dy)
 
 bool clipping_box::scale_clipping_box(int _x, int _y, int _dy)
 {
-    const auto vp_pos = helper::camera::convertFromWindowToViewportSpace(*m_camera, _x, _y);
+    const auto vp_pos = helper::camera::convert_from_window_to_viewport_space(*m_camera, _x, _y);
 
     const Ogre::Ray old_pos_ray = m_camera->getCameraToViewportRay(vp_pos.x, vp_pos.y);
 
     // Get ray in image space.
     const Ogre::Ray mouse_ray_img_space(
-        m_volumeSceneNode->convertWorldToLocalPosition(old_pos_ray.getOrigin()),
-        m_volumeSceneNode->convertWorldToLocalDirection(old_pos_ray.getDirection(), true)
+        m_volume_scene_node->convertWorldToLocalPosition(old_pos_ray.getOrigin()),
+        m_volume_scene_node->convertWorldToLocalDirection(old_pos_ray.getDirection(), true)
     );
 
-    const Ogre::Vector3 min = m_clippingCube[0];
-    const Ogre::Vector3 max = m_clippingCube[1];
+    const Ogre::Vector3 min = m_clipping_cube[0];
+    const Ogre::Vector3 max = m_clipping_cube[1];
 
     // Ray clipping box intersection
     const std::pair<bool, float> inter = mouse_ray_img_space.intersects(Ogre::AxisAlignedBox(min, max));
 
-    if(m_selectionMode == NONE)
+    if(m_selection_mode == none)
     {
-        if(inter.first && this->getVisibility())
+        if(inter.first && this->get_visibility())
         {
             // Get picked point in box space.
-            m_selectionMode = BOX;
+            m_selection_mode = box;
 
-            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName(), RESOURCE_GROUP);
+            m_bounding_box->setMaterialName(0, m_box_highlight_mtl->getName(), RESOURCE_GROUP);
         }
         else
         {
-            m_selectionMode = CAMERA;
+            m_selection_mode = camera;
         }
     }
 
-    const bool box_selected = m_selectionMode == BOX;
+    const bool box_selected = m_selection_mode == box;
     if(box_selected)
     {
-        const auto volume_size = m_volumeSceneNode->getScale();
+        const auto volume_size = m_volume_scene_node->getScale();
 
         const int height = m_camera->getViewport()->getActualHeight();
 
@@ -538,15 +538,15 @@ bool clipping_box::scale_clipping_box(int _x, int _y, int _dy)
         const float speed = (volume_size.length() / 100.F) / static_cast<float>(height);
         const float scale = 1.0F + static_cast<float>(_dy) * speed;
 
-        const Ogre::Vector3 cc_center = (m_clippingCube[1] + m_clippingCube[0]) / 2.F;
+        const Ogre::Vector3 cc_center = (m_clipping_cube[1] + m_clipping_cube[0]) / 2.F;
 
         // Scale clipping cube along its center.
-        m_clippingCube[0] = (m_clippingCube[0] - cc_center) * scale + cc_center;
-        m_clippingCube[1] = (m_clippingCube[1] - cc_center) * scale + cc_center;
+        m_clipping_cube[0] = (m_clipping_cube[0] - cc_center) * scale + cc_center;
+        m_clipping_cube[1] = (m_clipping_cube[1] - cc_center) * scale + cc_center;
 
-        this->updateWidgets();
+        this->update_widgets();
 
-        m_clippingUpdateCallback();
+        m_clipping_update_callback();
     }
 
     return box_selected;
@@ -554,23 +554,23 @@ bool clipping_box::scale_clipping_box(int _x, int _y, int _dy)
 
 //-----------------------------------------------------------------------------
 
-bool clipping_box::getVisibility() const
+bool clipping_box::get_visibility() const
 {
-    return m_widgetSceneNode->getAttachedObject(0)->getVisible();
+    return m_widget_scene_node->getAttachedObject(0)->getVisible();
 }
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::setVisibility(bool _visibility)
+void clipping_box::set_visibility(bool _visibility)
 {
-    m_widgetSceneNode->setVisible(_visibility);
+    m_widget_scene_node->setVisible(_visibility);
 }
 
 //-----------------------------------------------------------------------------
 
 Ogre::AxisAlignedBox clipping_box::get_clipping_box() const
 {
-    return {m_clippingCube[0], m_clippingCube[1]};
+    return {m_clipping_cube[0], m_clipping_cube[1]};
 }
 
 //-----------------------------------------------------------------------------
@@ -598,25 +598,25 @@ Ogre::Matrix4 clipping_box::get_clipping_transform() const
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::updateFromTransform(const Ogre::Matrix4& _clipping_mx)
+void clipping_box::update_from_transform(const Ogre::Matrix4& _clipping_mx)
 {
-    this->applyTransform(_clipping_mx);
-    m_clippingUpdateCallback();
+    this->apply_transform(_clipping_mx);
+    m_clipping_update_callback();
 }
 
 //-----------------------------------------------------------------------------
 
-void clipping_box::applyTransform(const Ogre::Matrix4& _clipping_mx)
+void clipping_box::apply_transform(const Ogre::Matrix4& _clipping_mx)
 {
     // The clipping matrix is the transform from the initial box position to the new one.
     // Convert to world position because that's how VTK stores its crop matrices...
     const Ogre::Vector3 world_cube_min = Ogre::Vector3::ZERO;
     const Ogre::Vector3 world_cube_max = Ogre::Vector3::UNIT_SCALE;
 
-    m_clippingCube[0] = _clipping_mx * world_cube_min;
-    m_clippingCube[1] = _clipping_mx * world_cube_max;
+    m_clipping_cube[0] = _clipping_mx * world_cube_min;
+    m_clipping_cube[1] = _clipping_mx * world_cube_max;
 
-    this->updateWidgets();
+    this->update_widgets();
 }
 
 //-----------------------------------------------------------------------------

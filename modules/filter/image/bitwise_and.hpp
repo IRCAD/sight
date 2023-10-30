@@ -77,11 +77,11 @@ protected:
     /// Performs bitwise operation between mask and image.
     MODULE_FILTER_IMAGE_API void updating() override;
 
-    static constexpr std::string_view s_OUTPUTIMAGE_OUT = "outputImage";
+    static constexpr std::string_view OUTPUTIMAGE_OUT = "outputImage";
 
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_mask {this, "mask"};
-    sight::data::ptr<sight::data::image, sight::data::Access::out> m_outputImage {this, s_OUTPUTIMAGE_OUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask"};
+    sight::data::ptr<sight::data::image, sight::data::access::out> m_output_image {this, OUTPUTIMAGE_OUT};
 };
 
 } // namespace sight::module::filter::image.

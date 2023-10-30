@@ -58,12 +58,12 @@ void activity_builder_test::setUp()
 
 void activity_builder_test::tearDown()
 {
-    activity::extension::activity::getDefault()->clear_registry();
+    activity::extension::activity::get_default()->clear_registry();
 }
 
 //------------------------------------------------------------------------------
 
-void activity_builder_test::buildDataTest()
+void activity_builder_test::build_data_test()
 {
     data::vector::sptr selection                   = std::make_shared<data::vector>();
     data::image_series::sptr img_series_selected   = std::make_shared<data::image_series>();
@@ -72,18 +72,18 @@ void activity_builder_test::buildDataTest()
     selection->push_back(model_series_selected);
 
     activity::extension::activity::infos_t activities;
-    activities = m_activity->getInfos(selection);
+    activities = m_activity->get_infos(selection);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
 
     activity::extension::activity_info activity_info = activities[0];
     auto builder                                     =
-        sight::activity::builder::factory::make(activity_info.builderImpl);
-    CPPUNIT_ASSERT_MESSAGE("<" + activity_info.builderImpl + "> instantiation failed", builder);
-    data::activity::sptr activity = builder->buildData(activity_info, selection);
+        sight::activity::builder::factory::make(activity_info.builder_impl);
+    CPPUNIT_ASSERT_MESSAGE("<" + activity_info.builder_impl + "> instantiation failed", builder);
+    data::activity::sptr activity = builder->build_data(activity_info, selection);
 
     CPPUNIT_ASSERT_MESSAGE("Activity instantiation failed", activity);
 
-    CPPUNIT_ASSERT_EQUAL(activity_info.id, activity->getActivityConfigId());
+    CPPUNIT_ASSERT_EQUAL(activity_info.id, activity->get_activity_config_id());
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activity->size());
 
     const std::string image_key = "imageSeries";
@@ -105,7 +105,7 @@ void activity_builder_test::buildDataTest()
 
 //------------------------------------------------------------------------------
 
-void activity_builder_test::objectParserTest()
+void activity_builder_test::object_parser_test()
 {
     core::runtime::add_modules(core::runtime::get_resource_file_path("module_service"));
     auto module = core::runtime::load_module("sight::module::service");
@@ -114,14 +114,14 @@ void activity_builder_test::objectParserTest()
     CPPUNIT_ASSERT_MESSAGE("Cannot load 'service' module.", module);
 
     data::vector::sptr selection = std::make_shared<data::vector>();
-    auto activity_info           = m_activity->getInfo("TestBuilderObjectParser");
-    auto builder                 = sight::activity::builder::factory::make(activity_info.builderImpl);
-    CPPUNIT_ASSERT_MESSAGE("<" + activity_info.builderImpl + "> instantiation failed", builder);
-    data::activity::sptr activity = builder->buildData(activity_info, selection);
+    auto activity_info           = m_activity->get_info("TestBuilderObjectParser");
+    auto builder                 = sight::activity::builder::factory::make(activity_info.builder_impl);
+    CPPUNIT_ASSERT_MESSAGE("<" + activity_info.builder_impl + "> instantiation failed", builder);
+    data::activity::sptr activity = builder->build_data(activity_info, selection);
 
     CPPUNIT_ASSERT_MESSAGE("Activity instantiation failed", activity);
 
-    CPPUNIT_ASSERT_EQUAL(activity_info.id, activity->getActivityConfigId());
+    CPPUNIT_ASSERT_EQUAL(activity_info.id, activity->get_activity_config_id());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), activity->size());
 
     const std::string string_key = "string";

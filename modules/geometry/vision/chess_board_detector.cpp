@@ -50,11 +50,11 @@ static const core::com::signals::key_t CHESSBOARD_FOUND_SIG    = "chessboardFoun
 // ----------------------------------------------------------------------------
 
 chess_board_detector::chess_board_detector() noexcept :
-    m_sigChessboardDetected(new_signal<chessboard_detected_signal_t>(CHESSBOARD_DETECTED_SIG)),
-    m_sigChessboardFound(new_signal<chessboard_found_signal_t>(CHESSBOARD_FOUND_SIG))
+    m_sig_chessboard_detected(new_signal<chessboard_detected_signal_t>(CHESSBOARD_DETECTED_SIG)),
+    m_sig_chessboard_found(new_signal<chessboard_found_signal_t>(CHESSBOARD_FOUND_SIG))
 {
-    new_slot(RECORD_POINTS_SLOT, &chess_board_detector::recordPoints, this);
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chess_board_detector::updateChessboardSize, this);
+    new_slot(RECORD_POINTS_SLOT, &chess_board_detector::record_points, this);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chess_board_detector::update_chessboard_size, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -68,29 +68,29 @@ void chess_board_detector::configuring()
 {
     SIGHT_ASSERT(
         "This service must have the same number of 'image' keys and 'calInfo' keys",
-        m_image.size() == m_calInfo.size()
+        m_image.size() == m_cal_info.size()
     );
 
     const config_t config       = this->get_config();
     const config_t board_config = config.get_child("board");
 
-    m_widthKey = board_config.get<std::string>("<xmlattr>.width");
-    SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
-    m_heightKey = board_config.get<std::string>("<xmlattr>.height");
-    SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
-    m_scaleKey = board_config.get<std::string>("<xmlattr>.scale");
+    m_width_key = board_config.get<std::string>("<xmlattr>.width");
+    SIGHT_ASSERT("Missing board width preference key.", !m_width_key.empty());
+    m_height_key = board_config.get<std::string>("<xmlattr>.height");
+    SIGHT_ASSERT("Missing board height preference key.", !m_height_key.empty());
+    m_scale_key = board_config.get<std::string>("<xmlattr>.scale");
 }
 
 // ----------------------------------------------------------------------------
 
 void chess_board_detector::starting()
 {
-    this->updateChessboardSize();
+    this->update_chessboard_size();
 
     const std::size_t image_group_size = m_image.size();
 
     m_images.resize(image_group_size);
-    m_pointLists.resize(image_group_size);
+    m_point_lists.resize(image_group_size);
 }
 
 // ----------------------------------------------------------------------------
@@ -103,11 +103,11 @@ void chess_board_detector::updating()
     std::vector<std::thread> detection_jobs;
     for(std::size_t i = 1 ; i < image_group_size ; ++i)
     {
-        detection_jobs.emplace_back(&chess_board_detector::doDetection, this, i);
+        detection_jobs.emplace_back(&chess_board_detector::do_detection, this, i);
     }
 
     // Detection in the first image is done on the service's worker.
-    this->doDetection(0);
+    this->do_detection(0);
 
     for(auto& detection_job : detection_jobs)
     {
@@ -116,11 +116,11 @@ void chess_board_detector::updating()
 
     const bool all_detected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
-    m_sigChessboardDetected->async_emit(all_detected);
+    m_sig_chessboard_detected->async_emit(all_detected);
 
     if(all_detected)
     {
-        m_sigChessboardFound->async_emit();
+        m_sig_chessboard_found->async_emit();
     }
 }
 
@@ -129,7 +129,7 @@ void chess_board_detector::updating()
 void chess_board_detector::stopping()
 {
     m_images.clear();
-    m_pointLists.clear();
+    m_point_lists.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -137,17 +137,17 @@ void chess_board_detector::stopping()
 service::connections_t chess_board_detector::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(s_IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
 
 // ----------------------------------------------------------------------------
 
-void chess_board_detector::recordPoints()
+void chess_board_detector::record_points()
 {
-    const std::size_t calib_group_size = m_calInfo.size();
+    const std::size_t calib_group_size = m_cal_info.size();
 
     const bool all_detected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
@@ -155,12 +155,12 @@ void chess_board_detector::recordPoints()
     {
         for(std::size_t i = 0 ; i < calib_group_size ; ++i)
         {
-            auto cal_info = m_calInfo[i].lock();
+            auto cal_info = m_cal_info[i].lock();
             SIGHT_ASSERT("Missing 'calibInfo' in-out.", cal_info);
 
-            if(m_pointLists[i])
+            if(m_point_lists[i])
             {
-                cal_info->addRecord(m_images[i], m_pointLists[i]);
+                cal_info->add_record(m_images[i], m_point_lists[i]);
 
                 // Notify
                 auto sig = cal_info->signal<data::calibration_info::added_record_signal_t>(
@@ -171,7 +171,7 @@ void chess_board_detector::recordPoints()
             }
             else
             {
-                cal_info->addRecord(m_images[i], std::make_shared<data::point_list>());
+                cal_info->add_record(m_images[i], std::make_shared<data::point_list>());
             }
         }
     }
@@ -179,14 +179,14 @@ void chess_board_detector::recordPoints()
 
 // ----------------------------------------------------------------------------
 
-void chess_board_detector::updateChessboardSize()
+void chess_board_detector::update_chessboard_size()
 {
     try
     {
         ui::preferences preferences;
-        m_width  = preferences.get(m_widthKey, m_width);
-        m_height = preferences.get(m_heightKey, m_height);
-        m_scale  = preferences.get(m_scaleKey, m_scale);
+        m_width  = preferences.get(m_width_key, m_width);
+        m_height = preferences.get(m_height_key, m_height);
+        m_scale  = preferences.get(m_scale_key, m_scale);
 
         if(m_scale > 1.F)
         {
@@ -202,7 +202,7 @@ void chess_board_detector::updateChessboardSize()
 
 // ----------------------------------------------------------------------------
 
-void chess_board_detector::doDetection(std::size_t _image_index)
+void chess_board_detector::do_detection(std::size_t _image_index)
 {
     const auto img = m_image[_image_index].lock();
     SIGHT_ASSERT("Missing 'image' input.", img);
@@ -213,10 +213,10 @@ void chess_board_detector::doDetection(std::size_t _image_index)
     {
         const cv::Mat cv_img = io::opencv::image::move_to_cv(img.get_shared());
 
-        m_pointLists[_image_index] =
+        m_point_lists[_image_index] =
             sight::geometry::vision::helper::detect_chessboard(cv_img, m_width, m_height, m_scale);
 
-        if(m_pointLists[_image_index] != nullptr)
+        if(m_point_lists[_image_index] != nullptr)
         {
             m_images[_image_index] = std::make_shared<data::image>();
             m_images[_image_index]->deep_copy(img.get_shared());
@@ -231,13 +231,13 @@ void chess_board_detector::doDetection(std::size_t _image_index)
         {
             auto out_pl = m_detection[_image_index].lock();
 
-            if(m_pointLists[_image_index] != nullptr)
+            if(m_point_lists[_image_index] != nullptr)
             {
-                out_pl->deep_copy(m_pointLists[_image_index]);
+                out_pl->deep_copy(m_point_lists[_image_index]);
             }
             else
             {
-                out_pl->getPoints().clear();
+                out_pl->get_points().clear();
             }
 
             auto sig = out_pl->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);

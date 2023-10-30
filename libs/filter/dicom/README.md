@@ -2,35 +2,35 @@
 
 Contains filters used to pre-process DICOM files before reading
 
-## Filter classes
+## filter classes
 
 The interface filter class is `sight::filter::filter`. All filters need to implement the abstract methods defined in it, notably `apply()`, `getName()`, `getDescription()` and `get_filter_type()`
 
 ### Composite
-- **CTImageStorageDefaultComposite**: reads CTImageStorage SOP class.
+- **ct_image_storage_default_composite**: reads CTImageStorage SOP class.
 
 ### Custom
-- **DefaultDicomFilter**: applies default filter.
-- **NoFilter**: filter that doesn't apply any modification.
+- **default_dicom_filter**: applies default filter.
+- **no_filter**: filter that doesn't apply any modification.
 
 ### Modifier
-- **SliceThicknessModifier**: modifies slice thickness.
+- **slice_thickness_modifier**: modifies slice thickness.
 
 ### Sorter
-- **ImagePositionPatientSorter**: uses the ImagepositionPatient tag to sort the instances.
-- **InstanceNumberSorter**: uses the InstanceNumber tag to sort the instances.
-- **TagValueSorter**: uses a random tag to sort the instances.
+- **image_position_patient_sorter**: uses the ImagepositionPatient tag to sort the instances.
+- **instance_number_sorter**: uses the InstanceNumber tag to sort the instances.
+- **tag_value_sorter**: uses a random tag to sort the instances.
 
 ### Splitter
-- **AcquisitionNumberSplitter**: uses the AcquisitionNumber tag to split the instances.
-- **ImageDimensionsSplitter**: uses the image dimensions to split the instances.
-- **ImageOrientationSplitter**: uses the ImageOrientationPatient tag to split the instances.
-- **ImagePositionPatientSplitter**: uses the ImagePositionPatient tag to split the instances
-- **ImageTypeSplitter**: uses the image_t tag to split the instances.
+- **acquisition_number_splitter**: uses the AcquisitionNumber tag to split the instances.
+- **image_dimensions_splitter**: uses the image dimensions to split the instances.
+- **image_orientation_splitter**: uses the ImageOrientationPatient tag to split the instances.
+- **image_position_patient_splitter**: uses the ImagePositionPatient tag to split the instances
+- **image_type_splitter**: uses the image_t tag to split the instances.
 - **sop_class_uid_splitter**: uses the sop_classUID tag to split the instances.
-- **TagValueInstanceRemoveSplitter**: removes instances according to tag value
-- **TagValueSplitter**: uses a random tag to split the instances
-- **TemporalPositionSplitter**: uses the TemporalPositionIdentifier tag to split the instances.
+- **tag_value_instance_remove_splitter**: removes instances according to tag value
+- **tag_value_splitter**: uses a random tag to split the instances
+- **temporal_position_splitter**: uses the TemporalPositionIdentifier tag to split the instances.
 
 ## How to use it
 

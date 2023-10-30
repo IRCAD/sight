@@ -36,7 +36,7 @@ namespace sight::core::runtime::detail::profile
 //------------------------------------------------------------------------------
 
 activater::activater(std::string _identifier, const std::string& /*unused*/) :
-    M_IDENTIFIER(std::move(_identifier))
+    m_identifier(std::move(_identifier))
 {
 }
 
@@ -65,17 +65,17 @@ void activater::add_disable_extension(const std::string& _identifier)
 
 void activater::apply()
 {
-    auto module = std::dynamic_pointer_cast<detail::module>(runtime::get().find_module(M_IDENTIFIER));
+    auto module = std::dynamic_pointer_cast<detail::module>(runtime::get().find_module(m_identifier));
 
     // TEMP_FB: until I refactor the profile.xml
     if(module == nullptr)
     {
-        const auto identifier = boost::algorithm::replace_first_copy(M_IDENTIFIER, "sight_", "");
+        const auto identifier = boost::algorithm::replace_first_copy(m_identifier, "sight_", "");
         module = std::dynamic_pointer_cast<detail::module>(runtime::get().find_module(identifier));
         SIGHT_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == nullptr);
     }
 
-    SIGHT_FATAL_IF("Unable to activate Module " + M_IDENTIFIER + ". Not found.", module == nullptr);
+    SIGHT_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == nullptr);
     // TEMP_FB: useless now since all modules are now enabled by default
     module->set_enable(true);
 
@@ -95,7 +95,7 @@ void activater::apply()
         else
         {
             SIGHT_ERROR(
-                "Unable to disable Extension Point " << m_disable_extension_point << " defined in the Module " << M_IDENTIFIER
+                "Unable to disable Extension Point " << m_disable_extension_point << " defined in the Module " << m_identifier
                 << ". Not found."
             );
         }
@@ -111,7 +111,7 @@ void activater::apply()
         else
         {
             SIGHT_ERROR(
-                "Unable to disable Extension " << m_disable_extension << " defined in the Module " << M_IDENTIFIER
+                "Unable to disable Extension " << m_disable_extension << " defined in the Module " << m_identifier
                 << ". Not found."
             );
         }

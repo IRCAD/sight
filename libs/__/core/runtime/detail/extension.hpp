@@ -44,12 +44,12 @@ public:
     /**
      * @brief   Defines the validity states of an extension
      */
-    typedef enum
+    enum validity
     {
         unknown_validity, ///< The extension has not been validated.
         valid,            ///< The extension passed the validation.
         invalid           ///< The extension failed the validation.
-    } validity;
+    };
 
     /**
      * @brief       Constructor.

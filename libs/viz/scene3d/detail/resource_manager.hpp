@@ -89,7 +89,7 @@ public:
     void release(Ogre::SharedPtr<RESOURCE> /*_resource*/);
 
     /// Returns true if the GPU resource is out of date
-    [[nodiscard]] bool updateNeeded(Ogre::SharedPtr<RESOURCE> /*_resource*/) const;
+    [[nodiscard]] bool update_needed(Ogre::SharedPtr<RESOURCE> /*_resource*/) const;
 
     /// Loads the texture into GPU memory if the GPU resource is out of date
     /// @returns True if the GPU resource has been updated, false if it was already up-to-date
@@ -103,16 +103,16 @@ public:
 
 private:
 
-    struct Resource
+    struct resource
     {
         Ogre::SharedPtr<RESOURCE> resource;
         CWPTR(OBJECT) object;
         std::size_t use_count;
-        std::uint64_t lastModified;
-        typename LOADER::return_t loadingResult {0}; // Extra attribute to store resource-specific loading data
+        std::uint64_t last_modified;
+        typename LOADER::return_t loading_result {0}; // Extra attribute to store resource-specific loading data
     };
 
-    std::map<std::string, Resource> m_registry;
+    std::map<std::string, resource> m_registry;
 };
 
 // ----------------------------------------------------------------------------
@@ -180,7 +180,7 @@ void resource_manager<OBJECT, RESOURCE, LOADER>::release(Ogre::SharedPtr<RESOURC
 // ----------------------------------------------------------------------------
 
 template<class OBJECT, class RESOURCE, class LOADER>
-bool resource_manager<OBJECT, RESOURCE, LOADER>::updateNeeded(Ogre::SharedPtr<RESOURCE> _resource) const
+bool resource_manager<OBJECT, RESOURCE, LOADER>::update_needed(Ogre::SharedPtr<RESOURCE> _resource) const
 {
     auto it = m_registry.find(_resource->getName());
     if(it == m_registry.end())
@@ -204,19 +204,19 @@ std::pair<bool, typename LOADER::return_t> resource_manager<OBJECT, RESOURCE, LO
         SIGHT_THROW_EXCEPTION(std::out_of_range("No resource found for this object"));
     }
 
-    if(it->second.lastModified != it->second.object.lock()->lastModified())
+    if(it->second.last_modified != it->second.object.lock()->last_modified())
     {
         const sight::data::mt::locked_ptr lock(it->second.object.lock());
 
         SIGHT_DEBUG("Update resource: " << _resource->getName());
         const auto result = LOADER::load(*lock, _resource.get());
-        it->second.lastModified  = it->second.object.lock()->lastModified();
-        it->second.loadingResult = result;
+        it->second.last_modified  = it->second.object.lock()->last_modified();
+        it->second.loading_result = result;
 
         return {true, result};
     }
 
-    return {false, it->second.loadingResult};
+    return {false, it->second.loading_result};
 }
 
 // ----------------------------------------------------------------------------

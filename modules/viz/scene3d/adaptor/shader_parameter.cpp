@@ -44,7 +44,7 @@ void shader_parameter::configuring()
 
     const config_t config = this->get_config();
 
-    m_materialName = config.get<std::string>(s_CONFIG + "materialName");
+    m_material_name = config.get<std::string>(CONFIG + "materialName");
 }
 
 //------------------------------------------------------------------------------
@@ -55,10 +55,10 @@ void shader_parameter::starting()
 
     // Retrieves the associated material
     Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
-        m_materialName,
+        m_material_name,
         sight::viz::scene3d::RESOURCE_GROUP
     );
-    this->setMaterial(material);
+    this->set_material(material);
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void shader_parameter::updating()
 {
     // This is typically called when the data has changed through autoconnect
     // So set the parameter as dirty and perform the update
-    this->setDirty();
+    this->set_dirty();
     this->parameter_adaptor::updating();
 }
 

@@ -54,7 +54,7 @@ namespace reader
 /**
  * @brief This class adds patient(s) from DICOM file(s) to data::series_set.
  */
-class IO_DICOM_CLASS_API series_set : public io::reader::generic_object_reader<data::series_set>,
+class IO_DICOM_CLASS_API series_set : public sight::io::reader::generic_object_reader<data::series_set>,
                                       public core::location::single_folder,
                                       public core::location::multiple_files,
                                       public core::com::has_signals
@@ -67,9 +67,9 @@ public:
         io::reader::factory::make<series_set>
     );
 
-    typedef std::vector<SPTR(data::dicom_series)> dicom_series_container_t;
-    typedef std::vector<std::string> filename_container_t;
-    typedef std::vector<std::string> supportedSOPClassContainerType;
+    using dicom_series_container_t        = std::vector<std::shared_ptr<data::dicom_series> >;
+    using filename_container_t            = std::vector<std::string>;
+    using supported_sop_class_container_t = std::vector<std::string>;
 
     /// Constructor
     IO_DICOM_API series_set();
@@ -85,7 +85,7 @@ public:
      * @param[in] dicom_series_set series_set containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in series_set
      */
-    IO_DICOM_API void readFromDicomSeriesSet(
+    IO_DICOM_API void read_from_dicom_series_set(
         const data::series_set::csptr& _dicom_series_set,
         const sight::service::base::sptr& _notifier = sight::service::base::sptr()
     );
@@ -93,69 +93,69 @@ public:
     /**
      * @brief Reads DICOM data from configured path and fills series_set object with DicomSeries
      */
-    IO_DICOM_API void readDicomSeries();
+    IO_DICOM_API void read_dicom_series();
 
     /// Return true if a dicomdir file can be read.
-    IO_DICOM_API bool isDicomDirAvailable();
+    IO_DICOM_API bool is_dicom_dir_available();
 
     /// Return DicomSeries container
-    IO_DICOM_API dicom_series_container_t& getDicomSeries();
+    IO_DICOM_API dicom_series_container_t& get_dicom_series();
 
     /// Get Set whether the reader must use the dicomdir file or not
-    const bool& getDicomdirActivated() const
+    const bool& get_dicomdir_activated() const
     {
-        return m_isDicomdirActivated;
+        return m_is_dicomdir_activated;
     }
 
     ///Set Set whether the reader must use the dicomdir file or not
-    void setDicomdirActivated(const bool& _is_dicomdir_activated)
+    void set_dicomdir_activated(const bool& _is_dicomdir_activated)
     {
-        m_isDicomdirActivated = _is_dicomdir_activated;
+        m_is_dicomdir_activated = _is_dicomdir_activated;
     }
 
     /// Get Dicom filter type that must be applied prior to the reading process
     const std::string& get_dicom_filter_type() const
     {
-        return m_dicomFilterType;
+        return m_dicom_filter_type;
     }
 
     ///Set Dicom filter type that must be applied prior to the reading process
     void set_dicom_filter_type(const std::string& _dicom_filter_type)
     {
-        m_dicomFilterType = _dicom_filter_type;
+        m_dicom_filter_type = _dicom_filter_type;
     }
 
     /// Get Supported SOP Class
-    const supportedSOPClassContainerType& getsupportedSOPClassContainer() const
+    const supported_sop_class_container_t& getsupported_sop_class_container() const
     {
-        return m_supportedSOPClassContainer;
+        return m_supported_sop_class_container;
     }
 
     ///Set Supported SOP Class
-    void setsupportedSOPClassContainer(const supportedSOPClassContainerType& _supported_sop_class_container)
+    void setsupported_sop_class_container(const supported_sop_class_container_t& _supported_sop_class_container)
     {
-        m_supportedSOPClassContainer = _supported_sop_class_container;
+        m_supported_sop_class_container = _supported_sop_class_container;
     }
 
     /// Get Logger
-    const core::log::logger::sptr& getLogger() const
+    const core::log::logger::sptr& get_logger() const
     {
         return m_logger;
     }
 
     ///Set Logger
-    void setLogger(const core::log::logger::sptr& _logger)
+    void set_logger(const core::log::logger::sptr& _logger)
     {
         m_logger = _logger;
     }
 
     /// Getter for reader's job
-    IO_DICOM_API SPTR(core::jobs::base) getJob() const override;
+    IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
 
     /// Enable buffer rotation
-    void setBufferRotationEnabled(bool _enabled)
+    void set_buffer_rotation_enabled(bool _enabled)
     {
-        m_enableBufferRotation = _enabled;
+        m_enable_buffer_rotation = _enabled;
     }
 
 private:
@@ -163,35 +163,35 @@ private:
     /**
      * @brief Read DICOM series
      */
-    void readDicom();
+    void read_dicom();
 
     /**
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
      */
-    void convertDicomSeries(const sight::service::base::sptr& _notifier = sight::service::base::sptr());
+    void convert_dicom_series(const sight::service::base::sptr& _notifier = sight::service::base::sptr());
 
     /**
      * @brief Function used to sort DicomSeries
      * @param[in] a First DicomSeries
      * @param[in] b Second DicomSeries
      */
-    static bool dicomSeriesComparator(
+    static bool dicom_series_comparator(
         const SPTR(data::dicom_series)& _a,
         const SPTR(data::dicom_series)& _b
     );
 
     /// Object Reader Map
-    dicom_series_container_t m_dicomSeriesContainer;
+    dicom_series_container_t m_dicom_series_container;
 
     /// True if the reader can use the dicomdir file.
-    bool m_isDicomdirActivated;
+    bool m_is_dicomdir_activated;
 
     /// Dicom filter type that must be applied prior to the reading process
-    std::string m_dicomFilterType;
+    std::string m_dicom_filter_type;
 
     /// Supported SOP Class container
-    supportedSOPClassContainerType m_supportedSOPClassContainer;
+    supported_sop_class_container_t m_supported_sop_class_container;
 
     /// Logger
     core::log::logger::sptr m_logger;
@@ -200,13 +200,13 @@ private:
     SPTR(core::jobs::aggregator) m_job;
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation;
+    bool m_enable_buffer_rotation;
 
-    SPTR(core::jobs::observer) m_dicomdirFileLookupJob;
-    SPTR(core::jobs::observer) m_regularFileLookupJob;
-    SPTR(core::jobs::observer) m_readerJob;
-    SPTR(core::jobs::observer) m_completeDicomSeriesJob;
-    SPTR(core::jobs::observer) m_converterJob;
+    SPTR(core::jobs::observer) m_dicomdir_file_lookup_job;
+    SPTR(core::jobs::observer) m_regular_file_lookup_job;
+    SPTR(core::jobs::observer) m_reader_job;
+    SPTR(core::jobs::observer) m_complete_dicom_series_job;
+    SPTR(core::jobs::observer) m_converter_job;
 };
 
 } // namespace reader

@@ -117,7 +117,7 @@ public:
 
     /// Convenience function that mimic std::dynamic_pointer_cast()
     template<class CASTED_DATATYPE>
-    inline weak_ptr<CASTED_DATATYPE> dynamicPointerCast() const noexcept
+    inline weak_ptr<CASTED_DATATYPE> dynamic_pointer_cast() const noexcept
     {
         return weak_ptr<CASTED_DATATYPE>(std::dynamic_pointer_cast<CASTED_DATATYPE>(m_data.lock()));
     }

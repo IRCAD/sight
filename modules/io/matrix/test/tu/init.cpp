@@ -24,13 +24,13 @@
 namespace sight::module::io::matrix::ut
 {
 
-static const struct Initializer
+static const struct initializer
 {
-    Initializer()
+    initializer()
     {
         sight::core::runtime::init();
         sight::core::runtime::load_module("sight::module::io::matrix");
     }
-} initializer;
+} INITIALIZER;
 
 } // namespace sight::module::io::matrix::ut

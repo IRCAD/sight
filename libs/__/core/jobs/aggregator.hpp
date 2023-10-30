@@ -51,18 +51,13 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef SPTR(core::jobs::aggregator) sptr;
-    typedef WPTR(core::jobs::aggregator) wptr;
+    using sptr = std::shared_ptr<core::jobs::aggregator>;
+    using wptr = std::weak_ptr<core::jobs::aggregator>;
 
     /// aggregator container type
-    typedef boost::multi_index_container<core::jobs::base::sptr,
-                                         boost::multi_index::indexed_by<
-                                             boost::multi_index::random_access<>,
-                                             boost::multi_index::hashed_unique<
-                                                 boost::multi_index::identity<core::jobs::base::sptr>
-                                             >
-                                         >
-    > job_seq;
+    using job_seq = boost::multi_index_container<core::jobs::base::sptr,
+                                                 boost::multi_index::indexed_by<boost::multi_index::random_access<>,
+                                                                                boost::multi_index::hashed_unique<boost::multi_index::identity<core::jobs::base::sptr> > > >;
     /**  @} */
 
     /// Default constructor. The name is initialized with an empty string
@@ -137,7 +132,7 @@ private:
     };
 
     /// Job info map type
-    typedef std::map<core::jobs::base*, job_info> job_info_map;
+    using job_info_map = std::map<core::jobs::base*, job_info>;
 
     /// Map containing job info
     job_info_map m_job_info;

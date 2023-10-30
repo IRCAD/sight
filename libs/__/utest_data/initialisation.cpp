@@ -29,9 +29,9 @@
 namespace sight::utest_data
 {
 
-struct LogInitialization
+struct log_initialization
 {
-    LogInitialization()
+    log_initialization()
     {
         std::string log_file = "fwTest.log";
 
@@ -66,6 +66,6 @@ struct LogInitialization
     }
 };
 
-static LogInitialization init;
+static log_initialization init;
 
 } //namespace sight::utest_data

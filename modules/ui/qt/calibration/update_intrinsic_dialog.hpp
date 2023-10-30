@@ -55,35 +55,35 @@ public:
      * @brief setParameters
      * @param calibration parameters in a array< double , 12>
      */
-    void setParameters(std::array<double, 12>& _parameters);
+    void set_parameters(std::array<double, 12>& _parameters);
 
 Q_SIGNALS:
 
-    void newCalibration(std::array<double, 12>& _new_parameters);
+    void new_calibration(std::array<double, 12>& _new_parameters);
 
 private Q_SLOTS:
 
     /**
      * @brief onPushCompute compute the calibration with new resolution
      */
-    void onPushCompute();
+    void on_push_compute();
 
     /**
      * @brief onPushReset reset the original calibration
      */
-    void onPushReset();
+    void on_push_reset();
 
     /**
      * @brief onValidate send the signal newCalibration
      */
-    void onValidate();
+    void on_validate();
 
 private:
 
     /**
      * @brief updateInfos display new calibration
      */
-    void updateInfos();
+    void update_infos();
 
     /**
      * @brief concatenation of resolution (0-1) , intrinsic parameters (2-5), distortions (6-10), and skew(11)
@@ -92,7 +92,7 @@ private:
     /**
      * @brief store the original calibration (to reset)
      */
-    std::array<double, 12> m_originCalibration {};
+    std::array<double, 12> m_origin_calibration {};
 
     /**
      * @brief Width of the video.

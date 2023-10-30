@@ -37,7 +37,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Surface Information Entity class
  */
-class IO_DICOM_CLASS_API Surface : public io::dicom::writer::ie::InformationEntity<data::model_series>
+class IO_DICOM_CLASS_API surface : public io::dicom::writer::ie::information_entity<data::model_series>
 {
 public:
 
@@ -50,37 +50,37 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Surface(
+    IO_DICOM_API surface(
         const SPTR(gdcm::Writer)& _writer,
-        const SPTR(io::dicom::container::DicomInstance)& _instance,
-        SPTR(io::dicom::container::DicomInstance)_image_instance,
+        const SPTR(io::dicom::container::dicom_instance)& _instance,
+        SPTR(io::dicom::container::dicom_instance)_image_instance,
         const data::model_series::csptr& _series,
         const core::log::logger::sptr& _logger = nullptr,
-        ProgressCallback _progress             = nullptr,
-        CancelRequestedCallback _cancel        = nullptr
+        progress_callback _progress            = nullptr,
+        cancel_requested_callback _cancel      = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API ~Surface() override;
+    IO_DICOM_API ~surface() override;
 
     /**
      * @brief Load Segmented Property Registry
      * @param[in] filepath Path to the registry CSV file
      * @return True on success
      */
-    IO_DICOM_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& _filepath);
+    IO_DICOM_API bool load_segmented_property_registry(const std::filesystem::path& _filepath);
 
     /**
      * @brief Write SOP Common Module tags
      * @see PS 3.3 C.12.1
      */
-    IO_DICOM_API virtual void writeSOPCommonModule();
+    IO_DICOM_API virtual void write_sop_common_module();
 
     /**
      * @brief Write Surface Segmentation Module tags
      * @see PS 3.3 C.8.23.1 & PS 3.3 C.27.1
      */
-    IO_DICOM_API virtual void writeSurfaceSegmentationAndSurfaceMeshModules();
+    IO_DICOM_API virtual void write_surface_segmentation_and_surface_mesh_modules();
 
 protected:
 
@@ -92,7 +92,7 @@ protected:
      * @param[in] segment GDCM segment
      * @param[in] segmentNumber Segment number
      */
-    IO_DICOM_API virtual void writeSegmentSequence(
+    IO_DICOM_API virtual void write_segment_sequence(
         const CSPTR(data::reconstruction)& _reconstruction,
         gdcm::Item& _segment_item,
         const gdcm::SmartPointer<gdcm::Segment>& _segment,
@@ -106,7 +106,7 @@ protected:
      * @param[in] surface GDCM surface
      * @param[in] segmentNumber Associated segment number
      */
-    IO_DICOM_API virtual void writeSurfaceSequence(
+    IO_DICOM_API virtual void write_surface_sequence(
         const CSPTR(data::reconstruction)& _reconstruction,
         gdcm::Item& _surface_item,
         const gdcm::SmartPointer<gdcm::Surface>& _surface,
@@ -114,10 +114,10 @@ protected:
     );
 
     /// Structure Dictionary
-    io::dicom::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;
+    io::dicom::helper::segmented_property_registry m_segmented_property_registry;
 
     /// DICOM Image Instance
-    SPTR(io::dicom::container::DicomInstance) m_imageInstance;
+    SPTR(io::dicom::container::dicom_instance) m_image_instance;
 };
 
 } // namespace sight::io::dicom::writer::ie

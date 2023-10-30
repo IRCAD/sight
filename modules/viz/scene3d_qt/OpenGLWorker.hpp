@@ -43,33 +43,33 @@ struct OpenGLRunner;
  * @warning can not be used for parallel rendering as it is not supported by OGRE.
  * OpenGL workers should mainly be used to fill large gpu buffers in the background.
  */
-class OpenGLWorker final : public sight::viz::scene3d::graphics_worker
+class open_gl_worker final : public sight::viz::scene3d::graphics_worker
 {
 public:
 
     /// Builds a graphic worker able to handle resources for the given surface.
-    OpenGLWorker(QOpenGLWidget* _gl_widget);
+    open_gl_worker(QOpenGLWidget* _gl_widget);
 
     /// Clears all waiting tasks and waits for the one being executed.
-    ~OpenGLWorker() final;
+    ~open_gl_worker() final;
 
     /// Schedules a new task for the thread pool.
-    void pushTask(sight::viz::scene3d::graphics_worker::task_t _task) override;
+    void push_task(sight::viz::scene3d::graphics_worker::task_t _task) override;
 
 private:
 
     friend struct OpenGLRunner;
 
     /// Contains an OpenGL context used by the graphics worker.
-    std::unique_ptr<QOpenGLContext> m_glContext;
+    std::unique_ptr<QOpenGLContext> m_gl_context;
 
     /// Contains a thread pool launching workers, this spares the expense of re-instancing a QThread with an
     /// OpenGL context for each new task.
-    std::unique_ptr<QThreadPool> m_threadPool;
+    std::unique_ptr<QThreadPool> m_thread_pool;
 
     /// Contains the surface on which the thread's context is enabled.
 //     QSurface* m_surface;
-    QOpenGLWidget* m_glWidget;
+    QOpenGLWidget* m_gl_widget;
 };
 
 } // namespace sight::module::viz::scene3d_qt.

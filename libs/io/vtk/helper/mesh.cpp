@@ -52,7 +52,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
         const vtkIdType number_of_points = points->GetNumberOfPoints();
         const vtkIdType number_of_cells  = _dataset.GetNumberOfCells();
 
-        data::mesh::Attributes attributes                  = data::mesh::Attributes::NONE;
+        data::mesh::attribute attributes                   = data::mesh::attribute::none;
         vtkSmartPointer<vtkUnsignedCharArray> point_colors = nullptr;
         vtkSmartPointer<vtkUnsignedCharArray> cell_colors  = nullptr;
         vtkSmartPointer<vtkFloatArray> point_normals       = nullptr;
@@ -71,7 +71,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
                 point_data->GetAbstractArray(color_array, idx);
                 if(point_data->IsArrayAnAttribute(idx) == vtkDataSetAttributes::SCALARS)
                 {
-                    attributes   = attributes | data::mesh::Attributes::POINT_COLORS;
+                    attributes   = attributes | data::mesh::attribute::point_colors;
                     point_colors = vtkUnsignedCharArray::SafeDownCast(point_data->GetScalars(color_array));
                     break;
                 }
@@ -87,7 +87,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
                 cell_data->GetAbstractArray(color_array, idx);
                 if(cell_data->IsArrayAnAttribute(idx) == vtkDataSetAttributes::SCALARS)
                 {
-                    attributes  = attributes | data::mesh::Attributes::CELL_COLORS;
+                    attributes  = attributes | data::mesh::attribute::cell_colors;
                     cell_colors = vtkUnsignedCharArray::SafeDownCast(cell_data->GetScalars(color_array));
                     break;
                 }
@@ -96,25 +96,25 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
 
         if(point_data->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
         {
-            attributes    = attributes | data::mesh::Attributes::POINT_NORMALS;
+            attributes    = attributes | data::mesh::attribute::point_normals;
             point_normals = vtkFloatArray::SafeDownCast(point_data->GetNormals());
         }
 
         if(cell_data->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
         {
-            attributes   = attributes | data::mesh::Attributes::CELL_NORMALS;
+            attributes   = attributes | data::mesh::attribute::cell_normals;
             cell_normals = vtkFloatArray::SafeDownCast(cell_data->GetNormals());
         }
 
         if(point_data->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
         {
-            attributes       = attributes | data::mesh::Attributes::POINT_TEX_COORDS;
+            attributes       = attributes | data::mesh::attribute::point_tex_coords;
             point_tex_coords = vtkFloatArray::SafeDownCast(point_data->GetTCoords());
         }
 
         if(cell_data->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
         {
-            attributes      = attributes | data::mesh::Attributes::CELL_TEX_COORDS;
+            attributes      = attributes | data::mesh::attribute::cell_tex_coords;
             cell_tex_coords = vtkFloatArray::SafeDownCast(cell_data->GetTCoords());
         }
 
@@ -123,11 +123,11 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
         int first_cell_type = (number_of_cells > 0) ? _dataset.GetCell(0)->GetCellType() : VTK_EMPTY_CELL;
 
         static std::map<int, data::mesh::cell_type_t> s_get_cell_type = {
-            {VTK_VERTEX, data::mesh::cell_type_t::POINT},
-            {VTK_LINE, data::mesh::cell_type_t::LINE},
-            {VTK_TRIANGLE, data::mesh::cell_type_t::TRIANGLE},
-            {VTK_QUAD, data::mesh::cell_type_t::QUAD},
-            {VTK_TETRA, data::mesh::cell_type_t::TETRA},
+            {VTK_VERTEX, data::mesh::cell_type_t::point},
+            {VTK_LINE, data::mesh::cell_type_t::line},
+            {VTK_TRIANGLE, data::mesh::cell_type_t::triangle},
+            {VTK_QUAD, data::mesh::cell_type_t::quad},
+            {VTK_TETRA, data::mesh::cell_type_t::tetra},
         };
 
         if(number_of_points > 0 && number_of_cells > 0)
@@ -348,7 +348,7 @@ void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh&
 {
     vtkPoints* data_points = _point_set_dst.GetPoints();
 
-    const auto nb_points = static_cast<vtkIdType>(_mesh_src.numPoints());
+    const auto nb_points = static_cast<vtkIdType>(_mesh_src.num_points());
 
     if(nb_points != data_points->GetNumberOfPoints())
     {
@@ -370,7 +370,7 @@ void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh&
     float* new_normals                    = nullptr;
     float* new_tex_coords                 = nullptr;
     const std::size_t nb_color_components = 4;
-    if(_mesh_src.has<data::mesh::Attributes::POINT_COLORS>())
+    if(_mesh_src.has<data::mesh::attribute::point_colors>())
     {
         new_colors = new unsigned char [static_cast<std::size_t>(nb_points) * nb_color_components];
         i          = 0;
@@ -384,7 +384,7 @@ void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh&
         }
     }
 
-    if(_mesh_src.has<data::mesh::Attributes::POINT_NORMALS>())
+    if(_mesh_src.has<data::mesh::attribute::point_normals>())
     {
         new_normals = new float [static_cast<std::size_t>(nb_points * 3)];
         i           = 0;
@@ -397,7 +397,7 @@ void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh&
         }
     }
 
-    if(_mesh_src.has<data::mesh::Attributes::POINT_TEX_COORDS>())
+    if(_mesh_src.has<data::mesh::attribute::point_tex_coords>())
     {
         new_tex_coords = new float [static_cast<std::size_t>(nb_points * 2)];
         i              = 0;
@@ -409,7 +409,7 @@ void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh&
         }
     }
 
-    if(_mesh_src.has<data::mesh::Attributes::POINT_COLORS>())
+    if(_mesh_src.has<data::mesh::attribute::point_colors>())
     {
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         colors->SetNumberOfComponents(static_cast<int>(nb_color_components));
@@ -427,7 +427,7 @@ void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh&
         _point_set_dst.GetPointData()->RemoveArray("Colors");
     }
 
-    if(_mesh_src.has<data::mesh::Attributes::POINT_NORMALS>())
+    if(_mesh_src.has<data::mesh::attribute::point_normals>())
     {
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         normals->SetNumberOfComponents(3);
@@ -440,7 +440,7 @@ void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh&
         _point_set_dst.GetPointData()->RemoveArray(vtkDataSetAttributes::NORMALS);
     }
 
-    if(_mesh_src.has<data::mesh::Attributes::POINT_TEX_COORDS>())
+    if(_mesh_src.has<data::mesh::attribute::point_tex_coords>())
     {
         vtkSmartPointer<vtkFloatArray> tex_coords = vtkSmartPointer<vtkFloatArray>::New();
         tex_coords->SetNumberOfComponents(2);
@@ -463,7 +463,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
     const vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
     _dataset.SetPoints(pts);
 
-    const auto nb_cells  = _mesh.numCells();
+    const auto nb_cells  = _mesh.num_cells();
     const auto dump_lock = _mesh.dump_lock();
 
     if(nb_cells > 0)
@@ -489,7 +489,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
         float* new_tex_coords                 = nullptr;
         const std::size_t nb_color_components = 4;
 
-        if(_mesh.has<data::mesh::Attributes::CELL_COLORS>())
+        if(_mesh.has<data::mesh::attribute::cell_colors>())
         {
             new_colors = new unsigned char [nb_cells * nb_color_components];
 
@@ -504,7 +504,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
             }
         }
 
-        if(_mesh.has<data::mesh::Attributes::CELL_NORMALS>())
+        if(_mesh.has<data::mesh::attribute::cell_normals>())
         {
             new_normals = new float [nb_cells * 3LL];
             vtkIdType i = 0;
@@ -517,7 +517,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
             }
         }
 
-        if(_mesh.has<data::mesh::Attributes::CELL_TEX_COORDS>())
+        if(_mesh.has<data::mesh::attribute::cell_tex_coords>())
         {
             new_tex_coords = new float [nb_cells * 2LL];
             vtkIdType i = 0;
@@ -543,9 +543,9 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
 
         int type_vtk_cell = 0;
         std::array<vtkIdType, 4> cell {};
-        switch(_mesh.get_cell_type())
+        switch(_mesh.cell_type())
         {
-            case data::mesh::cell_type_t::POINT:
+            case data::mesh::cell_type_t::point:
                 type_vtk_cell = VTK_VERTEX;
                 for(const auto& p : _mesh.crange<data::iterator::cell::point>())
                 {
@@ -555,7 +555,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
 
                 break;
 
-            case data::mesh::cell_type_t::LINE:
+            case data::mesh::cell_type_t::line:
                 type_vtk_cell = VTK_LINE;
 
                 for(const auto& p : _mesh.crange<data::iterator::cell::line>())
@@ -567,7 +567,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
 
                 break;
 
-            case data::mesh::cell_type_t::TRIANGLE:
+            case data::mesh::cell_type_t::triangle:
                 type_vtk_cell = VTK_TRIANGLE;
 
                 for(const auto& p : _mesh.crange<data::iterator::cell::triangle>())
@@ -580,7 +580,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
 
                 break;
 
-            case data::mesh::cell_type_t::QUAD:
+            case data::mesh::cell_type_t::quad:
                 type_vtk_cell = VTK_QUAD;
 
                 for(const auto& p : _mesh.crange<data::iterator::cell::quad>())
@@ -594,7 +594,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
 
                 break;
 
-            case data::mesh::cell_type_t::TETRA:
+            case data::mesh::cell_type_t::tetra:
                 type_vtk_cell = VTK_TETRA;
                 for(const auto& p : _mesh.crange<data::iterator::cell::tetra>())
                 {
@@ -611,7 +611,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
                 SIGHT_THROW("Mesh type not supported.");
         }
 
-        if(_mesh.has<data::mesh::Attributes::CELL_COLORS>())
+        if(_mesh.has<data::mesh::attribute::cell_colors>())
         {
             vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
             colors->SetNumberOfComponents(static_cast<int>(nb_color_components));
@@ -629,7 +629,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
             _dataset.GetCellData()->RemoveArray("Colors");
         }
 
-        if(_mesh.has<data::mesh::Attributes::CELL_NORMALS>())
+        if(_mesh.has<data::mesh::attribute::cell_normals>())
         {
             vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
             normals->SetNumberOfComponents(3);
@@ -647,7 +647,7 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
             _dataset.GetCellData()->RemoveArray(vtkDataSetAttributes::NORMALS);
         }
 
-        if(_mesh.has<data::mesh::Attributes::CELL_TEX_COORDS>())
+        if(_mesh.has<data::mesh::attribute::cell_tex_coords>())
         {
             vtkSmartPointer<vtkFloatArray> tex_coords = vtkSmartPointer<vtkFloatArray>::New();
             tex_coords->SetNumberOfComponents(2);
@@ -672,45 +672,45 @@ void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
 
 //------------------------------------------------------------------------------
 
-void mesh::fromVTKMesh(vtkSmartPointer<vtkPolyData> _poly_data, data::mesh::sptr _mesh)
+void mesh::from_vtk_mesh(vtkSmartPointer<vtkPolyData> _poly_data, data::mesh::sptr _mesh)
 {
     from_vtk_point_set(*_poly_data, *_mesh);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> _grid, data::mesh::sptr _mesh)
+void mesh::from_vtk_grid(vtkSmartPointer<vtkUnstructuredGrid> _grid, data::mesh::sptr _mesh)
 {
     from_vtk_point_set(*_grid, *_mesh);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::toVTKMesh(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _poly_data)
+void mesh::to_vtk_mesh(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _poly_data)
 {
     to_vtk_point_set(*_mesh, *_poly_data);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::toVTKGrid(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkUnstructuredGrid> _grid)
+void mesh::to_vtk_grid(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkUnstructuredGrid> _grid)
 {
     to_vtk_point_set(*_mesh, *_grid);
 }
 
 //-----------------------------------------------------------------------------
 
-double mesh::computeVolume(const data::mesh::csptr& _mesh)
+double mesh::compute_volume(const data::mesh::csptr& _mesh)
 {
     vtkSmartPointer<vtkPolyData> vtk_mesh_raw = vtkSmartPointer<vtkPolyData>::New();
-    mesh::toVTKMesh(_mesh, vtk_mesh_raw);
+    mesh::to_vtk_mesh(_mesh, vtk_mesh_raw);
 
     // identify and fill holes in meshes
     vtkSmartPointer<vtkFillHolesFilter> holes_filter = vtkSmartPointer<vtkFillHolesFilter>::New();
     holes_filter->SetHoleSize(2000);
     holes_filter->SetInputData(vtk_mesh_raw);
     holes_filter->Update();
-    if(holes_filter->GetOutput()->GetNumberOfCells() > 0) // Filter return empty mesh when no topological holes are
+    if(holes_filter->GetOutput()->GetNumberOfCells() > 0) // filter return empty mesh when no topological holes are
                                                           // present
     {
         vtk_mesh_raw = holes_filter->GetOutput();

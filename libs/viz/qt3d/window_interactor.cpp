@@ -32,7 +32,7 @@ const window_interactor::factory_registry_key_t window_interactor::REGISTRY_KEY 
 
 //-----------------------------------------------------------------------------
 
-window_interactor::sptr window_interactor::createManager()
+window_interactor::sptr window_interactor::create_manager()
 {
     window_interactor::sptr manager = viz::qt3d::factory::make(
         viz::qt3d::window_interactor::REGISTRY_KEY

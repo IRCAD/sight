@@ -55,7 +55,7 @@ public:
 
     ///@}
 
-    VIZ_SCENE3D_API static constexpr std::string_view s_PARAMETER_INOUT = "parameter";
+    VIZ_SCENE3D_API static constexpr std::string_view PARAMETER_INOUT = "parameter";
 
     /// Constructor.
     VIZ_SCENE3D_API parameter_adaptor() noexcept;
@@ -67,16 +67,16 @@ public:
     VIZ_SCENE3D_API void set_shader_type(Ogre::GpuProgramType _shader_type);
 
     /// Set the name of the parameter m_paramName.
-    VIZ_SCENE3D_API void setParamName(const std::string& _param_name);
+    VIZ_SCENE3D_API void set_param_name(const std::string& _param_name);
 
     /// Get the name of the parameter m_paramName.
-    VIZ_SCENE3D_API const std::string& getParamName() const;
+    VIZ_SCENE3D_API const std::string& get_param_name() const;
 
     /// Get the name of the parameter m_paramName.
-    VIZ_SCENE3D_API const std::string& getDefaultValue() const;
+    VIZ_SCENE3D_API const std::string& get_default_value() const;
 
     /// Inform that the parameter value has changed. Its value will be uploaded on next update
-    void setDirty();
+    void set_dirty();
 
 protected:
 
@@ -90,10 +90,10 @@ protected:
     VIZ_SCENE3D_API void stopping() override;
 
     /// Set the parameter for a given technique
-    VIZ_SCENE3D_API virtual bool setParameter(Ogre::Technique& _technique);
+    VIZ_SCENE3D_API virtual bool set_parameter(Ogre::Technique& _technique);
 
     /// Set the material to update
-    VIZ_SCENE3D_API void setMaterial(const Ogre::MaterialPtr& _material);
+    VIZ_SCENE3D_API void set_material(const Ogre::MaterialPtr& _material);
 
     /// Connect the input parameter modified signal to this service update slot.
     VIZ_SCENE3D_API service::connections_t auto_connections() const override;
@@ -101,37 +101,37 @@ protected:
 private:
 
     /// SLOT : Set the uniform from an integer value
-    void setBoolParameter(bool _value, std::string _name);
+    void set_bool_parameter(bool _value, std::string _name);
 
     /// SLOT : Set the uniform from a color value
-    void setColorParameter(std::array<std::uint8_t, 4> _color, std::string _name);
+    void set_color_parameter(std::array<std::uint8_t, 4> _color, std::string _name);
 
     /// SLOT : Set the uniform from an integer value
-    void setIntParameter(int _value, std::string _name);
+    void set_int_parameter(int _value, std::string _name);
 
     /// SLOT : Set the uniform from an integer value
-    void setInt2Parameter(int _value1, int _value2, std::string _name);
+    void set_int2_parameter(int _value1, int _value2, std::string _name);
 
     /// SLOT : Set the uniform from an integer value
-    void setInt3Parameter(int _value1, int _value2, int _value3, std::string _name);
+    void set_int3_parameter(int _value1, int _value2, int _value3, std::string _name);
 
     /// SLOT : Set the uniform from an double value
-    void setDoubleParameter(double _value, std::string _name);
+    void set_double_parameter(double _value, std::string _name);
 
     /// SLOT : Set the uniform from an double value
-    void setDouble2Parameter(double _value1, double _value2, std::string _name);
+    void set_double2_parameter(double _value1, double _value2, std::string _name);
 
     /// SLOT : Set the uniform from an double value
-    void setDouble3Parameter(double _value1, double _value2, double _value3, std::string _name);
+    void set_double3_parameter(double _value1, double _value2, double _value3, std::string _name);
 
     /// Parameter name
-    std::string m_paramName;
+    std::string m_param_name;
     /// technique name
-    std::string m_techniqueName;
+    std::string m_technique_name;
     /// Parameter name
-    std::string m_defaultValue;
+    std::string m_default_value;
     /// Stores the value of the enum representing the shader's type.
-    Ogre::GpuProgramType m_shaderType {Ogre::GPT_FRAGMENT_PROGRAM};
+    Ogre::GpuProgramType m_shader_type {Ogre::GPT_FRAGMENT_PROGRAM};
     /// Pointer on the material
     Ogre::MaterialPtr m_material;
     /// Pointer on a texture if the parameter is an image
@@ -139,12 +139,12 @@ private:
     /// Dirty flag to know if we must trigger an update or not
     bool m_dirty {true};
 
-    data::ptr<data::object, data::Access::inout> m_parameter {this, s_PARAMETER_INOUT, true};
+    data::ptr<data::object, data::access::inout> m_parameter {this, PARAMETER_INOUT, true};
 };
 
 //------------------------------------------------------------------------------
 
-inline void parameter_adaptor::setDirty()
+inline void parameter_adaptor::set_dirty()
 {
     m_dirty = true;
 }

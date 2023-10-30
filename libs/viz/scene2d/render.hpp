@@ -23,9 +23,9 @@
 #pragma once
 
 #include "viz/scene2d/config.hpp"
-#include "viz/scene2d/data/Axis.hpp"
-#include "viz/scene2d/data/Event.hpp"
-#include "viz/scene2d/data/Viewport.hpp"
+#include "viz/scene2d/data/axis.hpp"
+#include "viz/scene2d/data/event.hpp"
+#include "viz/scene2d/data/viewport.hpp"
 #include "viz/scene2d/vec2d.hpp"
 
 #include <viz/__/render.hpp>
@@ -41,7 +41,7 @@ namespace sight::viz::scene2d
 {
 
 // Not declared in the #include because of mutual inclusion.
-class Scene2DGraphicsView;
+class graphics_view;
 
 // Not declared in the #include because of mutual inclusion.
 class adaptor;
@@ -99,16 +99,16 @@ public:
     VIZ_SCENE2D_API ~render() noexcept override;
 
     /// Get the scene.
-    VIZ_SCENE2D_API QGraphicsScene* getScene() const;
+    VIZ_SCENE2D_API QGraphicsScene* get_scene() const;
 
     /// Get the view.
-    VIZ_SCENE2D_API Scene2DGraphicsView* getView() const;
+    VIZ_SCENE2D_API graphics_view* get_view() const;
 
     /// Get the axis.
-    VIZ_SCENE2D_API scene2d::data::Axis::sptr getAxis(const std::string& _id) const;
+    VIZ_SCENE2D_API scene2d::data::axis::sptr get_axis(const std::string& _id) const;
 
     /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
-    VIZ_SCENE2D_API void dispatchInteraction(scene2d::data::Event& _event);
+    VIZ_SCENE2D_API void dispatch_interaction(scene2d::data::event& _event);
 
     /// Returns true if given coordinates are contained in the view of the scene
     VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& _coord) const;
@@ -118,13 +118,13 @@ public:
      * @param clip clip the returned coordinates to the size of the scene
      * @return scene coordinates
      */
-    VIZ_SCENE2D_API scene2d::vec2d_t mapToScene(const scene2d::vec2d_t& _coord, bool _clip = false) const;
+    VIZ_SCENE2D_API scene2d::vec2d_t map_to_scene(const scene2d::vec2d_t& _coord, bool _clip = false) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
-    VIZ_SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
+    VIZ_SCENE2D_API Qt::AspectRatioMode get_aspect_ratio_mode() const;
 
     /// Update scene size from items bounding rect, this bounding can be enlarged with ratioPercent parameter
-    VIZ_SCENE2D_API void updateSceneSize(float _ratio_percent = 0);
+    VIZ_SCENE2D_API void update_scene_size(float _ratio_percent = 0);
 
 protected:
 
@@ -147,35 +147,35 @@ protected:
 private:
 
     /// Create the widget, the scene, the viewport, the view.
-    void startContext();
+    void start_context();
 
     /// Delete m_scene and m_view;
-    void stopContext();
+    void stop_context();
 
     /// Get the axis configuration specifications
-    void configureAxis(const config_t& _conf);
+    void configure_axis(const config_t& _conf);
 
     /// Get the scene configuration specifications and set them to m_sceneStart and m_sceneWidth.
-    void configureScene(const config_t& _conf);
+    void configure_scene(const config_t& _conf);
 
     /// Get the adaptor configuration specifications, push back the id attribute in the m_objectsID2AdaptorIDVector map,
     /// create a SceneAdaptor2D,
     /// set its attributes and push it back in the m_adaptorID2SceneAdaptor2D map.
-    void configureAdaptor(const config_t& _conf);
+    void configure_adaptor(const config_t& _conf);
 
-    std::map<std::string, scene2d::data::Axis::sptr> m_axisMap;
+    std::map<std::string, scene2d::data::axis::sptr> m_axis_map;
 
     /// Coordinates of the scene top left corner.
-    scene2d::vec2d_t m_sceneStart;
+    scene2d::vec2d_t m_scene_start;
 
     /// Width and height of the scene.
-    scene2d::vec2d_t m_sceneWidth;
+    scene2d::vec2d_t m_scene_width;
 
     /// The scene.
     QGraphicsScene* m_scene {nullptr};
 
     /// The view.
-    Scene2DGraphicsView* m_view {nullptr};
+    graphics_view* m_view {nullptr};
 
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
     bool m_antialiasing {false};
@@ -184,7 +184,7 @@ private:
     std::string m_background;
 
     /// How the scene should behave on view resize events
-    Qt::AspectRatioMode m_aspectRatioMode {Qt::IgnoreAspectRatio};
+    Qt::AspectRatioMode m_aspect_ratio_mode {Qt::IgnoreAspectRatio};
 };
 
 } // namespace sight::viz::scene2d

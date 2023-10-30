@@ -44,83 +44,83 @@
 namespace sight::module::viz::scene3d_qt::adaptor
 {
 
-struct LandmarksOrImageSeriesConstPtr
+struct landmarks_or_image_series_const_ptr
 {
     data::landmarks::csptr landmarks;
-    data::image_series::csptr imageSeries;
+    data::image_series::csptr image_series;
 };
 
-struct LandmarksOrImageSeriesConstLock
+struct landmarks_or_image_series_const_lock
 {
     data::mt::locked_ptr<const data::landmarks> landmarks;
-    data::mt::locked_ptr<const data::image_series> imageSeries;
+    data::mt::locked_ptr<const data::image_series> image_series;
 
-    operator LandmarksOrImageSeriesConstPtr() const {
-        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    operator landmarks_or_image_series_const_ptr() const {
+        return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
     }
 };
 
-struct LandmarksOrImageSeriesPtr
+struct landmarks_or_image_series_ptr
 {
     data::landmarks::sptr landmarks;
-    data::image_series::sptr imageSeries;
+    data::image_series::sptr image_series;
 
-    operator LandmarksOrImageSeriesConstPtr() const {
-        return {.landmarks = landmarks, .imageSeries = imageSeries};
+    operator landmarks_or_image_series_const_ptr() const {
+        return {.landmarks = landmarks, .image_series = image_series};
     }
 };
 
-struct LandmarksOrImageSeriesLock
+struct landmarks_or_image_series_lock
 {
     data::mt::locked_ptr<data::landmarks> landmarks;
-    data::mt::locked_ptr<data::image_series> imageSeries;
+    data::mt::locked_ptr<data::image_series> image_series;
 
-    operator LandmarksOrImageSeriesPtr() const {
-        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    operator landmarks_or_image_series_ptr() const {
+        return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
     }
 
-    operator LandmarksOrImageSeriesConstPtr() const {
-        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    operator landmarks_or_image_series_const_ptr() const {
+        return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
     }
 };
 
-struct ImageOrImageSeriesConstPtr
+struct image_or_image_series_const_ptr
 {
     data::image::csptr image;
-    data::image_series::csptr imageSeries;
+    data::image_series::csptr image_series;
 };
 
-struct ImageOrImageSeriesConstLock
+struct image_or_image_series_const_lock
 {
     data::mt::locked_ptr<const data::image> image;
-    data::mt::locked_ptr<const data::image_series> imageSeries;
+    data::mt::locked_ptr<const data::image_series> image_series;
 
-    operator ImageOrImageSeriesConstPtr() const {
-        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    operator image_or_image_series_const_ptr() const {
+        return {.image = image.get_shared(), .image_series = image_series.get_shared()};
     }
 };
 
-struct ImageOrImageSeriesPtr
+struct image_or_image_series_ptr
 {
     data::image::csptr image;
-    data::image_series::sptr imageSeries;
+    data::image_series::sptr image_series;
 
-    operator ImageOrImageSeriesConstPtr() const {
-        return {.image = image, .imageSeries = imageSeries};
+    operator image_or_image_series_const_ptr() const {
+        return {.image = image, .image_series = image_series};
     }
 };
 
-struct ImageOrImageSeriesLock
+struct image_or_image_series_lock
 {
     data::mt::locked_ptr<const data::image> image;
-    data::mt::locked_ptr<data::image_series> imageSeries;
+    data::mt::locked_ptr<data::image_series> image_series;
 
-    operator ImageOrImageSeriesPtr() const {
-        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    operator image_or_image_series_ptr() const {
+        return {.image = image.get_shared(), .image_series = image_series.get_shared()};
     }
 
-    operator ImageOrImageSeriesConstPtr() const {
-        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    operator image_or_image_series_const_ptr() const {
+        return {.image = image.get_shared(), .image_series = image_series.get_shared()};
     }
 };
 
@@ -129,9 +129,9 @@ struct ImageOrImageSeriesLock
  *
  * @section Slots Slots
  * - \b removeAll(): removes all groups.
- * - \b removeGroup(std::string): removes an entire group.
+ * - \b remove_group(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
- * - \b renameGroup(std::string, std::string): replaces and old group's name by a new one.
+ * - \b rename_group(std::string, std::string): replaces and old group's name by a new one.
  * - \b setCurrentGroup(std::string): set the current group
  * - \b addPoint(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
@@ -141,7 +141,7 @@ struct ImageOrImageSeriesLock
  * - \b initializeImage(): initializes image slices index if there is one.
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
- * - \b updateVisibility(bool): shows or hides the landmarks.
+ * - \b update_visibility(bool): shows or hides the landmarks.
  * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
  * - \b show(): shows the landmarks.
  * - \b hide(): hides the landmarks.
@@ -211,14 +211,14 @@ public:
     /// Destroys the adaptor.
     MODULE_VIZ_SCENE3D_QT_API ~landmarks() noexcept final = default;
 
-    struct MODULE_VIZ_SCENE3D_QT_CLASS_API Slots final
+    struct MODULE_VIZ_SCENE3D_QT_CLASS_API slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
         inline static const key_t REMOVE_ALL              = "removeAll";
-        inline static const key_t REMOVE_GROUP            = "removeGroup";
+        inline static const key_t REMOVE_GROUP            = "remove_group";
         inline static const key_t MODIFY_GROUP            = "modifyGroup";
-        inline static const key_t RENAME_GROUP            = "renameGroup";
+        inline static const key_t RENAME_GROUP            = "rename_group";
         inline static const key_t SET_CURRENT_GROUP       = "setCurrentGroup";
         inline static const key_t MODIFY_POINT            = "modifyPoint";
         inline static const key_t ADD_POINT               = "addPoint";
@@ -245,56 +245,56 @@ public:
     };
 
     /// Remove all manual objects group
-    MODULE_VIZ_SCENE3D_QT_API void removeAllManualObjects();
+    MODULE_VIZ_SCENE3D_QT_API void remove_all_manual_objects();
 
     /// SLOT: remove all groups
-    MODULE_VIZ_SCENE3D_QT_API void removeAll();
+    MODULE_VIZ_SCENE3D_QT_API void remove_all();
 
     /// SLOT: removes an entire group.
     /// @param _groupName name of the group to remove.
-    MODULE_VIZ_SCENE3D_QT_API void removeGroup(std::string _group_name);
+    MODULE_VIZ_SCENE3D_QT_API void remove_group(std::string _group_name);
 
     /// SLOT: removes an entire group and re-create it.
     /// @param _groupName name of the group to update.
-    MODULE_VIZ_SCENE3D_QT_API void modifyGroup(std::string _group_name);
+    MODULE_VIZ_SCENE3D_QT_API void modify_group(std::string _group_name);
 
     /// SLOT: replaces an entire group and re-create it.
     /// @param _oldGroupName old group name to update.
     /// @param _newGroupName new group name to replace the old one.
-    MODULE_VIZ_SCENE3D_QT_API void renameGroup(std::string _old_group_name, std::string _new_group_name);
+    MODULE_VIZ_SCENE3D_QT_API void rename_group(std::string _old_group_name, std::string _new_group_name);
 
     /// SLOT: set the current group name
     /// @param _newCurrentGroupName the new current group name.
-    MODULE_VIZ_SCENE3D_QT_API void setCurrentGroup(std::string _new_current_group_name);
+    MODULE_VIZ_SCENE3D_QT_API void set_current_group(std::string _new_current_group_name);
 
     /// SLOT: removes a point group and update it.
     /// @param _groupName name of the group to update.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_QT_API void modifyPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_QT_API void modify_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: adds the last point of a landmarks group.
     /// _groupName group name of the point to add.
-    MODULE_VIZ_SCENE3D_QT_API void addPoint(std::string _group_name);
+    MODULE_VIZ_SCENE3D_QT_API void add_point(std::string _group_name);
 
     /// SLOT: removes a point.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_QT_API void removePoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_QT_API void remove_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: inserts a point.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_QT_API void insertPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_QT_API void insert_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: hightlights the selected landmark.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_QT_API void selectPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_QT_API void select_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: resets the hightlights the selected landmark.
     /// @param _groupName group name of the landmark.
     /// @param _index index of the point relative to the group.
-    MODULE_VIZ_SCENE3D_QT_API void deselectPoint(std::string _group_name, std::size_t _index);
+    MODULE_VIZ_SCENE3D_QT_API void deselect_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: initializes image slices index if there is one.
     // MODULE_VIZ_SCENE3D_QT_API void initializeImage();
@@ -302,45 +302,45 @@ public:
     /// SLOT: updates the image slice type.
     /// @param _from origin of the orientation.
     /// @param _to destination of the orientation.
-    MODULE_VIZ_SCENE3D_QT_API void changeSliceType(int _from, int _to);
+    MODULE_VIZ_SCENE3D_QT_API void change_slice_type(int _from, int _to);
 
     /// SLOT: updates the image slice index to show or hide landmarks.
     /// @param _axialIndex new axial slice index.
     /// @param _frontalIndex new frontal slice index.
     /// @param _sagittalIndex new sagittal slice index.
-    MODULE_VIZ_SCENE3D_QT_API void changeSliceIndex(int _axial_index, int _frontal_index, int _sagittal_index);
+    MODULE_VIZ_SCENE3D_QT_API void change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index);
 
     /// SLOT: Toggle landmarks addition
     /// @param toggle set or unset landmarks addition mode.
-    MODULE_VIZ_SCENE3D_QT_API void toggleAddLandmarks(bool _toggle);
+    MODULE_VIZ_SCENE3D_QT_API void toggle_add_landmarks(bool _toggle);
 
     /// SLOT: Toggle landmarks removal
     /// @param toggle set or unset landmarks removal mode.
-    MODULE_VIZ_SCENE3D_QT_API void toggleRemoveLandmarks(bool _toggle);
+    MODULE_VIZ_SCENE3D_QT_API void toggle_remove_landmarks(bool _toggle);
 
     /// SLOT: Remove all visible landmarks
-    MODULE_VIZ_SCENE3D_QT_API void removeLandmarks();
+    MODULE_VIZ_SCENE3D_QT_API void remove_landmarks();
 
     /// SLOT: Create a point and insert it in the Landmarks data.
-    MODULE_VIZ_SCENE3D_QT_API void createLandmark(sight::data::landmarks::point_t _point);
+    MODULE_VIZ_SCENE3D_QT_API void create_landmark(sight::data::landmarks::point_t _point);
 
     /// SLOT: Configure the new landmarks size, shape and color used when adding landmarks ind "ADD" mode.
 
-    MODULE_VIZ_SCENE3D_QT_API void configureLandmarks(sight::viz::scene3d::landmarks_configuration _configuration);
+    MODULE_VIZ_SCENE3D_QT_API void configure_landmarks(sight::viz::scene3d::landmarks_configuration _configuration);
 
     /// SLOT: Enable edit mode.
-    void enableEditMode();
+    void enable_edit_mode();
 
     /// SLOT: Disable edit mode.
-    void disableEditMode();
+    void disable_edit_mode();
 
     /// SLOT: Enable move mode.
-    void enableMoveMode();
+    void enable_move_mode();
 
     /// SLOT: Disable move mode.
-    void disableMoveMode();
+    void disable_move_mode();
 
-    struct MODULE_VIZ_SCENE3D_QT_CLASS_API Signals final
+    struct MODULE_VIZ_SCENE3D_QT_CLASS_API signals final
     {
         using key_t = sight::core::com::signals::key_t;
 
@@ -349,7 +349,7 @@ public:
         using world_coordinates_signal_t = core::com::signal<void (double, double, double)>;
 
         inline static const key_t EDIT_MODE_CHANGED = "editModeChanged";
-        using EditModeChanged = core::com::signal<void (bool)>;
+        using edit_mode_changed = core::com::signal<void (bool)>;
     };
 
 protected:
@@ -387,7 +387,7 @@ protected:
      * @brief Sets the landmarks visibility.
      * @param _visible the visibility status of the landmarks.
      */
-    MODULE_VIZ_SCENE3D_QT_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_QT_API void set_visible(bool _visible) final;
 
     /**
      * @brief Retrieves the picked landmark and stores the result in m_pickedData.
@@ -396,7 +396,7 @@ protected:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_QT_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_QT_API void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
     /**
      * @brief Moves a landmark stored in m_pickedData.
@@ -407,9 +407,9 @@ protected:
      * @param _dx width displacement of the mouse since the last event.
      * @param _dx height displacement of the mouse since the last event.
      */
-    MODULE_VIZ_SCENE3D_QT_API void mouseMoveEvent(
-        MouseButton _button,
-        Modifier _mod,
+    MODULE_VIZ_SCENE3D_QT_API void mouse_move_event(
+        mouse_button _button,
+        modifier _mod,
         int _x,
         int _y,
         int _dx,
@@ -423,7 +423,7 @@ protected:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_QT_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_QT_API void button_release_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
     /**
      * @brief Listens to mouse buttons being double pressed.
@@ -432,20 +432,25 @@ protected:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    MODULE_VIZ_SCENE3D_QT_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_QT_API void button_double_press_event(
+        mouse_button _button,
+        modifier _mods,
+        int _x,
+        int _y
+    ) final;
 
     /// Hides the contextual menu when the mouse wheel is used.
-    MODULE_VIZ_SCENE3D_QT_API void wheelEvent(Modifier _mods, double _angle_delta, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_QT_API void wheel_event(modifier _mods, double _angle_delta, int _x, int _y) final;
 
     /// Exit edit mode if the Escape key is pressed
-    MODULE_VIZ_SCENE3D_QT_API void keyPressEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y) final;
+    MODULE_VIZ_SCENE3D_QT_API void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
 
 private:
 
     /// Stores data used to display one landmark.
-    struct Landmark final
+    struct landmark final
     {
-        Landmark(
+        landmark(
             Ogre::SceneNode* _node,
             Ogre::ManualObject* _object,
             std::string _group_name,
@@ -454,7 +459,7 @@ private:
         ) :
             m_node(_node),
             m_object(_object),
-            m_groupName(_group_name),
+            m_group_name(_group_name),
             m_index(_index),
             m_label(_label)
         {
@@ -463,7 +468,7 @@ private:
         Ogre::SceneNode* m_node {nullptr};                           /*!< Contains the node of the landmark */
         Ogre::ManualObject* m_object {nullptr};                      /*!< Contains the manual object that represent the
                                                                         landmark */
-        std::string m_groupName;                                     /*!< Defines the group name of the landmark */
+        std::string m_group_name;                                    /*!< Defines the group name of the landmark */
         std::size_t m_index {0};                                     /*!< Defines the index of the landmark */
         sight::viz::scene3d::text::sptr m_label;                     /*!< Defines the text label of the landmark (can be
                                                                          nullptr) */
@@ -471,36 +476,36 @@ private:
     };
 
     /// Stores data used to hightlight the selected landmark.
-    struct SelectedLandmark final
+    struct selected_landmark final
     {
-        SelectedLandmark(core::thread::timer::sptr _timer, std::shared_ptr<Landmark> _landmark) :
+        selected_landmark(core::thread::timer::sptr _timer, std::shared_ptr<landmark> _landmark) :
             m_timer(_timer),
             m_landmark(_landmark)
         {
         }
 
         core::thread::timer::sptr m_timer;
-        std::shared_ptr<Landmark> m_landmark;
+        std::shared_ptr<landmark> m_landmark;
         bool m_show {false};
     };
 
-    typedef data::helper::medical_image::orientation_t OrientationMode;
+    using orientation_mode = data::helper::medical_image::orientation_t;
 
     /// Show the landmark at the given index.
-    enum class ViewDistance : std::uint8_t
+    enum class view_distance : std::uint8_t
     {
-        SLICES_IN_RANGE = 0,
-        CURRENT_SLICE,
-        ALL_SLICES
+        slices_in_range = 0,
+        current_slice,
+        all_slices
     };
 
-    class DeleteContextualMenuWhenFocusOut : public QObject
+    class delete_contextual_menu_when_focus_out : public QObject
     {
     public:
 
-        explicit DeleteContextualMenuWhenFocusOut(landmarks* _s_landmarks);
+        explicit delete_contextual_menu_when_focus_out(landmarks* _s_landmarks);
         bool eventFilter(QObject* _o, QEvent* _e) override;
-        landmarks* m_sLandmarks;
+        landmarks* m_s_landmarks;
     };
 
     /**
@@ -508,15 +513,15 @@ private:
      * @param _cam camera from which to extract the direction vector.
      * @return A vector representing the camera direction
      */
-    static Ogre::Vector3 getCamDirection(const Ogre::Camera* _cam);
+    static Ogre::Vector3 get_cam_direction(const Ogre::Camera* _cam);
 
     /// Signal send when double clicked on a landmark, send its world coordinates;
-    const Signals::world_coordinates_signal_t::sptr M_SEND_WORLD_COORD {
-        new_signal<Signals::world_coordinates_signal_t>(Signals::SEND_WORLD_COORD)
+    const signals::world_coordinates_signal_t::sptr m_send_world_coord {
+        new_signal<signals::world_coordinates_signal_t>(signals::SEND_WORLD_COORD)
     };
 
-    const Signals::EditModeChanged::sptr M_EDIT_MODE_CHANGED = new_signal<Signals::EditModeChanged>(
-        Signals::EDIT_MODE_CHANGED
+    const signals::edit_mode_changed::sptr m_edit_mode_changed = new_signal<signals::edit_mode_changed>(
+        signals::EDIT_MODE_CHANGED
     );
 
     /**
@@ -527,10 +532,10 @@ private:
      * @param pointPos The position of the landmark
      * @returns The created manual object
      */
-    std::shared_ptr<Landmark> createManualObject(
+    std::shared_ptr<landmark> create_manual_object(
         const std::string& _group_name,
         std::size_t _index,
-        data::landmarks::LandmarksGroup _group_data,
+        data::landmarks::landmarks_group _group_data,
         data::landmarks::point_t _point_pos
     );
 
@@ -541,7 +546,7 @@ private:
      * @param landmarks Landmarks container which provides information about the landmark (graphical hints and position)
      * @returns The created manual object
      */
-    std::shared_ptr<Landmark> createManualObject(
+    std::shared_ptr<landmark> create_manual_object(
         const std::string& _group_name,
         std::size_t _index,
         data::landmarks::csptr _landmarks
@@ -554,29 +559,29 @@ private:
      * @param lock Landmarks container which provides information about the landmark (graphical hints and position)
      * @returns The created manual object
      */
-    std::shared_ptr<Landmark> createManualObject(
+    std::shared_ptr<landmark> create_manual_object(
         const std::string& _group_name,
         std::size_t _index,
-        LandmarksOrImageSeriesConstPtr _lf
+        landmarks_or_image_series_const_ptr _lf
     );
 
     /**
      * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
      * @param _selectedLandmark which landmarks to manage.
      */
-    void hightlight(std::shared_ptr<SelectedLandmark> _selected_landmark);
+    void hightlight(std::shared_ptr<selected_landmark> _selected_landmark);
 
     /// Used to create a landmark and pick it. Called by the mouse event (pick) and the slot (no pick).
-    void createAndPickLandmark(const sight::data::landmarks::point_t& _point, bool _pick = true);
+    void create_and_pick_landmark(const sight::data::landmarks::point_t& _point, bool _pick = true);
 
     /// Check if the maximum number of landmarks is reached.
-    bool isMaxLandmarksReached();
+    bool is_max_landmarks_reached();
 
     /**
      * @brief Hides landmarks that are not on the current image slice index (if one is given).
      * @see hideLandmark().
      */
-    void updateLandmarksVisibility();
+    void update_landmarks_visibility();
 
     /**
      * @brief Gets the nearest picked position if there is one.
@@ -584,71 +589,71 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional<Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
+    std::optional<Ogre::Vector3> get_nearest_picked_position(int _x, int _y);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark whose visibility must be updated.
      */
-    void updateLandmarkVisibility(std::shared_ptr<Landmark> _landmark);
+    void update_landmark_visibility(std::shared_ptr<landmark> _landmark);
 
     /**
      * Hides the landmark if it's not on the current image slice index (if one is given).
      * @param landmark The landmark to hide
      * @param group The group information of the landmark to hide
      */
-    void updateLandmarkVisibility(Landmark& _landmark, std::optional<data::landmarks::LandmarksGroup> _group);
+    void update_landmark_visibility(landmark& _landmark, std::optional<data::landmarks::landmarks_group> _group);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param landmark the landmark whose visibility must be updated.
      * @param lock landmarks data in which the landmarks should be updated.
      */
-    void updateLandmarkVisibility(Landmark& _landmark, const LandmarksOrImageSeriesConstLock& _lock);
+    void update_landmark_visibility(landmark& _landmark, const landmarks_or_image_series_const_lock& _lock);
 
-    bool isLandmarkVisible(const data::landmarks::point_t& _point, data::landmarks::size_t _group_size) const;
+    bool is_landmark_visible(const data::landmarks::point_t& _point, data::landmarks::size_t _group_size) const;
 
-    std::shared_ptr<Landmark> tryPick(int _x, int _y, bool _for_modification = true) const;
+    std::shared_ptr<landmark> try_pick(int _x, int _y, bool _for_modification = true) const;
 
-    void setCursor(QCursor _cursor);
+    void set_cursor(QCursor _cursor);
 
-    [[nodiscard]] LandmarksOrImageSeriesLock lockLandmarks();
+    [[nodiscard]] landmarks_or_image_series_lock lock_landmarks();
 
-    [[nodiscard]] LandmarksOrImageSeriesConstLock constLockLandmarks() const;
+    [[nodiscard]] landmarks_or_image_series_const_lock const_lock_landmarks() const;
 
-    [[nodiscard]] ImageOrImageSeriesLock lockImage();
+    [[nodiscard]] image_or_image_series_lock lock_image();
 
-    [[nodiscard]] ImageOrImageSeriesConstLock constLockImage() const;
+    [[nodiscard]] image_or_image_series_const_lock const_lock_image() const;
 
     /// Contains the root scene node.
-    Ogre::SceneNode* m_transNode {nullptr};
+    Ogre::SceneNode* m_trans_node {nullptr};
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
 
     /// Contains the Ogre material adaptor.
-    sight::viz::scene3d::material_adaptor::sptr m_materialAdaptor {nullptr};
+    sight::viz::scene3d::material_adaptor::sptr m_material_adaptor {nullptr};
 
     /// Stores each landmarks points.
-    std::vector<std::shared_ptr<Landmark> > m_manualObjects;
+    std::vector<std::shared_ptr<landmark> > m_manual_objects;
 
     /// Enables labels.
-    bool m_enableLabels {true};
+    bool m_enable_labels {true};
 
     /// Defines the label font size in points.
-    std::size_t m_fontSize {12};
+    std::size_t m_font_size {12};
 
     /// Stores informations about the selected landmark.
-    std::list<std::shared_ptr<SelectedLandmark> > m_selectedLandmarks;
+    std::list<std::shared_ptr<selected_landmark> > m_selected_landmarks;
 
     /// Define a mutex to synchronized methods working with selected landmark.
-    std::mutex m_selectedMutex;
+    std::mutex m_selected_mutex;
 
     /// Defines the image orientation.
-    OrientationMode m_orientation {OrientationMode::Z_AXIS};
+    orientation_mode m_orientation {orientation_mode::z_axis};
 
     /// Defines the view distance of the landmarks.
-    ViewDistance m_viewDistance {ViewDistance::SLICES_IN_RANGE};
+    view_distance m_view_distance {view_distance::slices_in_range};
 
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive {true};
@@ -657,67 +662,67 @@ private:
     int m_priority {2};
 
     /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
-    std::shared_ptr<Landmark> m_pickedData {nullptr};
+    std::shared_ptr<landmark> m_picked_data {nullptr};
 
     /// Defines the mask used to filter out entities when the distance is auto snapped.
-    std::uint32_t m_queryMask {0xFFFFFFFF};
+    std::uint32_t m_query_mask {0xFFFFFFFF};
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_landmarksQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_landmarks_query_flag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Initial group configuration
     /// @{
-    std::string m_currentGroup {"Landmarks"};
-    sight::data::landmarks::color_t m_currentColor {1.0F, 1.0F, 0.0F, 1.0F};
-    sight::data::landmarks::size_t m_currentSize {32.0F};
-    sight::data::landmarks::Shape m_currentShape {sight::data::landmarks::Shape::SPHERE};
+    std::string m_current_group {"Landmarks"};
+    sight::data::landmarks::color_t m_current_color {1.0F, 1.0F, 0.0F, 1.0F};
+    sight::data::landmarks::size_t m_current_size {32.0F};
+    sight::data::landmarks::shape m_current_shape {sight::data::landmarks::shape::sphere};
     /// @}
 
     /// Allow to limit the number of landmarks
     /// @{
-    std::map<std::string, std::size_t> m_groupMax;
-    std::optional<size_t> m_visibleMax {std::nullopt};
-    std::optional<size_t> m_totalMax {std::nullopt};
+    std::map<std::string, std::size_t> m_group_max;
+    std::optional<size_t> m_visible_max {std::nullopt};
+    std::optional<size_t> m_total_max {std::nullopt};
     /// @}
 
-    std::set<std::string> m_movableGroups;
+    std::set<std::string> m_movable_groups;
 
     /// Adaptor edit "mode":
     /// - DISPLAY is read-only,
     /// - MOVE allows to modify existing landmarks position
     /// - EDIT allows to add/remove and move landmarks
-    enum EditMode : std::uint8_t
+    enum edit_mode : std::uint8_t
     {
-        DISPLAY = 1 << 0,
-        MOVE    = 1 << 1,
-        EDIT    = 1 << 2
+        display = 1 << 0,
+        move    = 1 << 1,
+        edit    = 1 << 2
     };
 
-    std::uint8_t m_editMode {std::uint8_t(EditMode::DISPLAY)};
+    std::uint8_t m_edit_mode {std::uint8_t(edit_mode::display)};
 
     /// Whether all landmarks can be modified or only landmarks belonging to the current group
-    bool m_canOnlyModifyCurrent = false;
+    bool m_can_only_modify_current = false;
 
     /// True if the landmarks can be renamed by the user
-    bool m_renamingAllowed = true;
+    bool m_renaming_allowed = true;
 
     /// True if we must show the contextual menu. It must be shown if the landmark already existed and the landmark
     /// wasn't moved.
-    bool m_mustShowContextualMenu = false;
+    bool m_must_show_contextual_menu = false;
 
-    QWidget* m_contextualMenu = nullptr;
+    QWidget* m_contextual_menu = nullptr;
 
     /// Auto-delete the event filter in the end
-    std::unique_ptr<DeleteContextualMenuWhenFocusOut> m_eventFilter = nullptr;
+    std::unique_ptr<delete_contextual_menu_when_focus_out> m_event_filter = nullptr;
 
-    static constexpr std::string_view s_LANDMARKS_INOUT    = "landmarks";
-    static constexpr std::string_view s_IMAGE_SERIES_INOUT = "imageSeries";
-    static constexpr std::string_view s_IMAGE_INPUT        = "image";
+    static constexpr std::string_view LANDMARKS_INOUT    = "landmarks";
+    static constexpr std::string_view IMAGE_SERIES_INOUT = "imageSeries";
+    static constexpr std::string_view IMAGE_INPUT        = "image";
 
-    sight::data::ptr<sight::data::landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INOUT, true};
-    sight::data::ptr<sight::data::image_series, sight::data::Access::inout> m_imageSeries
-    {this, s_IMAGE_SERIES_INOUT, true};
-    sight::data::ptr<sight::data::image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
+    sight::data::ptr<sight::data::landmarks, sight::data::access::inout> m_landmarks {this, LANDMARKS_INOUT, true};
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image_series
+    {this, IMAGE_SERIES_INOUT, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor.

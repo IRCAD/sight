@@ -29,13 +29,13 @@ namespace sight::service::extension
 
 const std::string config::CONFIG_EXT_POINT = "sight::service::extension::config";
 
-config::sptr config::s_currentServiceConfig = std::make_shared<config>();
+config::sptr config::s_current_service_config = std::make_shared<config>();
 
 //-----------------------------------------------------------------------------
 
-config::sptr config::getDefault()
+config::sptr config::get_default()
 {
-    return s_currentServiceConfig;
+    return s_current_service_config;
 }
 
 //-----------------------------------------------------------------------------
@@ -58,13 +58,13 @@ void config::parse_plugin_infos()
         const auto config = cfg.get_child("config");
 
         // Add service config info
-        this->addServiceConfigInfo(config_id, service, desc, config);
+        this->add_service_config_info(config_id, service, desc, config);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void config::addServiceConfigInfo
+void config::add_service_config_info
 (
     const std::string& _config_id,
     const std::string& _service,
@@ -72,7 +72,7 @@ void config::addServiceConfigInfo
     const boost::property_tree::ptree& _config
 )
 {
-    core::mt::write_lock lock(m_registryMutex);
+    core::mt::write_lock lock(m_registry_mutex);
 
     SIGHT_DEBUG(
         "New service config registering : "
@@ -86,7 +86,7 @@ void config::addServiceConfigInfo
         m_reg.find(_config_id) == m_reg.end()
     );
 
-    ServiceConfigInfo::sptr info = std::make_shared<ServiceConfigInfo>();
+    service_config_info::sptr info = std::make_shared<service_config_info>();
     info->service     = sight::core::runtime::filter_id(_service);
     info->desc        = _desc;
     info->config      = _config;
@@ -97,7 +97,7 @@ void config::addServiceConfigInfo
 
 void config::clear_registry()
 {
-    core::mt::write_lock lock(m_registryMutex);
+    core::mt::write_lock lock(m_registry_mutex);
     m_reg.clear();
 }
 
@@ -113,7 +113,7 @@ boost::property_tree::ptree config::get_service_config(
 #else
     const std::string service_impl = core::runtime::filter_id(_service_impl);
 #endif
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     auto iter = m_reg.find(_config_id);
     SIGHT_ASSERT(
         "The id " << _config_id << " is not found in the application configuration registry",
@@ -128,9 +128,9 @@ boost::property_tree::ptree config::get_service_config(
 
 //-----------------------------------------------------------------------------
 
-const std::string& config::getConfigDesc(const std::string& _config_id) const
+const std::string& config::get_config_desc(const std::string& _config_id) const
 {
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     auto iter = m_reg.find(_config_id);
     SIGHT_ASSERT(
         "The id " << _config_id << " is not found in the application configuration registry",
@@ -141,15 +141,15 @@ const std::string& config::getConfigDesc(const std::string& _config_id) const
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> config::getAllConfigForService(std::string _service_impl, bool _matching_only) const
+std::vector<std::string> config::get_all_config_for_service(std::string _service_impl, bool _matching_only) const
 {
     const std::string service_impl = core::runtime::filter_id(_service_impl);
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     std::vector<std::string> configs;
 
-    for(const Registry::value_type& srv_cfg : m_reg)
+    for(const auto& srv_cfg : m_reg)
     {
-        ServiceConfigInfo::sptr info = srv_cfg.second;
+        service_config_info::sptr info = srv_cfg.second;
         if((info->service.empty() && !_matching_only) || info->service == service_impl)
         {
             configs.push_back(srv_cfg.first);

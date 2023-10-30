@@ -40,7 +40,7 @@
         <id>DicomPacsReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
-            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+            <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>
         </config>
     </extension>
 

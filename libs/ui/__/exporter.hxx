@@ -36,8 +36,8 @@ namespace sight::ui
 template<class C>
 constexpr exporter<C>::exporter()
 {
-    new_slot(exporter<C>::CHECK_ADDED_OBJECTS_SLOT, &exporter<C>::checkAddedObjects, this);
-    new_slot(exporter<C>::CHECK_REMOVED_OBJECTS_SLOT, &exporter<C>::checkRemovedObjects, this);
+    new_slot(exporter<C>::CHECK_ADDED_OBJECTS_SLOT, &exporter<C>::check_added_objects, this);
+    new_slot(exporter<C>::CHECK_REMOVED_OBJECTS_SLOT, &exporter<C>::check_removed_objects, this);
 }
 
 //------------------------------------------------------------------------------
@@ -45,8 +45,8 @@ template<class C>
 typename exporter<C>::connections_t exporter<C>::auto_connections() const
 {
     return {
-        {s_CONTAINER_INOUT, C::ADDED_OBJECTS_SIG, CHECK_ADDED_OBJECTS_SLOT},
-        {s_CONTAINER_INOUT, C::REMOVED_OBJECTS_SIG, CHECK_REMOVED_OBJECTS_SLOT}
+        {CONTAINER_INOUT, C::ADDED_OBJECTS_SIG, CHECK_ADDED_OBJECTS_SLOT},
+        {CONTAINER_INOUT, C::REMOVED_OBJECTS_SIG, CHECK_REMOVED_OBJECTS_SLOT}
     };
 }
 
@@ -63,7 +63,7 @@ void exporter<C>::configuring()
 template<class C>
 void exporter<C>::starting()
 {
-    actionServiceStarting();
+    action_service_starting();
 
     auto container = m_container.lock();
     auto data      = m_data.lock();
@@ -71,7 +71,7 @@ void exporter<C>::starting()
     if(const auto& it = std::find(container->cbegin(), container->cend(), data.get_shared());
        it != container->cend())
     {
-        setEnabled(false);
+        set_enabled(false);
     }
 }
 
@@ -80,7 +80,7 @@ void exporter<C>::starting()
 template<class C>
 void exporter<C>::stopping()
 {
-    actionServiceStopping();
+    action_service_stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -90,9 +90,9 @@ void exporter<C>::updating()
 {
     auto data = m_data.lock();
 
-    std::string description = data->getDescription();
+    std::string description = data->get_description();
 
-    const auto& [input, ok] = sight::ui::dialog::input::showInputDialog(
+    const auto& [input, ok] = sight::ui::dialog::input::show_input_dialog(
         "exporter activity",
         "Enter description",
         description
@@ -100,7 +100,7 @@ void exporter<C>::updating()
 
     if(ok)
     {
-        data->setDescription(input);
+        data->set_description(input);
 
         {
             auto container            = m_container.lock();
@@ -108,7 +108,7 @@ void exporter<C>::updating()
             container->push_back(data.get_shared());
         }
 
-        setEnabled(false);
+        set_enabled(false);
     }
 }
 
@@ -124,28 +124,28 @@ void exporter<C>::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void exporter<C>::checkAddedObjects(typename C::container_type _added_objects)
+constexpr void exporter<C>::check_added_objects(typename C::container_t _added_objects)
 {
     auto data = m_data.lock();
 
     if(const auto& it = std::find(_added_objects.cbegin(), _added_objects.cend(), data.get_shared());
        it != _added_objects.cend())
     {
-        setEnabled(false);
+        set_enabled(false);
     }
 }
 
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void exporter<C>::checkRemovedObjects(typename C::container_type _removed_objects)
+constexpr void exporter<C>::check_removed_objects(typename C::container_t _removed_objects)
 {
     auto data = m_data.lock();
 
     if(const auto& it = std::find(_removed_objects.cbegin(), _removed_objects.cend(), data.get_shared());
        it != _removed_objects.cend())
     {
-        setEnabled(true);
+        set_enabled(true);
     }
 }
 

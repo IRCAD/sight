@@ -46,7 +46,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief Helper class for encoding management.
  */
-class IO_DICOM_CLASS_API Encoding
+class IO_DICOM_CLASS_API encoding
 {
 public:
 
@@ -59,7 +59,7 @@ public:
      * @throw boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
      */
-    IO_DICOM_API static std::string convertString(
+    IO_DICOM_API static std::string convert_string(
         const std::string& _source,
         const std::string& _defined_charset_term,
         const SPTR(core::log::logger)& _logger = nullptr
@@ -74,7 +74,7 @@ private:
      * @param[in] logger Logger used for conversion errors
      * @return converted charset
      */
-    static std::string convertStringWithoutCodeExtensions(
+    static std::string convert_string_without_code_extensions(
         const std::string& _source,
         const std::string& _defined_term,
         const SPTR(core::log::logger)& _logger
@@ -88,7 +88,7 @@ private:
      * @throw boost::locale::conv::invalid_charset_error
      * @return converted sequence in utf-8 format
      */
-    static std::string convertSequenceWithCodeExtensions(
+    static std::string convert_sequence_with_code_extensions(
         const std::string& _sequence,
         const std::vector<std::string>& _defined_term_list,
         const SPTR(core::log::logger)& _logger
@@ -97,21 +97,21 @@ private:
     /**
      * @brief Map used to convert defined term to charset
      * @{ */
-    typedef std::map<std::string, std::string> DefinedTermToCharset_map_type;
-    static const DefinedTermToCharset_map_type s_DEFINED_TERM_TO_CHARSET;
+    using defined_term_to_charset_map_t = std::map<std::string, std::string>;
+    static const defined_term_to_charset_map_t DEFINED_TERM_TO_CHARSET;
     /**  @} */
 
     /// Escape sequence representation
-    typedef std::pair<char, char> escape_sequence_t;
+    using escape_sequence_t = std::pair<char, char>;
 
     /// Pair containing a defined term and the associated charset
-    typedef std::pair<std::string, std::string> DefinedTermAndCharset_pair_type;
+    using defined_term_and_charset_pair_t = std::pair<std::string, std::string>;
 
     /**
      * @brief Map used to convert escape sequence to charset
      * @{ */
-    typedef std::map<escape_sequence_t, DefinedTermAndCharset_pair_type> EscapeSequenceToCharset_map_type;
-    static const EscapeSequenceToCharset_map_type s_ESCAPE_SEQUENCE_TO_CHARSET;
+    using escape_sequence_to_charset_map_t = std::map<escape_sequence_t, defined_term_and_charset_pair_t>;
+    static const escape_sequence_to_charset_map_t ESCAPE_SEQUENCE_TO_CHARSET;
     /**  @} */
 };
 

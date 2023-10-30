@@ -31,15 +31,15 @@
 namespace sight::io::itk::ut
 {
 
-class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
+class image_reader_writer_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ImageReaderWriterTest);
-CPPUNIT_TEST(inrReadWriteTest);
-CPPUNIT_TEST(inrStressTest);
-CPPUNIT_TEST(niftiReadTest);
-CPPUNIT_TEST(niftiWriteTest);
-CPPUNIT_TEST(jpegWriteTest);
-CPPUNIT_TEST(inrReadJpegWriteTest);
+CPPUNIT_TEST_SUITE(image_reader_writer_test);
+CPPUNIT_TEST(inr_read_write_test);
+CPPUNIT_TEST(inr_stress_test);
+CPPUNIT_TEST(nifti_read_test);
+CPPUNIT_TEST(nifti_write_test);
+CPPUNIT_TEST(jpeg_write_test);
+CPPUNIT_TEST(inr_read_jpeg_write_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,24 +48,24 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void inrReadWriteTest();
-    static void inrStressTest();
-    static void niftiReadTest();
-    static void niftiWriteTest();
-    static void jpegWriteTest();
-    static void inrReadJpegWriteTest();
+    static void inr_read_write_test();
+    static void inr_stress_test();
+    static void nifti_read_test();
+    static void nifti_write_test();
+    static void jpeg_write_test();
+    static void inr_read_jpeg_write_test();
 
 private:
 
-    static void inrStressTestWithType(core::type _type, int _nb_test);
-    static void inrReadWriteCheck(data::image::sptr _image);
-    static void niftiReadCheck(
+    static void inr_stress_test_with_type(core::type _type, int _nb_test);
+    static void inr_read_write_check(data::image::sptr _image);
+    static void nifti_read_check(
         const data::image::sptr& _image_to_test,
         const core::type& _expected_type,
         std::size_t _expected_dim,
-        const data::image::Spacing& _expected_spacing,
-        const data::image::Origin& _expected_origin,
-        const data::image::Size& _expected_size
+        const data::image::spacing_t& _expected_spacing,
+        const data::image::origin_t& _expected_origin,
+        const data::image::size_t& _expected_size
     );
 };
 

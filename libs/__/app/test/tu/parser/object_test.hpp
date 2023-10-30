@@ -31,7 +31,7 @@ namespace sight::app::parser::ut
 class object_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(object_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    parser::object objectParser;
+    parser::object m_object_parser;
 };
 
 } // namespace sight::app::parser::ut

@@ -48,11 +48,11 @@ void color_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void color_test::hexaStringToRGBA()
+void color_test::hexa_string_to_rgba()
 {
     const std::string str_color1 = "#ff0527";
     std::array<std::uint8_t, 4> color1 {};
-    CPPUNIT_ASSERT_NO_THROW(data::tools::color::hexaStringToRGBA(str_color1, color1));
+    CPPUNIT_ASSERT_NO_THROW(data::tools::color::hexa_string_to_rgba(str_color1, color1));
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), color1[0]);
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(5), color1[1]);
@@ -61,7 +61,7 @@ void color_test::hexaStringToRGBA()
 
     const std::string str_color2 = "#45a5bc28";
     std::array<std::uint8_t, 4> color2 {};
-    CPPUNIT_ASSERT_NO_THROW(data::tools::color::hexaStringToRGBA(str_color2, color2));
+    CPPUNIT_ASSERT_NO_THROW(data::tools::color::hexa_string_to_rgba(str_color2, color2));
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(69), color2[0]);
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(165), color2[1]);
@@ -70,13 +70,13 @@ void color_test::hexaStringToRGBA()
 
     const std::string str_color3 = "45a5bc28";
     std::array<std::uint8_t, 4> color3 {};
-    CPPUNIT_ASSERT_THROW(data::tools::color::hexaStringToRGBA(str_color3, color3), core::exception);
+    CPPUNIT_ASSERT_THROW(data::tools::color::hexa_string_to_rgba(str_color3, color3), core::exception);
 
     const std::string str_color4 = "45a58";
-    CPPUNIT_ASSERT_THROW(data::tools::color::hexaStringToRGBA(str_color4, color3), core::exception);
+    CPPUNIT_ASSERT_THROW(data::tools::color::hexa_string_to_rgba(str_color4, color3), core::exception);
 
     const std::string str_color5 = "#45a564928";
-    CPPUNIT_ASSERT_THROW(data::tools::color::hexaStringToRGBA(str_color5, color3), core::exception);
+    CPPUNIT_ASSERT_THROW(data::tools::color::hexa_string_to_rgba(str_color5, color3), core::exception);
 }
 
 } // namespace sight::data::tools::ut

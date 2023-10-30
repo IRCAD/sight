@@ -119,7 +119,7 @@ struct native
         /**
          * @brief   The path to the module to load.
          */
-        const std::string M_NAME;
+        const std::string m_name;
 
         /**
          * @brief   A pointer to the module the library is attached to.

@@ -27,24 +27,24 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-std::tuple<cv::Mat, cv::Size, cv::Mat> camera::copyToCv(const data::camera::csptr& _src)
+std::tuple<cv::Mat, cv::Size, cv::Mat> camera::copy_to_cv(const data::camera::csptr& _src)
 {
     cv::Mat intrinsic = cv::Mat::eye(3, 3, CV_64F);
 
-    intrinsic.at<double>(0, 0) = _src->getFx();
-    intrinsic.at<double>(1, 1) = _src->getFy();
-    intrinsic.at<double>(0, 2) = _src->getCx();
-    intrinsic.at<double>(1, 2) = _src->getCy();
+    intrinsic.at<double>(0, 0) = _src->get_fx();
+    intrinsic.at<double>(1, 1) = _src->get_fy();
+    intrinsic.at<double>(0, 2) = _src->get_cx();
+    intrinsic.at<double>(1, 2) = _src->get_cy();
 
     cv::Size img_size;
-    img_size.width  = static_cast<int>(_src->getWidth());
-    img_size.height = static_cast<int>(_src->getHeight());
+    img_size.width  = static_cast<int>(_src->get_width());
+    img_size.height = static_cast<int>(_src->get_height());
 
     cv::Mat distortion_coeffs = cv::Mat::zeros(5, 1, CV_64F);
 
     for(std::size_t i = 0 ; i < 5 ; ++i)
     {
-        distortion_coeffs.at<double>(static_cast<int>(i)) = _src->getDistortionCoefficient()[i];
+        distortion_coeffs.at<double>(static_cast<int>(i)) = _src->get_distortion_coefficient()[i];
     }
 
     return std::make_tuple(intrinsic, img_size, distortion_coeffs);

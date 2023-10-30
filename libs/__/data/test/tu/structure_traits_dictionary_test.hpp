@@ -32,7 +32,7 @@ class structure_traits_dictionary_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(structure_traits_dictionary_test);
-    CPPUNIT_TEST(testAddingStructure);
+    CPPUNIT_TEST(test_adding_structure);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,7 +41,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testAddingStructure();
+    static void test_adding_structure();
 };
 
 } // namespace sight::data::ut

@@ -41,7 +41,7 @@ namespace sight::module::viz::scene3d::adaptor
  * The number of Frustum is fixed, if the maximum number of Frustum is reached the oldest one will be replaced.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): sets whether frustums are shown or not.
+ * - \b update_visibility(bool): sets whether frustums are shown or not.
  * - \b toggleVisibility(): toggles whether frustums are shown or not.
  * - \b show(): shows frustums.
  * - \b hide(): hides frustums.
@@ -110,7 +110,7 @@ protected:
      * @brief Sets the frustum list visibility.
      * @param _visible the visibility status of the frustum list.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
 
 private:
 
@@ -118,10 +118,10 @@ private:
     void clear();
 
     /// SLOT: adds a frustum in the list and displays it.
-    void addFrustum();
+    void add_frustum();
 
     /// Transform the data::Transform into position / oriention of the scene node.
-    void setTransfromToNode(Ogre::SceneNode* _node);
+    void set_transfrom_to_node(Ogre::SceneNode* _node);
 
     /// Defines the near clipping distance.
     float m_near {1.F};
@@ -138,21 +138,21 @@ private:
     using frustum_t = std::pair<Ogre::ManualObject*, Ogre::SceneNode*>;
 
     /// Stores a circular list of frustum adaptors.
-    boost::circular_buffer<frustum_t> m_frustumList {};
+    boost::circular_buffer<frustum_t> m_frustum_list {};
 
     /// Uses to generate unique ID for each Ogre::Camera.
-    std::size_t m_currentCamIndex {0};
+    std::size_t m_current_cam_index {0};
 
     /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::material::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
 
-    static constexpr std::string_view s_TRANSFORM_INPUT = "transform";
+    static constexpr std::string_view TRANSFORM_INPUT = "transform";
 
-    sight::data::ptr<sight::data::camera, sight::data::Access::in> m_camera {this, "camera"};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
+    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, "camera"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -41,7 +41,7 @@ void get_camera::configuring()
             {
                 auto index = it_key->second.get<size_t>("<xmlattr>.index", 0);
 
-                m_cameraIndexNumbers.push_back(index);
+                m_camera_index_numbers.push_back(index);
             }
         }
         else if(attr.get_value<std::string>() == "extrinsic")
@@ -50,7 +50,7 @@ void get_camera::configuring()
             for(auto it_key = key_range.first ; it_key != key_range.second ; ++it_key)
             {
                 auto index = it_key->second.get<size_t>("<xmlattr>.index", 0);
-                m_extrinsicIndexNumbers.push_back(index);
+                m_extrinsic_index_numbers.push_back(index);
             }
         }
     }
@@ -74,16 +74,16 @@ void get_camera::updating()
     }
 
     size_t i = 0;
-    for(auto& index : m_cameraIndexNumbers)
+    for(auto& index : m_camera_index_numbers)
     {
         m_camera[i] = camera_set->get_camera(index);
         i++;
     }
 
-    if(!m_extrinsicIndexNumbers.empty())
+    if(!m_extrinsic_index_numbers.empty())
     {
         size_t j = 0;
-        for(auto& index : m_extrinsicIndexNumbers)
+        for(auto& index : m_extrinsic_index_numbers)
         {
             if(camera_set->get_extrinsic_matrix(index) == nullptr)
             {

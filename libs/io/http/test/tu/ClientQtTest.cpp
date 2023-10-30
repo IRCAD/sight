@@ -33,7 +33,7 @@
 
 #include <array>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::ClientQtTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::client_qt_test);
 
 namespace sight::io::http::ut
 {
@@ -82,7 +82,7 @@ std::array post_answer { /* Packet 196 */
 
 //------------------------------------------------------------------------------
 
-void ClientQtTest::setUp()
+void client_qt_test::setUp()
 {
     // Set up context before running a test.
     static std::string arg1 = "ClientQtTest";
@@ -110,7 +110,7 @@ void ClientQtTest::setUp()
 
 //------------------------------------------------------------------------------
 
-void ClientQtTest::tearDown()
+void client_qt_test::tearDown()
 {
     // Clean up after the test run.
     m_thread.quit();
@@ -128,7 +128,7 @@ void ClientQtTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void ClientQtTest::get()
+void client_qt_test::get()
 {
     QTcpServer::connect(
         &m_server,
@@ -169,8 +169,8 @@ void ClientQtTest::get()
     CPPUNIT_ASSERT(m_server.isListening());
 
     const int port                         = m_server.serverPort();
-    sight::io::http::Request::sptr request =
-        sight::io::http::Request::New("http://localhost:" + std::to_string(port) + "/instances");
+    sight::io::http::request::sptr request =
+        sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/instances");
 
     const QByteArray& answer = m_client.get(request);
 
@@ -185,7 +185,7 @@ void ClientQtTest::get()
 
 //------------------------------------------------------------------------------
 
-void ClientQtTest::post()
+void client_qt_test::post()
 {
     QTcpServer::connect(
         &m_server,
@@ -245,7 +245,7 @@ void ClientQtTest::post()
     body.insert("Query", query);
     body.insert("Limit", 0);
 
-    auto request = sight::io::http::Request::New("http://localhost:" + std::to_string(port) + "/tools/find");
+    auto request = sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/tools/find");
 
     const QByteArray& answer = m_client.post(request, QJsonDocument(body).toJson());
     QString expected("[ \"ffe1ae67-887d4fc5-47773ce0-1b194e0e-c8bf7642\" ]\n");

@@ -54,16 +54,16 @@ public:
 };
 
 /// Subclass of preferences_disabled, thrown when trying to open an encrypted file with a wrong password
-class UI_CLASS_API BadPassword : public preferences_disabled
+class UI_CLASS_API bad_password : public preferences_disabled
 {
 public:
 
-    inline BadPassword(const std::string& _err) noexcept :
+    inline bad_password(const std::string& _err) noexcept :
         preferences_disabled(_err)
     {
     }
 
-    ~BadPassword() override = default;
+    ~bad_password() override = default;
 };
 
 /**
@@ -181,7 +181,7 @@ class UI_CLASS_API preferences final
 {
 public:
 
-    static constexpr auto s_DEFAULT_DELIMITER = "%";
+    static constexpr auto DEFAULT_DELIMITER = "%";
 
     /// Constructor
     /// It will load the default preference file if not already done and throw 'preferences_disabled' exception in case
@@ -251,7 +251,7 @@ public:
     template<typename T>
     [[nodiscard]] inline std::pair<std::string, T> parsed_get(
         const std::string& _key,
-        const std::string& _delimiter = s_DEFAULT_DELIMITER
+        const std::string& _delimiter = DEFAULT_DELIMITER
     ) const
     {
         if(const auto& delimiter_start = _key.find_first_of(_delimiter); delimiter_start != std::string::npos)
@@ -273,7 +273,7 @@ public:
     template<typename T>
     [[nodiscard]] inline T delimited_get(
         const std::string& _key,
-        const std::string& _delimiter = s_DEFAULT_DELIMITER
+        const std::string& _delimiter = DEFAULT_DELIMITER
     ) const
     {
         return this->parsed_get<T>(_key, _delimiter).second;
@@ -289,7 +289,7 @@ public:
     [[nodiscard]] inline T delimited_get(
         const std::string& _key,
         const T& _default_value,
-        const std::string& _delimiter = s_DEFAULT_DELIMITER
+        const std::string& _delimiter = DEFAULT_DELIMITER
     ) const noexcept
     {
         try
@@ -335,7 +335,7 @@ public:
     UI_API static void set_enabled(bool _enable);
 
     /// Enable / disable loading/saving from the filesystem.
-    UI_API static void ignoreFilesystem(bool _ignore);
+    UI_API static void ignore_filesystem(bool _ignore);
 
     /// Set a password and enable encryption
     UI_API static void set_password(const core::crypto::secure_string& _password);
@@ -353,7 +353,7 @@ public:
 
     /// Password dialog customization
     /// @{
-    struct UI_CLASS_API PasswordDialogStrings final
+    struct UI_CLASS_API password_dialog_strings final
     {
         std::optional<std::string> title {std::nullopt};
         std::optional<std::string> message {std::nullopt};
@@ -369,7 +369,7 @@ public:
         std::optional<std::string> cancel_fatal_message {std::nullopt};
     };
 
-    UI_API static void set_password_dialog_strings(const PasswordDialogStrings& _strings);
+    UI_API static void set_password_dialog_strings(const password_dialog_strings& _strings);
     /// @}
 
     /// Set a custom password validator
@@ -395,7 +395,7 @@ private:
     UI_API static bool s_is_enabled;
 
     /// If true, the preferences won't be loaded/saved from the filesystem
-    UI_API static bool s_ignoreFilesystem;
+    UI_API static bool s_ignore_filesystem;
 };
 
 } // namespace sight::ui

@@ -35,13 +35,13 @@ namespace sight::core::crypto
 template<std::uint32_t S, std::uint32_t A = 16807UL, std::uint32_t C = 0UL, std::uint32_t M = (1UL << 31) - 1>
 struct linear_generator
 {
-    static const std::uint32_t state = ((std::uint64_t) S * A + C) % M;
-    static const std::uint32_t value = state;
-    using next = linear_generator<state>;
+    static const std::uint32_t STATE = ((std::uint64_t) S * A + C) % M;
+    static const std::uint32_t VALUE = STATE;
+    using next = linear_generator<STATE>;
     struct split
     {
         // Leapfrog
-        using gen1 = linear_generator<state, A* A, 0, M>;
+        using gen1 = linear_generator<STATE, A* A, 0, M>;
         using gen2 = linear_generator<next::state, A* A, 0, M>;
     };
 };
@@ -50,13 +50,13 @@ struct linear_generator
 template<std::uint32_t S, std::size_t index>
 struct generate
 {
-    static const std::uint8_t value = generate<linear_generator<S>::state, index - 1>::value;
+    static const std::uint8_t VALUE = generate<linear_generator<S>::state, index - 1>::VALUE;
 };
 
 template<std::uint32_t S>
 struct generate<S, 0>
 {
-    static const std::uint8_t value = static_cast<std::uint8_t>(linear_generator<S>::value);
+    static const std::uint8_t VALUE = static_cast<std::uint8_t>(linear_generator<S>::VALUE);
 };
 
 // List of indices
@@ -96,7 +96,7 @@ using count_t = typename count<s>::type;
 template<std::uint32_t seed, std::size_t index, std::size_t N>
 constexpr std::uint8_t get_scrambled_char(const std::array<char, N>& _a)
 {
-    return static_cast<std::uint8_t>(_a[index]) + generate<seed, index>::value;
+    return static_cast<std::uint8_t>(_a[index]) + generate<seed, index>::VALUE;
 }
 
 // Get a ciphertext from a plaintext string
@@ -133,7 +133,7 @@ struct noise_helper<seed, st_list<SL ...> >
 
     static constexpr std::array<std::uint8_t, sizeof...(SL)> get_array()
     {
-        return {{generate<seed, SL>::value ...}};
+        return {{generate<seed, SL>::VALUE ...}};
     }
 };
 
@@ -164,14 +164,14 @@ class obfuscated_string
 {
 private:
 
-    std::array<std::uint8_t, N> cipher_text;
-    std::array<std::uint8_t, N> key;
+    std::array<std::uint8_t, N> m_cipher_text;
+    std::array<std::uint8_t, N> m_key;
 
 public:
 
     explicit constexpr obfuscated_string( /*const char (& a)[N]*/ const std::array<char, N>& _a) :
-        cipher_text(get_cipher_text<seed, N>(_a)),
-        key(get_key<seed, N>())
+        m_cipher_text(get_cipher_text<seed, N>(_a)),
+        m_key(get_key<seed, N>())
     {
     }
 
@@ -180,7 +180,7 @@ public:
         std::array<char, N> plain_text;
         for(std::size_t i = 0 ; i < N ; ++i)
         {
-            const char temp = static_cast<char>(cipher_text[i] - key[i]);
+            const char temp = static_cast<char>(m_cipher_text[i] - m_key[i]);
             plain_text[i] = temp;
         }
 

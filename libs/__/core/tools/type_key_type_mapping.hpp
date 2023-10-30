@@ -91,17 +91,8 @@ bool is_mapping<std::string>(const type& _type);
 
 ///@}
 ///
-typedef boost::mpl::vector<
-        std::int8_t,
-        std::uint8_t,
-        std::int16_t,
-        std::uint16_t,
-        std::int32_t,
-        std::uint32_t,
-        std::int64_t,
-        std::uint64_t,
-        float,
-        double
->::type supported_dispatcher_types;
+using supported_dispatcher_types = boost::mpl::vector<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t,
+                                                      std::int32_t, std::uint32_t, std::int64_t, std::uint64_t, float,
+                                                      double>::type;
 
 } //end namespace sight::core::tools

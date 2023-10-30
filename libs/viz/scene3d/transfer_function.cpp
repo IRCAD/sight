@@ -48,7 +48,7 @@ transfer_function::~transfer_function()
 
 void transfer_function::update()
 {
-    m_tfWindow = viz::scene3d::detail::tf_manager::get()->load(m_resource).second;
+    m_tf_window = viz::scene3d::detail::tf_manager::get()->load(m_resource).second;
 }
 
 //-----------------------------------------------------------------------------

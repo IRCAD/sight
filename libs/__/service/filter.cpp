@@ -34,7 +34,7 @@ const core::com::signals::key_t filter::COMPUTED_SIG = "computed";
 //-----------------------------------------------------------------------------
 
 filter::filter() :
-    m_sigComputed(new_signal<computed_signal_t>(COMPUTED_SIG))
+    m_sig_computed(new_signal<computed_signal_t>(COMPUTED_SIG))
 {
 }
 

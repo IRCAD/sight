@@ -37,7 +37,7 @@ public:
     CPPUNIT_TEST_SUITE(frame_tl_test);
     CPPUNIT_TEST(move_to_cv);
     CPPUNIT_TEST(copy_from_cv);
-    CPPUNIT_TEST(copyToCv);
+    CPPUNIT_TEST(copy_to_cv);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,7 +48,7 @@ public:
 
     static void move_to_cv();
     static void copy_from_cv();
-    static void copyToCv();
+    static void copy_to_cv();
 };
 
 } // namespace sight::io::opencv::ut

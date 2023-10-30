@@ -33,17 +33,17 @@
                         <name>ExSolvePnP</name>
                         <icon>ExSolvePnP/app.ico</icon>
                     </frame>
-                    <menuBar />
-                    <toolBar />
+                    <menubar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
-                    <toolBar sid="toolbarView" start="true" />
+                    <menubar sid="menuBarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="cameraView" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menu_bar">
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -78,7 +78,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -400,7 +400,7 @@
 
             <connect>
                 <signal>frameUpdaterSrv/synchronizationDone</signal>
-                <slot>ARSceneSrv/requestRender</slot>
+                <slot>ARSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

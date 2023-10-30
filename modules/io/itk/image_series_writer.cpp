@@ -55,9 +55,9 @@ image_series_writer::~image_series_writer() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType image_series_writer::getIOPathType() const
+sight::io::service::path_type_t image_series_writer::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
@@ -69,27 +69,27 @@ void image_series_writer::configuring()
 
 //------------------------------------------------------------------------------
 
-void image_series_writer::openLocationDialog()
+void image_series_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose an image file to save image" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.set_title(m_window_title.empty() ? "Choose an image file to save image" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.set_option(ui::dialog::location::write);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -116,20 +116,20 @@ void image_series_writer::info(std::ostream& _sstream)
 
 void image_series_writer::updating()
 {
-    m_writeFailed = true;
+    m_write_failed = true;
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         const auto data         = m_data.lock();
         const auto image_series = std::dynamic_pointer_cast<const data::image_series>(data.get_shared());
         SIGHT_ASSERT(
-            "The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.",
+            "The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.",
             image_series
         );
 
-        sight::ui::BusyCursor cursor;
-        image_writer::saveImage(this->get_file(), image_series);
-        m_writeFailed = false;
+        sight::ui::busy_cursor cursor;
+        image_writer::save_image(this->get_file(), image_series);
+        m_write_failed = false;
     }
 }
 

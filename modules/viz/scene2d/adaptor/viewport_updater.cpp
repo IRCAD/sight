@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene2d/adaptor/viewport_updater.hpp"
 
-#include <viz/scene2d/Scene2DGraphicsView.hpp>
+#include <viz/scene2d/graphics_view.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -31,7 +31,7 @@ namespace sight::module::viz::scene2d::adaptor
 
 void viewport_updater::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 }
 
 //-----------------------------------------------------------------------------
@@ -41,10 +41,10 @@ void viewport_updater::starting()
     {
         // If the viewport Y and height are not set, scale the viewport to the height of the scene
         auto viewport = m_viewport.lock();
-        auto* scene   = this->getScene2DRender()->getScene();
+        auto* scene   = this->get_scene_2d_render()->get_scene();
 
-        viewport->setY(viewport->y_or(scene->sceneRect().y()));
-        viewport->setHeight(viewport->height_or(scene->sceneRect().height()));
+        viewport->set_y(viewport->y_or(scene->sceneRect().y()));
+        viewport->set_height(viewport->height_or(scene->sceneRect().height()));
     }
 
     this->updating();
@@ -61,7 +61,7 @@ void viewport_updater::stopping()
 void viewport_updater::updating()
 {
     auto viewport = m_viewport.lock();
-    this->getScene2DRender()->getView()->updateFromViewport(*viewport);
+    this->get_scene_2d_render()->get_view()->update_from_viewport(*viewport);
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ void viewport_updater::updating()
 service::connections_t viewport_updater::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(VIEWPORT_INOUT, sight::viz::scene2d::data::viewport::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

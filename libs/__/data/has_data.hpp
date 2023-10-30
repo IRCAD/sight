@@ -84,7 +84,7 @@ public:
      */
     DATA_API data::object::csptr object(
         std::string_view _key,
-        data::Access _access,
+        data::access _access,
         std::optional<std::size_t> _index = {}) const;
 
     /**
@@ -150,7 +150,7 @@ protected:
         data::object::sptr _obj,
         std::string_view _key,
         std::optional<std::size_t> _index,
-        data::Access _access,
+        data::access _access,
         bool _auto_connect,
         bool _optional
     );
@@ -181,15 +181,15 @@ protected:
 private:
 
     friend class base_ptr;
-    template<class DATATYPE, data::Access ACCESS>
+    template<class DATATYPE, data::access ACCESS>
     friend class ptr;
-    template<class DATATYPE, data::Access ACCESS>
+    template<class DATATYPE, data::access ACCESS>
     friend class ptr_vector;
 
     /// Registers a pointer
-    DATA_API void registerPtr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
+    DATA_API void register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
     /// Unregisters a pointer
-    DATA_API void unregisterPtr(base_ptr* _data);
+    DATA_API void unregister_ptr(base_ptr* _data);
     /// Notifies that a new object has been created and available
     DATA_API virtual void notify_register_out(data::object::sptr, const std::string&) = 0;
     /// Notifies that a new object is being destroyed and no longer available
@@ -204,19 +204,16 @@ private:
      * 4 times for each contained data::ptr.
      * Accessing elements with {} index is used to get initial properties (autoconnect, optional).
      */
-    container_t m_dataContainer;
+    container_t m_data_container;
 };
 
 //------------------------------------------------------------------------------
 
 template<class DATATYPE, typename CDATATYPE>
-inline data::mt::weak_ptr<CDATATYPE> has_data::input(
-    std::string_view _key,
-    std::optional<std::size_t> _index
-) const
+inline data::mt::weak_ptr<CDATATYPE> has_data::input(std::string_view _key, std::optional<std::size_t> _index) const
 {
     data::mt::weak_ptr<CDATATYPE> input;
-    input = std::dynamic_pointer_cast<CDATATYPE>(this->object(_key, data::Access::in, _index));
+    input = std::dynamic_pointer_cast<CDATATYPE>(this->object(_key, data::access::in, _index));
     return input;
 }
 
@@ -231,7 +228,7 @@ inline data::mt::weak_ptr<DATATYPE> has_data::inout(std::string_view _key, std::
             std::const_pointer_cast<data::object>(
                 this->object(
                     _key,
-                    data::Access::inout,
+                    data::access::inout,
                     _index
                 )
             )
@@ -250,7 +247,7 @@ inline data::mt::weak_ptr<DATATYPE> has_data::output(std::string_view _key, std:
             std::const_pointer_cast<data::object>(
                 this->object(
                     _key,
-                    data::Access::out,
+                    data::access::out,
                     _index
                 )
             )

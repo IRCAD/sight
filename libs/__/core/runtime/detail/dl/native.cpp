@@ -36,7 +36,7 @@ namespace sight::core::runtime::detail::dl
 //------------------------------------------------------------------------------
 
 native::native(std::string _name) noexcept :
-    M_NAME(std::move(_name))
+    m_name(std::move(_name))
 {
 }
 
@@ -59,7 +59,7 @@ std::filesystem::path native::get_full_path() const
     if(auto it = s_cache.find(m_search_path); it == s_cache.end())
     {
         {
-            static const std::regex library_regex("lib(.*).so(\\.?[0-9\\.]*)?");
+            static const std::regex s_LIBRARY_REGEX("lib(.*).so(\\.?[0-9\\.]*)?");
 
             auto& map = s_cache[m_search_path];
             for(const auto& p : std::filesystem::directory_iterator(m_search_path))
@@ -68,7 +68,7 @@ std::filesystem::path native::get_full_path() const
                     const std::filesystem::path filename = p.path().filename();
                     const std::string filename_str       = filename.string();
 
-                    if(std::smatch match; std::regex_match(filename_str, match, library_regex))
+                    if(std::smatch match; std::regex_match(filename_str, match, s_LIBRARY_REGEX))
                     {
                         const auto library_name = match[1].str();
                         const auto it_find      = map.find(library_name);
@@ -92,7 +92,7 @@ std::filesystem::path native::get_full_path() const
         }
     }
 
-    std::filesystem::path result = m_search_path / s_cache[m_search_path][M_NAME];
+    std::filesystem::path result = m_search_path / s_cache[m_search_path][m_name];
 #elif defined(WIN32)
     std::filesystem::path result = m_search_path / (this->name() + ".dll");
 #endif
@@ -120,7 +120,7 @@ std::filesystem::path native::get_full_path() const
 
 std::string native::name() const
 {
-    return M_NAME;
+    return m_name;
 }
 
 //------------------------------------------------------------------------------

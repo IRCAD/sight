@@ -58,35 +58,35 @@ image_reader::~image_reader() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType image_reader::getIOPathType() const
+sight::io::service::path_type_t image_reader::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
 
-void image_reader::openLocationDialog()
+void image_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialog_file.setOption(ui::dialog::location::READ);
-    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    dialog_file.set_title(m_window_title.empty() ? "Choose a file to load an image" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.set_option(ui::dialog::location::read);
+    dialog_file.set_option(ui::dialog::location::file_must_exist);
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -109,9 +109,9 @@ void image_reader::info(std::ostream& _sstream)
 
 void image_reader::updating()
 {
-    m_readFailed = true;
+    m_read_failed = true;
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         const auto data  = m_data.lock();
         const auto image = std::dynamic_pointer_cast<data::image>(data.get_shared());
@@ -119,19 +119,19 @@ void image_reader::updating()
             "The object is not a '"
             + data::image::classname()
             + "' or '"
-            + sight::io::service::s_DATA_KEY
+            + sight::io::service::DATA_KEY
             + "' is not correctly set.",
             image
         );
 
         sight::ui::cursor cursor;
-        cursor.setCursor(ui::cursor_base::BUSY);
+        cursor.set_cursor(ui::cursor_base::busy);
 
         try
         {
-            if(sight::module::io::itk::image_reader::loadImage(this->get_file(), image))
+            if(sight::module::io::itk::image_reader::load_image(this->get_file(), image))
             {
-                m_readFailed = false;
+                m_read_failed = false;
                 auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                 {
                     core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -141,20 +141,20 @@ void image_reader::updating()
         }
         catch(core::tools::failed& e)
         {
-            cursor.setDefaultCursor();
+            cursor.set_default_cursor();
             SIGHT_THROW_EXCEPTION(e);
         }
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
     }
     else
     {
-        m_readFailed = true;
+        m_read_failed = true;
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool image_reader::loadImage(
+bool image_reader::load_image(
     const std::filesystem::path& _img_file,
     const data::image::sptr& _img
 )
@@ -167,13 +167,13 @@ bool image_reader::loadImage(
     sight::io::reader::object_reader::sptr image_reader;
     if(boost::algorithm::ends_with(_img_file.string(), ".inr.gz"))
     {
-        auto inr_reader = std::make_shared<sight::io::itk::InrImageReader>();
+        auto inr_reader = std::make_shared<sight::io::itk::inr_image_reader>();
         inr_reader->set_file(_img_file);
         image_reader = inr_reader;
     }
     else if(ext == ".nii" || boost::algorithm::ends_with(_img_file.string(), ".nii.gz"))
     {
-        auto nifti_reader = std::make_shared<sight::io::itk::NiftiImageReader>();
+        auto nifti_reader = std::make_shared<sight::io::itk::nifti_image_reader>();
         nifti_reader->set_file(_img_file);
         image_reader = nifti_reader;
     }
@@ -185,7 +185,7 @@ bool image_reader::loadImage(
         sight::ui::dialog::message::show(
             "Error",
             ss.str(),
-            sight::ui::dialog::message::CRITICAL
+            sight::ui::dialog::message::critical
         );
         return false;
     }
@@ -203,7 +203,7 @@ bool image_reader::loadImage(
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
     }
@@ -212,7 +212,7 @@ bool image_reader::loadImage(
         sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
         ok = false;
     }

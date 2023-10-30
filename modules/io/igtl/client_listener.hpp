@@ -88,32 +88,32 @@ private:
      * @brief method contain the receive loop
      * this method run in a thread
      */
-    void runClient();
+    void run_client();
 
     /**
      * @brief method called when the current object is a timeline
      * @note Currently only data::matrix_tl and data::frame_tl are managed
      */
-    void manageTimeline(data::object::sptr _obj, std::size_t _index);
+    void manage_timeline(data::object::sptr _obj, std::size_t _index);
 
     /// client socket
-    sight::io::igtl::Client m_client;
+    sight::io::igtl::client m_client;
 
     /// Future used to wait for the client
-    std::future<void> m_clientFuture;
+    std::future<void> m_client_future;
 
     /// hostname config key
-    std::string m_hostnameConfig;
+    std::string m_hostname_config;
 
     /// port config key
-    std::string m_portConfig;
+    std::string m_port_config;
 
-    bool m_tlInitialized {false};
+    bool m_tl_initialized {false};
 
     /// Vector of device name used
-    std::vector<std::string> m_deviceNames;
+    std::vector<std::string> m_device_names;
 
-    data::ptr_vector<data::object, sight::data::Access::inout> m_objects {this, "objects"};
+    data::ptr_vector<data::object, sight::data::access::inout> m_objects {this, "objects"};
 };
 
 } // namespace sight::module::io::igtl

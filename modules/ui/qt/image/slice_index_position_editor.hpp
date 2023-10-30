@@ -72,7 +72,7 @@ public:
 
 protected:
 
-    static const service::base::key_t s_IMAGE_INOUT;
+    static const service::base::key_t IMAGE_INOUT;
 
     /// @brief The slice type: axial, frontal, sagittal.
     using orientation_t = data::helper::medical_image::orientation_t;
@@ -119,16 +119,16 @@ protected:
     MODULE_UI_QT_API void info(std::ostream& _sstream) override;
 
     /// Update the editor slider from the image slice index.
-    MODULE_UI_QT_API void updateSliceIndexFromImg(const sight::data::image& _image);
+    MODULE_UI_QT_API void update_slice_index_from_img(const sight::data::image& _image);
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QT_API void updateSliceTypeFromImg(const orientation_t& _type);
+    MODULE_UI_QT_API void update_slice_type_from_img(const orientation_t& _type);
 
     /// This method is called when the slider is move. Notify the slice index is modified.
-    MODULE_UI_QT_API void sliceIndexNotification(int _index);
+    MODULE_UI_QT_API void slice_index_notification(int _index);
 
     /// This method is called when the slice type selected change. Notify the slice type is modified.
-    MODULE_UI_QT_API void sliceTypeNotification(int _type);
+    MODULE_UI_QT_API void slice_type_notification(int _type);
 
 private:
 
@@ -138,30 +138,30 @@ private:
      */
 
     /// Slot: update image slice index
-    void updateSliceIndex(int _axial, int _frontal, int _sagittal);
+    void update_slice_index(int _axial, int _frontal, int _sagittal);
 
     /// Slot: update image slice type
-    void updateSliceType(int _from, int _to);
+    void update_slice_type(int _from, int _to);
 
     /// Slot: update image buffer
-    void updateBuffer();
+    void update_buffer();
     /**
      * @}
      */
 
-    sight::ui::qt::slice_selector* m_sliceSelectorPanel {};
+    sight::ui::qt::slice_selector* m_slice_selector_panel {};
 
-    data::ptr<data::image, data::Access::inout> m_image {this, "image", true};
+    data::ptr<data::image, data::access::inout> m_image {this, "image", true};
 
-    std::int64_t m_axialIndex {-1};
-    std::int64_t m_frontalIndex {-1};
-    std::int64_t m_sagittalIndex {-1};
+    std::int64_t m_axial_index {-1};
+    std::int64_t m_frontal_index {-1};
+    std::int64_t m_sagittal_index {-1};
 
-    orientation_t m_orientation {orientation_t::Z_AXIS};
+    orientation_t m_orientation {orientation_t::z_axis};
 
-    bool m_displayAxisSelector {true};
+    bool m_display_axis_selector {true};
 
-    bool m_displayStepButtons {false};
+    bool m_display_step_buttons {false};
 };
 
 } // namespace sight::module::ui::qt::image

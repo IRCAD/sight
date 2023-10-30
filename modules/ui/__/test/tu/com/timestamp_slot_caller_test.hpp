@@ -31,7 +31,7 @@ namespace sight::module::ui::com::ut
 class timestamp_slot_caller_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(timestamp_slot_caller_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    service::base::sptr m_timestampSlotCaller;
+    service::base::sptr m_timestamp_slot_caller;
 };
 
 } // namespace sight::module::ui::com::ut

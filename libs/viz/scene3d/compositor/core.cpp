@@ -37,11 +37,11 @@ namespace sight::viz::scene3d::compositor
 
 //----------------------------------------------------------------------------
 
-static const std::map<core::stereo_mode_t, std::string> s_stereoCompositorMap = {
-    {core::stereo_mode_t::AUTOSTEREO_5, "AutoStereo5"},
-    {core::stereo_mode_t::AUTOSTEREO_8, "AutoStereo8"},
-    {core::stereo_mode_t::STEREO, "Stereo"},
-    {core::stereo_mode_t::NONE, "Default"}
+static const std::map<core::stereo_mode_t, std::string> STEREO_COMPOSITOR_MAP = {
+    {core::stereo_mode_t::autostereo_5, "AutoStereo5"},
+    {core::stereo_mode_t::autostereo_8, "AutoStereo8"},
+    {core::stereo_mode_t::stereo, "Stereo"},
+    {core::stereo_mode_t::none, "Default"}
 };
 
 // ----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ const std::string core::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
 
 core::core(Ogre::Viewport* _viewport) :
 
-    m_coreCompositorName("Default"),
+    m_core_compositor_name("Default"),
     m_viewport(_viewport)
 {
 }
@@ -64,31 +64,31 @@ core::~core()
 
 //-----------------------------------------------------------------------------
 
-transparencyTechnique core::getTransparencyTechnique()
+transparency_technique core::get_transparency_technique()
 {
-    return m_transparencyTechnique;
+    return m_transparency_technique;
 }
 
 //-----------------------------------------------------------------------------
 
-int core::getTransparencyDepth() const
+int core::get_transparency_depth() const
 {
-    return m_numPass;
+    return m_num_pass;
 }
 
 //-----------------------------------------------------------------------------
 
-bool core::setTransparencyTechnique(transparencyTechnique _technique)
+bool core::set_transparency_technique(transparency_technique _technique)
 {
     try
     {
-        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_core_compositor_name, false);
     }
     catch(Ogre::InvalidParametersException&)
     {
-        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+        SIGHT_DEBUG("Can not find compositor: " + m_core_compositor_name);
     }
-    m_transparencyTechnique = _technique;
+    m_transparency_technique = _technique;
 
     return true;
 }
@@ -97,124 +97,124 @@ bool core::setTransparencyTechnique(transparencyTechnique _technique)
 
 void core::update()
 {
-    m_cellShadingName = "";
+    m_cell_shading_name = "";
 
     SIGHT_ERROR_IF(
         "OIT isn't supported when stereo is enabled, falling back to mono rendering.",
-        m_transparencyTechnique != DEFAULT && m_stereoMode != stereo_mode_t::NONE
+        m_transparency_technique != DEFAULT && m_stereo_mode != stereo_mode_t::none
     );
 
-    switch(m_transparencyTechnique)
+    switch(m_transparency_technique)
     {
         case DEFAULT:
-            m_coreCompositorName = s_stereoCompositorMap.at(m_stereoMode);
-            this->setupTransparency();
-            this->setupDefaultTransparency();
+            m_core_compositor_name = STEREO_COMPOSITOR_MAP.at(m_stereo_mode);
+            this->setup_transparency();
+            this->setup_default_transparency();
             break;
 
-        case CELLSHADING_DEPTHPEELING:
-            m_cellShadingName = "CellShading";
+        case cellshading_depthpeeling:
+            m_cell_shading_name = "CellShading";
             BOOST_FALLTHROUGH;
 
-        case DEPTHPEELING:
-            m_coreCompositorName = m_cellShadingName + "DepthPeeling";
-            this->setupTransparency();
-            this->setTransparencyDepthOfDepthPeeling(m_numPass);
+        case depthpeeling:
+            m_core_compositor_name = m_cell_shading_name + "DepthPeeling";
+            this->setup_transparency();
+            this->set_transparency_depth_of_depth_peeling(m_num_pass);
             break;
 
-        case DUALDEPTHPEELING:
-            m_coreCompositorName = "DualDepthPeeling";
-            this->setupTransparency();
-            this->setTransparencyDepthOfDualDepthPeeling(m_numPass);
+        case dualdepthpeeling:
+            m_core_compositor_name = "DualDepthPeeling";
+            this->setup_transparency();
+            this->set_transparency_depth_of_dual_depth_peeling(m_num_pass);
             break;
 
-        case WEIGHTEDBLENDEDOIT:
-            m_coreCompositorName = "WeightedBlended";
-            this->setupTransparency();
+        case weightedblendedoit:
+            m_core_compositor_name = "WeightedBlended";
+            this->setup_transparency();
             Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, "WeightedBlended", true);
             break;
 
-        case HYBRIDTRANSPARENCY:
-            m_coreCompositorName = "HybridTransparency";
-            this->setupTransparency();
-            this->setTransparencyDepthOfHybridTransparency(m_numPass);
+        case hybridtransparency:
+            m_core_compositor_name = "HybridTransparency";
+            this->setup_transparency();
+            this->set_transparency_depth_of_hybrid_transparency(m_num_pass);
             break;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepth(int _depth)
+void core::set_transparency_depth(int _depth)
 {
     try
     {
-        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_core_compositor_name, false);
     }
     catch(Ogre::InvalidParametersException&)
     {
-        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+        SIGHT_DEBUG("Can not find compositor: " + m_core_compositor_name);
     }
-    m_numPass = _depth;
+    m_num_pass = _depth;
 }
 
 //-----------------------------------------------------------------------------
 
-void core::setStereoMode(core::stereo_mode_t _stereo_mode)
+void core::set_stereo_mode(core::stereo_mode_t _stereo_mode)
 {
     try
     {
-        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_core_compositor_name, false);
     }
     catch(Ogre::InvalidParametersException&)
     {
-        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+        SIGHT_DEBUG("Can not find compositor: " + m_core_compositor_name);
     }
-    m_stereoMode = _stereo_mode;
+    m_stereo_mode = _stereo_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-core::stereo_mode_t core::getStereoMode() const
+core::stereo_mode_t core::get_stereo_mode() const
 {
-    return m_stereoMode;
+    return m_stereo_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-void core::setupDefaultTransparency()
+void core::setup_default_transparency()
 {
     try
     {
-        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, true);
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_core_compositor_name, true);
     }
     catch(Ogre::InvalidParametersException&)
     {
-        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+        SIGHT_DEBUG("Can not find compositor: " + m_core_compositor_name);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void core::setupTransparency()
+void core::setup_transparency()
 {
     // Check if compositor is already existing
     Ogre::CompositorChain* comp_chain = Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
 
     const auto& comp_instances = comp_chain->getCompositorInstances();
 
-    m_compositorInstance = nullptr;
+    m_compositor_instance = nullptr;
 
     for(auto* target_comp : comp_instances)
     {
-        if(target_comp->getCompositor()->getName() == m_coreCompositorName)
+        if(target_comp->getCompositor()->getName() == m_core_compositor_name)
         {
-            m_compositorInstance = target_comp;
+            m_compositor_instance = target_comp;
             break;
         }
     }
 
     // If we didn't retrieve the good compositor
-    if(m_compositorInstance == nullptr)
+    if(m_compositor_instance == nullptr)
     {
         Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
         bool need_final_compositor_swap(false);
@@ -229,12 +229,12 @@ void core::setupTransparency()
         }
 
         // Now, we can add the new compositor to the compositor chain
-        m_compositorInstance = compositor_manager.addCompositor(
+        m_compositor_instance = compositor_manager.addCompositor(
             m_viewport,
-            m_coreCompositorName,
+            m_core_compositor_name,
             0
         );
-        compositor_manager.setCompositorEnabled(m_viewport, m_coreCompositorName, true);
+        compositor_manager.setCompositorEnabled(m_viewport, m_core_compositor_name, true);
 
         // If the final compositor has been removed, we need to add it to the compositor chain
         if(need_final_compositor_swap)
@@ -243,10 +243,10 @@ void core::setupTransparency()
             compositor_manager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, true);
         }
 
-        if(m_compositorInstance == nullptr)
+        if(m_compositor_instance == nullptr)
         {
             SIGHT_ERROR(
-                "Compositor " + m_coreCompositorName
+                "Compositor " + m_core_compositor_name
                 + " script is missing in resources (check your resources' paths)"
             );
         }
@@ -255,9 +255,9 @@ void core::setupTransparency()
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepthOfDepthPeeling(int _depth)
+void core::set_transparency_depth_of_depth_peeling(int _depth)
 {
-    Ogre::CompositionTechnique* dp_comp_tech = m_compositorInstance->getTechnique();
+    Ogre::CompositionTechnique* dp_comp_tech = m_compositor_instance->getTechnique();
 
     // Check if depthpeeling technique is already existing
     const int num_of_target_pass = static_cast<int>(dp_comp_tech->getTargetPasses().size());
@@ -291,7 +291,7 @@ void core::setTransparencyDepthOfDepthPeeling(int _depth)
             }
 
             // Material scheme
-            dp_comp_target_peel->setMaterialScheme(m_cellShadingName + "DepthPeeling/peelP" + ping_pong);
+            dp_comp_target_peel->setMaterialScheme(m_cell_shading_name + "DepthPeeling/peelP" + ping_pong);
 
             // No shadow
             dp_comp_target_peel->setShadowsEnabled(false);
@@ -300,7 +300,7 @@ void core::setTransparencyDepthOfDepthPeeling(int _depth)
             {
                 Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
                 dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
             }
         }
 
@@ -316,9 +316,9 @@ void core::setTransparencyDepthOfDepthPeeling(int _depth)
             {
                 Ogre::CompositionPass* dp_comp_pass_render_quad = dp_comp_target_blend->createPass();
                 dp_comp_pass_render_quad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
-                dp_comp_pass_render_quad->setMaterialName(m_cellShadingName + "DepthPeeling/Blend");
+                dp_comp_pass_render_quad->setMaterialName(m_cell_shading_name + "DepthPeeling/Blend");
                 dp_comp_pass_render_quad->setInput(0, "p" + ping_pong + "Buffer", 0);
-                if(!m_cellShadingName.empty())
+                if(!m_cell_shading_name.empty())
                 {
                     dp_comp_pass_render_quad->setInput(1, "p" + ping_pong + "Buffer", 1);
                     dp_comp_pass_render_quad->setInput(2, "p" + ping_pong + "Buffer", 2);
@@ -327,14 +327,18 @@ void core::setTransparencyDepthOfDepthPeeling(int _depth)
         }
     }
 
-    Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_cellShadingName + "DepthPeeling", true);
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(
+        m_viewport,
+        m_cell_shading_name + "DepthPeeling",
+        true
+    );
 }
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepthOfDualDepthPeeling(int _depth)
+void core::set_transparency_depth_of_dual_depth_peeling(int _depth)
 {
-    Ogre::CompositionTechnique* dp_comp_tech = m_compositorInstance->getTechnique();
+    Ogre::CompositionTechnique* dp_comp_tech = m_compositor_instance->getTechnique();
 
     // Check if depthpeeling technique is already existing
     const int num_of_target_pass = static_cast<int>(dp_comp_tech->getTargetPasses().size());
@@ -378,7 +382,7 @@ void core::setTransparencyDepthOfDualDepthPeeling(int _depth)
             {
                 Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
                 dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
             }
         }
 
@@ -406,9 +410,9 @@ void core::setTransparencyDepthOfDualDepthPeeling(int _depth)
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepthOfHybridTransparency(int _depth)
+void core::set_transparency_depth_of_hybrid_transparency(int _depth)
 {
-    Ogre::CompositionTechnique* dp_comp_tech = m_compositorInstance->getTechnique();
+    Ogre::CompositionTechnique* dp_comp_tech = m_compositor_instance->getTechnique();
 
     // Check if hybrid transparency technique is already existing
     const int num_of_target_pass = static_cast<int>(dp_comp_tech->getTargetPasses().size());
@@ -452,7 +456,7 @@ void core::setTransparencyDepthOfHybridTransparency(int _depth)
             {
                 Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
                 dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
             }
         }
 
@@ -499,7 +503,7 @@ void core::setTransparencyDepthOfHybridTransparency(int _depth)
         {
             Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_occlusion->createPass();
             dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
         }
     }
 
@@ -528,7 +532,7 @@ void core::setTransparencyDepthOfHybridTransparency(int _depth)
         {
             Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_weight_blend->createPass();
             dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
         }
     }
 
@@ -557,7 +561,7 @@ void core::setTransparencyDepthOfHybridTransparency(int _depth)
         {
             Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_transmittance->createPass();
             dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
         }
     }
 
@@ -706,9 +710,9 @@ void core::setTransparencyDepthOfHybridTransparency(int _depth)
             // following incrementation renders another pass with 0 frag
             // (to reduce number of peels if necessary)
             m_currNumPass++;
-            m_currNumPass = std::min(m_currNumPass, m_transparencyTechniqueMaxDepth);
+            m_currNumPass = std::min(m_currNumPass, m_transparency_techniqueMaxDepth);
             // Compared to the previous number of peel
-            if(m_numPass != m_currNumPass)
+            if(m_num_pass != m_currNumPass)
             {
                 // Uncomment following for number of passes info
                 // std::cout<<"Depth of OIT updated : "<<m_currNumPass<<std::endl;

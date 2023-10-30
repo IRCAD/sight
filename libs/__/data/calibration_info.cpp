@@ -41,23 +41,23 @@ const core::com::signals::key_t calibration_info::REMOVED_RECORD_SIG = "removedR
 const core::com::signals::key_t calibration_info::RESET_RECORD_SIG   = "resetRecord";
 const core::com::signals::key_t calibration_info::GET_RECORD_SIG     = "getRecord";
 
-using image_container_t           = std::list<image::sptr>;
-using point_list_container_t      = std::list<point_list::sptr>;
-using constImageContainerType     = std::list<image::csptr>;
-using constPointListContainerType = std::list<point_list::csptr>;
+using image_container_t            = std::list<image::sptr>;
+using point_list_container_t       = std::list<point_list::sptr>;
+using const_image_container_t      = std::list<image::csptr>;
+using const_point_list_container_t = std::list<point_list::csptr>;
 
 //------------------------------------------------------------------------------
 
 calibration_info::calibration_info() :
-    m_sigAddedRecord(std::make_shared<added_record_signal_t>()),
-    m_sigRemovedRecord(std::make_shared<removed_record_signal_t>()),
-    m_sigResetRecord(std::make_shared<Reset_record_signal_type>()),
-    m_sigGetRecord(std::make_shared<get_record_signal_t>())
+    m_sig_added_record(std::make_shared<added_record_signal_t>()),
+    m_sig_removed_record(std::make_shared<removed_record_signal_t>()),
+    m_sig_reset_record(std::make_shared<reset_record_signal_t>()),
+    m_sig_get_record(std::make_shared<get_record_signal_t>())
 {
-    core::com::has_signals::m_signals(ADDED_RECORD_SIG, m_sigAddedRecord);
-    core::com::has_signals::m_signals(REMOVED_RECORD_SIG, m_sigRemovedRecord);
-    core::com::has_signals::m_signals(RESET_RECORD_SIG, m_sigResetRecord);
-    core::com::has_signals::m_signals(GET_RECORD_SIG, m_sigGetRecord);
+    core::com::has_signals::m_signals(ADDED_RECORD_SIG, m_sig_added_record);
+    core::com::has_signals::m_signals(REMOVED_RECORD_SIG, m_sig_removed_record);
+    core::com::has_signals::m_signals(RESET_RECORD_SIG, m_sig_reset_record);
+    core::com::has_signals::m_signals(GET_RECORD_SIG, m_sig_get_record);
 }
 
 //------------------------------------------------------------------------------
@@ -74,10 +74,10 @@ void calibration_info::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_imageContainer     = other->m_imageContainer;
-    m_pointListContainer = other->m_pointListContainer;
+    m_image_container        = other->m_image_container;
+    m_point_list_container_t = other->m_point_list_container_t;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -94,68 +94,71 @@ void calibration_info::deep_copy(const object::csptr& _source, const std::unique
         !bool(other)
     );
 
-    this->resetRecords();
-    SIGHT_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
+    this->reset_records();
+    SIGHT_ASSERT(
+        "Lists have not the same size",
+        other->m_point_list_container_t.size() == other->m_image_container.size()
+    );
 
-    auto img_iter = other->m_imageContainer.begin();
-    for(const data::point_list::sptr& pl : other->m_pointListContainer)
+    auto img_iter = other->m_image_container.begin();
+    for(const data::point_list::sptr& pl : other->m_point_list_container_t)
     {
         data::image::sptr other_img     = data::object::copy(*img_iter, _cache);
         data::point_list::sptr other_pl = data::object::copy(pl, _cache);
-        this->addRecord(other_img, other_pl);
+        this->add_record(other_img, other_pl);
 
         ++img_iter;
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void calibration_info::addRecord(const data::image::sptr& _img, const data::point_list::sptr& _pl)
+void calibration_info::add_record(const data::image::sptr& _img, const data::point_list::sptr& _pl)
 {
-    m_imageContainer.push_back(_img);
-    m_pointListContainer.push_back(_pl);
+    m_image_container.push_back(_img);
+    m_point_list_container_t.push_back(_pl);
 }
 
 //------------------------------------------------------------------------------
 
-void calibration_info::removeRecord(std::size_t _idx)
+void calibration_info::remove_record(std::size_t _idx)
 {
-    SIGHT_ASSERT("index out of bound ", _idx < m_pointListContainer.size());
+    SIGHT_ASSERT("index out of bound ", _idx < m_point_list_container_t.size());
 
-    auto pl_it  = m_pointListContainer.begin();
-    auto img_it = m_imageContainer.begin();
+    auto pl_it  = m_point_list_container_t.begin();
+    auto img_it = m_image_container.begin();
 
     std::advance(pl_it, static_cast<point_list_container_t::iterator::difference_type>(_idx));
     std::advance(img_it, static_cast<image_container_t::iterator::difference_type>(_idx));
 
-    m_pointListContainer.erase(pl_it);
-    m_imageContainer.erase(img_it);
+    m_point_list_container_t.erase(pl_it);
+    m_image_container.erase(img_it);
 }
 
 //------------------------------------------------------------------------------
 
-void calibration_info::resetRecords()
+void calibration_info::reset_records()
 {
-    m_pointListContainer.clear();
-    m_imageContainer.clear();
+    m_point_list_container_t.clear();
+    m_image_container.clear();
 }
 
 //------------------------------------------------------------------------------
 
-image_container_t calibration_info::getImageContainer()
+image_container_t calibration_info::get_image_container()
 {
-    return m_imageContainer;
+    return m_image_container;
 }
 
 //------------------------------------------------------------------------------
 
-constImageContainerType calibration_info::getImageContainer() const
+const_image_container_t calibration_info::get_image_container() const
 {
     // Transform to csptr
-    constImageContainerType const_image_list;
-    for(const auto& image : m_imageContainer)
+    const_image_container_t const_image_list;
+    for(const auto& image : m_image_container)
     {
         const_image_list.push_back(image);
     }
@@ -165,18 +168,18 @@ constImageContainerType calibration_info::getImageContainer() const
 
 //------------------------------------------------------------------------------
 
-point_list_container_t calibration_info::getPointListContainer()
+point_list_container_t calibration_info::get_point_list_container()
 {
-    return m_pointListContainer;
+    return m_point_list_container_t;
 }
 
 //------------------------------------------------------------------------------
 
-constPointListContainerType calibration_info::getPointListContainer() const
+const_point_list_container_t calibration_info::get_point_list_container() const
 {
     // Transform to csptr
-    constPointListContainerType const_point_list;
-    for(const auto& pl : m_pointListContainer)
+    const_point_list_container_t const_point_list;
+    for(const auto& pl : m_point_list_container_t)
     {
         const_point_list.push_back(pl);
     }
@@ -186,21 +189,21 @@ constPointListContainerType calibration_info::getPointListContainer() const
 
 //------------------------------------------------------------------------------
 
-data::point_list::csptr calibration_info::getPointList(const data::image::csptr& _img) const
+data::point_list::csptr calibration_info::get_point_list(const data::image::csptr& _img) const
 {
     data::point_list::sptr pl;
 
-    SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size());
+    SIGHT_ASSERT("Lists have not the same size", m_image_container.size() == m_point_list_container_t.size());
     std::size_t dist = 0;
     image_container_t::const_iterator it;
-    for(it = m_imageContainer.begin() ; it != m_imageContainer.end() && *(it) != _img ; ++it, ++dist)
+    for(it = m_image_container.begin() ; it != m_image_container.end() && *(it) != _img ; ++it, ++dist)
     {
     }
 
-    auto pl_it = m_pointListContainer.begin();
+    auto pl_it = m_point_list_container_t.begin();
     std::advance(pl_it, static_cast<point_list_container_t::const_iterator::difference_type>(dist));
 
-    if(it != m_imageContainer.end())
+    if(it != m_image_container.end())
     {
         pl = *(pl_it);
     }
@@ -210,22 +213,22 @@ data::point_list::csptr calibration_info::getPointList(const data::image::csptr&
 
 //------------------------------------------------------------------------------
 
-data::image::csptr calibration_info::getImage(const data::point_list::csptr& _pl) const
+data::image::csptr calibration_info::get_image(const data::point_list::csptr& _pl) const
 {
     data::image::sptr img;
 
-    SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size());
+    SIGHT_ASSERT("Lists have not the same size", m_image_container.size() == m_point_list_container_t.size());
 
     std::size_t dist = 0;
     point_list_container_t::const_iterator it;
-    for(it = m_pointListContainer.begin() ; it != m_pointListContainer.end() && *(it) != _pl ; ++it, ++dist)
+    for(it = m_point_list_container_t.begin() ; it != m_point_list_container_t.end() && *(it) != _pl ; ++it, ++dist)
     {
     }
 
-    auto img_it = m_imageContainer.begin();
+    auto img_it = m_image_container.begin();
     std::advance(img_it, static_cast<image_container_t::const_iterator::difference_type>(dist));
 
-    if(it != m_pointListContainer.end())
+    if(it != m_point_list_container_t.end())
     {
         img = *(img_it);
     }
@@ -235,11 +238,11 @@ data::image::csptr calibration_info::getImage(const data::point_list::csptr& _pl
 
 //------------------------------------------------------------------------------
 
-data::image::sptr calibration_info::getImage(std::size_t _idx)
+data::image::sptr calibration_info::get_image(std::size_t _idx)
 {
-    SIGHT_ASSERT("index out of bound ", _idx < m_imageContainer.size());
+    SIGHT_ASSERT("index out of bound ", _idx < m_image_container.size());
 
-    auto img_it = m_imageContainer.begin();
+    auto img_it = m_image_container.begin();
 
     std::advance(img_it, static_cast<image_container_t::const_iterator::difference_type>(_idx));
 
@@ -248,11 +251,11 @@ data::image::sptr calibration_info::getImage(std::size_t _idx)
 
 //------------------------------------------------------------------------------
 
-data::image::csptr calibration_info::getImage(std::size_t _idx) const
+data::image::csptr calibration_info::get_image(std::size_t _idx) const
 {
-    SIGHT_ASSERT("index out of bound ", _idx < m_imageContainer.size());
+    SIGHT_ASSERT("index out of bound ", _idx < m_image_container.size());
 
-    auto img_it = m_imageContainer.begin();
+    auto img_it = m_image_container.begin();
 
     std::advance(img_it, static_cast<image_container_t::const_iterator::difference_type>(_idx));
 
@@ -263,14 +266,14 @@ data::image::csptr calibration_info::getImage(std::size_t _idx) const
 
 bool calibration_info::operator==(const calibration_info& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_imageContainer, _other.m_imageContainer)
-       || !core::tools::is_equal(m_pointListContainer, _other.m_pointListContainer))
+    if(!core::tools::is_equal(m_image_container, _other.m_image_container)
+       || !core::tools::is_equal(m_point_list_container_t, _other.m_point_list_container_t))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

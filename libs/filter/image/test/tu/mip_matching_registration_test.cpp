@@ -65,18 +65,18 @@ void mip_matching_registration_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void mip_matching_registration_test::identityTest()
+void mip_matching_registration_test::identity_test()
 {
     data::image::csptr moving = create_sphere_image<std::uint16_t, 3>();
     data::image::csptr fixed  = data::object::copy(moving);
     data::matrix4::sptr mat   = std::make_shared<data::matrix4>();
 
-    filter::image::RegistrationDispatch::Parameters params;
+    filter::image::registration_dispatch::parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = std::make_shared<data::matrix4>();
-    core::type type = moving->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, RegistrationDispatch>::invoke(type, params);
+    core::type type = moving->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, registration_dispatch>::invoke(type, params);
 
     for(std::size_t i = 0 ; i != 3 ; ++i)
     {
@@ -90,7 +90,7 @@ void mip_matching_registration_test::identityTest()
 
 //------------------------------------------------------------------------------
 
-void mip_matching_registration_test::translateTransformTest()
+void mip_matching_registration_test::translate_transform_test()
 {
     data::image::csptr moving = create_sphere_image<std::uint16_t, 3>();
     data::image::sptr fixed   = std::make_shared<data::image>();
@@ -102,12 +102,12 @@ void mip_matching_registration_test::translateTransformTest()
     sight::filter::image::resampler::resample(moving, fixed, transform);
 
     std::array<double, 3> expected {{4., 12., 7.}};
-    filter::image::RegistrationDispatch::Parameters params;
+    filter::image::registration_dispatch::parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = std::make_shared<data::matrix4>();
-    core::type type = moving->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, RegistrationDispatch>::invoke(type, params);
+    core::type type = moving->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, registration_dispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
@@ -121,7 +121,7 @@ void mip_matching_registration_test::translateTransformTest()
 
 //------------------------------------------------------------------------------
 
-void mip_matching_registration_test::translateTransformWithScalesTest()
+void mip_matching_registration_test::translate_transform_with_scales_test()
 {
     using image_t = itk::Image<std::uint16_t, 3>;
 
@@ -130,7 +130,7 @@ void mip_matching_registration_test::translateTransformWithScalesTest()
     moving_spacing[1] = 1.3;
     data::image::sptr moving = create_sphere_image<std::uint16_t, 3>(moving_spacing);
     data::image::sptr fixed  = std::make_shared<data::image>();
-    moving->setOrigin({107., 50., -30.});
+    moving->set_origin({107., 50., -30.});
 
     // Translate the image a bit
     std::array<double, 3> v_trans {{4., 19., 7.}};
@@ -140,8 +140,8 @@ void mip_matching_registration_test::translateTransformWithScalesTest()
     (*transform)(2, 3) = v_trans[2];
     sight::filter::image::resampler::resample(moving, fixed, transform);
     auto fixed_origin  = std::array<double, 3> {{20., 10., 35.}};
-    auto moving_origin = moving->getOrigin();
-    fixed->setOrigin(fixed_origin);
+    auto moving_origin = moving->origin();
+    fixed->set_origin(fixed_origin);
     std::array<float, 3> expected {
         {
             float(moving_origin[0] + v_trans[0] - fixed_origin[0]),
@@ -169,12 +169,12 @@ void mip_matching_registration_test::translateTransformWithScalesTest()
     auto* resampled          = resample->GetOutput();
     auto resampled_f4s_fixed = io::itk::move_from_itk<image_t>(resampled, true);
 
-    filter::image::RegistrationDispatch::Parameters params;
+    filter::image::registration_dispatch::parameters params;
     params.fixed     = resampled_f4s_fixed;
     params.moving    = moving;
     params.transform = std::make_shared<data::matrix4>();
-    core::type type = moving->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, RegistrationDispatch>::invoke(type, params);
+    core::type type = moving->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, registration_dispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(

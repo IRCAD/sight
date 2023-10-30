@@ -24,7 +24,7 @@
 
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/filter.hpp>
-#include <filter/dicom/helper/Filter.hpp>
+#include <filter/dicom/helper/filter.hpp>
 
 #include <io/dicom/reader/series_set.hpp>
 
@@ -54,12 +54,12 @@ void sop_class_uid_splitter_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void sop_class_uid_splitter_test::simpleApplication()
+void sop_class_uid_splitter_test::simple_application()
 {
     auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "71-CT-DICOM_SEG";
-    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
@@ -70,7 +70,7 @@ void sop_class_uid_splitter_test::simpleApplication()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
+    CPPUNIT_ASSERT_NO_THROW(reader->read_dicom_series());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
@@ -84,18 +84,18 @@ void sop_class_uid_splitter_test::simpleApplication()
         "sight::filter::dicom::splitter::sop_class_uid_splitter"
     );
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
+    sight::filter::dicom::helper::filter::apply_filter(dicom_series_container, filter, true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicom_series_container.size());
     data::dicom_series::sptr dicom_series_a = dicom_series_container[0];
     data::dicom_series::sptr dicom_series_b = dicom_series_container[1];
 
     // Check SOP Class UIDs
-    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.2"), *dicom_series_a->getSOPClassUIDs().begin());    // CT
-                                                                                                                   // Image
-                                                                                                                   // Storage
-    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.66.5"), *dicom_series_b->getSOPClassUIDs().begin()); // Surface
-                                                                                                                   // Segmentation
-                                                                                                                   // Storage
+    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.2"), *dicom_series_a->get_sop_class_ui_ds().begin()); // CT
+    // Image
+    // Storage
+    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.66.5"), *dicom_series_b->get_sop_class_ui_ds().begin()); // Surface
+    // Segmentation
+    // Storage
 }
 
 //------------------------------------------------------------------------------

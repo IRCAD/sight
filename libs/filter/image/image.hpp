@@ -58,17 +58,17 @@ void merge_mask(const data::image::sptr& _img_dest, const data::image::csptr& _m
 {
     typedef IMG_DEST_TYPE img_dest_t;
     typedef MASK_TYPE mask_t;
-    SIGHT_ASSERT("image dest has not correct type", _img_dest->getType() == core::type::get<img_dest_t>());
-    SIGHT_ASSERT("image mask has not correct type", _mask->getType() == core::type::get<mask_t>());
+    SIGHT_ASSERT("image dest has not correct type", _img_dest->type() == core::type::get<img_dest_t>());
+    SIGHT_ASSERT("image mask has not correct type", _mask->type() == core::type::get<mask_t>());
 
     SIGHT_ASSERT("images have not the same size", _img_dest->size() == _mask->size());
     SIGHT_ASSERT(
         "images have not the same spacing",
-        core::tools::is_equal(_img_dest->getSpacing(), _mask->getSpacing())
+        core::tools::is_equal(_img_dest->spacing(), _mask->spacing())
     );
     SIGHT_ASSERT(
         "images have not the same origin",
-        core::tools::is_equal(_img_dest->getOrigin(), _mask->getOrigin())
+        core::tools::is_equal(_img_dest->origin(), _mask->origin())
     );
 
     const auto img_dump_lock  = _img_dest->dump_lock();

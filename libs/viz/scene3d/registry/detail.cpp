@@ -27,52 +27,52 @@
 namespace sight::viz::scene3d::registry
 {
 
-struct FwRenderOgreRegistryInstantiatorTag {};
+struct render_ogre_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwRenderOgreRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, render_ogre_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct InteractorOffscreenMgrRegistryInstantiatorTag {};
+struct interactor_offscreen_mgr_registry_instantiator_tag {};
 
 SPTR(offscreen_mgr_t) get_offscreen_mgr()
 {
     using instantiator_t = core::lazy_instantiator<offscreen_mgr_t,
-                                                   InteractorOffscreenMgrRegistryInstantiatorTag>;
+                                                   interactor_offscreen_mgr_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct InteractorRegistryInstantiatorTag {};
+struct interactor_registry_instantiator_tag {};
 
 SPTR(interactor_factory_t) get_interactor_registry()
 {
-    using instantiator_t = core::lazy_instantiator<interactor_factory_t, InteractorRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<interactor_factory_t, interactor_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct CameraRegistryInstantiatorTag {};
+struct camera_registry_instantiator_tag {};
 
 SPTR(camera_factory_t) get_camera_registry()
 {
-    using instantiator_t = core::lazy_instantiator<camera_factory_t, CameraRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<camera_factory_t, camera_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct LightRegistryInstantiatorTag {};
+struct light_registry_instantiator_tag {};
 
 SPTR(light_factory_t) get_light_registry()
 {
-    using instantiator_t = core::lazy_instantiator<light_factory_t, LightRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<light_factory_t, light_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct TextRegistryInstantiatorTag {};
+struct text_registry_instantiator_tag {};
 
 SPTR(text_factory_t) get_text_registry()
 {
-    using instantiator_t = core::lazy_instantiator<text_factory_t, TextRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<text_factory_t, text_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

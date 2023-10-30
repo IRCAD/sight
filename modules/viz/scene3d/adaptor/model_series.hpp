@@ -45,7 +45,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b changeField(): update all reconstructions visibility.
- * - \b updateVisibility(bool): sets whether all reconstructions are shown or not.
+ * - \b update_visibility(bool): sets whether all reconstructions are shown or not.
  * - \b toggleVisibility(): toggle whether all reconstructions are shown or not.
  * - \b show(): shows all reconstructions.
  * - \b hide(): hides all reconstructions.
@@ -127,36 +127,36 @@ protected:
      * @brief Sets the model series visibility.
      * @param _visible the visibility status of the model series.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
 
 private:
 
     /// SLOT: updates all reconstructions visibility from the input data field.
-    void showReconstructionsOnFieldChanged();
+    void show_reconstructions_on_field_changed();
 
     /// Defines if the camera must be reset automatically
-    bool m_autoResetCamera {true};
+    bool m_auto_reset_camera {true};
 
     /// Defines the texture name.
-    std::string m_textureAdaptorUID;
+    std::string m_texture_adaptor_uid;
 
     /// Defines the material name.
-    std::string m_materialTemplateName {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_material_template_name {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
 
     /// Defines if the model series is dynamic.
-    bool m_isDynamic {false};
+    bool m_is_dynamic {false};
 
     /// Defines if the model series' vertices are dynamic.
-    bool m_isDynamicVertices {false};
+    bool m_is_dynamic_vertices {false};
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines if the visibility tag is present in the configuration.
-    bool m_isVisibleTag {false};
+    bool m_is_visible_tag {false};
 
-    static constexpr std::string_view s_MODEL_INPUT = "model";
-    data::ptr<data::model_series, data::Access::in> m_model {this, s_MODEL_INPUT, true};
+    static constexpr std::string_view MODEL_INPUT = "model";
+    data::ptr<data::model_series, data::access::in> m_model {this, MODEL_INPUT, true};
 };
 
 //------------------------------------------------------------------------------

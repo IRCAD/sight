@@ -35,10 +35,10 @@ namespace sight::filter::image::ut
 class powell_optimizer_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(powell_optimizer_test);
-CPPUNIT_TEST(parabolaTest);
-CPPUNIT_TEST(ackleyTest);
-CPPUNIT_TEST(sphereFunctionTest);
-CPPUNIT_TEST(bealeFunctionTest);
+CPPUNIT_TEST(parabola_test);
+CPPUNIT_TEST(ackley_test);
+CPPUNIT_TEST(sphere_function_test);
+CPPUNIT_TEST(beale_function_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,10 +47,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void parabolaTest();
-    static void ackleyTest();
-    static void sphereFunctionTest();
-    static void bealeFunctionTest();
+    static void parabola_test();
+    static void ackley_test();
+    static void sphere_function_test();
+    static void beale_function_test();
 };
 
 } // namespace sight::filter::image::ut

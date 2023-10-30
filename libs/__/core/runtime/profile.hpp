@@ -40,8 +40,8 @@ class CORE_CLASS_API profile : public core::base_object
 {
 public:
 
-    typedef std::vector<std::string> params_container;
-    typedef std::function<int ()> run_callback_type;
+    using params_container  = std::vector<std::string>;
+    using run_callback_type = std::function<int ()>;
 
     SIGHT_DECLARE_CLASS(profile, base_object);
 

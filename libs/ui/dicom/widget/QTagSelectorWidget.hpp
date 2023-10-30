@@ -37,39 +37,39 @@ namespace sight::ui::dicom::widget
 /**
  * @brief Widget used to select a dicom tag
  */
-class QTagSelectorWidget : public QWidget
+class q_tag_selector_widget : public QWidget
 {
 Q_OBJECT;
 
 public:
 
     /// Constructor
-    QTagSelectorWidget(QWidget* _parent = nullptr);
+    q_tag_selector_widget(QWidget* _parent = nullptr);
 
     /// Destructor
-    ~QTagSelectorWidget() override;
+    ~q_tag_selector_widget() override;
 
     /// Set tag
-    void setTagValue(const DcmTagKey& _tag);
+    void set_tag_value(const DcmTagKey& _tag);
 
     /// Get tag
-    DcmTagKey getTag();
+    DcmTagKey get_tag();
 
 protected Q_SLOTS:
 
     /// Update tag name when selected tag changes
-    void updateTagName(int _value = 0);
+    void update_tag_name(int _value = 0);
 
 protected:
 
     /// Group spin box
-    QPointer<ui::dicom::widget::QHexSpinBox> m_groupSpinBox;
+    QPointer<ui::dicom::widget::q_hex_spin_box> m_group_spin_box;
 
     /// Tag spin box
-    QPointer<ui::dicom::widget::QHexSpinBox> m_elementSpinBox;
+    QPointer<ui::dicom::widget::q_hex_spin_box> m_element_spin_box;
 
     /// tag name label
-    QPointer<QLabel> m_tagNameLabel;
+    QPointer<QLabel> m_tag_name_label;
 
     /// Tag
     DcmTagKey m_tag;

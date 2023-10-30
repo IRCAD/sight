@@ -83,15 +83,15 @@ protected:
 
 protected Q_SLOTS:
 
-    void onLoadButton();
-    void onDeleteButton();
+    void on_load_button();
+    void on_delete_button();
 
 private:
 
-    QPointer<QPushButton> m_loadButton;
-    QPointer<QPushButton> m_deleteButton;
+    QPointer<QPushButton> m_load_button;
+    QPointer<QPushButton> m_delete_button;
 
-    data::ptr<data::reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
+    data::ptr<data::reconstruction, data::access::inout> m_reconstruction {this, "reconstruction"};
 };
 
 } // namespace sight::module::ui::viz

@@ -31,7 +31,7 @@ namespace sight::ui::dialog
 
 //-----------------------------------------------------------------------------
 
-void notification::show(service::Notification _notification)
+void notification::show(service::notification _notification)
 {
     ui::dialog::notification notif(std::move(_notification));
     notif.show();
@@ -51,7 +51,7 @@ notification::notification()
 
 //-----------------------------------------------------------------------------
 
-notification::notification(service::Notification _notification)
+notification::notification(service::notification _notification)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
@@ -61,7 +61,7 @@ notification::notification(service::Notification _notification)
 
             if(m_implementation)
             {
-                m_implementation->setNotification(std::move(_notification));
+                m_implementation->set_notification(std::move(_notification));
             }
         }).wait();
 }
@@ -82,56 +82,56 @@ void notification::show()
 
 //-----------------------------------------------------------------------------
 
-void notification::setMessage(std::string _msg)
+void notification::set_message(std::string _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setMessage(std::move(_msg));
+                m_implementation->set_message(std::move(_msg));
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void notification::setType(notification_base::Type _type)
+void notification::set_type(notification_base::type _type)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setType(_type);
+                m_implementation->set_type(_type);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void notification::setPosition(notification_base::Position _position)
+void notification::set_position(notification_base::position _position)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setPosition(_position);
+                m_implementation->set_position(_position);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void notification::setSize(std::array<int, 2> _size)
+void notification::set_size(std::array<int, 2> _size)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setSize(_size);
+                m_implementation->set_size(_size);
             }
         }).wait();
 }
@@ -150,47 +150,47 @@ std::array<int, 2> notification::size() const
 
 //-----------------------------------------------------------------------------
 
-void notification::setIndex(unsigned int _index)
+void notification::set_index(unsigned int _index)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setIndex(_index);
+                m_implementation->set_index(_index);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void notification::setDuration(std::optional<std::chrono::milliseconds> _duration_in_ms)
+void notification::set_duration(std::optional<std::chrono::milliseconds> _duration_in_ms)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setDuration(_duration_in_ms);
+                m_implementation->set_duration(_duration_in_ms);
             }
         }).wait();
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<std::chrono::milliseconds> notification::getDuration() const
+std::optional<std::chrono::milliseconds> notification::get_duration() const
 {
     if(m_implementation)
     {
-        return m_implementation->getDuration();
+        return m_implementation->get_duration();
     }
 
-    return notification_base::getDuration();
+    return notification_base::get_duration();
 }
 
 //------------------------------------------------------------------------------
 
-void notification::setChannel(std::string _channel)
+void notification::set_channel(std::string _channel)
 {
     std::string channel(_channel);
     core::thread::get_default_worker()->post_task<void>(
@@ -198,26 +198,26 @@ void notification::setChannel(std::string _channel)
         {
             if(m_implementation)
             {
-                m_implementation->setChannel(std::move(_channel));
+                m_implementation->set_channel(std::move(_channel));
             }
         }).wait();
 }
 
 //------------------------------------------------------------------------------
 
-std::string notification::getChannel() const
+std::string notification::get_channel() const
 {
     if(m_implementation)
     {
-        return m_implementation->getChannel();
+        return m_implementation->get_channel();
     }
 
-    return notification_base::getChannel();
+    return notification_base::get_channel();
 }
 
 //------------------------------------------------------------------------------
 
-void notification::setClosable(std::optional<bool> _closable)
+void notification::set_closable(std::optional<bool> _closable)
 {
     std::optional<bool> is_closable(_closable);
     core::thread::get_default_worker()->post_task<void>(
@@ -225,26 +225,26 @@ void notification::setClosable(std::optional<bool> _closable)
         {
             if(m_implementation)
             {
-                m_implementation->setClosable(is_closable);
+                m_implementation->set_closable(is_closable);
             }
         }).wait();
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<bool> notification::isClosable() const
+std::optional<bool> notification::is_closable() const
 {
     if(m_implementation)
     {
-        return m_implementation->isClosable();
+        return m_implementation->is_closable();
     }
 
-    return notification_base::isClosable();
+    return notification_base::is_closable();
 }
 
 //-----------------------------------------------------------------------------
 
-bool notification::isVisible() const
+bool notification::is_visible() const
 {
     bool visible = false;
     core::thread::get_default_worker()->post_task<void>(
@@ -252,7 +252,7 @@ bool notification::isVisible() const
         {
             if(m_implementation)
             {
-                visible = m_implementation->isVisible();
+                visible = m_implementation->is_visible();
             }
         }).wait();
 
@@ -275,42 +275,42 @@ void notification::close() const
 
 //-----------------------------------------------------------------------------
 
-void notification::moveDown()
+void notification::move_down()
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->moveDown();
+                m_implementation->move_down();
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void notification::setContainer(container::widget::csptr _container)
+void notification::set_container(container::widget::csptr _container)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setContainer(_container);
+                m_implementation->set_container(_container);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void notification::setClosedCallback(std::function<void()> _f)
+void notification::set_closed_callback(std::function<void()> _f)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setClosedCallback(_f);
+                m_implementation->set_closed_callback(_f);
             }
         }).wait();
 }

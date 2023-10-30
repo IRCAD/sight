@@ -28,23 +28,23 @@
 namespace sight::io::bitmap::ut
 {
 
-class ReaderWriterTest : public CPPUNIT_NS::TestFixture
+class reader_writer_test : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    CPPUNIT_TEST_SUITE(ReaderWriterTest);
-    CPPUNIT_TEST(grayscaleUINT8Test);
-    CPPUNIT_TEST(grayscaleUINT16Test);
-    CPPUNIT_TEST(grayscaleINT8Test);
-    CPPUNIT_TEST(grayscaleINT16Test);
-    CPPUNIT_TEST(rgbUINT8Test);
-    CPPUNIT_TEST(rgbUINT16Test);
-    CPPUNIT_TEST(rgbINT8Test);
-    CPPUNIT_TEST(rgbINT16Test);
-    CPPUNIT_TEST(rgbaUINT8Test);
-    CPPUNIT_TEST(rgbaUINT16Test);
-    CPPUNIT_TEST(rgbaINT8Test);
-    CPPUNIT_TEST(rgbaINT16Test);
+    CPPUNIT_TEST_SUITE(reader_writer_test);
+    CPPUNIT_TEST(grayscale_uin_t8_test);
+    CPPUNIT_TEST(grayscale_uin_t16_test);
+    CPPUNIT_TEST(grayscale_in_t8_test);
+    CPPUNIT_TEST(grayscale_in_t16_test);
+    CPPUNIT_TEST(rgb_uin_t8_test);
+    CPPUNIT_TEST(rgb_uin_t16_test);
+    CPPUNIT_TEST(rgb_in_t8_test);
+    CPPUNIT_TEST(rgb_in_t16_test);
+    CPPUNIT_TEST(rgba_uin_t8_test);
+    CPPUNIT_TEST(rgba_uin_t16_test);
+    CPPUNIT_TEST(rgba_in_t8_test);
+    CPPUNIT_TEST(rgba_in_t16_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,18 +52,18 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void grayscaleUINT8Test();
-    static void grayscaleUINT16Test();
-    static void grayscaleINT8Test();
-    static void grayscaleINT16Test();
-    static void rgbUINT8Test();
-    static void rgbUINT16Test();
-    static void rgbINT8Test();
-    static void rgbINT16Test();
-    static void rgbaUINT8Test();
-    static void rgbaUINT16Test();
-    static void rgbaINT8Test();
-    static void rgbaINT16Test();
+    static void grayscale_uin_t8_test();
+    static void grayscale_uin_t16_test();
+    static void grayscale_in_t8_test();
+    static void grayscale_in_t16_test();
+    static void rgb_uin_t8_test();
+    static void rgb_uin_t16_test();
+    static void rgb_in_t8_test();
+    static void rgb_in_t16_test();
+    static void rgba_uin_t8_test();
+    static void rgba_uin_t16_test();
+    static void rgba_in_t8_test();
+    static void rgba_in_t16_test();
 };
 
 } // namespace sight::io::bitmap::ut

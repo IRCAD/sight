@@ -40,14 +40,14 @@ namespace sight::ui::qt::builder
 
 //-----------------------------------------------------------------------------
 
-void menubar::createMenuBar(ui::container::widget::sptr _parent)
+void menubar::create_menu_bar(ui::container::widget::sptr _parent)
 {
     m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
-    auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    auto* window = qobject_cast<QMainWindow*>(m_parent->get_qt_container());
     if(window == nullptr)
     {
-        window = qobject_cast<QMainWindow*>(m_parent->getQtContainer()->parent());
+        window = qobject_cast<QMainWindow*>(m_parent->get_qt_container()->parent());
     }
 
     SIGHT_ASSERT("The parent container must be a QMainWindow", window);
@@ -55,14 +55,14 @@ void menubar::createMenuBar(ui::container::widget::sptr _parent)
     {
         auto menu_bar_container = ui::qt::container::menubar::make();
         auto* menu_bar          = new QMenuBar(nullptr);
-        menu_bar_container->setQtMenuBar(menu_bar);
+        menu_bar_container->set_qt_menu_bar(menu_bar);
         window->setMenuBar(menu_bar);
-        m_menuBar = menu_bar_container;
+        m_menu_bar = menu_bar_container;
 
-        if(!m_backgroundColor.empty())
+        if(!m_background_color.empty())
         {
             std::array<std::uint8_t, 4> rgba {};
-            data::tools::color::hexaStringToRGBA(m_backgroundColor, rgba);
+            data::tools::color::hexa_string_to_rgba(m_background_color, rgba);
             std::stringstream ss;
             ss << "QMenuBar, QMenu { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
             << static_cast<std::int16_t>(rgba[1]) << ','
@@ -76,14 +76,14 @@ void menubar::createMenuBar(ui::container::widget::sptr _parent)
 
 //-----------------------------------------------------------------------------
 
-void menubar::destroyMenuBar()
+void menubar::destroy_menu_bar()
 {
-    SIGHT_ASSERT("The menu is not initialized", m_menuBar);
+    SIGHT_ASSERT("The menu is not initialized", m_menu_bar);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
-    auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    auto* window = qobject_cast<QMainWindow*>(m_parent->get_qt_container());
     if(window == nullptr)
     {
-        window = qobject_cast<QMainWindow*>(m_parent->getQtContainer()->parent());
+        window = qobject_cast<QMainWindow*>(m_parent->get_qt_container()->parent());
     }
 
     SIGHT_ASSERT("The parent container must be a QMainWindow", window);
@@ -92,7 +92,7 @@ void menubar::destroyMenuBar()
         window->setMenuBar(nullptr);
     }
 
-    m_menuBar->destroyContainer();
+    m_menu_bar->destroy_container();
 }
 
 //-----------------------------------------------------------------------------

@@ -52,7 +52,7 @@ void field_helper_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void field_helper_test::testHelper()
+void field_helper_test::test_helper()
 {
     const std::string field_i_d1 = "FIELD_ID1";
     const std::string field_i_d2 = "FIELD_ID2";
@@ -212,7 +212,7 @@ void field_helper_test::testHelper()
         CPPUNIT_ASSERT(obj->get_field(field_i_d2) == field_obj1);
         CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
 
-        field_helper.addOrSwap(field_i_d2, field_obj3);
+        field_helper.add_or_swap(field_i_d2, field_obj3);
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_fields().size());
         CPPUNIT_ASSERT(obj->get_field(field_i_d1) == field_obj2);
         CPPUNIT_ASSERT(obj->get_field(field_i_d2) == field_obj3);

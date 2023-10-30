@@ -66,9 +66,9 @@ public:
     /// Destructor. Do nothing
     UI_API ~view() override;
 
-    UI_API virtual SPTR(ui::container::widget) getParent();
+    UI_API virtual SPTR(ui::container::widget) get_parent();
 
-    UI_API virtual void setParent(std::string _wid);
+    UI_API virtual void set_parent(std::string _wid);
 
     /**
      * @brief Initialize managers.
@@ -83,13 +83,13 @@ public:
                     <view caption="view4" />
                     <view caption="view5" />
                 </layout>
-                <toolBar />
-                <menuBar />
+                <toolbar />
+                <menubar />
             </gui>
             <registry>
                 <parent wid="my_view" />
-                <toolBar sid="toolbar" start="true" />
-                <menuBar sid="menubar" start="true" />
+                <toolbar sid="toolbar" start="true" />
+                <menubar sid="menubar" start="true" />
                 <view sid="subview3" start="true" />
                 <view wid="subview4" />
                 <view wid="subview5" />
@@ -100,11 +100,11 @@ public:
      * attribute
      * is used to find its parent container.
      * Otherwise, the service uid is used to find its parent container.
-     * - \<toolBar sid="toolbar1" start="true" /\> : This section isn't mandatory.
+     * - \<toolbar sid="toolbar1" start="true" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the tool bar identifier.
      *   - \b start = {true| false} (default value false): indicate if the tool bar service must be started by the
      * service.
-     * - \<menuBar sid="menubar1" start="true" /\> : This section isn't mandatory.
+     * - \<menubar sid="menubar1" start="true" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the menu bar identifier.
      *   - \b start = {true| false} (default value false): indicate if the menu bar service must be started by the
      * service.
@@ -140,13 +140,13 @@ public:
      * @brief Register menu bar.
      * If start="true" in configuration the menu bar services will be started.
      */
-    UI_API virtual void manageMenuBar(SPTR(ui::container::menubar) _menu_bar);
+    UI_API virtual void manage_menu_bar(SPTR(ui::container::menubar) _menu_bar);
 
     /**
      * @brief Register tool bar.
      * If start="true" in configuration the tool bar services will be started.
      */
-    UI_API virtual void manageToolBar(SPTR(ui::container::toolbar) _tool_bar);
+    UI_API virtual void manage_tool_bar(SPTR(ui::container::toolbar) _tool_bar);
 
     /**
      * @brief Stopping view manager.
@@ -158,38 +158,38 @@ public:
      * @brief Stopping view manager.
      * tool_bar service will be stopped.
      */
-    UI_API virtual void unmanageToolBar();
+    UI_API virtual void unmanage_tool_bar();
 
     /**
      * @brief Stopping view manager.
      * menu_bar service will be stopped.
      */
-    UI_API virtual void unmanageMenuBar();
+    UI_API virtual void unmanage_menu_bar();
 
 protected:
 
-    typedef std::map<std::string, std::pair<unsigned int, bool> > SIDContainerMapType;
-    typedef std::map<std::string, unsigned int> WIDContainerMapType;
-    typedef std::pair<std::string, bool> SIDMenuBarPairType;
-    typedef std::pair<std::string, bool> SIDToolBarPairType;
+    using sid_container_map_type = std::map<std::string, std::pair<unsigned int, bool> >;
+    using wid_container_map_type = std::map<std::string, unsigned int>;
+    using sid_menu_bar_pair_type = std::pair<std::string, bool>;
+    using sid_tool_bar_pair_type = std::pair<std::string, bool>;
 
     /**
      * @brief All services ID managed and associated with pair containing:
      * subviews index vector and boolean describing if is started by the manager.
      */
-    SIDContainerMapType m_sids;
+    sid_container_map_type m_sids;
 
     /// All windows containers ID managed (and associated with subviews index vector).
-    WIDContainerMapType m_wids;
+    wid_container_map_type m_wids;
 
     /// menu bar service ID associate with this view
-    SIDMenuBarPairType m_menuBarSid;
+    sid_menu_bar_pair_type m_menu_bar_sid;
 
     /// Tool bar service ID associate with this view
-    SIDToolBarPairType m_toolBarSid;
+    sid_tool_bar_pair_type m_tool_bar_sid;
 
-    std::string m_parentWid;
-    SPTR(ui::container::widget) m_parentContainer;
+    std::string m_parent_wid;
+    SPTR(ui::container::widget) m_parent_container;
 
     /// Main service ID associate with this view
     std::string m_sid;

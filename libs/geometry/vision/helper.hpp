@@ -36,7 +36,7 @@
 namespace sight::geometry::vision::helper
 {
 
-typedef std::pair<double, std::vector<cv::Point2f> > error_and_points_t;
+using error_and_points_t = std::pair<double, std::vector<cv::Point2f> >;
 
 /**
  * @brief compute the mean error of reprojection

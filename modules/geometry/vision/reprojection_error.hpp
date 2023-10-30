@@ -43,7 +43,7 @@ namespace sight::module::geometry::vision
  * and 2d image points.
  *
  * @section Slots Slots
- * - \b setParameter(ui::parameter_t, std::string): set a parameter from the UI.
+ * - \b set_parameter(ui::parameter_t, std::string): set a parameter from the UI.
  *
  * @section XML XML Configuration
  *
@@ -82,7 +82,7 @@ public:
     SIGHT_DECLARE_SERVICE(reprojection_error, service::controller);
 
     /// Double changed signal type
-    typedef core::com::signal<void (double)> error_computed_signal_t;
+    using error_computed_signal_t = core::com::signal<void (double)>;
 
     MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t COMPUTE_SLOT;
     MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
@@ -120,41 +120,41 @@ private:
     void compute(core::hires_clock::type _timestamp);
 
     ///Slot called when a parameter is changed
-    void setParameter(sight::ui::parameter_t _val, std::string _key);
+    void set_parameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Last timestamp
-    core::hires_clock::type m_lastTimestamp {0};
+    core::hires_clock::type m_last_timestamp {0};
 
     /// Marker pattern width.
-    double m_patternWidth {80};
+    double m_pattern_width {80};
 
     /// 3D object points
-    std::vector<cv::Point3f> m_objectPoints;
+    std::vector<cv::Point3f> m_object_points;
     /// Camera Matrix (fx, fy, cx, cy)
-    cv::Mat m_cameraMatrix;
+    cv::Mat m_camera_matrix;
     ///Distorsion coefficient
-    cv::Mat m_distorsionCoef;
+    cv::Mat m_distorsion_coef;
     /// Color of the reprojection circle
-    cv::Scalar m_cvColor;
+    cv::Scalar m_cv_color;
     /// if true: display circle centered at reprojection point.
     bool m_display {true};
     /// extrinsic matrix (can be identity)
-    cv::Mat m_cvExtrinsic;
+    cv::Mat m_cv_extrinsic;
 
     /// List of tags associated with each input matrix
-    std::vector<data::marker_map::key_t> m_matricesTag;
+    std::vector<data::marker_map::key_t> m_matrices_tag;
 
-    static constexpr std::string_view s_MATRIX_INPUT    = "matrix";
-    static constexpr std::string_view s_MARKERMAP_INPUT = "markerMap";
-    static constexpr std::string_view s_CAMERA_INPUT    = "camera";
-    static constexpr std::string_view s_EXTRINSIC_INPUT = "extrinsic";
-    static constexpr std::string_view s_FRAME_INOUT     = "frame";
+    static constexpr std::string_view MATRIX_INPUT    = "matrix";
+    static constexpr std::string_view MARKERMAP_INPUT = "markerMap";
+    static constexpr std::string_view CAMERA_INPUT    = "camera";
+    static constexpr std::string_view EXTRINSIC_INPUT = "extrinsic";
+    static constexpr std::string_view FRAME_INOUT     = "frame";
 
-    data::ptr_vector<data::matrix4, data::Access::in> m_matrix {this, s_MATRIX_INPUT, true, false};
-    data::ptr<data::marker_map, data::Access::in> m_markerMap {this, s_MARKERMAP_INPUT};
-    data::ptr<data::camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
-    data::ptr<data::matrix4, data::Access::in> m_extrinsic {this, s_EXTRINSIC_INPUT};
-    data::ptr<data::image, data::Access::inout> m_frame {this, s_FRAME_INOUT};
+    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT, true, false};
+    data::ptr<data::marker_map, data::access::in> m_marker_map {this, MARKERMAP_INPUT};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
+    data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
+    data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};
 };
 
 } //namespace sight::module::geometry::vision

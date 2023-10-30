@@ -51,10 +51,10 @@ Ogre::Technique* ray_exit_depth_listener::handleSchemeNotFound(
     {
         // Copy the first technique, set appropriate raster ops and add a RAY_EXIT_POINTS define in the fragment program
         // That should be sufficient for most materials that render with Transparency.inc.glsl
-        static const std::string techName = "FrontFacesMin";
-        auto* color_tech                  = _original_material->getTechnique("");
+        static const std::string s_TECH_NAME = "FrontFacesMin";
+        auto* color_tech                     = _original_material->getTechnique("");
 
-        new_technique = viz::scene3d::helper::technique::copyToMaterial(
+        new_technique = viz::scene3d::helper::technique::copy_to_material(
             color_tech,
             _scheme_name,
             _original_material
@@ -65,13 +65,16 @@ Ogre::Technique* ray_exit_depth_listener::handleSchemeNotFound(
         {
             const auto fp_base_name = pass->getFragmentProgramName();
             const auto fp_src_name  = pass->getFragmentProgram()->getSourceFile();
-            auto new_name           = viz::scene3d::helper::shading::setTechniqueInProgramName(fp_base_name, techName);
+            auto new_name           = viz::scene3d::helper::shading::set_technique_in_program_name(
+                fp_base_name,
+                s_TECH_NAME
+            );
 
             viz::scene3d::helper::shading::gpu_program_parameters_t parameters {
                 {"preprocessor_defines", "RAY_EXIT_POINTS=1"}
             };
 
-            auto program = viz::scene3d::helper::shading::createProgramFrom(
+            auto program = viz::scene3d::helper::shading::create_program_from(
                 new_name,
                 fp_src_name,
                 parameters,

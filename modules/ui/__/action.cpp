@@ -58,29 +58,29 @@ void action::configuring()
 
 void action::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //-----------------------------------------------------------------------------
 
 void action::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------
 
 void action::updating()
 {
-    if(this->confirmAction())
+    if(this->confirm_action())
     {
         if(m_sync)
         {
-            M_CLICKED_SIG->emit();
+            m_clicked_sig->emit();
         }
         else
         {
-            M_CLICKED_SIG->async_emit();
+            m_clicked_sig->async_emit();
         }
 
         if(m_key)
@@ -88,7 +88,7 @@ void action::updating()
             const bool is_checked = this->checked();
             if(m_sync)
             {
-                M_PARAMETER_CHANGED_SIG->emit(
+                m_parameter_changed_sig->emit(
                     m_clicked
                     ? *m_clicked
                     : is_checked && m_checked
@@ -101,7 +101,7 @@ void action::updating()
             }
             else
             {
-                M_PARAMETER_CHANGED_SIG->async_emit(
+                m_parameter_changed_sig->async_emit(
                     m_clicked
                     ? *m_clicked
                     : is_checked && m_checked

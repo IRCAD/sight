@@ -24,23 +24,23 @@
 namespace sight::ui::dialog
 {
 
-std::queue<std::string> input_dummy::inputs;
+std::queue<std::string> input_dummy::s_inputs;
 
 //------------------------------------------------------------------------------
 
-void input_dummy::setTitle(const std::string& /*title*/)
+void input_dummy::set_title(const std::string& /*title*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void input_dummy::setMessage(const std::string& /*msg*/)
+void input_dummy::set_message(const std::string& /*msg*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void input_dummy::setEchoMode(EchoMode /*echoMode*/)
+void input_dummy::set_echo_mode(echo_mode /*echoMode*/)
 {
 }
 
@@ -52,13 +52,13 @@ void input_dummy::set_input(const std::string& /*text*/)
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, bool> input_dummy::getInput()
+std::pair<std::string, bool> input_dummy::get_input()
 {
     std::string res;
-    if(!inputs.empty())
+    if(!s_inputs.empty())
     {
-        res = inputs.front();
-        inputs.pop();
+        res = s_inputs.front();
+        s_inputs.pop();
     }
 
     return {res, true};
@@ -66,23 +66,23 @@ std::pair<std::string, bool> input_dummy::getInput()
 
 //------------------------------------------------------------------------------
 
-void input_dummy::pushInput(const std::string& _input)
+void input_dummy::push_input(const std::string& _input)
 {
-    inputs.push(_input);
+    s_inputs.push(_input);
 }
 
 //------------------------------------------------------------------------------
 
 bool input_dummy::clear()
 {
-    if(inputs.empty())
+    if(s_inputs.empty())
     {
         return true;
     }
 
-    while(!inputs.empty())
+    while(!s_inputs.empty())
     {
-        inputs.pop();
+        s_inputs.pop();
     }
 
     return false;

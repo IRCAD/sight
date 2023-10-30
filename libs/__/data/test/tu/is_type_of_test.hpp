@@ -32,7 +32,7 @@ class is_type_of_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(is_type_of_test);
-    CPPUNIT_TEST(checkType);
+    CPPUNIT_TEST(check_type);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,7 +41,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void checkType();
+    static void check_type();
 };
 
 } // namespace sight::data::ut

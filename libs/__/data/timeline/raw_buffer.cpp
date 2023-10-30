@@ -44,7 +44,7 @@ raw_buffer::~raw_buffer()
 
 //-----------------------------------------------------------------------------
 
-void raw_buffer::setBufferValues(buffer_data_t _values)
+void raw_buffer::set_buffer_values(buffer_data_t _values)
 {
     memcpy(m_buffer, _values, m_size);
 }

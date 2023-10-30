@@ -31,9 +31,9 @@ namespace sight::module::activity::validator::ut
 class contain_one_skin_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(contain_one_skin_test);
-CPPUNIT_TEST(testValidator);
-CPPUNIT_TEST(testValidatorWithVector);
-CPPUNIT_TEST(testValidatorWithComposite);
+CPPUNIT_TEST(test_validator);
+CPPUNIT_TEST(test_validator_with_vector);
+CPPUNIT_TEST(test_validator_with_composite);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,9 +42,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testValidator();
-    static void testValidatorWithVector();
-    static void testValidatorWithComposite();
+    static void test_validator();
+    static void test_validator_with_vector();
+    static void test_validator_with_composite();
 };
 
 } // namespace sight::module::activity::validator::ut

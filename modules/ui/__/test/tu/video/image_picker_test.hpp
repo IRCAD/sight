@@ -31,11 +31,11 @@ namespace sight::module::ui::video::ut
 class image_picker_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(image_picker_test);
-CPPUNIT_TEST(basicTest);
-CPPUNIT_TEST(clickWithoutControlTest);
-CPPUNIT_TEST(topLeftRefTest);
-CPPUNIT_TEST(singlePointModeTest);
-CPPUNIT_TEST(noCtrlModifierTest);
+CPPUNIT_TEST(basic_test);
+CPPUNIT_TEST(click_without_control_test);
+CPPUNIT_TEST(top_left_ref_test);
+CPPUNIT_TEST(single_point_mode_test);
+CPPUNIT_TEST(no_ctrl_modifier_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,15 +43,15 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
-    void clickWithoutControlTest();
-    void topLeftRefTest();
-    void singlePointModeTest();
-    void noCtrlModifierTest();
+    void basic_test();
+    void click_without_control_test();
+    void top_left_ref_test();
+    void single_point_mode_test();
+    void no_ctrl_modifier_test();
 
 private:
 
-    service::base::sptr m_imagePicker;
+    service::base::sptr m_image_picker;
 };
 
 } // namespace sight::module::ui::video::ut

@@ -46,7 +46,7 @@ void marker_map::shallow_copy(const object::csptr& _source)
 
     m_markers = other->m_markers;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -65,12 +65,12 @@ void marker_map::deep_copy(const object::csptr& _source, const std::unique_ptr<d
 
     m_markers = other->m_markers;
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-const marker_map::marker_t* marker_map::getMarker(const key_t& _id) const
+const marker_map::marker_t* marker_map::get_marker(const key_t& _id) const
 {
     auto it = m_markers.find(_id);
     if(it != m_markers.end())
@@ -83,7 +83,7 @@ const marker_map::marker_t* marker_map::getMarker(const key_t& _id) const
 
 //------------------------------------------------------------------------------
 
-marker_map::marker_t* marker_map::getMarker(const key_t& _id)
+marker_map::marker_t* marker_map::get_marker(const key_t& _id)
 {
     auto it = m_markers.find(_id);
     if(it != m_markers.end())
@@ -96,7 +96,7 @@ marker_map::marker_t* marker_map::getMarker(const key_t& _id)
 
 //------------------------------------------------------------------------------
 
-const marker_map::marker_t& marker_map::getMarker(std::size_t _index) const
+const marker_map::marker_t& marker_map::get_marker(std::size_t _index) const
 {
     SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
     SIGHT_ASSERT("Index is bigger than map's size", _index < m_markers.size());
@@ -108,7 +108,7 @@ const marker_map::marker_t& marker_map::getMarker(std::size_t _index) const
 
 //------------------------------------------------------------------------------
 
-marker_map::marker_t& marker_map::getMarker(std::size_t _index)
+marker_map::marker_t& marker_map::get_marker(std::size_t _index)
 {
     SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
     SIGHT_ASSERT("Index is bigger than map's size", _index < m_markers.size());
@@ -127,7 +127,7 @@ std::size_t marker_map::count() const
 
 //------------------------------------------------------------------------------
 
-void marker_map::setMarker(const key_t& _id, const marker_map::marker_t& _marker)
+void marker_map::set_marker(const key_t& _id, const marker_map::marker_t& _marker)
 {
     m_markers[_id] = _marker;
 }
@@ -142,7 +142,7 @@ bool marker_map::operator==(const marker_map& _other) const noexcept
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

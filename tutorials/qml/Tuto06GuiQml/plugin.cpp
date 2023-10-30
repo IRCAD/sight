@@ -26,7 +26,7 @@
 
 #include <ui/qml/QmlEngine.hpp>
 
-namespace Tuto06GuiQml
+namespace tuto06_gui_qml
 {
 
 namespace ui   = sight::ui;
@@ -39,13 +39,13 @@ SIGHT_REGISTER_PLUGIN("Tuto06GuiQml::plugin");
 void plugin::start()
 {
     // get the qml engine
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
+    SPTR(ui::qml::qml_engine) engine = ui::qml::qml_engine::get_default();
 
     // get the path of the qml ui file
     auto path = core::runtime::get_module_resource_file_path("Tuto06GuiQml", "app.qml");
 
     // load the qml ui
-    engine->loadMainComponent(path);
+    engine->load_main_component(path);
 }
 
 //------------------------------------------------------------------------------
@@ -56,4 +56,4 @@ void plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto06GuiQml
+} // namespace tuto06_gui_qml

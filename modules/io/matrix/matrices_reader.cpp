@@ -59,14 +59,14 @@ static const core::com::slots::key_t SET_STEP      = "setStep";
 
 matrices_reader::matrices_reader() noexcept
 {
-    new_slot(START_READING, &matrices_reader::startReading, this);
-    new_slot(STOP_READING, &matrices_reader::stopReading, this);
+    new_slot(START_READING, &matrices_reader::start_reading, this);
+    new_slot(STOP_READING, &matrices_reader::stop_reading, this);
     new_slot(PAUSE, &matrices_reader::pause, this);
-    new_slot(TOGGLE_LOOP_MODE, &matrices_reader::toggleLoopMode, this);
+    new_slot(TOGGLE_LOOP_MODE, &matrices_reader::toggle_loop_mode, this);
 
-    new_slot(READ_NEXT, &matrices_reader::readNext, this);
-    new_slot(READ_PREVIOUS, &matrices_reader::readPrevious, this);
-    new_slot(SET_STEP, &matrices_reader::setStep, this);
+    new_slot(READ_NEXT, &matrices_reader::read_next, this);
+    new_slot(READ_PREVIOUS, &matrices_reader::read_previous, this);
+    new_slot(SET_STEP, &matrices_reader::set_step, this);
 }
 
 //------------------------------------------------------------------------------
@@ -82,9 +82,9 @@ matrices_reader::~matrices_reader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType matrices_reader::getIOPathType() const
+sight::io::service::path_type_t matrices_reader::get_path_type() const
 {
-    return sight::io::service::FILE;
+    return sight::io::service::file;
 }
 
 //------------------------------------------------------------------------------
@@ -98,17 +98,17 @@ void matrices_reader::configuring()
     m_fps = config.get<unsigned int>("fps", 30);
     SIGHT_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
 
-    m_useTimelapse = config.get<bool>("useTimelapse", m_useTimelapse);
+    m_use_timelapse = config.get<bool>("useTimelapse", m_use_timelapse);
 
-    m_createNewTS = config.get<bool>("createTimestamp", m_createNewTS);
+    m_create_new_ts = config.get<bool>("createTimestamp", m_create_new_ts);
 
-    m_oneShot = config.get<bool>("oneShot", m_oneShot);
+    m_one_shot = config.get<bool>("oneShot", m_one_shot);
 
     m_step = config.get<std::uint64_t>("step", m_step);
     SIGHT_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
-    m_stepChanged = m_step;
+    m_step_changed = m_step;
 
-    m_loopMatrix = config.get<bool>("loop", m_loopMatrix);
+    m_loop_matrix = config.get<bool>("loop", m_loop_matrix);
 }
 
 //------------------------------------------------------------------------------
@@ -120,21 +120,21 @@ void matrices_reader::starting()
 
 //------------------------------------------------------------------------------
 
-void matrices_reader::openLocationDialog()
+void matrices_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a csv file to read" : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::READ);
-    dialog_file.setType(ui::dialog::location::SINGLE_FILE);
-    dialog_file.addFilter(".csv file", "*.csv");
+    dialog_file.set_title(m_window_title.empty() ? "Choose a csv file to read" : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::read);
+    dialog_file.set_type(ui::dialog::location::single_file);
+    dialog_file.add_filter(".csv file", "*.csv");
 
     auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
         this->set_file(result->get_file());
 
         if(nullptr != m_filestream)
@@ -146,7 +146,7 @@ void matrices_reader::openLocationDialog()
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 }
 
@@ -154,7 +154,7 @@ void matrices_reader::openLocationDialog()
 
 void matrices_reader::stopping()
 {
-    this->stopReading();
+    this->stop_reading();
     m_worker->stop();
 }
 
@@ -166,19 +166,19 @@ void matrices_reader::updating()
 
 //------------------------------------------------------------------------------
 
-void matrices_reader::readPrevious()
+void matrices_reader::read_previous()
 {
-    if(m_oneShot)
+    if(m_one_shot)
     {
-        if(m_tsMatricesCount - m_step >= m_stepChanged)
+        if(m_ts_matrices_count - m_step >= m_step_changed)
         {
             // Compute difference between a possible step change in setStep() slot and the current step value
-            const std::int64_t shift   = static_cast<std::int64_t>(m_stepChanged) - static_cast<std::int64_t>(m_step);
-            const std::int64_t shifted = static_cast<std::int64_t>(m_tsMatricesCount) - shift;
+            const std::int64_t shift   = static_cast<std::int64_t>(m_step_changed) - static_cast<std::int64_t>(m_step);
+            const std::int64_t shifted = static_cast<std::int64_t>(m_ts_matrices_count) - shift;
 
             // m_tsMatricesCount is pointing to previous matrix,so -1 = present matrix
-            m_tsMatricesCount = static_cast<std::size_t>(shifted) - (2 * m_step);
-            m_step            = m_stepChanged;
+            m_ts_matrices_count = static_cast<std::size_t>(shifted) - (2 * m_step);
+            m_step              = m_step_changed;
 
             m_timer->stop();
             m_timer->start();
@@ -195,19 +195,19 @@ void matrices_reader::readPrevious()
 
 //------------------------------------------------------------------------------
 
-void matrices_reader::readNext()
+void matrices_reader::read_next()
 {
-    if(m_oneShot)
+    if(m_one_shot)
     {
         // Compute difference between a possible step change in setStep() slot and the current step value
-        const std::int64_t shift   = static_cast<std::int64_t>(m_stepChanged) - static_cast<std::int64_t>(m_step);
-        const std::int64_t shifted = static_cast<std::int64_t>(m_tsMatricesCount) + shift;
+        const std::int64_t shift   = static_cast<std::int64_t>(m_step_changed) - static_cast<std::int64_t>(m_step);
+        const std::int64_t shifted = static_cast<std::int64_t>(m_ts_matrices_count) + shift;
 
-        if(shifted < static_cast<std::int64_t>(m_tsMatrices.size()))
+        if(shifted < static_cast<std::int64_t>(m_ts_matrices.size()))
         {
             // Update matrix position index
-            m_tsMatricesCount = static_cast<std::size_t>(shifted);
-            m_step            = m_stepChanged;
+            m_ts_matrices_count = static_cast<std::size_t>(shifted);
+            m_step              = m_step_changed;
 
             m_timer->stop();
             m_timer->start();
@@ -224,14 +224,14 @@ void matrices_reader::readNext()
 
 //------------------------------------------------------------------------------
 
-void matrices_reader::setStep(int _step, std::string _key)
+void matrices_reader::set_step(int _step, std::string _key)
 {
     if(_key == "step")
     {
         SIGHT_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
 
         // Save the changed step value
-        m_stepChanged = static_cast<std::uint64_t>(_step);
+        m_step_changed = static_cast<std::uint64_t>(_step);
     }
     else
     {
@@ -241,19 +241,19 @@ void matrices_reader::setStep(int _step, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void matrices_reader::startReading()
+void matrices_reader::start_reading()
 {
     if(m_timer)
     {
-        this->stopReading();
+        this->stop_reading();
     }
 
-    if(!this->hasLocationDefined())
+    if(!this->has_location_defined())
     {
-        this->openLocationDialog();
+        this->open_location_dialog();
     }
 
-    if(this->hasLocationDefined())
+    if(this->has_location_defined())
     {
         if(nullptr == m_filestream)
         {
@@ -281,10 +281,10 @@ void matrices_reader::startReading()
 
                 const auto nb_of_matrices = static_cast<unsigned int>((nb_of_elements - 1) / 16);
 
-                const auto matrix_tl = m_matrixTL.lock();
-                matrix_tl->initPoolSize(nb_of_matrices);
+                const auto matrix_tl = m_matrix_tl.lock();
+                matrix_tl->init_pool_size(nb_of_matrices);
 
-                TimeStampedMatrices current_ts_mat;
+                time_stamped_matrices current_ts_mat;
 
                 boost::tokenizer<boost::char_separator<char> >::iterator iter = tok.begin();
                 current_ts_mat.timestamp = std::stod(iter.current_token());
@@ -307,7 +307,7 @@ void matrices_reader::startReading()
                     current_ts_mat.matrices.push_back(mat);
                 }
 
-                m_tsMatrices.push_back(current_ts_mat);
+                m_ts_matrices.push_back(current_ts_mat);
             }
 
             m_filestream->close();
@@ -317,11 +317,11 @@ void matrices_reader::startReading()
             SIGHT_ERROR("The csv file '" + this->get_file().string() + "' can not be openned.");
         }
 
-        if(m_oneShot)
+        if(m_one_shot)
         {
             m_timer = m_worker->create_timer();
             m_timer->set_one_shot(true);
-            m_timer->set_function([this](auto&& ...){readMatrices();});
+            m_timer->set_function([this](auto&& ...){read_matrices();});
             m_timer->set_duration(std::chrono::milliseconds(0));
             m_timer->start();
         }
@@ -330,15 +330,15 @@ void matrices_reader::startReading()
             m_timer = m_worker->create_timer();
 
             core::thread::timer::time_duration_t duration;
-            if(m_useTimelapse)
+            if(m_use_timelapse)
             {
                 m_timer->set_one_shot(true);
-                if(m_tsMatrices.size() >= 2)
+                if(m_ts_matrices.size() >= 2)
                 {
                     duration =
                         std::chrono::milliseconds(
-                            static_cast<std::uint64_t>(m_tsMatrices[1].timestamp
-                                                       - m_tsMatrices[0].timestamp)
+                            static_cast<std::uint64_t>(m_ts_matrices[1].timestamp
+                                                       - m_ts_matrices[0].timestamp)
                         );
                 }
                 else
@@ -352,20 +352,20 @@ void matrices_reader::startReading()
                 duration = std::chrono::milliseconds(1000 / m_fps);
             }
 
-            m_timer->set_function([this](auto&& ...){readMatrices();});
+            m_timer->set_function([this](auto&& ...){read_matrices();});
             m_timer->set_duration(duration);
             m_timer->start();
         }
 
-        m_isPlaying = true;
+        m_is_playing = true;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void matrices_reader::stopReading()
+void matrices_reader::stop_reading()
 {
-    m_isPlaying = false;
+    m_is_playing = false;
 
     if(m_timer)
     {
@@ -384,16 +384,16 @@ void matrices_reader::stopReading()
         m_filestream = nullptr;
     }
 
-    if(!m_tsMatrices.empty())
+    if(!m_ts_matrices.empty())
     {
-        m_tsMatrices.clear();
+        m_ts_matrices.clear();
     }
 
-    m_tsMatricesCount = 0;
+    m_ts_matrices_count = 0;
 
     //clear the timeline
-    const auto matrix_tl = m_matrixTL.lock();
-    matrix_tl->clearTimeline();
+    const auto matrix_tl = m_matrix_tl.lock();
+    matrix_tl->clear_timeline();
 
     auto sig = matrix_tl->signal<data::timeline::signals::cleared_t>(data::timeline::signals::CLEARED);
     sig->async_emit();
@@ -403,27 +403,27 @@ void matrices_reader::stopReading()
 
 void matrices_reader::pause()
 {
-    m_isPaused = !m_isPaused;
+    m_is_paused = !m_is_paused;
     if(m_timer)
     {
-        m_isPaused ? m_timer->stop() : m_timer->start();
+        m_is_paused ? m_timer->stop() : m_timer->start();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void matrices_reader::readMatrices()
+void matrices_reader::read_matrices()
 {
-    if(!m_isPaused && m_tsMatricesCount < m_tsMatrices.size())
+    if(!m_is_paused && m_ts_matrices_count < m_ts_matrices.size())
     {
         const auto t_start   = core::hires_clock::get_time_in_milli_sec();
-        const auto matrix_tl = m_matrixTL.lock();
+        const auto matrix_tl = m_matrix_tl.lock();
 
-        TimeStampedMatrices current_matrices = m_tsMatrices[m_tsMatricesCount];
+        time_stamped_matrices current_matrices = m_ts_matrices[m_ts_matrices_count];
 
         core::hires_clock::type timestamp = NAN;
 
-        if(m_createNewTS)
+        if(m_create_new_ts)
         {
             timestamp = core::hires_clock::get_time_in_milli_sec();
         }
@@ -434,38 +434,38 @@ void matrices_reader::readMatrices()
 
         // Push matrix in timeline
         SPTR(data::matrix_tl::buffer_t) matrix_buf;
-        matrix_buf = matrix_tl->createBuffer(timestamp);
-        matrix_tl->pushObject(matrix_buf);
+        matrix_buf = matrix_tl->create_buffer(timestamp);
+        matrix_tl->push_object(matrix_buf);
 
-        SIGHT_DEBUG("Reading matrix index " << m_tsMatricesCount << " with timestamp " << timestamp);
+        SIGHT_DEBUG("Reading matrix index " << m_ts_matrices_count << " with timestamp " << timestamp);
         for(unsigned int i = 0 ; i < current_matrices.matrices.size() ; ++i)
         {
-            matrix_buf->setElement(current_matrices.matrices[i], i);
+            matrix_buf->set_element(current_matrices.matrices[i], i);
         }
 
-        if(m_useTimelapse && (m_tsMatricesCount + m_step) < m_tsMatrices.size())
+        if(m_use_timelapse && (m_ts_matrices_count + m_step) < m_ts_matrices.size())
         {
             const auto elapsed_time          = core::hires_clock::get_time_in_milli_sec() - t_start;
-            const std::size_t current_matrix = m_tsMatricesCount;
-            const double current_time        = m_tsMatrices[current_matrix].timestamp + elapsed_time;
-            double next_duration             = m_tsMatrices[m_tsMatricesCount + m_step].timestamp - current_time;
+            const std::size_t current_matrix = m_ts_matrices_count;
+            const double current_time        = m_ts_matrices[current_matrix].timestamp + elapsed_time;
+            double next_duration             = m_ts_matrices[m_ts_matrices_count + m_step].timestamp - current_time;
 
             // If the next matrix delay is already passed, drop the matrices and check the next one.
-            while(next_duration < elapsed_time && (m_tsMatricesCount + m_step) < m_tsMatrices.size())
+            while(next_duration < elapsed_time && (m_ts_matrices_count + m_step) < m_ts_matrices.size())
             {
-                next_duration      = m_tsMatrices[m_tsMatricesCount + m_step].timestamp - current_time;
-                m_tsMatricesCount += m_step;
+                next_duration        = m_ts_matrices[m_ts_matrices_count + m_step].timestamp - current_time;
+                m_ts_matrices_count += m_step;
                 SIGHT_DEBUG("Skipping a matrix");
             }
 
             // If it is the last matrix array: stop the timer or loop
-            if((m_tsMatricesCount + m_step) == m_tsMatrices.size())
+            if((m_ts_matrices_count + m_step) == m_ts_matrices.size())
             {
                 m_timer->stop();
-                if(m_loopMatrix)
+                if(m_loop_matrix)
                 {
-                    matrix_tl->clearTimeline();
-                    m_tsMatricesCount = 0;
+                    matrix_tl->clear_timeline();
+                    m_ts_matrices_count = 0;
                     core::thread::timer::time_duration_t duration = std::chrono::milliseconds(1000 / m_fps);
                     m_timer->set_duration(duration);
                     m_timer->start();
@@ -473,7 +473,7 @@ void matrices_reader::readMatrices()
             }
             else
             {
-                next_duration = m_tsMatrices[m_tsMatricesCount + m_step].timestamp
+                next_duration = m_ts_matrices[m_ts_matrices_count + m_step].timestamp
                                 - current_time;
                 core::thread::timer::time_duration_t duration =
                     std::chrono::milliseconds(static_cast<std::int64_t>(next_duration));
@@ -490,21 +490,21 @@ void matrices_reader::readMatrices()
         );
         sig->async_emit(timestamp);
 
-        m_tsMatricesCount += m_step;
+        m_ts_matrices_count += m_step;
     }
-    else if(!m_isPaused && m_loopMatrix)
+    else if(!m_is_paused && m_loop_matrix)
     {
-        const auto matrix_tl = m_matrixTL.lock();
-        matrix_tl->clearTimeline();
-        m_tsMatricesCount = 0;
+        const auto matrix_tl = m_matrix_tl.lock();
+        matrix_tl->clear_timeline();
+        m_ts_matrices_count = 0;
     }
 }
 
 // -----------------------------------------------------------------------------
 
-void matrices_reader::toggleLoopMode()
+void matrices_reader::toggle_loop_mode()
 {
-    m_loopMatrix = !m_loopMatrix;
+    m_loop_matrix = !m_loop_matrix;
 }
 
 //------------------------------------------------------------------------------

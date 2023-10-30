@@ -78,16 +78,16 @@ protected:
 private:
 
     /// Starts a progress bar with the given id.
-    void startProgress(std::string _id);
+    void start_progress(std::string _id);
 
     /// Starts a progress bar with the given id with a new message.
-    void updateProgress(std::string _id, float _percentage, std::string _message);
+    void update_progress(std::string _id, float _percentage, std::string _message);
 
     /// Stops a progress bar with the given id.
-    void stopProgress(std::string _id);
+    void stop_progress(std::string _id);
 
     /// Stores progress bars.
-    std::map<std::string, sight::ui::dialog::progress::sptr> m_progressDialogs;
+    std::map<std::string, sight::ui::dialog::progress::sptr> m_progress_dialogs;
 
     /// Synchronizes progress bars access.
     core::mt::mutex m_mutex;

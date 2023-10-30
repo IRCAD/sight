@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
     std::string log_file;
 
     using spy_logger = sight::core::log::spy_logger;
-    int log_level = spy_logger::SL_WARN;
+    int log_level = spy_logger::sl_warn;
 
     po::options_description log_options("Log options");
     log_options.add_options()
@@ -240,32 +240,32 @@ int main(int argc, char* argv[])
     )
     (
         "log-trace",
-        po::value(&log_level)->implicit_value(spy_logger::SL_TRACE)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::sl_trace)->zero_tokens(),
         "Set log_level to trace"
     )
     (
         "log-debug",
-        po::value(&log_level)->implicit_value(spy_logger::SL_DEBUG)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::sl_debug)->zero_tokens(),
         "Set log_level to debug"
     )
     (
         "log-info",
-        po::value(&log_level)->implicit_value(spy_logger::SL_INFO)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::sl_info)->zero_tokens(),
         "Set log_level to info"
     )
     (
         "log-warn",
-        po::value(&log_level)->implicit_value(spy_logger::SL_WARN)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::sl_warn)->zero_tokens(),
         "Set log_level to warn"
     )
     (
         "log-error",
-        po::value(&log_level)->implicit_value(spy_logger::SL_ERROR)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::sl_error)->zero_tokens(),
         "Set log_level to error"
     )
     (
         "log-fatal",
-        po::value(&log_level)->implicit_value(spy_logger::SL_FATAL)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::sl_fatal)->zero_tokens(),
         "Set log_level to fatal"
     );
 
@@ -364,7 +364,7 @@ int main(int argc, char* argv[])
 
     if(console_log)
     {
-        spy_logger::add_console_log(std::clog, static_cast<spy_logger::level_type>(log_level));
+        spy_logger::add_console_log(std::clog, static_cast<spy_logger::level_t>(log_level));
     }
 
     if(file_log)
@@ -380,14 +380,14 @@ int main(int argc, char* argv[])
 
             logger.start_encrypted_logger(
                 log_file_path,
-                static_cast<spy_logger::level_type>(log_level),
+                static_cast<spy_logger::level_t>(log_level),
                 password,
                 ask_password
             );
         }
         else
         {
-            logger.start_logger(log_file_path, static_cast<spy_logger::level_type>(log_level));
+            logger.start_logger(log_file_path, static_cast<spy_logger::level_t>(log_level));
         }
     }
 

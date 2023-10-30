@@ -46,7 +46,7 @@ void plane_functions_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkGetPlane()
+void plane_functions_test::check_get_plane()
 {
     const double plan_p1_x = 1.0;
     const double plan_p1_y = 0.0;
@@ -60,14 +60,14 @@ void plane_functions_test::checkGetPlane()
     const double plan_p3_y = 2.0;
     const double plan_p3_z = 1.0;
 
-    const fwVec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
-    const fwVec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
-    const fwVec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
+    const fw_vec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
+    const fw_vec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
+    const fw_vec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
 
-    fwPlane plane1 = geometry::data::get_plane(plan_pt1, plan_pt2, plan_pt3);
-    fwVec3d normal = geometry::data::get_normal(plane1);
+    fw_plane plane1 = geometry::data::get_plane(plan_pt1, plan_pt2, plan_pt3);
+    fw_vec3d normal = geometry::data::get_normal(plane1);
 
-    fwPlane plane2 = geometry::data::get_plane(normal, plan_pt1);
+    fw_plane plane2 = geometry::data::get_plane(normal, plan_pt1);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[0], plane2[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[1], plane2[1], 0.00001);
@@ -77,7 +77,7 @@ void plane_functions_test::checkGetPlane()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkSetValues()
+void plane_functions_test::check_set_values()
 {
     const double plan_p1_x = 0.0;
     const double plan_p1_y = 0.0;
@@ -91,14 +91,14 @@ void plane_functions_test::checkSetValues()
     const double plan_p3_y = 1.0;
     const double plan_p3_z = -0.5;
 
-    const fwVec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
-    const fwVec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
-    const fwVec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
+    const fw_vec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
+    const fw_vec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
+    const fw_vec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
 
-    fwVec3d normal        = {{0.8164965, 0.408248290, 0.408248290}};
+    fw_vec3d normal       = {{0.8164965, 0.408248290, 0.408248290}};
     const double distance = 1.02062072;
 
-    fwPlane plane;
+    fw_plane plane;
     geometry::data::set_values(plane, plan_pt1, plan_pt2, plan_pt3);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], normal[0], 0.00001);
@@ -109,18 +109,18 @@ void plane_functions_test::checkSetValues()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkDistance()
+void plane_functions_test::check_distance()
 {
     const double distance = 10.25;
 
-    fwPlane plane;
+    fw_plane plane;
     geometry::data::set_distance(plane, distance);
     CPPUNIT_ASSERT_EQUAL(geometry::data::get_distance(plane), distance);
 }
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkNormal()
+void plane_functions_test::check_normal()
 {
     const double plan_p1_x = 0.0;
     const double plan_p1_y = 0.0;
@@ -134,24 +134,24 @@ void plane_functions_test::checkNormal()
     const double plan_p3_y = 1.0;
     const double plan_p3_z = -0.5;
 
-    const fwVec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
-    const fwVec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
-    const fwVec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
+    const fw_vec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
+    const fw_vec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
+    const fw_vec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
 
-    fwVec3d normal  = {{0.8164965, 0.408248290, 0.408248290}};
-    fwVec3d normal2 = {{2.0, 1.5, 1.0}};
+    fw_vec3d normal  = {{0.8164965, 0.408248290, 0.408248290}};
+    fw_vec3d normal2 = {{2.0, 1.5, 1.0}};
     geometry::data::normalize(normal2);
 
-    fwPlane plane;
+    fw_plane plane;
     geometry::data::set_values(plane, plan_pt1, plan_pt2, plan_pt3);
-    fwVec3d plane_normal = geometry::data::get_normal(plane);
+    fw_vec3d plane_normal = geometry::data::get_normal(plane);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[0], normal[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[1], normal[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[2], normal[2], 0.00001);
 
     geometry::data::set_normal(plane, normal2);
-    fwVec3d plane_normal2 = geometry::data::get_normal(plane);
+    fw_vec3d plane_normal2 = geometry::data::get_normal(plane);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[0], normal2[0], 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[1], normal2[1], 0.001);
@@ -160,21 +160,21 @@ void plane_functions_test::checkNormal()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkIntersect()
+void plane_functions_test::check_intersect()
 {
-    fwVec3d point;
-    fwLine line;
-    const fwVec3d line_pos = {{1.0, 2.0, 4.0}};
-//  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> No intersection
-//  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intersection
-    const fwVec3d line_direction = {{0.0, 0.0, 4.0}}; // ==> intersection in (0.0, 0.0, 0.0)
+    fw_vec3d point;
+    fw_line line;
+    const fw_vec3d line_pos = {{1.0, 2.0, 4.0}};
+//  const fw_vec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> No intersection
+//  const fw_vec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intersection
+    const fw_vec3d line_direction = {{0.0, 0.0, 4.0}}; // ==> intersection in (0.0, 0.0, 0.0)
 
     line = std::make_pair(line_pos, line_direction);
 
-    const fwVec3d plan_pt1 = {{0.0, 0.0, 0.0}};
-    const fwVec3d plan_pt2 = {{2.0, 0.0, 0.0}};
-    const fwVec3d plan_pt3 = {{0.0, 2.0, 0.0}};
-    fwPlane plane;
+    const fw_vec3d plan_pt1 = {{0.0, 0.0, 0.0}};
+    const fw_vec3d plan_pt2 = {{2.0, 0.0, 0.0}};
+    const fw_vec3d plan_pt3 = {{0.0, 2.0, 0.0}};
+    fw_plane plane;
     geometry::data::set_values(plane, plan_pt1, plan_pt2, plan_pt3);
     const bool intersect = geometry::data::intersect(plane, line, point);
 
@@ -187,7 +187,7 @@ void plane_functions_test::checkIntersect()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkIsInHalfSpace()
+void plane_functions_test::check_is_in_half_space()
 {
     const double plan_p1_x = 1.0;
     const double plan_p1_y = 0.0;
@@ -201,15 +201,15 @@ void plane_functions_test::checkIsInHalfSpace()
     const double plan_p3_y = 2.0;
     const double plan_p3_z = 1.0;
 
-    const fwVec3d point1   = {{1.0, 0.0, 1.0}};
-    const fwVec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
-    const fwVec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
-    const fwVec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
-    fwPlane plane;
+    const fw_vec3d point1   = {{1.0, 0.0, 1.0}};
+    const fw_vec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
+    const fw_vec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
+    const fw_vec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
+    fw_plane plane;
     geometry::data::set_values(plane, plan_pt1, plan_pt2, plan_pt3);
-    fwVec3d normal           = geometry::data::get_normal(plane);
-    double distance          = geometry::data::get_distance(plane);
-    const fwPlane plane_test = {{normal[0], normal[1], normal[2], distance}};
+    fw_vec3d normal           = geometry::data::get_normal(plane);
+    double distance           = geometry::data::get_distance(plane);
+    const fw_plane plane_test = {{normal[0], normal[1], normal[2], distance}};
 
     bool result = geometry::data::is_in_half_space(plane_test, point1);
 
@@ -218,9 +218,9 @@ void plane_functions_test::checkIsInHalfSpace()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkOffset()
+void plane_functions_test::check_offset()
 {
-    static constexpr double OFFSET = 0.3;
+    static constexpr double s_OFFSET = 0.3;
 
     const double plan_p1_x = 0.0;
     const double plan_p1_y = 0.0;
@@ -234,13 +234,13 @@ void plane_functions_test::checkOffset()
     const double plan_p3_y = 1.0;
     const double plan_p3_z = -0.5;
 
-    const fwVec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
-    const fwVec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
-    const fwVec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
-    fwPlane plane;
+    const fw_vec3d plan_pt1 = {{plan_p1_x, plan_p1_y, plan_p1_z}};
+    const fw_vec3d plan_pt2 = {{plan_p2_x, plan_p2_y, plan_p2_z}};
+    const fw_vec3d plan_pt3 = {{plan_p3_x, plan_p3_y, plan_p3_z}};
+    fw_plane plane;
     geometry::data::set_values(plane, plan_pt1, plan_pt2, plan_pt3);
 
-    geometry::data::offset(plane, OFFSET);
+    geometry::data::offset(plane, s_OFFSET);
     double offset = geometry::data::get_distance(plane);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.320620, offset, 0.001);
@@ -248,17 +248,17 @@ void plane_functions_test::checkOffset()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkTransform()
+void plane_functions_test::check_transform()
 {
-    const fwVec3d normal_res  = {{0.832, -0.554, 0.0}};
+    const fw_vec3d normal_res = {{0.832, -0.554, 0.0}};
     const double distance_res = -0.028691;
 
-    const fwVec3d normal = {{4.0, 3.0, 2.0}};
-    const fwVec3d point  = {{0.0, 0.0, 0.5}};
+    const fw_vec3d normal = {{4.0, 3.0, 2.0}};
+    const fw_vec3d point  = {{0.0, 0.0, 0.5}};
 
-    fwPlane plane = geometry::data::get_plane(normal, point);
+    fw_plane plane = geometry::data::get_plane(normal, point);
 
-    const fwMatrix4x4 matrice = {{{{1.0, 0.0, 1.0, 3.0}}, {{-1.0, 0.0, 0.0, 5.0}},
+    const fw_matrix4x4 matrice = {{{{1.0, 0.0, 1.0, 3.0}}, {{-1.0, 0.0, 0.0, 5.0}},
         {{0.0, 0.0, 0.0, 2.0}}, {{0.0, 0.0, 0.0, 1.0
         }
         }
@@ -275,10 +275,10 @@ void plane_functions_test::checkTransform()
 
 //------------------------------------------------------------------------------
 
-void plane_functions_test::checkOperator()
+void plane_functions_test::check_operator()
 {
-    fwPlane plane1 = {{1.0, 0.0, 1.0, 3.0}};
-    fwPlane plane2 = plane1;
+    fw_plane plane1 = {{1.0, 0.0, 1.0, 3.0}};
+    fw_plane plane2 = plane1;
 
     bool test = (plane1 == plane2);
     CPPUNIT_ASSERT_EQUAL(test, true);

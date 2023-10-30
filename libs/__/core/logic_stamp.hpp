@@ -42,7 +42,7 @@ public:
     /**
      * @brief Type used in logical typestamp.
      */
-    typedef std::uint64_t logic_stamp_type;
+    using logic_stamp_type = std::uint64_t;
 
     /**
      * @name Constructor/Destructor

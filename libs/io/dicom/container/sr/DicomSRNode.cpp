@@ -31,12 +31,12 @@ namespace sight::io::dicom::container::sr
 
 //------------------------------------------------------------------------------
 
-DicomSRNode::DicomSRNode(
-    DicomCodedAttribute _coded_attribute,
+dicom_sr_node::dicom_sr_node(
+    dicom_coded_attribute _coded_attribute,
     std::string _type,
     std::string _relationship
 ) :
-    m_codedAttribute(std::move(_coded_attribute)),
+    m_coded_attribute(std::move(_coded_attribute)),
     m_type(std::move(_type)),
     m_relationship(std::move(_relationship))
 {
@@ -44,48 +44,48 @@ DicomSRNode::DicomSRNode(
 
 //------------------------------------------------------------------------------
 
-DicomSRNode::~DicomSRNode()
+dicom_sr_node::~dicom_sr_node()
 = default;
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::addSubNode(const SPTR(DicomSRNode)& _node)
+void dicom_sr_node::add_sub_node(const SPTR(dicom_sr_node)& _node)
 {
-    m_subNodeContainer.push_back(_node);
+    m_sub_node_container.push_back(_node);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::write(gdcm::DataSet& _dataset) const
+void dicom_sr_node::write(gdcm::DataSet& _dataset) const
 {
     // Value Type - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa040>(m_type, _dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0040, 0xa040>(m_type, _dataset);
 
     // Relationship Value - Type 1 (Shouldn't be there for root node)
     if(!m_relationship.empty())
     {
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa010>(m_relationship, _dataset);
+        io::dicom::helper::dicom_data_writer::set_tag_value<0x0040, 0xa010>(m_relationship, _dataset);
     }
 
     // Concept Name Code Sequence - Type 1C
-    if(!m_codedAttribute.getCodeValue().empty() && !m_codedAttribute.getCodingSchemeDesignator().empty())
+    if(!m_coded_attribute.get_code_value().empty() && !m_coded_attribute.get_coding_scheme_designator().empty())
     {
         gdcm::SmartPointer<gdcm::SequenceOfItems> code_sequence =
-            this->createConceptNameCodeSequence(m_codedAttribute);
-        io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa043>(code_sequence, _dataset);
+            this->create_concept_name_code_sequence(m_coded_attribute);
+        io::dicom::helper::dicom_data_writer::set_and_merge_sequence_tag_value<0x0040, 0xa043>(code_sequence, _dataset);
     }
 
     // Content sequence - Type 1C
-    if(!m_subNodeContainer.empty())
+    if(!m_sub_node_container.empty())
     {
-        this->writeContentSequence(_dataset);
+        this->write_content_sequence(_dataset);
     }
 }
 
 //------------------------------------------------------------------------------
 
-gdcm::SmartPointer<gdcm::SequenceOfItems> DicomSRNode::createConceptNameCodeSequence(
-    const DicomCodedAttribute& _coded_attribute
+gdcm::SmartPointer<gdcm::SequenceOfItems> dicom_sr_node::create_concept_name_code_sequence(
+    const dicom_coded_attribute& _coded_attribute
 ) const
 {
     // Write code sequence
@@ -98,25 +98,31 @@ gdcm::SmartPointer<gdcm::SequenceOfItems> DicomSRNode::createConceptNameCodeSequ
     gdcm::DataSet& item_dataset = item.GetNestedDataSet();
 
     // Code value - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0100>(_coded_attribute.getCodeValue(), item_dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0100>(
+        _coded_attribute.get_code_value(),
+        item_dataset
+    );
 
     // Coding Scheme Designator - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0102>(
-        _coded_attribute.getCodingSchemeDesignator(),
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0102>(
+        _coded_attribute.get_coding_scheme_designator(),
         item_dataset
     );
 
     // Coding Scheme Version - Type 1C
-    if(!m_codedAttribute.getCodingSchemeVersion().empty())
+    if(!m_coded_attribute.get_coding_scheme_version().empty())
     {
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0103>(
-            _coded_attribute.getCodingSchemeVersion(),
+        io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0103>(
+            _coded_attribute.get_coding_scheme_version(),
             item_dataset
         );
     }
 
     // Code Meaning - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0104>(_coded_attribute.getCodeMeaning(), item_dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0104>(
+        _coded_attribute.get_code_meaning(),
+        item_dataset
+    );
 
     // Insert in a sequence
     code_sequence->AddItem(item);
@@ -126,13 +132,13 @@ gdcm::SmartPointer<gdcm::SequenceOfItems> DicomSRNode::createConceptNameCodeSequ
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::writeContentSequence(gdcm::DataSet& _dataset) const
+void dicom_sr_node::write_content_sequence(gdcm::DataSet& _dataset) const
 {
     // Create the content sequence
     gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
 
     // Write every node
-    for(const SPTR(io::dicom::container::sr::DicomSRNode) & child : m_subNodeContainer)
+    for(const SPTR(io::dicom::container::sr::dicom_sr_node) & child : m_sub_node_container)
     {
         gdcm::Item item;
         item.SetVLToUndefined();
@@ -141,17 +147,17 @@ void DicomSRNode::writeContentSequence(gdcm::DataSet& _dataset) const
         sequence->AddItem(item);
     }
 
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0040, 0xa730>(sequence, _dataset);
+    io::dicom::helper::dicom_data_writer::set_sequence_tag_value<0x0040, 0xa730>(sequence, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::print(std::ostream& _os) const
+void dicom_sr_node::print(std::ostream& _os) const
 {
     _os << m_type;
-    if(!m_codedAttribute.isEmpty())
+    if(!m_coded_attribute.is_empty())
     {
-        _os << "\\n[" << m_codedAttribute << "]";
+        _os << "\\n[" << m_coded_attribute << "]";
     }
 }
 

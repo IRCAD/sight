@@ -52,7 +52,7 @@ plane_slicer::plane_slicer() noexcept :
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     new_slot(UPDATE_SLICE_TYPE_SLOT, &plane_slicer::updateorientation_t, this);
-    new_slot(UPDATE_DEFAULT_VALUE_SLOT, &plane_slicer::updateDefaultValue, this);
+    new_slot(UPDATE_DEFAULT_VALUE_SLOT, &plane_slicer::update_default_value, this);
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void plane_slicer::starting()
     m_reslicer->SetOutputDimensionality(2);
     m_reslicer->SetInterpolationModeToLinear();
 
-    updateDefaultValue();
+    update_default_value();
 
     this->updating();
 }
@@ -82,11 +82,11 @@ void plane_slicer::stopping()
 
 void plane_slicer::updating()
 {
-    this->setReslicerExtent();
-    this->setReslicerAxes();
+    this->set_reslicer_extent();
+    this->set_reslicer_axes();
 
     const auto image = m_image.lock();
-    SIGHT_ASSERT("Cannot find " << s_IMAGE_IN, image);
+    SIGHT_ASSERT("Cannot find " << IMAGE_IN, image);
 
     vtkSmartPointer<vtkImageData> vtk_img = vtkSmartPointer<vtkImageData>::New();
 
@@ -96,7 +96,7 @@ void plane_slicer::updating()
     m_reslicer->Update();
 
     auto slice = m_slice.lock();
-    SIGHT_ASSERT("Cannot find " << s_SLICE_INOUT, slice);
+    SIGHT_ASSERT("Cannot find " << SLICE_INOUT, slice);
 
     io::vtk::from_vtk_image(m_reslicer->GetOutput(), slice.get_shared());
 
@@ -104,11 +104,11 @@ void plane_slicer::updating()
     // We need to do so in order to visualize it with ::visuVTKAdaptor::imageSlice.
     // This is because the adaptor uses a vtkImageActor which doesn't handle 2d images.
     const auto size = slice->size();
-    slice->resize({{size[0], size[1], 1}}, slice->getType(), slice->getPixelFormat());
-    const auto spacing = slice->getSpacing();
-    slice->setSpacing({{spacing[0], spacing[1], 0}});
-    const auto origin = slice->getOrigin();
-    slice->setOrigin({{origin[0], origin[1], 0}});
+    slice->resize({{size[0], size[1], 1}}, slice->type(), slice->pixel_format());
+    const auto spacing = slice->spacing();
+    slice->set_spacing({{spacing[0], spacing[1], 0}});
+    const auto origin = slice->origin();
+    slice->set_origin({{origin[0], origin[1], 0}});
 
     auto sig = slice->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
 
@@ -127,15 +127,15 @@ void plane_slicer::configuring()
 
     if(orientation == "axial")
     {
-        m_orientation = data::helper::medical_image::orientation_t::Z_AXIS;
+        m_orientation = data::helper::medical_image::orientation_t::z_axis;
     }
     else if(orientation == "sagittal")
     {
-        m_orientation = data::helper::medical_image::orientation_t::X_AXIS;
+        m_orientation = data::helper::medical_image::orientation_t::x_axis;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = data::helper::medical_image::orientation_t::Y_AXIS;
+        m_orientation = data::helper::medical_image::orientation_t::y_axis;
     }
     else
     {
@@ -148,26 +148,26 @@ void plane_slicer::configuring()
 service::connections_t plane_slicer::auto_connections() const
 {
     return {
-        {s_IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {s_IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {s_IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, UPDATE_DEFAULT_VALUE_SLOT},
-        {s_EXTENT_IN, data::image::SLICE_INDEX_MODIFIED_SIG, service::slots::UPDATE},
-        {s_EXTENT_IN, data::image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT},
-        {s_AXES_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE}
+        {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
+        {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, UPDATE_DEFAULT_VALUE_SLOT},
+        {EXTENT_IN, data::image::SLICE_INDEX_MODIFIED_SIG, service::slots::UPDATE},
+        {EXTENT_IN, data::image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT},
+        {AXES_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 
 //------------------------------------------------------------------------------
 
-void plane_slicer::setReslicerExtent()
+void plane_slicer::set_reslicer_extent()
 {
     const auto extent_img = m_extent.lock();
 
-    SIGHT_ASSERT("No " << s_EXTENT_IN << " found", extent_img);
+    SIGHT_ASSERT("No " << EXTENT_IN << " found", extent_img);
 
     const auto& size    = extent_img->size();
-    const auto& origin  = extent_img->getOrigin();
-    const auto& spacing = extent_img->getSpacing();
+    const auto& origin  = extent_img->origin();
+    const auto& spacing = extent_img->spacing();
 
     // cast std::size_t to int.
     std::vector<int> int_size(size.size());
@@ -182,19 +182,19 @@ void plane_slicer::setReslicerExtent()
 
     switch(m_orientation)
     {
-        case data::helper::medical_image::orientation_t::X_AXIS:
+        case data::helper::medical_image::orientation_t::x_axis:
             m_reslicer->SetOutputExtent(0, int_size[1], 0, int_size[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[1], origin[2], origin[0]);
             m_reslicer->SetOutputSpacing(spacing[1], spacing[2], spacing[0]);
             break;
 
-        case data::helper::medical_image::orientation_t::Y_AXIS:
+        case data::helper::medical_image::orientation_t::y_axis:
             m_reslicer->SetOutputExtent(0, int_size[0], 0, int_size[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[2], origin[1]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[2], spacing[1]);
             break;
 
-        case data::helper::medical_image::orientation_t::Z_AXIS:
+        case data::helper::medical_image::orientation_t::z_axis:
             m_reslicer->SetOutputExtent(0, int_size[0], 0, int_size[1], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[1], origin[2]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[1], spacing[2]);
@@ -204,20 +204,20 @@ void plane_slicer::setReslicerExtent()
 
 //------------------------------------------------------------------------------
 
-void plane_slicer::setReslicerAxes()
+void plane_slicer::set_reslicer_axes()
 {
     const auto axes = m_axes.lock();
 
-    SIGHT_ASSERT("No " << s_AXES_IN << " found.", axes);
+    SIGHT_ASSERT("No " << AXES_IN << " found.", axes);
 
     vtkSmartPointer<vtkMatrix4x4> axes_matrix = io::vtk::to_vtk_matrix(axes.get_shared());
 
-    this->applySliceTranslation(axes_matrix);
+    this->apply_slice_translation(axes_matrix);
 
     // permutate axes.
     switch(m_orientation)
     {
-        case data::helper::medical_image::orientation_t::X_AXIS:
+        case data::helper::medical_image::orientation_t::x_axis:
             // permutate X with Y and Y with Z
             for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
@@ -231,7 +231,7 @@ void plane_slicer::setReslicerAxes()
 
             break;
 
-        case data::helper::medical_image::orientation_t::Y_AXIS:
+        case data::helper::medical_image::orientation_t::y_axis:
             // permutate Y with Z
             for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
@@ -243,7 +243,7 @@ void plane_slicer::setReslicerAxes()
 
             break;
 
-        case data::helper::medical_image::orientation_t::Z_AXIS:
+        case data::helper::medical_image::orientation_t::z_axis:
             break; // Nothing to do.
     }
 
@@ -252,38 +252,38 @@ void plane_slicer::setReslicerAxes()
 
 //------------------------------------------------------------------------------
 
-void plane_slicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> _vtk_mat) const
+void plane_slicer::apply_slice_translation(vtkSmartPointer<vtkMatrix4x4> _vtk_mat) const
 {
     const auto image = m_extent.lock();
-    SIGHT_ASSERT("Cannot find " << s_EXTENT_IN, image);
+    SIGHT_ASSERT("Cannot find " << EXTENT_IN, image);
 
     std::int64_t idx = 0;
     switch(m_orientation)
     {
-        case data::helper::medical_image::orientation_t::X_AXIS:
+        case data::helper::medical_image::orientation_t::x_axis:
             idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::medical_image::orientation_t::SAGITTAL
+                data::helper::medical_image::orientation_t::sagittal
             ).value_or(0);
             break;
 
-        case data::helper::medical_image::orientation_t::Y_AXIS:
+        case data::helper::medical_image::orientation_t::y_axis:
             idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::medical_image::orientation_t::FRONTAL
+                data::helper::medical_image::orientation_t::frontal
             ).value_or(0);
             break;
 
-        case data::helper::medical_image::orientation_t::Z_AXIS:
+        case data::helper::medical_image::orientation_t::z_axis:
             idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::medical_image::orientation_t::AXIAL
+                data::helper::medical_image::orientation_t::axial
             ).value_or(0);
             break;
     }
 
-    const auto& spacing = image->getSpacing();
-    const auto& origin  = image->getOrigin();
+    const auto& spacing = image->spacing();
+    const auto& origin  = image->origin();
 
     const auto axis = static_cast<std::uint8_t>(m_orientation);
 
@@ -314,10 +314,10 @@ void plane_slicer::updateorientation_t(int _from, int _to)
 
 //------------------------------------------------------------------------------
 
-void plane_slicer::updateDefaultValue()
+void plane_slicer::update_default_value()
 {
     const auto image = m_image.lock();
-    SIGHT_ASSERT("No " << s_IMAGE_IN << " found.", image);
+    SIGHT_ASSERT("No " << IMAGE_IN << " found.", image);
 
     double min = NAN;
     double max = NAN;

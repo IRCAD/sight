@@ -36,7 +36,7 @@ namespace detail::set
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter&,
+    zip::archive_writer&,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -57,7 +57,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::set::sptr read(
-    zip::ArchiveReader&,
+    zip::archive_reader&,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,

@@ -31,12 +31,12 @@
 namespace sight::io::session::detail::plane
 {
 
-constexpr static auto s_IsIntersection {"IsIntersection"};
+constexpr static auto IS_INTERSECTION {"IsIntersection"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -48,10 +48,10 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::plane>(_tree, 1);
 
-    _tree.put(s_IsIntersection, plane->getIsIntersection());
+    _tree.put(IS_INTERSECTION, plane->get_is_intersection());
 
     std::size_t index = 0;
-    for(const auto& point : plane->getPoints())
+    for(const auto& point : plane->get_points())
     {
         _children[data::point::classname() + std::to_string(index++)] = point;
     }
@@ -60,7 +60,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::plane::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -73,9 +73,9 @@ inline static data::plane::sptr read(
     // Check version number. Not mandatory, but could help for future release
     helper::read_version<data::plane>(_tree, 0, 1);
 
-    plane->setIsIntersection(_tree.get<bool>(s_IsIntersection));
+    plane->set_is_intersection(_tree.get<bool>(IS_INTERSECTION));
 
-    auto& points = plane->getPoints();
+    auto& points = plane->get_points();
 
     for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {

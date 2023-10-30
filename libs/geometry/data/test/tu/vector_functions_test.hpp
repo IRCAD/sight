@@ -32,12 +32,12 @@ class vector_functions_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(vector_functions_test);
-    CPPUNIT_TEST(checkNormalize);
-    CPPUNIT_TEST(checkDot);
-    CPPUNIT_TEST(checkCross);
-    CPPUNIT_TEST(checkNegate);
-    CPPUNIT_TEST(checkVecLength);
-    CPPUNIT_TEST(checkOperators);
+    CPPUNIT_TEST(check_normalize);
+    CPPUNIT_TEST(check_dot);
+    CPPUNIT_TEST(check_cross);
+    CPPUNIT_TEST(check_negate);
+    CPPUNIT_TEST(check_vec_length);
+    CPPUNIT_TEST(check_operators);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -48,12 +48,12 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void checkDot();
-    static void checkCross();
-    static void checkNormalize();
-    static void checkNegate();
-    static void checkVecLength();
-    static void checkOperators();
+    static void check_dot();
+    static void check_cross();
+    static void check_normalize();
+    static void check_negate();
+    static void check_vec_length();
+    static void check_operators();
 };
 
 } // namespace sight::geometry::data::ut

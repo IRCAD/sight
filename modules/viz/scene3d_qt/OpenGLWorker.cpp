@@ -42,7 +42,7 @@ namespace sight::module::viz::scene3d_qt
 struct OpenGLRunner final : public QRunnable
 {
     // Constructor.
-    OpenGLRunner(OpenGLWorker* _worker, sight::viz::scene3d::graphics_worker::task_t _task) :
+    OpenGLRunner(open_gl_worker* _worker, sight::viz::scene3d::graphics_worker::task_t _task) :
         m_worker(_worker),
         m_task(std::move(_task))
     {
@@ -59,23 +59,23 @@ struct OpenGLRunner final : public QRunnable
     // Pulls the GL context if it is not owned by the thread and runs the task.
     void run() final
     {
-        QOpenGLContext* worker_context = m_worker->m_glWidget->context();
+        QOpenGLContext* worker_context = m_worker->m_gl_widget->context();
         if(worker_context->thread() == nullptr)
         {
             QThread* current_thread = QThread::currentThread();
             worker_context->moveToThread(current_thread);
-            m_worker->m_glWidget->makeCurrent();
+            m_worker->m_gl_widget->makeCurrent();
         }
 
         m_task();
         worker_context->moveToThread(qApp->thread());
-        m_worker->m_glWidget->update();
+        m_worker->m_gl_widget->update();
     }
 
     private:
 
         // Pointer to the worker running the task.
-        OpenGLWorker* m_worker;
+        open_gl_worker* m_worker;
 
         // Task to run.
         sight::viz::scene3d::graphics_worker::task_t m_task;
@@ -83,39 +83,39 @@ struct OpenGLRunner final : public QRunnable
 
 //------------------------------------------------------------------------------
 
-OpenGLWorker::OpenGLWorker(QOpenGLWidget* _gl_widget) :
-    m_glWidget(_gl_widget)
+open_gl_worker::open_gl_worker(QOpenGLWidget* _gl_widget) :
+    m_gl_widget(_gl_widget)
 {
-    m_threadPool = std::make_unique<QThreadPool>();
+    m_thread_pool = std::make_unique<QThreadPool>();
 
     // Only use a single thread. We want tasks to be executed in a FIFO order.
     // Also avoids the cost of having to create an OpenGL context for every thread.
-    m_threadPool->setMaxThreadCount(1);
+    m_thread_pool->setMaxThreadCount(1);
 
-    auto global_gl_context = OpenGLContext::getGlobalOgreOpenGLContext();
-    m_glContext = std::unique_ptr<QOpenGLContext>(OpenGLContext::createOgreGLContext(global_gl_context.get()));
+    auto global_gl_context = open_gl_context::get_global_ogre_open_gl_context();
+    m_gl_context = std::unique_ptr<QOpenGLContext>(open_gl_context::create_ogre_gl_context(global_gl_context.get()));
 
     // Remove thread affinity so it can be pulled by the worker.
-    m_glWidget->context()->doneCurrent();
-    m_glWidget->context()->moveToThread(nullptr);
+    m_gl_widget->context()->doneCurrent();
+    m_gl_widget->context()->moveToThread(nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-OpenGLWorker::~OpenGLWorker()
+open_gl_worker::~open_gl_worker()
 {
-    m_threadPool->clear();       // Clear all pending tasks.
-    m_threadPool->waitForDone(); // Wait on the running task.
+    m_thread_pool->clear();       // Clear all pending tasks.
+    m_thread_pool->waitForDone(); // Wait on the running task.
 }
 
 //------------------------------------------------------------------------------
 
-void OpenGLWorker::pushTask(sight::viz::scene3d::graphics_worker::task_t _task)
+void open_gl_worker::push_task(sight::viz::scene3d::graphics_worker::task_t _task)
 {
     auto* runner = new OpenGLRunner(this, _task);
     runner->setAutoDelete(true); // Let the thread pool delete the runner once it has finished running.
 
-    m_threadPool->start(runner, QThread::Priority::HighestPriority);
+    m_thread_pool->start(runner, QThread::Priority::HighestPriority);
 }
 
 //------------------------------------------------------------------------------

@@ -41,7 +41,7 @@
 #include <io/dicom/writer/series.hpp>
 #include <io/dicom/writer/series_set.hpp>
 
-#include <utest/Filter.hpp>
+#include <utest/filter.hpp>
 
 #include <utest_data/generator/image.hpp>
 #include <utest_data/generator/object.hpp>
@@ -50,7 +50,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::WriterReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::writer_reader_test);
 
 namespace sight::io::dicom::ut
 {
@@ -66,17 +66,17 @@ double tolerance(double _num)
 
 void round_spacing(data::image::sptr _image)
 {
-    data::image::Spacing spacing = _image->getSpacing();
+    data::image::spacing_t spacing = _image->spacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    _image->setSpacing(spacing);
+    _image->set_spacing(spacing);
 }
 
 //------------------------------------------------------------------------------
 
-void WriterReaderTest::setUp()
+void writer_reader_test::setUp()
 {
     // Set up context before running a test.
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -88,21 +88,21 @@ void WriterReaderTest::setUp()
 
 //------------------------------------------------------------------------------
 
-void WriterReaderTest::tearDown()
+void writer_reader_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void WriterReaderTest::writeReadImageSeriesTest()
+void writer_reader_test::write_read_image_series_test()
 {
-    if(utest::Filter::ignoreSlowTests())
+    if(utest::filter::ignore_slow_tests())
     {
         return;
     }
 
-    auto img_series = utest_data::generator::series_set::createImageSeries();
+    auto img_series = utest_data::generator::series_set::create_image_series();
     core::os::temp_dir tmp_dir;
 
     auto writer = std::make_shared<io::dicom::writer::series>();
@@ -128,42 +128,42 @@ void WriterReaderTest::writeReadImageSeriesTest()
 
 //------------------------------------------------------------------------------
 
-data::series_set::sptr WriterReaderTest::createSeriesSet()
+data::series_set::sptr writer_reader_test::create_series_set()
 {
     //create series_set
     auto series_set   = std::make_shared<data::series_set>();
-    auto img_series   = utest_data::generator::series_set::createImageSeries();
-    auto model_series = utest_data::generator::series_set::createModelSeries(1);
+    auto img_series   = utest_data::generator::series_set::create_image_series();
+    auto model_series = utest_data::generator::series_set::create_model_series(1);
 
     series_set->push_back(img_series);
     series_set->push_back(model_series);
 
     // Add landmarks
-    data::point_list::sptr landmarks   = data::helper::medical_image::get_landmarks(*img_series);
-    const data::image::Spacing spacing = img_series->getSpacing();
-    const data::image::Origin origin   = img_series->getOrigin();
-    const data::point::sptr point      = std::make_shared<data::point>(
+    data::point_list::sptr landmarks     = data::helper::medical_image::get_landmarks(*img_series);
+    const data::image::spacing_t spacing = img_series->spacing();
+    const data::image::origin_t origin   = img_series->origin();
+    const data::point::sptr point        = std::make_shared<data::point>(
         2.6 + origin[0],
         1.2 + origin[1],
         4.5 + origin[2]
     );
-    point->setLabel("Label1");
-    landmarks->getPoints().push_back(point);
+    point->set_label("Label1");
+    landmarks->get_points().push_back(point);
     data::point::sptr point2 = std::make_shared<data::point>(
         1.2 + origin[0],
         2.4 + origin[1],
         0.3 + origin[2]
     );
-    point2->setLabel("Label2");
-    landmarks->getPoints().push_back(point2);
-    const data::image::Size size   = img_series->size();
+    point2->set_label("Label2");
+    landmarks->get_points().push_back(point2);
+    const data::image::size_t size = img_series->size();
     const data::point::sptr point3 = std::make_shared<data::point>(
         1.2 + origin[0],
         2.4 + origin[1],
         static_cast<double>(size[2] - 1) * spacing[2] + origin[2]
     );
-    point3->setLabel("Label3");
-    landmarks->getPoints().push_back(point3);
+    point3->set_label("Label3");
+    landmarks->get_points().push_back(point3);
 
     // Add distance
     data::point_list::sptr pl   = std::make_shared<data::point_list>();
@@ -173,8 +173,8 @@ data::series_set::sptr WriterReaderTest::createSeriesSet()
         static_cast<double>(size[1] - 1) * spacing[1],
         static_cast<double>(size[2] - 1) * spacing[2]
     );
-    pl->getPoints().push_back(pt1);
-    pl->getPoints().push_back(pt2);
+    pl->get_points().push_back(pt1);
+    pl->get_points().push_back(pt2);
 
     data::vector::sptr vect_dist = data::helper::medical_image::get_distances(*img_series);
 
@@ -189,18 +189,18 @@ data::series_set::sptr WriterReaderTest::createSeriesSet()
     data::helper::medical_image::set_distance_visibility(*img_series, true);
     data::helper::medical_image::set_landmarks_visibility(*img_series, true);
     // Update Reconstruction
-    data::reconstruction::sptr rec = model_series->getReconstructionDB().front();
-    data::mesh::sptr mesh          = rec->getMesh();
-    mesh->clear<data::mesh::Attributes::CELL_COLORS>();
-    mesh->clear<data::mesh::Attributes::POINT_COLORS>();
-    mesh->clear<data::mesh::Attributes::CELL_NORMALS>();
+    data::reconstruction::sptr rec = model_series->get_reconstruction_db().front();
+    data::mesh::sptr mesh          = rec->get_mesh();
+    mesh->clear<data::mesh::attribute::cell_colors>();
+    mesh->clear<data::mesh::attribute::point_colors>();
+    mesh->clear<data::mesh::attribute::cell_normals>();
 
     // gdcm only manage ambient color in reconstruction
     data::material::sptr material = std::make_shared<data::material>();
-    data::color::sptr color       = utest_data::generator::object::randomizeColor();
-    material->setDiffuse(color);
-    rec->setMaterial(material);
-    rec->setImage(data::image::sptr()); // not managed
+    data::color::sptr color       = utest_data::generator::object::randomize_color();
+    material->set_diffuse(color);
+    rec->set_material(material);
+    rec->set_image(data::image::sptr()); // not managed
 
     model_series->set_field("ShowReconstructions", std::make_shared<data::boolean>(true));
 

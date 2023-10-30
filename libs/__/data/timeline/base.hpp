@@ -29,12 +29,12 @@
 namespace sight::data::timeline
 {
 
-typedef enum
+enum direction_t
 {
-    PAST   = -1,
-    BOTH   = 0,
-    FUTURE = 1
-} direction_t;
+    past   = -1,
+    both   = 0,
+    future = 1
+};
 
 struct signals
 {
@@ -62,13 +62,13 @@ public:
     DATA_API ~base() override = default;
 
     /// Push an object to the base
-    DATA_API virtual void pushObject(const SPTR(timeline::object)& _obj) = 0;
+    DATA_API virtual void push_object(const SPTR(timeline::object)& _obj) = 0;
 
     /// Removes an object from the base
-    DATA_API virtual SPTR(timeline::object) popObject(core::hires_clock::type _timestamp) = 0;
+    DATA_API virtual SPTR(timeline::object) pop_object(core::hires_clock::type _timestamp) = 0;
 
     /// modify an object timestamp
-    DATA_API virtual void modifyTime(
+    DATA_API virtual void modify_time(
         core::hires_clock::type _timestamp,
         core::hires_clock::type _new_timestamp
     ) = 0;
@@ -84,20 +84,20 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the base. You must call pushObject() to register it.
      */
-    DATA_API virtual SPTR(timeline::object) createObject(core::hires_clock::type _timestamp) = 0;
+    DATA_API virtual SPTR(timeline::object) create_object(core::hires_clock::type _timestamp) = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param timestamp timestamp used to find the closest object
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    DATA_API virtual CSPTR(timeline::object) getClosestObject(
+    DATA_API virtual CSPTR(timeline::object) get_closest_object(
         core::hires_clock::type _timestamp,
-        direction_t _direction = BOTH
+        direction_t _direction = both
     ) const = 0;
 
     /// Return the object with the specified timestamp
-    DATA_API virtual CSPTR(timeline::object) getObject(core::hires_clock::type _timestamp) const = 0;
+    DATA_API virtual CSPTR(timeline::object) get_object(core::hires_clock::type _timestamp) const = 0;
 
     /// Equality comparison operators
     /// @{
@@ -108,9 +108,9 @@ public:
 protected:
 
     /// Signal to emit when an object is pushed in the base.
-    signals::pushed_t::sptr m_sigObjectPushed;
+    signals::pushed_t::sptr m_sig_object_pushed;
     /// Signal to emit when an object is removed in the base.
-    signals::pushed_t::sptr m_sigObjectRemoved;
+    signals::pushed_t::sptr m_sig_object_removed;
 }; // class base
 
 } // namespace sight::data::timeline

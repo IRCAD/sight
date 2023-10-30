@@ -30,12 +30,12 @@ namespace sight::data::ut
 class camera_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(camera_test);
-CPPUNIT_TEST(paramTest);
-CPPUNIT_TEST(shallow_copyTest);
-CPPUNIT_TEST(deep_copyTest);
-CPPUNIT_TEST(equalityTest);
-CPPUNIT_TEST(getPixelFormatTest);
-CPPUNIT_TEST(getPixelFormatNameTest);
+CPPUNIT_TEST(param_test);
+CPPUNIT_TEST(shallow_copy_test);
+CPPUNIT_TEST(deep_copy_test);
+CPPUNIT_TEST(equality_test);
+CPPUNIT_TEST(get_pixel_format_test);
+CPPUNIT_TEST(get_pixel_format_name_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,12 +44,12 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void paramTest();
-    static void shallow_copyTest();
-    static void deep_copyTest();
-    static void equalityTest();
-    static void getPixelFormatTest();
-    static void getPixelFormatNameTest();
+    static void param_test();
+    static void shallow_copy_test();
+    static void deep_copy_test();
+    static void equality_test();
+    static void get_pixel_format_test();
+    static void get_pixel_format_name_test();
 };
 
 } // namespace sight::data::ut

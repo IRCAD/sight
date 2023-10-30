@@ -40,7 +40,7 @@ constexpr static auto s_StructureTraits {"structure_traits"};
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& tree,
     data::object::csptr object,
     std::map<std::string, data::object::csptr>& children,
@@ -62,7 +62,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::roi_traits::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::object::sptr>& children,
     data::object::sptr object,

@@ -42,7 +42,7 @@ class generic_object_reader : public io::reader::object_reader
 public:
 
     /// the object type related
-    typedef DATATYPE data_t;
+    using data_t = DATATYPE;
 
     SIGHT_DECLARE_CLASS(generic_object_reader<DATATYPE>, io::reader::object_reader);
 
@@ -78,9 +78,9 @@ public:
      *
      * This method automatically casts object in the correct data_t.
      */
-    [[nodiscard]] std::shared_ptr<data_t> getConcreteObject() const
+    [[nodiscard]] std::shared_ptr<data_t> get_concrete_object() const
     {
-        return std::dynamic_pointer_cast<data_t>(getObject());
+        return std::dynamic_pointer_cast<data_t>(get_object());
     }
 };
 

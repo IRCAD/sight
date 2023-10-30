@@ -39,26 +39,26 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_READER(sight::io::itk::InrImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::itk::inr_image_reader);
 
 namespace sight::io::itk
 {
 
 //------------------------------------------------------------------------------
 
-struct InrLoaderFunctor
+struct inr_loader_functor
 {
-    struct Parameter
+    struct parameter
     {
-        data::image::sptr m_dataImage;
+        data::image::sptr m_data_image;
         std::string m_filename;
-        io::itk::InrImageReader::sptr m_fwReader;
+        io::itk::inr_image_reader::sptr m_fw_reader;
     };
 
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameter& _param)
+    void operator()(parameter& _param)
     {
         SIGHT_INFO(
             "::io::itk::InrImageReader::InrLoaderFunctor with PIXELTYPE "
@@ -72,7 +72,7 @@ struct InrLoaderFunctor
         );
 
         // set observation (*2*)
-        Progressor progress(image_io_read, _param.m_fwReader, _param.m_filename);
+        progressor progress(image_io_read, _param.m_fw_reader, _param.m_filename);
 
         // the reader
         using image_t  = ::itk::Image<PIXELTYPE, 3>;
@@ -85,7 +85,7 @@ struct InrLoaderFunctor
 
         reader->Update();
         typename image_t::Pointer itkimage = reader->GetOutput();
-        io::itk::move_from_itk<image_t>(itkimage, _param.m_dataImage);
+        io::itk::move_from_itk<image_t>(itkimage, _param.m_data_image);
     }
 
     //// get pixel type from Header
@@ -112,28 +112,28 @@ struct InrLoaderFunctor
 
 //------------------------------------------------------------------------------
 
-void InrImageReader::read()
+void inr_image_reader::read()
 {
     std::filesystem::path file = get_file();
     SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const core::type type = InrLoaderFunctor::get_image_type(file.string());
+    const core::type type = inr_loader_functor::get_image_type(file.string());
 
-    InrLoaderFunctor::Parameter param;
-    param.m_filename  = file.string();
-    param.m_dataImage = this->getConcreteObject();
-    param.m_fwReader  = this->get_sptr();
+    inr_loader_functor::parameter param;
+    param.m_filename   = file.string();
+    param.m_data_image = this->get_concrete_object();
+    param.m_fw_reader  = this->get_sptr();
 
-    core::tools::dispatcher<core::tools::intrinsic_types, InrLoaderFunctor>::invoke(type, param);
+    core::tools::dispatcher<core::tools::intrinsic_types, inr_loader_functor>::invoke(type, param);
 
     SIGHT_ASSERT("sight::data::image is not well produced", m_object.lock()); // verify that data::image is well
     // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(
         "Image has an unspecified type",
-        getConcreteObject()->getType() != core::type::NONE
+        get_concrete_object()->type() != core::type::NONE
     );
 }
 

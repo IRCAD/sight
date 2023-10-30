@@ -32,16 +32,16 @@
 namespace sight::io::session::detail::resection
 {
 
-constexpr static auto s_Name {"Name"};
-constexpr static auto s_PlaneList {"PlaneList"};
-constexpr static auto s_IsSafePart {"IsSafePart"};
-constexpr static auto s_IsValid {"IsValid"};
-constexpr static auto s_IsVisible {"IsVisible"};
+constexpr static auto NAME {"Name"};
+constexpr static auto PLANE_LIST {"PlaneList"};
+constexpr static auto IS_SAFE_PART {"IsSafePart"};
+constexpr static auto IS_VALID {"IsValid"};
+constexpr static auto IS_VISIBLE {"IsVisible"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -54,23 +54,23 @@ inline static void write(
     helper::write_version<data::resection>(_tree, 1);
 
     // Serialize attributes
-    helper::write_string(_tree, s_Name, resection->getName());
-    _tree.put(s_IsSafePart, resection->getIsSafePart());
-    _tree.put(s_IsValid, resection->getIsValid());
-    _tree.put(s_IsVisible, resection->getIsVisible());
+    helper::write_string(_tree, NAME, resection->get_name());
+    _tree.put(IS_SAFE_PART, resection->get_is_safe_part());
+    _tree.put(IS_VALID, resection->get_is_valid());
+    _tree.put(IS_VISIBLE, resection->get_is_visible());
 
-    _children[s_PlaneList] = resection->getPlaneList();
+    _children[PLANE_LIST] = resection->get_plane_list();
 
     // Serialize intputs
     std::size_t index = 0;
-    for(const auto& input : resection->getInputs())
+    for(const auto& input : resection->get_inputs())
     {
         _children["I" + std::to_string(index++)] = input;
     }
 
     // Serialize outputs
     index = 0;
-    for(const auto& output : resection->getOutputs())
+    for(const auto& output : resection->get_outputs())
     {
         _children["O" + std::to_string(index++)] = output;
     }
@@ -79,7 +79,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::resection::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -93,18 +93,18 @@ inline static data::resection::sptr read(
     helper::read_version<data::resection>(_tree, 0, 1);
 
     // Deserialize attributes
-    resection->setName(helper::read_string(_tree, s_Name));
-    resection->setIsSafePart(_tree.get<bool>(s_IsSafePart));
-    resection->setIsValid(_tree.get<bool>(s_IsValid));
-    resection->setIsVisible(_tree.get<bool>(s_IsVisible));
+    resection->set_name(helper::read_string(_tree, NAME));
+    resection->set_is_safe_part(_tree.get<bool>(IS_SAFE_PART));
+    resection->set_is_valid(_tree.get<bool>(IS_VALID));
+    resection->set_is_visible(_tree.get<bool>(IS_VISIBLE));
 
-    resection->setPlaneList(std::dynamic_pointer_cast<data::plane_list>(_children.at(s_PlaneList)));
+    resection->set_plane_list(std::dynamic_pointer_cast<data::plane_list>(_children.at(PLANE_LIST)));
 
     // Deserialize intputs / outputs
-    auto& inputs = resection->getInputs();
+    auto& inputs = resection->get_inputs();
     inputs.clear();
 
-    auto& outputs = resection->getOutputs();
+    auto& outputs = resection->get_outputs();
     outputs.clear();
 
     for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)

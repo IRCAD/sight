@@ -91,7 +91,7 @@ protected:
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
     /// Manage the given events
-    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 private:
 
@@ -101,22 +101,22 @@ private:
     void draw();
 
     /// Returns x-axis starting value
-    float getXStartVal() const;
+    float get_x_start_val() const;
 
     /// Returns x-axis ending value
-    float getXEndVal() const;
+    float get_x_end_val() const;
 
     /// Returns y-axis starting value
-    float getYStartVal() const;
+    float get_y_start_val() const;
 
     /// Returns y-axis ending value
-    float getYEndVal() const;
+    float get_y_end_val() const;
 
     /// Slot: This method is used to set the grid spacing from two double parameters.
-    void setGridSpacing(double _x, double _y, std::string _key);
+    void set_grid_spacing(double _x, double _y, std::string _key);
 
     /// Bounds of the grid and spacing values for each axis.
-    float m_xMin {0.F}, m_xMax {0.F}, m_yMin {0.F}, m_yMax {0.F}, m_xSpacing {10.F}, m_ySpacing {10.F};
+    float m_x_min {0.F}, m_x_max {0.F}, m_y_min {0.F}, m_y_max {0.F}, m_x_spacing {10.F}, m_y_spacing {10.F};
 
     /// The pen.
     QPen m_pen;

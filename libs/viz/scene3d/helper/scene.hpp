@@ -40,7 +40,7 @@ public:
      * @param[in] _sceneMgr scene manager
      * @return the Ogre scene node, null if not found
      */
-    VIZ_SCENE3D_API static Ogre::SceneNode* getNodeById(
+    VIZ_SCENE3D_API static Ogre::SceneNode* get_node_by_id(
         viz::scene3d::render::ogre_object_id_t _node_id,
         Ogre::SceneNode* _scene_node
     );
@@ -50,7 +50,7 @@ public:
      * @param rootsceneNode The node whose bounding box is to be computed
      * @return The bounding box of the node
      */
-    VIZ_SCENE3D_API static Ogre::AxisAlignedBox computeBoundingBox(const Ogre::SceneNode* _root_scene_node);
+    VIZ_SCENE3D_API static Ogre::AxisAlignedBox compute_bounding_box(const Ogre::SceneNode* _root_scene_node);
 
     /**
      * Computes the projection of the bounding box of the descendants of the provided node in screen space using the
@@ -60,7 +60,7 @@ public:
      * @return The projection of the bounding box in screen space as a pair, with the first element being the minimum
      * (top left) and the second element the maximum (bottom right).
      */
-    VIZ_SCENE3D_API static std::pair<Ogre::Vector2, Ogre::Vector2> computeBoundingRect(
+    VIZ_SCENE3D_API static std::pair<Ogre::Vector2, Ogre::Vector2> compute_bounding_rect(
         const Ogre::Camera& _camera,
         const Ogre::SceneNode* _root_scene_node
     );

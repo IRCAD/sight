@@ -30,9 +30,9 @@ namespace sight::io::dimse::exceptions
 {
 
 /**
- * @brief Base class of fwPacsIO Exceptions
+ * @brief Base class of fwPacsIO exceptions
  */
-class IO_DIMSE_CLASS_API Base : public core::exception
+class IO_DIMSE_CLASS_API base : public core::exception
 {
 public:
 
@@ -40,10 +40,10 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DIMSE_API Base(const std::string& _message);
+    IO_DIMSE_API base(const std::string& _message);
 
     /// Destructor
-    IO_DIMSE_API ~Base() noexcept override;
+    IO_DIMSE_API ~base() noexcept override;
 };
 
 } // namespace sight::io::dimse::exceptions

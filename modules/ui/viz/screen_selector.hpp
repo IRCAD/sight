@@ -84,10 +84,10 @@ private:
     using screen_selected_signal_t = core::com::signal<void (int)>;
 
     /// Prompts a dialog letting the user select a screen if there are multiple monitors.
-    static int selectScreen();
+    static int select_screen();
 
     /// Signal sent when a screen is selected.
-    screen_selected_signal_t::sptr m_screenSelectedSig;
+    screen_selected_signal_t::sptr m_screen_selected_sig;
 
     /// Selection mode can be 'select', 'current' or 'neighbor' (cf XML configuration).
     std::string m_mode {"select"};

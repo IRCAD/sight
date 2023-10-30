@@ -49,24 +49,24 @@ namespace sight::io::vtk
  * Reads a VTK Mesh (.vtp) using the VTK library.
  */
 
-class IO_VTK_CLASS_API VtpMeshReader :
+class IO_VTK_CLASS_API vtp_mesh_reader :
     public reader::generic_object_reader<data::mesh>,
     public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        VtpMeshReader,
+        vtp_mesh_reader,
         io::reader::generic_object_reader<data::mesh>,
-        io::reader::factory::make<VtpMeshReader>
+        io::reader::factory::make<vtp_mesh_reader>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API VtpMeshReader();
+    IO_VTK_API vtp_mesh_reader();
 
     /// @brief Destructor.
-    IO_VTK_API ~VtpMeshReader() override;
+    IO_VTK_API ~vtp_mesh_reader() override;
 
     /// @brief Reading operator.
     IO_VTK_API void read() override;
@@ -75,7 +75,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

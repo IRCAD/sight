@@ -51,21 +51,21 @@ void camera_set::shallow_copy(const object::csptr& _source)
         !other
     );
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool camera_set::operator==(const camera_set& _other) const noexcept
 {
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
 bool camera_set::operator!=(const camera_set& _other) const noexcept
 {
-    return base_class::operator!=(_other);
+    return base_class_t::operator!=(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ void camera_set::deep_copy(const object::csptr& _source, const std::unique_ptr<d
             return std::make_pair(object::copy(_value.first, _cache), _value.second);
         });
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------

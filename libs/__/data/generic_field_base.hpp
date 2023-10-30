@@ -44,12 +44,12 @@ public:
 
     DATA_API friend std::ostream& operator<<(std::ostream& /*_os*/, const generic_field_base& /*lf*/);
 
-    DATA_API virtual std::string toString() const               = 0;
-    DATA_API virtual void fromString(const std::string& _value) = 0;
+    DATA_API virtual std::string to_string() const               = 0;
+    DATA_API virtual void from_string(const std::string& _value) = 0;
 
 private:
 
-    DATA_API virtual std::ostream& toOStream(std::ostream& _os) const = 0;
+    DATA_API virtual std::ostream& to_o_stream(std::ostream& _os) const = 0;
 };
 
 } // namespace sight::data

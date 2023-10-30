@@ -39,13 +39,13 @@ public:
 
     SIGHT_DECLARE_CLASS(input_base, ui::object);
 
-    enum class EchoMode : uint8_t
+    enum class echo_mode : uint8_t
     {
-        NORMAL       = 0,
-        NOECHO       = 1,
-        PASSWORD     = 2,
-        ECHO_ON_EDIT = 3,
-        DEFAULT      = NORMAL
+        normal       = 0,
+        noecho       = 1,
+        password     = 2,
+        echo_on_edit = 3,
+        DEFAULT      = normal
     };
 
     /// Constructor. Do nothing.
@@ -53,23 +53,23 @@ public:
     /// Destructor. Do nothing.
     UI_API ~input_base() override;
 
-    typedef std::string factory_registry_key_t;
+    using factory_registry_key_t = std::string;
     UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the title of the input dialog
-    UI_API virtual void setTitle(const std::string& _title) = 0;
+    UI_API virtual void set_title(const std::string& _title) = 0;
 
     /// Set the input text in the input field
     UI_API virtual void set_input(const std::string& _text) = 0;
 
     /// Get the input text in the input field
-    UI_API virtual std::pair<std::string, bool> getInput() = 0;
+    UI_API virtual std::pair<std::string, bool> get_input() = 0;
 
     /// Set the message
-    UI_API virtual void setMessage(const std::string& _msg) = 0;
+    UI_API virtual void set_message(const std::string& _msg) = 0;
 
     /// Sets the echo mode used to display input field content
-    UI_API virtual void setEchoMode(EchoMode _echo_mode) = 0;
+    UI_API virtual void set_echo_mode(echo_mode _echo_mode) = 0;
 };
 
 } // namespace sight::ui::dialog

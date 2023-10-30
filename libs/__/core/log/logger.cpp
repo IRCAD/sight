@@ -37,7 +37,7 @@ logger::~logger()
 
 void logger::information(const std::string& _message)
 {
-    core::log::log log(core::log::log::INFORMATION, _message);
+    core::log::log log(core::log::log::information, _message);
     m_log_container.push_back(log);
     SIGHT_INFO(_message);
 }
@@ -46,7 +46,7 @@ void logger::information(const std::string& _message)
 
 void logger::warning(const std::string& _message)
 {
-    core::log::log log(core::log::log::WARNING, _message);
+    core::log::log log(core::log::log::warning, _message);
     m_log_container.push_back(log);
     SIGHT_WARN(_message);
 }
@@ -55,7 +55,7 @@ void logger::warning(const std::string& _message)
 
 void logger::critical(const std::string& _message)
 {
-    core::log::log log(core::log::log::CRITICAL, _message);
+    core::log::log log(core::log::log::critical, _message);
     m_log_container.push_back(log);
     SIGHT_ERROR(_message);
 }
@@ -77,7 +77,7 @@ std::size_t logger::count() const
 
 //-----------------------------------------------------------------------------
 
-std::size_t logger::count(core::log::log::level_type _level) const
+std::size_t logger::count(core::log::log::level_t _level) const
 {
     std::size_t count = 0;
     for(const core::log::log& log : m_log_container)

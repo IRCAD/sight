@@ -34,7 +34,7 @@
 #include <utest_data/generator/image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageConversionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::image_conversion_test);
 
 namespace sight::io::itk::ut
 {
@@ -43,24 +43,24 @@ using core::tools::random::safe_rand;
 
 //------------------------------------------------------------------------------
 
-void ImageConversionTest::setUp()
+void image_conversion_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageConversionTest::tearDown()
+void image_conversion_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void ImageConversionTest::testConversion()
+void image_conversion_test::test_conversion()
 {
     // create Image
     data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(image, core::type::INT16);
+    utest_data::generator::image::generate_random_image(image, core::type::INT16);
 
     using image_t = ::itk::Image<std::int16_t, 3>;
     image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
@@ -71,52 +71,52 @@ void ImageConversionTest::testConversion()
     io::itk::ut::helper::round_spacing(image);
     io::itk::ut::helper::round_spacing(image2);
 
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    image2->set_window_center(image->window_center());
+    image2->set_window_width(image->window_width());
 
     CPPUNIT_ASSERT(*image == *image2);
 
     data::image::sptr image3 = io::itk::move_from_itk<image_t>(itk_image, false);
-    image3->setWindowCenter(image->getWindowCenter());
-    image3->setWindowWidth(image->getWindowWidth());
+    image3->set_window_center(image->window_center());
+    image3->set_window_width(image->window_width());
 
     CPPUNIT_ASSERT(*image == *image3);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageConversionTest::stressTest()
+void image_conversion_test::stress_test()
 {
-    stressTestForAType<std::int8_t>();
-    stressTestForAType<std::uint8_t>();
+    stress_test_for_a_type<std::int8_t>();
+    stress_test_for_a_type<std::uint8_t>();
 
-    stressTestForAType<std::int16_t>();
-    stressTestForAType<std::uint16_t>();
+    stress_test_for_a_type<std::int16_t>();
+    stress_test_for_a_type<std::uint16_t>();
 
-    stressTestForAType<std::int32_t>();
-    stressTestForAType<std::uint32_t>();
+    stress_test_for_a_type<std::int32_t>();
+    stress_test_for_a_type<std::uint32_t>();
 
-    stressTestForAType<std::int64_t>();
-    stressTestForAType<std::uint64_t>();
+    stress_test_for_a_type<std::int64_t>();
+    stress_test_for_a_type<std::uint64_t>();
 
-    stressTestForAType<float>();
-    stressTestForAType<double>();
+    stress_test_for_a_type<float>();
+    stress_test_for_a_type<double>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageConversionTest::testConversion2D()
+void image_conversion_test::test_conversion_2d()
 {
     // create Image
-    data::image::sptr image = std::make_shared<data::image>();
-    data::image::Size size  =
+    data::image::sptr image  = std::make_shared<data::image>();
+    data::image::size_t size =
     {static_cast<std::size_t>(safe_rand() % 100 + 2), static_cast<std::size_t>(safe_rand() % 100 + 2), 0
     };
-    data::image::Spacing spacing = {(safe_rand() % 200 + 1) / 100., (safe_rand() % 200 + 1) / 100., 0.};
-    data::image::Origin origin   = {(safe_rand() % 200 - 100) / 3., (safe_rand() % 200 - 100) / 3., 0.};
-    core::type type              = core::type::INT16;
+    data::image::spacing_t spacing = {(safe_rand() % 200 + 1) / 100., (safe_rand() % 200 + 1) / 100., 0.};
+    data::image::origin_t origin   = {(safe_rand() % 200 - 100) / 3., (safe_rand() % 200 - 100) / 3., 0.};
+    core::type type                = core::type::INT16;
 
-    utest_data::generator::image::generateImage(image, size, spacing, origin, type, data::image::GRAY_SCALE, 0);
+    utest_data::generator::image::generate_image(image, size, spacing, origin, type, data::image::gray_scale, 0);
 
     using image_t = ::itk::Image<std::int16_t, 2>;
 
@@ -129,14 +129,14 @@ void ImageConversionTest::testConversion2D()
     io::itk::ut::helper::round_spacing(image);
     io::itk::ut::helper::round_spacing(image2);
 
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    image2->set_window_center(image->window_center());
+    image2->set_window_width(image->window_width());
 
     CPPUNIT_ASSERT(*image == *image2);
 
     data::image::sptr image3 = io::itk::move_from_itk<image_t>(itk_image, false);
-    image3->setWindowCenter(image->getWindowCenter());
-    image3->setWindowWidth(image->getWindowWidth());
+    image3->set_window_center(image->window_center());
+    image3->set_window_width(image->window_width());
 
     CPPUNIT_ASSERT(*image == *image3);
 }

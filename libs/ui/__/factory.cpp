@@ -27,11 +27,11 @@
 namespace sight::ui::registry
 {
 
-struct FwGuiRegistryInstantiatorTag {};
+struct gui_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using instantiator_t = core::lazy_instantiator<Type, FwGuiRegistryInstantiatorTag>;
+    using instantiator_t = core::lazy_instantiator<type, gui_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 

@@ -115,14 +115,14 @@ protected:
 
 private Q_SLOTS:
 
-    void onClicked();
+    void on_clicked();
 
-    void onToggled(bool /*toggled*/);
+    void on_toggled(bool /*toggled*/);
 
 private:
 
     /// SLOT: checks or unchecks the button.
-    void setChecked(bool _checked);
+    void set_checked(bool _checked);
 
     /// SLOT: checks the button.
     void check();
@@ -131,7 +131,7 @@ private:
     void uncheck();
 
     /// SLOT: sets the button executability.
-    void setEnabled(bool _is_enabled) override;
+    void set_enabled(bool _is_enabled) override;
 
     /// SLOT: sets the button executable.
     void enable() override;
@@ -140,7 +140,7 @@ private:
     void disable() override;
 
     /// SLOT: sets the button visibility.
-    void setVisible(bool _is_visible) override;
+    void set_visible(bool _is_visible) override;
 
     /// SLOT: shows the button.
     void show() override;
@@ -148,13 +148,13 @@ private:
     /// SLOT: hides he button.
     void hide() override;
 
-    typedef core::com::signal<void ()> clicked_signal_t;
+    using clicked_signal_t = core::com::signal<void ()>;
     /// Contains the signal emitted when button is clicked.
-    clicked_signal_t::sptr m_sigClicked {nullptr};
+    clicked_signal_t::sptr m_sig_clicked {nullptr};
 
-    typedef core::com::signal<void (bool)> toggled_signal_t;
+    using toggled_signal_t = core::com::signal<void (bool)>;
     /// Contains the signal emitted when button is checked/unchecked
-    toggled_signal_t::sptr m_sigToggled {nullptr};
+    toggled_signal_t::sptr m_sig_toggled {nullptr};
 
     /// Contains the button
     QPointer<QPushButton> m_button {nullptr};
@@ -178,16 +178,16 @@ private:
     bool m_enable {true};
 
     /// Defines if the button is checked at start.
-    bool m_checkAtStart {false};
+    bool m_check_at_start {false};
 
     /// Defines the icon width.
-    unsigned m_iconWidth {0};
+    unsigned m_icon_width {0};
 
     /// Defines the icon height.
-    unsigned m_iconHeight {0};
+    unsigned m_icon_height {0};
 
     /// Defines the button tooltip.
-    std::string m_toolTip;
+    std::string m_tool_tip;
 };
 
 } // namespace sight::module::ui::qt::com

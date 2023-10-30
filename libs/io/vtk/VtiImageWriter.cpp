@@ -22,7 +22,7 @@
 
 #include "io/vtk/VtiImageWriter.hpp"
 
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
@@ -36,33 +36,33 @@
 #include <vtkXMLImageDataWriter.h>
 #include <vtkZLibDataCompressor.h>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::vtk::VtiImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::vti_image_writer);
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-VtiImageWriter::VtiImageWriter() :
+vti_image_writer::vti_image_writer() :
     m_job(std::make_shared<core::jobs::observer>("VTK image Writer"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-VtiImageWriter::~VtiImageWriter()
+vti_image_writer::~vti_image_writer()
 = default;
 
 //------------------------------------------------------------------------------
 
-void VtiImageWriter::write()
+void vti_image_writer::write()
 {
-    using helper::vtkLambdaCommand;
+    using helper::vtk_lambda_command;
 
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::csptr p_image = getConcreteObject();
+    data::image::csptr p_image = get_concrete_object();
 
     vtkSmartPointer<vtkXMLImageDataWriter> writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
     vtkSmartPointer<vtkImageData> vtk_image       = vtkSmartPointer<vtkImageData>::New();
@@ -76,9 +76,9 @@ void VtiImageWriter::write()
     writer->SetCompressor(compressor);
     writer->EncodeAppendedDataOff();
 
-    vtkSmartPointer<vtkLambdaCommand> progress_callback;
-    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progress_callback->SetCallback(
+    vtkSmartPointer<vtk_lambda_command> progress_callback;
+    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
+    progress_callback->set_callback(
         [this](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkXMLImageDataWriter*>(_caller);
@@ -97,14 +97,14 @@ void VtiImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string VtiImageWriter::extension() const
+std::string vti_image_writer::extension() const
 {
     return ".vti";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr VtiImageWriter::getJob() const
+core::jobs::base::sptr vti_image_writer::get_job() const
 {
     return m_job;
 }

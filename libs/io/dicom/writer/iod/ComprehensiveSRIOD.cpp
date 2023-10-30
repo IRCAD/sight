@@ -42,27 +42,27 @@ namespace sight::io::dicom::writer::iod
 
 //------------------------------------------------------------------------------
 
-ComprehensiveSRIOD::ComprehensiveSRIOD(
-    const SPTR(io::dicom::container::DicomInstance)& _instance,
+comprehensive_sriod::comprehensive_sriod(
+    const SPTR(io::dicom::container::dicom_instance)& _instance,
     const std::filesystem::path& _destination_path,
-    bool _use3_dsr,
+    bool _use_3d_sr,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::writer::iod::InformationObjectDefinition(_instance, _destination_path, _logger, _progress, _cancel),
-    m_use3DSR(_use3_dsr)
+    io::dicom::writer::iod::information_object_definition(_instance, _destination_path, _logger, _progress, _cancel),
+    m_use_3d_sr(_use_3d_sr)
 {
 }
 
 //------------------------------------------------------------------------------
 
-ComprehensiveSRIOD::~ComprehensiveSRIOD()
+comprehensive_sriod::~comprehensive_sriod()
 = default;
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::write(const data::series::csptr& _series)
+void comprehensive_sriod::write(const data::series::csptr& _series)
 {
     // Retrieve image series
     data::image_series::csptr image_series = std::dynamic_pointer_cast<const data::image_series>(_series);
@@ -72,38 +72,38 @@ void ComprehensiveSRIOD::write(const data::series::csptr& _series)
     SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patient_ie(writer, m_instance, _series);
-    io::dicom::writer::ie::Study study_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::patient patient_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::study study_ie(writer, m_instance, _series);
     io::dicom::writer::ie::series series_ie(writer, m_instance, _series);
-    io::dicom::writer::ie::Equipment equipment_ie(writer, m_instance, _series);
-    io::dicom::writer::ie::Document document_ie(writer, m_instance, image_series, m_use3DSR);
+    io::dicom::writer::ie::equipment equipment_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::document document_ie(writer, m_instance, image_series, m_use_3d_sr);
 
     // Write Patient Module - PS 3.3 C.7.1.1
-    patient_ie.writePatientModule();
+    patient_ie.write_patient_module();
 
     // Write General Study Module - PS 3.3 C.7.2.1
-    study_ie.writeGeneralStudyModule();
+    study_ie.write_general_study_module();
 
     // Write Patient Study Module - PS 3.3 C.7.2.2
-    study_ie.writePatientStudyModule();
+    study_ie.write_patient_study_module();
 
     // Write SR Document Series Module - PS 3.3 C.17.1
-    series_ie.writeSRDocumentSeriesModule();
+    series_ie.write_sr_document_series_module();
 
     // Write General Equipment Module - PS 3.3 C.7.5.1
-    equipment_ie.writeGeneralEquipmentModule();
+    equipment_ie.write_general_equipment_module();
 
     // Write SR Document General Module - PS 3.3 C.17.2
-    document_ie.writeSRDocumentGeneralModule();
+    document_ie.write_sr_document_general_module();
 
     // Write SR Document Content Module - PS 3.3 C.17.3
-    document_ie.writeSRDocumentContentModule();
+    document_ie.write_sr_document_content_module();
 
     // Write SOP Common module - PS 3.3 C.12.1
-    document_ie.writeSOPCommonModule();
+    document_ie.write_sop_common_module();
 
     // Write document
-    io::dicom::helper::FileWriter::write(m_destinationPath, writer);
+    io::dicom::helper::file_writer::write(m_destination_path, writer);
 }
 
 //------------------------------------------------------------------------------

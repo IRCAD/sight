@@ -44,7 +44,7 @@ public:
     VIZ_SCENE3D_API ~r2vb_renderable() override
     = default;
 
-    VIZ_SCENE3D_API static Ogre::String FACTORY_TYPE_NAME;
+    VIZ_SCENE3D_API static Ogre::String s_factory_type_name;
 
     [[nodiscard]] VIZ_SCENE3D_API const Ogre::String& getType() const override;
 #if OGRE_VERSION_PATCH < 9

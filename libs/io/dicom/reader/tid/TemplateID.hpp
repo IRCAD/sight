@@ -38,7 +38,7 @@ namespace sight::io::dicom::reader::tid
  * @brief TemplateID base class used to write templates
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API TemplateID
+class IO_DICOM_CLASS_API template_id
 {
 public:
 
@@ -50,27 +50,27 @@ public:
      * @param[in] object Sight data object
      * @param[in] logger Logger
      */
-    IO_DICOM_API TemplateID(
+    IO_DICOM_API template_id(
         CSPTR(data::dicom_series)_dicom_series,
         SPTR(gdcm::Reader)_reader,
-        SPTR(io::dicom::container::DicomInstance)_instance,
+        SPTR(io::dicom::container::dicom_instance)_instance,
         SPTR(DATATYPE)_object,
         core::log::logger::sptr _logger
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~TemplateID();
+    IO_DICOM_API virtual ~template_id();
 
 protected:
 
     /// Dicom Series
-    CSPTR(data::dicom_series) m_dicomSeries;
+    CSPTR(data::dicom_series) m_dicom_series;
 
     /// GDCM Reader
     SPTR(gdcm::Reader) m_reader;
 
     /// DICOM Instance
-    SPTR(io::dicom::container::DicomInstance) m_instance;
+    SPTR(io::dicom::container::dicom_instance) m_instance;
 
     /// Sight Object
     SPTR(DATATYPE) m_object;
@@ -82,20 +82,20 @@ protected:
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-TemplateID<DATATYPE>::TemplateID(
+template_id<DATATYPE>::template_id(
     CSPTR(data::dicom_series)_dicom_series,
     SPTR(gdcm::Reader)_reader,
-    SPTR(io::dicom::container::DicomInstance)_instance,
+    SPTR(io::dicom::container::dicom_instance)_instance,
     SPTR(DATATYPE)_object,
     core::log::logger::sptr _logger
 ) :
-    m_dicomSeries(std::move(_dicom_series)),
+    m_dicom_series(std::move(_dicom_series)),
     m_reader(std::move(_reader)),
     m_instance(std::move(_instance)),
     m_object(std::move(_object)),
     m_logger(std::move(_logger))
 {
-    SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null.", m_dicom_series);
     SIGHT_ASSERT("Reader should not be null.", m_reader);
     SIGHT_ASSERT("Instance should not be null.", m_instance);
     SIGHT_ASSERT("Object should not be null.", m_object);
@@ -104,7 +104,7 @@ TemplateID<DATATYPE>::TemplateID(
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE> TemplateID<DATATYPE>::~TemplateID()
+template<class DATATYPE> template_id<DATATYPE>::~template_id()
 = default;
 
 //------------------------------------------------------------------------------

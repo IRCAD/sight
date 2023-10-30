@@ -48,7 +48,7 @@ public:
 private:
 
     /// Ogre root to setup the scene and instantiate 'Text' objects.
-    Ogre::Root* m_ogreRoot {nullptr};
+    Ogre::Root* m_ogre_root {nullptr};
 };
 
 } // namespace sight::module::viz::scene3d::test

@@ -34,33 +34,33 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::ut::job_bar_test);
 namespace sight::module::ui::ut
 {
 
-class DummyProgressDialog : public sight::ui::dialog::progress_base
+class dummy_progress_dialog : public sight::ui::dialog::progress_base
 {
 public:
 
-    DummyProgressDialog()
+    dummy_progress_dialog()
     {
-        lastDialog = this;
+        s_last_dialog = this;
     }
 
-    ~DummyProgressDialog() override
+    ~dummy_progress_dialog() override
     {
-        if(lastDialog == this)
+        if(s_last_dialog == this)
         {
-            lastDialog = nullptr;
+            s_last_dialog = nullptr;
         }
     }
 
     //------------------------------------------------------------------------------
 
-    void setTitle(const std::string& _title) override
+    void set_title(const std::string& _title) override
     {
         m_title = _title;
     }
 
     //------------------------------------------------------------------------------
 
-    void setMessage(const std::string& _message) override
+    void set_message(const std::string& _message) override
     {
         m_message = _message;
     }
@@ -75,26 +75,26 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::string getTitle()
+    std::string get_title()
     {
         return m_title;
     }
 
     //------------------------------------------------------------------------------
 
-    std::string getMessage()
+    std::string get_message()
     {
         return m_message;
     }
 
     //------------------------------------------------------------------------------
 
-    float getPercentage() const
+    float get_percentage() const
     {
         return m_percentage;
     }
 
-    static DummyProgressDialog* lastDialog;
+    static dummy_progress_dialog* s_last_dialog;
 
 private:
 
@@ -103,15 +103,15 @@ private:
     float m_percentage {};
 };
 
-DummyProgressDialog* DummyProgressDialog::lastDialog = nullptr;
+dummy_progress_dialog* dummy_progress_dialog::s_last_dialog = nullptr;
 
-SIGHT_REGISTER_GUI(DummyProgressDialog, sight::ui::dialog::progress_base::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(dummy_progress_dialog, sight::ui::dialog::progress_base::REGISTRY_KEY);
 
-class DummyJob : public core::jobs::base
+class dummy_job : public core::jobs::base
 {
 public:
 
-    explicit DummyJob(const std::string& _name, std::uint64_t _total_work_unit = 100) :
+    explicit dummy_job(const std::string& _name, std::uint64_t _total_work_unit = 100) :
         base(_name)
     {
         m_total_work_units = _total_work_unit;
@@ -131,46 +131,46 @@ public:
 
 void job_bar_test::setUp()
 {
-    m_jobBar = service::add("sight::module::ui::job_bar");
-    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::job_bar'", m_jobBar);
+    m_job_bar = service::add("sight::module::ui::job_bar");
+    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::job_bar'", m_job_bar);
 }
 
 //------------------------------------------------------------------------------
 
 void job_bar_test::tearDown()
 {
-    if(!m_jobBar->stopped())
+    if(!m_job_bar->stopped())
     {
-        CPPUNIT_ASSERT_NO_THROW(m_jobBar->stop().get());
+        CPPUNIT_ASSERT_NO_THROW(m_job_bar->stop().get());
     }
 
-    service::remove(m_jobBar);
+    service::remove(m_job_bar);
 }
 
 //------------------------------------------------------------------------------
 
-void job_bar_test::basicTest()
+void job_bar_test::basic_test()
 {
     using namespace std::literals::string_literals;
 
-    static const std::string JOB_NAME = "Your Dream Job";
+    static const std::string s_JOB_NAME = "Your Dream Job";
 
-    CPPUNIT_ASSERT_NO_THROW(m_jobBar->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_jobBar->start().get());
+    CPPUNIT_ASSERT_NO_THROW(m_job_bar->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_job_bar->start().get());
 
-    auto job = std::make_shared<DummyJob>(JOB_NAME);
-    m_jobBar->slot("showJob")->run(std::static_pointer_cast<core::jobs::base>(job));
+    auto job = std::make_shared<dummy_job>(s_JOB_NAME);
+    m_job_bar->slot("showJob")->run(std::static_pointer_cast<core::jobs::base>(job));
 
-    CPPUNIT_ASSERT_EQUAL(JOB_NAME, DummyProgressDialog::lastDialog->getTitle());
-    CPPUNIT_ASSERT_EQUAL(""s, DummyProgressDialog::lastDialog->getMessage());
+    CPPUNIT_ASSERT_EQUAL(s_JOB_NAME, dummy_progress_dialog::s_last_dialog->get_title());
+    CPPUNIT_ASSERT_EQUAL(""s, dummy_progress_dialog::s_last_dialog->get_message());
 
     for(int i = 1 ; i <= 100 ; i++)
     {
         std::string log = "Doing the thing " + std::to_string(i);
         job->log(log);
         job->done_work(std::uint64_t(i));
-        CPPUNIT_ASSERT_EQUAL(log, DummyProgressDialog::lastDialog->getMessage());
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(i / 100.), DummyProgressDialog::lastDialog->getPercentage());
+        CPPUNIT_ASSERT_EQUAL(log, dummy_progress_dialog::s_last_dialog->get_message());
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(i / 100.), dummy_progress_dialog::s_last_dialog->get_percentage());
     }
 }
 

@@ -39,14 +39,14 @@ namespace sight::io::dicom::reader::ie
 series::series(
     const data::dicom_series::csptr& _dicom_series,
     const SPTR(gdcm::Reader)& _reader,
-    const io::dicom::container::DicomInstance::sptr& _instance,
+    const io::dicom::container::dicom_instance::sptr& _instance,
     const data::series::sptr& _series,
     const core::log::logger::sptr& _logger,
-    ProgressCallback _progress,
-    CancelRequestedCallback _cancel
+    progress_callback _progress,
+    cancel_requested_callback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::series>(_dicom_series, _reader, _instance, _series,
-                                                           _logger, _progress, _cancel)
+    io::dicom::reader::ie::information_entity<data::series>(_dicom_series, _reader, _instance, _series,
+                                                            _logger, _progress, _cancel)
 {
 }
 
@@ -57,135 +57,136 @@ series::~series()
 
 //------------------------------------------------------------------------------
 
-void series::readGeneralSeriesModule()
+void series::read_general_series_module()
 {
     // Retrieve dataset
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
-    const std::string& modality = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0060>(dataset);
-    m_object->setModality(modality);
+    const std::string& modality = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0060>(dataset);
+    m_object->set_modality(modality);
 
-    const std::string& uid = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000e>(dataset);
-    m_object->setSeriesInstanceUID(uid);
+    const std::string& uid = io::dicom::helper::dicom_data_reader::get_tag_value<0x0020, 0x000e>(dataset);
+    m_object->set_series_instance_uid(uid);
 
-    const std::string& number = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x0011>(dataset);
+    const std::string& number = io::dicom::helper::dicom_data_reader::get_tag_value<0x0020, 0x0011>(dataset);
     if(!number.empty())
     {
-        m_object->setSeriesNumber(std::stoi(number));
+        m_object->set_series_number(std::stoi(number));
     }
 
-    const std::string& laterality = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x0060>(dataset);
-    m_object->setLaterality(laterality);
+    const std::string& laterality = io::dicom::helper::dicom_data_reader::get_tag_value<0x0020, 0x0060>(dataset);
+    m_object->set_laterality(laterality);
 
-    const std::string& date = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0021>(dataset);
-    m_object->setSeriesDate(date);
+    const std::string& date = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0021>(dataset);
+    m_object->set_series_date(date);
 
-    const std::string& time = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0031>(dataset);
-    m_object->setSeriesTime(time);
+    const std::string& time = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0031>(dataset);
+    m_object->set_series_time(time);
 
     const std::string& performing_physician_name =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1050>(dataset);
-    m_object->setPerformingPhysicianName(performing_physician_name);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x1050>(dataset);
+    m_object->set_performing_physician_name(performing_physician_name);
 
-    const std::string& protocol_name = io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1030>(dataset);
-    m_object->setProtocolName(protocol_name);
+    const std::string& protocol_name = io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1030>(dataset);
+    m_object->set_protocol_name(protocol_name);
 
-    const std::string& description = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x103e>(dataset);
-    m_object->setSeriesDescription(description);
+    const std::string& description = io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x103e>(dataset);
+    m_object->set_series_description(description);
 
-    const std::string& body_part_examined = io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x0015>(dataset);
-    m_object->setBodyPartExamined(body_part_examined);
+    const std::string& body_part_examined =
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x0015>(dataset);
+    m_object->set_body_part_examined(body_part_examined);
 
-    const std::string& patient_position = io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x5100>(dataset);
-    m_object->setPatientPosition(patient_position);
+    const std::string& patient_position = io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x5100>(dataset);
+    m_object->set_patient_position(patient_position);
 
     const std::string& anatomical_orientation_type =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x2210>(dataset);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0010, 0x2210>(dataset);
     m_object->set_anatomical_orientation_type(anatomical_orientation_type);
 
     const std::string& performed_procedure_step_id =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0253>(dataset);
-    m_object->setPerformedProcedureStepID(performed_procedure_step_id);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0x0253>(dataset);
+    m_object->set_performed_procedure_step_id(performed_procedure_step_id);
 
     const std::string& performed_procedure_step_start_date =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0244>(dataset);
-    m_object->setPerformedProcedureStepStartDate(performed_procedure_step_start_date);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0x0244>(dataset);
+    m_object->set_performed_procedure_step_start_date(performed_procedure_step_start_date);
 
     const std::string& performed_procedure_step_start_time =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0245>(dataset);
-    m_object->setPerformedProcedureStepStartTime(performed_procedure_step_start_time);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0x0245>(dataset);
+    m_object->set_performed_procedure_step_start_time(performed_procedure_step_start_time);
 
     const std::string& performed_procedure_step_end_date =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0250>(dataset);
-    m_object->setPerformedProcedureStepEndDate(performed_procedure_step_end_date);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0x0250>(dataset);
+    m_object->set_performed_procedure_step_end_date(performed_procedure_step_end_date);
 
     const std::string& performed_procedure_step_end_time =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0251>(dataset);
-    m_object->setPerformedProcedureStepEndTime(performed_procedure_step_end_time);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0x0251>(dataset);
+    m_object->set_performed_procedure_step_end_time(performed_procedure_step_end_time);
 
     const std::string& performed_procedure_step_description =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0254>(dataset);
-    m_object->setPerformedProcedureStepDescription(performed_procedure_step_description);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0x0254>(dataset);
+    m_object->set_performed_procedure_step_description(performed_procedure_step_description);
 
     const std::string& performed_procedure_comments =
-        io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0280>(dataset);
-    m_object->setCommentsOnThePerformedProcedureStep(performed_procedure_comments);
+        io::dicom::helper::dicom_data_reader::get_tag_value<0x0040, 0x0280>(dataset);
+    m_object->set_comments_on_the_performed_procedure_step(performed_procedure_comments);
 
     const data::image_series::sptr image_series = std::dynamic_pointer_cast<data::image_series>(m_object);
     if(image_series)
     {
         const std::string& image_contrast_bolus_agent =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x0010>(dataset);
-        image_series->setContrastBolusAgent(image_contrast_bolus_agent);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x0010>(dataset);
+        image_series->set_contrast_bolus_agent(image_contrast_bolus_agent);
 
         const std::string& image_contrast_bolus_route =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1040>(dataset);
-        image_series->setContrastBolusRoute(image_contrast_bolus_route);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1040>(dataset);
+        image_series->set_contrast_bolus_route(image_contrast_bolus_route);
 
         const std::string& image_contrast_bolus_volume =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1041>(
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1041>(
                 dataset
             );
 
         if(!image_contrast_bolus_volume.empty())
         {
-            image_series->setContrastBolusVolume(std::stod(image_contrast_bolus_volume));
+            image_series->set_contrast_bolus_volume(std::stod(image_contrast_bolus_volume));
         }
 
         const std::string& image_contrast_bolus_start_time =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1042>(dataset);
-        image_series->setContrastBolusStartTime(image_contrast_bolus_start_time);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1042>(dataset);
+        image_series->set_contrast_bolus_start_time(image_contrast_bolus_start_time);
 
         const std::string& image_contrast_bolus_stop_time =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1043>(dataset);
-        image_series->setContrastBolusStopTime(image_contrast_bolus_stop_time);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1043>(dataset);
+        image_series->set_contrast_bolus_stop_time(image_contrast_bolus_stop_time);
 
         const std::string& image_contrast_bolus_total_dose =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1044>(dataset);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1044>(dataset);
 
         if(!image_contrast_bolus_total_dose.empty())
         {
-            image_series->setContrastBolusTotalDose(std::stod(image_contrast_bolus_total_dose));
+            image_series->set_contrast_bolus_total_dose(std::stod(image_contrast_bolus_total_dose));
         }
 
         const std::string& image_contrast_flow_rate =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1046>(dataset);
-        image_series->setContrastFlowRate(image_contrast_flow_rate);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1046>(dataset);
+        image_series->set_contrast_flow_rate(image_contrast_flow_rate);
 
         const std::string& image_contrast_flow_duration =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1047>(dataset);
-        image_series->setContrastFlowDuration(image_contrast_flow_duration);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1047>(dataset);
+        image_series->set_contrast_flow_duration(image_contrast_flow_duration);
 
         const std::string& image_contrast_bolus_ingredient =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1048>(dataset);
-        image_series->setContrastBolusIngredient(image_contrast_bolus_ingredient);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1048>(dataset);
+        image_series->set_contrast_bolus_ingredient(image_contrast_bolus_ingredient);
 
         const std::string& image_contrast_bolus_ingredient_concentration =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1049>(dataset);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0018, 0x1049>(dataset);
 
         if(!image_contrast_bolus_ingredient_concentration.empty())
         {
-            image_series->setContrastBolusIngredientConcentration(
+            image_series->set_contrast_bolus_ingredient_concentration(
                 std::stod(
                     image_contrast_bolus_ingredient_concentration
                 )
@@ -193,12 +194,12 @@ void series::readGeneralSeriesModule()
         }
 
         const std::string& image_acquisition_date =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0022>(dataset);
-        image_series->setAcquisitionDate(image_acquisition_date);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0022>(dataset);
+        image_series->set_acquisition_date(image_acquisition_date);
 
         const std::string& image_acquisition_time =
-            io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0032>(dataset);
-        image_series->setAcquisitionTime(image_acquisition_time);
+            io::dicom::helper::dicom_data_reader::get_tag_value<0x0008, 0x0032>(dataset);
+        image_series->set_acquisition_time(image_acquisition_time);
     }
 }
 

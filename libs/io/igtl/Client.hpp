@@ -43,27 +43,27 @@ namespace sight::io::igtl
  *
  * @brief A Network client using igtl::ClientSocket can send fwData primitive
  */
-class IO_IGTL_CLASS_API Client : public io::igtl::network
+class IO_IGTL_CLASS_API client : public io::igtl::network
 {
 public:
 
-    typedef SPTR(Client) sptr;
+    using sptr = std::shared_ptr<client>;
 
     /**
      * @brief default constructor
      */
-    IO_IGTL_API Client();
+    IO_IGTL_API client();
 
     /**
      * @brief Constructor take a igtl::ClientSocket used only by server class.
      *        You should not use this constructor, use default constructor instead
      */
-    IO_IGTL_API Client(::igtl::ClientSocket::Pointer _socket);
+    IO_IGTL_API client(::igtl::ClientSocket::Pointer _socket);
 
     /**
      * @brief Destructor if a connection is opened the destructor close it
      */
-    IO_IGTL_API ~Client() override;
+    IO_IGTL_API ~client() override;
 
     /**
      * @brief method to connect client to a server by using hostname and port
@@ -83,7 +83,7 @@ public:
      *
      * @return a boolean to say if the client is connected or not
      */
-    [[nodiscard]] IO_IGTL_API bool isConnected() const;
+    [[nodiscard]] IO_IGTL_API bool is_connected() const;
 
 private:
 
@@ -92,7 +92,7 @@ private:
      * @param[in] msg exception message
      * @param[in] result throw the exception if result=true
      */
-    void throwExceptionIfFailed(const std::string& _msg, bool _result);
+    void throw_exception_if_failed(const std::string& _msg, bool _result);
 };
 
 } // namespace sight::io::igtl

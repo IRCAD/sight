@@ -29,31 +29,31 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::dimse::ut::IoPacsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::dimse::ut::io_pacs_test);
 
 namespace sight::module::io::dimse::ut
 {
 
 //------------------------------------------------------------------------------
 
-void IoPacsTest::setUp()
+void io_pacs_test::setUp()
 {
     // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
-void IoPacsTest::tearDown()
+void io_pacs_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void IoPacsTest::pacsConfigurationInitializer()
+void io_pacs_test::pacs_configuration_initializer()
 {
     // Pacs Configuration
-    auto pacs_configuration = std::make_shared<sight::io::dimse::data::PacsConfiguration>();
+    auto pacs_configuration = std::make_shared<sight::io::dimse::data::pacs_configuration>();
 
     // Create service
     service::base::sptr srv = service::add("sight::module::io::dimse::pacs_configuration_initializer");
@@ -82,15 +82,15 @@ void IoPacsTest::pacsConfigurationInitializer()
 
     std::uint16_t pacs_application_port = 11112U;
     std::uint16_t move_application_port = 11110U;
-    CPPUNIT_ASSERT_EQUAL(std::string("VRRender"), pacs_configuration->getLocalApplicationTitle());
-    CPPUNIT_ASSERT_EQUAL(std::string("mypacs.mycompany.com"), pacs_configuration->getPacsHostName());
-    CPPUNIT_ASSERT_EQUAL(std::string("PACSNAME"), pacs_configuration->getPacsApplicationTitle());
-    CPPUNIT_ASSERT_EQUAL(pacs_application_port, pacs_configuration->getPacsApplicationPort());
-    CPPUNIT_ASSERT_EQUAL(std::string("MoveApplicationTitle"), pacs_configuration->getMoveApplicationTitle());
-    CPPUNIT_ASSERT_EQUAL(move_application_port, pacs_configuration->getMoveApplicationPort());
+    CPPUNIT_ASSERT_EQUAL(std::string("VRRender"), pacs_configuration->get_local_application_title());
+    CPPUNIT_ASSERT_EQUAL(std::string("mypacs.mycompany.com"), pacs_configuration->get_pacs_host_name());
+    CPPUNIT_ASSERT_EQUAL(std::string("PACSNAME"), pacs_configuration->get_pacs_application_title());
+    CPPUNIT_ASSERT_EQUAL(pacs_application_port, pacs_configuration->get_pacs_application_port());
+    CPPUNIT_ASSERT_EQUAL(std::string("MoveApplicationTitle"), pacs_configuration->get_move_application_title());
+    CPPUNIT_ASSERT_EQUAL(move_application_port, pacs_configuration->get_move_application_port());
     CPPUNIT_ASSERT_EQUAL(
-        sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD,
-        pacs_configuration->getRetrieveMethod()
+        sight::io::dimse::data::pacs_configuration::retrieve_method::get,
+        pacs_configuration->get_retrieve_method()
     );
 }
 

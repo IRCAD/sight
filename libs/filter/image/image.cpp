@@ -29,7 +29,7 @@ namespace sight::filter::image
 
 //------------------------------------------------------------------------------
 
-struct RoiApplierParam
+struct roi_applier_param
 {
     data::image::sptr img;
     data::image::sptr roi;
@@ -38,12 +38,12 @@ struct RoiApplierParam
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE>
-struct RoiApplier
+struct roi_applier
 {
     //------------------------------------------------------------------------------
 
     template<typename ROI_TYPE>
-    void operator()(RoiApplierParam& _p)
+    void operator()(roi_applier_param& _p)
     {
         using img_t = IMAGE_TYPE;
         using roi_t = ROI_TYPE;
@@ -72,15 +72,15 @@ struct RoiApplier
 
 //------------------------------------------------------------------------------
 
-struct RoiApplierCaller
+struct roi_applier_caller
 {
     //------------------------------------------------------------------------------
 
     template<typename IMAGE_TYPE>
-    void operator()(RoiApplierParam& _p)
+    void operator()(roi_applier_param& _p)
     {
-        core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiApplier<IMAGE_TYPE> >::invoke(
-            _p.roi->getType(),
+        core::tools::dispatcher<core::tools::supported_dispatcher_types, roi_applier<IMAGE_TYPE> >::invoke(
+            _p.roi->type(),
             _p
         );
     }
@@ -93,23 +93,23 @@ void apply_roi(data::image::sptr _image, data::image::sptr _roi)
     SIGHT_ASSERT("Null image pointers", _image && _roi);
     SIGHT_ASSERT("images have different size", _image->size() == _roi->size());
 
-    RoiApplierParam param;
+    roi_applier_param param;
     param.img = _image;
     param.roi = _roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiApplierCaller>::invoke(
-        _image->getType(),
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, roi_applier_caller>::invoke(
+        _image->type(),
         param
     );
 }
 
 //------------------------------------------------------------------------------
 
-struct RoiTesterParam
+struct roi_tester_param
 {
     data::image::sptr img;
-    data::image::sptr imgRoiApplied;
+    data::image::sptr img_roi_applied;
     data::image::sptr roi;
     bool result {};
 };
@@ -117,12 +117,12 @@ struct RoiTesterParam
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE>
-struct RoiTester
+struct roi_tester
 {
     //------------------------------------------------------------------------------
 
     template<typename ROI_TYPE>
-    void operator()(RoiTesterParam& _p)
+    void operator()(roi_tester_param& _p)
     {
         bool& result = _p.result;
         result = true;
@@ -131,18 +131,18 @@ struct RoiTester
         using roi_t = ROI_TYPE;
 
         const auto img_dump_lock             = _p.img->dump_lock();
-        const auto img_roi_applied_dump_lock = _p.imgRoiApplied->dump_lock();
+        const auto img_roi_applied_dump_lock = _p.img_roi_applied->dump_lock();
         const auto roi_dump_lock             = _p.roi->dump_lock();
 
         SIGHT_ASSERT(
             "Null data buffers",
-            _p.img->buffer() && _p.roi->buffer() && _p.imgRoiApplied->buffer()
+            _p.img->buffer() && _p.roi->buffer() && _p.img_roi_applied->buffer()
         );
 
         auto im_it        = _p.img->begin<img_t>();
         const auto im_end = _p.img->end<img_t>();
         auto roi_it       = _p.roi->begin<roi_t>();
-        auto im_roi_it    = _p.imgRoiApplied->begin<img_t>();
+        auto im_roi_it    = _p.img_roi_applied->begin<img_t>();
 
         for( ; result && im_it != im_end ; ++im_it, ++roi_it, ++im_roi_it)
         {
@@ -153,15 +153,15 @@ struct RoiTester
 
 //------------------------------------------------------------------------------
 
-struct RoiTesterCaller
+struct roi_tester_caller
 {
     //------------------------------------------------------------------------------
 
     template<typename IMAGE_TYPE>
-    void operator()(RoiTesterParam& _p)
+    void operator()(roi_tester_param& _p)
     {
-        core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiTester<IMAGE_TYPE> >::invoke(
-            _p.roi->getType(),
+        core::tools::dispatcher<core::tools::supported_dispatcher_types, roi_tester<IMAGE_TYPE> >::invoke(
+            _p.roi->type(),
             _p
         );
     }
@@ -177,14 +177,14 @@ bool is_roi_applied(data::image::sptr _image, data::image::sptr _roi, data::imag
         _image->size() == _img_roi_applied->size() && _image->size() == _roi->size()
     );
 
-    RoiTesterParam param;
-    param.img           = _image;
-    param.imgRoiApplied = _img_roi_applied;
-    param.roi           = _roi;
+    roi_tester_param param;
+    param.img             = _image;
+    param.img_roi_applied = _img_roi_applied;
+    param.roi             = _roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiTesterCaller>::invoke(
-        _image->getType(),
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, roi_tester_caller>::invoke(
+        _image->type(),
         param
     );
 

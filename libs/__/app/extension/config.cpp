@@ -35,9 +35,9 @@
 namespace sight::app::extension
 {
 
-std::string config::s_mandatoryParameterIdentifier = "@mandatory@";
+std::string config::s_mandatory_parameter_identifier = "@mandatory@";
 
-config::uid_definition_t config::s_uidDefinitionDictionary = {{"object", "uid"},
+config::uid_definition_t config::s_uid_definition_dictionary = {{"object", "uid"},
     {"service", "uid"},
     {"view", "sid"},
     {"view", "wid"},
@@ -47,11 +47,11 @@ config::uid_definition_t config::s_uidDefinitionDictionary = {{"object", "uid"},
     {"menuItem", "sid"},
     {"channel", "uid"},
 };
-static const std::regex s_isVariable(R"(\$\{.*\}.*)");
+static const std::regex IS_VARIABLE(R"(\$\{.*\}.*)");
 
 //-----------------------------------------------------------------------------
 
-config::sptr config::getDefault()
+config::sptr config::get_default()
 {
     static config::sptr s_current_app_config = std::make_shared<config>();
     return s_current_app_config;
@@ -77,7 +77,7 @@ void config::parse_plugin_infos()
             for(const auto& param : boost::make_iterator_range(parameters_cfg->equal_range("param")))
             {
                 const auto name = param.second.get<std::string>("<xmlattr>.name");
-                parameters[name] = param.second.get<std::string>("<xmlattr>.default", s_mandatoryParameterIdentifier);
+                parameters[name] = param.second.get<std::string>("<xmlattr>.default", s_mandatory_parameter_identifier);
             }
         }
 
@@ -104,7 +104,7 @@ void config::addapp_info(
     const std::string& _module_id
 )
 {
-    core::mt::write_lock lock(m_registryMutex);
+    core::mt::write_lock lock(m_registry_mutex);
 
     SIGHT_DEBUG("New app config registering : configId = " + _config_id);
     SIGHT_ASSERT(
@@ -117,7 +117,7 @@ void config::addapp_info(
     info->desc        = _desc;
     info->config      = _config;
     info->parameters  = _parameters;
-    info->moduleId    = _module_id;
+    info->module_id   = _module_id;
     m_reg[_config_id] = info;
 }
 
@@ -130,19 +130,19 @@ config::config()
 
 void config::clear_registry()
 {
-    core::mt::write_lock lock(m_registryMutex);
+    core::mt::write_lock lock(m_registry_mutex);
     m_reg.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-core::runtime::config_t config::getAdaptedTemplateConfig(
+core::runtime::config_t config::get_adapted_template_config(
     const std::string& _config_id,
     const field_adaptor_t _field_adaptors,
     bool _auto_prefix_id
 ) const
 {
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     // Get config template
     auto iter = m_reg.find(_config_id);
     SIGHT_ASSERT(
@@ -156,7 +156,7 @@ core::runtime::config_t config::getAdaptedTemplateConfig(
     field_adaptor_t fields;
     app_info::parameters_t parameters = iter->second->parameters;
 
-    for(const app_info::parameters_t::value_type& param : parameters)
+    for(const auto& param : parameters)
     {
         auto iter_field       = _field_adaptors.find(param.first);
         const std::string key = "\\$\\{" + param.first + "\\}";
@@ -164,7 +164,7 @@ core::runtime::config_t config::getAdaptedTemplateConfig(
         {
             fields[key] = iter_field->second;
         }
-        else if(param.second != s_mandatoryParameterIdentifier)
+        else if(param.second != s_mandatory_parameter_identifier)
         {
             fields[key] = param.second;
         }
@@ -180,16 +180,16 @@ core::runtime::config_t config::getAdaptedTemplateConfig(
     std::string auto_prefix_name;
     if(_auto_prefix_id)
     {
-        auto_prefix_name = sight::app::extension::config::getUniqueIdentifier(_config_id);
+        auto_prefix_name = sight::app::extension::config::get_unique_identifier(_config_id);
     }
 
     uid_parameter_replace_t parameter_replace_adaptors;
-    sight::app::extension::config::collectUIDForParameterReplace(
+    sight::app::extension::config::collect_uid_for_parameter_replace(
         "config",
         iter->second->config,
         parameter_replace_adaptors
     );
-    new_config = sight::app::extension::config::adaptConfig(
+    new_config = sight::app::extension::config::adapt_config(
         iter->second->config,
         fields,
         parameter_replace_adaptors,
@@ -201,15 +201,15 @@ core::runtime::config_t config::getAdaptedTemplateConfig(
 
 //-----------------------------------------------------------------------------
 
-core::runtime::config_t config::getAdaptedTemplateConfig(
+core::runtime::config_t config::get_adapted_template_config(
     const std::string& _config_id,
     data::composite::csptr _replace_fields,
     bool _auto_prefix_id
 )
 const
 {
-    field_adaptor_t field_adaptors = compositeToFieldAdaptor(_replace_fields);
-    return this->getAdaptedTemplateConfig(_config_id, field_adaptors, _auto_prefix_id);
+    field_adaptor_t field_adaptors = composite_to_field_adaptor(_replace_fields);
+    return this->get_adapted_template_config(_config_id, field_adaptors, _auto_prefix_id);
 }
 
 //-----------------------------------------------------------------------------
@@ -222,18 +222,18 @@ std::shared_ptr<core::runtime::module> config::get_module(const std::string& _co
         iter != m_reg.end()
     );
 
-    auto module = core::runtime::find_module(iter->second->moduleId);
+    auto module = core::runtime::find_module(iter->second->module_id);
 
     return module;
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> config::getAllConfigs() const
+std::vector<std::string> config::get_all_configs() const
 {
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     std::vector<std::string> ids;
-    for(const Registry::value_type& elem : m_reg)
+    for(const auto& elem : m_reg)
     {
         ids.push_back(elem.first);
     }
@@ -243,11 +243,11 @@ std::vector<std::string> config::getAllConfigs() const
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> config::getConfigsFromGroup(const std::string& _group) const
+std::vector<std::string> config::get_configs_from_group(const std::string& _group) const
 {
-    core::mt::read_lock lock(m_registryMutex);
+    core::mt::read_lock lock(m_registry_mutex);
     std::vector<std::string> ids;
-    for(const Registry::value_type& elem : m_reg)
+    for(const auto& elem : m_reg)
     {
         app_info::sptr info = elem.second;
         if(info->group == _group)
@@ -261,10 +261,10 @@ std::vector<std::string> config::getConfigsFromGroup(const std::string& _group) 
 
 //-----------------------------------------------------------------------------
 
-field_adaptor_t config::compositeToFieldAdaptor(data::composite::csptr _field_adaptors)
+field_adaptor_t config::composite_to_field_adaptor(data::composite::csptr _field_adaptors)
 {
     field_adaptor_t fields;
-    for(const data::composite::value_type& elem : *_field_adaptors)
+    for(const auto& elem : *_field_adaptors)
     {
         fields[elem.first] = std::dynamic_pointer_cast<data::string>(elem.second)->value();
     }
@@ -274,7 +274,7 @@ field_adaptor_t config::compositeToFieldAdaptor(data::composite::csptr _field_ad
 
 //-----------------------------------------------------------------------------
 
-std::string config::getUniqueIdentifier(const std::string& _service_uid)
+std::string config::get_unique_identifier(const std::string& _service_uid)
 {
     static core::mt::mutex s_id_mutex;
     core::mt::scoped_lock lock(s_id_mutex);
@@ -297,7 +297,7 @@ std::string config::getUniqueIdentifier(const std::string& _service_uid)
 
 //-----------------------------------------------------------------------------
 
-void config::collectUIDForParameterReplace(
+void config::collect_uid_for_parameter_replace(
     const std::string& _name,
     const core::runtime::config_t& _cfg_elem,
     uid_parameter_replace_t& _replace_map
@@ -309,12 +309,12 @@ void config::collectUIDForParameterReplace(
     {
         for(const auto& attribute : *attributes)
         {
-            auto range = s_uidDefinitionDictionary.equal_range(_name);
+            auto range = s_uid_definition_dictionary.equal_range(_name);
 
             for(auto it = range.first ; it != range.second ; ++it)
             {
                 const auto attr_value = attribute.second.get_value<std::string>();
-                if(it->second == attribute.first && !std::regex_match(attr_value, s_isVariable))
+                if(it->second == attribute.first && !std::regex_match(attr_value, IS_VARIABLE))
                 {
                     _replace_map.insert(attr_value);
                 }
@@ -332,13 +332,13 @@ void config::collectUIDForParameterReplace(
             _replace_map.insert(tokens[0]);
         }
 
-        collectUIDForParameterReplace(sub_elem.first, sub_elem.second, _replace_map);
+        collect_uid_for_parameter_replace(sub_elem.first, sub_elem.second, _replace_map);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-core::runtime::config_t config::adaptConfig(
+core::runtime::config_t config::adapt_config(
     const core::runtime::config_t& _cfg_elem,
     const field_adaptor_t& _field_adaptors,
     const uid_parameter_replace_t& _uid_parameter_replace,
@@ -346,7 +346,7 @@ core::runtime::config_t config::adaptConfig(
 )
 {
     core::runtime::config_t result;
-    result.put_value<std::string>(adaptField(_cfg_elem.get_value<std::string>(), _field_adaptors));
+    result.put_value<std::string>(adapt_field(_cfg_elem.get_value<std::string>(), _field_adaptors));
 
     const auto& attributes = _cfg_elem.get_child_optional("<xmlattr>");
 
@@ -365,12 +365,12 @@ core::runtime::config_t config::adaptConfig(
                    || attribute.first == "channel")
                 {
                     // Detect if we have a variable name
-                    if(!std::regex_match(attribute_value, s_isVariable))
+                    if(!std::regex_match(attribute_value, IS_VARIABLE))
                     {
                         // This is not a variable, add the prefix
                         result.put(
                             "<xmlattr>." + attribute.first,
-                            _auto_prefix_id + "_" + adaptField(attribute_value, _field_adaptors)
+                            _auto_prefix_id + "_" + adapt_field(attribute_value, _field_adaptors)
                         );
                         continue;
                     }
@@ -379,7 +379,7 @@ core::runtime::config_t config::adaptConfig(
                 else if(attribute.first == "by")
                 {
                     // Detect if we have a variable name
-                    if(!std::regex_match(attribute_value, s_isVariable))
+                    if(!std::regex_match(attribute_value, IS_VARIABLE))
                     {
                         // Look inside the map of potential replacements
                         auto it_param = _uid_parameter_replace.find(attribute_value);
@@ -388,7 +388,7 @@ core::runtime::config_t config::adaptConfig(
                             result.put(
                                 "<xmlattr>." + attribute.first,
                                 _auto_prefix_id + "_"
-                                + adaptField(attribute_value, _field_adaptors)
+                                + adapt_field(attribute_value, _field_adaptors)
                             );
                             continue;
                         }
@@ -396,7 +396,7 @@ core::runtime::config_t config::adaptConfig(
                 }
             }
 
-            result.put("<xmlattr>." + attribute.first, adaptField(attribute_value, _field_adaptors));
+            result.put("<xmlattr>." + attribute.first, adapt_field(attribute_value, _field_adaptors));
         }
     }
 
@@ -406,7 +406,7 @@ core::runtime::config_t config::adaptConfig(
         if(!_auto_prefix_id.empty() && (sub_elem.first == "signal" || sub_elem.first == "slot"))
         {
             // Detect if we have a variable name
-            if(!std::regex_match(sub_elem.second.get_value<std::string>(), s_isVariable))
+            if(!std::regex_match(sub_elem.second.get_value<std::string>(), IS_VARIABLE))
             {
                 // This is not a variable, add the prefix
                 core::runtime::config_t elt;
@@ -429,7 +429,7 @@ core::runtime::config_t config::adaptConfig(
 
         result.add_child(
             sub_elem.first,
-            adaptConfig(sub_elem.second, _field_adaptors, _uid_parameter_replace, _auto_prefix_id)
+            adapt_config(sub_elem.second, _field_adaptors, _uid_parameter_replace, _auto_prefix_id)
         );
     }
 
@@ -438,7 +438,7 @@ core::runtime::config_t config::adaptConfig(
 
 //-----------------------------------------------------------------------------
 
-std::string config::adaptField(const std::string& _str, const field_adaptor_t& _variables_map)
+std::string config::adapt_field(const std::string& _str, const field_adaptor_t& _variables_map)
 {
     std::string new_str = _str;
     if(!_str.empty())
@@ -446,7 +446,7 @@ std::string config::adaptField(const std::string& _str, const field_adaptor_t& _
         // Discriminate first variable expressions only, looking through all keys of the replace map is not for free
         // However we look inside the whole string instead of only at the beginning because we want  to replace "inner"
         // variables as well, i.e. not only ${uid} but also uid${suffix}
-        if(std::regex_search(_str, s_isVariable))
+        if(std::regex_search(_str, IS_VARIABLE))
         {
             // Iterate over all variables
             for(const auto& field_adaptor : _variables_map)

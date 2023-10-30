@@ -37,7 +37,7 @@ namespace sight::io::dimse::helper
 
 //------------------------------------------------------------------------------
 
-void series::releaseResponses(OFList<QRResponse*> _responses)
+void series::release_responses(OFList<QRResponse*> _responses)
 {
     while(!_responses.empty())
     {
@@ -48,7 +48,7 @@ void series::releaseResponses(OFList<QRResponse*> _responses)
 
 // ----------------------------------------------------------------------------
 
-series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
+series::DicomSeriesContainer series::to_fw_med_data(OFList<QRResponse*> _responses)
 {
     DicomSeriesContainer series_container;
 
@@ -66,57 +66,57 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
             // series
             if(response->m_dataset->findAndGetOFStringArray(DCM_Modality, data).good() && !data.empty())
             {
-                series->setModality(data.c_str());
+                series->set_modality(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data).good() && !data.empty())
             {
-                series->setSeriesInstanceUID(data.c_str());
+                series->set_series_instance_uid(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_SeriesNumber, data).good() && !data.empty())
             {
-                series->setSeriesNumber(std::stoi(data.c_str()));
+                series->set_series_number(std::stoi(data.c_str()));
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_Laterality, data).good() && !data.empty())
             {
-                series->setLaterality(data.c_str());
+                series->set_laterality(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, data).good() && !data.empty())
             {
-                series->setSeriesDate(data.c_str());
+                series->set_series_date(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_SeriesTime, data).good() && !data.empty())
             {
-                series->setSeriesTime(data.c_str());
+                series->set_series_time(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PerformingPhysicianName, data).good() && !data.empty())
             {
-                series->setPerformingPhysicianName(data.c_str());
+                series->set_performing_physician_name(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_ProtocolName, data).good() && !data.empty())
             {
-                series->setProtocolName(data.c_str());
+                series->set_protocol_name(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, data).good() && !data.empty())
             {
-                series->setSeriesDescription(data.c_str());
+                series->set_series_description(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_BodyPartExamined, data).good() && !data.empty())
             {
-                series->setBodyPartExamined(data.c_str());
+                series->set_body_part_examined(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientPosition, data).good() && !data.empty())
             {
-                series->setPatientPosition(data.c_str());
+                series->set_patient_position(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(
@@ -132,7 +132,7 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
                    data
             ).good() && !data.empty())
             {
-                series->setPerformedProcedureStepID(data.c_str());
+                series->set_performed_procedure_step_id(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(
@@ -140,7 +140,7 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
                    data
             ).good() && !data.empty())
             {
-                series->setPerformedProcedureStepStartDate(data.c_str());
+                series->set_performed_procedure_step_start_date(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(
@@ -148,7 +148,7 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
                    data
             ).good() && !data.empty())
             {
-                series->setPerformedProcedureStepStartTime(data.c_str());
+                series->set_performed_procedure_step_start_time(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(
@@ -156,7 +156,7 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
                    data
             ).good() && !data.empty())
             {
-                series->setPerformedProcedureStepEndDate(data.c_str());
+                series->set_performed_procedure_step_end_date(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(
@@ -164,7 +164,7 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
                    data
             ).good() && !data.empty())
             {
-                series->setPerformedProcedureStepEndTime(data.c_str());
+                series->set_performed_procedure_step_end_time(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(
@@ -172,7 +172,7 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
                    data
             ).good() && !data.empty())
             {
-                series->setPerformedProcedureStepDescription(data.c_str());
+                series->set_performed_procedure_step_description(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(
@@ -180,80 +180,80 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
                    data
             ).good() && !data.empty())
             {
-                series->setCommentsOnThePerformedProcedureStep(data.c_str());
+                series->set_comments_on_the_performed_procedure_step(data.c_str());
             }
 
             // Study
             if(response->m_dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data).good() && !data.empty())
             {
-                series->setStudyInstanceUID(data.c_str());
+                series->set_study_instance_uid(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_StudyID, data).good() && !data.empty())
             {
-                series->setStudyID(data.c_str());
+                series->set_study_id(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_StudyDate, data).good() && !data.empty())
             {
-                series->setStudyDate(data.c_str());
+                series->set_study_date(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_StudyTime, data).good() && !data.empty())
             {
-                series->setStudyTime(data.c_str());
+                series->set_study_time(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data).good() && !data.empty())
             {
-                series->setReferringPhysicianName(data.c_str());
+                series->set_referring_physician_name(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_StudyDescription, data).good() && !data.empty())
             {
-                series->setStudyDescription(data.c_str());
+                series->set_study_description(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientAge, data).good() && !data.empty())
             {
-                series->setPatientAge(data.c_str());
+                series->set_patient_age(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientSize, data).good() && !data.empty())
             {
-                series->setPatientSize(std::stod(data.c_str()));
+                series->set_patient_size(std::stod(data.c_str()));
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientWeight, data).good() && !data.empty())
             {
-                series->setPatientWeight(std::stod(data.c_str()));
+                series->set_patient_weight(std::stod(data.c_str()));
             }
 
             // Patient
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientName, data).good() && !data.empty())
             {
-                series->setPatientName(data.c_str());
+                series->set_patient_name(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientID, data).good() && !data.empty())
             {
-                series->setPatientID(data.c_str());
+                series->set_patient_id(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, data).good() && !data.empty())
             {
-                series->setPatientBirthDate(data.c_str());
+                series->set_patient_birth_date(data.c_str());
             }
 
             if(response->m_dataset->findAndGetOFStringArray(DCM_PatientSex, data).good() && !data.empty())
             {
-                series->setPatientSex(data.c_str());
+                series->set_patient_sex(data.c_str());
             }
 
             // Equipment
             if(response->m_dataset->findAndGetOFStringArray(DCM_InstitutionName, data).good() && !data.empty())
             {
-                series->setInstitutionName(data.c_str());
+                series->set_institution_name(data.c_str());
             }
 
             // Number of instances
@@ -261,7 +261,7 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
             long nb_instances = 0;
             if(response->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances).good())
             {
-                series->setNumberOfInstances(std::size_t(nb_instances));
+                series->set_number_of_instances(std::size_t(nb_instances));
             }
 
             // Add series to container
@@ -274,13 +274,13 @@ series::DicomSeriesContainer series::toFwMedData(OFList<QRResponse*> _responses)
 
 // ----------------------------------------------------------------------------
 
-series::InstanceUIDContainer series::toSeriesInstanceUIDContainer(DicomSeriesContainer _series)
+series::InstanceUIDContainer series::to_series_instance_uid_container(DicomSeriesContainer _series)
 {
     InstanceUIDContainer result;
 
     for(const auto& s : _series)
     {
-        result.emplace_back(s->getSeriesInstanceUID());
+        result.emplace_back(s->get_series_instance_uid());
     }
 
     return result;
@@ -288,7 +288,7 @@ series::InstanceUIDContainer series::toSeriesInstanceUIDContainer(DicomSeriesCon
 
 // ----------------------------------------------------------------------------
 
-series::InstanceUIDContainer series::toSeriesInstanceUIDContainer(OFList<QRResponse*> _responses)
+series::InstanceUIDContainer series::to_series_instance_uid_container(OFList<QRResponse*> _responses)
 {
     InstanceUIDContainer instance_uid_container;
 
@@ -312,7 +312,7 @@ series::InstanceUIDContainer series::toSeriesInstanceUIDContainer(OFList<QRRespo
             {
                 const std::string msg = "There is no \"SeriersInstanceUID\" tag in the selected series :"
                                         + std::string(result.text());
-                throw io::dimse::exceptions::TagMissing(msg);
+                throw io::dimse::exceptions::tag_missing(msg);
             }
         }
     }

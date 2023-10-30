@@ -51,8 +51,8 @@ public:
 
 public Q_SLOTS:
 
-    void executeQt(bool _checked = false);
-    void checkQt(bool _checked);
+    void execute_qt(bool _checked = false);
+    void check_qt(bool _checked);
 };
 
 } // namespace sight::ui::qt

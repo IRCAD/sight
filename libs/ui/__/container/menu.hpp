@@ -37,8 +37,8 @@ public:
 
     SIGHT_DECLARE_CLASS(menu, ui::object);
 
-    UI_API virtual void clean()            = 0;
-    UI_API virtual void destroyContainer() = 0;
+    UI_API virtual void clean()             = 0;
+    UI_API virtual void destroy_container() = 0;
 };
 
 } // namespace sight::ui::container

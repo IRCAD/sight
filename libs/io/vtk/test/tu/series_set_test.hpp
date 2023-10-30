@@ -39,7 +39,7 @@ namespace ut
 class series_set_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(series_set_test);
-CPPUNIT_TEST(testImportSeriesSet);
+CPPUNIT_TEST(test_import_series_set);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,7 +48,7 @@ public:
     void setUp();
     void tearDown();
 
-    static void testImportSeriesSet();
+    static void test_import_series_set();
 };
 
 } // namespace ut

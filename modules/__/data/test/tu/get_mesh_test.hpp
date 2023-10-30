@@ -32,13 +32,13 @@ namespace sight::module::data::ut
 class get_mesh_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(get_mesh_test);
-CPPUNIT_TEST(extractsMeshByIndex);
-CPPUNIT_TEST(extractsMeshWithIndexOutOfBound);
-CPPUNIT_TEST(extractsMeshByType);
-CPPUNIT_TEST(extractsMeshByTypeNotFound);
-CPPUNIT_TEST(extractsMeshByNameNotFound);
-CPPUNIT_TEST(extractsWithInvalidModelsSeries);
-CPPUNIT_TEST(extractsWithMeshTypeAndIndex);
+CPPUNIT_TEST(extracts_mesh_by_index);
+CPPUNIT_TEST(extracts_mesh_with_index_out_of_bound);
+CPPUNIT_TEST(extracts_mesh_by_type);
+CPPUNIT_TEST(extracts_mesh_by_type_not_found);
+CPPUNIT_TEST(extracts_mesh_by_name_not_found);
+CPPUNIT_TEST(extracts_with_invalid_models_series);
+CPPUNIT_TEST(extracts_with_mesh_type_and_index);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,13 +47,13 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void extractsMeshByIndex();
-    static void extractsMeshByType();
-    static void extractsMeshByTypeNotFound();
-    static void extractsMeshByNameNotFound();
-    static void extractsWithInvalidModelsSeries();
-    static void extractsMeshWithIndexOutOfBound();
-    static void extractsWithMeshTypeAndIndex();
+    static void extracts_mesh_by_index();
+    static void extracts_mesh_by_type();
+    static void extracts_mesh_by_type_not_found();
+    static void extracts_mesh_by_name_not_found();
+    static void extracts_with_invalid_models_series();
+    static void extracts_mesh_with_index_out_of_bound();
+    static void extracts_with_mesh_type_and_index();
 };
 
 } // namespace sight::module::data::ut

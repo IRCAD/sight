@@ -31,15 +31,15 @@ namespace sight::io::opencv::ut
 
 //------------------------------------------------------------------------------
 
-using CvFormatValue = const std::array<std::int32_t, 4>;
+using cv_format_value_t = const std::array<std::int32_t, 4>;
 
-CvFormatValue getCvFormat<std::uint8_t>::type {CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4};
-CvFormatValue getCvFormat<std::int8_t>::type {CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4};
-CvFormatValue getCvFormat<std::uint16_t>::type {CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4};
-CvFormatValue getCvFormat<std::int16_t>::type {CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4};
-CvFormatValue getCvFormat<std::int32_t>::type {CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4};
-CvFormatValue getCvFormat<float>::type {CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4};
-CvFormatValue getCvFormat<double>::type {CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4};
+cv_format_value_t getCvFormat<std::uint8_t>::type {CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4};
+cv_format_value_t getCvFormat<std::int8_t>::type {CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4};
+cv_format_value_t getCvFormat<std::uint16_t>::type {CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4};
+cv_format_value_t getCvFormat<std::int16_t>::type {CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4};
+cv_format_value_t getCvFormat<std::int32_t>::type {CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4};
+cv_format_value_t getCvFormat<float>::type {CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4};
+cv_format_value_t getCvFormat<double>::type {CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4};
 
 //------------------------------------------------------------------------------
 

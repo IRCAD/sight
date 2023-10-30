@@ -44,9 +44,9 @@ namespace sight::ui::qt::dialog
 
 core::location::base::sptr location::show()
 {
-    const QString& caption = QString::fromStdString(this->getTitle());
-    const QString& path    = QString::fromStdString(this->getDefaultLocation()->to_string());
-    const QString& filter  = this->fileFilters();
+    const QString& caption = QString::fromStdString(this->get_title());
+    const QString& path    = QString::fromStdString(this->get_default_location()->to_string());
+    const QString& filter  = this->file_filters();
     core::location::base::sptr location;
 
     QFileDialog dialog;
@@ -55,7 +55,7 @@ core::location::base::sptr location::show()
     dialog.setWindowTitle(caption);
     dialog.setOption(QFileDialog::Option::DontUseNativeDialog, !qgetenv("GUI_TESTS_ARE_RUNNING").isEmpty());
 
-    if(((m_style& ui::dialog::location::READ) != 0) || m_type == ui::dialog::location::FOLDER)
+    if(((m_style& ui::dialog::location::read) != 0) || m_type == ui::dialog::location::folder)
     {
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
     }
@@ -64,15 +64,15 @@ core::location::base::sptr location::show()
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
     }
 
-    if(m_type == ui::dialog::location::SINGLE_FILE
-       || m_type == ui::dialog::location::MULTI_FILES)
+    if(m_type == ui::dialog::location::single_file
+       || m_type == ui::dialog::location::multi_files)
     {
         dialog.setFilter(QDir::Filter::Files);
 
-        if(((m_style& ui::dialog::location::READ) != 0)
-           || ((m_style& ui::dialog::location::FILE_MUST_EXIST) != 0))
+        if(((m_style& ui::dialog::location::read) != 0)
+           || ((m_style& ui::dialog::location::file_must_exist) != 0))
         {
-            if(m_type == ui::dialog::location::SINGLE_FILE)
+            if(m_type == ui::dialog::location::single_file)
             {
                 dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
             }
@@ -86,7 +86,7 @@ core::location::base::sptr location::show()
             dialog.setFileMode(QFileDialog::FileMode::AnyFile);
         }
     }
-    else if(m_type == ui::dialog::location::FOLDER)
+    else if(m_type == ui::dialog::location::folder)
     {
         dialog.setFilter(QDir::Filter::Dirs);
         dialog.setFileMode(QFileDialog::FileMode::Directory);
@@ -100,14 +100,14 @@ core::location::base::sptr location::show()
         {
             m_wildcard = dialog.selectedNameFilter().toStdString();
 
-            if(m_type == ui::dialog::location::SINGLE_FILE)
+            if(m_type == ui::dialog::location::single_file)
             {
                 const auto& selected_file = selected_files.constFirst();
                 auto file                 = std::make_shared<core::location::single_file>();
                 file->set_file(selected_file.toStdString());
                 location = file;
             }
-            else if(m_type == ui::dialog::location::MULTI_FILES)
+            else if(m_type == ui::dialog::location::multi_files)
             {
                 std::vector<std::filesystem::path> paths;
                 paths.reserve(size_t(selected_files.size()));
@@ -120,7 +120,7 @@ core::location::base::sptr location::show()
                 multifiles->set_files(paths);
                 location = multifiles;
             }
-            else if(m_type == ui::dialog::location::FOLDER)
+            else if(m_type == ui::dialog::location::folder)
             {
                 const auto& selected_directory = selected_files.constFirst();
                 auto folder                    = std::make_shared<core::location::single_folder>();
@@ -135,35 +135,35 @@ core::location::base::sptr location::show()
 
 //------------------------------------------------------------------------------
 
-void location::setType(location::Types _type)
+void location::set_type(location::types _type)
 {
     m_type = _type;
 }
 
 //------------------------------------------------------------------------------
 
-void location::setOption(location::Options _option)
+void location::set_option(location::options _option)
 {
-    if(_option == location::WRITE)
+    if(_option == location::write)
     {
-        m_style = static_cast<location::Options>(m_style & ~location::READ);
-        m_style = static_cast<location::Options>(m_style | location::WRITE);
+        m_style = static_cast<location::options>(m_style & ~location::read);
+        m_style = static_cast<location::options>(m_style | location::write);
     }
-    else if(_option == location::READ)
+    else if(_option == location::read)
     {
-        m_style = static_cast<location::Options>(m_style & ~location::WRITE);
-        m_style = static_cast<location::Options>(m_style | location::READ);
+        m_style = static_cast<location::options>(m_style & ~location::write);
+        m_style = static_cast<location::options>(m_style | location::read);
     }
-    else if(_option == location::FILE_MUST_EXIST)
+    else if(_option == location::file_must_exist)
     {
-        m_style = static_cast<location::Options>(m_style | location::FILE_MUST_EXIST);
+        m_style = static_cast<location::options>(m_style | location::file_must_exist);
     }
 }
 
 //------------------------------------------------------------------------------
 
 // example ( addFilter("images","*.png *.jpg");
-void location::addFilter(const std::string& _filter_name, const std::string& _wildcard_list)
+void location::add_filter(const std::string& _filter_name, const std::string& _wildcard_list)
 {
     m_filters.emplace_back(_filter_name, _wildcard_list);
 }
@@ -171,7 +171,7 @@ void location::addFilter(const std::string& _filter_name, const std::string& _wi
 //------------------------------------------------------------------------------
 
 // "BMP and GIF files (*.bmp *.gif)|*.bmp *.gif|PNG files (*.png)|*.png"
-QString location::fileFilters()
+QString location::file_filters()
 {
     std::string result;
     for(auto iter = m_filters.begin() ; iter != m_filters.end() ; ++iter)
@@ -192,7 +192,7 @@ QString location::fileFilters()
 
 //------------------------------------------------------------------------------
 
-std::string location::getCurrentSelection() const
+std::string location::get_current_selection() const
 {
     for(auto&& [filterName, rawWildcards] : m_filters)
     {

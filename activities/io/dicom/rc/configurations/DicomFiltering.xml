@@ -24,18 +24,18 @@
                     <view align="bottom"/>
                     <view align="right" minWidth="350" />
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="true" />
+                <toolbar sid="toolbar" start="true" />
                 <view sid="centerView" start="true" />
                 <view sid="bottomView" start="true" />
                 <view sid="rightView" start="true" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::tool_bar" >
+        <service uid="toolbar" type="sight::module::ui::toolbar" >
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="sight::module::ui::icons/Import.svg" />

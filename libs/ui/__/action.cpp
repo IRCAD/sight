@@ -56,20 +56,20 @@ const core::com::signals::key_t action::IS_VISIBLE_SIG = "isVisible";
 
 action::action()
 {
-    new_slot(SET_CHECKED_SLOT, &action::setChecked, this);
-    new_slot(CHECK_SLOT, [this](){this->setChecked(true);});
-    new_slot(UNCHECK_SLOT, [this](){this->setChecked(false);});
+    new_slot(SET_CHECKED_SLOT, &action::set_checked, this);
+    new_slot(CHECK_SLOT, [this](){this->set_checked(true);});
+    new_slot(UNCHECK_SLOT, [this](){this->set_checked(false);});
 
-    new_slot(SET_ENABLED_SLOT, &action::setEnabled, this);
-    new_slot(SET_DISABLED_SLOT, [this](bool _disabled){this->setEnabled(!_disabled);});
-    new_slot(ENABLE_SLOT, [this](){this->setEnabled(true);});
-    new_slot(DISABLE_SLOT, [this](){this->setEnabled(false);});
+    new_slot(SET_ENABLED_SLOT, &action::set_enabled, this);
+    new_slot(SET_DISABLED_SLOT, [this](bool _disabled){this->set_enabled(!_disabled);});
+    new_slot(ENABLE_SLOT, [this](){this->set_enabled(true);});
+    new_slot(DISABLE_SLOT, [this](){this->set_enabled(false);});
 
-    new_slot(SET_VISIBLE_SLOT, &action::setVisible, this);
-    new_slot(SET_HIDDEN_SLOT, [this](bool _hidden){this->setVisible(!_hidden);});
-    new_slot(SHOW_SLOT, [this](){this->setVisible(true);});
-    new_slot(HIDE_SLOT, [this](){this->setVisible(false);});
-    new_slot(TOGGLE_VISIBILITY_SLOT, [this]{this->setVisible(!m_visible);});
+    new_slot(SET_VISIBLE_SLOT, &action::set_visible, this);
+    new_slot(SET_HIDDEN_SLOT, [this](bool _hidden){this->set_visible(!_hidden);});
+    new_slot(SHOW_SLOT, [this](){this->set_visible(true);});
+    new_slot(HIDE_SLOT, [this](){this->set_visible(false);});
+    new_slot(TOGGLE_VISIBILITY_SLOT, [this]{this->set_visible(!m_visible);});
 
     new_signal<bool_signal_t>(IS_ENABLED_SIG);
     new_signal<void_signal_t>(ENABLED_SIG);
@@ -99,35 +99,36 @@ void action::initialize()
     m_inverted = core::runtime::get_ptree_value(config, "state.<xmlattr>.inverse", m_inverted);
     m_visible  = core::runtime::get_ptree_value(config, "state.<xmlattr>.visible", m_visible);
 
-    m_confirmAction  = config.get_child_optional("confirmation").has_value();
-    m_confirmMessage = config.get<std::string>("confirmation.<xmlattr>.message", "");
-    m_defaultButton  = core::runtime::get_ptree_value(config, "confirmation.<xmlattr>.defaultButton", m_defaultButton);
+    m_confirm_action  = config.get_child_optional("confirmation").has_value();
+    m_confirm_message = config.get<std::string>("confirmation.<xmlattr>.message", "");
+    m_default_button  =
+        core::runtime::get_ptree_value(config, "confirmation.<xmlattr>.defaultButton", m_default_button);
 }
 
 //-----------------------------------------------------------------------------
 
-void action::actionServiceStopping()
+void action::action_service_stopping()
 {
-    this->m_registry->actionServiceStopping();
+    this->m_registry->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------
 
-void action::actionServiceStarting()
+void action::action_service_starting()
 {
-    this->m_registry->actionServiceStarting();
-    this->setChecked(m_checked);
+    this->m_registry->action_service_starting();
+    this->set_checked(m_checked);
 }
 
 //-----------------------------------------------------------------------------
 
-void action::setChecked(bool _checked)
+void action::set_checked(bool _checked)
 {
     m_checked = _checked;
 
-    if(this->confirmAction())
+    if(this->confirm_action())
     {
-        this->m_registry->actionServiceSetChecked(m_checked);
+        this->m_registry->action_service_set_checked(m_checked);
         if(m_checked)
         {
             auto sig = this->signal<void_signal_t>(CHECKED_SIG);
@@ -153,11 +154,11 @@ bool action::checked() const
 
 //-----------------------------------------------------------------------------
 
-void action::setEnabled(bool _enabled)
+void action::set_enabled(bool _enabled)
 {
     m_enabled = _enabled;
 
-    this->m_registry->actionServiceSetEnabled(m_enabled);
+    this->m_registry->action_service_set_enabled(m_enabled);
     if(m_enabled)
     {
         auto sig = this->signal<void_signal_t>(ENABLED_SIG);
@@ -182,10 +183,10 @@ bool action::enabled() const
 
 //-----------------------------------------------------------------------------
 
-void action::setVisible(bool _visible)
+void action::set_visible(bool _visible)
 {
     m_visible = _visible;
-    this->m_registry->actionServiceSetVisible(_visible);
+    this->m_registry->action_service_set_visible(_visible);
     signal<bool_signal_t>(IS_VISIBLE_SIG)->async_emit(_visible);
 }
 
@@ -193,14 +194,14 @@ void action::setVisible(bool _visible)
 
 void action::show()
 {
-    this->setVisible(true);
+    this->set_visible(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void action::hide()
 {
-    this->setVisible(false);
+    this->set_visible(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -219,36 +220,36 @@ bool action::inverted() const
 
 //-----------------------------------------------------------------------------
 
-bool action::confirmAction()
+bool action::confirm_action()
 {
     bool action_is_confirmed = true;
 
-    if(m_confirmAction && this->status() == base::STARTED)
+    if(m_confirm_action && this->status() == base::global_status::started)
     {
         ui::dialog::message dialog;
-        dialog.setTitle("Confirmation");
-        std::string message = m_confirmMessage;
+        dialog.set_title("Confirmation");
+        std::string message = m_confirm_message;
         if(message.empty())
         {
             message = "Do you really want to execute this action ?";
         }
 
-        dialog.setMessage(message);
+        dialog.set_message(message);
 
-        if(m_defaultButton)
+        if(m_default_button)
         {
-            dialog.setDefaultButton(ui::dialog::message::YES);
+            dialog.set_default_button(ui::dialog::message::yes);
         }
         else
         {
-            dialog.setDefaultButton(ui::dialog::message::NO);
+            dialog.set_default_button(ui::dialog::message::no);
         }
 
-        dialog.setIcon(ui::dialog::message::QUESTION);
-        dialog.addButton(ui::dialog::message::YES_NO);
-        ui::dialog::message::Buttons button = dialog.show();
+        dialog.set_icon(ui::dialog::message::question);
+        dialog.add_button(ui::dialog::message::yes_no);
+        ui::dialog::message::buttons button = dialog.show();
 
-        action_is_confirmed = (button == ui::dialog::message::YES);
+        action_is_confirmed = (button == ui::dialog::message::yes);
     }
 
     return action_is_confirmed;

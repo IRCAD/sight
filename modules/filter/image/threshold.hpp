@@ -86,11 +86,11 @@ private:
     /// Threshold value used in filter
     double m_threshold {50.0};
 
-    static constexpr std::string_view s_IMAGE_IN  = "source";
-    static constexpr std::string_view s_IMAGE_OUT = "target";
+    static constexpr std::string_view IMAGE_IN  = "source";
+    static constexpr std::string_view IMAGE_OUT = "target";
 
-    sight::data::ptr<sight::data::object, sight::data::Access::in> m_source {this, s_IMAGE_IN, true};
-    sight::data::ptr<sight::data::object, sight::data::Access::out> m_target {this, s_IMAGE_OUT};
+    sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, IMAGE_IN, true};
+    sight::data::ptr<sight::data::object, sight::data::access::out> m_target {this, IMAGE_OUT};
 };
 
 } // namespace sight::module::filter::image

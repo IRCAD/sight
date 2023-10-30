@@ -35,16 +35,16 @@ namespace sight::activity::validator::ut
 
 //------------------------------------------------------------------------------
 
-void related_study_test::studiesAreRelatedTest()
+void related_study_test::studies_are_related_test()
 {
     activity::validator::base::sptr validator =
         activity::validator::factory::make("sight::activity::validator::related_study");
     CPPUNIT_ASSERT(validator);
 
     auto series1 = std::make_shared<data::series>();
-    series1->setStudyInstanceUID("These studies look related");
+    series1->set_study_instance_uid("These studies look related");
     auto series2 = std::make_shared<data::series>();
-    series2->setStudyInstanceUID("These studies look related");
+    series2->set_study_instance_uid("These studies look related");
 
     auto vector = std::make_shared<data::vector>();
     vector->push_back(series1);
@@ -55,16 +55,16 @@ void related_study_test::studiesAreRelatedTest()
 
 //------------------------------------------------------------------------------
 
-void related_study_test::studiesArentRelatedTest()
+void related_study_test::studies_arent_related_test()
 {
     activity::validator::base::sptr validator =
         activity::validator::factory::make("sight::activity::validator::related_study");
     CPPUNIT_ASSERT(validator);
 
     auto series1 = std::make_shared<data::series>();
-    series1->setStudyInstanceUID("My study is better than yours");
+    series1->set_study_instance_uid("My study is better than yours");
     auto series2 = std::make_shared<data::series>();
-    series2->setStudyInstanceUID("Well, in any case our studies aren't related");
+    series2->set_study_instance_uid("Well, in any case our studies aren't related");
 
     auto vector = std::make_shared<data::vector>();
     vector->push_back(series1);

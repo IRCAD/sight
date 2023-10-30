@@ -91,7 +91,7 @@ void job_test::apiand_state_test()
         core::jobs::job job("Job", [](core::jobs::job&)
                 {
                 });
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::WAITING, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::waiting, job.get_state());
 
         CPPUNIT_ASSERT_THROW(job.wait(), core::jobs::exception::waiting);
 
@@ -99,7 +99,7 @@ void job_test::apiand_state_test()
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested_callback()());
 
         job.cancel();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceled, job.get_state());
 
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested_callback()());
@@ -112,17 +112,17 @@ void job_test::apiand_state_test()
     {
         core::jobs::job job("Job", [](core::jobs::job& _running_job)
                 {
-                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, _running_job.get_state());
+                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::running, _running_job.get_state());
                 });
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::WAITING, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::waiting, job.get_state());
 
         CPPUNIT_ASSERT_THROW(job.wait(), core::jobs::exception::waiting);
 
         job.run();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::FINISHED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::finished, job.get_state());
 
         job.cancel();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::FINISHED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::finished, job.get_state());
         CPPUNIT_ASSERT_NO_THROW(job.wait());
     }
 
@@ -131,26 +131,26 @@ void job_test::apiand_state_test()
         core::jobs::job job("Job", [](core::jobs::job& _running_job)
                 {
                             std::this_thread::sleep_for(std::chrono::milliseconds(30));
-                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELING, _running_job.get_state());
+                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceling, _running_job.get_state());
                 }, worker);
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::WAITING, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::waiting, job.get_state());
 
         CPPUNIT_ASSERT_THROW(job.wait(), core::jobs::exception::waiting);
 
         job.run();
         job.cancel();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELING, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceling, job.get_state());
 
         job.wait();
 
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceled, job.get_state());
         CPPUNIT_ASSERT_NO_THROW(job.wait());
         worker->stop();
     }
 
     {
         core::jobs::observer job("Observer");
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::running, job.get_state());
 
         auto future = std::async(
             [&job]() -> bool
@@ -172,9 +172,9 @@ void job_test::apiand_state_test()
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested_callback()());
 
         job.cancel();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceled, job.get_state());
         job.finish();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceled, job.get_state());
 
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested_callback()());
@@ -186,12 +186,12 @@ void job_test::apiand_state_test()
 
     {
         core::jobs::observer job("Observer");
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::running, job.get_state());
 
         job.finish();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::FINISHED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::finished, job.get_state());
         job.cancel();
-        CPPUNIT_ASSERT_EQUAL(core::jobs::base::FINISHED, job.get_state());
+        CPPUNIT_ASSERT_EQUAL(core::jobs::base::finished, job.get_state());
 
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested_callback()());
@@ -210,16 +210,16 @@ void job_test::generic_callback_test()
         {
             core::jobs::observer job("GenericCallbackJob");
 
-            CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, job.get_state());
+            CPPUNIT_ASSERT_EQUAL(core::jobs::base::running, job.get_state());
 
             algo_mock_generic_callback(loops, job.progress_callback(), job.cancel_requested_callback());
 
-            CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, job.get_state());
+            CPPUNIT_ASSERT_EQUAL(core::jobs::base::running, job.get_state());
             job.finish();
 
             CPPUNIT_ASSERT_EQUAL(std::uint64_t(loops), job.get_done_work_units());
 
-            CPPUNIT_ASSERT_EQUAL(core::jobs::base::FINISHED, job.get_state());
+            CPPUNIT_ASSERT_EQUAL(core::jobs::base::finished, job.get_state());
         }
 
         {
@@ -233,11 +233,11 @@ void job_test::generic_callback_test()
                                          };
             core::jobs::job job("GenericCallbackJob", func);
 
-            CPPUNIT_ASSERT_EQUAL(core::jobs::base::WAITING, job.get_state());
+            CPPUNIT_ASSERT_EQUAL(core::jobs::base::waiting, job.get_state());
 
             job.run();
             CPPUNIT_ASSERT_EQUAL(std::uint64_t(loops), job.get_done_work_units());
-            CPPUNIT_ASSERT_EQUAL(core::jobs::base::FINISHED, job.get_state());
+            CPPUNIT_ASSERT_EQUAL(core::jobs::base::finished, job.get_state());
         }
 
         {
@@ -256,13 +256,13 @@ void job_test::generic_callback_test()
                                 worker);
             job.set_total_work_units(std::uint64_t(loops));
             job.run();
-            CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, job.get_state());
+            CPPUNIT_ASSERT_EQUAL(core::jobs::base::running, job.get_state());
             std::this_thread::sleep_for(std::chrono::milliseconds(30));
             job.cancel();
             job.wait();
             CPPUNIT_ASSERT(
-                core::jobs::base::CANCELING == job.get_state()
-                || core::jobs::base::CANCELED == job.get_state()
+                core::jobs::base::canceling == job.get_state()
+                || core::jobs::base::canceled == job.get_state()
             );
 
             CPPUNIT_ASSERT(static_cast<std::uint64_t>(loops) > job.get_done_work_units());
@@ -660,7 +660,7 @@ struct job_observer_canceler : public job_observer
         base::cancel_request_callback _canceled_callback
     ) :
         job_observer(std::move(_func)),
-        M_CANCELED_CALLBACK(std::move(_canceled_callback))
+        m_canceled_callback(std::move(_canceled_callback))
     {
     }
 
@@ -668,10 +668,10 @@ struct job_observer_canceler : public job_observer
 
     bool canceled() override
     {
-        return M_CANCELED_CALLBACK();
+        return m_canceled_callback();
     }
 
-    const base::cancel_request_callback M_CANCELED_CALLBACK;
+    const base::cancel_request_callback m_canceled_callback;
 };
 
 //------------------------------------------------------------------------------

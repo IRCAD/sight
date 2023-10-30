@@ -29,9 +29,9 @@ namespace sight::io::dimse::exceptions
 {
 
 /**
- * @brief PresentationContextMissing Exceptions
+ * @brief PresentationContextMissing exceptions
  */
-class IO_DIMSE_CLASS_API PresentationContextMissing : public sight::io::dimse::exceptions::Base
+class IO_DIMSE_CLASS_API presentation_context_missing : public sight::io::dimse::exceptions::base
 {
 public:
 
@@ -39,10 +39,10 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DIMSE_API PresentationContextMissing(const std::string& _message);
+    IO_DIMSE_API presentation_context_missing(const std::string& _message);
 
     /// Destructor
-    IO_DIMSE_API ~PresentationContextMissing() noexcept override;
+    IO_DIMSE_API ~presentation_context_missing() noexcept override;
 };
 
 } // namespace sight::io::dimse::exceptions

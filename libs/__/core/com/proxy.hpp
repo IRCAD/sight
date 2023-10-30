@@ -76,11 +76,11 @@ private:
      */
     struct sig_slots
     {
-        using signal_container_type = std::set<core::com::signal_base::sptr>;
-        using slot_container_type   = std::set<core::com::slot_base::sptr>;
-        signal_container_type m_signals;
-        slot_container_type m_slots;
-        slot_container_type::iterator m_last_connected_slot;
+        using signal_container_t = std::set<core::com::signal_base::sptr>;
+        using slot_container_t   = std::set<core::com::slot_base::sptr>;
+        signal_container_t m_signals;
+        slot_container_t m_slots;
+        slot_container_t::iterator m_last_connected_slot;
 
         core::mt::read_write_mutex m_mutex;
     };

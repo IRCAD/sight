@@ -45,11 +45,9 @@ public:
 
     SIGHT_DECLARE_CLASS(dicom_series, series);
 
-    typedef std::map<std::size_t, core::memory::buffer_object::sptr> dicom_container_t;
-
-    typedef std::set<std::string> sop_classUIDContainerType;
-
-    typedef std::map<std::string, std::string> ComputedTagValueContainerType;
+    using dicom_container_t              = std::map<std::size_t, core::memory::buffer_object::sptr>;
+    using sop_class_uid_container_t      = std::set<std::string>;
+    using computed_tag_value_container_t = std::map<std::string, std::string>;
 
     /// Destroys the DICOM series.
     DATA_API ~dicom_series() noexcept override = default;
@@ -59,116 +57,116 @@ public:
      * @param _instanceIndex index of the instance.
      * @param _path the path.
      */
-    DATA_API void addDicomPath(std::size_t _instance_index, const std::filesystem::path& _path);
+    DATA_API void add_dicom_path(std::size_t _instance_index, const std::filesystem::path& _path);
 
     /**
      * @brief Adds a binary buffer.
      * @param _instanceIndex index of the instance.
      * @param _buffer the buffer.
      */
-    DATA_API void addBinary(std::size_t _instance_index, const core::memory::buffer_object::sptr& _buffer);
+    DATA_API void add_binary(std::size_t _instance_index, const core::memory::buffer_object::sptr& _buffer);
 
     /**
      * @brief Gets if the instance is available on the local computer
      * @param _instanceIndex the instance to check.
      * @return True if the instance is available on the local computer
      */
-    DATA_API bool isInstanceAvailable(std::size_t _instance_index) const;
+    DATA_API bool is_instance_available(std::size_t _instance_index) const;
 
     /**
      * @brief Adds a sop_classUID that is used by this series.
      * @param _sopClassUID sop_classUID that must be added.
      */
-    DATA_API void addsop_classUID(const std::string& _sop_class_uid);
+    DATA_API void addsop_class_uid(const std::string& _sop_class_uid);
 
     /**
      * @brief Adds a computed value to the specified tag.
      * @param _tagName Name of the tag.
      * @param _value Computed value.
      */
-    DATA_API void addComputedTagValue(const std::string& _tag_name, const std::string& _value);
+    DATA_API void add_computed_tag_value(const std::string& _tag_name, const std::string& _value);
 
     /**
      * @brief Gets if there is a computed value for the specified tag.
      * @param _tagName Name of the tag.
      * @return True if there is a computed value for the tag.
      */
-    DATA_API bool hasComputedValues(const std::string& _tag_name) const;
+    DATA_API bool has_computed_values(const std::string& _tag_name) const;
 
     /**
      * @brief Gets the number of instances in the series.
      * @return The number of instances in the series.
      */
-    std::size_t numInstances() const
+    std::size_t num_instances() const
     {
-        return m_numberOfInstances;
+        return m_number_of_instances;
     }
 
     ///f Sets the number of instances in the series.
-    void setNumberOfInstances(std::size_t _val)
+    void set_number_of_instances(std::size_t _val)
     {
-        m_numberOfInstances = _val;
+        m_number_of_instances = _val;
     }
 
     /// Gets the DICOM container.
-    const dicom_container_t& getDicomContainer() const
+    const dicom_container_t& get_dicom_container() const
     {
-        return m_dicomContainer;
+        return m_dicom_container;
     }
 
     /// Sets the DICOM container.
-    void setDicomContainer(const dicom_container_t& _dicom_container)
+    void set_dicom_container(const dicom_container_t& _dicom_container)
     {
-        m_dicomContainer = _dicom_container;
+        m_dicom_container = _dicom_container;
     }
 
     /// Clears the DICOM container.
-    void clearDicomContainer()
+    void clear_dicom_container()
     {
-        m_dicomContainer.clear();
+        m_dicom_container.clear();
     }
 
     /// Gets the SOP Class UID.
-    const sop_classUIDContainerType& getSOPClassUIDs() const
+    const sop_class_uid_container_t& get_sop_class_ui_ds() const
     {
-        return m_sop_classUIDs;
+        return m_sop_class_ui_ds;
     }
 
     //------------------------------------------------------------------------------
 
-    sop_classUIDContainerType& getSOPClassUIDs()
+    sop_class_uid_container_t& get_sop_class_ui_ds()
     {
-        return m_sop_classUIDs;
+        return m_sop_class_ui_ds;
     }
 
     /// Sets the SOP Class UID.
-    void setSOPClassUIDs(const sop_classUIDContainerType& _val)
+    void set_sop_class_ui_ds(const sop_class_uid_container_t& _val)
     {
-        m_sop_classUIDs = _val;
+        m_sop_class_ui_ds = _val;
     }
 
     /// Gets the computed tag values.
-    const ComputedTagValueContainerType& getComputedTagValues() const
+    const computed_tag_value_container_t& get_computed_tag_values() const
     {
-        return m_computedTagValues;
+        return m_computed_tag_values;
     }
 
     /// Sets the computed tag values.
-    void setComputedTagValues(const ComputedTagValueContainerType& _val)
+    void set_computed_tag_values(const computed_tag_value_container_t& _val)
     {
-        m_computedTagValues = _val;
+        m_computed_tag_values = _val;
     }
 
     /// Gets the first instance number (0 or 1) - Used for PACS preview.
-    std::size_t getFirstInstanceNumber() const
+    std::size_t get_first_instance_number() const
     {
-        return m_firstInstanceNumber;
+        return m_first_instance_number;
     }
 
     /// Sets the first instance number (0 or 1) - Used for PACS preview.
-    void setFirstInstanceNumber(std::size_t _first_instance_number)
+    void set_first_instance_number(std::size_t _first_instance_number)
     {
-        m_firstInstanceNumber = _first_instance_number;
+        m_first_instance_number = _first_instance_number;
     }
 
     /// Equality comparison operators
@@ -194,19 +192,19 @@ public:
 protected:
 
     /// Defines the number of instances in the series.
-    std::size_t m_numberOfInstances {0};
+    std::size_t m_number_of_instances {0};
 
     /// Stores DICOM.
-    dicom_container_t m_dicomContainer;
+    dicom_container_t m_dicom_container;
 
     /// Stores SOP Class UIDs.
-    sop_classUIDContainerType m_sop_classUIDs;
+    sop_class_uid_container_t m_sop_class_ui_ds;
 
     /// Stores computed tag values.
-    ComputedTagValueContainerType m_computedTagValues;
+    computed_tag_value_container_t m_computed_tag_values;
 
     /// Defines the first instance number (0 or 1) - Used for PACS preview.
-    std::size_t m_firstInstanceNumber {0};
+    std::size_t m_first_instance_number {0};
 };
 
 } // Namespace sight::data

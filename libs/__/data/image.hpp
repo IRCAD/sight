@@ -65,7 +65,7 @@ class point_list;
  * @subsection Allocation Allocation
  *
  * The image buffer is allocated using the resize() method.
- * You can get the allocated size using getSizeInBytes() and getAllocatedSizeInBytes().
+ * You can get the allocated size using size_in_bytes() and getAllocatedSizeInBytes().
  *
  * To resize the image, you must pass the Type ([u]int[8|16|32|64], double, float), the size and the pixel
  * format of the buffer when calling resize(const Size& size, const core::type& type, PixelFormat format).
@@ -125,7 +125,7 @@ class point_list;
  * \b Example :
  * @code{.cpp}
     image::sptr img = image::New();
-    img->resize(1920, 1080, 1, core::type::UINT8, image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 1, core::type::UINT8, image::pixel_format::rgba);
     auto iter    = img->begin<color>();
     const auto iterEnd = img->end<color>();
 
@@ -178,27 +178,24 @@ public:
     SIGHT_DECLARE_CLASS(image, object);
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
-    /// image size
-    typedef std::array<std::size_t, 3> Size;
-    /// image origin
-    typedef std::array<double, 3> Origin;
-    /// image spacing
-    typedef std::array<double, 3> Spacing;
+    using size_t    = std::array<std::size_t, 3>;
+    using origin_t  = std::array<double, 3>;
+    using spacing_t = std::array<double, 3>;
 
-    typedef Size::value_type index_t;
-    typedef std::uint8_t buffer_t;
+    using index_t  = size_t::value_type;
+    using buffer_t = std::uint8_t;
 
     /// image format
-    enum PixelFormat
+    enum pixel_format
     {
-        UNDEFINED = 0, ///< Undefined pixel format
-        RGB,           ///< image with 3 component RGB.
-        RGBA,          ///< image with 4 component RGBA.
-        BGR,           ///< image with 3 component BGR.
-        BGRA,          ///< image with 4 component BGRA.
-        GRAY_SCALE,    ///< image with 1 component.
-        RG,            ///< image with 2 components RG.
-        _SIZE
+        undefined = 0, ///< Undefined pixel format
+        rgb,           ///< image with 3 component RGB.
+        rgba,          ///< image with 4 component RGBA.
+        bgr,           ///< image with 3 component BGR.
+        bgra,          ///< image with 4 component BGRA.
+        gray_scale,    ///< image with 1 component.
+        rg,            ///< image with 2 components RG.
+        count
     };
 
     /**
@@ -213,49 +210,49 @@ public:
     DATA_API ~image() noexcept override = default;
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
-    DATA_API void copyInformation(image::csptr _source);
+    DATA_API void copy_information(image::csptr _source);
 
     /// Get image spacing
-    const Spacing& getSpacing() const;
+    const spacing_t& spacing() const;
     /// Set image spacing
-    void setSpacing(const Spacing& _spacing);
+    void set_spacing(const spacing_t& _spacing);
 
     /// Get image origin
-    const Origin& getOrigin() const;
+    const origin_t& origin() const;
     /// Set image origin
-    void setOrigin(const Origin& _origin);
+    void set_origin(const origin_t& _origin);
 
     /// Get image size
-    const Size& size() const;
+    const image::size_t& size() const;
 
     /// Number of dimensions of the image (3 for 3D image)
-    DATA_API std::size_t numDimensions() const;
+    DATA_API std::size_t num_dimensions() const;
 
     /** @{
      *  @brief Get/set preferred window center
      */
-    virtual std::vector<double> getWindowCenter() const noexcept;
-    virtual void setWindowCenter(const std::vector<double>& _window_centers);
+    virtual std::vector<double> window_center() const noexcept;
+    virtual void set_window_center(const std::vector<double>& _window_centers);
     /// @}
 
     /** @{
      *  @brief Get/set preferred window width
      */
-    virtual std::vector<double> getWindowWidth() const noexcept;
-    virtual void setWindowWidth(const std::vector<double>& _window_widths);
+    virtual std::vector<double> window_width() const noexcept;
+    virtual void set_window_width(const std::vector<double>& _window_widths);
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
-    DATA_API std::size_t numElements() const;
+    DATA_API std::size_t num_elements() const;
 
     /// Get the number of components of an image pixel
-    std::size_t numComponents() const;
+    std::size_t num_components() const;
 
     /// Get image type
-    DATA_API core::type getType() const;
+    DATA_API core::type type() const;
 
     /// Get pixel format
-    PixelFormat getPixelFormat() const;
+    pixel_format pixel_format() const;
 
     /**
        @{
@@ -272,40 +269,40 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API virtual std::size_t resize(const Size& _size, const core::type& _type, PixelFormat _format);
+    DATA_API virtual std::size_t resize(const image::size_t& _size, const core::type& _type, enum pixel_format _format);
     /// @}
 
     /// @brief return image size in bytes
-    DATA_API std::size_t getSizeInBytes() const;
+    DATA_API std::size_t size_in_bytes() const;
     /// @brief return allocated image size in bytes
-    DATA_API std::size_t getAllocatedSizeInBytes() const;
+    DATA_API std::size_t allocated_size_in_bytes() const;
 
     /**
      * @name Signals
      * @{
      */
     /// Type of signal when image's buffer is added
-    typedef core::com::signal<void ()> buffer_modified_signal_t;
+    using buffer_modified_signal_t = core::com::signal<void ()>;
     DATA_API static const core::com::signals::key_t BUFFER_MODIFIED_SIG;
 
     /// Type of signal when a landmark is added
-    typedef core::com::signal<void (SPTR(point))> landmark_added_signal_t;
+    using landmark_added_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
     DATA_API static const core::com::signals::key_t LANDMARK_ADDED_SIG;
 
     /// Type of signal when a landmark is removed
-    typedef core::com::signal<void (SPTR(point))> landmark_removed_signal_t;
+    using landmark_removed_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
     DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::signal<void (bool)> landmark_displayed_signal_t;
+    using landmark_displayed_signal_t = core::com::signal<void (bool)>;
     DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::signal<void (bool)> distance_displayed_signal_t;
+    using distance_displayed_signal_t = core::com::signal<void (bool)>;
     DATA_API static const core::com::signals::key_t DISTANCE_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::signal<void (SPTR(point_list))> distance_added_signal_t;
+    using distance_added_signal_t = core::com::signal<void (std::shared_ptr<point_list>)>;
     DATA_API static const core::com::signals::key_t DISTANCE_ADDED_SIG;
 
     /// Type of signal when a distance is modified
@@ -313,15 +310,15 @@ public:
     DATA_API static const core::com::signals::key_t DISTANCE_MODIFIED_SIG;
 
     /// Type of signal when a distance is removed
-    typedef core::com::signal<void (CSPTR(point_list))> distance_removed_signal_t;
+    using distance_removed_signal_t = core::com::signal<void (std::shared_ptr<const point_list>)>;
     DATA_API static const core::com::signals::key_t DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
-    typedef core::com::signal<void (int, int, int)> SliceIndexModifiedSignalType;
+    using slice_index_modified_signal_t = core::com::signal<void (int, int, int)>;
     DATA_API static const core::com::signals::key_t SLICE_INDEX_MODIFIED_SIG;
 
     /// Type of signal when slice type is modified (from slice type, to slice type)
-    typedef core::com::signal<void (int, int)> SliceTypeModifiedSignalType;
+    using slice_type_modified_signal_t = core::com::signal<void (int, int)>;
     DATA_API static const core::com::signals::key_t SLICE_TYPE_MODIFIED_SIG;
     /**
      * @}
@@ -357,7 +354,7 @@ public:
      * Example:
      * @code{.cpp}
         image::sptr img = image::New();
-        img->resize(1920, 1080, 0, core::type::UINT8, image::PixelFormat::RGBA);
+        img->resize(1920, 1080, 0, core::type::UINT8, image::pixel_format::rgba);
         image::iterator< Color > iter    = img->begin< Color >();
         const image::iterator< Color > iterEnd = img->end< Color >();
 
@@ -428,12 +425,12 @@ public:
      * @param size           Size of the array view
      * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    DATA_API void setBuffer(
+    DATA_API void set_buffer(
         void* _buf,
         bool _take_ownership,
         const core::type& _type,
-        const image::Size& _size,
-        PixelFormat _format,
+        const image::size_t& _size,
+        enum pixel_format _format,
         core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
@@ -481,14 +478,14 @@ public:
      * @param index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void* getPixel(index_t _index);
+    DATA_API void* get_pixel(index_t _index);
 
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API const void* getPixel(index_t _index) const;
+    DATA_API const void* get_pixel(index_t _index) const;
 
     /**
      * @brief Set pixel value represented as a void* buffer
@@ -496,10 +493,10 @@ public:
      * @param pixBuf pixel value represented as a void* buffer
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void setPixel(index_t _index, const buffer_t* _pix_buf);
+    DATA_API void set_pixel(index_t _index, const buffer_t* _pix_buf);
 
     /// Return the pixel value in a std::string
-    DATA_API std::string getPixelAsString(
+    DATA_API std::string get_pixel_as_string(
         index_t _x,
         index_t _y,
         index_t _z
@@ -555,7 +552,12 @@ private:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const Size& _size, const core::type& _type, PixelFormat _format, bool _realloc);
+    DATA_API std::size_t resize(
+        const image::size_t& _size,
+        const core::type& _type,
+        enum pixel_format _format,
+        bool _realloc
+    );
     /// @}
 
     /**
@@ -566,113 +568,113 @@ private:
      * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
      * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    void setBuffer(
+    void set_buffer(
         void* _buf,
         bool _take_ownership                                 = false,
         core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
     //! Size of the image (in terms of points)
-    Size m_size {0, 0, 0};
+    size_t m_size {0, 0, 0};
 
     //! An array on the voxel size of the image
-    Spacing m_spacing {0., 0., 0.};
+    spacing_t m_spacing {0., 0., 0.};
 
-    //! Origin of the image in 3D repair
-    Origin m_origin {0., 0., 0.};
+    //! origin_t of the image in 3D repair
+    origin_t m_origin {0., 0., 0.};
 
     //! Preferred window center/with
     ///@{
-    std::vector<double> m_windowCenters;
-    std::vector<double> m_windowWidths;
+    std::vector<double> m_window_centers;
+    std::vector<double> m_window_widths;
     ///@}
 
     //! Number of components
-    std::size_t m_numComponents {1};
+    std::size_t m_num_components {1};
 
     //! type of image pixel
     core::type m_type {core::type::UINT8};
 
     //! image format
-    PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
+    enum pixel_format m_pixel_format {pixel_format::undefined};
 
     //! image buffer
-    array::sptr m_dataArray;
+    array::sptr m_data_array;
 };
 
 //-----------------------------------------------------------------------------
 
-inline std::vector<double> image::getWindowCenter() const noexcept
+inline std::vector<double> image::window_center() const noexcept
 {
-    return m_windowCenters;
+    return m_window_centers;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void image::setWindowCenter(const std::vector<double>& _window_centers)
+inline void image::set_window_center(const std::vector<double>& _window_centers)
 {
-    m_windowCenters = _window_centers;
+    m_window_centers = _window_centers;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::vector<double> image::getWindowWidth() const noexcept
+inline std::vector<double> image::window_width() const noexcept
 {
-    return m_windowWidths;
+    return m_window_widths;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void image::setWindowWidth(const std::vector<double>& _window_widths)
+inline void image::set_window_width(const std::vector<double>& _window_widths)
 {
-    m_windowWidths = _window_widths;
+    m_window_widths = _window_widths;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::size_t image::numComponents() const
+inline std::size_t image::num_components() const
 {
-    return m_numComponents;
+    return m_num_components;
 }
 
 //-----------------------------------------------------------------------------
 
-inline image::PixelFormat image::getPixelFormat() const
+inline enum image::pixel_format image::pixel_format() const
 {
-    return m_pixelFormat;
+    return m_pixel_format;
 }
 
 //------------------------------------------------------------------------------
 
-inline const image::Spacing& image::getSpacing() const
+inline const image::spacing_t& image::spacing() const
 {
     return m_spacing;
 }
 
 //------------------------------------------------------------------------------
 
-inline void image::setSpacing(const Spacing& _spacing)
+inline void image::set_spacing(const spacing_t& _spacing)
 {
     m_spacing = _spacing;
 }
 
 //------------------------------------------------------------------------------
 
-inline const image::Origin& image::getOrigin() const
+inline const image::origin_t& image::origin() const
 {
     return m_origin;
 }
 
 //------------------------------------------------------------------------------
 
-inline void image::setOrigin(const Origin& _origin)
+inline void image::set_origin(const origin_t& _origin)
 {
     m_origin = _origin;
 }
 
 //------------------------------------------------------------------------------
 
-inline const image::Size& image::size() const
+inline const image::size_t& image::size() const
 {
     return m_size;
 }
@@ -682,7 +684,7 @@ inline const image::Size& image::size() const
 template<typename T>
 inline image::iterator<T> image::begin()
 {
-    return iterator<T>(static_cast<typename iterator<T>::pointer>(buffer()));
+    return iterator<T>(static_cast<typename iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -691,7 +693,7 @@ template<typename T>
 inline image::iterator<T> image::end()
 {
     auto itr = begin<T>();
-    itr += static_cast<typename iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    itr += static_cast<typename iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -700,7 +702,7 @@ inline image::iterator<T> image::end()
 template<typename T>
 inline image::const_iterator<T> image::begin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(buffer()));
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -709,7 +711,7 @@ template<typename T>
 inline image::const_iterator<T> image::end() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -718,7 +720,7 @@ inline image::const_iterator<T> image::end() const
 template<typename T>
 inline image::const_iterator<T> image::cbegin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(buffer()));
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -727,7 +729,7 @@ template<typename T>
 inline image::const_iterator<T> image::cend() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -756,7 +758,7 @@ auto image::crange() const
 template<typename T>
 inline T& image::at(index_t _id)
 {
-    return *reinterpret_cast<T*>(this->getPixel(_id));
+    return *reinterpret_cast<T*>(this->get_pixel(_id));
 }
 
 //------------------------------------------------------------------------------
@@ -764,7 +766,7 @@ inline T& image::at(index_t _id)
 template<typename T>
 inline T image::at(index_t _id) const
 {
-    return *reinterpret_cast<const T*>(this->getPixel(_id));
+    return *reinterpret_cast<const T*>(this->get_pixel(_id));
 }
 
 //------------------------------------------------------------------------------
@@ -773,7 +775,7 @@ template<typename T>
 inline T& image::at(index_t _x, index_t _y, index_t _z, index_t _c)
 {
     const index_t offset = _x + m_size[0] * _y + _z * m_size[0] * m_size[1];
-    return *(reinterpret_cast<T*>(this->getPixel(offset)) + _c);
+    return *(reinterpret_cast<T*>(this->get_pixel(offset)) + _c);
 }
 
 //------------------------------------------------------------------------------
@@ -782,7 +784,7 @@ template<typename T>
 inline T image::at(index_t _x, index_t _y, index_t _z, index_t _c) const
 {
     const index_t offset = _x + m_size[0] * _y + _z * m_size[0] * m_size[1];
-    return *(reinterpret_cast<const T*>(this->getPixel(offset)) + _c);
+    return *(reinterpret_cast<const T*>(this->get_pixel(offset)) + _c);
 }
 
 } // namespace sight::data

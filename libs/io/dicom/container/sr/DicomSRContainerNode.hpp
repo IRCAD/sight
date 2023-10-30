@@ -34,18 +34,18 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a CONTAINER node in a SR document
  */
-class IO_DICOM_CLASS_API DicomSRContainerNode : public io::dicom::container::sr::DicomSRNode
+class IO_DICOM_CLASS_API dicom_sr_container_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRContainerNode(
-        const DicomCodedAttribute& _coded_attribute,
+    IO_DICOM_API dicom_sr_container_node(
+        const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship = ""
     );
 
     /// Destructor
-    IO_DICOM_API ~DicomSRContainerNode() override;
+    IO_DICOM_API ~dicom_sr_container_node() override;
 
     /**
      * @brief Write the SR node in the dataset

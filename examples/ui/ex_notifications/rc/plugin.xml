@@ -34,15 +34,15 @@ are already displayed and where they are displayed on screen.
                         <icon>ex_notifications/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <toolBar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="mainview" start="true" />
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <editor />
@@ -173,30 +173,30 @@ are already displayed and where they are displayed on screen.
             <!-- Others connections -->
             <connect>
                 <signal>positionAct/enumChanged</signal>
-                <slot>testNotifierSrv/setEnumParameter</slot>
-                <slot>notifierSrv/setEnumParameter</slot>
+                <slot>testNotifierSrv/set_enum_parameter</slot>
+                <slot>notifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
                 <signal>durationAct/enumChanged</signal>
-                <slot>testNotifierSrv/setEnumParameter</slot>
-                <slot>notifierSrv/setEnumParameter</slot>
+                <slot>testNotifierSrv/set_enum_parameter</slot>
+                <slot>notifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
                 <signal>typeAct/enumChanged</signal>
-                <slot>testNotifierSrv/setEnumParameter</slot>
+                <slot>testNotifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
                 <signal>channelAct/enumChanged</signal>
-                <slot>testNotifierSrv/setEnumParameter</slot>
+                <slot>testNotifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
                 <signal>useNotifierAct/boolChanged</signal>
                 <signal>maxChar/boolChanged</signal>
-                <slot>testNotifierSrv/setBoolParameter</slot>
+                <slot>testNotifierSrv/set_bool_parameter</slot>
             </connect>
 
             <connect>

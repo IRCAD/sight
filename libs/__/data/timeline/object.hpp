@@ -50,7 +50,7 @@ public:
     DATA_API virtual void deep_copy(const object& _source);
 
     /// Return timestamp
-    [[nodiscard]] core::hires_clock::type getTimestamp() const
+    [[nodiscard]] core::hires_clock::type get_timestamp() const
     {
         return m_timestamp;
     }

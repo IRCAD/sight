@@ -34,25 +34,25 @@ namespace sight::io::itk::helper
 /**
  * @brief Helper class to convert Sight Matrix4 to itk Matrix and the other way around.
  */
-class IO_ITK_CLASS_API Transform
+class IO_ITK_CLASS_API transform
 {
 public:
 
     /// Typedef to a itk Transform <double, 4,4>
-    typedef ::itk::Matrix<double, 4, 4> matrix_t;
+    using matrix_t = ::itk::Matrix<double, 4, 4>;
     /**
      * @brief convert a Sight transformation to itk
      * @param _inTrf input data::matrix4
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
-    IO_ITK_API static matrix_t convertToITK(const data::matrix4::csptr& _in_trf);
+    IO_ITK_API static matrix_t convert_to_itk(const data::matrix4::csptr& _in_trf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a Sight one
      * @param _inTrf Const Pointer to a itk::Transform<double, 4,4>
      * @param _outTrf output data::matrix4 (needs to be allocated before)
      */
-    IO_ITK_API static void convertFromITK(
+    IO_ITK_API static void convert_from_itk(
         const matrix_t& _in_trf,
         data::matrix4::sptr& _out_trf
     );

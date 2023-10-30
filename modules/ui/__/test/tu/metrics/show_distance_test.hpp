@@ -31,7 +31,7 @@ namespace sight::module::ui::metrics::ut
 class show_distance_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(show_distance_test);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,11 +39,11 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basicTest();
+    void basic_test();
 
 private:
 
-    service::base::sptr m_showDistance;
+    service::base::sptr m_show_distance;
 };
 
 } // namespace sight::module::ui::metrics::ut

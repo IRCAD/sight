@@ -40,9 +40,9 @@ namespace sight::module::ui::qt
  * Values are set using slots or using a data::string input.
  *
  * @section Slots Slots
- * - \b setIntParameter(int): display the value in the QLabel.
- * - \b setDoubleParameter(double): display the value in the QLabel.
- * - \b setBoolParameter(int): display the value in the QLabel.
+ * - \b set_int_parameter(int): display the value in the QLabel.
+ * - \b set_double_parameter(double): display the value in the QLabel.
+ * - \b set_bool_parameter(int): display the value in the QLabel.
  * - \b setStringParameter(int): display the value in the QLabel.
  *
  * @section XML XML Configuration
@@ -99,25 +99,25 @@ private:
     connections_t auto_connections() const override;
 
     /// Sets the interger to display.
-    void setIntParameter(int _val);
+    void set_int_parameter(int _val);
 
     /// Sets the double to display.
-    void setDoubleParameter(double _val);
+    void set_double_parameter(double _val);
 
     /// Sets the boolean to display.
-    void setBoolParameter(bool _val);
+    void set_bool_parameter(bool _val);
 
     /// Sets the string to display.
-    void setStringParameter(std::string _val);
+    void set_string_parameter(std::string _val);
 
     /// Stores the label.
-    QPointer<QLabel> m_labelValue;
+    QPointer<QLabel> m_label_value;
 
     /// Stores the static text to be displayed.
-    QPointer<QLabel> m_labelStaticText;
+    QPointer<QLabel> m_label_static_text;
 
-    static constexpr std::string_view s_STRING_INPUT = "string";
-    data::ptr<data::string, sight::data::Access::in> m_string {this, s_STRING_INPUT, true, true};
+    static constexpr std::string_view STRING_INPUT = "string";
+    data::ptr<data::string, sight::data::access::in> m_string {this, STRING_INPUT, true, true};
 };
 
 } // namespace sight::module::ui::qt

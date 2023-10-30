@@ -31,15 +31,15 @@ namespace sight::io::http::exceptions
 /**
  * @brief Implements exception for an HTTP host not found errors.
  */
-class IO_HTTP_CLASS_API HostNotFound : public sight::io::http::exceptions::Base
+class IO_HTTP_CLASS_API host_not_found : public sight::io::http::exceptions::base
 {
 public:
 
     /**
      * @name Constructor/Destructor.
      * @{ */
-    IO_HTTP_API HostNotFound(const std::string& _message);
-    ~HostNotFound() noexcept override;
+    IO_HTTP_API host_not_found(const std::string& _message);
+    ~host_not_found() noexcept override;
     /**  @} */
 };
 

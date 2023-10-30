@@ -37,15 +37,15 @@
                         <icon>ExVideoTracking/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <toolBar />
+                    <toolbar />
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="true" />
+                    <toolbar sid="toolbarView" start="true" />
                     <view sid="cameraView" start="true" />
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::tool_bar">
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <editor />
@@ -167,11 +167,11 @@
 
             <connect>
                 <signal>parameters/parameterChanged</signal>
-                <slot>trackerSrv/setParameter</slot>
+                <slot>trackerSrv/set_parameter</slot>
             </connect>
             <connect>
                 <signal>markerMap/modified</signal>
-                <slot>genericSceneSrv/requestRender</slot>
+                <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

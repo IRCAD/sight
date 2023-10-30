@@ -64,7 +64,7 @@ public:
      */
     template<typename T>
     demangler(T& _s) :
-        M_NAME(typeid(_s).name())
+        m_name(typeid(_s).name())
     {
     }
 
@@ -94,7 +94,7 @@ protected:
     /**
      * @brief Store the name to demangle
      */
-    const std::string M_NAME;
+    const std::string m_name;
 
     /**
      * @brief Process the name to demangle and return the same string whatever the OS is.

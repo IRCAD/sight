@@ -26,17 +26,17 @@
                     <view proportion="1" />
                     <view proportion="0" minWidth="300" />
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" />
+                <toolbar sid="toolBarView" />
                 <view sid="containerView" />
                 <view sid="materialView" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::tool_bar">
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="VTK Mesher" icon="sight::module::ui::flaticons/YellowMenu.svg" />
@@ -176,7 +176,7 @@
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
-        <service uid="representationSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" auto_connect="true">
+        <service uid="representationSrv" type="sight::module::ui::qt::reconstruction::representation_editor" auto_connect="true">
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
@@ -196,7 +196,7 @@
 
         <connect>
             <signal>showHideNegatoSrv/toggled</signal>
-            <slot>negatoAdp/updateVisibility</slot>
+            <slot>negatoAdp/update_visibility</slot>
         </connect>
 
         <connect>

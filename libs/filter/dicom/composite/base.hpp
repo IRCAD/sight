@@ -39,7 +39,7 @@ public:
 
     SIGHT_DECLARE_CLASS(base, sight::filter::dicom::filter);
 
-    typedef std::vector<sight::filter::dicom::filter::sptr> filter_container_t;
+    using filter_container_t = std::vector<sight::filter::dicom::filter::sptr>;
 
     /// Destructor
     FILTER_DICOM_API ~base() override;
@@ -58,31 +58,31 @@ public:
      * If an exception is thrown, it is ignored and the next filter is applied.
      * @return Returns one or more Dicom Instance Group
      */
-    FILTER_DICOM_API dicom_series_container_t forcedApply(
+    FILTER_DICOM_API dicom_series_container_t forced_apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const;
 
     /// Add a filter to the composite
-    FILTER_DICOM_API void addChild(
+    FILTER_DICOM_API void add_child(
         const sight::filter::dicom::filter::sptr& _filter
     );
 
     /// Remove a filter from the composite
-    FILTER_DICOM_API void removeChild(
+    FILTER_DICOM_API void remove_child(
         const sight::filter::dicom::filter::sptr& _filter
     );
 
     /// Return composite container
-    FILTER_DICOM_API filter_container_t& getChildren();
+    FILTER_DICOM_API filter_container_t& get_children();
 
 protected:
 
     /// Constructor
     FILTER_DICOM_API base();
 
-    /// Filter container
-    filter_container_t m_filterContainer;
+    /// filter container
+    filter_container_t m_filter_container;
 };
 
 } // namespace sight::filter::dicom::composite

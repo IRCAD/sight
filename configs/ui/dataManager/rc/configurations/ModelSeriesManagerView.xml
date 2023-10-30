@@ -45,7 +45,7 @@ Example
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="representationEditor" type="sight::module::ui::qt::reconstruction::RepresentationEditor">
+        <service uid="representationEditor" type="sight::module::ui::qt::reconstruction::representation_editor">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 

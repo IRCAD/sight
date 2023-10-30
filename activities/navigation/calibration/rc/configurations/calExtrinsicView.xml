@@ -62,7 +62,7 @@
 
         <service uid="toolboxView" type="sight::module::ui::view" >
             <gui>
-                <toolBar/>
+                <toolbar/>
                 <layout type="sight::ui::layout::toolbox">
                     <orientation value="vertical" />
                     <view proportion="1" caption="Calibration input" expanded="true" />
@@ -70,13 +70,13 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="videoToolbarView" start="true" />
+                <toolbar sid="videoToolbarView" start="true" />
                 <view sid="calibrationDataView" start="true" />
                 <view sid="cameraInfoView" start="true" />
             </registry>
         </service>
 
-        <service uid="videoToolbarView" type="sight::module::ui::tool_bar">
+        <service uid="videoToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
@@ -97,15 +97,15 @@
 
         <service uid="calibrationDataView" type="sight::module::ui::view">
             <gui>
-                <toolBar>
+                <toolbar>
                     <toolBitmapSize height="24" width="24" />
-                </toolBar>
+                </toolbar>
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="extrinsicCameraView" start="true" />
+                <toolbar sid="extrinsicCameraView" start="true" />
                 <view sid="calibrationInfoEditorSrv" start="true" />
             </registry>
         </service>
@@ -127,7 +127,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCameraView" type="sight::module::ui::tool_bar">
+        <service uid="extrinsicCameraView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <editor/>
@@ -438,17 +438,17 @@
 
         <connect>
             <signal>saveInputsAct/clicked</signal>
-            <slot>calibrationDataWriter1Srv/openLocationDialog</slot>
+            <slot>calibrationDataWriter1Srv/open_location_dialog</slot>
             <slot>calibrationDataWriter1Srv/update</slot>
-            <slot>calibrationDataWriter2Srv/openLocationDialog</slot>
+            <slot>calibrationDataWriter2Srv/open_location_dialog</slot>
             <slot>calibrationDataWriter2Srv/update</slot>
         </connect>
 
         <connect>
             <signal>loadInputsAct/clicked</signal>
-            <slot>calibrationDataReader1Srv/openLocationDialog</slot>
+            <slot>calibrationDataReader1Srv/open_location_dialog</slot>
             <slot>calibrationDataReader1Srv/update</slot>
-            <slot>calibrationDataReader2Srv/openLocationDialog</slot>
+            <slot>calibrationDataReader2Srv/open_location_dialog</slot>
             <slot>calibrationDataReader2Srv/update</slot>
         </connect>
 
@@ -500,7 +500,7 @@
 
         <connect>
             <signal>chessboardDetectorSrv/updated</signal>
-            <slot>genericSceneSrv/requestRender</slot>
+            <slot>genericSceneSrv/request_render</slot>
             <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
@@ -519,7 +519,7 @@
 
         <connect>
             <signal>openCVExtrinsicCalSrv/errorComputed</signal>
-            <slot>errorLabelSrv/setDoubleParameter</slot>
+            <slot>errorLabelSrv/set_double_parameter</slot>
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">

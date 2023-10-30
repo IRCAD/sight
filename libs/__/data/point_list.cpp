@@ -59,9 +59,9 @@ void point_list::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_vPoints = other->m_vPoints;
+    m_v_points = other->m_v_points;
 
-    base_class::shallow_copy(other);
+    base_class_t::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -78,26 +78,26 @@ void point_list::deep_copy(const object::csptr& _source, const std::unique_ptr<d
         !bool(other)
     );
 
-    m_vPoints.clear();
-    for(const PointListContainer::value_type& point : other->m_vPoints)
+    m_v_points.clear();
+    for(const auto& point : other->m_v_points)
     {
-        m_vPoints.push_back(data::object::copy(point, _cache));
+        m_v_points.push_back(data::object::copy(point, _cache));
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool point_list::operator==(const point_list& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_vPoints, _other.m_vPoints))
+    if(!core::tools::is_equal(m_v_points, _other.m_v_points))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ std::ostream& operator<<(std::ostream& _out, const sight::data::point_list& _pl)
 {
     _out << "{";
     bool first = true;
-    for(const auto& e : _pl.getPoints())
+    for(const auto& e : _pl.get_points())
     {
         if(!first)
         {

@@ -35,46 +35,46 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-SIGHT_REGISTER_DICOM_FILTER(sight::ui::dicom::splitter::TagValueConfigurableSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::ui::dicom::splitter::tag_value_configurable_splitter);
 
 namespace sight::ui::dicom::splitter
 {
 
-const std::string TagValueConfigurableSplitter::s_FILTER_NAME        = "Tag value configurable splitter";
-const std::string TagValueConfigurableSplitter::s_FILTER_DESCRIPTION =
+const std::string tag_value_configurable_splitter::FILTER_NAME        = "Tag value configurable splitter";
+const std::string tag_value_configurable_splitter::FILTER_DESCRIPTION =
     "Split instances using a tag value.";
 
 //-----------------------------------------------------------------------------
 
-std::string TagValueConfigurableSplitter::getName() const
+std::string tag_value_configurable_splitter::get_name() const
 {
-    return TagValueConfigurableSplitter::s_FILTER_NAME;
+    return tag_value_configurable_splitter::FILTER_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string TagValueConfigurableSplitter::getDescription() const
+std::string tag_value_configurable_splitter::get_description() const
 {
-    return TagValueConfigurableSplitter::s_FILTER_DESCRIPTION;
+    return tag_value_configurable_splitter::FILTER_DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSplitter::isConfigurationRequired() const
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-
-bool TagValueConfigurableSplitter::isConfigurableWithGUI() const
+bool tag_value_configurable_splitter::is_configuration_required() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-void TagValueConfigurableSplitter::configureWithGUI()
+bool tag_value_configurable_splitter::is_configurable_with_gui() const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+void tag_value_configurable_splitter::configure_with_gui()
 {
     auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Configure"));
@@ -84,8 +84,8 @@ void TagValueConfigurableSplitter::configureWithGUI()
 
     // Create tag selectors
     auto* tag_selector =
-        new ui::dicom::widget::QTagSelectorWidget();
-    tag_selector->setTagValue(m_tag);
+        new ui::dicom::widget::q_tag_selector_widget();
+    tag_selector->set_tag_value(m_tag);
     main_layout->addWidget(tag_selector);
 
     // Create buttons
@@ -100,7 +100,7 @@ void TagValueConfigurableSplitter::configureWithGUI()
     int result = dialog->exec();
     if(result == QDialog::Accepted)
     {
-        m_tag = tag_selector->getTag();
+        m_tag = tag_selector->get_tag();
     }
 }
 

@@ -125,18 +125,18 @@ protected:
     void info(std::ostream& _sstream) override;
 
     /// Allows changing the config to start
-    void setConfig(sight::ui::parameter_t _val, std::string _key);
+    void set_config(sight::ui::parameter_t _val, std::string _key);
 
 private:
 
     /// config manager
-    app::helper::config_launcher::uptr m_configLauncher;
+    app::helper::config_launcher::uptr m_config_launcher;
 
     // the config name for configuration set key evaluation
     std::string m_key {"multiConfigController"};
 
     /// Input data to pass to the configuration
-    data::ptr_vector<data::object, data::Access::inout> m_data {this, app::helper::config_launcher::s_DATA_GROUP};
+    data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};
 };
 
 } // namespace sight::app

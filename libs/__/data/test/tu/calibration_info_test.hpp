@@ -30,10 +30,10 @@ namespace sight::data::ut
 class calibration_info_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(calibration_info_test);
-CPPUNIT_TEST(calibrationInfoTest);
-CPPUNIT_TEST(shallow_copyTest);
-CPPUNIT_TEST(deep_copyTest);
-CPPUNIT_TEST(getImageTest);
+CPPUNIT_TEST(calibration_test);
+CPPUNIT_TEST(shallow_copy_test);
+CPPUNIT_TEST(deep_copy_test);
+CPPUNIT_TEST(get_image_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,10 +42,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void calibrationInfoTest();
-    static void shallow_copyTest();
-    static void deep_copyTest();
-    static void getImageTest();
+    static void calibration_test();
+    static void shallow_copy_test();
+    static void deep_copy_test();
+    static void get_image_test();
 };
 
 } // namespace sight::data::ut

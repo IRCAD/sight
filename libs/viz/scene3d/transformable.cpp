@@ -28,46 +28,46 @@
 namespace sight::viz::scene3d
 {
 
-const std::string transformable::s_TRANSFORM_CONFIG = "config.<xmlattr>.transform";
+const std::string transformable::TRANSFORM_CONFIG = "config.<xmlattr>.transform";
 
 //------------------------------------------------------------------------------
 
-void transformable::setTransformId(viz::scene3d::render::ogre_object_id_t _id)
+void transformable::set_transform_id(viz::scene3d::render::ogre_object_id_t _id)
 {
-    m_transformId = _id;
+    m_transform_id = _id;
 }
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::render::ogre_object_id_t transformable::getTransformId() const
+viz::scene3d::render::ogre_object_id_t transformable::get_transform_id() const
 {
-    return m_transformId;
+    return m_transform_id;
 }
 
 //------------------------------------------------------------------------------
 
-Ogre::SceneNode* transformable::getTransformNode() const
+Ogre::SceneNode* transformable::get_transform_node() const
 {
-    return m_transformNode;
+    return m_transform_node;
 }
 
 //------------------------------------------------------------------------------
 
-Ogre::SceneNode* transformable::getOrCreateTransformNode(
+Ogre::SceneNode* transformable::get_or_create_transform_node(
     Ogre::SceneNode* const _parent_node
 )
 {
-    SIGHT_ASSERT("Transform id is not set.", !m_transformId.empty());
-    auto* transform_node = viz::scene3d::helper::scene::getNodeById(m_transformId, _parent_node);
+    SIGHT_ASSERT("Transform id is not set.", !m_transform_id.empty());
+    auto* transform_node = viz::scene3d::helper::scene::get_node_by_id(m_transform_id, _parent_node);
     if(transform_node == nullptr)
     {
-        transform_node = _parent_node->createChildSceneNode(m_transformId);
+        transform_node = _parent_node->createChildSceneNode(m_transform_id);
     }
 
     // assign m_transform to the retrieved/created node.
-    m_transformNode = transform_node;
+    m_transform_node = transform_node;
 
-    return m_transformNode;
+    return m_transform_node;
 }
 
 //-----------------------------------------------------------------------------

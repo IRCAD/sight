@@ -58,7 +58,7 @@ private:
      * @param[in] _algoPassName new suffix to use
      * @param[in] _baseName new suffix to use
      */
-    static Ogre::GpuProgramPtr ensureFPCreated(
+    static Ogre::GpuProgramPtr ensure_fp_created(
         const std::string& _name,
         const std::string& _algo_name,
         const std::string& _algo_pass_name,

@@ -43,7 +43,7 @@ menu::menu(std::string _sid) :
 
 //-----------------------------------------------------------------------------
 
-ui::container::menu::sptr menu::getParent()
+ui::container::menu::sptr menu::get_parent()
 {
     return ui::registry::get_sid_menu(m_sid);
 }
@@ -57,9 +57,9 @@ ui::container::menu_item::sptr menu::get_menu_item(
 {
     SIGHT_ASSERT(
         "The action '" + _action_sid + "' declared by the menu '" + m_sid + "' is not found",
-        m_actionSids.find(_action_sid) != m_actionSids.end()
+        m_action_sids.find(_action_sid) != m_action_sids.end()
     );
-    ui::container::menu_item::sptr menu_item = _menu_items.at(m_actionSids[_action_sid].first);
+    ui::container::menu_item::sptr menu_item = _menu_items.at(m_action_sids[_action_sid].first);
     return menu_item;
 }
 
@@ -80,9 +80,9 @@ void menu::initialize(const ui::config_t& _configuration)
 
             SIGHT_ASSERT(
                 "The action '" + sid.value() + "' already exists for '" + m_sid + "' menu.",
-                m_actionSids.find(sid.value()) == m_actionSids.end()
+                m_action_sids.find(sid.value()) == m_action_sids.end()
             );
-            m_actionSids[sid.value()] = SIDmenuMapType::mapped_type(index, start);
+            m_action_sids[sid.value()] = sid_menu_map_t::mapped_type(index, start);
 
             ui::action_callback_base::sptr callback;
             ui::object::sptr gui_obj = ui::factory::make(action_callback_base::REGISTRY_KEY);
@@ -93,7 +93,7 @@ void menu::initialize(const ui::config_t& _configuration)
                 callback
             );
 
-            callback->setSID(sid.value());
+            callback->set_sid(sid.value());
             m_callbacks.push_back(callback);
         }
 
@@ -109,9 +109,9 @@ void menu::initialize(const ui::config_t& _configuration)
             const bool start = menu.second.get("<xmlattr>.start", false);
             SIGHT_ASSERT(
                 "The menu '" + sid.value() + "' already exists for this menu '" + m_sid + "'",
-                m_menuSids.find(sid.value()) == m_menuSids.end()
+                m_menu_sids.find(sid.value()) == m_menu_sids.end()
             );
-            m_menuSids[sid.value()] = SIDmenuMapType::mapped_type(index, start);
+            m_menu_sids[sid.value()] = sid_menu_map_t::mapped_type(index, start);
         }
 
         index++;
@@ -123,7 +123,7 @@ void menu::initialize(const ui::config_t& _configuration)
 void menu::manage(std::vector<ui::container::menu_item::sptr> _menu_items)
 {
     ui::container::menu_item::sptr menu_item;
-    for(const SIDmenuMapType::value_type& sid : m_actionSids)
+    for(const auto& sid : m_action_sids)
     {
         SIGHT_ASSERT(
             "The menu '" << m_sid << "' contains more menuItems in <registry> than in <layout>: "
@@ -167,7 +167,7 @@ void menu::manage(std::vector<ui::container::menu_item::sptr> _menu_items)
 void menu::manage(std::vector<ui::container::menu::sptr> _menus)
 {
     ui::container::menu::sptr menu;
-    for(const SIDmenuMapType::value_type& sid : m_menuSids)
+    for(const auto& sid : m_menu_sids)
     {
         SIGHT_ASSERT(
             "The menu '" << m_sid << "' contains more menus in <registry> than in <layout>: "
@@ -197,7 +197,7 @@ void menu::manage(std::vector<ui::container::menu::sptr> _menus)
 
 void menu::unmanage()
 {
-    for(const SIDmenuMapType::value_type& sid : m_actionSids)
+    for(const auto& sid : m_action_sids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -213,7 +213,7 @@ void menu::unmanage()
         ui::registry::unregister_action_sid_to_parent_sid(sid.first, m_sid);
     }
 
-    for(const SIDmenuMapType::value_type& sid : m_menuSids)
+    for(const auto& sid : m_menu_sids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -232,7 +232,7 @@ void menu::unmanage()
 
 //-----------------------------------------------------------------------------
 
-void menu::onItemAction()
+void menu::on_item_action()
 {
     SIGHT_WARN("TODO: menu::onItemAction not yet implemented");
 }

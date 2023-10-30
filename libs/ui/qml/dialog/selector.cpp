@@ -46,7 +46,7 @@ void selector::set_choices_preset(choices_preset_t _selections)
 
 //------------------------------------------------------------------------------
 
-void selector::setTitle(std::string _title)
+void selector::set_title(std::string _title)
 {
     this->m_title = QString::fromStdString(_title);
 }
@@ -63,19 +63,19 @@ void selector::set_multiple(bool _multiple)
 selector::selections_t selector::show()
 {
     // list model for the repeater
-    ui::qml::model::RoleListModel model;
+    ui::qml::model::role_list_model model;
     // get the qml engine QmlApplicationEngine
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
+    SPTR(ui::qml::qml_engine) engine = ui::qml::qml_engine::get_default();
 
     // get the path of the qml ui file in the 'rc' directory
     const auto dialog_path = core::runtime::get_library_resource_file_path("ui_qml/dialog/selector.qml");
     // set the root context for the model
-    engine->getRootContext()->setContextProperty("selector_model", &model);
+    engine->get_root_context()->setContextProperty("selector_model", &model);
     // set the context for the new component
-    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->get_root_context()));
     context->setContextProperty("selectorDialog", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialog_path, context);
+    QObject* window = engine->create_component(dialog_path, context);
     SIGHT_ASSERT("The Qml File selector is not found or not loaded", window);
     // keep window to destroy it
 
@@ -84,21 +84,21 @@ selector::selections_t selector::show()
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
     // create all radiobutton
-    model.addRole(Qt::UserRole + 1, "textOption");
-    model.addRole(Qt::UserRole + 2, "check");
+    model.add_role(Qt::UserRole + 1, "textOption");
+    model.add_role(Qt::UserRole + 2, "check");
     for(const auto& selection : m_choices)
     {
         QHash<QByteArray, QVariant> data;
         data.insert("textOption", QString::fromStdString(selection.first));
         data.insert("check", selection.second);
-        model.addData(QHash<QByteArray, QVariant>(data));
+        model.add_data(QHash<QByteArray, QVariant>(data));
     }
 
-    SIGHT_ASSERT("The selector need at least one option", !model.isEmpty());
+    SIGHT_ASSERT("The selector need at least one option", !model.is_empty());
 
     if(!m_message.isEmpty())
     {
-        Q_EMIT messageChanged();
+        Q_EMIT message_changed();
     }
 
     QEventLoop loop;
@@ -126,21 +126,21 @@ selector::selections_t selector::show()
 
 //------------------------------------------------------------------------------
 
-void selector::setMessage(const std::string& _msg)
+void selector::set_message(const std::string& _msg)
 {
     m_message = QString::fromStdString(_msg);
 }
 
 //------------------------------------------------------------------------------
 
-void selector::resultDialog(QVariant _selection)
+void selector::result_dialog(QVariant _selection)
 {
     m_selection = _selection.toString();
 }
 
 //------------------------------------------------------------------------------
 
-void selector::addCustomButton(const std::string& /*label*/, std::function<void()> /*clickedFn*/)
+void selector::add_custom_button(const std::string& /*label*/, std::function<void()> /*clickedFn*/)
 {
 }
 

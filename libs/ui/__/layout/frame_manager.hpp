@@ -43,14 +43,14 @@ public:
     SIGHT_DECLARE_CLASS(frame_manager, ui::object);
 
     /// Defines all possible style for a frame
-    typedef enum
+    enum style
     {
         DEFAULT,
-        STAY_ON_TOP,
-        MODAL
-    } Style;
+        stay_on_top,
+        modal
+    };
 
-    typedef std::string registry_key_t;
+    using registry_key_t = std::string;
 
     static const std::string SOFTWARE_UI;
     static const std::string FRAME_STATE_UI;
@@ -59,21 +59,21 @@ public:
     static const std::string FRAME_POSITION_X_UI;
     static const std::string FRAME_POSITION_Y_UI;
 
-    enum class FrameState : std::uint8_t
+    enum class frame_state : std::uint8_t
     {
-        UNKNOWN     = 0, ///< the unknown state
-        ICONIZED    = 1, ///< the minimized state
-        MAXIMIZED   = 2, ///< the maximied state
-        FULL_SCREEN = 3  ///< the full screen state
+        unknown     = 0, ///< the unknown state
+        iconized    = 1, ///< the minimized state
+        maximized   = 2, ///< the maximied state
+        full_screen = 3  ///< the full screen state
     };
 
-    class FrameInfo
+    class frame_info
     {
     public:
 
-        FrameInfo() :
+        frame_info() :
 
-            m_minSize(std::make_pair(-1, -1)),
+            m_min_size(std::make_pair(-1, -1)),
             m_size(std::make_pair(-1, -1)),
             m_position(std::make_pair(-1, -1))
         {
@@ -86,16 +86,16 @@ public:
         std::string m_version;
 
         /// Frame icon.
-        std::filesystem::path m_iconPath;
+        std::filesystem::path m_icon_path;
 
         /// Frame minimum size (min width and min height)
-        std::pair<int, int> m_minSize;
+        std::pair<int, int> m_min_size;
 
         /// Frame maximum size (max width and max height)
-        std::pair<int, int> m_maxSize {-1, -1};
+        std::pair<int, int> m_max_size {-1, -1};
 
         /// Frame style
-        Style m_style {DEFAULT};
+        style m_style {DEFAULT};
 
         /// Frame size
         std::pair<int, int> m_size;
@@ -104,12 +104,12 @@ public:
         std::pair<int, int> m_position;
 
         /// Frame state (maximize, minized, full screen)
-        FrameState m_state {FrameState::UNKNOWN};
+        frame_state m_state {frame_state::unknown};
 
         /// Frame visibility
         bool m_visibility {true};
 
-        std::string m_qssClass;
+        std::string m_qss_class;
     };
 
     /// Constructor. Do nothing.
@@ -128,68 +128,68 @@ public:
     /**
      * @brief Instantiate frame.
      */
-    UI_API virtual void createFrame() = 0;
+    UI_API virtual void create_frame() = 0;
 
     /**
      * @brief Destroy frame.
      */
-    UI_API virtual void destroyFrame() = 0;
+    UI_API virtual void destroy_frame() = 0;
 
     /// Return the frame container
-    virtual ui::container::widget::sptr getFrame()
+    virtual ui::container::widget::sptr get_frame()
     {
         return m_frame;
     }
 
     /// Return the first container into the frame
-    virtual ui::container::widget::sptr getContainer()
+    virtual ui::container::widget::sptr get_container()
     {
         return m_container;
     }
 
-    typedef std::function<void ()> CloseCallback;
-    UI_API virtual void setCloseCallback(CloseCallback _fct);
+    using CloseCallback = std::function<void ()>;
+    UI_API virtual void set_close_callback(CloseCallback _fct);
 
 protected:
 
     /**
      * @brief Configuration definition.
      * @{ */
-    const FrameInfo& getFrameInfo() const
+    const frame_info& get_frame_info() const
     {
-        return m_frameInfo;
+        return m_frame_info;
     }
 
     //------------------------------------------------------------------------------
 
-    FrameInfo& getFrameInfo()
+    frame_info& get_frame_info()
     {
-        return m_frameInfo;
+        return m_frame_info;
     }
 
     //------------------------------------------------------------------------------
 
-    void setFrameInfo(const FrameInfo& _frame_info)
+    void set_frame_info(const frame_info& _frame_info)
     {
-        m_frameInfo = _frame_info;
+        m_frame_info = _frame_info;
     }
 
     /**  @} */
 
     ui::container::widget::sptr m_frame;
     ui::container::widget::sptr m_container;
-    CloseCallback m_closeCallback;
+    CloseCallback m_close_callback;
 
-    UI_API void readConfig();
+    UI_API void read_config();
 
-    UI_API void writeConfig() const;
+    UI_API void write_config() const;
 
 private:
 
-    static void defaultCloseCallback();
+    static void default_close_callback();
 
     /// Save frame configuration definition
-    FrameInfo m_frameInfo;
+    frame_info m_frame_info;
 };
 
 } // namespace sight::ui::layout

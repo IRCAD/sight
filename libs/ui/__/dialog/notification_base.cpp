@@ -25,7 +25,7 @@
 namespace sight::ui::dialog
 {
 
-static const std::string s_defaultMessage = "Empty message";
+static const std::string DEFAULT_MESSAGE = "Empty message";
 
 const notification_base::factory_registry_key_t notification_base::REGISTRY_KEY =
     "::ui::dialog::notification";
@@ -33,18 +33,18 @@ const notification_base::factory_registry_key_t notification_base::REGISTRY_KEY 
 //-----------------------------------------------------------------------------
 
 notification_base::notification_base() :
-    m_notification({.message = s_defaultMessage})
+    m_notification({.message = DEFAULT_MESSAGE})
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void notification_base::setMessage(std::string _msg)
+void notification_base::set_message(std::string _msg)
 {
     if(_msg.empty())
     {
         SIGHT_ERROR("Cannot set an empty message to notification, using 'Empty Message'");
-        m_notification.message = s_defaultMessage;
+        m_notification.message = DEFAULT_MESSAGE;
     }
     else
     {
@@ -54,21 +54,21 @@ void notification_base::setMessage(std::string _msg)
 
 //-----------------------------------------------------------------------------
 
-void notification_base::setPosition(notification_base::Position _position)
+void notification_base::set_position(notification_base::position _position)
 {
     m_notification.position = _position;
 }
 
 //-----------------------------------------------------------------------------
 
-void notification_base::setType(notification_base::Type _type)
+void notification_base::set_type(notification_base::type _type)
 {
     m_notification.type = _type;
 }
 
 //-----------------------------------------------------------------------------
 
-void notification_base::setSize(std::array<int, 2> _size)
+void notification_base::set_size(std::array<int, 2> _size)
 {
     m_notification.size = _size;
 }
@@ -82,56 +82,56 @@ std::array<int, 2> notification_base::size() const
 
 //-----------------------------------------------------------------------------
 
-void notification_base::setIndex(unsigned int _index)
+void notification_base::set_index(unsigned int _index)
 {
     m_index = _index;
 }
 
 //-----------------------------------------------------------------------------
 
-void notification_base::setDuration(std::optional<std::chrono::milliseconds> _duration_in_ms)
+void notification_base::set_duration(std::optional<std::chrono::milliseconds> _duration_in_ms)
 {
     m_notification.duration = _duration_in_ms;
 }
 
 //------------------------------------------------------------------------------
 
-void notification_base::setChannel(std::string _channel)
+void notification_base::set_channel(std::string _channel)
 {
     m_notification.channel = std::move(_channel);
 }
 
 //------------------------------------------------------------------------------
 
-std::string notification_base::getChannel() const
+std::string notification_base::get_channel() const
 {
     return m_notification.channel;
 }
 
 //------------------------------------------------------------------------------
 
-void notification_base::setClosable(std::optional<bool> _closable)
+void notification_base::set_closable(std::optional<bool> _closable)
 {
     m_notification.closable = _closable;
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<bool> notification_base::isClosable() const
+std::optional<bool> notification_base::is_closable() const
 {
     return m_notification.closable;
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<std::chrono::milliseconds> notification_base::getDuration() const
+std::optional<std::chrono::milliseconds> notification_base::get_duration() const
 {
     return m_notification.duration;
 }
 
 //------------------------------------------------------------------------------
 
-void notification_base::setNotification(service::Notification _notification)
+void notification_base::set_notification(service::notification _notification)
 {
     m_notification = std::move(_notification);
 }

@@ -34,7 +34,7 @@ namespace sight::io::session::detail::structure_traits_dictionary
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& /*unused*/,
+    zip::archive_writer& /*unused*/,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -47,16 +47,16 @@ inline static void write(
     helper::write_version<data::structure_traits_dictionary>(_tree, 1);
 
     // Serialize attributes
-    for(const auto& name : structure_traits_dictionary->getStructureTypeNames())
+    for(const auto& name : structure_traits_dictionary->get_structure_type_names())
     {
-        _children[name] = structure_traits_dictionary->getStructure(name);
+        _children[name] = structure_traits_dictionary->get_structure(name);
     }
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::structure_traits_dictionary::sptr read(
-    zip::ArchiveReader& /*unused*/,
+    zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -81,7 +81,7 @@ inline static data::structure_traits_dictionary::sptr read(
         }
     }
 
-    structure_traits_dictionary->setStructureTraitsMap(structures);
+    structure_traits_dictionary->set_structure_traits_map(structures);
     return structure_traits_dictionary;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,10 @@
 namespace sight::viz::scene2d::ut
 {
 
-class ViewportTest : public CPPUNIT_NS::TestFixture
+class viewport_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ViewportTest);
-CPPUNIT_TEST(testParser);
+CPPUNIT_TEST_SUITE(viewport_test);
+CPPUNIT_TEST(test_parser);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,7 +39,7 @@ public:
     void tearDown() override;
 
     /// test object with services creation from a configuration
-    static void testParser();
+    static void test_parser();
 };
 
 } // namespace sight::viz::scene2d::ut

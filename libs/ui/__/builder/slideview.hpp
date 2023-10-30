@@ -61,26 +61,26 @@ public:
     UI_API const static std::string REGISTRY_KEY;
 
     /// Defines the horizontal alignment of the widget.
-    enum HAlignment
+    enum h_alignment
     {
-        RIGHT,
-        LEFT
+        right,
+        left
     };
 
     /// Defines the vertical alignment of the widget.
-    enum VAlignment
+    enum v_alignment
     {
-        TOP,
-        BOTTOM
+        top,
+        bottom
     };
 
     /// Defines animation direction.
-    enum AnimatableAlignment
+    enum animatable_alignment
     {
-        RIGHT_ANIMATION,
-        LEFT_ANIMATION,
-        TOP_ANIMATION,
-        BOTTOM_ANIMATION
+        right_animation,
+        left_animation,
+        top_animation,
+        bottom_animation
     };
 
     /// Creates the slide view builder.
@@ -90,16 +90,16 @@ public:
     UI_API ~slideview() override = default;
 
     /// Returns the generic container.
-    UI_API virtual ui::container::widget::sptr getContainer() const;
+    UI_API virtual ui::container::widget::sptr get_container() const;
 
     /// Parses the configuration.
     UI_API virtual void initialize(const ui::config_t& _config);
 
     /// Creates the container.
-    UI_API virtual void createContainer(ui::container::widget::sptr _parent) = 0;
+    UI_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
 
     /// Destroys the container.
-    UI_API virtual void destroyContainer() = 0;
+    UI_API virtual void destroy_container() = 0;
 
 protected:
 
@@ -107,34 +107,34 @@ protected:
     ui::container::widget::sptr m_container;
 
     /// Defines the horizontal alignment.
-    HAlignment m_hAlignment {LEFT};
+    h_alignment m_h_alignment {left};
 
     /// Defines the vertical alignment.
-    VAlignment m_vAlignment {TOP};
+    v_alignment m_v_alignment {top};
 
     /// Defines the width of the widget.
     int m_width {100};
 
     /// Defines if the width must be read a percent.
-    bool m_percentWidth {true};
+    bool m_percent_width {true};
 
     /// Defines the height of the widget.
     int m_height {100};
 
     /// Defines if the height must be read a percent.
-    bool m_percentHeight {true};
+    bool m_percent_height {true};
 
     /// Defines the horizontal offset of the widget.
-    int m_hOffset {0};
+    int m_h_offset {0};
 
     /// Defines if the horizontal offset must be read a percent.
-    bool m_percentHOffset {false};
+    bool m_percent_h_offset {false};
 
     /// Defines the vertical offset of the widget.
-    int m_vOffset {0};
+    int m_v_offset {0};
 
     /// Defines if the vertical offset must be read a percent.
-    bool m_percentVOffset {false};
+    bool m_percent_v_offset {false};
 
     /// Defines the widget opacity.
     double m_opacity {1.};
@@ -143,10 +143,10 @@ protected:
     bool m_animatable {false};
 
     /// Defines the animation direction.
-    AnimatableAlignment m_animatableAlignment {TOP_ANIMATION};
+    animatable_alignment m_animatable_alignment {top_animation};
 
     /// Defines the additional style sheet of the widget.
-    std::string m_styleSheet;
+    std::string m_style_sheet;
 };
 
 } // namespace sight::ui::builder

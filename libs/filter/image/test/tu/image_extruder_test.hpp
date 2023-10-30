@@ -35,8 +35,8 @@ namespace sight::filter::image::ut
 class image_extruder_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(image_extruder_test);
-CPPUNIT_TEST(extrudeTriangleMesh);
-CPPUNIT_TEST(extrudeQuadMesh);
+CPPUNIT_TEST(extrude_triangle_mesh);
+CPPUNIT_TEST(extrude_quad_mesh);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,21 +45,18 @@ public:
 
     void tearDown() override;
 
-    void extrudeTriangleMesh();
+    void extrude_triangle_mesh();
 
-    void extrudeQuadMesh();
+    void extrude_quad_mesh();
 
 private:
 
-    const core::type M_TYPE {core::type::INT8};
+    const core::type m_type {core::type::INT8};
 
-    const data::image::PixelFormat M_FORMAT {data::image::PixelFormat::GRAY_SCALE};
-
-    const data::image::Size M_SIZE {8, 16, 24};
-
-    const data::image::Origin M_ORIGIN {0.F, 0.F, 0.F};
-
-    const data::image::Spacing M_SPACING {1.F, 1.F, 1.F};
+    const enum data::image::pixel_format m_format {data::image::pixel_format::gray_scale};
+    const data::image::size_t m_size {8, 16, 24};
+    const data::image::origin_t m_origin {0.F, 0.F, 0.F};
+    const data::image::spacing_t m_spacing {1.F, 1.F, 1.F};
 
     data::image::sptr m_image;
 };

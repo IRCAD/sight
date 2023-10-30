@@ -91,13 +91,13 @@ protected:
     MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Slot called to extract position from the latest matrix of the MatrixTL and push it in the pointList
-    MODULE_GEOMETRY_VISION_API void addPoint();
+    MODULE_GEOMETRY_VISION_API void add_point();
 
     /// Slot called to clear the pointlist
     MODULE_GEOMETRY_VISION_API void clear();
 
-    data::ptr<data::matrix_tl, data::Access::in> m_matrixTL {this, "matrixTL"};
-    data::ptr<data::point_list, data::Access::inout> m_pointList {this, "pointList"};
+    data::ptr<data::matrix_tl, data::access::in> m_matrix_tl {this, "matrixTL"};
+    data::ptr<data::point_list, data::access::inout> m_point_list {this, "pointList"};
 };
 
 } //namespace sight::module::geometry::vision

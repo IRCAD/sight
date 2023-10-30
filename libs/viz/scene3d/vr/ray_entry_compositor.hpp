@@ -51,7 +51,7 @@ public:
     VIZ_SCENE3D_API virtual ~ray_entry_compositor();
 
     /// Returns the created compositor's name.
-    [[nodiscard]] VIZ_SCENE3D_API const std::string& getName() const;
+    [[nodiscard]] VIZ_SCENE3D_API const std::string& get_name() const;
 
 private:
 
@@ -59,7 +59,7 @@ private:
     Ogre::CompositorPtr m_compositor;
 
     /// Created compositor's name.
-    const std::string M_COMPOSITOR_NAME;
+    const std::string m_compositor_name;
 };
 
 } // namespace sight::viz::scene3d::vr

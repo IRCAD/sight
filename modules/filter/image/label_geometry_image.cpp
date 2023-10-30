@@ -40,7 +40,7 @@ const core::com::slots::key_t UPDATE_SELECTED_POINT_LIST = "updateSelectedPointL
 
 label_geometry_image::label_geometry_image()
 {
-    new_slot(UPDATE_SELECTED_POINT_LIST, &label_geometry_image::updateSelectedPointList, this);
+    new_slot(UPDATE_SELECTED_POINT_LIST, &label_geometry_image::update_selected_point_list, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,8 +67,8 @@ void label_geometry_image::configuring()
             cluster_labels.push_back(std::stoul(t));
         }
 
-        m_lPointListLabels.push_back(cluster_labels);
-        m_lPointListCentroids.push_back(std::make_shared<data::point_list>());
+        m_l_point_list_labels.push_back(cluster_labels);
+        m_l_point_list_centroids.push_back(std::make_shared<data::point_list>());
     }
 }
 
@@ -85,15 +85,15 @@ void label_geometry_image::updating()
     const auto image = m_image.lock();
 
     // Call the ITK operator
-    sight::filter::image::compute_centroids(image.get_shared(), m_lPointListCentroids, m_lPointListLabels);
+    sight::filter::image::compute_centroids(image.get_shared(), m_l_point_list_centroids, m_l_point_list_labels);
 
-    if(m_lPointListCentroids.empty())
+    if(m_l_point_list_centroids.empty())
     {
         data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*image);
 
         SIGHT_ASSERT("landmarks not instanced", landmarks);
 
-        for(const auto& point : landmarks->getPoints())
+        for(const auto& point : landmarks->get_points())
         {
             auto sig = image->signal<data::image::landmark_added_signal_t>(data::image::LANDMARK_ADDED_SIG);
             sig->async_emit(point);
@@ -101,10 +101,10 @@ void label_geometry_image::updating()
     }
     else
     {
-        this->updateSelectedPointList("1", "");
+        this->update_selected_point_list("1", "");
     }
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,7 +115,7 @@ void label_geometry_image::stopping()
 
 //-----------------------------------------------------------------------------
 
-void label_geometry_image::updateSelectedPointList(std::string _value, std::string /*key*/)
+void label_geometry_image::update_selected_point_list(std::string _value, std::string /*key*/)
 {
     SIGHT_ASSERT(
         "value: " << _value << "should end by a number between 0 and 9",
@@ -128,14 +128,14 @@ void label_geometry_image::updateSelectedPointList(std::string _value, std::stri
         index_plane--;
     }
 
-    data::point_list::sptr selected_point_list = m_lPointListCentroids.at(index_plane);
+    data::point_list::sptr selected_point_list = m_l_point_list_centroids.at(index_plane);
 
-    for(std::size_t id_point = 0 ; id_point < selected_point_list->getPoints().size() ; ++id_point)
+    for(std::size_t id_point = 0 ; id_point < selected_point_list->get_points().size() ; ++id_point)
     {
-        selected_point_list->getPoints().at(id_point)->setLabel(std::to_string(id_point));
+        selected_point_list->get_points().at(id_point)->set_label(std::to_string(id_point));
     }
 
-    this->set_output("pointList", m_lPointListCentroids.at(index_plane));
+    this->set_output("pointList", m_l_point_list_centroids.at(index_plane));
 }
 
 //-----------------------------------------------------------------------------

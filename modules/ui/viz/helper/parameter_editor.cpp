@@ -37,27 +37,27 @@ namespace sight::module::ui::viz::helper
 template<typename T>
 std::pair<T, T> get_range(T _value)
 {
-    static const T range = 10;
+    static const T s_RANGE = 10;
     T max;
     T min;
 
     // For _value > 1, we use [-_value * range;+_value *range]
     if(_value > 1)
     {
-        max = +_value * range;
-        min = -_value * range;
+        max = +_value * s_RANGE;
+        min = -_value * s_RANGE;
     }
     else if(_value < -1)
     // For _value < 0, we use [_value * range;-_value *range]
     {
-        max = -_value * range;
-        min = +_value * range;
+        max = -_value * s_RANGE;
+        min = +_value * s_RANGE;
     }
     else if(_value > 0 || _value < 0)
     // For -1 < value < 0 < _value < 1, we use [_value / range;+_value * range]
     {
-        max = _value * range;
-        min = _value / range;
+        max = _value * s_RANGE;
+        min = _value / s_RANGE;
     }
     else
     // For _value == 0, we use [0; 1]
@@ -71,7 +71,7 @@ std::pair<T, T> get_range(T _value)
 
 //-----------------------------------------------------------------------------
 
-service::config_t parameter_editor::createConfig(
+service::config_t parameter_editor::create_config(
     const sight::viz::scene3d::parameter_adaptor::csptr& _adaptor,
     const service::base::csptr& _param_srv,
     core::com::helper::sig_slot_connection& _connections
@@ -81,22 +81,22 @@ service::config_t parameter_editor::createConfig(
 
     /// Getting associated object infos
     const auto shader_obj =
-        _adaptor->inout(sight::viz::scene3d::parameter_adaptor::s_PARAMETER_INOUT).lock();
+        _adaptor->inout(sight::viz::scene3d::parameter_adaptor::PARAMETER_INOUT).lock();
 
     const auto& obj_type = shader_obj->get_classname();
 
     if(obj_type == "sight::data::boolean")
     {
-        _connections.connect(_param_srv, "boolChanged", _adaptor, "setBoolParameter");
+        _connections.connect(_param_srv, "boolChanged", _adaptor, "set_bool_parameter");
 
         param_config.add("<xmlattr>.type", "bool");
-        param_config.add("<xmlattr>.name", _adaptor->getParamName());
-        param_config.add("<xmlattr>.key", _adaptor->getParamName());
+        param_config.add("<xmlattr>.name", _adaptor->get_param_name());
+        param_config.add("<xmlattr>.key", _adaptor->get_param_name());
         param_config.add("<xmlattr>.defaultValue", false);
     }
     else if(obj_type == "sight::data::color")
     {
-        _connections.connect(_param_srv, "colorChanged", _adaptor, "setColorParameter");
+        _connections.connect(_param_srv, "colorChanged", _adaptor, "set_color_parameter");
 
         auto color_value = std::dynamic_pointer_cast<data::color>(shader_obj.get_shared());
 
@@ -113,13 +113,13 @@ service::config_t parameter_editor::createConfig(
         hex_str << ((a < 0x10) ? "0" : "") << a;
 
         param_config.add("<xmlattr>.type", "color");
-        param_config.add("<xmlattr>.name", _adaptor->getParamName());
-        param_config.add("<xmlattr>.key", _adaptor->getParamName());
+        param_config.add("<xmlattr>.name", _adaptor->get_param_name());
+        param_config.add("<xmlattr>.key", _adaptor->get_param_name());
         param_config.add("<xmlattr>.defaultValue", hex_str.str());
     }
     else if(obj_type == "sight::data::real")
     {
-        _connections.connect(_param_srv, "doubleChanged", _adaptor, "setDoubleParameter");
+        _connections.connect(_param_srv, "doubleChanged", _adaptor, "set_double_parameter");
 
         auto float_value         = std::dynamic_pointer_cast<data::real>(shader_obj.get_shared());
         const auto default_value = static_cast<double>(float_value->value());
@@ -128,15 +128,15 @@ service::config_t parameter_editor::createConfig(
         const double max         = minmax.second;
 
         param_config.add("<xmlattr>.type", "double");
-        param_config.add("<xmlattr>.name", _adaptor->getParamName());
-        param_config.add("<xmlattr>.key", _adaptor->getParamName());
+        param_config.add("<xmlattr>.name", _adaptor->get_param_name());
+        param_config.add("<xmlattr>.key", _adaptor->get_param_name());
         param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
         param_config.add("<xmlattr>.min", min);
         param_config.add("<xmlattr>.max", max);
     }
     else if(obj_type == "sight::data::integer")
     {
-        _connections.connect(_param_srv, "intChanged", _adaptor, "setIntParameter");
+        _connections.connect(_param_srv, "intChanged", _adaptor, "set_int_parameter");
 
         auto int_value          = std::dynamic_pointer_cast<data::integer>(shader_obj.get_shared());
         const int default_value = int(int_value->value());
@@ -145,8 +145,8 @@ service::config_t parameter_editor::createConfig(
         const int max           = minmax.second;
 
         param_config.add("<xmlattr>.type", "int");
-        param_config.add("<xmlattr>.name", _adaptor->getParamName());
-        param_config.add("<xmlattr>.key", _adaptor->getParamName());
+        param_config.add("<xmlattr>.name", _adaptor->get_param_name());
+        param_config.add("<xmlattr>.key", _adaptor->get_param_name());
         param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
         param_config.add("<xmlattr>.min", min);
         param_config.add("<xmlattr>.max", max);
@@ -159,8 +159,8 @@ service::config_t parameter_editor::createConfig(
         {
             std::string str_size = std::to_string(num_components);
 
-            if(array_object->getType() == core::type::FLOAT
-               || array_object->getType() == core::type::DOUBLE)
+            if(array_object->type() == core::type::FLOAT
+               || array_object->type() == core::type::DOUBLE)
             {
                 _connections.connect(
                     _param_srv,
@@ -174,7 +174,7 @@ service::config_t parameter_editor::createConfig(
                 const auto dump_lock = array_object->dump_lock();
 
                 double default_value = NAN;
-                if(array_object->getType() == core::type::FLOAT)
+                if(array_object->type() == core::type::FLOAT)
                 {
                     default_value = static_cast<double>(array_object->at<float>(0));
                 }
@@ -188,13 +188,13 @@ service::config_t parameter_editor::createConfig(
                 const double max  = minmax.second;
 
                 param_config.add("<xmlattr>.type", "double" + str_size);
-                param_config.add("<xmlattr>.name", _adaptor->getParamName());
-                param_config.add("<xmlattr>.key", _adaptor->getParamName());
+                param_config.add("<xmlattr>.name", _adaptor->get_param_name());
+                param_config.add("<xmlattr>.key", _adaptor->get_param_name());
                 param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
                 param_config.add("<xmlattr>.min", min);
                 param_config.add("<xmlattr>.max", max);
             }
-            else if(array_object->getType() == core::type::INT32)
+            else if(array_object->type() == core::type::INT32)
             {
                 _connections.connect(
                     _param_srv,
@@ -210,15 +210,15 @@ service::config_t parameter_editor::createConfig(
                 const int max           = minmax.second;
 
                 param_config.add("<xmlattr>.type", "int" + str_size);
-                param_config.add("<xmlattr>.name", _adaptor->getParamName());
-                param_config.add("<xmlattr>.key", _adaptor->getParamName());
+                param_config.add("<xmlattr>.name", _adaptor->get_param_name());
+                param_config.add("<xmlattr>.key", _adaptor->get_param_name());
                 param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
                 param_config.add("<xmlattr>.min", min);
                 param_config.add("<xmlattr>.max", max);
             }
             else
             {
-                SIGHT_ERROR("Array type not handled: " << array_object->getType());
+                SIGHT_ERROR("Array type not handled: " << array_object->type());
             }
         }
         else

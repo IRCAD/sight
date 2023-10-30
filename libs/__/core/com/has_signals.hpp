@@ -37,8 +37,8 @@ class CORE_CLASS_API has_signals
 {
 public:
 
-    typedef std::shared_ptr<has_signals> sptr;
-    typedef std::shared_ptr<const has_signals> csptr;
+    using sptr  = std::shared_ptr<has_signals>;
+    using csptr = std::shared_ptr<const has_signals>;
 
     has_signals()          = default;
     virtual ~has_signals() = default;

@@ -40,7 +40,7 @@ namespace sight::module::ui::dicom
    <service type="sight::module::ui::dicom::filter_selector_dialog">
        <inout key="filter" uid="..." />
        <selection mode="include" />
-       <addSelection filter="sight::filter::dicom::custom::NoFilter" />
+       <addSelection filter="sight::filter::dicom::custom::no_filter" />
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -95,16 +95,16 @@ protected:
 private:
 
     /// Configure if selected filters are included or excluded.
-    bool m_filtersAreExcluded {true};
+    bool m_filters_are_excluded {true};
 
     /**
      * @brief List of filters to be included or excluded.
      *
      * @see filter_selector_dialog::m_filtersAreExcluded.
      */
-    std::vector<std::string> m_selectedFilters;
+    std::vector<std::string> m_selected_filters;
 
-    data::ptr<data::string, data::Access::inout> m_filter {this, "filter"};
+    data::ptr<data::string, data::access::inout> m_filter {this, "filter"};
 };
 
 } // namespace sight::module::ui::dicom

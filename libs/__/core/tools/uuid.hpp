@@ -32,7 +32,7 @@ namespace sight::core::tools
 /**
  * @brief   Management of UUID on objects.
  */
-class CORE_CLASS_API UUID
+class CORE_CLASS_API uuid
 {
 public:
 

@@ -45,11 +45,11 @@ public:
     /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
-    UI_API static void show(sight::service::Notification _notification);
+    UI_API static void show(sight::service::notification _notification);
     inline static void show(
         std::string _message,
-        sight::service::Notification::Type _type    = sight::service::Notification::Type::INFO,
-        sight::service::Notification::Position _pos = sight::service::Notification::Position::TOP_RIGHT
+        enum sight::service::notification::type _type    = sight::service::notification::type::info,
+        enum sight::service::notification::position _pos = sight::service::notification::position::top_right
     );
     /// @}
 
@@ -61,11 +61,11 @@ public:
     /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
-    UI_API notification(sight::service::Notification _notification);
+    UI_API notification(sight::service::notification _notification);
     inline explicit notification(
         std::string _message,
-        sight::service::Notification::Type _type    = sight::service::Notification::Type::INFO,
-        sight::service::Notification::Position _pos = sight::service::Notification::Position::TOP_RIGHT
+        enum sight::service::notification::type _type    = sight::service::notification::type::info,
+        enum sight::service::notification::position _pos = sight::service::notification::position::top_right
     ) :
         notification({.type = _type, .position = _pos, .message = std::move(_message)})
     {
@@ -80,53 +80,53 @@ public:
     UI_API void show() override;
 
     /// Sets the message.
-    UI_API void setMessage(std::string _msg) override;
+    UI_API void set_message(std::string _msg) override;
 
     /// Sets the notification type.
-    UI_API void setType(Type _type) override;
+    UI_API void set_type(type _type) override;
 
     /// Sets the position.
-    UI_API void setPosition(Position _position) override;
+    UI_API void set_position(position _position) override;
 
     /// Sets the size
-    UI_API void setSize(std::array<int, 2> _size) override;
+    UI_API void set_size(std::array<int, 2> _size) override;
     UI_API std::array<int, 2> size() const override;
 
     /// Sets the index
-    UI_API void setIndex(unsigned int _index) override;
+    UI_API void set_index(unsigned int _index) override;
 
     /// Sets the duration in ms.
-    UI_API void setDuration(std::optional<std::chrono::milliseconds> _duration_in_ms) override;
-    UI_API std::optional<std::chrono::milliseconds> getDuration() const override;
+    UI_API void set_duration(std::optional<std::chrono::milliseconds> _duration_in_ms) override;
+    UI_API std::optional<std::chrono::milliseconds> get_duration() const override;
 
     /// Sets the channel. Empty string for default global channel
-    UI_API void setChannel(std::string) override;
-    UI_API std::string getChannel() const override;
+    UI_API void set_channel(std::string) override;
+    UI_API std::string get_channel() const override;
 
     /// Sets the closable property. std::nullopt means finite duration is closable
-    UI_API void setClosable(std::optional<bool> _closable) override;
-    UI_API std::optional<bool> isClosable() const override;
+    UI_API void set_closable(std::optional<bool> _closable) override;
+    UI_API std::optional<bool> is_closable() const override;
 
     /**
      * @brief Gets the visibility
      * @return Visibility, true = visible.
      */
-    UI_API bool isVisible() const override;
+    UI_API bool is_visible() const override;
 
     /// Closes the notification.
     UI_API void close() const override;
 
     /// Move the notification to the lower index
-    UI_API void moveDown() override;
+    UI_API void move_down() override;
 
     /**
      * @brief Sets the parent container.
      * @param _container const pointer to a ui::container::widget.
      */
-    UI_API void setContainer(ui::container::widget::csptr _container) override;
+    UI_API void set_container(ui::container::widget::csptr _container) override;
 
     /// Define the callback called when the dialog is closed
-    UI_API void setClosedCallback(std::function<void()> _f) override;
+    UI_API void set_closed_callback(std::function<void()> _f) override;
 
 protected:
 
@@ -138,8 +138,8 @@ protected:
 
 inline void notification::show(
     std::string _message,
-    sight::service::Notification::Type _type,
-    sight::service::Notification::Position _pos
+    enum sight::service::notification::type _type,
+    enum sight::service::notification::position _pos
 )
 {
     show({.type = _type, .position = _pos, .message = std::move(_message)});

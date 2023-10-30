@@ -51,7 +51,7 @@ bool is_dicom(const std::filesystem::path& _filepath)
 
 //------------------------------------------------------------------------------
 
-void DicomSearch::searchRecursively(
+void dicom_search::search_recursively(
     const std::filesystem::path& _dir_path,
     std::vector<std::filesystem::path>& _dicom_files,
     bool _check_is_dicom,
@@ -59,7 +59,7 @@ void DicomSearch::searchRecursively(
 )
 {
     std::vector<std::filesystem::path> file_vect;
-    checkFilenameExtension(_dir_path, file_vect, _reader_observer);
+    check_filename_extension(_dir_path, file_vect, _reader_observer);
 
     if(_check_is_dicom)
     {
@@ -100,7 +100,7 @@ void DicomSearch::searchRecursively(
 
 //------------------------------------------------------------------------------
 
-void DicomSearch::checkFilenameExtension(
+void dicom_search::check_filename_extension(
     const std::filesystem::path& _dir_path,
     std::vector<std::filesystem::path>& _dicom_files,
     const core::jobs::observer::sptr& _file_lookup_observer

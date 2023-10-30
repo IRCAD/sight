@@ -28,7 +28,7 @@
 #include <gdcmDataSet.h>
 #include <gdcmSequenceOfItems.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::DicomSRCodeNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::dicom_sr_code_node_test);
 
 #define CODE_NODE 0x0040, 0xa168
 #define VALUE 0x0008, 0x0100
@@ -43,39 +43,39 @@ namespace sight::io::dicom::container::sr::ut
 
 //------------------------------------------------------------------------------
 
-void DicomSRCodeNodeTest::basicTest()
+void dicom_sr_code_node_test::basic_test()
 {
     using namespace std::literals::string_literals;
-    using DicomDataReader = io::dicom::helper::DicomDataReader;
+    using dicom_data_reader = io::dicom::helper::dicom_data_reader;
 
     gdcm::DataSet dataset;
-    DicomSRCodeNode({}, "friend", {"value", "designator", "meaning", "version"}).write(dataset);
-    CPPUNIT_ASSERT_EQUAL("CODE"s, (DicomDataReader::getTagValue<TYPE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("friend"s, (DicomDataReader::getTagValue<RELATIONSHIP>(dataset)));
+    dicom_sr_code_node({}, "friend", {"value", "designator", "meaning", "version"}).write(dataset);
+    CPPUNIT_ASSERT_EQUAL("CODE"s, (dicom_data_reader::get_tag_value<TYPE>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("friend"s, (dicom_data_reader::get_tag_value<RELATIONSHIP>(dataset)));
     gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
         dataset.GetDataElement(gdcm::Attribute<CODE_NODE>::GetTag()).GetValueAsSQ();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), sequence->GetNumberOfItems());
     gdcm::DataSet& item = sequence->GetItem(1).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("value"s, (DicomDataReader::getTagValue<VALUE>(item)));
-    CPPUNIT_ASSERT_EQUAL("designator"s, (DicomDataReader::getTagValue<DESIGNATOR>(item)));
-    CPPUNIT_ASSERT_EQUAL("meaning"s, (DicomDataReader::getTagValue<MEANING>(item)));
+    CPPUNIT_ASSERT_EQUAL("value"s, (dicom_data_reader::get_tag_value<VALUE>(item)));
+    CPPUNIT_ASSERT_EQUAL("designator"s, (dicom_data_reader::get_tag_value<DESIGNATOR>(item)));
+    CPPUNIT_ASSERT_EQUAL("meaning"s, (dicom_data_reader::get_tag_value<MEANING>(item)));
     // TODO: fix
-    // CPPUNIT_ASSERT_EQUAL("version"s, (DicomDataReader::getTagValue<VERSION>(item)));
+    // CPPUNIT_ASSERT_EQUAL("version"s, (dicom_data_reader::getTagValue<VERSION>(item)));
 
-    DicomSRCodeNode({}, "enemy", {"anotherValue", "anotherDesignator", "42", "anotherVersion"}).write(dataset);
+    dicom_sr_code_node({}, "enemy", {"anotherValue", "anotherDesignator", "42", "anotherVersion"}).write(dataset);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), sequence->GetNumberOfItems());
     gdcm::DataSet& first_item = sequence->GetItem(1).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("value"s, (DicomDataReader::getTagValue<VALUE>(first_item)));
-    CPPUNIT_ASSERT_EQUAL("designator"s, (DicomDataReader::getTagValue<DESIGNATOR>(first_item)));
-    CPPUNIT_ASSERT_EQUAL("meaning"s, (DicomDataReader::getTagValue<MEANING>(first_item)));
+    CPPUNIT_ASSERT_EQUAL("value"s, (dicom_data_reader::get_tag_value<VALUE>(first_item)));
+    CPPUNIT_ASSERT_EQUAL("designator"s, (dicom_data_reader::get_tag_value<DESIGNATOR>(first_item)));
+    CPPUNIT_ASSERT_EQUAL("meaning"s, (dicom_data_reader::get_tag_value<MEANING>(first_item)));
     // TODO: fix
-    // CPPUNIT_ASSERT_EQUAL("version"s, (DicomDataReader::getTagValue<VERSION>(firstItem)));
+    // CPPUNIT_ASSERT_EQUAL("version"s, (dicom_data_reader::getTagValue<VERSION>(firstItem)));
     gdcm::DataSet& second_item = sequence->GetItem(2).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("anotherValue"s, (DicomDataReader::getTagValue<VALUE>(second_item)));
-    CPPUNIT_ASSERT_EQUAL("anotherDesignator"s, (DicomDataReader::getTagValue<DESIGNATOR>(second_item)));
-    CPPUNIT_ASSERT_EQUAL("42"s, (DicomDataReader::getTagValue<MEANING>(second_item)));
+    CPPUNIT_ASSERT_EQUAL("anotherValue"s, (dicom_data_reader::get_tag_value<VALUE>(second_item)));
+    CPPUNIT_ASSERT_EQUAL("anotherDesignator"s, (dicom_data_reader::get_tag_value<DESIGNATOR>(second_item)));
+    CPPUNIT_ASSERT_EQUAL("42"s, (dicom_data_reader::get_tag_value<MEANING>(second_item)));
     // TODO: fix
-    // CPPUNIT_ASSERT_EQUAL("anotherVersion"s, (DicomDataReader::getTagValue<VERSION>(secondItem)));
+    // CPPUNIT_ASSERT_EQUAL("anotherVersion"s, (dicom_data_reader::getTagValue<VERSION>(secondItem)));
 }
 
 } // namespace sight::io::dicom::container::sr::ut

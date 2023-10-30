@@ -63,27 +63,27 @@ public:
     DATA_API ~image_series() noexcept override = default;
 
     /// Gets the DICOM reference used to generate valid Dicom Segmentation.
-    dicom_series::csptr getDicomReference() const;
+    dicom_series::csptr get_dicom_reference() const;
 
     /// Sets the DICOM reference used to generate valid Dicom Segmentation.
-    void setDicomReference(const dicom_series::csptr& _reference);
+    void set_dicom_reference(const dicom_series::csptr& _reference);
 
     /// Getter/Setter of DICOM VOI LUT Module Module related attributes
     /// @note the definition is in Series.cpp
     /// @note Image also implements a getter/setter for this attribute that is overriden here
     /// @{
-    DATA_API void setWindowCenter(const std::vector<double>& _window_centers) override;
-    DATA_API std::vector<double> getWindowCenter() const noexcept override;
-    DATA_API void setWindowWidth(const std::vector<double>& _window_widths) override;
-    DATA_API std::vector<double> getWindowWidth() const noexcept override;
+    DATA_API void set_window_center(const std::vector<double>& _window_centers) override;
+    DATA_API std::vector<double> window_center() const noexcept override;
+    DATA_API void set_window_width(const std::vector<double>& _window_widths) override;
+    DATA_API std::vector<double> window_width() const noexcept override;
     /// @}
 
     /// Getter/Setter of DICOM Image Pixel Module
     /// @note the definition is in Series.cpp
     /// @note Image also somewhat implements a getter/setter for this attribute
     /// @{
-    DATA_API void setRows(const std::optional<std::uint16_t>& _rows       = std::nullopt) override;
-    DATA_API void setColumns(const std::optional<std::uint16_t>& _columns = std::nullopt) override;
+    DATA_API void set_rows(const std::optional<std::uint16_t>& _rows       = std::nullopt) override;
+    DATA_API void set_columns(const std::optional<std::uint16_t>& _columns = std::nullopt) override;
     /// @}
 
     /// Equality comparison operators
@@ -121,34 +121,33 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const Size& _size, const core::type& _type, PixelFormat _format) override;
+    DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
     /// @}
 
-    DATA_API fiducials_series::csptr getFiducials() const;
-    DATA_API fiducials_series::sptr getFiducials();
-    DATA_API bool hasFiducials() const;
+    DATA_API fiducials_series::csptr get_fiducials() const;
+    DATA_API fiducials_series::sptr get_fiducials();
 
 private:
 
     /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
-    dicom_series::sptr m_dicomReference;
+    dicom_series::sptr m_dicom_reference;
 
     /// Contains the associated Spatial Fiducials file
-    fiducials_series::sptr m_fiducialsSeries {std::make_shared<fiducials_series>()};
+    fiducials_series::sptr m_fiducials_series {std::make_shared<fiducials_series>()};
 };
 
 //-----------------------------------------------------------------------------
 
-inline dicom_series::csptr image_series::getDicomReference() const
+inline dicom_series::csptr image_series::get_dicom_reference() const
 {
-    return m_dicomReference;
+    return m_dicom_reference;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void image_series::setDicomReference(const dicom_series::csptr& _reference)
+inline void image_series::set_dicom_reference(const dicom_series::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast<dicom_series>(_reference);
+    m_dicom_reference = std::const_pointer_cast<dicom_series>(_reference);
 }
 
 } //end namespace sight::data.

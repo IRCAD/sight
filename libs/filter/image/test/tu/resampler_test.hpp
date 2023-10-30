@@ -30,8 +30,8 @@ namespace sight::filter::image::ut
 class resampler_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(resampler_test);
-CPPUNIT_TEST(identityTest);
-CPPUNIT_TEST(translateTest);
+CPPUNIT_TEST(identity_test);
+CPPUNIT_TEST(translate_test);
 //CPPUNIT_TEST( rotateTest );//fail
 CPPUNIT_TEST_SUITE_END();
 
@@ -40,9 +40,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void identityTest();
-    static void translateTest();
-    static void rotateTest();
+    static void identity_test();
+    static void translate_test();
+    static void rotate_test();
 };
 
 } // namespace sight::filter::image::ut

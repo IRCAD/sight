@@ -32,12 +32,12 @@
 namespace sight::io::session::detail::model_series
 {
 
-constexpr static auto s_DicomReference {"DicomReference"};
+constexpr static auto DICOM_REFERENCE {"DicomReference"};
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& _archive,
+    zip::archive_writer& _archive,
     boost::property_tree::ptree& _tree,
     data::object::csptr _object,
     std::map<std::string, data::object::csptr>& _children,
@@ -53,10 +53,10 @@ inline static void write(
     series::write(_archive, _tree, model_series, _children, _password);
 
     // Serialize other attributes
-    _children[s_DicomReference] = model_series->getDicomReference();
+    _children[DICOM_REFERENCE] = model_series->get_dicom_reference();
 
     std::size_t index = 0;
-    for(const auto& reconstruction : model_series->getReconstructionDB())
+    for(const auto& reconstruction : model_series->get_reconstruction_db())
     {
         _children[data::reconstruction::classname() + std::to_string(index++)] = reconstruction;
     }
@@ -65,7 +65,7 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::model_series::sptr read(
-    zip::ArchiveReader& _archive,
+    zip::archive_reader& _archive,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
     data::object::sptr _object,
@@ -82,7 +82,7 @@ inline static data::model_series::sptr read(
     series::read(_archive, _tree, _children, model_series, _password);
 
     // Deserialize other attributes
-    model_series->setDicomReference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(s_DicomReference)));
+    model_series->set_dicom_reference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(DICOM_REFERENCE)));
 
     // Deserialize ReconstructionDB
     std::vector<data::reconstruction::sptr> reconstruction_db;
@@ -99,7 +99,7 @@ inline static data::model_series::sptr read(
         reconstruction_db.push_back(std::dynamic_pointer_cast<data::reconstruction>(it->second));
     }
 
-    model_series->setReconstructionDB(reconstruction_db);
+    model_series->set_reconstruction_db(reconstruction_db);
 
     return model_series;
 }

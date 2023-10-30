@@ -24,15 +24,15 @@
 namespace sight::viz::scene3d::ut
 {
 
-struct Initializer
+struct initializer
 {
-    Initializer()
+    initializer()
     {
         sight::core::runtime::init();
         sight::core::runtime::load_module("sight::module::viz::scene3d::test");
     }
 };
 
-static const Initializer init;
+static const initializer INIT;
 
 } // namespace sight::viz::scene3d::ut

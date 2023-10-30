@@ -61,8 +61,8 @@ public:
     SIGHT_DECLARE_SERVICE(timestamp_signal, sight::ui::action);
 
     /// Type of triggered signal
-    typedef core::com::signal<void (sight::core::hires_clock::type)> triggered_signal_t;
-    typedef core::com::signal<void (std::string)> TriggeredAsStringSignalType;
+    using triggered_signal_t_t         = core::com::signal<void (sight::core::hires_clock::type)>;
+    using triggered_as_string_signal_t = core::com::signal<void (std::string)>;
 
     /**
      * @brief Constructor. Do nothing.
@@ -72,7 +72,7 @@ public:
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_API ~timestamp_signal() noexcept override;
+    MODULE_UI_API ~timestamp_signal() noexcept override = default;
 
 protected:
 
@@ -93,17 +93,17 @@ protected:
 
     /// Whether to use system clock or high resolution clock
     /// to compute the timestamp.
-    bool m_useSystemClock {false};
+    bool m_use_system_clock {false};
 
     /// Whether to format the timestamp as a date representation (true),
     /// or to convert the timestamp plainly.
-    bool m_formatStringAsDate {true};
+    bool m_format_string_as_date {true};
 
     /// Signal triggered when action has been triggered
-    SPTR(triggered_signal_t) m_sigTriggered;
+    SPTR(triggered_signal_t_t) m_sig_triggered;
 
     /// Signal triggered when action has been triggered (message sent as string)
-    SPTR(TriggeredAsStringSignalType) m_sigTriggeredAsString;
+    SPTR(triggered_as_string_signal_t) m_sig_triggered_as_string;
 };
 
 } // namespace sight::module::ui::com

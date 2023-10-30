@@ -29,30 +29,30 @@
 namespace sight::core::mt
 {
 
-typedef boost::mutex mutex;
-typedef boost::unique_lock<mutex> scoped_lock;
+using mutex       = boost::mutex;
+using scoped_lock = boost::unique_lock<mutex>;
 
 /// Defines a single writer, multiple readers mutex.
-typedef boost::shared_mutex read_write_mutex;
+using read_write_mutex = boost::shared_mutex;
 /**
  * @brief Defines a lock of read type for read/write mutex.
  * @note Multiple read lock can be done.
  */
-typedef boost::shared_lock<read_write_mutex> read_lock;
+using read_lock = boost::shared_lock<read_write_mutex>;
 /**
  * @brief Defines a lock of write type for read/write mutex.
  * @note Only one write lock can be done at once.
  */
-typedef boost::unique_lock<read_write_mutex> write_lock;
+using write_lock = boost::unique_lock<read_write_mutex>;
 /**
  * @brief Defines an upgradable lock type for read/write mutex.
  * @note Only one upgradable lock can be done at once but there may be multiple read lock.
  */
-typedef boost::upgrade_lock<read_write_mutex> read_to_write_lock;
+using read_to_write_lock = boost::upgrade_lock<read_write_mutex>;
 /**
  * @brief Defines a write lock upgraded from read_to_write_lock.
  * @note Only one upgradable lock can be done at once but there may be multiple read lock.
  */
-typedef boost::upgrade_to_unique_lock<read_write_mutex> upgrade_to_write_lock;
+using upgrade_to_write_lock = boost::upgrade_to_unique_lock<read_write_mutex>;
 
 } // namespace sight::core::mt

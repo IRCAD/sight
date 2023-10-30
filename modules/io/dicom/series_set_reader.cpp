@@ -53,56 +53,56 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 //------------------------------------------------------------------------------
 
 series_set_reader::series_set_reader() noexcept :
-    m_showLogDialog(true),
-    m_enableBufferRotation(true),
-    m_dicomDirSupport(USER_SELECTION)
+    m_show_log_dialog(true),
+    m_enable_buffer_rotation(true),
+    m_dicom_dir_support(user_selection)
 {
-    m_sigJobCreated = new_signal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
+    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::service::IOPathType series_set_reader::getIOPathType() const
+sight::io::service::path_type_t series_set_reader::get_path_type() const
 {
-    return sight::io::service::FOLDER;
+    return sight::io::service::folder;
 }
 
 //------------------------------------------------------------------------------
 
-void series_set_reader::openLocationDialog()
+void series_set_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
-    dialog_file.setDefaultLocation(default_directory);
-    dialog_file.setOption(ui::dialog::location::READ);
-    dialog_file.setType(ui::dialog::location::FOLDER);
+    dialog_file.set_title(m_window_title.empty() ? this->get_selector_dialog_title() : m_window_title);
+    dialog_file.set_default_location(default_directory);
+    dialog_file.set_option(ui::dialog::location::read);
+    dialog_file.set_type(ui::dialog::location::folder);
 
     auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
         this->set_folder(result->get_folder());
         default_directory->set_folder(result->get_folder());
-        dialog_file.saveDefaultLocation(default_directory);
+        dialog_file.save_default_location(default_directory);
     }
     else
     {
-        this->clearLocations();
+        this->clear_locations();
     }
 
     // Select filter
-    if(!m_filterConfig.empty())
+    if(!m_filter_config.empty())
     {
         // Get the config
-        const auto filter_selector_config = service::extension::config::getDefault()->get_service_config(
-            m_filterConfig,
+        const auto filter_selector_config = service::extension::config::get_default()->get_service_config(
+            m_filter_config,
             "sight::module::ui::dicom::filter_selector_dialog"
         );
 
         SIGHT_ASSERT(
             "Sorry, there is no service configuration "
-            << m_filterConfig
+            << m_filter_config
             << " for module::ui::dicom::filter_selector_dialog",
             !filter_selector_config.empty()
         );
@@ -119,13 +119,13 @@ void series_set_reader::openLocationDialog()
         filter_selector_srv->stop();
         service::remove(filter_selector_srv);
 
-        m_filterType = key->getValue();
+        m_filter_type = key->get_value();
 
-        m_readFailed = false;
+        m_read_failed = false;
     }
     else
     {
-        m_readFailed = true;
+        m_read_failed = true;
     }
 }
 
@@ -138,16 +138,16 @@ void series_set_reader::configuring()
     const service::config_t config = this->get_config();
 
     // Use filter selector
-    m_filterConfig = config.get<std::string>("filterConfig", "");
+    m_filter_config = config.get<std::string>("filterConfig", "");
 
     // Set filter
-    m_filterType = config.get<std::string>("filterType", "");
+    m_filter_type = config.get<std::string>("filterType", "");
 
     // Show log dialog
-    m_showLogDialog = config.get<bool>("showLogDialog", true);
+    m_show_log_dialog = config.get<bool>("showLogDialog", true);
 
     // Enable buffer rotation
-    m_enableBufferRotation = config.get<bool>("enableBufferRotation", true);
+    m_enable_buffer_rotation = config.get<bool>("enableBufferRotation", true);
 
     // Enable dicomdir
     const std::string dicom_dir_str = config.get<std::string>("dicomdirSupport", "user_selection");
@@ -157,15 +157,15 @@ void series_set_reader::configuring()
     );
     if(dicom_dir_str == "always")
     {
-        m_dicomDirSupport = ALWAYS;
+        m_dicom_dir_support = always;
     }
     else if(dicom_dir_str == "never")
     {
-        m_dicomDirSupport = NEVER;
+        m_dicom_dir_support = never;
     }
     else if(dicom_dir_str == "user_selection")
     {
-        m_dicomDirSupport = USER_SELECTION;
+        m_dicom_dir_support = user_selection;
     }
 
     // Get SOP Class selection
@@ -179,7 +179,7 @@ void series_set_reader::configuring()
             const service::config_t& sop_class_attr   = sop_class_config.get_child("<xmlattr>");
 
             SIGHT_ASSERT("Missing attribute 'uid' in element '<sop_class>'", sop_class_attr.count("uid") == 1);
-            m_supportedSOPClassSelection.push_back(sop_class_attr.get<std::string>("uid"));
+            m_supported_sop_class_selection.push_back(sop_class_attr.get<std::string>("uid"));
         }
     }
 }
@@ -205,46 +205,46 @@ void series_set_reader::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-std::string series_set_reader::getSelectorDialogTitle()
+std::string series_set_reader::get_selector_dialog_title()
 {
     return "Choose a directory with DICOM images";
 }
 
 //------------------------------------------------------------------------------
 
-data::series_set::sptr series_set_reader::createSeriesSet(const std::filesystem::path& _dicom_dir)
+data::series_set::sptr series_set_reader::create_series_set(const std::filesystem::path& _dicom_dir)
 {
     auto reader                  = std::make_shared<sight::io::dicom::reader::series_set>();
     data::series_set::sptr dummy = std::make_shared<data::series_set>();
     reader->set_object(dummy);
     reader->set_folder(_dicom_dir);
-    reader->set_dicom_filter_type(m_filterType);
-    reader->setBufferRotationEnabled(m_enableBufferRotation);
-    reader->setsupportedSOPClassContainer(m_supportedSOPClassSelection);
-    auto job = reader->getJob();
-    m_sigJobCreated->emit(job);
+    reader->set_dicom_filter_type(m_filter_type);
+    reader->set_buffer_rotation_enabled(m_enable_buffer_rotation);
+    reader->setsupported_sop_class_container(m_supported_sop_class_selection);
+    auto job = reader->get_job();
+    m_sig_job_created->emit(job);
 
-    if(m_dicomDirSupport == USER_SELECTION && reader->isDicomDirAvailable())
+    if(m_dicom_dir_support == user_selection && reader->is_dicom_dir_available())
     {
         sight::ui::dialog::message message_box;
-        message_box.setTitle("Dicomdir file");
-        message_box.setMessage(
+        message_box.set_title("Dicomdir file");
+        message_box.set_message(
             "There is a dicomdir file in the root folder. "
             "Would you like to use it for the reading process ?"
         );
-        message_box.setIcon(ui::dialog::message::QUESTION);
-        message_box.addButton(ui::dialog::message::YES_NO);
-        sight::ui::dialog::message::Buttons button = message_box.show();
+        message_box.set_icon(ui::dialog::message::question);
+        message_box.add_button(ui::dialog::message::yes_no);
+        sight::ui::dialog::message::buttons button = message_box.show();
 
-        reader->setDicomdirActivated(button == sight::ui::dialog::message::YES);
+        reader->set_dicomdir_activated(button == sight::ui::dialog::message::yes);
     }
-    else if(m_dicomDirSupport == ALWAYS)
+    else if(m_dicom_dir_support == always)
     {
-        reader->setDicomdirActivated(true);
+        reader->set_dicomdir_activated(true);
     }
     else //m_dicomDirSupport == NEVER
     {
-        reader->setDicomdirActivated(false);
+        reader->set_dicomdir_activated(false);
     }
 
     try
@@ -252,15 +252,15 @@ data::series_set::sptr series_set_reader::createSeriesSet(const std::filesystem:
         reader->read();
 
         // Retrieve logger
-        core::log::logger::sptr logger = reader->getLogger();
+        core::log::logger::sptr logger = reader->get_logger();
         logger->sort();
 
         // Set default cursor
         sight::ui::cursor cursor;
-        cursor.setDefaultCursor();
+        cursor.set_default_cursor();
 
         // Display logger dialog if enabled
-        if(m_showLogDialog && !logger->empty())
+        if(m_show_log_dialog && !logger->empty())
         {
             std::stringstream ss;
             if(dummy->size() > 1)
@@ -277,7 +277,7 @@ data::series_set::sptr series_set_reader::createSeriesSet(const std::filesystem:
             bool result = false;
             if(!job->cancel_requested())
             {
-                result = sight::ui::dialog::logger::showLoggerDialog(
+                result = sight::ui::dialog::logger::show_logger_dialog(
                     "Reading process over",
                     ss.str(),
                     logger
@@ -293,22 +293,22 @@ data::series_set::sptr series_set_reader::createSeriesSet(const std::filesystem:
     }
     catch(const std::exception& e)
     {
-        m_readFailed = true;
+        m_read_failed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
     }
     catch(...)
     {
-        m_readFailed = true;
+        m_read_failed = true;
         sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading",
-            sight::ui::dialog::message::WARNING
+            sight::ui::dialog::message::warning
         );
     }
 
@@ -319,11 +319,11 @@ data::series_set::sptr series_set_reader::createSeriesSet(const std::filesystem:
 
 void series_set_reader::updating()
 {
-    m_readFailed = true;
+    m_read_failed = true;
 
-    if(hasLocationDefined())
+    if(has_location_defined())
     {
-        auto local_series_set = createSeriesSet(get_folder());
+        auto local_series_set = create_series_set(get_folder());
 
         if(!local_series_set->empty())
         {
@@ -336,7 +336,7 @@ void series_set_reader::updating()
             series_set->clear();
             series_set->shallow_copy(local_series_set);
 
-            m_readFailed = false;
+            m_read_failed = false;
         }
     }
 }

@@ -35,14 +35,14 @@ struct convert_function_type;
 template<typename R, typename C, typename ... args>
 struct convert_function_type<R (C::*)(args ...)>
 {
-    typedef R type(args ...);
+    using type = R(args ...);
 };
 
 /// Convert class const member method type to equivalent function type.
 template<typename R, typename C, typename ... args>
 struct convert_function_type<R (C::*)(args ...) const>
 {
-    typedef R type(args ...);
+    using type = R(args ...);
 };
 
 /// Extract function type from a boost function.

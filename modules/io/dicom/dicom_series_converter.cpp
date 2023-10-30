@@ -42,7 +42,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 //------------------------------------------------------------------------------
 
 dicom_series_converter::dicom_series_converter() noexcept :
-    m_sigJobCreated(new_signal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
 }
 
@@ -90,24 +90,24 @@ void dicom_series_converter::updating()
     if(dicom_series_set->empty())
     {
         sight::ui::dialog::message message_box;
-        message_box.setIcon(ui::dialog::message::INFO);
-        message_box.addButton(ui::dialog::message::OK);
-        message_box.setTitle("Read DICOM series");
-        message_box.setMessage("There is no DICOM series that can be read.");
+        message_box.set_icon(ui::dialog::message::info);
+        message_box.add_button(ui::dialog::message::ok);
+        message_box.set_title("Read DICOM series");
+        message_box.set_message("There is no DICOM series that can be read.");
         message_box.show();
     }
     else
     {
         auto reader = std::make_shared<sight::io::dicom::reader::series_set>();
         reader->set_object(dummy);
-        auto job = reader->getJob();
-        m_sigJobCreated->emit(job);
+        auto job = reader->get_job();
+        m_sig_job_created->emit(job);
 
         try
         {
-            reader->readFromDicomSeriesSet(dicom_series_set.get_shared(), this->get_sptr());
+            reader->read_from_dicom_series_set(dicom_series_set.get_shared(), this->get_sptr());
 
-            core::log::logger::sptr logger = reader->getLogger();
+            core::log::logger::sptr logger = reader->get_logger();
             logger->sort();
 
             std::stringstream ss;
@@ -118,7 +118,7 @@ void dicom_series_converter::updating()
             bool result = false;
             if(!job->cancel_requested())
             {
-                result = sight::ui::dialog::logger::showLoggerDialog(
+                result = sight::ui::dialog::logger::show_logger_dialog(
                     "Reading process over",
                     ss.str(),
                     logger
@@ -143,7 +143,7 @@ void dicom_series_converter::updating()
             sight::ui::dialog::message::show(
                 "Warning",
                 ss.str(),
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
         catch(...)
@@ -151,7 +151,7 @@ void dicom_series_converter::updating()
             sight::ui::dialog::message::show(
                 "Warning",
                 "Warning during loading",
-                sight::ui::dialog::message::WARNING
+                sight::ui::dialog::message::warning
             );
         }
     }

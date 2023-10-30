@@ -59,7 +59,7 @@ void decompose_matrix::stopping()
 
 service::connections_t decompose_matrix::auto_connections() const
 {
-    return {{s_SOURCE_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{SOURCE_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
 }
 
 // ----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ service::connections_t decompose_matrix::auto_connections() const
 void decompose_matrix::updating()
 {
     auto matrix = m_source.lock();
-    SIGHT_ASSERT("input matrix '" << s_SOURCE_INPUT << "' is not defined", matrix);
+    SIGHT_ASSERT("input matrix '" << SOURCE_INPUT << "' is not defined", matrix);
 
     glm::dmat4 glm_matrix = sight::geometry::data::to_glm_mat(*matrix);
     glm::dvec3 glm_scale {};
@@ -128,7 +128,7 @@ void decompose_matrix::updating()
         }
     }
 
-    m_sigComputed->async_emit();
+    m_sig_computed->async_emit();
 }
 
 // ----------------------------------------------------------------------------

@@ -45,23 +45,23 @@ namespace interactor_3d = sight::viz::scene3d::interactor;
 
 negato2d_camera::negato2d_camera() noexcept
 {
-    new_slot(RESET_CAMERA_SLOT, &negato2d_camera::resetCamera, this);
-    new_slot(RESIZE_VIEWPORT_SLOT, &negato2d_camera::resizeViewport, this);
-    new_slot(CHANGE_ORIENTATION_SLOT, &negato2d_camera::changeOrientation, this);
+    new_slot(RESET_CAMERA_SLOT, &negato2d_camera::reset_camera, this);
+    new_slot(RESIZE_VIEWPORT_SLOT, &negato2d_camera::resize_viewport, this);
+    new_slot(CHANGE_ORIENTATION_SLOT, &negato2d_camera::change_orientation, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void negato2d_camera::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    m_priority            = config.get<int>(s_CONFIG + "priority", m_priority);
-    m_layerOrderDependant = config.get<bool>(s_CONFIG + "layerOrderDependant", m_layerOrderDependant);
+    m_priority              = config.get<int>(CONFIG + "priority", m_priority);
+    m_layer_order_dependant = config.get<bool>(CONFIG + "layerOrderDependant", m_layer_order_dependant);
 
-    const std::string orientation = config.get<std::string>(s_CONFIG + "orientation", "sagittal");
+    const std::string orientation = config.get<std::string>(CONFIG + "orientation", "sagittal");
 
     SIGHT_ERROR_IF(
         "Unknown orientation: '" + orientation
@@ -71,18 +71,18 @@ void negato2d_camera::configuring()
 
     if(orientation == "axial")
     {
-        m_currentNegatoOrientation = Orientation::Z_AXIS;
+        m_current_negato_orientation = orientation_t::z_axis;
     }
     else if(orientation == "frontal")
     {
-        m_currentNegatoOrientation = Orientation::Y_AXIS;
+        m_current_negato_orientation = orientation_t::y_axis;
     }
     else if(orientation == "sagittal")
     {
-        m_currentNegatoOrientation = Orientation::X_AXIS;
+        m_current_negato_orientation = orientation_t::x_axis;
     }
 
-    m_margin = config.get<float>(s_CONFIG + "margin", m_margin);
+    m_margin = config.get<float>(CONFIG + "margin", m_margin);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,21 +91,21 @@ void negato2d_camera::starting()
 {
     this->initialize();
 
-    const auto layer = this->getLayer();
+    const auto layer = this->layer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-    layer->addInteractor(interactor, m_priority);
+    layer->add_interactor(interactor, m_priority);
 
-    Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
+    Ogre::Camera* const cam = this->layer()->get_default_camera();
     cam->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
 
-    m_layerConnection.connect(
-        this->getLayer(),
+    m_layer_connection.connect(
+        this->layer(),
         sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
         this->get_sptr(),
         RESIZE_VIEWPORT_SLOT
     );
 
-    this->resetCamera();
+    this->reset_camera();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,10 +119,10 @@ void negato2d_camera::updating() noexcept
 
 void negato2d_camera::stopping()
 {
-    m_layerConnection.disconnect();
-    const auto layer = this->getLayer();
+    m_layer_connection.disconnect();
+    const auto layer = this->layer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-    layer->removeInteractor(interactor);
+    layer->remove_interactor(interactor);
 }
 
 // ----------------------------------------------------------------------------
@@ -130,24 +130,24 @@ void negato2d_camera::stopping()
 service::connections_t negato2d_camera::auto_connections() const
 {
     return {
-        {s_IMAGE_INOUT, data::image::MODIFIED_SIG, RESET_CAMERA_SLOT},
-        {s_IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, CHANGE_ORIENTATION_SLOT}
+        {IMAGE_INOUT, data::image::MODIFIED_SIG, RESET_CAMERA_SLOT},
+        {IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, CHANGE_ORIENTATION_SLOT}
     };
 }
 
 //-----------------------------------------------------------------------------
 
-void negato2d_camera::wheelEvent(Modifier _modifier, double _delta, int _x, int _y)
+void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int _y)
 {
-    const auto layer = this->getLayer();
+    const auto layer = this->layer();
 
-    if(interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant))
+    if(interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant))
     {
         // CTRL + wheel = Zoom in/out.
-        if(_modifier == Modifier::CONTROL)
+        if(_modifier == modifier::control)
         {
-            const auto* const viewport = layer->getViewport();
-            auto* const camera         = layer->getDefaultCamera();
+            const auto* const viewport = layer->get_viewport();
+            auto* const camera         = layer->get_default_camera();
             auto* const cam_node       = camera->getParentNode();
 
             constexpr float mouse_wheel_scale = 0.05F;
@@ -158,7 +158,7 @@ void negato2d_camera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
                                            static_cast<Ogre::Real>(_y),
                                            Ogre::Real(0));
             const auto mouse_pos_view =
-                sight::viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, screen_pos);
+                sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, screen_pos);
 
             // Zoom in.
             const float ortho_height     = camera->getOrthoWindowHeight();
@@ -176,13 +176,13 @@ void negato2d_camera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 
             // Compute the mouse's position in the zoomed view.
             const auto new_mouse_pos_view =
-                sight::viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, screen_pos);
+                sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, screen_pos);
 
             // Translate the camera back to the cursor's previous position.
             cam_node->translate(mouse_pos_view - new_mouse_pos_view);
-            m_hasMoved = true;
+            m_has_moved = true;
 
-            this->requestRender();
+            this->request_render();
         }
         // Wheel alone or other modifier -> moving along slices (SHIFT to speed-up)
         else
@@ -193,8 +193,8 @@ void negato2d_camera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 
             // Get Index
             const int current_index =
-                static_cast<int>(imHelper::get_slice_index(*image, m_currentNegatoOrientation).value_or(0));
-            const int max_slice = static_cast<int>(image->size()[m_currentNegatoOrientation] - 1);
+                static_cast<int>(imHelper::get_slice_index(*image, m_current_negato_orientation).value_or(0));
+            const int max_slice = static_cast<int>(image->size()[m_current_negato_orientation] - 1);
 
             if(max_slice <= 0)
             {
@@ -214,7 +214,7 @@ void negato2d_camera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
             int slice_move = static_cast<int>(_delta) / 120;
 
             // Speed up SHIFT+ wheel: "scrolls" 5% of total slices at each wheel move.
-            if(_modifier == Modifier::SHIFT)
+            if(_modifier == modifier::shift)
             {
                 slice_move *= int(std::round(static_cast<float>(max_slice) * 5.F / 100.F));
             }
@@ -233,18 +233,18 @@ void negato2d_camera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
                 new_slice_index = 0;
             }
 
-            imHelper::set_slice_index(*image, m_currentNegatoOrientation, new_slice_index);
+            imHelper::set_slice_index(*image, m_current_negato_orientation, new_slice_index);
 
             // Get up-to-date index values.
             const std::array<int, 3> idx {
-                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::SAGITTAL).value_or(0)),
-                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::FRONTAL).value_or(0)),
-                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::AXIAL).value_or(0))
+                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::sagittal).value_or(0)),
+                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::frontal).value_or(0)),
+                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::axial).value_or(0))
             };
-            m_hasMoved = true;
+            m_has_moved = true;
 
             // Send signal.
-            auto sig = image->signal<data::image::SliceIndexModifiedSignalType>(
+            auto sig = image->signal<data::image::slice_index_modified_signal_t>(
                 data::image::SLICE_INDEX_MODIFIED_SIG
             );
             sig->async_emit(idx[2], idx[1], idx[0]);
@@ -254,44 +254,44 @@ void negato2d_camera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 
 //------------------------------------------------------------------------------
 
-void negato2d_camera::pinchGestureEvent(double _scale_factor, int _center_x, int _center_y)
+void negato2d_camera::pinch_gesture_event(double _scale_factor, int _center_x, int _center_y)
 {
     // * 42 / 0.05 is a magic number to get a similar behavior as the mouse wheel
-    wheelEvent(Modifier::CONTROL, (_scale_factor * 42) / 0.05, _center_x, _center_y);
+    wheel_event(modifier::control, (_scale_factor * 42) / 0.05, _center_x, _center_y);
 }
 
 //------------------------------------------------------------------------------
 
-void negato2d_camera::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+void negato2d_camera::pan_gesture_move_event(int _x, int _y, int _dx, int _dy)
 {
-    m_isInteracting = true;
+    m_is_interacting = true;
 
-    mouseMoveEvent(MouseButton::MIDDLE, {}, _x, _y, _dx, _dy);
+    mouse_move_event(mouse_button::middle, {}, _x, _y, _dx, _dy);
 }
 
 //------------------------------------------------------------------------------
 
-void negato2d_camera::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
+void negato2d_camera::pan_gesture_release_event(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
 {
-    m_isInteracting = false;
+    m_is_interacting = false;
 }
 
 // ----------------------------------------------------------------------------
 
-void negato2d_camera::mouseMoveEvent(
-    interactor_3d::base::MouseButton _button,
-    Modifier /*_mods*/,
+void negato2d_camera::mouse_move_event(
+    interactor_3d::base::mouse_button _button,
+    modifier /*_mods*/,
     int _x,
     int _y,
     int _dx,
     int _dy
 )
 {
-    if(m_isInteracting && _button == MouseButton::MIDDLE)
+    if(m_is_interacting && _button == mouse_button::middle)
     {
-        const auto layer = this->getLayer();
+        const auto layer = this->layer();
 
-        auto* const camera   = layer->getDefaultCamera();
+        auto* const camera   = layer->get_default_camera();
         auto* const cam_node = camera->getParentNode();
 
         const Ogre::Vector3 delta_screen_pos(static_cast<Ogre::Real>(_x - _dx),
@@ -302,77 +302,77 @@ void negato2d_camera::mouseMoveEvent(
                                        Ogre::Real(0));
 
         const auto previous_mouse_pos_view =
-            sight::viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, delta_screen_pos);
+            sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, delta_screen_pos);
         const auto mouse_pos_view =
-            sight::viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, screen_pos);
+            sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, screen_pos);
 
         cam_node->translate(mouse_pos_view - previous_mouse_pos_view);
-        m_hasMoved = true;
-        this->requestRender();
+        m_has_moved = true;
+        this->request_render();
     }
-    else if(m_isInteracting && _button == MouseButton::RIGHT)
+    else if(m_is_interacting && _button == mouse_button::right)
     {
-        const auto dx = static_cast<double>(_x - m_initialPos[0]);
-        const auto dy = static_cast<double>(m_initialPos[1] - _y);
+        const auto dx = static_cast<double>(_x - m_initial_pos[0]);
+        const auto dy = static_cast<double>(m_initial_pos[1] - _y);
 
-        this->updateWindowing(dx, dy);
+        this->update_windowing(dx, dy);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void negato2d_camera::buttonPressEvent(interactor_3d::base::MouseButton _button, Modifier /*_mods*/, int _x, int _y)
+void negato2d_camera::button_press_event(interactor_3d::base::mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
-    const auto layer = this->getLayer();
-    if(_button == MouseButton::MIDDLE)
+    const auto layer = this->layer();
+    if(_button == mouse_button::middle)
     {
-        m_isInteracting = interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant);
+        m_is_interacting = interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant);
     }
-    else if(_button == MouseButton::RIGHT && interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant))
+    else if(_button == mouse_button::right && interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant))
     {
-        m_isInteracting = true;
+        m_is_interacting = true;
 
         const auto tf = m_tf.const_lock();
 
-        m_initialLevel  = tf->level();
-        m_initialWindow = tf->window();
+        m_initial_level  = tf->level();
+        m_initial_window = tf->window();
 
-        m_initialPos = {_x, _y};
+        m_initial_pos = {_x, _y};
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void negato2d_camera::buttonReleaseEvent(
-    interactor_3d::base::MouseButton /*_button*/,
-    Modifier /*_mods*/,
+void negato2d_camera::button_release_event(
+    interactor_3d::base::mouse_button /*_button*/,
+    modifier /*_mods*/,
     int /*_x*/,
     int /*_y*/
 )
 {
-    m_isInteracting = false;
+    m_is_interacting = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void negato2d_camera::keyPressEvent(int _key, Modifier /*_mods*/, int _x, int _y)
+void negato2d_camera::key_press_event(int _key, modifier /*_mods*/, int _x, int _y)
 {
-    const auto layer = this->getLayer();
-    if(interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant) && (_key == 'R' || _key == 'r'))
+    const auto layer = this->layer();
+    if(interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant) && (_key == 'R' || _key == 'r'))
     {
-        this->resetCamera();
+        this->reset_camera();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void negato2d_camera::resetCamera()
+void negato2d_camera::reset_camera()
 {
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
-    const auto layer           = this->getLayer();
-    const auto* const viewport = layer->getViewport();
-    auto* const camera         = layer->getDefaultCamera();
+    const auto layer           = this->layer();
+    const auto* const viewport = layer->get_viewport();
+    auto* const camera         = layer->get_default_camera();
     auto* const cam_node       = camera->getParentNode();
 
     const auto vp_width  = static_cast<float>(viewport->getActualWidth());
@@ -388,18 +388,18 @@ void negato2d_camera::resetCamera()
     cam_node->resetOrientation();
 
     const auto image   = m_image.const_lock();
-    const auto origin  = image->getOrigin();
+    const auto origin  = image->origin();
     const auto size    = image->size();
-    const auto spacing = image->getSpacing();
+    const auto spacing = image->spacing();
 
     if(size[0] > 0 && size[1] > 0 && size[2] > 0)
     {
         float ratio   = 0;
         double width  = 0.;
         double height = 0.;
-        switch(m_currentNegatoOrientation)
+        switch(m_current_negato_orientation)
         {
-            case Orientation::X_AXIS:
+            case orientation_t::x_axis:
                 cam_node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.F));
                 cam_node->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(-90.F));
                 width  = static_cast<double>(size[1]) * spacing[1];
@@ -407,14 +407,14 @@ void negato2d_camera::resetCamera()
                 ratio  = static_cast<float>(width / height);
                 break;
 
-            case Orientation::Y_AXIS:
+            case orientation_t::y_axis:
                 cam_node->rotate(Ogre::Vector3::UNIT_X, Ogre::Degree(90.F));
                 width  = static_cast<double>(size[0]) * spacing[0];
                 height = static_cast<double>(size[2]) * spacing[2];
                 ratio  = static_cast<float>(width / height);
                 break;
 
-            case Orientation::Z_AXIS:
+            case orientation_t::z_axis:
                 cam_node->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(180.F));
                 cam_node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180.F));
                 width  = static_cast<double>(size[0]) * spacing[0];
@@ -436,7 +436,7 @@ void negato2d_camera::resetCamera()
             camera->setOrthoWindowWidth(w + w * m_margin);
         }
 
-        const auto orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
+        const auto orientation = static_cast<std::size_t>(m_current_negato_orientation);
         Ogre::Vector3 cam_pos(
             static_cast<Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
             static_cast<Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
@@ -448,53 +448,53 @@ void negato2d_camera::resetCamera()
                                     * spacing[orientation]);
         cam_node->setPosition(cam_pos);
 
-        m_hasMoved = false;
-        this->requestRender();
+        m_has_moved = false;
+        this->request_render();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void negato2d_camera::resizeViewport()
+void negato2d_camera::resize_viewport()
 {
-    if(!m_hasMoved)
+    if(!m_has_moved)
     {
-        this->resetCamera();
+        this->reset_camera();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void negato2d_camera::changeOrientation(int _from, int _to)
+void negato2d_camera::change_orientation(int _from, int _to)
 {
-    const auto to_orientation   = static_cast<Orientation>(_to);
-    const auto from_orientation = static_cast<Orientation>(_from);
+    const auto to_orientation   = static_cast<orientation_t>(_to);
+    const auto from_orientation = static_cast<orientation_t>(_from);
 
-    if(m_currentNegatoOrientation == to_orientation)
+    if(m_current_negato_orientation == to_orientation)
     {
-        m_currentNegatoOrientation = from_orientation;
-        this->resetCamera();
+        m_current_negato_orientation = from_orientation;
+        this->reset_camera();
     }
-    else if(m_currentNegatoOrientation == from_orientation)
+    else if(m_current_negato_orientation == from_orientation)
     {
-        m_currentNegatoOrientation = to_orientation;
-        this->resetCamera();
+        m_current_negato_orientation = to_orientation;
+        this->reset_camera();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void negato2d_camera::updateWindowing(double _dw, double _dl)
+void negato2d_camera::update_windowing(double _dw, double _dl)
 {
-    const double new_window = m_initialWindow + _dw;
-    const double new_level  = m_initialLevel - _dl;
+    const double new_window = m_initial_window + _dw;
+    const double new_level  = m_initial_level - _dl;
 
     {
         const auto image = m_image.const_lock();
         const auto tf    = m_tf.lock();
 
-        tf->setWindow(new_window);
-        tf->setLevel(new_level);
+        tf->set_window(new_window);
+        tf->set_level(new_level);
         const auto sig = tf->template signal<data::transfer_function::windowing_modified_signal_t>(
             data::transfer_function::WINDOWING_MODIFIED_SIG
         );

@@ -44,7 +44,7 @@ field::field(data::object::sptr _object) :
 
 field::~field()
 {
-    if(!m_addedfields.empty() || !m_newChangedfields.empty() || !m_removedfields.empty())
+    if(!m_addedfields.empty() || !m_new_changedfields.empty() || !m_removedfields.empty())
     {
         notify();
     }
@@ -54,7 +54,7 @@ field::~field()
 
 void field::set_field(const data::object::field_name_t& _name, data::object::sptr _obj)
 {
-    this->addOrSwap(_name, _obj);
+    this->add_or_swap(_name, _obj);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void field::set_fields(const data::object::field_map_t& _new_fields)
     data::object::sptr object = m_object.lock();
     SIGHT_ASSERT("field helper need a non-null object pointer", object);
     const data::object::field_map_t old_fields = object->get_fields();
-    this->buildMessage(old_fields, _new_fields);
+    this->build_message(old_fields, _new_fields);
     object->set_fields(_new_fields);
 }
 
@@ -101,15 +101,15 @@ void field::swap(const data::object::field_name_t& _name, data::object::sptr _ob
     data::object::sptr field = object->get_field(_name);
     SIGHT_THROW_EXCEPTION_IF(data::exception("field does not exist"), !field);
 
-    m_newChangedfields[_name] = _obj;
-    m_oldChangedfields[_name] = field;
+    m_new_changedfields[_name] = _obj;
+    m_old_changedfields[_name] = field;
 
     object->set_field(_name, _obj);
 }
 
 //-----------------------------------------------------------------------------
 
-void field::addOrSwap(const data::object::field_name_t& _name, data::object::sptr _obj)
+void field::add_or_swap(const data::object::field_name_t& _name, data::object::sptr _obj)
 {
     SIGHT_ASSERT("field helper need a non-null object pointer", !m_object.expired());
     data::object::sptr object = m_object.lock();
@@ -122,8 +122,8 @@ void field::addOrSwap(const data::object::field_name_t& _name, data::object::spt
     }
     else
     {
-        m_newChangedfields[_name] = _obj;
-        m_oldChangedfields[_name] = field;
+        m_new_changedfields[_name] = _obj;
+        m_old_changedfields[_name] = field;
     }
 
     object->set_field(_name, _obj);
@@ -174,13 +174,13 @@ void field::notify()
         sig->async_emit(m_removedfields);
     }
 
-    if(!m_newChangedfields.empty() && !m_oldChangedfields.empty())
+    if(!m_new_changedfields.empty() && !m_old_changedfields.empty())
     {
         auto sig = m_object.lock()->signal<data::object::changed_fields_signal_t>(
             data::object::CHANGED_FIELDS_SIG
         );
 
-        sig->async_emit(m_newChangedfields, m_oldChangedfields);
+        sig->async_emit(m_new_changedfields, m_old_changedfields);
     }
 
     if(!m_addedfields.empty())
@@ -195,18 +195,18 @@ void field::notify()
     SIGHT_INFO_IF(
         "No changes were found on the fields of the object '" + m_object.lock()->get_id()
         + "', nothing to notify.",
-        m_addedfields.empty() && m_newChangedfields.empty() && m_removedfields.empty()
+        m_addedfields.empty() && m_new_changedfields.empty() && m_removedfields.empty()
     );
 
     m_removedfields.clear();
-    m_newChangedfields.clear();
-    m_oldChangedfields.clear();
+    m_new_changedfields.clear();
+    m_old_changedfields.clear();
     m_addedfields.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void field::buildMessage(
+void field::build_message(
     const data::object::field_map_t& _old_fields,
     const data::object::field_map_t& _new_fields
 )
@@ -256,18 +256,18 @@ void field::buildMessage(
         std::back_inserter(removed)
     );
 
-    for(const data::object::field_name_vector_t::value_type& field_name : added)
+    for(const auto& field_name : added)
     {
         m_addedfields[field_name] = _new_fields.find(field_name)->second;
     }
 
-    for(const data::object::field_name_vector_t::value_type& field_name : changed)
+    for(const auto& field_name : changed)
     {
-        m_newChangedfields[field_name] = _new_fields.find(field_name)->second;
-        m_oldChangedfields[field_name] = _old_fields.find(field_name)->second;
+        m_new_changedfields[field_name] = _new_fields.find(field_name)->second;
+        m_old_changedfields[field_name] = _old_fields.find(field_name)->second;
     }
 
-    for(const data::object::field_name_vector_t::value_type& field_name : removed)
+    for(const auto& field_name : removed)
     {
         m_removedfields[field_name] = _old_fields.find(field_name)->second;
     }

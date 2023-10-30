@@ -60,48 +60,48 @@
  */
 #define FWCORE_CLASS_TYPEDEFS_1(_class) \
     /** Self type  */ \
-    typedef _class self_type; \
+    using self_t = _class; \
     /** Type of base class  */ \
-    typedef self_type base_class; \
+    using base_class_t = self_t; \
     /** Type of root class  */ \
-    typedef self_type root_class; \
+    using root_class_t = self_t; \
     /** Shared pointer type  */ \
-    typedef SPTR(self_type) sptr; \
+    using sptr = SPTR(self_t); \
     /** Weak pointer type  */ \
-    typedef WPTR(self_type) wptr; \
+    using wptr = WPTR(self_t); \
     /** Unique pointer type  */ \
-    typedef UPTR(self_type) uptr; \
+    using uptr = UPTR(self_t); \
     /** Const shared pointer type  */ \
-    typedef CSPTR(self_type) csptr; \
+    using csptr = CSPTR(self_t); \
     /** Const weak pointer type  */ \
-    typedef CWPTR(self_type) cwptr; \
+    using cwptr = CWPTR(self_t); \
     /** Const unique pointer type  */ \
-    typedef CUPTR(self_type) cuptr; \
+    using cuptr = CUPTR(self_t); \
 
 /**
  * @brief Define several typdefs for classes (sptr, wptr, ...)
  *
- * base_class is a typedef to the superclass
+ * base_class_t is a typedef to the superclass
  */
 #define FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
     /** Self type  */ \
-    typedef _class self_type; \
+    using self_t = _class; \
     /** Type of base class  */ \
-    typedef  _parent_class base_class; \
+    using base_class_t = _parent_class; \
     /** Type of root class  */ \
-    typedef base_class::root_class root_class; \
+    using root_class_t = base_class_t::root_class_t; \
     /** Shared pointer type  */ \
-    typedef SPTR(self_type) sptr; \
+    using sptr = SPTR(self_t); \
     /** Weak pointer type  */ \
-    typedef WPTR(self_type) wptr; \
+    using wptr = WPTR(self_t); \
     /** Unique pointer type  */ \
-    typedef UPTR(self_type) uptr; \
+    using uptr = UPTR(self_t); \
     /** Const shared pointer type  */ \
-    typedef CSPTR(self_type) csptr; \
+    using csptr = CSPTR(self_t); \
     /** Const weak pointer type  */ \
-    typedef CWPTR(self_type) cwptr; \
+    using cwptr = CWPTR(self_t); \
     /** Const unique pointer type  */ \
-    typedef CUPTR(self_type) cuptr;
+    using cuptr = CUPTR(self_t);
 
 #define FWCORE_STATIC_CACHE(value) \
     static const std::string __cache__(value); \
@@ -124,16 +124,16 @@
     } \
     static const std::string& leaf_classname() \
     { \
-        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_t>()); \
     } \
     /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
     virtual const std::string& get_classname() const \
     { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
     } \
     static const std::string& classname() \
     { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
     } \
     /** @} */
 
@@ -154,16 +154,16 @@
     } \
     static const std::string& leaf_classname() \
     { \
-        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_t>()); \
     } \
     /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
     const std::string& get_classname() const override \
     { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
     } \
     static const std::string& classname() \
     { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
     } \
     /** @} */
 
@@ -179,25 +179,25 @@
 #define FWCORE_TYPE_1(_class) \
     static bool is_type_of(const std::string& type) \
     { \
-        return self_type::classname() == type; \
+        return self_t::classname() == type; \
     } \
     virtual bool is_a(const std::string& type) const \
     { \
-        return self_type::is_type_of(type); \
+        return self_t::is_type_of(type); \
     }
 
 #define FWCORE_TYPE_2(_class, _parent_class) \
     static bool is_type_of(const std::string& type) \
     { \
-        if(self_type::classname() == type) \
+        if(self_t::classname() == type) \
         { \
             return true; \
         } \
-        return base_class::is_type_of(type); \
+        return base_class_t::is_type_of(type); \
     } \
     bool is_a(const std::string& type) const override \
     { \
-        return self_type::is_type_of(type); \
+        return self_t::is_type_of(type); \
     }
 
 /**
@@ -209,12 +209,12 @@
     /** @brief return a casted const shared ptr from this object */ \
     csptr get_const_sptr() const \
     { \
-        return dynamic_pointer_cast<const self_type>(this->core::base_object::shared_from_this()); \
+        return dynamic_pointer_cast<const self_t>(this->core::base_object::shared_from_this()); \
     } \
     /** @brief return a casted shared ptr from this object */ \
     sptr get_sptr() \
     { \
-        return dynamic_pointer_cast<self_type>(this->core::base_object::shared_from_this()); \
+        return dynamic_pointer_cast<self_t>(this->core::base_object::shared_from_this()); \
     }
 
 #if !BOOST_PP_VARIADICS_MSVC

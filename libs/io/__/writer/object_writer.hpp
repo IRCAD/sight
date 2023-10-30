@@ -52,8 +52,8 @@ public:
 
     SIGHT_DECLARE_CLASS(object_writer, core::base_object);
 
-    typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
-    typedef std::function<void ()> CancelCallback;
+    using progress_callback = std::function<void (std::uint64_t)>;
+    using cancel_callback   = std::function<void ()>;
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -62,11 +62,11 @@ public:
      * @tparam T factory product type
      */
     template<typename T>
-    class Registry
+    class registry
     {
     public:
 
-        Registry()
+        registry()
         {
             io::writer::registry::get()->add_factory(T::classname(), &io::writer::factory::make<T>);
         }
@@ -83,7 +83,7 @@ public:
      * @brief m_object setter.
      * @param[in] _pObject replaces m_object of the instance writer
      * @note m_object is saved in class as a weakptr
-     * @note This object can be get with the method getObject()
+     * @note This object can be get with the method get_object()
      */
     IO_API virtual void set_object(core::tools::object::csptr _object);
 
@@ -92,7 +92,7 @@ public:
      *
      * @return m_object
      */
-    IO_API virtual core::tools::object::csptr getObject() const;
+    IO_API virtual core::tools::object::csptr get_object() const;
 
     /**
      * @brief Return the default filename extension can be dynamic.
@@ -109,7 +109,7 @@ public:
     IO_API virtual void cancel();
 
     /// Returns the internal job, nullptr by default
-    virtual SPTR(core::jobs::base) getJob() const
+    virtual SPTR(core::jobs::base) get_job() const
     {
         return nullptr;
     }

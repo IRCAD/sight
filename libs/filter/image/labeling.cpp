@@ -42,29 +42,29 @@ namespace sight::filter::image
 
 //------------------------------------------------------------------------------
 
-struct labelingFilter
+struct labeling_filter
 {
-    struct Parameters
+    struct parameters
     {
-        data::image::sptr m_inputImage;
-        data::image::sptr m_outputImage;
-        unsigned int m_numLabels {};
+        data::image::sptr m_input_image;
+        data::image::sptr m_output_image;
+        unsigned int m_num_labels {};
     };
 
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameters& _params)
+    void operator()(parameters& _params)
     {
         using image_t        = itk::Image<PIXELTYPE, 3>;
         using binary_image_t = itk::Image<std::uint8_t, 3>;
         typename image_t::Pointer itk_image;
-        itk_image = io::itk::move_to_itk<image_t>(_params.m_inputImage);
+        itk_image = io::itk::move_to_itk<image_t>(_params.m_input_image);
 
         binary_image_t::Pointer out;
-        out = filter::image::labeling<PIXELTYPE, 3>(itk_image, _params.m_numLabels);
+        out = filter::image::labeling<PIXELTYPE, 3>(itk_image, _params.m_num_labels);
 
-        io::itk::move_from_itk<binary_image_t>(out, _params.m_outputImage);
+        io::itk::move_from_itk<binary_image_t>(out, _params.m_output_image);
     }
 };
 
@@ -74,13 +74,13 @@ data::image::sptr labeling(data::image::sptr _image, unsigned int _num_labels)
 {
     data::image::sptr output_image = std::make_shared<data::image>();
 
-    labelingFilter::Parameters params;
-    params.m_inputImage  = _image;
-    params.m_outputImage = output_image;
-    params.m_numLabels   = _num_labels;
+    labeling_filter::parameters params;
+    params.m_input_image  = _image;
+    params.m_output_image = output_image;
+    params.m_num_labels   = _num_labels;
 
-    const core::type type = _image->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, labelingFilter>::invoke(type, params);
+    const core::type type = _image->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, labeling_filter>::invoke(type, params);
 
     // Notify image
     data::object::modified_signal_t::sptr sig;
@@ -93,22 +93,22 @@ data::image::sptr labeling(data::image::sptr _image, unsigned int _num_labels)
 //------------------------------------------------------------------------------
 
 // Gets centroids of shapes from a labelled image and adds them as a 'landmark' field to it.
-struct LabelImageFilter
+struct label_image_filter
 {
-    struct Parameters
+    struct parameters
     {
         data::image::sptr i_image;
-        std::vector<data::point_list::sptr> i_lPointListCentroids;
-        std::vector<std::vector<std::size_t> > i_lPointListLabels;
+        std::vector<data::point_list::sptr> i_l_point_list_centroids;
+        std::vector<std::vector<std::size_t> > i_l_point_list_labels;
     };
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameters& _params)
+    void operator()(parameters& _params)
     {
         data::image::sptr image                       = _params.i_image;
         [[maybe_unused]] const unsigned int dimension = 3;
-        SIGHT_ASSERT("Only image dimension 3 managed.", image->numDimensions() == dimension);
+        SIGHT_ASSERT("Only image dimension 3 managed.", image->num_dimensions() == dimension);
         using input_image_t = typename itk::Image<PIXELTYPE, dimension>;
         typename input_image_t::Pointer itk_input_image = io::itk::move_to_itk<input_image_t>(image);
 
@@ -118,16 +118,16 @@ struct LabelImageFilter
         using label_map_t          = itk::LabelMap<shape_label_object_t>;
 
         // Extract shapes
-        using I2LType = typename itk::LabelImageToShapeLabelMapFilter<output_image_t, label_map_t>;
+        using i2l_t = typename itk::LabelImageToShapeLabelMapFilter<output_image_t, label_map_t>;
 
-        typename I2LType::Pointer i2l = I2LType::New();
+        auto i2l = i2l_t::New();
         i2l->SetInput(itk_input_image);
         i2l->SetComputePerimeter(true);
         i2l->SetBackgroundValue(0);
         i2l->Update();
 
         // If we have clusters in XML file
-        if(!_params.i_lPointListCentroids.empty() && !_params.i_lPointListLabels.empty())
+        if(!_params.i_l_point_list_centroids.empty() && !_params.i_l_point_list_labels.empty())
         {
             label_map_t* label_map = i2l->GetOutput();
             data::point::sptr new_point;
@@ -136,9 +136,9 @@ struct LabelImageFilter
             {
                 std::vector<std::size_t> find_planes;
                 std::size_t plane = 0;
-                for(plane = 0 ; plane < _params.i_lPointListLabels.size() ; ++plane)
+                for(plane = 0 ; plane < _params.i_l_point_list_labels.size() ; ++plane)
                 {
-                    std::vector<std::size_t> current_plane = _params.i_lPointListLabels.at(plane);
+                    std::vector<std::size_t> current_plane = _params.i_l_point_list_labels.at(plane);
 
                     for(std::size_t label_in_plane : current_plane)
                     {
@@ -163,14 +163,14 @@ struct LabelImageFilter
                     for(std::size_t find_plane : find_planes)
                     {
                         data::point_list::sptr plane_point_list =
-                            _params.i_lPointListCentroids.at(find_plane);
+                            _params.i_l_point_list_centroids.at(find_plane);
 
                         // append to point the label
                         std::stringstream label_name;
                         label_name << n;
                         data::string::sptr label = std::make_shared<data::string>(label_name.str());
 
-                        plane_point_list->getPoints().push_back(new_point);
+                        plane_point_list->get_points().push_back(new_point);
                     }
                 }
             }
@@ -182,7 +182,7 @@ struct LabelImageFilter
             data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*image);
 
             SIGHT_ASSERT("landmarks not instanced", landmarks);
-            landmarks->getPoints().clear();
+            landmarks->get_points().clear();
 
             label_map_t* label_map = i2l->GetOutput();
             data::point::sptr new_point;
@@ -194,12 +194,12 @@ struct LabelImageFilter
                 const typename shape_label_object_t::CentroidType centroid = label_object->GetCentroid();
 
                 new_point = std::make_shared<data::point>(centroid[0], centroid[1], centroid[2]);
-                landmarks->getPoints().push_back(new_point);
+                landmarks->get_points().push_back(new_point);
 
                 // append to point the label
                 std::stringstream label_name;
                 label_name << n;
-                new_point->setLabel(label_name.str());
+                new_point->set_label(label_name.str());
             }
 
             data::helper::medical_image::set_landmarks_visibility(*image, true);
@@ -216,18 +216,18 @@ void compute_centroids(
 )
 {
     // Preparing the parameters for ITK
-    LabelImageFilter::Parameters params;
+    label_image_filter::parameters params;
     params.i_image = _image;
 
     if(!_point_list_centroids.empty())
     {
-        params.i_lPointListCentroids = _point_list_centroids;
-        params.i_lPointListLabels    = _point_list_labels;
+        params.i_l_point_list_centroids = _point_list_centroids;
+        params.i_l_point_list_labels    = _point_list_labels;
     }
 
     // Call the ITK operator
-    const core::type type = _image->getType();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, LabelImageFilter>::invoke(type, params);
+    const core::type type = _image->type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, label_image_filter>::invoke(type, params);
 }
 
 } // namespace sight::filter::image.

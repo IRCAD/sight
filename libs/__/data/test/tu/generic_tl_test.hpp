@@ -32,12 +32,12 @@ class generic_tl_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(generic_tl_test);
-    CPPUNIT_TEST(pushPopTest);
-    CPPUNIT_TEST(pushClassTest);
-    CPPUNIT_TEST(copyTest);
-    CPPUNIT_TEST(iteratorTest);
-    CPPUNIT_TEST(objectValid);
-    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(push_pop_test);
+    CPPUNIT_TEST(push_class_test);
+    CPPUNIT_TEST(copy_test);
+    CPPUNIT_TEST(iterator_test);
+    CPPUNIT_TEST(object_valid);
+    CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,12 +46,12 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void pushPopTest();
-    static void pushClassTest();
-    static void copyTest();
-    static void iteratorTest();
-    static void objectValid();
-    static void equalityTest();
+    static void push_pop_test();
+    static void push_class_test();
+    static void copy_test();
+    static void iterator_test();
+    static void object_valid();
+    static void equality_test();
 };
 
 } // namespace sight::data::ut

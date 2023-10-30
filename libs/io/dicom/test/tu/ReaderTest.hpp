@@ -27,20 +27,20 @@
 namespace sight::io::dicom::ut
 {
 
-class ReaderTest : public CPPUNIT_NS::TestFixture
+class reader_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ReaderTest);
-CPPUNIT_TEST(readJMSSeriesSetTest);
-CPPUNIT_TEST(readCTSeriesSetTest);
-CPPUNIT_TEST(readMRSeriesSetTest);
-CPPUNIT_TEST(readOTSeriesSetTest);
-CPPUNIT_TEST(readMultipleRescaleSeriesSetTest);
-CPPUNIT_TEST(readCTWithSurviewSeriesSetTest);
-CPPUNIT_TEST(readMRWithTemporalPositionSeriesSetTest);
-CPPUNIT_TEST(readCTSeriesSetIssue01Test);
-CPPUNIT_TEST(readEnhancedUSVolumeTest);
-CPPUNIT_TEST(readUltrasoundImageTest);
-CPPUNIT_TEST(readUltrasoundMultiframeImageTest);
+CPPUNIT_TEST_SUITE(reader_test);
+CPPUNIT_TEST(read_jms_series_set_test);
+CPPUNIT_TEST(read_ct_series_set_test);
+CPPUNIT_TEST(read_mr_series_set_test);
+CPPUNIT_TEST(read_ot_series_set_test);
+CPPUNIT_TEST(read_multiple_rescale_series_set_test);
+CPPUNIT_TEST(read_ct_with_surview_series_set_test);
+CPPUNIT_TEST(read_mr_with_temporal_position_series_set_test);
+CPPUNIT_TEST(read_ct_series_set_issue01_test);
+CPPUNIT_TEST(read_enhanced_us_volume_test);
+CPPUNIT_TEST(read_ultrasound_image_test);
+CPPUNIT_TEST(read_ultrasound_multiframe_image_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,37 +49,37 @@ public:
     void tearDown();
 
     /// Read JMS Series
-    static void readJMSSeriesSetTest();
+    static void read_jms_series_set_test();
 
     /// Read CT Series (01-CT-DICOM_LIVER)
-    static void readCTSeriesSetTest();
+    static void read_ct_series_set_test();
 
     /// Read MR Series (46-MR-BARRE-MONO2-12-shoulder) (Rotated)
-    static void readMRSeriesSetTest();
+    static void read_mr_series_set_test();
 
     /// Read OT Series (42-OT-BARRE-MONO2-8-colon) (Secondary capture)
-    static void readOTSeriesSetTest();
+    static void read_ot_series_set_test();
 
     /// Read multiple rescale Series (83-CT-MultipleRescale)
-    static void readMultipleRescaleSeriesSetTest();
+    static void read_multiple_rescale_series_set_test();
 
     /// Read CT with surview Series (84-CT-Surview)
-    static void readCTWithSurviewSeriesSetTest();
+    static void read_ct_with_surview_series_set_test();
 
     /// Read MR with temporal position identifier Series (85-MR-TemporalPosition)
-    static void readMRWithTemporalPositionSeriesSetTest();
+    static void read_mr_with_temporal_position_series_set_test();
 
     /// Read CT image 01 for stability issue (86-CT-Skull)
-    static void readCTSeriesSetIssue01Test();
+    static void read_ct_series_set_issue01_test();
 
     /// Read Enhanced US Volume Storage
-    static void readEnhancedUSVolumeTest();
+    static void read_enhanced_us_volume_test();
 
     /// Read Ultrasound image Storage
-    static void readUltrasoundImageTest();
+    static void read_ultrasound_image_test();
 
     /// Read Ultrasound Multi-frame image Storage
-    static void readUltrasoundMultiframeImageTest();
+    static void read_ultrasound_multiframe_image_test();
 };
 
 } // namespace sight::io::dicom::ut

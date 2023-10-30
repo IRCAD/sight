@@ -31,7 +31,7 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-std::int32_t type::toCv(const core::type _type, const std::size_t _num_components)
+std::int32_t type::to_cv(const core::type _type, const std::size_t _num_components)
 {
     SIGHT_ASSERT("Number of dimensions should be between 1 and 4", _num_components > 0 && _num_components <= 4);
 
@@ -55,7 +55,7 @@ std::int32_t type::toCv(const core::type _type, const std::size_t _num_component
 
 //------------------------------------------------------------------------------
 
-std::pair<core::type, uint8_t> type::fromCv(int32_t _cv_type)
+std::pair<core::type, uint8_t> type::from_cv(int32_t _cv_type)
 {
     static const std::map<std::int32_t, std::pair<core::type, std::size_t> > s_IMAGE_FORMAT_FROM_CV =
     {{

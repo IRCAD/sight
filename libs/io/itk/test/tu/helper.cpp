@@ -38,9 +38,9 @@ double tolerance(double _num)
 
 void round_spacing(data::image::sptr _image)
 {
-    data::image::Spacing spacing = _image->getSpacing();
+    data::image::spacing_t spacing = _image->spacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    _image->setSpacing(spacing);
+    _image->set_spacing(spacing);
 }
 
 //------------------------------------------------------------------------------

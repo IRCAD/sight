@@ -34,8 +34,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::app::plugin");
 
 void plugin::start()
 {
-    sight::app::extension::config::getDefault()->parse_plugin_infos();
-    sight::app::extension::parameters::getDefault()->parse_plugin_infos();
+    sight::app::extension::config::get_default()->parse_plugin_infos();
+    sight::app::extension::parameters::get_default()->parse_plugin_infos();
 
     auto worker = core::thread::get_default_worker();
     worker->post([this](auto&& ...){run();});
@@ -47,30 +47,30 @@ void plugin::run()
 {
     if(this->get_module()->has_parameter("config"))
     {
-        m_configurationName = this->get_module()->get_parameter_value("config");
+        m_configuration_name = this->get_module()->get_parameter_value("config");
         if(this->get_module()->has_parameter("parameters"))
         {
-            m_parametersName = this->get_module()->get_parameter_value("parameters");
+            m_parameters_name = this->get_module()->get_parameter_value("parameters");
         }
 
-        SIGHT_ASSERT("The OSR is already initialized.", !m_appConfigMng);
-        SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
+        SIGHT_ASSERT("The OSR is already initialized.", !m_app_config_mng);
+        SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configuration_name.empty());
 
-        m_appConfigMng = sight::app::config_manager::make();
+        m_app_config_mng = sight::app::config_manager::make();
 
-        if(m_parametersName.empty())
+        if(m_parameters_name.empty())
         {
             const sight::app::field_adaptor_t fields;
-            m_appConfigMng->setConfig(m_configurationName, fields);
+            m_app_config_mng->set_config(m_configuration_name, fields);
         }
         else
         {
             const sight::app::field_adaptor_t& fields =
-                sight::app::extension::parameters::getDefault()->getParameters(m_parametersName);
-            m_appConfigMng->setConfig(m_configurationName, fields);
+                sight::app::extension::parameters::get_default()->get_parameters(m_parameters_name);
+            m_app_config_mng->set_config(m_configuration_name, fields);
         }
 
-        m_appConfigMng->launch();
+        m_app_config_mng->launch();
     }
     else
     {
@@ -82,17 +82,17 @@ void plugin::run()
 
 void plugin::stop() noexcept
 {
-    if(m_appConfigMng)
+    if(m_app_config_mng)
     {
-        m_appConfigMng->stopAndDestroy();
-        m_appConfigMng.reset();
+        m_app_config_mng->stop_and_destroy();
+        m_app_config_mng.reset();
     }
 
     // Clear all app configuration
-    sight::app::extension::config::getDefault()->clear_registry();
+    sight::app::extension::config::get_default()->clear_registry();
 
     // Clear all app configuration parameters
-    sight::app::extension::parameters::getDefault()->clear_registry();
+    sight::app::extension::parameters::get_default()->clear_registry();
 }
 
 //------------------------------------------------------------------------------

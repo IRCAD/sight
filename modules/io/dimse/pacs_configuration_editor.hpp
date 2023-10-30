@@ -101,29 +101,29 @@ private:
      * @brief Sends a modified signal on the configuration.
      * @param _pacsConfiguration the modified data .
      */
-    void modifiedNotify(sight::io::dimse::data::PacsConfiguration::sptr _pacs_configuration);
+    void modified_notify(sight::io::dimse::data::pacs_configuration::sptr _pacs_configuration);
 
     /**
      * @brief Displays an information dialog.
      * @param _title title of the dialog.
      * @param _message message of the dialog.
      */
-    static void showDialog(const std::string _title, const std::string _message);
+    static void show_dialog(const std::string _title, const std::string _message);
 
     /// Contains the AET of the SCU (client name) editor.
-    QPointer<QLineEdit> m_SCUAppEntityTitleEdit;
+    QPointer<QLineEdit> m_scu_app_entity_title_edit;
 
     /// Contains the AET of the SCP (server name) editor.
-    QPointer<QLineEdit> m_SCPAppEntityTitleEdit;
+    QPointer<QLineEdit> m_scp_app_entity_title_edit;
 
     /// Contains the SCP host name (server address) editor.
-    QPointer<QLineEdit> m_SCPHostNameEdit;
+    QPointer<QLineEdit> m_scp_host_name_edit;
 
     /// Contains the SCP port (server port) editor.
-    QPointer<QSpinBox> m_SCPPortEdit;
+    QPointer<QSpinBox> m_scp_port_edit;
 
     /// Contains the request mode, GET or MOVE, editor.
-    QPointer<QComboBox> m_retrieveMethodWidget;
+    QPointer<QComboBox> m_retrieve_method_widget;
 
     /**
      * @brief Contains the move AET editor. This AET is use to receive C-MOVE responses.
@@ -133,61 +133,61 @@ private:
      * For more information, see the link bellow:
      * https://book.orthanc-server.com/dicom-guide.html#dicom-network-protocol.
      */
-    QPointer<QLineEdit> m_moveAppEntityTitleEdit;
+    QPointer<QLineEdit> m_move_app_entity_title_edit;
 
     /// Contains the move port editor. This port is use to receive C-MOVE responses.
-    QPointer<QSpinBox> m_movePort;
+    QPointer<QSpinBox> m_move_port;
 
     /// Contains the test button, sends a C-ECHO request to the PACS.
-    QPointer<QPushButton> m_pingPacsButtonWidget;
+    QPointer<QPushButton> m_ping_pacs_button_widget;
 
     /// Contains the worker of the series enquire thread.
-    core::thread::worker::sptr m_requestWorker;
+    core::thread::worker::sptr m_request_worker;
 
     /// Defines whether or not the dialog message should be displayed for the ping result.
-    bool m_showDialog {true};
+    bool m_show_dialog {true};
 
     /// Contains the slot to show a dialog in the main thread.
-    core::com::slot<void(const std::string, const std::string)>::sptr m_slotShowDialog {nullptr};
+    core::com::slot<void(const std::string, const std::string)>::sptr m_slot_show_dialog {nullptr};
 
 private Q_SLOTS:
 
     /// Calls for pinging the pacs.
-    void pingPACS();
+    void ping_pacs();
 
     /// Calls for changing AET of the SCU.
-    void onSCUAppEntityTitleChanged();
+    void on_scu_app_entity_title_changed();
 
     /// Calls for changing AET of the SCP.
-    void onSCPAppEntityTitleChanged();
+    void on_scp_app_entity_title_changed();
 
     /// Calls for changing the IP of the SCP.
-    void onSCPHostNameChanged();
+    void on_scp_host_name_changed();
 
     /**
      * @brief Calls for changing the port of the SCP.
      * @param _value the PACS application port.
      */
-    void onSCPPortChanged(int _value);
+    void on_scp_port_changed(int _value);
 
     /**
      * @brief Calls for changing the retrieve method.
      * @param _index the retrieve method index.
      */
-    void onRetrieveMethodChanged(int _index);
+    void on_retrieve_method_changed(int _index);
 
     /// Calls for changing the move AET.
-    void onMoveAppEntityTitleChanged();
+    void on_move_app_entity_title_changed();
 
     /**
      * @brief Calls for changing the move IP.
      * @param _value the move application port.
      */
-    void onMovePortChanged(int _value);
+    void on_move_port_changed(int _value);
 
 private:
 
-    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::inout> m_config {this, "config"};
+    data::ptr<sight::io::dimse::data::pacs_configuration, data::access::inout> m_config {this, "config"};
 };
 
 } // namespace sight::module::io::dimse.

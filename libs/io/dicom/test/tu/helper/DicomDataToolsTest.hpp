@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,29 +26,29 @@
 namespace sight::io::dicom::helper::ut
 {
 
-class DicomDataToolsTest : public CPPUNIT_NS::TestFixture
+class dicom_data_tools_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(DicomDataToolsTest);
-CPPUNIT_TEST(getPixelTypeTest);
-CPPUNIT_TEST(getPhotometricInterpretationTest);
-CPPUNIT_TEST(convertToPresentationTypeTest);
-CPPUNIT_TEST(convertToRepresentationModeTest);
-CPPUNIT_TEST(convertPointToFrameNumberNominalTest);
-CPPUNIT_TEST(convertPointToFrameNumberFailureTest);
-CPPUNIT_TEST(convertFrameNumberToZCoordinateNominalTest);
-CPPUNIT_TEST(convertFrameNumberToZCoordinateFailureTest);
+CPPUNIT_TEST_SUITE(dicom_data_tools_test);
+CPPUNIT_TEST(get_pixel_type_test);
+CPPUNIT_TEST(get_photometric_interpretation_test);
+CPPUNIT_TEST(convert_to_presentation_type_test);
+CPPUNIT_TEST(convert_to_representation_mode_test);
+CPPUNIT_TEST(convert_point_to_frame_number_nominal_test);
+CPPUNIT_TEST(convert_point_to_frame_number_failure_test);
+CPPUNIT_TEST(convert_frame_number_to_z_coordinate_nominal_test);
+CPPUNIT_TEST(convert_frame_number_to_z_coordinate_failure_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    static void getPixelTypeTest();
-    static void getPhotometricInterpretationTest();
-    static void convertToPresentationTypeTest();
-    static void convertToRepresentationModeTest();
-    static void convertPointToFrameNumberNominalTest();
-    static void convertPointToFrameNumberFailureTest();
-    static void convertFrameNumberToZCoordinateNominalTest();
-    static void convertFrameNumberToZCoordinateFailureTest();
+    static void get_pixel_type_test();
+    static void get_photometric_interpretation_test();
+    static void convert_to_presentation_type_test();
+    static void convert_to_representation_mode_test();
+    static void convert_point_to_frame_number_nominal_test();
+    static void convert_point_to_frame_number_failure_test();
+    static void convert_frame_number_to_z_coordinate_nominal_test();
+    static void convert_frame_number_to_z_coordinate_failure_test();
 };
 
 } // namespace sight::io::dicom::helper::ut

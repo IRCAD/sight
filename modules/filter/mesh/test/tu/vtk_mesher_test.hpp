@@ -32,10 +32,10 @@ namespace sight::module::filter::mesh::ut
 class vtk_mesher_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(vtk_mesher_test);
-CPPUNIT_TEST(generateMesh);
-CPPUNIT_TEST(generateMeshWithMinReduction);
-CPPUNIT_TEST(noMeshGenerated);
-CPPUNIT_TEST(updateThresholdTest);
+CPPUNIT_TEST(generate_mesh);
+CPPUNIT_TEST(generate_mesh_with_min_reduction);
+CPPUNIT_TEST(no_mesh_generated);
+CPPUNIT_TEST(update_threshold_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,10 +44,10 @@ public:
     void setUp();
     void tearDown();
 
-    static void generateMesh();
-    static void generateMeshWithMinReduction();
-    static void noMeshGenerated();
-    static void updateThresholdTest();
+    static void generate_mesh();
+    static void generate_mesh_with_min_reduction();
+    static void no_mesh_generated();
+    static void update_threshold_test();
 };
 
 } // namespace sight::module::filter::mesh::ut

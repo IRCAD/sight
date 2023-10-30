@@ -37,7 +37,7 @@ namespace sight::data
 frame_tl::frame_tl()
 {
     // Default to 100 frames since images used to eat a lot of memory...
-    this->setMaximumSize(100);
+    this->set_maximum_size(100);
 }
 
 //------------------------------------------------------------------------------
@@ -61,65 +61,65 @@ void frame_tl::deep_copy(const object::csptr& _source, const std::unique_ptr<dee
         !bool(other)
     );
 
-    this->clearTimeline();
+    this->clear_timeline();
 
-    this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
+    this->init_pool_size(other->m_width, other->m_height, other->m_type, other->m_pixel_format);
 
-    for(const timeline_t::value_type& elt : other->m_timeline)
+    for(const auto& elt : other->m_timeline)
     {
-        SPTR(data::timeline::buffer) tl_obj = this->createBuffer(elt.first);
+        SPTR(data::timeline::buffer) tl_obj = this->create_buffer(elt.first);
         tl_obj->deep_copy(*elt.second);
         m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }
 
-    base_class::deep_copy(other, _cache);
+    base_class_t::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void frame_tl::initPoolSize(
+void frame_tl::init_pool_size(
     std::size_t _width,
     std::size_t _height,
     const core::type& _type,
-    const PixelFormat _format,
+    const enum pixel_format _format,
     unsigned int _max_element_num
 )
 {
-    m_width       = _width;
-    m_height      = _height;
-    m_type        = _type;
-    m_pixelFormat = _format;
+    m_width        = _width;
+    m_height       = _height;
+    m_type         = _type;
+    m_pixel_format = _format;
     switch(_format)
     {
-        case data::frame_tl::PixelFormat::GRAY_SCALE:
-            m_numberOfComponents = 1;
+        case data::frame_tl::pixel_format::gray_scale:
+            m_number_of_components = 1;
             break;
 
-        case data::frame_tl::PixelFormat::BGR:
-        case data::frame_tl::PixelFormat::RGB:
-            m_numberOfComponents = 3;
+        case data::frame_tl::pixel_format::bgr:
+        case data::frame_tl::pixel_format::rgb:
+            m_number_of_components = 3;
             break;
 
-        case data::frame_tl::PixelFormat::BGRA:
-        case data::frame_tl::PixelFormat::RGBA:
-            m_numberOfComponents = 4;
+        case data::frame_tl::pixel_format::bgra:
+        case data::frame_tl::pixel_format::rgba:
+            m_number_of_components = 4;
             break;
 
         default:
-            m_numberOfComponents = 1;
+            m_number_of_components = 1;
     }
 
-    std::size_t size = _width * _height * m_numberOfComponents * _type.size();
+    std::size_t size = _width * _height * m_number_of_components * _type.size();
 
     SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
 
-    m_maxElementNum = _max_element_num;
-    this->allocPoolSize(size * m_maxElementNum);
+    m_max_element_num = _max_element_num;
+    this->alloc_pool_size(size * m_max_element_num);
 }
 
 //------------------------------------------------------------------------------
 
-void frame_tl::initPoolSize(unsigned int /*maxElementNum*/)
+void frame_tl::init_pool_size(unsigned int /*maxElementNum*/)
 {
     SIGHT_ERROR("This function should not be called");
 }
@@ -130,15 +130,15 @@ bool frame_tl::operator==(const frame_tl& _other) const noexcept
 {
     if(m_width != _other.m_width
        || m_height != _other.m_height
-       || m_numberOfComponents != _other.m_numberOfComponents
+       || m_number_of_components != _other.m_number_of_components
        || m_type != _other.m_type
-       || m_pixelFormat != _other.m_pixelFormat)
+       || m_pixel_format != _other.m_pixel_format)
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(_other);
+    return base_class_t::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

@@ -31,7 +31,7 @@
 namespace tuto13_mesh_generator_cpp
 {
 
-static const std::string s_FUNCTOR_CONFIG = "functor";
+static const std::string FUNCTOR_CONFIG = "functor";
 
 //-----------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ void mesh_modifier::configuring(const config_t& _config)
 
     const config_t config = _config.get_child("config.<xmlattr>");
 
-    m_functor = config.get<std::string>(s_FUNCTOR_CONFIG);
+    m_functor = config.get<std::string>(FUNCTOR_CONFIG);
     SIGHT_ASSERT(
         "Wrong functor name",
         m_functor == "ShakeMeshPoint"
@@ -59,7 +59,7 @@ void mesh_modifier::configuring(const config_t& _config)
 
 void mesh_modifier::starting()
 {
-    this->actionServiceStarting();
+    this->action_service_starting();
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ void mesh_modifier::updating()
     {
         if(m_functor == "ShakeMeshPoint")
         {
-            geometry::data::mesh::shakePoint(mesh.get_shared());
+            geometry::data::mesh::shake_point(mesh.get_shared());
 
             data::mesh::signal_t::sptr sig;
             sig = mesh->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
@@ -84,7 +84,7 @@ void mesh_modifier::updating()
         }
         else if(m_functor == "ColorizeMeshCells")
         {
-            geometry::data::mesh::colorizeMeshCells(mesh.get_shared());
+            geometry::data::mesh::colorize_mesh_cells(mesh.get_shared());
 
             data::mesh::signal_t::sptr sig;
             sig = mesh->signal<data::mesh::signal_t>(data::mesh::CELL_COLORS_MODIFIED_SIG);
@@ -92,7 +92,7 @@ void mesh_modifier::updating()
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
-            geometry::data::mesh::colorizeMeshPoints(mesh.get_shared());
+            geometry::data::mesh::colorize_mesh_points(mesh.get_shared());
 
             data::mesh::signal_t::sptr sig;
             sig = mesh->signal<data::mesh::signal_t>(data::mesh::POINT_COLORS_MODIFIED_SIG);
@@ -100,7 +100,7 @@ void mesh_modifier::updating()
         }
         else if(m_functor == "ComputeCellNormals")
         {
-            geometry::data::mesh::generateCellNormals(mesh.get_shared());
+            geometry::data::mesh::generate_cell_normals(mesh.get_shared());
 
             data::mesh::signal_t::sptr sig;
             sig = mesh->signal<data::mesh::signal_t>(
@@ -110,7 +110,7 @@ void mesh_modifier::updating()
         }
         else if(m_functor == "ComputePointNormals")
         {
-            geometry::data::mesh::generatePointNormals(mesh.get_shared());
+            geometry::data::mesh::generate_point_normals(mesh.get_shared());
 
             data::mesh::signal_t::sptr sig;
             sig = mesh->signal<data::mesh::signal_t>(
@@ -120,7 +120,7 @@ void mesh_modifier::updating()
         }
         else if(m_functor == "ShakeCellNormals")
         {
-            geometry::data::mesh::shakeCellNormals(mesh.get_shared());
+            geometry::data::mesh::shake_cell_normals(mesh.get_shared());
 
             data::mesh::signal_t::sptr sig;
             sig = mesh->signal<data::mesh::signal_t>(data::mesh::CELL_NORMALS_MODIFIED_SIG);
@@ -128,7 +128,7 @@ void mesh_modifier::updating()
         }
         else if(m_functor == "ShakePointNormals")
         {
-            geometry::data::mesh::shakePointNormals(mesh.get_shared());
+            geometry::data::mesh::shake_point_normals(mesh.get_shared());
 
             data::mesh::signal_t::sptr sig;
             sig = mesh->signal<data::mesh::signal_t>(
@@ -138,7 +138,7 @@ void mesh_modifier::updating()
         }
         else if(m_functor == "MeshDeformation")
         {
-            m_animator.computeDeformation(mesh.get_shared(), 100, 50);
+            m_animator.compute_deformation(mesh.get_shared(), 100, 50);
             const auto sig = mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             {
                 sight::core::com::connection::blocker block(sig->get_connection(slot(sight::service::slots::UPDATE)));
@@ -154,7 +154,7 @@ void mesh_modifier::updating()
         ui::dialog::message::show(
             "Warning",
             ss.str(),
-            ui::dialog::message::WARNING
+            ui::dialog::message::warning
         );
     }
 }
@@ -163,7 +163,7 @@ void mesh_modifier::updating()
 
 void mesh_modifier::stopping()
 {
-    this->actionServiceStopping();
+    this->action_service_stopping();
 }
 
 //-----------------------------------------------------------------------------

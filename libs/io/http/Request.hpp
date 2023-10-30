@@ -34,27 +34,27 @@ namespace sight::io::http
 /**
  * @brief HTTP request.
  */
-class IO_HTTP_CLASS_API Request : public core::base_object
+class IO_HTTP_CLASS_API request : public core::base_object
 {
 public:
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
-    SIGHT_DECLARE_CLASS(Request, core::base_object);
+    SIGHT_DECLARE_CLASS(request, core::base_object);
 
     /// Maps header name to its value.
-    typedef std::map<std::string, std::string> headers_t;
+    using headers_t = std::map<std::string, std::string>;
 
     /**
      * @name Constructor/Destructor
      * @{ */
-    IO_HTTP_API Request();
+    IO_HTTP_API request();
 
     /**
      * @brief Construct a new Request with given url.
      */
-    IO_HTTP_API Request(std::string _url);
+    IO_HTTP_API request(std::string _url);
 
-    ~Request() override
+    ~request() override
     = default;
 
     /**  @} */
@@ -66,32 +66,32 @@ public:
      *
      * @return  the newly created Request object
      */
-    IO_HTTP_API static Request::sptr New(const std::string& _url);
+    IO_HTTP_API static request::sptr New(const std::string& _url);
 
     /**
      * @brief add element in the request header
      */
-    IO_HTTP_API void addHeader(const std::string& _key, const std::string& _value);
+    IO_HTTP_API void add_header(const std::string& _key, const std::string& _value);
 
     /**
      *@brief headers setter.
      */
-    IO_HTTP_API void setHeaders(const headers_t& _headers);
+    IO_HTTP_API void set_headers(const headers_t& _headers);
 
     /**
      *@brief headers getter.
      */
-    IO_HTTP_API const headers_t& getHeaders() const;
+    IO_HTTP_API const headers_t& get_headers() const;
 
     /**
      * @brief return current url
      */
-    IO_HTTP_API const std::string& getUrl() const;
+    IO_HTTP_API const std::string& get_url() const;
 
     /**
      * @brief set current url
      */
-    IO_HTTP_API void setUrl(const std::string& _url);
+    IO_HTTP_API void set_url(const std::string& _url);
 
 private:
 

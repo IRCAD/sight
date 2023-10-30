@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 
 #include <gdcmDataSet.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::DicomSRTextNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::container::sr::ut::dicom_sr_text_node_test);
 
 #define TYPE 0x0040, 0xa040
 #define RELATIONSHIP 0x0040, 0xa010
@@ -37,15 +37,15 @@ namespace sight::io::dicom::container::sr::ut
 
 //------------------------------------------------------------------------------
 
-void DicomSRTextNodeTest::basicTest()
+void dicom_sr_text_node_test::basic_test()
 {
     using namespace std::literals::string_literals;
 
     gdcm::DataSet dataset;
-    DicomSRTextNode({}, "friend", "hello world").write(dataset);
-    CPPUNIT_ASSERT_EQUAL("TEXT"s, (io::dicom::helper::DicomDataReader::getTagValue<TYPE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::DicomDataReader::getTagValue<RELATIONSHIP>(dataset)));
-    CPPUNIT_ASSERT_EQUAL("hello world"s, (io::dicom::helper::DicomDataReader::getTagValue<TEXT>(dataset)));
+    dicom_sr_text_node({}, "friend", "hello world").write(dataset);
+    CPPUNIT_ASSERT_EQUAL("TEXT"s, (io::dicom::helper::dicom_data_reader::get_tag_value<TYPE>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::dicom_data_reader::get_tag_value<RELATIONSHIP>(dataset)));
+    CPPUNIT_ASSERT_EQUAL("hello world"s, (io::dicom::helper::dicom_data_reader::get_tag_value<TEXT>(dataset)));
 }
 
 } // namespace sight::io::dicom::container::sr::ut

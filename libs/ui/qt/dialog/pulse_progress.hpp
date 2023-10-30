@@ -55,10 +55,10 @@ public:
     UI_QT_API ~pulse_progress() override;
 
     /// override
-    UI_QT_API void setTitle(const std::string& _title) override;
+    UI_QT_API void set_title(const std::string& _title) override;
 
     /// override
-    UI_QT_API void setMessage(const std::string& _message) override;
+    UI_QT_API void set_message(const std::string& _message) override;
 
     UI_QT_API void show() override;
 

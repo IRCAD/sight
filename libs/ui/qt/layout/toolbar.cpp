@@ -46,14 +46,14 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::string& _id)
+void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::string& _id)
 {
     m_parent = std::dynamic_pointer_cast<ui::qt::container::toolbar>(_parent);
     SIGHT_ASSERT("dynamicCast toolbar to toolbar failed", m_parent);
 
     const QString q_id = QString::fromStdString(_id);
 
-    QToolBar* tool_bar = m_parent->getQtToolBar();
+    QToolBar* tool_bar = m_parent->get_qt_tool_bar();
     tool_bar->setObjectName(q_id);
 
     if(m_style == "ToolButtonTextOnly")
@@ -80,19 +80,19 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
     [[maybe_unused]] QActionGroup* action_group   = nullptr;
     widget::accordion_menu* accordion_layout      = nullptr;
     [[maybe_unused]] unsigned int menu_item_index = 0;
-    for(ui::layout::toolbar_manager::ActionInfo& action_info : m_actionInfo)
+    for(ui::layout::toolbar_manager::action_info& action_info : m_action_info)
     {
-        if(action_info.m_accordion == ui::layout::toolbar_manager::Accordion::NO)
+        if(action_info.m_accordion == ui::layout::toolbar_manager::accordion::no)
         {
             accordion_layout = nullptr;
         }
-        else if(action_info.m_accordion == ui::layout::toolbar_manager::Accordion::FIRST)
+        else if(action_info.m_accordion == ui::layout::toolbar_manager::accordion::first)
         {
             accordion_layout = new widget::accordion_menu(tool_bar);
             tool_bar->addWidget(accordion_layout);
         }
 
-        if(action_info.m_isSeparator)
+        if(action_info.m_is_separator)
         {
             if(action_info.m_size > 0)
             {
@@ -108,13 +108,13 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
 
             action_group = nullptr;
         }
-        else if(action_info.m_isSpacer)
+        else if(action_info.m_is_spacer)
         {
             auto* spacer = new QWidget(tool_bar);
             spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             if(accordion_layout != nullptr)
             {
-                accordion_layout->addWidget(spacer);
+                accordion_layout->add_widget(spacer);
             }
             else
             {
@@ -123,11 +123,11 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
 
             action_group = nullptr;
         }
-        else if(action_info.m_isMenu)
+        else if(action_info.m_is_menu)
         {
             ui::qt::container::menu::sptr menu = ui::qt::container::menu::make();
             auto* qt_menu                      = new QMenu(tool_bar);
-            menu->setQtMenu(qt_menu);
+            menu->set_qt_menu(qt_menu);
 
             auto* tool_button = new QToolButton(tool_bar);
             tool_button->setObjectName(q_id + '/' + action_info.m_name.c_str());
@@ -155,7 +155,7 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
 
             if(accordion_layout != nullptr)
             {
-                accordion_layout->addWidget(tool_button);
+                accordion_layout->add_widget(tool_button);
             }
             else
             {
@@ -164,12 +164,12 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
 
             m_menus.push_back(menu);
         }
-        else if(action_info.m_isEditor)
+        else if(action_info.m_is_editor)
         {
             ui::qt::container::widget::sptr container = ui::qt::container::widget::make();
             auto* widget                              = new QWidget(tool_bar);
             widget->setObjectName(q_id + '/' + action_info.m_name.c_str());
-            container->setQtContainer(widget);
+            container->set_qt_container(widget);
 
             if(tool_bar->orientation() == Qt::Horizontal)
             {
@@ -183,7 +183,7 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
             widget->adjustSize();
             if(accordion_layout != nullptr)
             {
-                accordion_layout->addWidget(widget);
+                accordion_layout->add_widget(widget);
             }
             else
             {
@@ -231,7 +231,7 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
                     tool_bar->setMinimumWidth(std::max(tool_bar->minimumWidth(), tool_button->sizeHint().width() + 5));
                 }
 
-                accordion_layout->addWidget(tool_button);
+                accordion_layout->add_widget(tool_button);
             }
             else
             {
@@ -263,9 +263,9 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
             }
 
             action->setObjectName(q_id + '/' + action_info.m_name.c_str());
-            action->setCheckable(action_info.m_isCheckable || action_info.m_isRadio);
+            action->setCheckable(action_info.m_is_checkable || action_info.m_is_radio);
 
-            if(action_info.m_isRadio)
+            if(action_info.m_is_radio)
             {
                 if(action_group == nullptr)
                 {
@@ -281,23 +281,23 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
                 action->setShortcut(QKeySequence(QString::fromStdString(action_info.m_shortcut)));
             }
 
-            menu_item->setQtMenuItem(action);
+            menu_item->set_qt_menu_item(action);
 
-            m_menuItems.push_back(menu_item);
+            m_menu_items.push_back(menu_item);
             SIGHT_ASSERT("No callback found for menu: " << action_info.m_name, menu_item_index < m_callbacks.size());
             ui::menu_item_callback::sptr callback = m_callbacks.at(menu_item_index);
 
             ui::qt::action_callback::sptr qt_callback = std::dynamic_pointer_cast<ui::qt::action_callback>(callback);
             SIGHT_ASSERT("dynamicCast menu_item_callback to action_callback failed", qt_callback);
 
-            QObject::connect(action, SIGNAL(triggered(bool)), qt_callback.get(), SLOT(executeQt(bool)));
-            QObject::connect(action, SIGNAL(toggled(bool)), qt_callback.get(), SLOT(checkQt(bool)));
+            QObject::connect(action, &QAction::triggered, qt_callback.get(), &ui::qt::action_callback::execute_qt);
+            QObject::connect(action, &QAction::toggled, qt_callback.get(), &ui::qt::action_callback::check_qt);
             menu_item_index++;
         }
     }
 
     // Parse all QToolButton and resize to the greater one.
-    if(m_unifyButtonSize)
+    if(m_unify_button_size)
     {
         int max         = -1;
         const auto list = tool_bar->findChildren<QToolButton*>();
@@ -316,57 +316,57 @@ void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::stri
         }
     }
 
-    m_toggleToolbarVisibilityAction = tool_bar->toggleViewAction();
-    m_toggleToolbarVisibilityAction->setVisible(false);
+    m_toggle_toolbar_visibility_action = tool_bar->toggleViewAction();
+    m_toggle_toolbar_visibility_action->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::destroyLayout()
+void toolbar::destroy_layout()
 {
-    this->destroyActions();
+    this->destroy_actions();
     m_parent->clean();
-    m_menuItems.clear();
+    m_menu_items.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::menuItemSetVisible(ui::container::menu_item::sptr _menu_item, bool _is_visible)
+void toolbar::menu_item_set_visible(ui::container::menu_item::sptr _menu_item, bool _is_visible)
 {
     ui::qt::container::menu_item::sptr menu_item_container =
         std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
-    QAction* action = menu_item_container->getQtMenuItem();
+    QAction* action = menu_item_container->get_qt_menu_item();
     action->setVisible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::menuItemSetEnabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled)
+void toolbar::menu_item_set_enabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled)
 {
     ui::qt::container::menu_item::sptr menu_item_container =
         std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
-    QAction* action = menu_item_container->getQtMenuItem();
+    QAction* action = menu_item_container->get_qt_menu_item();
     action->setEnabled(_is_enabled);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::menuItemSetChecked(ui::container::menu_item::sptr _menu_item, bool _is_checked)
+void toolbar::menu_item_set_checked(ui::container::menu_item::sptr _menu_item, bool _is_checked)
 {
     ui::qt::container::menu_item::sptr menu_item_container =
         std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
-    QAction* action = menu_item_container->getQtMenuItem();
+    QAction* action = menu_item_container->get_qt_menu_item();
     action->setChecked(_is_checked);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::setVisible(bool _is_visible)
+void toolbar::set_visible(bool _is_visible)
 {
-    if(m_toggleToolbarVisibilityAction != nullptr)
+    if(m_toggle_toolbar_visibility_action != nullptr)
     {
-        m_toggleToolbarVisibilityAction->setChecked(!_is_visible);
-        m_toggleToolbarVisibilityAction->trigger();
+        m_toggle_toolbar_visibility_action->setChecked(!_is_visible);
+        m_toggle_toolbar_visibility_action->trigger();
     }
 }
 

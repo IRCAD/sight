@@ -41,7 +41,7 @@ namespace sight::geometry::vision::detail
  * this class is used as functor in a ::ceres::Problem.
  * @see http://ceres-solver.org/nnls_tutorial.html#hello-world
  */
-class GEOMETRY_VISION_CLASS_API ReprojectionError
+class GEOMETRY_VISION_CLASS_API reprojection_error
 {
 public:
 
@@ -54,7 +54,7 @@ public:
      * @param _rotMat: rotation matrix
      * @param _tvec: translation vector
      */
-    GEOMETRY_VISION_API ReprojectionError(
+    GEOMETRY_VISION_API reprojection_error(
         cv::Mat _camera_mat,
         cv::Mat _dist_coef,
         cv::Point2f _image_points,
@@ -83,7 +83,7 @@ public:
      * @return a pointer to a ::ceres::CostFunction
      */
 
-    GEOMETRY_VISION_API static ::ceres::CostFunction* Create(
+    GEOMETRY_VISION_API static ::ceres::CostFunction* create(
         const cv::Mat& _camera_matrix,
         const cv::Mat& _dist_coef,
         const cv::Point2f& _image_points,
@@ -93,17 +93,17 @@ public:
 
 private:
 
-    cv::Point2f m_imagePoint;  ///< point on image
-    cv::Point3f m_objectPoint; ///< corresponding point in scene
-    cv::Mat m_extrinsic;       ///< extrinsic matrix
-    cv::Mat m_cameraMatrix;    ///< camera calibration (Fx, Fy, Cx, Cy)
-    cv::Mat m_distCoef;        ///< camera distorsion
+    cv::Point2f m_image_point;  ///< point on image
+    cv::Point3f m_object_point; ///< corresponding point in scene
+    cv::Mat m_extrinsic;        ///< extrinsic matrix
+    cv::Mat m_camera_matrix;    ///< camera calibration (Fx, Fy, Cx, Cy)
+    cv::Mat m_dist_coef;        ///< camera distorsion
 };
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-bool ReprojectionError::operator()(const T* const _pose, T* _residuals) const
+bool reprojection_error::operator()(const T* const _pose, T* _residuals) const
 {
     //Use OpenCV template structures since this operator is templated.
     // Conversion to OpenCv Mat
@@ -129,9 +129,9 @@ bool ReprojectionError::operator()(const T* const _pose, T* _residuals) const
 
     std::vector<cv::Point_<T> > point_reprojected(1); // 2d point
     const std::vector<cv::Point3_<T> > point3d_vector = {{
-        {T(m_objectPoint.x),
-         T(m_objectPoint.y),
-         T(m_objectPoint.z)
+        {T(m_object_point.x),
+         T(m_object_point.y),
+         T(m_object_point.z)
         }
     }
     };
@@ -141,14 +141,14 @@ bool ReprojectionError::operator()(const T* const _pose, T* _residuals) const
         point3d_vector,
         rvec_pose_extrinsic,
         transform_pose_extrinsic(cv::Range(0, 3), cv::Range(3, 4)),
-        m_cameraMatrix,
-        m_distCoef,
+        m_camera_matrix,
+        m_dist_coef,
         point_reprojected
     );
 
     // The error is the difference between the predicted and observed position.
-    _residuals[0] = T(m_imagePoint.x) - T(point_reprojected[0].x);
-    _residuals[1] = T(m_imagePoint.y) - T(point_reprojected[0].y);
+    _residuals[0] = T(m_image_point.x) - T(point_reprojected[0].x);
+    _residuals[1] = T(m_image_point.y) - T(point_reprojected[0].y);
 
     return true;
 }

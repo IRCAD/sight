@@ -51,7 +51,7 @@ const core::com::slots::key_t grabber::PREVIOUS_IMAGE_SLOT     = "previousImage"
 const core::com::slots::key_t grabber::NEXT_IMAGE_SLOT         = "nextImage";
 const core::com::slots::key_t grabber::SET_STEP_SLOT           = "setStep";
 
-const core::com::slots::key_t grabber::SET_PARAMETER_SLOT = "setParameter";
+const core::com::slots::key_t grabber::SET_PARAMETER_SLOT = "set_parameter";
 
 const core::com::slots::key_t grabber::REQUEST_SETTINGS_SLOT    = "requestSettings";
 const core::com::slots::key_t grabber::OPTIMIZE_SLOT            = "optimize";
@@ -72,74 +72,74 @@ grabber::grabber() noexcept :
     new_signal<camera_stopped_signal_t>(CAMERA_STOPPED_SIG);
     new_signal<frame_presented_signal_t>(FRAME_PRESENTED_SIG);
 
-    new_signal<parameter_changed_signal_t>(PARAMETER_CHANGED_SIG);
+    new_signal<parameter_changed_t>(PARAMETER_CHANGED_SIG);
     new_signal<job_created_signal_t>(JOB_CREATED_SIG);
-    new_signal<FPSChangedSignalType>(FPS_CHANGED_SIG);
+    new_signal<fps_changed_signal_t>(FPS_CHANGED_SIG);
 
-    new_slot(START_CAMERA_SLOT, &grabber::startCamera, this);
-    new_slot(STOP_CAMERA_SLOT, &grabber::stopCamera, this);
-    new_slot(PAUSE_CAMERA_SLOT, &grabber::pauseCamera, this);
-    new_slot(PLAY_PAUSE_CAMERA_SLOT, &grabber::playPauseCamera, this);
-    new_slot(LOOP_VIDEO_SLOT, &grabber::toggleLoopMode, this);
-    new_slot(SET_POSITION_VIDEO_SLOT, &grabber::setPosition, this);
-    new_slot(PREVIOUS_IMAGE_SLOT, &grabber::previousImage, this);
-    new_slot(NEXT_IMAGE_SLOT, &grabber::nextImage, this);
-    new_slot(SET_STEP_SLOT, &grabber::setStep, this);
+    new_slot(START_CAMERA_SLOT, &grabber::start_camera, this);
+    new_slot(STOP_CAMERA_SLOT, &grabber::stop_camera, this);
+    new_slot(PAUSE_CAMERA_SLOT, &grabber::pause_camera, this);
+    new_slot(PLAY_PAUSE_CAMERA_SLOT, &grabber::play_pause_camera, this);
+    new_slot(LOOP_VIDEO_SLOT, &grabber::toggle_loop_mode, this);
+    new_slot(SET_POSITION_VIDEO_SLOT, &grabber::set_position, this);
+    new_slot(PREVIOUS_IMAGE_SLOT, &grabber::previous_image, this);
+    new_slot(NEXT_IMAGE_SLOT, &grabber::next_image, this);
+    new_slot(SET_STEP_SLOT, &grabber::set_step, this);
 
-    new_slot(SET_PARAMETER_SLOT, &grabber::setParameter, this);
+    new_slot(SET_PARAMETER_SLOT, &grabber::set_parameter, this);
 
-    new_slot(REQUEST_SETTINGS_SLOT, &grabber::requestSettings, this);
+    new_slot(REQUEST_SETTINGS_SLOT, &grabber::request_settings, this);
     new_slot(OPTIMIZE_SLOT, &grabber::optimize, this);
 
-    new_slot(ADD_ROI_CENTER_SLOT, &grabber::addROICenter, this);
-    new_slot(REMOVE_ROI_CENTER_SLOT, &grabber::removeROICenter, this);
+    new_slot(ADD_ROI_CENTER_SLOT, &grabber::add_roi_center, this);
+    new_slot(REMOVE_ROI_CENTER_SLOT, &grabber::remove_roi_center, this);
 
-    new_slot(FORWARD_FPS_CHANGED_SLOT, &grabber::forwardFPSChanged, this);
+    new_slot(FORWARD_FPS_CHANGED_SLOT, &grabber::forward_fps_changed, this);
 }
 
 // ----------------------------------------------------------------------------
 
-void grabber::playPauseCamera()
+void grabber::play_pause_camera()
 {
-    if(m_isStarted)
+    if(m_is_started)
     {
-        this->pauseCamera();
+        this->pause_camera();
     }
     else
     {
-        this->startCamera();
+        this->start_camera();
     }
 }
 
 // ----------------------------------------------------------------------------
-void grabber::previousImage()
+void grabber::previous_image()
 {
     SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
 // ----------------------------------------------------------------------------
 
-void grabber::nextImage()
+void grabber::next_image()
 {
     SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
 // ----------------------------------------------------------------------------
 
-void grabber::setStep(int /*step*/, std::string /*key*/)
+void grabber::set_step(int /*step*/, std::string /*key*/)
 {
     SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
 //-----------------------------------------------------------------------------
 
-void grabber::setParameter(ui::parameter_t /*unused*/, std::string /*unused*/)
+void grabber::set_parameter(ui::parameter_t /*unused*/, std::string /*unused*/)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void grabber::requestSettings()
+void grabber::request_settings()
 {
 }
 
@@ -151,33 +151,33 @@ void grabber::optimize()
 
 //------------------------------------------------------------------------------
 
-void grabber::addROICenter(sight::data::point::sptr /*unused*/)
+void grabber::add_roi_center(sight::data::point::sptr /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void grabber::removeROICenter(sight::data::point::sptr /*unused*/)
+void grabber::remove_roi_center(sight::data::point::sptr /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void grabber::clearTimeline(data::frame_tl& _tl)
+void grabber::clear_timeline(data::frame_tl& _tl)
 {
-    if(_tl.isAllocated())
+    if(_tl.is_allocated())
     {
         // Clear the timeline: send a black frame
-        const core::hires_clock::type timestamp = _tl.getNewerTimestamp() + 1;
+        const core::hires_clock::type timestamp = _tl.get_newer_timestamp() + 1;
 
-        SPTR(data::frame_tl::buffer_t) buffer = _tl.createBuffer(timestamp);
-        auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
+        SPTR(data::frame_tl::buffer_t) buffer = _tl.create_buffer(timestamp);
+        auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->add_element(0));
 
-        std::memset(dest_buffer, 0, _tl.getWidth() * _tl.getHeight() * _tl.numComponents());
+        std::memset(dest_buffer, 0, _tl.get_width() * _tl.get_height() * _tl.num_components());
 
         // push buffer and notify
-        _tl.clearTimeline();
-        _tl.pushObject(buffer);
+        _tl.clear_timeline();
+        _tl.push_object(buffer);
 
         auto sig_tl = _tl.signal<data::timeline::signals::pushed_t>(
             data::timeline::signals::PUSHED
@@ -188,14 +188,14 @@ void grabber::clearTimeline(data::frame_tl& _tl)
 
 // ----------------------------------------------------------------------------
 
-void grabber::setStartState(bool _state)
+void grabber::set_start_state(bool _state)
 {
-    m_isStarted = _state;
+    m_is_started = _state;
 }
 
 //------------------------------------------------------------------------------
 
-void grabber::forwardFPSChanged(double /* fps */)
+void grabber::forward_fps_changed(double /* fps */)
 {
 }
 

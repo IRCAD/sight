@@ -38,18 +38,18 @@ public:
 
     struct view
     {
-        struct Coord
+        struct coord
         {
             bool relative = false;
             bool negative = false;
             int value     = 0;
         };
-        Coord x;
-        Coord y;
-        Coord width;
-        Coord height;
-        int minWidth {0};
-        int minHeight {0};
+        coord x;
+        coord y;
+        coord width;
+        coord height;
+        int min_width {0};
+        int min_height {0};
         bool visible {true};
         float opacity {0.0};
     };
@@ -94,7 +94,7 @@ public:
 
     UI_API void initialize(const ui::config_t& _configuration) override;
 
-    static inline std::string REGISTRY_KEY = "sight::ui::layout::overlay";
+    static inline std::string s_registry_key = "sight::ui::layout::overlay";
 
 protected:
 

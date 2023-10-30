@@ -39,7 +39,7 @@ class IO_OPENCV_CLASS_API camera
 public:
 
     /// Copy the intrinsic matrix, the image size and the distortion coefficients from a Sight camera.
-    IO_OPENCV_API static std::tuple<cv::Mat, cv::Size, cv::Mat> copyToCv(const data::camera::csptr& _src);
+    IO_OPENCV_API static std::tuple<cv::Mat, cv::Size, cv::Mat> copy_to_cv(const data::camera::csptr& _src);
 };
 
 } // namespace sight::io::opencv

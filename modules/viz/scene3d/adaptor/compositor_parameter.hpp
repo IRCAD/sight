@@ -35,19 +35,19 @@ class CompositorListener;
  * @brief This adaptor binds a Sight data to a shader uniform from a specific compositor.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): sets whether the compositor is enabled or not.
+ * - \b update_visibility(bool): sets whether the compositor is enabled or not.
  * - \b toggleVisibility(): toggle whether the compositor is enabled or not.
  * - \b show(): enables the compositor.
  * - \b hide(): enables the compositor.
- * - \b setBoolParameter(bool, std::string): set the uniform from an integer value.
- * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set the uniform from a color value.
- * - \b setIntParameter(int, std::string): set the uniform from an integer value.
- * - \b setInt2Parameter(int, int, std::string): set the uniform from two integer values.
- * - \b setInt3Parameter(int, int, int, std::string): set the uniform from three integer values.
+ * - \b set_bool_parameter(bool, std::string): set the uniform from an integer value.
+ * - \b set_color_parameter(std::array<std::uint8_t, 4>, std::string): set the uniform from a color value.
+ * - \b set_int_parameter(int, std::string): set the uniform from an integer value.
+ * - \b set_int2_parameter(int, int, std::string): set the uniform from two integer values.
+ * - \b set_int3_parameter(int, int, int, std::string): set the uniform from three integer values.
  * - \b setFloatParameter(float, std::string): set the uniform from an float value.
- * - \b setDoubleParameter(double, std::string): set the uniform from an double value.
- * - \b setDouble2Parameter(double, double, std::string): set the uniform from two double values.
- * - \b setDouble3Parameter(double, double, double, std::string): set the uniform from three double values.
+ * - \b set_double_parameter(double, std::string): set the uniform from an double value.
+ * - \b set_double2_parameter(double, double, std::string): set the uniform from two double values.
+ * - \b set_double3_parameter(double, double, double, std::string): set the uniform from three double values.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -99,24 +99,24 @@ protected:
      * @brief Sets the compositor status.
      * @param _enable the status of the compositor.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _enable) override;
+    MODULE_VIZ_SCENE3D_API void set_visible(bool _enable) override;
 
 private:
 
     /// Updates parameter according to the attached data::object.
-    void updateValue(Ogre::MaterialPtr& _mat);
+    void update_value(Ogre::MaterialPtr& _mat);
 
     /// Adds the listener
-    void addListener();
+    void add_listener();
 
     /// Defines the material name.
-    std::string m_compositorName;
+    std::string m_compositor_name;
 
     /// Contains the Ogre compositor listener, we need to keep a pointer to unregister it.
     CompositorListener* m_listener {nullptr};
 
     /// Handles connection with the layer.
-    core::com::helper::sig_slot_connection m_resizeConnection;
+    core::com::helper::sig_slot_connection m_resize_connection;
 
     friend class CompositorListener;
 };

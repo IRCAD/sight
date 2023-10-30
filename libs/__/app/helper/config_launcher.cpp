@@ -32,7 +32,7 @@ namespace sight::app::helper
 
 //-----------------------------------------------------------------------------
 
-config_launcher::Parameters::Parameters(const service::config_t& _config) :
+config_launcher::parameters::parameters(const service::config_t& _config) :
     m_id(_config.get<std::string>("<xmlattr>.id"))
 {
     if(_config.count("parameters") == 1)
@@ -54,12 +54,12 @@ config_launcher::Parameters::Parameters(const service::config_t& _config) :
 
 //------------------------------------------------------------------------------
 
-const std::string config_launcher::s_SELF_KEY        = "self";
-const std::string config_launcher::s_GENERIC_UID_KEY = "GENERIC_UID";
+const std::string config_launcher::SELF_KEY        = "self";
+const std::string config_launcher::GENERIC_UID_KEY = "GENERIC_UID";
 
 //------------------------------------------------------------------------------
 
-void config_launcher::parseConfig(
+void config_launcher::parse_config(
     const service::config_t& _config,
     const service::base::sptr& _service
 )
@@ -75,8 +75,8 @@ void config_launcher::parseConfig(
     if(app_cfg_id_element.has_value())
     {
         const auto& app_cfg_id                  = *app_cfg_id_element;
-        const service::config_t& app_config_cfg = initConfig(app_cfg_id, old_config, _service);
-        m_appConfigParameters[m_configKey] = Parameters(app_config_cfg);
+        const service::config_t& app_config_cfg = init_config(app_cfg_id, old_config, _service);
+        m_app_config_parameters[m_config_key] = parameters(app_config_cfg);
     }
     else
     {
@@ -88,11 +88,11 @@ void config_launcher::parseConfig(
         {
             const auto config_name = subconfig->second.get<std::string>("<xmlattr>.name");
             const auto config_id   = subconfig->second.get<std::string>("<xmlattr>.id");
-            if(!m_appConfigParameters.contains(config_id))
+            if(!m_app_config_parameters.contains(config_id))
             {
-                const service::config_t& app_config_cfg = initConfig(config_id, old_config, _service);
-                m_appConfigParameters[config_name] = Parameters(app_config_cfg);
-                m_configKey                        = config_name;
+                const service::config_t& app_config_cfg = init_config(config_id, old_config, _service);
+                m_app_config_parameters[config_name] = parameters(app_config_cfg);
+                m_config_key                         = config_name;
             }
             else
             {
@@ -105,14 +105,14 @@ void config_launcher::parseConfig(
                "<xmlattr>.default"
         ); default_config.has_value())
         {
-            setConfig(*default_config);
+            set_config(*default_config);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-service::config_t config_launcher::initConfig(
+service::config_t config_launcher::init_config(
     const std::string& _app_cfg_id,
     const service::config_t& _old_config,
     service::base::sptr _service
@@ -143,12 +143,12 @@ service::config_t config_launcher::initConfig(
 
             if(optional)
             {
-                m_optionalInputs[key] = {uid, i};
+                m_optional_inputs[key] = {uid, i};
                 parameter_cfg.add("<xmlattr>.by", uid);
             }
             else
             {
-                const auto obj = _service->inout(s_DATA_GROUP, i).lock();
+                const auto obj = _service->inout(DATA_GROUP, i).lock();
                 SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
                 parameter_cfg.add("<xmlattr>.by", obj->get_id());
             }
@@ -183,7 +183,7 @@ service::config_t config_launcher::initConfig(
 
 //------------------------------------------------------------------------------
 
-void config_launcher::startConfig(
+void config_launcher::start_config(
     service::base::sptr _service,
     const field_adaptor_t& _opt_replace_map
 )
@@ -191,11 +191,11 @@ void config_launcher::startConfig(
     field_adaptor_t replace_map(_opt_replace_map);
 
     // Generate generic UID
-    const std::string generic_uid_adaptor = app::extension::config::getUniqueIdentifier(_service->get_id());
-    replace_map[config_launcher::s_GENERIC_UID_KEY] = generic_uid_adaptor;
+    const std::string generic_uid_adaptor = app::extension::config::get_unique_identifier(_service->get_id());
+    replace_map[config_launcher::GENERIC_UID_KEY] = generic_uid_adaptor;
 
     //get the right appConfig
-    const auto app_config = m_appConfigParameters[m_configKey];
+    const auto app_config = m_app_config_parameters[m_config_key];
 
     for(const auto& param : app_config.m_parameters)
     {
@@ -204,48 +204,48 @@ void config_launcher::startConfig(
 
     // Init manager
     auto config_manager = std::make_shared<app::detail::config_manager>();
-    config_manager->setConfig(app_config.m_id, replace_map);
+    config_manager->set_config(app_config.m_id, replace_map);
 
     // When a configuration is launched, deferred objects may already exist.
     // This loop allow to notify the app config manager that this data exist and can be used by services.
     // Without that, the data is considered as null.
-    for(const auto& [key, value] : m_optionalInputs)
+    for(const auto& [key, value] : m_optional_inputs)
     {
-        const auto obj = _service->inout(s_DATA_GROUP, value.second).lock();
+        const auto obj = _service->inout(DATA_GROUP, value.second).lock();
         if(obj)
         {
-            config_manager->addExistingDeferredObject(obj.get_shared(), value.first);
+            config_manager->add_existing_deferred_object(obj.get_shared(), value.first);
         }
     }
 
     // Launch config
     config_manager->launch();
 
-    m_config_manager  = config_manager;
-    m_configIsRunning = true;
+    m_config_manager    = config_manager;
+    m_config_is_running = true;
 }
 
 //------------------------------------------------------------------------------
 
-void config_launcher::stopConfig()
+void config_launcher::stop_config()
 {
-    if(m_configIsRunning)
+    if(m_config_is_running)
     {
         // Delete manager
-        m_config_manager->stopAndDestroy();
+        m_config_manager->stop_and_destroy();
         m_config_manager.reset();
     }
 
-    m_configIsRunning = false;
+    m_config_is_running = false;
 }
 
 //------------------------------------------------------------------------------
 
-void config_launcher::setConfig(const std::string& _key)
+void config_launcher::set_config(const std::string& _key)
 {
-    if(m_appConfigParameters.contains(_key))
+    if(m_app_config_parameters.contains(_key))
     {
-        m_configKey = _key;
+        m_config_key = _key;
     }
     else
     {

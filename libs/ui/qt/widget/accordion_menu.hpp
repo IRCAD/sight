@@ -41,12 +41,12 @@ public:
 
     UI_QT_API_QT void fold();
     UI_QT_API_QT void unfold();
-    UI_QT_API_QT void setFolded(bool _folded);
-    UI_QT_API_QT void setUnfolded(bool _unfolded);
-    UI_QT_API_QT void toggleFold();
-    [[nodiscard]] UI_QT_API_QT bool isFolded() const;
+    UI_QT_API_QT void set_folded(bool _folded);
+    UI_QT_API_QT void set_unfolded(bool _unfolded);
+    UI_QT_API_QT void toggle_fold();
+    [[nodiscard]] UI_QT_API_QT bool is_folded() const;
 
-    UI_QT_API_QT void addWidget(QWidget* _w);
+    UI_QT_API_QT void add_widget(QWidget* _w);
     UI_QT_API_QT void update();
 
     bool eventFilter(QObject* _o, QEvent* _e) override;
@@ -58,12 +58,12 @@ protected:
 
 private:
 
-    [[nodiscard]] std::vector<QWidget*> childrenWidgets() const;
+    [[nodiscard]] std::vector<QWidget*> children_widgets() const;
 
-    Qt::Orientation m_orientation             = Qt::Horizontal;
-    bool m_folded                             = true;
-    QParallelAnimationGroup* m_animationGroup = new QParallelAnimationGroup;
-    QMetaObject::Connection m_firstButtonConnection;
+    Qt::Orientation m_orientation              = Qt::Horizontal;
+    bool m_folded                              = true;
+    QParallelAnimationGroup* m_animation_group = new QParallelAnimationGroup;
+    QMetaObject::Connection m_first_button_connection;
     QPushButton* m_bracket = new QPushButton;
     QPixmap m_pixmap;
 };

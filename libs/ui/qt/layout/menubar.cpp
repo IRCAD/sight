@@ -37,50 +37,50 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void menubar::createLayout(ui::container::menubar::sptr _parent, const std::string& _id)
+void menubar::create_layout(ui::container::menubar::sptr _parent, const std::string& _id)
 {
     m_parent = std::dynamic_pointer_cast<ui::qt::container::menubar>(_parent);
     SIGHT_ASSERT("dynamicCast menubar to menubar failed", m_parent);
 
     const QString q_id = QString::fromStdString(_id);
 
-    QMenuBar* menu_bar = m_parent->getQtMenuBar();
+    QMenuBar* menu_bar = m_parent->get_qt_menu_bar();
     menu_bar->setObjectName(q_id);
 
-    for(const std::string& name : m_menuNames)
+    for(const std::string& name : m_menu_names)
     {
         ui::qt::container::menu::sptr menu = ui::qt::container::menu::make();
         QMenu* qt_menu                     = menu_bar->addMenu(QString::fromStdString(name));
         qt_menu->setObjectName(q_id + '/' + name.c_str());
-        menu->setQtMenu(qt_menu);
+        menu->set_qt_menu(qt_menu);
         m_menus.push_back(menu);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void menubar::destroyLayout()
+void menubar::destroy_layout()
 {
-    this->destroyMenus();
+    this->destroy_menus();
     m_menus.clear();
     m_parent->clean();
 }
 
 //-----------------------------------------------------------------------------
 
-void menubar::menuIsVisible(ui::container::menu::sptr _menu, bool _is_visible)
+void menubar::menu_is_visible(ui::container::menu::sptr _menu, bool _is_visible)
 {
     auto menu_container = std::dynamic_pointer_cast<ui::qt::container::menu>(_menu);
-    QMenu* menu         = menu_container->getQtMenu();
+    QMenu* menu         = menu_container->get_qt_menu();
     menu->setVisible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void menubar::menuIsEnabled(ui::container::menu::sptr _menu, bool _is_enabled)
+void menubar::menu_is_enabled(ui::container::menu::sptr _menu, bool _is_enabled)
 {
     auto menu_container = std::dynamic_pointer_cast<ui::qt::container::menu>(_menu);
-    QMenu* menu         = menu_container->getQtMenu();
+    QMenu* menu         = menu_container->get_qt_menu();
     menu->setEnabled(_is_enabled);
 }
 

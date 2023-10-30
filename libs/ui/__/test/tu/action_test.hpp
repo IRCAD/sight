@@ -30,11 +30,11 @@ namespace sight::ui::ut
 /**
  * @brief preferences unit test.
  */
-class actionTest : public CPPUNIT_NS::TestFixture
+class action_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(actionTest);
-CPPUNIT_TEST(configuringTest);
-CPPUNIT_TEST(propertiesTest);
+CPPUNIT_TEST_SUITE(action_test);
+CPPUNIT_TEST(configuring_test);
+CPPUNIT_TEST(properties_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,8 +43,8 @@ public:
     void setUp();
     void tearDown();
 
-    static void configuringTest();
-    static void propertiesTest();
+    static void configuring_test();
+    static void properties_test();
     void cleanup();
 };
 

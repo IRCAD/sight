@@ -57,30 +57,30 @@ void material_test::methode1()
 {
     //-----------test values
     data::color::sptr ambient_color = std::make_shared<data::color>();
-    ambient_color->setRGBA(0.5F, 0.5F, 0.5F, 0.5F);
+    ambient_color->set_rgba(0.5F, 0.5F, 0.5F, 0.5F);
 
     data::color::sptr diffuse_color = std::make_shared<data::color>();
-    diffuse_color->setRGBA(0.8F, 0.2F, 0.5F, 0.4F);
+    diffuse_color->set_rgba(0.8F, 0.2F, 0.5F, 0.4F);
 
     auto material = std::make_shared<data::material>();
 
-    material->setAmbient(data::object::copy(ambient_color));
-    material->setDiffuse(data::object::copy(diffuse_color));
+    material->set_ambient(data::object::copy(ambient_color));
+    material->set_diffuse(data::object::copy(diffuse_color));
 
-    CPPUNIT_ASSERT_EQUAL(material->ambient()->getRGBA()[0], ambient_color->getRGBA()[0]);
-    CPPUNIT_ASSERT_EQUAL(material->diffuse()->getRGBA()[0], diffuse_color->getRGBA()[0]);
+    CPPUNIT_ASSERT_EQUAL(material->ambient()->rgba()[0], ambient_color->rgba()[0]);
+    CPPUNIT_ASSERT_EQUAL(material->diffuse()->rgba()[0], diffuse_color->rgba()[0]);
 
     auto material2 = std::make_shared<data::material>();
     CPPUNIT_ASSERT(*material != *material2);
 
-    material2->setAmbient(data::object::copy(ambient_color));
-    material2->setDiffuse(data::object::copy(diffuse_color));
+    material2->set_ambient(data::object::copy(ambient_color));
+    material2->set_diffuse(data::object::copy(diffuse_color));
     CPPUNIT_ASSERT(*material == *material2);
 }
 
 //------------------------------------------------------------------------------
 
-void material_test::equalityTest()
+void material_test::equality_test()
 {
     auto material1 = std::make_shared<data::material>();
     auto material2 = std::make_shared<data::material>();
@@ -100,18 +100,18 @@ void material_test::equalityTest()
         *material1 == *material2 && !(*material1 != *material2) \
     );
 
-    TEST(setAmbient(std::make_shared<data::color>(1.F, 0.F, 0.F)));
-    TEST(setAmbient(std::make_shared<data::color>(0.F, 1.F, 0.F)));
-    TEST(setAmbient(std::make_shared<data::color>(0.F, 0.F, 1.F)));
-    TEST(setDiffuse(std::make_shared<data::color>(1.F, 0.F, 0.F)));
-    TEST(setDiffuse(std::make_shared<data::color>(0.F, 1.F, 0.F)));
-    TEST(setDiffuse(std::make_shared<data::color>(0.F, 0.F, 1.F)));
-    TEST(setDiffuseTexture(std::make_shared<data::image>()));
-    TEST(setShadingMode(data::material::AMBIENT));
-    TEST(setRepresentationMode(data::material::POINT));
-    TEST(setOptionsMode(data::material::NORMALS));
-    TEST(setDiffuseTextureFiltering(data::material::LINEAR));
-    TEST(setDiffuseTextureWrapping(data::material::CLAMP));
+    TEST(set_ambient(std::make_shared<data::color>(1.F, 0.F, 0.F)));
+    TEST(set_ambient(std::make_shared<data::color>(0.F, 1.F, 0.F)));
+    TEST(set_ambient(std::make_shared<data::color>(0.F, 0.F, 1.F)));
+    TEST(set_diffuse(std::make_shared<data::color>(1.F, 0.F, 0.F)));
+    TEST(set_diffuse(std::make_shared<data::color>(0.F, 1.F, 0.F)));
+    TEST(set_diffuse(std::make_shared<data::color>(0.F, 0.F, 1.F)));
+    TEST(set_diffuse_texture(std::make_shared<data::image>()));
+    TEST(set_shading_mode(data::material::shading_t::ambient));
+    TEST(set_representation_mode(data::material::point));
+    TEST(set_options_mode(data::material::normals));
+    TEST(set_diffuse_texture_filtering(data::material::linear));
+    TEST(set_diffuse_texture_wrapping(data::material::clamp));
 
     #undef TEST
 }

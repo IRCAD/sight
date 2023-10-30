@@ -23,7 +23,7 @@
 #include "io/vtk/SeriesSetReader.hpp"
 
 #include "io/vtk/helper/mesh.hpp"
-#include "io/vtk/helper/vtkLambdaCommand.hpp"
+#include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
@@ -69,7 +69,7 @@
 #include <iosfwd>
 #include <numeric>
 
-SIGHT_REGISTER_IO_READER(sight::io::vtk::SeriesSetReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::series_set_reader);
 
 namespace sight::io::vtk
 {
@@ -78,23 +78,23 @@ namespace sight::io::vtk
 
 void init_series(data::series::sptr _series, const std::string& _instance_uid)
 {
-    _series->setModality("OT");
+    _series->set_modality("OT");
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     const std::string date       = core::tools::get_date(now);
     const std::string time       = core::tools::get_time(now);
-    _series->setSeriesDate(date);
-    _series->setSeriesTime(time);
+    _series->set_series_date(date);
+    _series->set_series_time(time);
 
-    _series->setStudyInstanceUID(_instance_uid);
-    _series->setStudyDate(date);
-    _series->setStudyTime(time);
+    _series->set_study_instance_uid(_instance_uid);
+    _series->set_study_date(date);
+    _series->set_study_time(time);
 }
 
 //------------------------------------------------------------------------------
 
-SeriesSetReader::SeriesSetReader() :
+series_set_reader::series_set_reader() :
     m_job(std::make_shared<core::jobs::observer>("series_set reader")),
-    m_lazyMode(true)
+    m_lazy_mode(true)
 {
 }
 
@@ -107,9 +107,9 @@ vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::jobs::observer::
 
     if(_job)
     {
-        vtkSmartPointer<helper::vtkLambdaCommand> progress_callback;
-        progress_callback = vtkSmartPointer<helper::vtkLambdaCommand>::New();
-        progress_callback->SetCallback(
+        vtkSmartPointer<helper::vtk_lambda_command> progress_callback;
+        progress_callback = vtkSmartPointer<helper::vtk_lambda_command>::New();
+        progress_callback->set_callback(
             [&](vtkObject* _caller, std::uint64_t, void*)
             {
                 auto* filter = static_cast<T*>(_caller);
@@ -145,23 +145,23 @@ data::object::sptr get_data_object(const vtkSmartPointer<vtkDataObject>& _obj, c
     if(grid != nullptr)
     {
         data::mesh::sptr mesh_obj = std::make_shared<data::mesh>();
-        io::vtk::helper::mesh::fromVTKGrid(grid, mesh_obj);
+        io::vtk::helper::mesh::from_vtk_grid(grid, mesh_obj);
 
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
-        rec->setMesh(mesh_obj);
-        rec->setOrganName(_file.stem().string());
-        rec->setIsVisible(true);
+        rec->set_mesh(mesh_obj);
+        rec->set_organ_name(_file.stem().string());
+        rec->set_is_visible(true);
         data_obj = rec;
     }
 
     if(mesh != nullptr)
     {
         data::mesh::sptr mesh_obj = std::make_shared<data::mesh>();
-        io::vtk::helper::mesh::fromVTKMesh(mesh, mesh_obj);
+        io::vtk::helper::mesh::from_vtk_mesh(mesh, mesh_obj);
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
-        rec->setMesh(mesh_obj);
-        rec->setOrganName(_file.stem().string());
-        rec->setIsVisible(true);
+        rec->set_mesh(mesh_obj);
+        rec->set_organ_name(_file.stem().string());
+        rec->set_is_visible(true);
         data_obj = rec;
     }
     else if(img != nullptr)
@@ -204,12 +204,12 @@ bool check_if_read_data_type_is_image(const vtkSmartPointer<vtkXMLGenericDataObj
 
 //------------------------------------------------------------------------------
 
-void SeriesSetReader::read()
+void series_set_reader::read()
 {
-    auto series_set = getConcreteObject();
+    auto series_set = get_concrete_object();
 
     const std::vector<std::filesystem::path>& files = get_files();
-    const std::string instance_uid                  = core::tools::UUID::generate();
+    const std::string instance_uid                  = core::tools::uuid::generate();
 
     data::model_series::reconstruction_vector_t recs;
     std::vector<std::string> error_files;
@@ -288,21 +288,21 @@ void SeriesSetReader::read()
     {
         data::model_series::sptr model_series = std::make_shared<data::model_series>();
         init_series(model_series, instance_uid);
-        model_series->setReconstructionDB(recs);
+        model_series->set_reconstruction_db(recs);
         series_set->push_back(model_series);
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::string SeriesSetReader::extension() const
+std::string series_set_reader::extension() const
 {
     return ".vtk";
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::base::sptr SeriesSetReader::getJob() const
+core::jobs::base::sptr series_set_reader::get_job() const
 {
     return m_job;
 }

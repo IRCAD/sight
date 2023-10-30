@@ -32,7 +32,7 @@ namespace sight::ui::dialog
 
 //-----------------------------------------------------------------------------
 
-bool logger::showLoggerDialog(
+bool logger::show_logger_dialog(
     const std::string& _title,
     const std::string& _message,
     const core::log::logger::sptr& _logger
@@ -68,31 +68,31 @@ logger::logger(const std::string& _title, const std::string& _message, const cor
         {
             ui::object::sptr gui_obj = ui::factory::make(logger_base::REGISTRY_KEY);
             m_implementation         = std::dynamic_pointer_cast<ui::dialog::logger_base>(gui_obj);
-            m_implementation->setTitle(_title);
-            m_implementation->setMessage(_message);
-            m_implementation->setLogger(_logger);
+            m_implementation->set_title(_title);
+            m_implementation->set_message(_message);
+            m_implementation->set_logger(_logger);
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void logger::setTitle(const std::string& _title)
+void logger::set_title(const std::string& _title)
 {
-    m_implementation->setTitle(_title);
+    m_implementation->set_title(_title);
 }
 
 //-----------------------------------------------------------------------------
 
-void logger::setMessage(const std::string& _message)
+void logger::set_message(const std::string& _message)
 {
-    m_implementation->setMessage(_message);
+    m_implementation->set_message(_message);
 }
 
 //-----------------------------------------------------------------------------
 
-void logger::setLogger(const core::log::logger::sptr& _logger)
+void logger::set_logger(const core::log::logger::sptr& _logger)
 {
-    m_implementation->setLogger(_logger);
+    m_implementation->set_logger(_logger);
 }
 
 //-----------------------------------------------------------------------------

@@ -81,7 +81,7 @@ public:
      * @{
      */
     /// Emitted when registration error is computed
-    typedef core::com::signal<void (double)> error_computed_signal_t;
+    using error_computed_signal_t = core::com::signal<void (double)>;
     ///@}
 
     MODULE_FILTER_POINT_API point_list_registration();
@@ -91,15 +91,15 @@ public:
 protected:
 
     /// Register a point list slot
-    MODULE_FILTER_POINT_API void computeRegistration(core::hires_clock::type _timestamp) override;
+    MODULE_FILTER_POINT_API void compute_registration(core::hires_clock::type _timestamp) override;
 
     /// Registration Mode (default: RIGID)
-    typedef enum Mode
+    enum registration_mode_t
     {
-        RIGID,      /*!< rigid mode of VTK registration */
-        SIMILARITY, /*!< similarity mode of VTK registration */
-        AFFINE      /*!< affine mode of VTK registration */
-    } registration_mode_t;
+        rigid,      /*!< rigid mode of VTK registration */
+        similarity, /*!< similarity mode of VTK registration */
+        affine      /*!< affine mode of VTK registration */
+    };
 
     /// Configures the service
     MODULE_FILTER_POINT_API void configuring() override;
@@ -116,23 +116,23 @@ protected:
 private:
 
     ///SLOT: changeMode
-    void changeMode(std::string _value);
+    void change_mode(std::string _value);
 
     /// Key source point list
-    std::string m_registeredPointsKey;
+    std::string m_registered_points_key;
 
     /// Key dest point list
-    std::string m_referencePointsKey;
+    std::string m_reference_points_key;
 
     /// Key for computed registration matrix
-    std::string m_matrixKey;
+    std::string m_matrix_key;
 
     ///Registration Mode
-    registration_mode_t m_registrationMode {RIGID};
+    registration_mode_t m_registration_mode {rigid};
 
-    sight::data::ptr<sight::data::point_list, sight::data::Access::inout> m_registeredPL {this, "registeredPL"};
-    sight::data::ptr<sight::data::point_list, sight::data::Access::inout> m_referencePL {this, "referencePL"};
-    sight::data::ptr<sight::data::matrix4, sight::data::Access::inout> m_output {this, "output"};
+    sight::data::ptr<sight::data::point_list, sight::data::access::inout> m_registered_pl {this, "registeredPL"};
+    sight::data::ptr<sight::data::point_list, sight::data::access::inout> m_reference_pl {this, "referencePL"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_output {this, "output"};
 };
 
 } // namespace sight::module::filter::point

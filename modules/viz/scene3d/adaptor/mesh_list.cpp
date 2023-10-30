@@ -47,19 +47,19 @@ mesh_list::~mesh_list() noexcept =
 
 void mesh_list::configuring()
 {
-    this->configureParams();
+    this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_CAPACITY_CONFIG      = s_CONFIG + "capacity";
-    static const std::string s_DROPPING_CONFIG      = s_CONFIG + "drop";
-    static const std::string s_TEXTURE_ALPHA_CONFIG = s_CONFIG + "textureAlpha";
+    static const std::string s_CAPACITY_CONFIG      = CONFIG + "capacity";
+    static const std::string s_DROPPING_CONFIG      = CONFIG + "drop";
+    static const std::string s_TEXTURE_ALPHA_CONFIG = CONFIG + "textureAlpha";
 
-    m_capacity = config.get(s_CAPACITY_CONFIG, m_capacity);
-    m_dropData = config.get(s_DROPPING_CONFIG, m_dropData);
+    m_capacity  = config.get(s_CAPACITY_CONFIG, m_capacity);
+    m_drop_data = config.get(s_DROPPING_CONFIG, m_drop_data);
     SIGHT_ASSERT("Capacity must be > 0", m_capacity > 0);
-    SIGHT_ASSERT("Drop ratio must be > 0", m_dropData > 0);
-    m_generateAlpha = config.get(s_TEXTURE_ALPHA_CONFIG, m_generateAlpha);
+    SIGHT_ASSERT("Drop ratio must be > 0", m_drop_data > 0);
+    m_generate_alpha = config.get(s_TEXTURE_ALPHA_CONFIG, m_generate_alpha);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,18 +83,18 @@ void mesh_list::starting()
         // Create adaptors configurations
         const std::string transform_id = this->get_id() + transform->get_id();
         service::config_t config;
-        config.add("config.<xmlattr>.layer", m_layerID);
-        config.add("config.<xmlattr>." + std::string(s_TRANSFORM_INPUT), transform_id);
+        config.add("config.<xmlattr>.layer", m_layer_id);
+        config.add("config.<xmlattr>." + std::string(TRANSFORM_INPUT), transform_id);
         config.add("config.<xmlattr>.autoresetcamera", "false");
 
         // Create the transform adaptor.
         const sight::viz::scene3d::adaptor::sptr transform_adaptor =
-            this->registerService<sight::viz::scene3d::adaptor>(
+            this->register_service<sight::viz::scene3d::adaptor>(
                 "sight::module::viz::scene3d::adaptor::transform"
             );
 
-        transform_adaptor->setLayerID(m_layerID);
-        transform_adaptor->setRenderService(this->getRenderService());
+        transform_adaptor->set_layer_id(m_layer_id);
+        transform_adaptor->set_render_service(this->render_service());
 
         transform_adaptor->set_inout(transform, "transform", true);
 
@@ -105,14 +105,14 @@ void mesh_list::starting()
 
         // Create the texture adaptor
         const sight::viz::scene3d::adaptor::sptr texture_adaptor =
-            this->registerService<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::texture");
+            this->register_service<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::texture");
 
         service::config_t texture_config = config;
         texture_config.add("config.<xmlattr>.textureName", image->get_id());
         texture_config.add("config.<xmlattr>.useAlpha", "true");
 
-        texture_adaptor->setLayerID(m_layerID);
-        texture_adaptor->setRenderService(this->getRenderService());
+        texture_adaptor->set_layer_id(m_layer_id);
+        texture_adaptor->set_render_service(this->render_service());
 
         texture_adaptor->set_input(image, "image", false);
 
@@ -122,13 +122,13 @@ void mesh_list::starting()
 
         // Creates the mesh adaptor.
         const sight::viz::scene3d::adaptor::sptr mesh_adaptor =
-            this->registerService<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::mesh");
+            this->register_service<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::mesh");
 
         service::config_t mesh_config = config;
         mesh_config.add("config.<xmlattr>.textureName", image->get_id());
 
-        mesh_adaptor->setLayerID(m_layerID);
-        mesh_adaptor->setRenderService(this->getRenderService());
+        mesh_adaptor->set_layer_id(m_layer_id);
+        mesh_adaptor->set_render_service(this->render_service());
 
         {
             const auto mesh = m_mesh.lock();
@@ -136,12 +136,12 @@ void mesh_list::starting()
         }
 
         mesh_adaptor->configure(mesh_config);
-        mesh_adaptor->updateVisibility(false);
+        mesh_adaptor->update_visibility(false);
         mesh_adaptor->start();
         SIGHT_ASSERT("mesh is not started", mesh_adaptor->started());
 
         // Store data.
-        MeshInstance instance {transform, image, transform_adaptor, mesh_adaptor, texture_adaptor};
+        mesh_instance instance {transform, image, transform_adaptor, mesh_adaptor, texture_adaptor};
         m_meshes.push_back(instance);
     }
 }
@@ -151,7 +151,7 @@ void mesh_list::starting()
 service::connections_t mesh_list::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_SLOT);
+    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_SLOT);
     return connections;
 }
 
@@ -167,25 +167,25 @@ void mesh_list::stopping()
 {
     for(const auto& instance : m_meshes)
     {
-        this->unregisterService(instance.m_transform);
-        this->unregisterService(instance.m_mesh);
-        this->unregisterService(instance.m_texture);
+        this->unregister_service(instance.m_transform);
+        this->unregister_service(instance.m_mesh);
+        this->unregister_service(instance.m_texture);
     }
 
     m_meshes.clear();
-    m_meshCount = 0;
+    m_mesh_count = 0;
 }
 
 //-----------------------------------------------------------------------------
 
-void mesh_list::setVisible(bool _visible)
+void mesh_list::set_visible(bool _visible)
 {
     for(const auto& instance : m_meshes)
     {
-        if(instance.m_isEnabled)
+        if(instance.m_is_enabled)
         {
             const sight::viz::scene3d::adaptor::sptr mesh = instance.m_mesh;
-            mesh->updateVisibility(_visible);
+            mesh->update_visibility(_visible);
         }
     }
 }
@@ -194,38 +194,38 @@ void mesh_list::setVisible(bool _visible)
 
 void mesh_list::add()
 {
-    if(m_dropCount % m_dropData == 0)
+    if(m_drop_count % m_drop_data == 0)
     {
         // Reset the drop count.
-        m_dropCount = 0;
+        m_drop_count = 0;
 
-        auto& instance = m_meshes.at(m_meshCount);
-        ++m_meshCount;
+        auto& instance = m_meshes.at(m_mesh_count);
+        ++m_mesh_count;
 
-        if(m_meshCount == m_capacity)
+        if(m_mesh_count == m_capacity)
         {
-            m_meshCount = 0;
+            m_mesh_count = 0;
         }
 
-        instance.m_isEnabled = true;
+        instance.m_is_enabled = true;
 
         const sight::viz::scene3d::adaptor::sptr texture_adp = instance.m_texture;
         {
             const auto image         = texture_adp->input<data::image>("image").lock();
             const auto texture_input = m_texture.lock();
 
-            if(m_generateAlpha && texture_input->getType() == core::type::UINT8
-               && (texture_input->getPixelFormat() == data::image::PixelFormat::GRAY_SCALE
-                   || texture_input->numComponents() == 1))
+            if(m_generate_alpha && texture_input->type() == core::type::UINT8
+               && (texture_input->pixel_format() == data::image::pixel_format::gray_scale
+                   || texture_input->num_components() == 1))
             {
                 // transform the image into RGBA with a transparent texture
-                if(texture_input->getAllocatedSizeInBytes() * 4 != instance.m_image->getAllocatedSizeInBytes())
+                if(texture_input->allocated_size_in_bytes() * 4 != instance.m_image->allocated_size_in_bytes())
                 {
-                    instance.m_image->copyInformation(texture_input.get_shared());
+                    instance.m_image->copy_information(texture_input.get_shared());
                     instance.m_image->resize(
                         instance.m_image->size(),
-                        instance.m_image->getType(),
-                        data::image::PixelFormat::RGBA
+                        instance.m_image->type(),
+                        data::image::pixel_format::rgba
                     );
                 }
 
@@ -241,19 +241,19 @@ void mesh_list::add()
                     itr->a = *in_itr;
                 }
             }
-            else if(m_generateAlpha && texture_input->getType() == core::type::UINT8
-                    && (texture_input->getPixelFormat() == data::image::PixelFormat::RGB
-                        || texture_input->numComponents() == 3))
+            else if(m_generate_alpha && texture_input->type() == core::type::UINT8
+                    && (texture_input->pixel_format() == data::image::pixel_format::rgb
+                        || texture_input->num_components() == 3))
             {
                 // transform the image into RGBA with a transparent texture
 
-                if(texture_input->getAllocatedSizeInBytes() * 4 / 3 != instance.m_image->getAllocatedSizeInBytes())
+                if(texture_input->allocated_size_in_bytes() * 4 / 3 != instance.m_image->allocated_size_in_bytes())
                 {
-                    instance.m_image->copyInformation(texture_input.get_shared());
+                    instance.m_image->copy_information(texture_input.get_shared());
                     instance.m_image->resize(
                         instance.m_image->size(),
-                        instance.m_image->getType(),
-                        data::image::PixelFormat::RGBA
+                        instance.m_image->type(),
+                        data::image::pixel_format::rgba
                     );
                 }
 
@@ -290,23 +290,23 @@ void mesh_list::add()
 
         // update mesh adaptor visibility
         const sight::viz::scene3d::adaptor::sptr mesh_adp = instance.m_mesh;
-        mesh_adp->updateVisibility(m_isVisible);
+        mesh_adp->update_visibility(m_visible);
     }
 
-    ++m_dropCount;
+    ++m_drop_count;
 }
 
 //-----------------------------------------------------------------------------
 
 void mesh_list::clear()
 {
-    this->setVisible(false);
+    this->set_visible(false);
     for(auto& instance : m_meshes)
     {
-        instance.m_isEnabled = false;
+        instance.m_is_enabled = false;
     }
 
-    m_meshCount = 0;
+    m_mesh_count = 0;
 }
 
 } // namespace sight::module::viz::scene3d::adaptor
