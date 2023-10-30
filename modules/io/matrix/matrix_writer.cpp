@@ -54,17 +54,14 @@ matrix_writer::matrix_writer() noexcept
     new_slot(START_RECORD, &matrix_writer::startRecord, this);
     new_slot(STOP_RECORD, &matrix_writer::stopRecord, this);
     new_slot(WRITE, &matrix_writer::write, this);
+    new_slot(SET_BASE_FOLDER, &matrix_writer::setBaseFolder, this);
 }
 
 //------------------------------------------------------------------------------
 
 matrix_writer::~matrix_writer() noexcept
 {
-    if(m_filestream.is_open())
-    {
-        m_filestream.flush();
-        m_filestream.close();
-    }
+    this->stopRecord();
 }
 
 //------------------------------------------------------------------------------
@@ -79,6 +76,13 @@ sight::io::service::IOPathType matrix_writer::getIOPathType() const
 void matrix_writer::configuring()
 {
     sight::io::service::writer::configuring();
+
+    const auto& config = this->get_config();
+
+    if(const auto& config_child = config.get_child_optional("config"); config_child)
+    {
+        m_interactive = config_child->get<bool>("<xmlattr>.interactive", true);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +127,7 @@ void matrix_writer::stopping()
 
 void matrix_writer::updating()
 {
-    core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
+    const auto& timestamp = core::hires_clock::get_time_in_milli_sec();
     this->saveMatrix(timestamp);
 }
 
@@ -131,6 +135,9 @@ void matrix_writer::updating()
 
 void matrix_writer::saveMatrix(core::hires_clock::type _timestamp)
 {
+    // Protect operation
+    std::unique_lock lock(m_mutex);
+
     this->startRecord();
     this->write(_timestamp);
     this->stopRecord();
@@ -140,56 +147,73 @@ void matrix_writer::saveMatrix(core::hires_clock::type _timestamp)
 
 void matrix_writer::write(core::hires_clock::type _timestamp)
 {
-    if(m_isRecording)
+    // Protect operation
+    std::unique_lock lock(m_mutex);
+
+    m_writeFailed = true;
+
+    if(!m_isRecording)
     {
-        const auto locked    = m_data.lock();
-        const auto matrix_tl = std::dynamic_pointer_cast<const data::matrix_tl>(locked.get_shared());
+        // No need to write if not recording
+        return;
+    }
 
-        SIGHT_ASSERT(
-            "The object is not a '"
-            + data::matrix_tl::classname()
-            + "' or '"
-            + sight::io::service::s_DATA_KEY
-            + "' is not correctly set.",
-            matrix_tl
-        );
+    const auto& locked   = m_data.lock();
+    const auto matrix_tl = std::dynamic_pointer_cast<const data::matrix_tl>(locked.get_shared());
 
-        const unsigned int number_of_mat = matrix_tl->getMaxElementNum();
+    SIGHT_ASSERT(
+        "The object is not a '"
+        + data::matrix_tl::classname()
+        + "' or '"
+        + sight::io::service::s_DATA_KEY
+        + "' is not correctly set.",
+        matrix_tl
+    );
 
-        // Get the buffer of the copied timeline
-        CSPTR(data::timeline::object) object = matrix_tl->getClosestObject(_timestamp);
-        if(object)
+    const unsigned int number_of_mat = matrix_tl->getMaxElementNum();
+
+    // Get the buffer of the copied timeline
+    if(const auto& object = matrix_tl->getClosestObject(_timestamp); object)
+    {
+        if(const auto& buffer = std::dynamic_pointer_cast<const data::matrix_tl::buffer_t>(object); buffer)
         {
-            CSPTR(data::matrix_tl::buffer_t) buffer =
-                std::dynamic_pointer_cast<const data::matrix_tl::buffer_t>(object);
-            if(buffer)
+            _timestamp = object->getTimestamp();
+            const auto time = static_cast<std::size_t>(_timestamp);
+            m_filestream << time << ";";
+
+            for(unsigned int i = 0 ; i < number_of_mat ; ++i)
             {
-                _timestamp = object->getTimestamp();
-                const auto time = static_cast<std::size_t>(_timestamp);
-                m_filestream << time << ";";
-                for(unsigned int i = 0 ; i < number_of_mat ; ++i)
+                const std::array<float, 16>& values = buffer->getElement(i);
+
+                for(unsigned int v = 0 ; v < 16 ; ++v)
                 {
-                    const std::array<float, 16> values = buffer->getElement(i);
-
-                    for(unsigned int v = 0 ; v < 16 ; ++v)
-                    {
-                        m_filestream << values[v] << ";";
-                    }
+                    m_filestream << values[v] << ";";
                 }
-
-                m_filestream << std::endl;
             }
+
+            m_filestream << std::endl;
         }
     }
+
+    m_writeFailed = false;
 }
 
 //------------------------------------------------------------------------------
 
 void matrix_writer::startRecord()
 {
+    // Protect operation
+    std::unique_lock lock(m_mutex);
+
+    // No need to start if already recording
+    if(m_isRecording)
+    {
+        return;
+    }
+
     // Default mode when opening a file is in append mode
     std::ios_base::openmode open_mode = std::ofstream::app;
-    if(!this->hasLocationDefined())
+    if(m_interactive && !this->hasLocationDefined())
     {
         this->openLocationDialog();
 
@@ -207,20 +231,39 @@ void matrix_writer::startRecord()
             std::filesystem::create_directories(dirname);
         }
 
-        if(!m_filestream.is_open())
+        try
         {
-            m_filestream.open(this->get_file().string(), std::ofstream::out | open_mode);
-            m_filestream.precision(7);
-            m_filestream << std::fixed;
-            m_isRecording = true;
-        }
-        else
-        {
-            SIGHT_WARN(
+            if(!m_filestream.is_open())
+            {
+                m_filestream.open(this->get_file().string(), std::ofstream::out | open_mode);
+                m_filestream.precision(7);
+                m_filestream << std::fixed;
+            }
+
+            // Check if the file is open and in good state
+            m_isRecording = m_filestream.good();
+
+            SIGHT_ERROR_IF(
                 "The file " + this->get_file().string()
-                + " can't be opened. Please check if it is already open in another program."
+                + " can't be opened. Please check if it is already open in another program.",
+                !m_isRecording
             );
         }
+        catch(const std::exception& e)
+        {
+            m_isRecording = false;
+
+            SIGHT_ERROR("The file " + this->get_file().string() + " can't be opened. " + e.what());
+        }
+    }
+    else if(!m_interactive)
+    {
+        // This will allow to start recording once the file and / or base folder has been set...
+        m_isRecording = true;
+    }
+    else
+    {
+        SIGHT_WARN("The output location has not been defined. The recording will not start.");
     }
 }
 
@@ -228,11 +271,52 @@ void matrix_writer::startRecord()
 
 void matrix_writer::stopRecord()
 {
-    m_isRecording = false;
-    if(m_filestream.is_open())
+    // Protect operation
+    std::unique_lock lock(m_mutex);
+
+    // No need to stop recording if already stopped
+    if(!m_isRecording)
     {
-        m_filestream.flush();
-        m_filestream.close();
+        return;
+    }
+
+    try
+    {
+        if(m_filestream.is_open())
+        {
+            m_filestream.flush();
+            m_filestream.close();
+        }
+
+        m_isRecording = false;
+    }
+    catch(const std::exception& e)
+    {
+        SIGHT_ERROR("The file " + this->get_file().string() + " can't be closed. " + e.what());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void matrix_writer::setBaseFolder(std::string _path)
+{
+    // Protect operation
+    std::unique_lock lock(m_mutex);
+
+    // If the service is recording, stop it and restart it after changing the base folder
+    const bool was_recording = m_isRecording;
+
+    if(m_isRecording)
+    {
+        this->stopRecord();
+    }
+
+    // Set the base folder
+    sight::io::service::writer::setBaseFolder(_path);
+
+    if(was_recording)
+    {
+        this->startRecord();
     }
 }
 

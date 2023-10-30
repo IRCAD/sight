@@ -176,7 +176,7 @@ public:
      * @brief Slot: Sets the output base folder.
      *
      */
-    IO_API void setBaseFolder(std::string _path);
+    IO_API virtual void setBaseFolder(std::string _path);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     IO_API bool hasLocationDefined() const;

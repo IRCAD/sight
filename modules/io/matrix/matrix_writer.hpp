@@ -29,6 +29,7 @@
 #include <io/__/service/writer.hpp>
 
 #include <fstream>
+#include <mutex>
 
 namespace sight::module::io::matrix
 {
@@ -52,6 +53,7 @@ namespace sight::module::io::matrix
    <service type="sight::module::io::matrix::matrix_writer">
        <in key="data" uid="..." auto_connect="true" />
        <windowTitle>Select the file to save the matrix timeline to</windowTitle>
+       <config interactive="true" />
    </service>
    @endcode
  * @subsection Input Input
@@ -59,6 +61,10 @@ namespace sight::module::io::matrix
  *
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::writer
+ * - \b config:
+ *   - \b interactive: if true, the service will display a dialog box to select the file to save. If false, no dialog
+ *                     box will be shown. In this case, for practical reasons, the recording will start when setting a
+ *                     baseFolder.
  */
 class MODULE_IO_MATRIX_CLASS_API matrix_writer : public sight::io::service::writer
 {
@@ -81,6 +87,21 @@ public:
     /// Return file type (io::service::FOLDER)
     MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
 
+    /// SLOT: Save current matrices.
+    MODULE_IO_MATRIX_API void saveMatrix(core::hires_clock::type _timestamp);
+
+    /// SLOT: Write matrices in csv file
+    MODULE_IO_MATRIX_API void write(core::hires_clock::type _timestamp);
+
+    /// SLOT: Start recording
+    MODULE_IO_MATRIX_API void startRecord();
+
+    /// SLOT: Stop recording
+    MODULE_IO_MATRIX_API void stopRecord();
+
+    /// SLOT: Change base folder
+    MODULE_IO_MATRIX_API void setBaseFolder(std::string _path) override;
+
 protected:
 
     /// Does nothing
@@ -97,21 +118,17 @@ protected:
 
 private:
 
-    /// SLOT: Save current matrices.
-    void saveMatrix(core::hires_clock::type _timestamp);
+    /// True if the service is recording.
+    bool m_isRecording {false};
 
-    /// SLOT: Write matrices in csv file
-    void write(core::hires_clock::type _timestamp);
+    /// flag if the service is in "interactive" mode. IE if a dialog box is displayed to select the file.
+    bool m_interactive {true};
 
-    /// SLOT: Start recording
-    void startRecord();
-
-    /// SLOT: Stop recording
-    void stopRecord();
-
-    bool m_isRecording {false}; ///< flag if the service is recording.
-
+    /// File stream to write the matrices
     std::ofstream m_filestream;
+
+    /// Mutex to protect concurrent access on the file stream and service state
+    std::recursive_mutex m_mutex;
 };
 
 } // namespace sight::module::io::matrix
