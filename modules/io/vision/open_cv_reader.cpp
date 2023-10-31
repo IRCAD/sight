@@ -28,7 +28,7 @@
 
 #include <data/camera_set.hpp>
 
-#include <io/__/service/ioTypes.hpp>
+#include <io/__/service/io_types.hpp>
 
 #include <ui/__/dialog/location.hpp>
 

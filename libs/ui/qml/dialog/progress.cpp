@@ -28,7 +28,7 @@
 #include <ui/__/container/widget.hpp>
 #include <ui/__/frame.hpp>
 #include <ui/__/macros.hpp>
-#include <ui/qml/QmlEngine.hpp>
+#include <ui/qml/qml_engine.hpp>
 
 #include <QGuiApplication>
 #include <QObject>

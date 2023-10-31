@@ -7,9 +7,9 @@
     <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::ui" />
 
-    <xi:include href="ExDicomSegmentationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="Threshold.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="VTKMesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="ex_dicom_segmentation_base.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="threshold.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="vtk_mesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension">
         <id>ExDicomSegmentation_VTKMesher_Activity</id>

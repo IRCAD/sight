@@ -35,10 +35,10 @@
 
 #include <io/__/reader/object_reader.hpp>
 #include <io/__/service/reader.hpp>
-#include <io/vtk/BitmapImageReader.hpp>
-#include <io/vtk/ImageReader.hpp>
-#include <io/vtk/MetaImageReader.hpp>
-#include <io/vtk/VtiImageReader.hpp>
+#include <io/vtk/bitmap_image_reader.hpp>
+#include <io/vtk/image_reader.hpp>
+#include <io/vtk/meta_image_reader.hpp>
+#include <io/vtk/vti_image_reader.hpp>
 
 #include <service/macros.hpp>
 

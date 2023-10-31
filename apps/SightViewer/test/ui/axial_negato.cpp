@@ -24,7 +24,7 @@
 #include <ui/testCore/helper/button.hpp>
 #include <ui/testCore/helper/slider.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::axial_negato);
 

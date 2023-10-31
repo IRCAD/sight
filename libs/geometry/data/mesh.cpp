@@ -22,7 +22,7 @@
 
 #include "geometry/data/mesh.hpp"
 
-#include "data/thread/RegionThreader.hpp"
+#include "data/thread/region_threader.hpp"
 
 #include "geometry/data/matrix4.hpp"
 

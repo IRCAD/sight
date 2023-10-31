@@ -29,9 +29,9 @@
 #include <data/image.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/itk/InrImageWriter.hpp>
-#include <io/itk/JpgImageWriter.hpp>
-#include <io/itk/NiftiImageWriter.hpp>
+#include <io/itk/inr_image_writer.hpp>
+#include <io/itk/jpg_image_writer.hpp>
+#include <io/itk/nifti_image_writer.hpp>
 
 #include <service/macros.hpp>
 

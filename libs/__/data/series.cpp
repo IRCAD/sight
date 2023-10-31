@@ -23,8 +23,8 @@
 #include "data/image_series.hpp"
 #include "data/model_series.hpp"
 
-#include "data/detail/SeriesImpl.hxx"
-#include "data/dicom/Sop.hpp"
+#include "data/detail/series_impl.hxx"
+#include "data/dicom/sop.hpp"
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 

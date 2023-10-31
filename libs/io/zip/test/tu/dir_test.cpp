@@ -27,7 +27,7 @@
 #include <io/zip/read_dir_archive.hpp>
 #include <io/zip/write_dir_archive.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 #include <filesystem>
 

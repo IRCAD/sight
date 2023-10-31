@@ -31,7 +31,7 @@
 #include <data/vector.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/dicom/helper/Fiducial.hpp>
+#include <io/dicom/helper/fiducial.hpp>
 #include <io/dicom/writer/series_set.hpp>
 
 #include <service/macros.hpp>

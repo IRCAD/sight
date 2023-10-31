@@ -22,12 +22,12 @@
 
 #include "ui/qml/dialog/logger.hpp"
 
-#include "ui/qml/model/RoleTableModel.hpp"
+#include "ui/qml/model/role_table_model.hpp"
 
 #include <core/runtime/path.hpp>
 
 #include <ui/__/macros.hpp>
-#include <ui/qml/QmlEngine.hpp>
+#include <ui/qml/qml_engine.hpp>
 
 #include <QGuiApplication>
 

@@ -24,7 +24,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/dicom/sorter/TagValueConfigurableSorter.hpp>
+#include <ui/dicom/sorter/tag_value_configurable_sorter.hpp>
 
 namespace sight::module::ui::dicom
 {

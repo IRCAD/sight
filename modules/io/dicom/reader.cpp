@@ -70,25 +70,25 @@ inline static auto print_series_set(const sight::data::series_set& _series_set)
 }
 
 /// Private reader implementation
-class reader::readerImpl
+class reader::reader_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    readerImpl(const readerImpl&)            = delete;
-    readerImpl(readerImpl&&)                 = delete;
-    readerImpl& operator=(const readerImpl&) = delete;
-    readerImpl& operator=(readerImpl&&)      = delete;
+    reader_impl(const reader_impl&)            = delete;
+    reader_impl(reader_impl&&)                 = delete;
+    reader_impl& operator=(const reader_impl&) = delete;
+    reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit readerImpl(reader* const _reader) noexcept :
+    inline explicit reader_impl(reader* const _reader) noexcept :
         m_owner(_reader),
         m_job_created_signal(_reader->new_signal<job_created_signal_t>("jobCreated"))
     {
     }
 
     /// Default destructor
-    inline ~readerImpl() noexcept = default;
+    inline ~reader_impl() noexcept = default;
 
     /// Pointer to the public interface
     reader* const m_owner;
@@ -246,7 +246,7 @@ public:
 };
 
 reader::reader() noexcept :
-    m_pimpl(std::make_unique<readerImpl>(this))
+    m_pimpl(std::make_unique<reader_impl>(this))
 {
 }
 

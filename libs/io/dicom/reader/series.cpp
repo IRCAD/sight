@@ -22,11 +22,11 @@
 
 #include "io/dicom/reader/series.hpp"
 
-#include "io/dicom/helper/DicomDataReader.hxx"
-#include "io/dicom/reader/iod/ComprehensiveSRIOD.hpp"
-#include "io/dicom/reader/iod/CTMRImageIOD.hpp"
-#include "io/dicom/reader/iod/SpatialFiducialsIOD.hpp"
-#include "io/dicom/reader/iod/SurfaceSegmentationIOD.hpp"
+#include "io/dicom/helper/dicom_data_reader.hxx"
+#include "io/dicom/reader/iod/comprehensive_srio_d.hpp"
+#include "io/dicom/reader/iod/ctmr_image_io_d.hpp"
+#include "io/dicom/reader/iod/spatial_fiducials_io_d.hpp"
+#include "io/dicom/reader/iod/surface_segmentation_io_d.hpp"
 
 #include <data/dicom/series.hpp>
 #include <data/image.hpp>

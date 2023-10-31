@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/writer/ie/InformationEntity.hpp"
+#include "io/dicom/writer/ie/information_entity.hpp"
 
 #include <data/image.hpp>
 

@@ -27,7 +27,7 @@
 #include <core/jobs/base.hpp>
 
 #include <io/__/service/reader.hpp>
-#include <io/bitmap/Reader.hpp>
+#include <io/bitmap/reader.hpp>
 
 #include <set>
 

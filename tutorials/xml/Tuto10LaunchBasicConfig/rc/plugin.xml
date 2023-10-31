@@ -5,7 +5,7 @@
     <requirement id="sight::module::service" />
 
     <!-- Allows to include a xml file containing a sub-configuration -->
-    <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="basic_frame_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::app::extension::config" >
         <id>Tuto10LaunchBasicConfig_AppCfg</id>

@@ -129,7 +129,7 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomPacsReader</id>
+                    <id>sight::activity::io::dicom::pacs_reader</id>
                 </filter>
             </config>
         </service>
@@ -144,7 +144,7 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomPacsWriter</id>
+                    <id>sight::activity::io::dicom::pacs_writer</id>
                 </filter>
             </config>
         </service>
@@ -159,7 +159,7 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomFiltering</id>
+                    <id>sight::activity::io::dicom::filtering</id>
                 </filter>
             </config>
         </service>
@@ -174,7 +174,7 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>activity_io_dicomweb</id>
+                    <id>sight::activity::io::dicomweb::reader</id>
                 </filter>
             </config>
         </service>
@@ -189,7 +189,7 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomWebWriterActivity</id>
+                    <id>sight::activity::io::dicomweb::writer</id>
                 </filter>
             </config>
         </service>

@@ -36,7 +36,7 @@
 #include <data/series_set.hpp>
 
 #include <io/__/service/reader.hpp>
-#include <io/http/exceptions/Base.hpp>
+#include <io/http/exceptions/base.hpp>
 
 #include <service/op.hpp>
 

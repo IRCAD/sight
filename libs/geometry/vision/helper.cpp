@@ -22,7 +22,7 @@
 
 #include "helper.hpp"
 
-#include "geometry/vision/detail/ReprojectionError.hpp"
+#include "geometry/vision/detail/reprojection_error.hpp"
 
 #include <core/spy_log.hpp>
 

@@ -7,8 +7,8 @@
     <requirement id="sight::module::io::session" />
     <requirement id="sight::module::ui::qt" />
 
-    <xi:include href="configurations/SightCalibratorActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/SightCalibratorBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sight_calibrator_activity_selector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sight_calibrator_base.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension">
         <id>SightCalibratorActivitySelector_Activity</id>

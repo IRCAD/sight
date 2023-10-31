@@ -28,8 +28,8 @@
 
 #include <data/series_set.hpp>
 
-#include <io/dimse/data/PacsConfiguration.hpp>
-#include <io/dimse/SeriesEnquirer.hpp>
+#include <io/dimse/data/pacs_configuration.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <service/notifier.hpp>
 
@@ -59,7 +59,7 @@ namespace sight::module::io::dimse
    @endcode
  *
  * @subsection Input Input:
- * - \b pacsConfig [sight::io::dimse::data::PacsConfiguration]: PACS configuration data.
+ * - \b pacsConfig [sight::io::dimse::data::pacs_configuration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
  * - \b seriesSet [sight::data::object]: series_set where to push the queried data.

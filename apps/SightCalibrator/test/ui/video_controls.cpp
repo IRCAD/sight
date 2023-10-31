@@ -29,7 +29,7 @@
 #include <ui/testCore/helper/video_controls.hpp>
 #include <ui/testCore/tester.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 #include <QLabel>
 

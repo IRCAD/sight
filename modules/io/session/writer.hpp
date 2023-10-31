@@ -134,8 +134,8 @@ protected:
 
 private:
 
-    class WriterImpl;
-    std::unique_ptr<WriterImpl> m_pimpl;
+    class writer_impl;
+    std::unique_ptr<writer_impl> m_pimpl;
 };
 
 } // namespace sight::module::io::session

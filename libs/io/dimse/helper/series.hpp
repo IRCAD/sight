@@ -23,7 +23,7 @@
 #pragma once
 
 #include "io/dimse/config.hpp"
-#include "io/dimse/data/PacsConfiguration.hpp"
+#include "io/dimse/data/pacs_configuration.hpp"
 
 #include <data/series_set.hpp>
 #include <data/vector.hpp>

@@ -22,7 +22,7 @@
 
 #include "viz/qt3d/data/material.hpp"
 
-#include "viz/qt3d/techniques/Lighting.hpp"
+#include "viz/qt3d/techniques/lighting.hpp"
 
 #include <data/color.hpp>
 

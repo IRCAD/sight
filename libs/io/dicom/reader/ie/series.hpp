@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/reader/ie/InformationEntity.hpp"
+#include "io/dicom/reader/ie/information_entity.hpp"
 
 #include <data/series.hpp>
 

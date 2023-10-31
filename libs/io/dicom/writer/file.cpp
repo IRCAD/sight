@@ -23,14 +23,14 @@
 
 #include "data/model_series.hpp"
 
-#include "io/dicom/codec/NvJpeg2K.hpp"
+#include "io/dicom/codec/nv_jpeg2k.hpp"
 
 #include <core/macros.hpp>
 
 #include <data/fiducials_series.hpp>
 #include <data/image_series.hpp>
 
-#include <io/bitmap/Writer.hpp>
+#include <io/bitmap/writer.hpp>
 
 #include <gdcmImageChangeTransferSyntax.h>
 #include <gdcmImageWriter.h>
@@ -302,24 +302,24 @@ static void write_spatial_fiducials(
 }
 
 /// Private Writer implementation
-class file::WriterImpl
+class file::writer_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    WriterImpl(const WriterImpl&)            = delete;
-    WriterImpl(WriterImpl&&)                 = delete;
-    WriterImpl& operator=(const WriterImpl&) = delete;
-    WriterImpl& operator=(WriterImpl&&)      = delete;
+    writer_impl(const writer_impl&)            = delete;
+    writer_impl(writer_impl&&)                 = delete;
+    writer_impl& operator=(const writer_impl&) = delete;
+    writer_impl& operator=(writer_impl&&)      = delete;
 
     /// Constructor
-    inline explicit WriterImpl(file* const _writer) noexcept :
+    inline explicit writer_impl(file* const _writer) noexcept :
         m_writer(_writer)
     {
     }
 
     /// Default destructor
-    inline ~WriterImpl() noexcept = default;
+    inline ~writer_impl() noexcept = default;
 
     /// Pointer to the public interface
     file* const m_writer;
@@ -355,7 +355,7 @@ public:
 
 file::file() :
     core::location::single_folder(),
-    m_pimpl(std::make_unique<WriterImpl>(this))
+    m_pimpl(std::make_unique<writer_impl>(this))
 {
 }
 

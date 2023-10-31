@@ -28,7 +28,7 @@
 
 #include <data/vector.hpp>
 
-#include <io/http/ClientQt.hpp>
+#include <io/http/client_qt.hpp>
 
 #include <service/controller.hpp>
 

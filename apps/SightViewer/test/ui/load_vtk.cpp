@@ -21,7 +21,7 @@
 
 #include "load_vtk.hpp"
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::load_vtk);
 

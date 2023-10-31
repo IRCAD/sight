@@ -28,11 +28,11 @@
 
 #include <io/__/service/reader.hpp>
 #include <io/bitmap/backend.hpp>
-#include <io/bitmap/Reader.hpp>
+#include <io/bitmap/reader.hpp>
 
 #include <service/op.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
 // cspell:ignore nvjpeg sreader

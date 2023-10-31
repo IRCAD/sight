@@ -26,16 +26,16 @@
 
 #include <data/image.hpp>
 
-#include <io/vtk/ImageReader.hpp>
-#include <io/vtk/ImageWriter.hpp>
-#include <io/vtk/MetaImageReader.hpp>
-#include <io/vtk/MetaImageWriter.hpp>
-#include <io/vtk/VtiImageReader.hpp>
-#include <io/vtk/VtiImageWriter.hpp>
+#include <io/vtk/image_reader.hpp>
+#include <io/vtk/image_writer.hpp>
+#include <io/vtk/meta_image_reader.hpp>
+#include <io/vtk/meta_image_writer.hpp>
+#include <io/vtk/vti_image_reader.hpp>
+#include <io/vtk/vti_image_writer.hpp>
 #include <io/vtk/vtk.hpp>
 
-#include <utest_data/Data.hpp>
-#include <utest_data/File.hpp>
+#include <utest_data/data.hpp>
+#include <utest_data/file.hpp>
 #include <utest_data/generator/image.hpp>
 
 #include <vtkGenericDataObjectReader.h>

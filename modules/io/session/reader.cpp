@@ -47,25 +47,25 @@ using core::crypto::secure_string;
 using sight::io::zip::archive;
 
 /// Private reader implementation
-class reader::ReaderImpl
+class reader::reader_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    ReaderImpl(const ReaderImpl&)            = delete;
-    ReaderImpl(ReaderImpl&&)                 = delete;
-    ReaderImpl& operator=(const ReaderImpl&) = delete;
-    ReaderImpl& operator=(ReaderImpl&&)      = delete;
+    reader_impl(const reader_impl&)            = delete;
+    reader_impl(reader_impl&&)                 = delete;
+    reader_impl& operator=(const reader_impl&) = delete;
+    reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit ReaderImpl(reader* const _reader) noexcept :
+    inline explicit reader_impl(reader* const _reader) noexcept :
         m_reader(_reader),
         m_job_created_signal(_reader->new_signal<signals::job_created_signal_t>("jobCreated"))
     {
     }
 
     /// Default destructor
-    inline ~ReaderImpl() noexcept = default;
+    inline ~reader_impl() noexcept = default;
 
     /// Pointer to the public interface
     reader* const m_reader;
@@ -96,7 +96,7 @@ public:
 };
 
 reader::reader() noexcept :
-    m_pimpl(std::make_unique<ReaderImpl>(this))
+    m_pimpl(std::make_unique<reader_impl>(this))
 {
     new_signal<signals::session_path_t>(signals::SESSION_LOADED);
     new_signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED);

@@ -30,10 +30,10 @@
 #include <core/runtime/path.hpp>
 #include <core/tools/os.hpp>
 
-#include <io/http/Download.hpp>
+#include <io/http/download.hpp>
 #include <io/opencv/frame_tl.hpp>
 
-#include <navigation/openvslam/Helper.hpp>
+#include <navigation/openvslam/helper.hpp>
 
 #include <service/macros.hpp>
 

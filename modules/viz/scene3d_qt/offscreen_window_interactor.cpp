@@ -23,7 +23,7 @@
 #include "modules/viz/scene3d_qt/offscreen_window_interactor.hpp"
 
 #include <modules/viz/scene3d_qt/init.hpp>
-#include <modules/viz/scene3d_qt/OpenGLWorker.hpp>
+#include <modules/viz/scene3d_qt/open_gl_worker.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/registry/macros.hpp>

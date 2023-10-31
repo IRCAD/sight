@@ -31,7 +31,7 @@
 
 #include <data/series_set.hpp>
 
-#include <io/vtk/SeriesSetReader.hpp>
+#include <io/vtk/series_set_reader.hpp>
 
 #include <service/macros.hpp>
 

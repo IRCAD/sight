@@ -26,8 +26,8 @@
 
 #include <core/thread/worker.hpp>
 
-#include <io/dimse/data/PacsConfiguration.hpp>
-#include <io/dimse/SeriesEnquirer.hpp>
+#include <io/dimse/data/pacs_configuration.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <service/notifier.hpp>
 
@@ -58,7 +58,7 @@ namespace sight::module::io::dimse
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b config [sight::io::dimse::data::PacsConfiguration]: pacs configuration.
+ * - \b config [sight::io::dimse::data::pacs_configuration]: pacs configuration.
  *
  * @subsection Configuration Configuration:
  * - \b showDialog (optional, bool, default=true): display dialog message for the ping result, or just send the

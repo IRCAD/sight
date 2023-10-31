@@ -23,8 +23,8 @@
 #pragma once
 
 #include "io/dicom/config.hpp"
-#include "io/dicom/container/DicomInstance.hpp"
-#include "io/dicom/exception/Failed.hpp"
+#include "io/dicom/container/dicom_instance.hpp"
+#include "io/dicom/exception/failed.hpp"
 
 #include <core/location/single_folder.hpp>
 #include <core/tools/progress_adviser.hpp>

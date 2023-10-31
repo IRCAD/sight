@@ -30,18 +30,18 @@
 #include <geometry/data/mesh.hpp>
 
 #include <io/vtk/helper/mesh.hpp>
-#include <io/vtk/MeshReader.hpp>
-#include <io/vtk/MeshWriter.hpp>
-#include <io/vtk/ObjMeshReader.hpp>
-#include <io/vtk/ObjMeshWriter.hpp>
-#include <io/vtk/PlyMeshReader.hpp>
-#include <io/vtk/PlyMeshWriter.hpp>
-#include <io/vtk/StlMeshReader.hpp>
-#include <io/vtk/StlMeshWriter.hpp>
-#include <io/vtk/VtpMeshReader.hpp>
-#include <io/vtk/VtpMeshWriter.hpp>
+#include <io/vtk/mesh_reader.hpp>
+#include <io/vtk/mesh_writer.hpp>
+#include <io/vtk/obj_mesh_reader.hpp>
+#include <io/vtk/obj_mesh_writer.hpp>
+#include <io/vtk/ply_mesh_reader.hpp>
+#include <io/vtk/ply_mesh_writer.hpp>
+#include <io/vtk/stl_mesh_reader.hpp>
+#include <io/vtk/stl_mesh_writer.hpp>
+#include <io/vtk/vtp_mesh_reader.hpp>
+#include <io/vtk/vtp_mesh_writer.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 #include <utest_data/generator/mesh.hpp>
 
 #include <vtkCellData.h>

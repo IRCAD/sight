@@ -26,7 +26,7 @@
 
 #include "sop_test.hpp"
 
-#include <data/dicom/Sop.hpp>
+#include <data/dicom/sop.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::dicom::ut::sop_test);
 

@@ -24,7 +24,7 @@
 #include <core/tools/compare.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/dicom/Attribute.hpp>
+#include <data/dicom/attribute.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>

@@ -34,7 +34,7 @@
 #include <data/dicom_series.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/dicom/helper/DicomSeriesWriter.hpp>
+#include <io/dicom/helper/dicom_series_writer.hpp>
 
 #include <service/macros.hpp>
 

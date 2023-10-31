@@ -36,9 +36,9 @@
 
 #include <data/image.hpp>
 
-#include <io/__/service/ioTypes.hpp>
+#include <io/__/service/io_types.hpp>
 #include <io/__/service/reader.hpp>
-#include <io/vtk/BitmapImageReader.hpp>
+#include <io/vtk/bitmap_image_reader.hpp>
 
 #include <service/macros.hpp>
 

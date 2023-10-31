@@ -27,7 +27,7 @@
 #include <data/dicom_series.hpp>
 #include <data/series_set.hpp>
 
-#include <io/dimse/exceptions/Base.hpp>
+#include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
 
 #include <service/macros.hpp>

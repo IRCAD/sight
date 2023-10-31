@@ -22,9 +22,9 @@
 
 #include "io/dicom/reader/ie/image.hpp"
 
-#include "io/dicom/exception/Failed.hpp"
-#include "io/dicom/helper/DicomDataReader.hxx"
-#include "io/dicom/helper/DicomDataTools.hpp"
+#include "io/dicom/exception/failed.hpp"
+#include "io/dicom/helper/dicom_data_reader.hxx"
+#include "io/dicom/helper/dicom_data_tools.hpp"
 
 #include <data/dicom/image.hpp>
 #include <data/dicom_series.hpp>

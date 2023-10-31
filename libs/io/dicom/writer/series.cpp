@@ -23,10 +23,10 @@
 #include "io/dicom/writer/series.hpp"
 
 #include "io/dicom/writer/file.hpp"
-#include "io/dicom/writer/iod/ComprehensiveSRIOD.hpp"
-#include "io/dicom/writer/iod/CTMRImageIOD.hpp"
-#include "io/dicom/writer/iod/SpatialFiducialsIOD.hpp"
-#include "io/dicom/writer/iod/SurfaceSegmentationIOD.hpp"
+#include "io/dicom/writer/iod/comprehensive_srio_d.hpp"
+#include "io/dicom/writer/iod/ctmr_image_io_d.hpp"
+#include "io/dicom/writer/iod/spatial_fiducials_io_d.hpp"
+#include "io/dicom/writer/iod/surface_segmentation_io_d.hpp"
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>

@@ -26,7 +26,7 @@
 #include <core/macros.hpp>
 #include <core/tools/compare.hpp>
 
-#include <data/dicom/Sop.hpp>
+#include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
@@ -1093,24 +1093,24 @@ inline static std::vector<fiducial_set_with_metadata> read_fiducial_sets(const d
 }
 
 /// Private reader implementation
-class file::ReaderImpl
+class file::reader_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    ReaderImpl(const ReaderImpl&)            = delete;
-    ReaderImpl(ReaderImpl&&)                 = delete;
-    ReaderImpl& operator=(const ReaderImpl&) = delete;
-    ReaderImpl& operator=(ReaderImpl&&)      = delete;
+    reader_impl(const reader_impl&)            = delete;
+    reader_impl(reader_impl&&)                 = delete;
+    reader_impl& operator=(const reader_impl&) = delete;
+    reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit ReaderImpl(reader::file* const _reader) noexcept :
+    inline explicit reader_impl(reader::file* const _reader) noexcept :
         m_reader(_reader)
     {
     }
 
     /// Default destructor
-    inline ~ReaderImpl() noexcept = default;
+    inline ~reader_impl() noexcept = default;
 
     /// Pointer to the public interface
     reader::file* const m_reader;
@@ -1573,7 +1573,7 @@ public:
 file::file() :
     core::location::single_folder(),
     core::location::multiple_files(),
-    m_pimpl(std::make_unique<ReaderImpl>(this))
+    m_pimpl(std::make_unique<reader_impl>(this))
 {
 }
 

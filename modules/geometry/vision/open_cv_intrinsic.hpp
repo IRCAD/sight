@@ -28,7 +28,7 @@
 #include <data/camera.hpp>
 #include <data/vector.hpp>
 
-#include <geometry/vision/ICalibration.hpp>
+#include <geometry/vision/icalibration.hpp>
 
 namespace sight::module::geometry::vision
 {

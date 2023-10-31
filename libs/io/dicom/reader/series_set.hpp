@@ -23,7 +23,7 @@
 #pragma once
 
 #include "io/dicom/config.hpp"
-#include "io/dicom/exception/Failed.hpp"
+#include "io/dicom/exception/failed.hpp"
 
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>

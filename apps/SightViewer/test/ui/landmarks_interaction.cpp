@@ -29,7 +29,7 @@
 #include <ui/testCore/helper/button.hpp>
 #include <ui/testCore/helper/slider.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 #include <qnamespace.h>
 #include <QTreeWidget>

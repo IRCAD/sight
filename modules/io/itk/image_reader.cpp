@@ -31,8 +31,8 @@
 #include <data/image.hpp>
 
 #include <io/__/service/reader.hpp>
-#include <io/itk/InrImageReader.hpp>
-#include <io/itk/NiftiImageReader.hpp>
+#include <io/itk/inr_image_reader.hpp>
+#include <io/itk/nifti_image_reader.hpp>
 
 #include <service/macros.hpp>
 

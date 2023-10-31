@@ -4,7 +4,7 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::editor</type>
          <service>sight::module::io::dimse::pacs_configuration_editor</service>
-         <object key="config">sight::io::dimse::data::PacsConfiguration</object>
+         <object key="config">sight::io::dimse::data::pacs_configuration</object>
          <desc>This editor is used to edit a pacs configuration.</desc>
     </extension>
 
@@ -22,7 +22,7 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::editor</type>
          <service>sight::module::io::dimse::query_editor</service>
-         <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
+         <object key="pacsConfig">sight::io::dimse::data::pacs_configuration</object>
          <object key="seriesSet">sight::data::object</object>
          <desc>This editor allows to perform queries on a pacs.</desc>
     </extension>
@@ -30,7 +30,7 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::service::controller</type>
          <service>sight::module::io::dimse::series_puller</service>
-         <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
+         <object key="pacsConfig">sight::io::dimse::data::pacs_configuration</object>
          <object key="selectedSeries">sight::data::vector</object>
          <object key="seriesSet">sight::data::series_set</object>
          <desc>This service is used to pull series from a PACS.</desc>
@@ -46,7 +46,7 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::editor</type>
          <service>sight::module::io::dimse::slice_index_dicom_editor</service>
-         <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
+         <object key="pacsConfig">sight::io::dimse::data::pacs_configuration</object>
          <object key="series">sight::data::dicom_series</object>
          <object key="image">sight::data::image</object>
          <desc>This editor service is used to select a slice index and pull the image from the pacs if it is not</desc>

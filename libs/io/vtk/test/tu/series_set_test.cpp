@@ -32,9 +32,9 @@
 #include <data/reconstruction.hpp>
 #include <data/series.hpp>
 
-#include <io/vtk/SeriesSetReader.hpp>
+#include <io/vtk/series_set_reader.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 #include <filesystem>
 

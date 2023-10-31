@@ -105,7 +105,7 @@ def tag_to_uint16(tag: dicom_parser.Tag) -> dicom_parser.Tag:
 
 
 def write_attribute_hpp() -> None:
-    """Write the Attribute.hpp file."""
+    """Write the attribute.hpp file."""
     with open(os.path.join(g_root_dir, g_attribute_class_name + g_header_extension), mode='w',
               encoding='utf-8') as attribute_hpp:
         # Preamble
@@ -369,7 +369,7 @@ def write_attribute_cpp() -> None:
 
 
 def write_sop_hpp() -> None:
-    """Write the Sop.hpp file."""
+    """Write the sop.hpp file."""
     with open(os.path.join(g_root_dir, g_sop_class_name + g_header_extension), mode='w', encoding='utf-8') as sop_hpp:
         # Preamble
         sop_hpp.write(

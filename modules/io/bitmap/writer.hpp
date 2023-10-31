@@ -27,7 +27,7 @@
 #include <core/jobs/base.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/bitmap/Writer.hpp>
+#include <io/bitmap/writer.hpp>
 
 // cspell:ignore nvjpeg
 

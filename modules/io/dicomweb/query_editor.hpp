@@ -26,7 +26,7 @@
 
 #include <data/series_set.hpp>
 
-#include <io/http/ClientQt.hpp>
+#include <io/http/client_qt.hpp>
 
 #include <ui/__/editor.hpp>
 

@@ -27,7 +27,7 @@
 
 #include <data/object.hpp>
 
-#include <io/igtl/Client.hpp>
+#include <io/igtl/client.hpp>
 
 #include <future>
 #include <string>

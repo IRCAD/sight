@@ -22,7 +22,7 @@
 
 #include "viz/qt3d/data/mesh.hpp"
 
-#include "viz/qt3d/ComputeMaterial.hpp"
+#include "viz/qt3d/compute_material.hpp"
 #include "viz/qt3d/core/generic_scene.hpp"
 
 #include <geometry/data/mesh.hpp>

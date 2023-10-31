@@ -26,7 +26,7 @@
 
 #include "attribute_test.hpp"
 
-#include <data/dicom/Attribute.hpp>
+#include <data/dicom/attribute.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::dicom::ut::attribute_test);
 

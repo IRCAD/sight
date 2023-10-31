@@ -32,7 +32,7 @@
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
 
-#include <io/vtk/ModelSeriesObjWriter.hpp>
+#include <io/vtk/model_series_obj_writer.hpp>
 
 #include <service/macros.hpp>
 

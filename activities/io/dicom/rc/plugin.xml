@@ -4,40 +4,40 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::viz::scene3d_qt" />
 
-    <xi:include href="configurations/DicomPacsReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/DicomPacsWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/PacsConfigurationManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/2DPacsPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/2DLocalPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/DicomFiltering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/DicomPreview.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2d_local_preview_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2d_pacs_preview_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/filtering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/pacs_configuration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/pacs_reader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/pacs_writer.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/preview.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension">
-        <id>DicomPacsReader</id>
+        <id>sight::activity::io::dicom::pacs_reader</id>
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
         <icon>sight::module::ui::icons/Pull.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="DicomPacsReader">
+        <appConfig id="sight::activity::io::dicom::pacs_reader">
         </appConfig>
         </extension>
 
     <extension implements="sight::activity::extension">
-        <id>DicomPacsWriter</id>
+        <id>sight::activity::io::dicom::pacs_writer</id>
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
         <icon>sight::module::ui::icons/Push.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="DicomPacsWriter">
+        <appConfig id="sight::activity::io::dicom::pacs_writer">
         </appConfig>
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>DicomPacsReaderConfig</id>
+        <id>sight::io::dicom::pacs_reader_config</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
             <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>
@@ -45,31 +45,31 @@
     </extension>
 
     <extension implements="sight::activity::extension">
-        <id>DicomFiltering</id>
+        <id>sight::activity::io::dicom::filtering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
         <icon>sight::module::ui::icons/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="DicomFiltering">
+        <appConfig id="sight::activity::io::dicom::filtering">
         </appConfig>
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>IOSelectorServiceConfigVRRenderExtDicomSeriesSetReader</id>
+        <id>sight::activity::io::dicom::series_set_selector_config</id>
         <service>sight::module::ui::io::selector</service>
-        <desc>IOSelectorService config for DICOM Filtering Activity</desc>
+        <desc>io::selector config for DICOM Filtering Activity</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="sight::module::io::dicom::dicom_series_set_reader" />
-            <config id="DicomReaderConfig" service="sight::module::io::dicom::dicom_series_set_reader" />
+            <config id="sight::activity::io::dicom::reader_config" service="sight::module::io::dicom::dicom_series_set_reader" />
         </config>
     </extension>
 
     <extension implements="sight::service::extension::config">
-         <id>DicomReaderConfig</id>
+         <id>sight::activity::io::dicom::reader_config</id>
          <desc>DICOM Reader config</desc>
          <config>
             <dicomdirSupport>user_selection</dicomdirSupport>

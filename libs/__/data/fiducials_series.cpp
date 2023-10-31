@@ -21,9 +21,9 @@
 
 #include "fiducials_series.hpp"
 
-#include "data/dicom/Sop.hpp"
+#include "data/dicom/sop.hpp"
 
-#include "detail/SeriesImpl.hxx"
+#include "detail/series_impl.hxx"
 
 #include <core/tools/uuid.hpp>
 

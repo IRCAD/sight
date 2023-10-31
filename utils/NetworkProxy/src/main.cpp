@@ -28,7 +28,7 @@
 #include <core/spy_log.hpp>
 #include <core/thread/worker.hpp>
 
-#include <io/igtl/Server.hpp>
+#include <io/igtl/server.hpp>
 
 #include <boost/date_time.hpp>
 #include <boost/type.hpp>

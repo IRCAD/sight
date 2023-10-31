@@ -25,7 +25,7 @@
 #include <core/runtime/path.hpp>
 #include <core/tools/id.hpp>
 
-#include <data/dicom/Sop.hpp>
+#include <data/dicom/sop.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>

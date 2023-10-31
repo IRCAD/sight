@@ -30,11 +30,11 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <io/vtk/MeshReader.hpp>
-#include <io/vtk/ObjMeshReader.hpp>
-#include <io/vtk/PlyMeshReader.hpp>
-#include <io/vtk/StlMeshReader.hpp>
-#include <io/vtk/VtpMeshReader.hpp>
+#include <io/vtk/mesh_reader.hpp>
+#include <io/vtk/obj_mesh_reader.hpp>
+#include <io/vtk/ply_mesh_reader.hpp>
+#include <io/vtk/stl_mesh_reader.hpp>
+#include <io/vtk/vtp_mesh_reader.hpp>
 
 #include <service/macros.hpp>
 

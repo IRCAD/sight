@@ -25,7 +25,7 @@
 
 #include <core/tools/system.hpp>
 
-#include <io/vtk/VtiImageReader.hpp>
+#include <io/vtk/vti_image_reader.hpp>
 
 #include <service/base.hpp>
 #include <service/op.hpp>
@@ -35,7 +35,7 @@
 #include <ui/__/dialog/message_dummy.hpp>
 #include <ui/__/macros.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::zip::ut::extract_test);
 

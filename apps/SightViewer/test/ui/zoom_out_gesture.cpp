@@ -21,7 +21,7 @@
 
 #include "zoom_out_gesture.hpp"
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::zoom_out_gesture);
 

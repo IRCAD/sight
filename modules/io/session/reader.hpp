@@ -141,8 +141,8 @@ protected:
 
 private:
 
-    class ReaderImpl;
-    std::unique_ptr<ReaderImpl> m_pimpl;
+    class reader_impl;
+    std::unique_ptr<reader_impl> m_pimpl;
 };
 
 } // namespace sight::module::io::session

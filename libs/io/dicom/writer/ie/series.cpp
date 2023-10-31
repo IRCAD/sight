@@ -22,7 +22,7 @@
 
 #include "io/dicom/writer/ie/series.hpp"
 
-#include "io/dicom/helper/DicomDataWriter.hxx"
+#include "io/dicom/helper/dicom_data_writer.hxx"
 
 #include <data/image_series.hpp>
 #include <data/series.hpp>

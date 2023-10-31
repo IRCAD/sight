@@ -23,7 +23,7 @@
 #include "io/dicom/helper/tags.hpp"
 
 #include "io/__/reader/csv_reader.hpp"
-#include "io/dicom/exception/InvalidTag.hpp"
+#include "io/dicom/exception/invalid_tag.hpp"
 
 #include <core/exceptionmacros.hpp>
 

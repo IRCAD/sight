@@ -30,7 +30,7 @@
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/point_list.hpp>
-#include <data/thread/RegionThreader.hpp>
+#include <data/thread/region_threader.hpp>
 #include <data/transfer_function.hpp>
 #include <data/vector.hpp>
 

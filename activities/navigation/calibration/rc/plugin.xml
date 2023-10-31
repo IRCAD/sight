@@ -6,13 +6,13 @@
     <requirement id="sight::module::activity" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/calExtrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/toolCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/cal_intrinsic_view.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/cal_extrinsic_view.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/display_image_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/display_two_images_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calibration_edition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/video_edition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/tool_calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension">
         <id>Calibration</id>

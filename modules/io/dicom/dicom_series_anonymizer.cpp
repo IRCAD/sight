@@ -29,7 +29,7 @@
 #include <data/dicom_series.hpp>
 #include <data/series_set.hpp>
 
-#include <io/dicom/helper/DicomSeriesAnonymizer.hpp>
+#include <io/dicom/helper/dicom_series_anonymizer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/message.hpp>

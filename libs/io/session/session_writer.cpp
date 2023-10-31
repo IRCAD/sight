@@ -35,19 +35,19 @@ namespace sight::io::session
 using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::archive;
-class session_writer::session_writerImpl
+class session_writer::session_writer_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    session_writerImpl()                                     = delete;
-    session_writerImpl(const session_writerImpl&)            = delete;
-    session_writerImpl(session_writerImpl&&)                 = delete;
-    session_writerImpl& operator=(const session_writerImpl&) = delete;
-    session_writerImpl& operator=(session_writerImpl&&)      = delete;
+    session_writer_impl()                                      = delete;
+    session_writer_impl(const session_writer_impl&)            = delete;
+    session_writer_impl(session_writer_impl&&)                 = delete;
+    session_writer_impl& operator=(const session_writer_impl&) = delete;
+    session_writer_impl& operator=(session_writer_impl&&)      = delete;
 
     /// Constructor
-    inline explicit session_writerImpl(session_writer* const _session_writer) :
+    inline explicit session_writer_impl(session_writer* const _session_writer) :
         m_session_writer(_session_writer),
         m_password(std::make_unique<password_keeper>()),
         m_encryption_policy(password_keeper::encryption_policy::password),
@@ -56,7 +56,7 @@ public:
     }
 
     /// Default destructor
-    inline ~session_writerImpl() = default;
+    inline ~session_writer_impl() = default;
 
     /// Read the session from archive.
     inline void write()
@@ -92,7 +92,7 @@ public:
 };
 
 session_writer::session_writer() :
-    m_pimpl(std::make_unique<session_writerImpl>(this))
+    m_pimpl(std::make_unique<session_writer_impl>(this))
 {
 }
 

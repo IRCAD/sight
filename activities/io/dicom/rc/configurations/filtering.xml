@@ -1,0 +1,191 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::activity::io::dicom::filtering</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="SERIES_SET" />
+        <param name="AS_UID" />
+        <param name="PROGRESS_CHANNEL" />
+    </parameters>
+    <config>
+
+        <object type="sight::data::series_set" uid="${SERIES_SET}" src="ref" />
+        <object type="sight::data::series_set" uid="readingSeriesSet" />
+        <object type="sight::data::series_set" uid="loadedSeriesSet" />
+        <object type="sight::data::series_set" uid="filteredSeriesSet" />
+        <object type="sight::data::vector" uid="readingSelection" />
+        <object type="sight::data::vector" uid="loadedSelection" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::view" >
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <view align="center" minWidth="200" />
+                    <view align="bottom"/>
+                    <view align="right" minWidth="350" />
+                </layout>
+                <toolbar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolbar sid="toolbar" start="true" />
+                <view sid="centerView" start="true" />
+                <view sid="bottomView" start="true" />
+                <view sid="rightView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="sight::module::ui::toolbar" >
+            <gui>
+                <layout>
+                    <menuItem name="Read DICOM files" icon="sight::module::ui::icons/Import.svg" />
+                    <menuItem name="Preview filtered DICOM series" icon="sight::module::ui::icons/Preview.svg" style="check" />
+                    <menuItem name="Read filtered DICOM series" icon="sight::module::ui::icons/Apply.svg" />
+                    <menuItem name="Push selected series to the main SeriesSet" icon="sight::module::ui::icons/Push.svg" />
+
+                    <spacer />
+
+                    <menu name="Help"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_readDicomSeries" start="true" />
+                <menuItem sid="action_previewFilteredDicomSeries" start="true" />
+                <menuItem sid="action_convertSeries" start="true" />
+                <menuItem sid="action_pushSeries" start="true" />
+
+                <menu sid="menuHelp" start="true" />
+            </registry>
+        </service>
+
+
+        <service uid="centerView" type="sight::module::ui::view" >
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <orientation value="horizontal" />
+                    <view caption="DICOM Information" align="center" minWidth="200" />
+                    <view caption="DICOM Preview" align="right" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="readingSelector" start="true" />
+                <view wid="readingPreview" start="true" />
+            </registry>
+        </service>
+
+        <service uid="bottomView" type="sight::module::ui::view" >
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <orientation value="horizontal" />
+                    <view caption="Loaded Series" align="center" minWidth="200" />
+                    <view caption="Loaded Preview" align="right" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="loadedSelector" start="true" />
+                <view wid="loadedPreview" start="true" />
+            </registry>
+        </service>
+
+        <service uid="rightView" type="sight::module::ui::view" >
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <orientation value="horizontal" />
+                    <view caption="Filters" align="center" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="filterSelectionEditor" start="true" />
+            </registry>
+        </service>
+
+        <!--HELP -->
+        <service uid="menuHelp" type="sight::module::ui::menu" >
+            <gui>
+                <layout>
+                    <menuItem name="Activity help" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="activityHelp" start="true" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="activityHelp" type="sight::module::ui::qt::launch_browser" >
+            <url>dicomFilteringActivity/quickstart.pdf</url>
+        </service>
+
+        <!-- READING SELECTION -->
+        <service uid="action_readDicomSeries" type="sight::module::ui::series::db_merger" >
+            <inout key="seriesSet" uid="readingSeriesSet" />
+            <IOSelectorSrvConfig name="sight::activity::io::dicom::series_set_selector_config" />
+        </service>
+
+        <service uid="readingSelector" type="sight::module::ui::qt::series::selector" auto_connect="true">
+            <inout key="selection" uid="readingSelection" />
+            <inout key="seriesSet" uid="readingSeriesSet" />
+        </service>
+
+        <service uid="readingViewer" type="sight::module::ui::qt::series::viewer" auto_connect="true">
+            <in key="series" uid="readingSelection" />
+            <parentView wid="readingPreview" />
+            <configs>
+                <config id="sight::activity::io::dicom::2d_local_preview" type="sight::data::dicom_series" />
+            </configs>
+        </service>
+
+        <service uid="filterSelectionEditor" type="sight::module::ui::dicom::filter_selection_editor">
+            <in key="selection" uid="readingSelection" />
+            <inout key="target" uid="filteredSeriesSet" />
+        </service>
+
+        <!-- FILTERED SELECTION -->
+        <service uid="action_previewFilteredDicomSeries" type="sight::module::ui::config_launcher">
+            <appConfig id="sight::activity::io::dicom::preview_config" />
+            <inout group="data">
+                <key name="SERIES_SET" uid="filteredSeriesSet" />
+            </inout>
+            <parameter replace="ICON_PATH" by="sight::module::ui::icons/Preview.svg" />
+        </service>
+
+        <service uid="action_convertSeries" type="sight::module::io::dicom::dicom_series_converter">
+            <in key="source" uid="filteredSeriesSet" />
+            <inout key="target" uid="loadedSeriesSet" />
+        </service>
+
+        <!-- LOADED SELECTION -->
+        <service uid="loadedSelector" type="sight::module::ui::qt::series::selector" auto_connect="true">
+            <inout key="selection" uid="loadedSelection" />
+            <inout key="seriesSet" uid="loadedSeriesSet" />
+        </service>
+
+        <service uid="loadedViewer" type="sight::module::ui::qt::series::viewer" auto_connect="true">
+            <in key="series" uid="loadedSelection" />
+            <parentView wid="loadedPreview" />
+            <configs>
+                <config id="2DSimpleConfig" type="sight::data::image_series" />
+            </configs>
+        </service>
+
+        <service uid="action_pushSeries" type="sight::module::ui::series::push_selection">
+            <in key="selectedSeries" uid="loadedSelection" />
+            <inout key="seriesSet" uid="${SERIES_SET}" />
+        </service>
+
+        <connect channel="${PROGRESS_CHANNEL}">
+            <signal>action_readDicomSeries/jobCreated</signal>
+        </connect>
+
+        <connect channel="${PROGRESS_CHANNEL}">
+            <signal>action_convertSeries/jobCreated</signal>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="readingViewer" />
+        <start uid="loadedViewer" />
+
+    </config>
+</extension>

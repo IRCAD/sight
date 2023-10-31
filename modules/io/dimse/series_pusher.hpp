@@ -26,8 +26,8 @@
 
 #include <data/vector.hpp>
 
-#include <io/dimse/data/PacsConfiguration.hpp>
-#include <io/dimse/SeriesEnquirer.hpp>
+#include <io/dimse/data/pacs_configuration.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <service/controller.hpp>
 
@@ -58,7 +58,7 @@ namespace sight::module::io::dimse
        </service>
    @endcode
  * @subsection Input Input:
- * - \b pacsConfig [sight::io::dimse::data::PacsConfiguration]: PACS configuration data.
+ * - \b pacsConfig [sight::io::dimse::data::pacs_configuration]: PACS configuration data.
  * - \b selectedSeries [sight::data::vector]: List of DICOM series to push to the PACS.
  */
 class MODULE_IO_DIMSE_CLASS_API series_pusher : public service::controller

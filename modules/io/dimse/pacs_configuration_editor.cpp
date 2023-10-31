@@ -27,7 +27,7 @@
 #include <core/com/signals.hpp>
 #include <core/com/slots.hxx>
 
-#include <io/dimse/exceptions/Base.hpp>
+#include <io/dimse/exceptions/base.hpp>
 
 #include <service/macros.hpp>
 

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <io/dicom/helper/DicomAnonymizer.hpp>
+#include <io/dicom/helper/dicom_anonymizer.hpp>
 
 #include <boost/program_options.hpp>
 

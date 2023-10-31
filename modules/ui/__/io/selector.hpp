@@ -28,7 +28,7 @@
 #include <core/com/slot.hpp>
 #include <core/jobs/base.hpp>
 
-#include <io/__/service/ioTypes.hpp>
+#include <io/__/service/io_types.hpp>
 
 #include <ui/__/dialog_editor.hpp>
 

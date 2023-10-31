@@ -26,11 +26,11 @@
 #include <data/image.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/bitmap/Writer.hpp>
+#include <io/bitmap/writer.hpp>
 
 #include <service/op.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
 // cspell:ignore nvjpeg

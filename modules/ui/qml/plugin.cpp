@@ -30,7 +30,7 @@
 
 #include <ui/__/service.hpp>
 #include <ui/qml/app.hpp>
-#include <ui/qml/QmlEngine.hpp>
+#include <ui/qml/qml_engine.hpp>
 #include <ui/qt/worker_qt.hpp>
 
 #include <modules/ui/qml/activity/sequencer.hpp>

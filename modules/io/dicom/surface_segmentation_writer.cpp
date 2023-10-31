@@ -30,9 +30,9 @@
 #include <data/vector.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/dicom/helper/Fiducial.hpp>
+#include <io/dicom/helper/fiducial.hpp>
 #include <io/dicom/writer/series.hpp>
-#include <io/dicom/writer/SurfaceSegmentation.hpp>
+#include <io/dicom/writer/surface_segmentation.hpp>
 
 #include <service/macros.hpp>
 

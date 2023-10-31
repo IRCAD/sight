@@ -30,7 +30,7 @@
 #include <service/macros.hpp>
 
 #include <ui/history/command.hpp>
-#include <ui/history/UndoRedoManager.hpp>
+#include <ui/history/undo_redo_manager.hpp>
 
 namespace sight::module::ui::history
 {

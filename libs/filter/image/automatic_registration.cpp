@@ -28,7 +28,7 @@
 
 #include "filter/image/itk_image_caster.hpp"
 
-#include <io/itk/helper/Transform.hpp>
+#include <io/itk/helper/transform.hpp>
 #include <io/itk/itk.hpp>
 
 #include <itkCommand.h>

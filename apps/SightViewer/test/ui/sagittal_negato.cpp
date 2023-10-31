@@ -25,7 +25,7 @@
 #include <ui/testCore/helper/scene3d.hpp>
 #include <ui/testCore/helper/slider.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::sagittal_negato);
 

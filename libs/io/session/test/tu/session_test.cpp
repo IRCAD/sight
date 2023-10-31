@@ -76,7 +76,7 @@
 
 #include <utest/filter.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 #include <utest_data/generator/mesh.hpp>
 

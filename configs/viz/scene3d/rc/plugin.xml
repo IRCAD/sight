@@ -4,10 +4,10 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::viz::scene3d" />
 
-    <xi:include href="configurations/negato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/lightManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/organManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/volumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/imageSplitViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/negato2d.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/light_manager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/organ_manager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/volume_rendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/image_split_views.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
 </plugin>

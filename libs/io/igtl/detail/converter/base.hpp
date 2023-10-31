@@ -23,7 +23,7 @@
 #pragma once
 
 #include "io/igtl/config.hpp"
-#include "io/igtl/detail/exception/Conversion.hpp"
+#include "io/igtl/detail/exception/conversion.hpp"
 
 #include <core/macros.hpp>
 #include <core/tools/failed.hpp>

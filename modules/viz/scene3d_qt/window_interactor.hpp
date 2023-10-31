@@ -23,7 +23,7 @@
 #pragma once
 
 #include "modules/viz/scene3d_qt/config.hpp"
-#include "modules/viz/scene3d_qt/Window.hpp"
+#include "modules/viz/scene3d_qt/window.hpp"
 
 #include <core/base.hpp>
 

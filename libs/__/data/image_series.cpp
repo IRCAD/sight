@@ -22,7 +22,7 @@
 
 #include "data/image_series.hpp"
 
-#include "data/detail/SeriesImpl.hxx"
+#include "data/detail/series_impl.hxx"
 
 #include <data/exception.hpp>
 #include <data/image.hpp>

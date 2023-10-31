@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/qml/config.hpp"
-#include "ui/qml/dialog/StandardButton.hpp"
+#include "ui/qml/dialog/standard_button.hpp"
 
 #include <ui/__/dialog/message_base.hpp>
 

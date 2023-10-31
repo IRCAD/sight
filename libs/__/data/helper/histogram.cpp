@@ -24,7 +24,7 @@
 #include <core/tools/dispatcher.hpp>
 
 #include <data/helper/medical_image.hpp>
-#include <data/thread/RegionThreader.hpp>
+#include <data/thread/region_threader.hpp>
 
 #include <numeric>
 

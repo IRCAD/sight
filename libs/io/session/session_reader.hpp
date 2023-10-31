@@ -117,8 +117,8 @@ public:
 private:
 
     /// PImpl
-    class session_readerImpl;
-    std::unique_ptr<session_readerImpl> m_pimpl;
+    class session_reader_impl;
+    std::unique_ptr<session_reader_impl> m_pimpl;
 };
 
 } // namespace sight::io::session

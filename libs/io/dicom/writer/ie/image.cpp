@@ -22,8 +22,8 @@
 
 #include "io/dicom/writer/ie/image.hpp"
 
-#include "io/dicom/helper/DicomDataTools.hpp"
-#include "io/dicom/helper/DicomDataWriter.hxx"
+#include "io/dicom/helper/dicom_data_tools.hpp"
+#include "io/dicom/helper/dicom_data_writer.hxx"
 
 #include <data/image.hpp>
 

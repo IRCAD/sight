@@ -47,25 +47,25 @@ using core::crypto::secure_string;
 using sight::io::zip::archive;
 
 /// Private writer implementation
-class writer::WriterImpl
+class writer::writer_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    WriterImpl(const WriterImpl&)            = delete;
-    WriterImpl(WriterImpl&&)                 = delete;
-    WriterImpl& operator=(const WriterImpl&) = delete;
-    WriterImpl& operator=(WriterImpl&&)      = delete;
+    writer_impl(const writer_impl&)            = delete;
+    writer_impl(writer_impl&&)                 = delete;
+    writer_impl& operator=(const writer_impl&) = delete;
+    writer_impl& operator=(writer_impl&&)      = delete;
 
     /// Constructor
-    inline explicit WriterImpl(writer* const _writer) noexcept :
+    inline explicit writer_impl(writer* const _writer) noexcept :
         m_writer(_writer),
         m_job_created_signal(_writer->new_signal<job_created_signal_t>("jobCreated"))
     {
     }
 
     /// Default destructor
-    inline ~WriterImpl() noexcept = default;
+    inline ~writer_impl() noexcept = default;
 
     /// Pointer to the public interface
     writer* const m_writer;
@@ -93,7 +93,7 @@ public:
 };
 
 writer::writer() noexcept :
-    m_pimpl(std::make_unique<WriterImpl>(this))
+    m_pimpl(std::make_unique<writer_impl>(this))
 {
 }
 

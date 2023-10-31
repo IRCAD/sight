@@ -19,11 +19,11 @@ To sum up:
 
 ### Writer
 
-- **Writer**: writes a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
+- **writer**: writes a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
 
 ### Reader
 
-- **Reader**: reads a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
+- **reader**: reads a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
 
 ## How to use it
 

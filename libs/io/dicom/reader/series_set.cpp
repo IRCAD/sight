@@ -22,9 +22,9 @@
 
 #include "io/dicom/reader/series_set.hpp"
 
-#include "io/dicom/helper/DicomDir.hpp"
-#include "io/dicom/helper/DicomSearch.hpp"
-#include "io/dicom/helper/DicomSeries.hpp"
+#include "io/dicom/helper/dicom_dir.hpp"
+#include "io/dicom/helper/dicom_search.hpp"
+#include "io/dicom/helper/dicom_series.hpp"
 #include "io/dicom/helper/sop_class.hpp"
 #include "io/dicom/reader/series.hpp"
 

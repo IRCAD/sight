@@ -27,7 +27,7 @@
 
 #include <data/matrix_tl.hpp>
 
-#include <io/igtl/Client.hpp>
+#include <io/igtl/client.hpp>
 
 #include <cstdint>
 

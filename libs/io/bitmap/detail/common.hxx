@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "io/bitmap/Reader.hpp"
-#include "io/bitmap/Writer.hpp"
+#include "io/bitmap/reader.hpp"
+#include "io/bitmap/writer.hpp"
 
 namespace sight::io::bitmap::detail
 {

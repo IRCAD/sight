@@ -26,7 +26,7 @@
 
 #include "core/thread/worker.hpp"
 
-#include "data/dicom/Attribute.hpp"
+#include "data/dicom/attribute.hpp"
 #include "data/fiducials_series.hpp"
 #include "data/image_series.hpp"
 

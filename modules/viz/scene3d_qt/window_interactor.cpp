@@ -22,8 +22,8 @@
 
 #include "modules/viz/scene3d_qt/window_interactor.hpp"
 
-#include "modules/viz/scene3d_qt/OpenGLContext.hpp"
-#include "modules/viz/scene3d_qt/OpenGLWorker.hpp"
+#include "modules/viz/scene3d_qt/open_gl_context.hpp"
+#include "modules/viz/scene3d_qt/open_gl_worker.hpp"
 
 #include <core/com/slots.hxx>
 

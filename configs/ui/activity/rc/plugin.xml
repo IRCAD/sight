@@ -4,7 +4,7 @@
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::io::activity" />
 
-    <xi:include href="configurations/ActivityLauncher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/activity_launcher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::service::extension::config">
         <id>defaultWizardConfig</id>

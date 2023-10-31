@@ -30,7 +30,7 @@
 #include <ui/__/dialog/input.hpp>
 #include <ui/__/dialog/location_base.hpp>
 #include <ui/__/macros.hpp>
-#include <ui/qml/QmlEngine.hpp>
+#include <ui/qml/qml_engine.hpp>
 
 #include <QDir>
 #include <QGuiApplication>

@@ -36,19 +36,19 @@ using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::archive;
 
-class session_reader::session_readerImpl
+class session_reader::session_reader_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    session_readerImpl()                                     = delete;
-    session_readerImpl(const session_readerImpl&)            = delete;
-    session_readerImpl(session_readerImpl&&)                 = delete;
-    session_readerImpl& operator=(const session_readerImpl&) = delete;
-    session_readerImpl& operator=(session_readerImpl&&)      = delete;
+    session_reader_impl()                                      = delete;
+    session_reader_impl(const session_reader_impl&)            = delete;
+    session_reader_impl(session_reader_impl&&)                 = delete;
+    session_reader_impl& operator=(const session_reader_impl&) = delete;
+    session_reader_impl& operator=(session_reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit session_readerImpl(session_reader* const _session_reader) :
+    inline explicit session_reader_impl(session_reader* const _session_reader) :
         m_session_reader(_session_reader),
         m_password(std::make_unique<password_keeper>()),
         m_encryption_policy(password_keeper::encryption_policy::password),
@@ -57,7 +57,7 @@ public:
     }
 
     /// Default destructor
-    inline ~session_readerImpl() = default;
+    inline ~session_reader_impl() = default;
 
     /// Read the session from archive.
     inline void read()
@@ -91,7 +91,7 @@ public:
 };
 
 session_reader::session_reader() :
-    m_pimpl(std::make_unique<session_readerImpl>(this))
+    m_pimpl(std::make_unique<session_reader_impl>(this))
 {
 }
 

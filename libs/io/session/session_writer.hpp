@@ -113,8 +113,8 @@ public:
 private:
 
     /// PImpl
-    class session_writerImpl;
-    std::unique_ptr<session_writerImpl> m_pimpl;
+    class session_writer_impl;
+    std::unique_ptr<session_writer_impl> m_pimpl;
 };
 
 } // namespace sight::io::session

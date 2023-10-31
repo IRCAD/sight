@@ -28,9 +28,9 @@
 
 #include <data/dicom_series.hpp>
 
-#include <io/http/exceptions/Base.hpp>
-#include <io/http/helper/Series.hpp>
-#include <io/http/Request.hpp>
+#include <io/http/exceptions/base.hpp>
+#include <io/http/helper/series.hpp>
+#include <io/http/request.hpp>
 
 #include <service/extension/config.hpp>
 #include <service/op.hpp>

@@ -47,7 +47,7 @@ namespace sight::module::ui::qt::series
         <parentView wid="..."/>
         <configs>
             <config id="2DSimpleConfig" type="data::image_series" />
-            <config id="2DPacsPreviewConfig" type="data::dicom_series" >
+            <config id="sight::io::dicom::2d_pacs_preview" type="data::dicom_series" >
                 <parameter replace="PACS_CONFIGURATION" by="None" />
             </config>
             <config id="3DSimpleConfig" type="data::model_series" />

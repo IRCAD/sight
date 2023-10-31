@@ -28,7 +28,7 @@
 
 #include <io/dicom/reader/series_set.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 
 #include <gdcmScanner.h>
 

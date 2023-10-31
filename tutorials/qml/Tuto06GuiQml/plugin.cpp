@@ -24,7 +24,7 @@
 
 #include <core/runtime/path.hpp>
 
-#include <ui/qml/QmlEngine.hpp>
+#include <ui/qml/qml_engine.hpp>
 
 namespace tuto06_gui_qml
 {

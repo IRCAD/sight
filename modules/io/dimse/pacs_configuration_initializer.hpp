@@ -24,7 +24,7 @@
 
 #include "modules/io/dimse/config.hpp"
 
-#include <io/dimse/data/PacsConfiguration.hpp>
+#include <io/dimse/data/pacs_configuration.hpp>
 
 #include <service/controller.hpp>
 
@@ -54,7 +54,7 @@ namespace sight::module::io::dimse
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b config [sight::io::dimse::data::PacsConfiguration]: PACS configuration data.
+ * - \b config [sight::io::dimse::data::pacs_configuration]: PACS configuration data.
  *
  * @subsection Configuration Configuration:
  * - \b localApplicationTitle (mandatory, string): Name of your local application, it must be known by the PACS.
@@ -92,7 +92,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::io::dimse::data::PacsConfiguration::MODIFIED_SIG of s_CONFIG_INOUT to
+     * Connect sight::io::dimse::data::pacs_configuration::MODIFIED_SIG of s_CONFIG_INOUT to
      *::module::io::dimse::pacs_configuration_initializer::service::slots::UPDATE.
      */
     MODULE_IO_DIMSE_API service::connections_t auto_connections() const final;

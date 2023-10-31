@@ -1,0 +1,223 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::config::viz::scene3d::negato2d</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="image" />
+        <param name="transferFunction" />
+        <param name="sliceIndex" default="axial" />
+        <param name="enableSliceType" default="true" />
+        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL"/>
+        <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" default="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL"/>
+        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
+        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" default="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL"/>
+        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" default="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL"/>
+        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" default="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL"/>
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${image}" type="sight::data::image_series" src="deferred" />
+        <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::overlay">
+                    <view />
+                    <view x="0" y="0" width="72" height="64" minHeight="0" minWidth="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="sceneView" start="true" />
+                <view sid="toolbarView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="sceneView" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" backgroundColor="#36393E" spacing="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sceneSrv" start="true"/>
+                <view wid="negatoSliderView" />
+            </registry>
+        </service>
+
+        <service uid="toolbarView" type="sight::module::ui::view">
+            <gui>
+                <toolbar backgroundColor="#00000000" />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                </layout>
+            </gui>
+            <registry>
+                <toolbar sid="toolbar" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Maximize" icon="sight::module::ui::flaticons/YellowMaximize.svg" />
+                    <menuItem name="Minimize" icon="sight::module::ui::flaticons/YellowRestore.svg" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="maximizeAct" start="true" />
+                <menuItem sid="minimizeAct" start="true" />
+            </registry>
+        </service>
+
+        <service uid="maximizeAct" type="sight::module::ui::action">
+            <state visible="true" />
+        </service>
+
+        <service uid="minimizeAct" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <service uid="sceneSrv" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#36393E" bottomColor="#36393E" />
+
+                <layer id="negatoLayer" order="1">
+                    <adaptor uid="negatoAdp" />
+                    <adaptor uid="negatoMultiDistancesAdp" />
+                    <adaptor uid="negatoCameraAdp" />
+                    <adaptor uid="pickerInteractorAdp" />
+                    <adaptor uid="landmarksAdp" />
+                    <adaptor uid="pickedVoxelTextAdp" />
+                    <adaptor uid="eventAdp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d">
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="${transferFunction}" />
+            <config sliceIndex="${sliceIndex}" filtering="anisotropic" />
+        </service>
+
+        <service uid="negatoMultiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::image_multi_distances" auto_connect="true">
+            <inout key="image" uid="${image}" />
+            <config fontSize="16" radius="3" queryFlags="0x40000000" />
+        </service>
+
+        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${transferFunction}" />
+            <config priority="0" orientation="${sliceIndex}" />
+        </service>
+
+        <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::picker">
+            <config queryMask="0x40000000" />
+        </service>
+
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::landmarks" auto_connect="true">
+            <inout key="imageSeries" uid="${image}" />
+            <config label="false" orientation="${sliceIndex}" priority="4" initialGroup="Group_0" initialSize="10.0" />
+        </service>
+
+        <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::text">
+            <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
+        <service uid="eventAdp" type="sight::module::viz::scene3d::adaptor::event">
+            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="negatoSliderCfg" type="sight::app::config_controller" >
+            <appConfig id="sight::config::viz::image::imageSlider" />
+            <parameter replace="WID_PARENT" by="negatoSliderView" />
+            <parameter replace="sliceIndex" by="${sliceIndex}" />
+            <parameter replace="enableSliceType" by="${enableSliceType}" />
+            <inout group="data">
+                <key name="image" uid="${image}" />
+                <key name="transferFunction" uid="${transferFunction}" />
+            </inout>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
+            <signal>landmarksAdp/sendWorldCoord</signal>
+        </connect>
+
+        <!-- Display the picked voxel information -->
+        <connect>
+            <signal>negatoAdp/pickedVoxel</signal>
+            <slot>pickedVoxelTextAdp/setText</slot>
+        </connect>
+
+        <!-- distance channels -->
+        <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
+            <slot>negatoMultiDistancesAdp/activateDistanceTool</slot>
+        </connect>
+
+        <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
+            <signal>negatoMultiDistancesAdp/deactivateDistanceTool</signal>
+        </connect>
+
+        <connect channel="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}">
+            <slot>landmarksAdp/changeEditMode</slot>
+        </connect>
+
+        <connect channel="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}">
+            <slot>landmarksAdp/setCurrentGroup</slot>
+        </connect>
+
+        <connect channel="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}">
+            <signal>landmarksAdp/editModeChanged</signal>
+        </connect>
+
+        <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
+            <signal>minimizeAct/clicked</signal>
+            <signal>maximizeAct/clicked</signal>
+            <signal>eventAdp/triggered</signal>
+        </connect>
+
+        <connect>
+            <signal>eventAdp/triggered</signal>
+            <slot>maximizeAct/toggleVisibility</slot>
+            <slot>minimizeAct/toggleVisibility</slot>
+        </connect>
+
+        <connect>
+            <signal>maximizeAct/clicked</signal>
+            <slot>maximizeAct/hide</slot>
+            <slot>minimizeAct/show</slot>
+        </connect>
+
+        <connect>
+            <signal>minimizeAct/clicked</signal>
+            <slot>minimizeAct/hide</slot>
+            <slot>maximizeAct/show</slot>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+
+        <start uid="negatoCameraAdp" />
+        <start uid="negatoAdp" />
+        <start uid="negatoMultiDistancesAdp" />
+        <start uid="pickerInteractorAdp" />
+        <start uid="landmarksAdp" />
+        <start uid="pickedVoxelTextAdp" />
+        <start uid="eventAdp" />
+
+        <start uid="negatoSliderCfg" />
+
+    </config>
+</extension>

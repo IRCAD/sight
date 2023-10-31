@@ -38,7 +38,7 @@
 #include <data/point_list.hpp>
 #include <data/real.hpp>
 
-#include <navigation/openvslam/OpenvslamConfig.hpp>
+#include <navigation/openvslam/openvslam_config.hpp>
 
 #include <service/notifier.hpp>
 #include <service/tracker.hpp>

@@ -35,7 +35,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/history/ImageDiffCommand.hpp>
+#include <ui/history/image_diff_command.hpp>
 
 namespace sight::module::filter::image
 {

@@ -28,9 +28,9 @@
 
 #include <data/series_set.hpp>
 
-#include <io/dimse/exceptions/Base.hpp>
+#include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
-#include <io/dimse/SeriesEnquirer.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <service/extension/config.hpp>
 

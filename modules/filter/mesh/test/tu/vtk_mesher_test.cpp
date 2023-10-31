@@ -31,8 +31,8 @@
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 
-#include <io/vtk/ImageReader.hpp>
-#include <io/vtk/ImageWriter.hpp>
+#include <io/vtk/image_reader.hpp>
+#include <io/vtk/image_writer.hpp>
 
 #include <service/op.hpp>
 

@@ -22,10 +22,10 @@
 
 #include "network.hpp"
 
-#include "io/igtl/Exception.hpp"
+#include "io/igtl/exception.hpp"
 
-#include <io/igtl/detail/DataConverter.hpp>
-#include <io/igtl/detail/MessageFactory.hpp>
+#include <io/igtl/detail/data_converter.hpp>
+#include <io/igtl/detail/message_factory.hpp>
 
 #include <cmath>
 

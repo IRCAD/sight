@@ -25,7 +25,7 @@
 #include "modules/io/igtl/config.hpp"
 #include "modules/io/igtl/network_sender.hpp"
 
-#include <io/igtl/Client.hpp>
+#include <io/igtl/client.hpp>
 
 namespace sight::module::io::igtl
 {

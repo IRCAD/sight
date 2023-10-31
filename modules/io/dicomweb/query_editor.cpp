@@ -24,7 +24,7 @@
 
 #include <data/dicom_series.hpp>
 
-#include <io/http/helper/Series.hpp>
+#include <io/http/helper/series.hpp>
 
 #include <service/macros.hpp>
 

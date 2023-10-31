@@ -27,8 +27,8 @@
 
 #include <data/object.hpp>
 
-#include <io/igtl/Client.hpp>
-#include <io/igtl/Server.hpp>
+#include <io/igtl/client.hpp>
+#include <io/igtl/server.hpp>
 
 #include <cstdint>
 #include <future>

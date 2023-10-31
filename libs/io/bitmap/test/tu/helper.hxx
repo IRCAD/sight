@@ -27,11 +27,11 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 
-#include <io/bitmap/Writer.hpp>
+#include <io/bitmap/writer.hpp>
 #include <io/opencv/image.hpp>
 #include <io/opencv/type.hpp>
 
-#include <utest_data/Data.hpp>
+#include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
 #include <opencv2/imgcodecs.hpp>

@@ -24,7 +24,7 @@
 
 #include <core/tools/dispatcher.hpp>
 
-#include <io/itk/helper/Transform.hpp>
+#include <io/itk/helper/transform.hpp>
 #include <io/itk/itk.hpp>
 
 #include <itkAffineTransform.h>

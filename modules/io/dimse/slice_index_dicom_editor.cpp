@@ -29,8 +29,8 @@
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
 
-#include <io/dimse/exceptions/Base.hpp>
-#include <io/dimse/SeriesEnquirer.hpp>
+#include <io/dimse/exceptions/base.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <service/extension/config.hpp>
 

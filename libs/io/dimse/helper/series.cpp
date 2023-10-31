@@ -24,7 +24,7 @@
 
 #include "io/dimse/helper/series.hpp"
 
-#include "io/dimse/exceptions/TagMissing.hpp"
+#include "io/dimse/exceptions/tag_missing.hpp"
 
 #include <core/spy_log.hpp>
 

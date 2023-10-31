@@ -5,9 +5,9 @@
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::activity" />
 
-    <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ex_activities_base.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/image_reading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/volume_rendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension">
         <id>ExImage_Import_Activity</id>

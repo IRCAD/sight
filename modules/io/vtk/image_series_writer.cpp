@@ -39,9 +39,9 @@
 
 #include <io/__/reader/object_reader.hpp>
 #include <io/__/service/writer.hpp>
-#include <io/vtk/ImageWriter.hpp>
-#include <io/vtk/MetaImageWriter.hpp>
-#include <io/vtk/VtiImageWriter.hpp>
+#include <io/vtk/image_writer.hpp>
+#include <io/vtk/meta_image_writer.hpp>
+#include <io/vtk/vti_image_writer.hpp>
 
 #include <service/macros.hpp>
 

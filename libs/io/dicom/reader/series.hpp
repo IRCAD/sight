@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/reader/iod/InformationObjectDefinition.hpp"
+#include "io/dicom/reader/iod/information_object_definition.hpp"
 
 #include <core/log/logger.hpp>
 

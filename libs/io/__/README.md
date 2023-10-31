@@ -16,7 +16,7 @@ This module contains services that can write sight data to files, and read them 
 - **dictionary_reader**: reads `.dic` files and converts them into a `sight::data::structure_traits_dictionary`.
 - **generic_object_reader**: generic reader which reads an object.
 - **gz_array_reader**: reads `.raw.gz` files and converts them into a `sight::data::array`.
-- **GzBufferImageReader**: reads `.raw.gz` files and converts them into a `sight::data::image`.
+- **gz_buffer_image_reader**: reads `.raw.gz` files and converts them into a `sight::data::image`.
 - **object_reader**: generic definition for readers, though is not a service unlike `sight::io::service::reader`.
 - **matrix4_reader**: reads `.trf` files and converts them into a `sight::data::matrix4`.
 

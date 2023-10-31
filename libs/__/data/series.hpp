@@ -23,8 +23,8 @@
 #pragma once
 
 #include "data/config.hpp"
-#include "data/dicom/Attribute.hpp"
-#include "data/dicom/Sop.hpp"
+#include "data/dicom/attribute.hpp"
+#include "data/dicom/sop.hpp"
 #include "data/factory/new.hpp"
 #include "data/landmarks.hpp"
 #include "data/matrix4.hpp"

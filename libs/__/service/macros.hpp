@@ -23,7 +23,7 @@
 #pragma once
 
 #include "service/base.hpp"
-#include "service/ServiceFactoryRegistry.hpp"
+#include "service/service_factory_registry.hpp"
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>

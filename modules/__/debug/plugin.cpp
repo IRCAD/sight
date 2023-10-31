@@ -22,7 +22,7 @@
 
 #include "plugin.hpp"
 
-#include "installSIGSEVBacktrace.hpp"
+#include "install_sigsev_backtrace.hpp"
 
 namespace sight::module::debug
 {

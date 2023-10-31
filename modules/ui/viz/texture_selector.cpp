@@ -28,7 +28,7 @@
 #include <data/image.hpp>
 #include <data/material.hpp>
 
-#include <io/__/service/ioTypes.hpp>
+#include <io/__/service/io_types.hpp>
 
 #include <service/macros.hpp>
 #include <service/op.hpp>

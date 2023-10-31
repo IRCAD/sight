@@ -1,0 +1,72 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::activity::io::dicom::2d_pacs_preview</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="objectID" />
+        <param name="PACS_CONFIGURATION" />
+    </parameters>
+    <config>
+        <object uid="${objectID}" type="sight::data::dicom_series" src="ref" />
+        <object uid="image" type="sight::data::image" />
+        <object uid="tf" type="sight::data::transfer_function" />
+        <object uid="${PACS_CONFIGURATION}" type="sight::io::dimse::data::pacs_configuration" src="ref" />
+        <service uid="mainview" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <view align="center" />
+                    <view align="bottom" minWidth="200" minHeight="40" resizable="false" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="gs" start="true" />
+                <view sid="sliderIndexDicomPullerEditor" start="true" />
+            </registry>
+        </service>
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="gs" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer" order="1">
+                    <adaptor uid="pNegatoAdp" />
+                    <adaptor uid="pNegatoCameraAdp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+            <in key="image" uid="image" />
+            <in key="tf" uid="tf" />
+            <config sliceIndex="axial" filtering="anisotropic" />
+        </service>
+
+        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
+            <inout key="image" uid="image" />
+            <inout key="tf" uid="tf" />
+            <config priority="0" orientation="axial" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="imageDumpLocker" type="sight::module::memory::lock_dump">
+            <inout key="target" uid="image" />
+        </service>
+
+        <service uid="sliderIndexDicomPullerEditor" type="sight::module::io::dimse::slice_index_dicom_editor">
+            <in key="pacsConfig" uid="${PACS_CONFIGURATION}" />
+            <inout key="series" uid="${objectID}" />
+            <inout key="image" uid="image" />
+            <config dicomReader="sight::module::io::dicom::series_set_reader" />
+        </service>
+
+        <start uid="mainview" />
+        <!-- Deferred start -->
+        <start uid="imageDumpLocker" />
+        <!-- VTK scene 'gs' -->
+        <start uid="pNegatoAdp" />
+        <start uid="pNegatoCameraAdp" />
+    </config>
+</extension>
