@@ -103,19 +103,19 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${videoStartedChannel}">
-            <slot>videoGrabberSrv/startCamera</slot>
+            <slot>videoGrabberSrv/start_camera</slot>
         </connect>
 
         <connect channel="${videoStoppedChannel}">
-            <slot>videoGrabberSrv/stopCamera</slot>
+            <slot>videoGrabberSrv/stop_camera</slot>
         </connect>
 
         <connect channel="${videoPausedChannel}">
-            <slot>videoGrabberSrv/pauseCamera</slot>
+            <slot>videoGrabberSrv/pause_camera</slot>
         </connect>
 
         <connect channel="${videoLoopedChannel}">
-            <slot>videoGrabberSrv/loopVideo</slot>
+            <slot>videoGrabberSrv/loop_video</slot>
         </connect>
 
         <connect>
@@ -124,18 +124,18 @@
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredCameras</signal>
+            <signal>videoSelectorSrv/configured_cameras</signal>
             <slot>videoGrabberSrv/reconfigure</slot>
         </connect>
 
         <connect>
-            <signal>frameSynchronizerSrv/synchronizationDone</signal>
+            <signal>frameSynchronizerSrv/synchronization_done</signal>
             <slot>genericSceneSrv/request_render</slot>
             <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
         <connect>
-            <signal>videoGrabberSrv/cameraStarted</signal>
+            <signal>videoGrabberSrv/camera_started</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
             <slot>stopVideoAct/enable</slot>
@@ -143,8 +143,8 @@
         </connect>
 
         <connect>
-            <signal>${camera}/idModified</signal>
-            <slot>videoGrabberSrv/stopCamera</slot>
+            <signal>${camera}/id_modified</signal>
+            <slot>videoGrabberSrv/stop_camera</slot>
         </connect>
 
         <connect>
@@ -154,19 +154,19 @@
         </connect>
 
         <connect channel="${cameraModifiedChannel}">
-            <slot>videoGrabberSrv/stopCamera</slot>
+            <slot>videoGrabberSrv/stop_camera</slot>
         </connect>
 
         <connect channel="${videoPositionChangedChannel}">
-            <slot>videoGrabberSrv/setPositionVideo</slot>
+            <slot>videoGrabberSrv/set_position_video</slot>
         </connect>
 
         <connect channel="${videoPositionModifiedChannel}">
-            <signal>videoGrabberSrv/positionModified</signal>
+            <signal>videoGrabberSrv/position_modified</signal>
         </connect>
 
         <connect channel="${videoDurationModifiedChannel}">
-            <signal>videoGrabberSrv/durationModified</signal>
+            <signal>videoGrabberSrv/duration_modified</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

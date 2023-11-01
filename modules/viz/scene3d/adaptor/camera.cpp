@@ -179,7 +179,7 @@ void camera::updating()
         const Ogre::Quaternion rotate_z(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
         orientation = orientation * rotate_z * rotate_y;
 
-        // Flag to skip updateTF3D() when called from the camera listener
+        // Flag to skip update_tf3D() when called from the camera listener
         m_skip_update = true;
 
         Ogre::Node* parent = m_camera->getParentNode();

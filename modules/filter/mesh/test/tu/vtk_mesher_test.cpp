@@ -243,7 +243,7 @@ void vtk_mesher_test::update_threshold_test()
 
     //threshold is modified by the slot updateThreshold
     const int new_threshold = 50;
-    mesherService->slot("updateThreshold")->run(new_threshold);
+    mesherService->slot("update_threshold")->run(new_threshold);
 
     mesherService->start().wait();
     mesherService->update().wait();

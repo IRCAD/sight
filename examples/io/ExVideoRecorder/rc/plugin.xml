@@ -148,45 +148,45 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>parametersSrv/enumChanged</signal>
-                <slot>frameWriterSrv/setFormatParameter</slot>
+                <signal>parametersSrv/enum_changed</signal>
+                <slot>frameWriterSrv/set_format_parameter</slot>
             </connect>
 
             <connect>
-                <signal>frameRecordingAct/triggeredAsString</signal>
-                <slot>frameWriterSrv/setPrefix</slot>
+                <signal>frameRecordingAct/triggered_as_string</signal>
+                <slot>frameWriterSrv/set_prefix</slot>
             </connect>
 
             <connect>
-                <signal>frameWriterSrv/prefixSet</signal>
-                <slot>frameWriterSrv/toggleRecording</slot>
+                <signal>frameWriterSrv/prefix_set</signal>
+                <slot>frameWriterSrv/toggle_recording</slot>
             </connect>
 
             <connect>
-                <signal>videoRecordingAct/triggeredAsString</signal>
-                <slot>videoWriterSrv/setPrefix</slot>
+                <signal>videoRecordingAct/triggered_as_string</signal>
+                <slot>videoWriterSrv/set_prefix</slot>
             </connect>
 
             <connect>
-                <signal>videoWriterSrv/prefixSet</signal>
-                <slot>videoWriterSrv/toggleRecording</slot>
+                <signal>videoWriterSrv/prefix_set</signal>
+                <slot>videoWriterSrv/toggle_recording</slot>
             </connect>
 
             <connect>
                 <signal>pickerAdp/picked</signal>
-                <slot>imagePickerSrv/getInteraction</slot>
+                <slot>imagePickerSrv/get_interaction</slot>
             </connect>
 
             <connect channel="addROICenterChannelIn">
-                <signal>2dPoints/pointAdded</signal>
+                <signal>2dPoints/point_added</signal>
             </connect>
 
             <connect channel="removeROICenterChannelIn">
-                <signal>2dPoints/pointRemoved</signal>
+                <signal>2dPoints/point_removed</signal>
             </connect>
 
             <connect>
-                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <signal>frameUpdaterSrv/synchronization_done</signal>
                 <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>

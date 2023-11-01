@@ -81,7 +81,7 @@ struct fragments_info_material_listener final : public Ogre::MaterialManager::Li
 };
 
 static std::unique_ptr<fragments_info_material_listener> s_material_listener = nullptr;
-static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT                    = "resizeViewport";
+static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT                    = "resize_viewport";
 
 //-----------------------------------------------------------------------------
 

@@ -39,8 +39,8 @@ namespace sight::module::filter::vision
  * due to internal parameters it only detects if camera is moving globally.
  *
  * @section Signals Signals
- * - \b cameraMoved: send when camera has moved.
- *  -\b cameraRemained: send when camera is detected as stable.
+ * - \b camera_moved: send when camera has moved.
+ *  -\b camera_remained: send when camera is detected as stable.
  *
  * @section Slots Slots
  * - \b updating: called when a new frame is pushed into the timeline. Detected if camera has moved or not.

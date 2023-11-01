@@ -54,14 +54,14 @@ namespace sight::module::viz::scene3d::adaptor
  * created between the segment at the near plane and the far plane.
  *
  * @section Slots Slots
- * - \b enableTool(bool): enable or disable the tool, it will be automatically disabled when interactions are finished.
- * - \b deleteLastMesh(): delete the last extruded mesh.
- * - \b cancelLastClick(): cancel the last point clicked during the extrusion
+ * - \b enable_tool(bool): enable or disable the tool, it will be automatically disabled when interactions are finished.
+ * - \b delete_last_mesh(): delete the last extruded mesh.
+ * - \b cancel_last_click(): cancel the last point clicked during the extrusion
  * - \b reset(): delete all extruded meshes.
  * - \b validate(): validate points and generates the extrusion mesh.
  *
  * @section Signal Signals
- * - \b toolDisabled(): sent when interactions are finished.
+ * - \b tool_disabled(): sent when interactions are finished.
  *
  * @section XML XML Configuration
  * @code{.xml}

@@ -42,8 +42,8 @@ namespace sight::module::io::matrix
  *       matrices when they are pushed in the timeline, you must use the slots 'startRecord' and 'stopRecord'
  *
  * @section Slots Slots
- * - \b startRecord() : start recording
- * - \b stopRecord() : stop recording
+ * - \b start_record() : start recording
+ * - \b stop_record() : stop recording
  * - \b write(core::hires_clock::type) : write matrix in a csv file
  * - \b saveMatrix(core::hires_clock::type) : save current matrices
  *

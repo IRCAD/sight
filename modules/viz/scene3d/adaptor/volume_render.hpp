@@ -44,15 +44,15 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor displays a volume rendering.
  *
  * @section Slots Slots
- * - \b newImage(): called when a new image is loaded.
- * - \b updateImage(): called when the image is updated.
- * - \b toggleWidgets(bool): toggles widget visibility.
+ * - \b new_image(): called when a new image is loaded.
+ * - \b update_image(): called when the image is updated.
+ * - \b toggle_widgets(bool): toggles widget visibility.
  * - \b bufferImage(): called when the image buffer is modified, copies it into the texture buffer.
  * - \b update_visibility(bool): shows or hides the volume.
- * - \b toggleVisibility(): toggle whether the volume is shown or not.
+ * - \b toggle_visibility(): toggle whether the volume is shown or not.
  * - \b show(): shows the volume.
  * - \b hide(): hides the volume.
- * - \b updateClippingBox(): updates the cropping widget from the clipping matrix.
+ * - \b update_clipping_box(): updates the cropping widget from the clipping matrix.
  * - \b set_bool_parameter(bool, string): calls a bool parameter slot according to the given key.
  *  - preIntegration: toggles the pre-integration.
  *  - ambientOcclusion: toggles the ambient occlusion.
@@ -135,16 +135,16 @@ public:
 protected:
 
     // Slot keys
-    static inline const sight::core::com::slots::key_t NEW_IMAGE_SLOT            = "newImage";
+    static inline const sight::core::com::slots::key_t NEW_IMAGE_SLOT            = "new_image";
     static inline const sight::core::com::slots::key_t BUFFER_IMAGE_SLOT         = "bufferImage";
-    static inline const sight::core::com::slots::key_t UPDATE_IMAGE_SLOT         = "updateImage";
-    static inline const sight::core::com::slots::key_t TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
+    static inline const sight::core::com::slots::key_t UPDATE_IMAGE_SLOT         = "update_image";
+    static inline const sight::core::com::slots::key_t TOGGLE_WIDGETS_SLOT       = "toggle_widgets";
     static inline const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "set_bool_parameter";
     static inline const sight::core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "set_int_parameter";
     static inline const sight::core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
-    static inline const sight::core::com::slots::key_t UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
-    static inline const sight::core::com::slots::key_t UPDATE_TF_SLOT            = "updateTF";
-    static inline const sight::core::com::slots::key_t UPDATE_MASK_SLOT          = "updateMask";
+    static inline const sight::core::com::slots::key_t UPDATE_CLIPPING_BOX_SLOT  = "update_clipping_box";
+    static inline const sight::core::com::slots::key_t UPDATE_TF_SLOT            = "update_tf";
+    static inline const sight::core::com::slots::key_t UPDATE_MASK_SLOT          = "update_mask";
 
     ///@brief Internal wrapper holding config defines.
     struct config

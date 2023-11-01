@@ -41,10 +41,10 @@
 namespace sight::module::geometry::vision
 {
 
-static const core::com::slots::key_t RECORD_POINTS_SLOT          = "recordPoints";
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::slots::key_t RECORD_POINTS_SLOT          = "record_points";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
 
-static const core::com::signals::key_t CHESSBOARD_DETECTED_SIG = "chessboardDetected";
+static const core::com::signals::key_t CHESSBOARD_DETECTED_SIG = "chessboard_detected";
 static const core::com::signals::key_t CHESSBOARD_FOUND_SIG    = "chessboardFound";
 
 // ----------------------------------------------------------------------------

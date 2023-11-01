@@ -56,7 +56,7 @@
 namespace sight::module::navigation::openvslam
 {
 
-static const core::com::slots::key_t ENABLE_LOCALIZATION_SLOT   = "enableLocalization";
+static const core::com::slots::key_t ENABLE_LOCALIZATION_SLOT   = "enable_localization";
 static const core::com::slots::key_t ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
 
 static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
@@ -64,25 +64,25 @@ static const core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "set_int_parame
 static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "set_bool_parameter";
 static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT   = "set_enum_parameter";
 
-static const core::com::slots::key_t RESET_POINTCLOUD_SLOT = "resetPointCloud";
+static const core::com::slots::key_t RESET_POINTCLOUD_SLOT = "reset_point_cloud";
 
-static const core::com::slots::key_t SAVE_MAP_SLOT = "saveMap";
-static const core::com::slots::key_t LOAD_MAP_SLOT = "loadMap";
+static const core::com::slots::key_t SAVE_MAP_SLOT = "save_map";
+static const core::com::slots::key_t LOAD_MAP_SLOT = "load_map";
 
-static const core::com::slots::key_t SAVE_TRAJECTORIES_SLOT = "saveTrajectories";
+static const core::com::slots::key_t SAVE_TRAJECTORIES_SLOT = "save_trajectories";
 
-static const core::com::slots::key_t PAUSE_TRACKER_SLOT = "pauseTracker";
+static const core::com::slots::key_t PAUSE_TRACKER_SLOT = "pause_tracker";
 
-static const core::com::signals::key_t TRACKING_INITIALIZED_SIG     = "trackingInitialized";
+static const core::com::signals::key_t TRACKING_INITIALIZED_SIG     = "tracking_initialized";
 static const core::com::signals::key_t TRACKING_NOT_INITIALIZED_SIG = "trackingNotInitialized";
 static const core::com::signals::key_t TRACKED_SIG                  = "tracked";
-static const core::com::signals::key_t TRACKING_LOST_SIG            = "trackingLost";
+static const core::com::signals::key_t TRACKING_LOST_SIG            = "tracking_lost";
 
-static const core::com::signals::key_t VOCFILE_UNLOADED_SIG        = "vocFileUnloaded";
-static const core::com::signals::key_t VOCFILE_LOADING_STARTED_SIG = "vocFileLoadingStarted";
-static const core::com::signals::key_t VOCFILE_LOADED_SIG          = "vocFileLoaded";
+static const core::com::signals::key_t VOCFILE_UNLOADED_SIG        = "voc_file_unloaded";
+static const core::com::signals::key_t VOCFILE_LOADING_STARTED_SIG = "voc_file_loading_started";
+static const core::com::signals::key_t VOCFILE_LOADED_SIG          = "voc_file_loaded";
 
-static const core::com::signals::key_t MAP_LOADED_SIG = "mapLoaded";
+static const core::com::signals::key_t MAP_LOADED_SIG = "map_loaded";
 
 static const std::string DOWNSAMPLE_CONFIG = "downsampleWidth";
 static const std::string MODE_CONFIG       = "mode";

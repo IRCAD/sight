@@ -44,7 +44,7 @@
 namespace sight::module::viz::scene2d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTF";
+static const core::com::slots::key_t UPDATE_TF_SLOT = "update_tf";
 
 //-----------------------------------------------------------------------------
 

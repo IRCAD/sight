@@ -39,7 +39,7 @@ namespace sight::data
 {
 
 const core::com::signals::key_t camera::INTRINSIC_CALIBRATED_SIG = "intrinsicCalibrated";
-const core::com::signals::key_t camera::ID_MODIFIED_SIG          = "idModified";
+const core::com::signals::key_t camera::ID_MODIFIED_SIG          = "id_modified";
 
 //------------------------------------------------------------------------------
 

@@ -39,7 +39,7 @@ namespace sight::module::geometry::vision
  * position).
  *
  * @section Slots Slots
- * - \b addPoint() : Add marker position in the pointList. Position is extracted from matrixTL.
+ * - \b add_point() : Add marker position in the pointList. Position is extracted from matrixTL.
  * - \b clear() : Clear the pointList.
  *
  * @section XML XML Configuration

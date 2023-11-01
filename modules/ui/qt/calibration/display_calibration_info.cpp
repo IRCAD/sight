@@ -37,7 +37,7 @@ namespace sight::module::ui::qt::calibration
 
 //------------------------------------------------------------------------------
 
-static const core::com::slots::key_t DISPLAY_IMAGE_SLOT = "displayImage";
+static const core::com::slots::key_t DISPLAY_IMAGE_SLOT = "display_image";
 static const core::com::slots::key_t STOP_CONFIG_SLOT   = "stopConfig";
 
 static const std::string SINGLE_IMAGE_CONFIG = "singleImageConfig";

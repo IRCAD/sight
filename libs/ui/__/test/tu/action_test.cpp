@@ -174,18 +174,18 @@ void action_test::properties_test()
         CPPUNIT_ASSERT_EQUAL(false, action->enabled());
         action->slot("enable")->run();
         CPPUNIT_ASSERT_EQUAL(true, action->enabled());
-        std::dynamic_pointer_cast<bool_slot_t>(action->slot("setEnabled"))->run(false);
+        std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_enabled"))->run(false);
         CPPUNIT_ASSERT_EQUAL(false, action->enabled());
-        std::dynamic_pointer_cast<bool_slot_t>(action->slot("setEnabled"))->run(true);
+        std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_enabled"))->run(true);
         CPPUNIT_ASSERT_EQUAL(true, action->enabled());
 
         action->slot("check")->run();
         CPPUNIT_ASSERT_EQUAL(true, action->checked());
         action->slot("uncheck")->run();
         CPPUNIT_ASSERT_EQUAL(false, action->checked());
-        std::dynamic_pointer_cast<bool_slot_t>(action->slot("setChecked"))->run(true);
+        std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_checked"))->run(true);
         CPPUNIT_ASSERT_EQUAL(true, action->checked());
-        std::dynamic_pointer_cast<bool_slot_t>(action->slot("setChecked"))->run(false);
+        std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_checked"))->run(false);
         CPPUNIT_ASSERT_EQUAL(false, action->checked());
 
         action->slot("hide")->run();

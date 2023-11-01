@@ -40,13 +40,13 @@ namespace sight::module::ui::qml::activity
  * @brief   This editor displays activities in a single view (when a new activity is launched, it replaces the previous
  * one).
  *
- * This service should receive signals containing Activity connected to the slot \b launchActivity.
+ * This service should receive signals containing Activity connected to the slot \b launch_activity.
  *
  * @section Signals Signals
- * - \b activityLaunched(): signal emitted when the activity is launched
+ * - \b activity_launched(): signal emitted when the activity is launched
  *
  * @section Slots Slots
- * - \b launchActivity( data::activity::sptr ): This slot allows to create a view for the given activity.
+ * - \b launch_activity( data::activity::sptr ): This slot allows to create a view for the given activity.
  *
  * @section config Configuration
  *

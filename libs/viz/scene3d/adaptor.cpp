@@ -34,7 +34,7 @@ namespace sight::viz::scene3d
 {
 
 const core::com::slots::key_t adaptor::UPDATE_VISIBILITY_SLOT = "update_visibility";
-const core::com::slots::key_t adaptor::TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const core::com::slots::key_t adaptor::TOGGLE_VISIBILITY_SLOT = "toggle_visibility";
 const core::com::slots::key_t adaptor::SHOW_SLOT              = "show";
 const core::com::slots::key_t adaptor::HIDE_SLOT              = "hide";
 

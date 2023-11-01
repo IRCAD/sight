@@ -58,21 +58,22 @@ namespace sight::module::io::video
  * \b Tags: FILE,DEVICE,STREAM
  *
  * @section Signals Signals
- * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
- * - \b durationModified(std::int64_t) : Emitted when the duration of the video is modified.
+ * - \b position_modified(std::int64_t) : Emitted when the position in the video is modified during playing.
+ * - \b duration_modified(std::int64_t) : Emitted when the duration of the video is modified.
  *
  * @section Slots Slots
- * - \b startCamera() : Start playing the camera or the video.
- * - \b stopCamera() : Stop playing the camera or the video.
- * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
- * - \b loopVideo() : Toggle the loop of the playing.
- * - \b setPositionVideo(int) : Force the current time in the video.
- * - \b nextImage() : Read the next image (in frame-by-frame mode).
- * - \b previousImage() : Read the previous image (in frame-by-frame mode).
- * - \b setStep(int step, std::string key) : set the step value between two images when calling nextImage/previousImage
+ * - \b start_camera() : Start playing the camera or the video.
+ * - \b stop_camera() : Stop playing the camera or the video.
+ * - \b pause_camera() : Pause the video, it has no effect when playing a camera.
+ * - \b loop_video() : Toggle the loop of the playing.
+ * - \b set_position_video(int) : Force the current time in the video.
+ * - \b next_image() : Read the next image (in frame-by-frame mode).
+ * - \b previous_image() : Read the previous image (in frame-by-frame mode).
+ * - \b set_step(int step, std::string key) : set the step value between two images when calling
+ * nextImage/previous_image
  * slots on oneShot mode (supported key: "step")
- * - \b addROICenter(sight::data::point::sptr): Adds a new region fo interest center.
- * - \b removeROICenter(sight::data::point::sptr): Removes a region of interest via its center.
+ * - \b add_roi_center(sight::data::point::sptr): Adds a new region fo interest center.
+ * - \b remove_roi_center(sight::data::point::sptr): Removes a region of interest via its center.
  *
  * @section XML XML Configuration
  *
@@ -242,10 +243,10 @@ private:
     /// If timestamp cannot be deduced from filename use the default duration (5000ms).
     double m_default_duration {5000};
 
-    /// Step between two images when calling nexImage()/previousImage() slots
+    /// Step between two images when calling nexImage()/previous_image() slots
     std::uint64_t m_step {1};
 
-    /// Step value updated in setStep() slot used to compute a shift value when calling nextImage()/previousImage()
+    /// Step value updated in set_step() slot used to compute a shift value when calling nextImage()/previous_image()
     std::uint64_t m_step_changed {1};
 
     /// Total number of frames in a video file.

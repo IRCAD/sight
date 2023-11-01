@@ -41,12 +41,12 @@ namespace sight::module::filter::vision
  * @see service::filter
  *
  * @section Slots Slots
- * - \b setBackground() : Slot to set the background image to learn the background model color
- * - \b setForeground() : Slot to set the foreground image to learn the foreground model color
- * - \b setThreshold(int threshold) : Slot to set the threshold value to get the final binary image
- * - \b setNoiseLevel(double noiseLevel) : Slot to set the noise level added in the learning steps
- * - \b setBackgroundComponents(int bgComponents) : Slot to set the number of background components learned
- * - \b setForegroundComponents(int fgComponents) : Slot to set the number of foreground components learned
+ * - \b set_background() : Slot to set the background image to learn the background model color
+ * - \b set_foreground() : Slot to set the foreground image to learn the foreground model color
+ * - \b set_threshold(int threshold) : Slot to set the threshold value to get the final binary image
+ * - \b set_noise_level(double noiseLevel) : Slot to set the noise level added in the learning steps
+ * - \b set_background_components(int bgComponents) : Slot to set the number of background components learned
+ * - \b set_foreground_components(int fgComponents) : Slot to set the number of foreground components learned
  * - \b clearMaskTL() : Slot to clear the output foreground mask timeline and reset the last timestamp.
  *
  * @section XML XML Configuration

@@ -892,7 +892,7 @@ void frame_grabber::next_image()
 {
     if(m_one_shot)
     {
-        // Compute difference between a possible step change in setStep() slot and the current step value
+        // Compute difference between a possible step change in set_step() slot and the current step value
         const std::int64_t shift = static_cast<std::int64_t>(m_step_changed)
                                    - static_cast<std::int64_t>(m_step);
         const std::int64_t shifted_image_count = static_cast<std::int64_t>(m_image_count) + shift;
@@ -924,7 +924,7 @@ void frame_grabber::previous_image()
     {
         if(m_image_count - m_step >= m_step_changed)
         {
-            // Compute difference between a possible step change in setStep() slot and the current step value
+            // Compute difference between a possible step change in set_step() slot and the current step value
             const std::int64_t shift = static_cast<std::int64_t>(m_step_changed)
                                        - static_cast<std::int64_t>(m_step);
             const std::int64_t shiftedimage_count = static_cast<std::int64_t>(m_image_count) - shift;

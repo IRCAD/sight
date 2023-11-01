@@ -34,7 +34,7 @@
 namespace sight::module::ui
 {
 
-static const core::com::slots::key_t SHOW_JOB_SLOT    = "showJob";
+static const core::com::slots::key_t SHOW_JOB_SLOT    = "show_job";
 static const core::com::signals::key_t STARTED_SIGNAL = "started";
 static const core::com::signals::key_t ENDED_SIGNAL   = "ended";
 

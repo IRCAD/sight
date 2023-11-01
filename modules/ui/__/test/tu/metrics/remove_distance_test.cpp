@@ -194,7 +194,7 @@ void remove_distance_test::remove_last_test()
     CPPUNIT_ASSERT_NO_THROW(m_remove_distance->configure());
     CPPUNIT_ASSERT_NO_THROW(m_remove_distance->start().get());
 
-    m_remove_distance->slot("removeLastDistance")->run();
+    m_remove_distance->slot("remove_last_distance")->run();
 
     auto distances = data::helper::medical_image::get_distances(*image);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), distances->size());

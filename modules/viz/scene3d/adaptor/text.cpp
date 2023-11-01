@@ -32,7 +32,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t SET_TEXT_SLOT = "setText";
+static const core::com::slots::key_t SET_TEXT_SLOT = "set_text";
 
 //----------------------------------------------------------------------------
 

@@ -42,8 +42,8 @@ namespace sight::module::io::matrix
 {
 
 static const core::com::slots::key_t SAVE_MATRIX  = "saveMatrix";
-static const core::com::slots::key_t START_RECORD = "startRecord";
-static const core::com::slots::key_t STOP_RECORD  = "stopRecord";
+static const core::com::slots::key_t START_RECORD = "start_record";
+static const core::com::slots::key_t STOP_RECORD  = "stop_record";
 static const core::com::slots::key_t WRITE        = "write";
 
 //------------------------------------------------------------------------------

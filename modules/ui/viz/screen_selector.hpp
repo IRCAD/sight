@@ -37,7 +37,7 @@ namespace sight::module::ui::viz
  * This service is initially meant to choose a screen for fullscreen rendering.
  *
  * @section Signals Signals
- * - \b screenSelected(int): sends the selected screen's index.
+ * - \b screen_selected(int): sends the selected screen's index.
  *
  * @section XML XML Configuration
  *

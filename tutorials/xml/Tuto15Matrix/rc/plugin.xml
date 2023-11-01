@@ -236,14 +236,14 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>shhowMeshSrv/boolChanged</signal>
+                <signal>shhowMeshSrv/bool_changed</signal>
                 <slot>mesh1Adp/update_visibility</slot>
                 <slot>mesh2Adp/update_visibility</slot>
             </connect>
 
             <connect>
                 <signal>trackballInteractorAdp/started</signal>
-                <slot>genericSceneSrv/resetCameras</slot>
+                <slot>genericSceneSrv/reset_cameras</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

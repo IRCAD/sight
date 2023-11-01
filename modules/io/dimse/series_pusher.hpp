@@ -46,8 +46,9 @@ namespace sight::module::io::dimse
  *
  * @section Signals Signals
  * - \b progressed(std::string) : Signal to start the progress (bar id).
- * - \b startedProgress(std::string, float, std::string) :  Signal to update the progress (bar id, percentage, message).
- * - \b stoppedProgress(std::string) : Signal to stop the progress (bar id).
+ * - \b started_progress(std::string, float, std::string) :  Signal to update the progress (bar id, percentage,
+ * message).
+ * - \b stopped_progress(std::string) : Signal to stop the progress (bar id).
  *
  * @section XML XML Configuration
  *

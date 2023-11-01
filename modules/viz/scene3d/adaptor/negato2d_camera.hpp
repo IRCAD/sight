@@ -46,7 +46,7 @@ namespace sight::module::viz::scene3d::adaptor
  * after all others one.
  *
  * @section Slots Slots
- * - \b resetCamera(): zooms out the camera to see the whole scene.
+ * - \b reset_camera(): zooms out the camera to see the whole scene.
  * - \b changeOrientation(int,int): sets the camera's orientation to one of the image's axes.
  *
  * @section XML XML Configuration

@@ -41,7 +41,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b add(): add a new mesh at the transformation matrix position.
  * - \b clear(): clear all meshes.
  * - \b update_visibility(bool): sets whether the mesh is to be seen or not.
- * - \b toggleVisibility(): toggle whether the mesh is shown or not.
+ * - \b toggle_visibility(): toggle whether the mesh is shown or not.
  * - \b show(): shows the mesh.
  * - \b hide(): hides the mesh.
  *

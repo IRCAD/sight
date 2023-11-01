@@ -38,14 +38,14 @@ namespace sight::module::ui::qt::com
 static const core::com::signals::key_t CLICKED_SIG = "clicked";
 static const core::com::signals::key_t TOGGLED_SIG = "toggled";
 
-static const core::com::slots::key_t SET_CHECKED_SLOT = "setChecked";
+static const core::com::slots::key_t SET_CHECKED_SLOT = "set_checked";
 static const core::com::slots::key_t CHECK_SLOT       = "check";
 static const core::com::slots::key_t UNCHECK_SLOT     = "uncheck";
 
-static const core::com::slots::key_t SET_ENABLED_SLOT = "setEnabled";
+static const core::com::slots::key_t SET_ENABLED_SLOT = "set_enabled";
 static const core::com::slots::key_t ENABLE_SLOT      = "enable";
 static const core::com::slots::key_t DISABLE_SLOT     = "disable";
-static const core::com::slots::key_t SET_VISIBLE_SLOT = "setVisible";
+static const core::com::slots::key_t SET_VISIBLE_SLOT = "set_visible";
 static const core::com::slots::key_t SHOW_SLOT        = "show";
 static const core::com::slots::key_t HIDE_SLOT        = "hide";
 

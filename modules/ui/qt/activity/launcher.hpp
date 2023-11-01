@@ -46,17 +46,17 @@ namespace sight::module::ui::qt::activity
  * signals and launches the activity in a new tab.
  *
  * @section Slots Slots
- * - \b launchSeries(data::series::sptr) : This slot launches the first available activity for this series or uses
+ * - \b launch_series(data::series::sptr) : This slot launches the first available activity for this series or uses
  *   m_quickLaunch information if a default association is defined for this series type. It sends the signal
  *   'activityLaunched' with all the activity information.
  *
- * - \b launchActivity(data::activity::sptr) : This slot allows to launch the given activity.
+ * - \b launch_activity(data::activity::sptr) : This slot allows to launch the given activity.
  *   It sends the signal 'activityLaunched' with all the activity information.
  *
- * - \b updateState() : Updates action state (enable if activities are available for current selection).
+ * - \b update_state() : Updates action state (enable if activities are available for current selection).
  *
  * @section Signal Signal
- * - \b activityLaunched(activity::message) : This signal is emitted when the activity is created,
+ * - \b activity_launched(activity::message) : This signal is emitted when the activity is created,
  *      it contains the activity information. It should be connected to the slot 'createTab' of the service
  *      '::module::ui::qt::editor::dynamic_view'.
  *

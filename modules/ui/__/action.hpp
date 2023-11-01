@@ -35,7 +35,7 @@ namespace sight::module::ui
  *
  * @section Signals Signals
  * - \b clicked(): Emitted when the action is clicked.
- * - \b parameterChanged(parameter_t, std::string): Emitted when the action is clicked or setChecked(true|false).
+ * - \b parameter_changed(parameter_t, std::string): Emitted when the action is clicked or setChecked(true|false).
  *
  * Example of configuration
  * @code{.xml}
@@ -65,7 +65,7 @@ public:
     {
         using key_t = core::com::signals::key_t;
         inline static const key_t CLICKED           = "clicked";
-        inline static const key_t PARAMETER_CHANGED = "parameterChanged";
+        inline static const key_t PARAMETER_CHANGED = "parameter_changed";
 
         using changed_t = core::com::signal<void (sight::ui::parameter_t, std::string)>;
     };

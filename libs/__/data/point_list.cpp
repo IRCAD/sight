@@ -34,8 +34,8 @@ SIGHT_REGISTER_DATA(sight::data::point_list);
 namespace sight::data
 {
 
-const core::com::signals::key_t point_list::POINT_ADDED_SIG   = "pointAdded";
-const core::com::signals::key_t point_list::POINT_REMOVED_SIG = "pointRemoved";
+const core::com::signals::key_t point_list::POINT_ADDED_SIG   = "point_added";
+const core::com::signals::key_t point_list::POINT_REMOVED_SIG = "point_removed";
 
 //------------------------------------------------------------------------------
 

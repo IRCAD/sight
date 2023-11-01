@@ -44,7 +44,7 @@
 namespace sight::module::ui::qt::image
 {
 
-static const core::com::slots::key_t GET_INTERACTION_SLOT = "getInteraction";
+static const core::com::slots::key_t GET_INTERACTION_SLOT = "get_interaction";
 
 image_info::image_info() noexcept
 {

@@ -40,7 +40,7 @@ namespace sight::viz::scene3d
  *
  * @section Slots Slots
  * - \b update_visibility(bool): sets whether the adaptor is shown or not.
- * - \b toggleVisibility(): toggle whether the adaptor is shown or not.
+ * - \b toggle_visibility(): toggle whether the adaptor is shown or not.
  * - \b show(): shows the adaptor.
  * - \b hide(): hides the hide.
  *

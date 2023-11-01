@@ -43,9 +43,10 @@ namespace sight::module::data
  * @section Slots Slots
  * - \b add() : Adds the object into the target (Vector, series_set, Composite), if target is a Composite or a field, it
  *  is added at the key given by config.
- * - \b addCopy() : Adds a copy of the object into the target (Vector, series_set, Composite), if target is a Composite
+ * - \b add_copy() : Adds a copy of the object into the target (Vector, series_set, Composite), if target is a Composite
  * or a field, it is added at the key given by config.
- * - \b addOrSwap() : Adds the object if it is not present in the target, else if target is a composite or a field, the
+ * - \b add_or_swap() : Adds the object if it is not present in the target, else if target is a composite or a field,
+ * the
  * object is swapped.
  * - \b swapObj() : Only if target is a Composite or a field : swaps the object into the composite with the key given by
  * config.

@@ -46,13 +46,13 @@ namespace sight::module::ui::qt::com
  * - \b toggled(bool):  This signal is emitted when the button is checked.
  *
  * @section Slot Slot
- * - \b setChecked(bool): allows to check/uncheck the button.
+ * - \b set_checked(bool): allows to check/uncheck the button.
  * - \b check(): allows to check the button.
  * - \b uncheck(): allows to uncheck the button.
- * - \b setEnabled(bool): sets the button executability.
+ * - \b set_enabled(bool): sets the button executability.
  * - \b enable(): sets the button executable.
  * - \b disable(): sets the button inexecutable.
- * - \b setVisible(bool):s ets the button visibility.
+ * - \b set_visible(bool):s ets the button visibility.
  * - \b show(): shows the button.
  * - \b hide(): hides the button.
  *

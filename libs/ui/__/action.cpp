@@ -33,26 +33,26 @@
 namespace sight::ui
 {
 
-const core::com::slots::key_t action::SET_CHECKED_SLOT       = "setChecked";
+const core::com::slots::key_t action::SET_CHECKED_SLOT       = "set_checked";
 const core::com::slots::key_t action::CHECK_SLOT             = "check";
 const core::com::slots::key_t action::UNCHECK_SLOT           = "uncheck";
-const core::com::slots::key_t action::SET_VISIBLE_SLOT       = "setVisible";
-const core::com::slots::key_t action::SET_HIDDEN_SLOT        = "setHidden";
+const core::com::slots::key_t action::SET_VISIBLE_SLOT       = "set_visible";
+const core::com::slots::key_t action::SET_HIDDEN_SLOT        = "set_hidden";
 const core::com::slots::key_t action::SHOW_SLOT              = "show";
 const core::com::slots::key_t action::HIDE_SLOT              = "hide";
-const core::com::slots::key_t action::TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-const core::com::slots::key_t action::SET_ENABLED_SLOT       = "setEnabled";
-const core::com::slots::key_t action::SET_DISABLED_SLOT      = "setDisabled";
+const core::com::slots::key_t action::TOGGLE_VISIBILITY_SLOT = "toggle_visibility";
+const core::com::slots::key_t action::SET_ENABLED_SLOT       = "set_enabled";
+const core::com::slots::key_t action::SET_DISABLED_SLOT      = "set_disabled";
 const core::com::slots::key_t action::ENABLE_SLOT            = "enable";
 const core::com::slots::key_t action::DISABLE_SLOT           = "disable";
 
-const core::com::signals::key_t action::IS_ENABLED_SIG = "isEnabled";
+const core::com::signals::key_t action::IS_ENABLED_SIG = "is_enabled";
 const core::com::signals::key_t action::ENABLED_SIG    = "enabled";
 const core::com::signals::key_t action::DISABLED_SIG   = "disabled";
-const core::com::signals::key_t action::IS_CHECKED_SIG = "isChecked";
+const core::com::signals::key_t action::IS_CHECKED_SIG = "is_checked";
 const core::com::signals::key_t action::CHECKED_SIG    = "checked";
 const core::com::signals::key_t action::UNCHECKED_SIG  = "unchecked";
-const core::com::signals::key_t action::IS_VISIBLE_SIG = "isVisible";
+const core::com::signals::key_t action::IS_VISIBLE_SIG = "is_visible";
 
 action::action()
 {

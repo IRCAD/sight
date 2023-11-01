@@ -47,14 +47,14 @@ namespace sight::module::ui::qt::activity
  * It works on a data::activity_set and adds the created activity into the activity_set.
  *
  * @section Slots Slots
- * - \b createActivity(std::string) : This slot displays the gui allowing to create a data::activity with
+ * - \b create_activity(std::string) : This slot displays the gui allowing to create a data::activity with
  *      the required data for the given activity.
- * - \b updateActivity(data::activity::sptr) : This slot displays the gui allowing to update the required
+ * - \b update_activity(data::activity::sptr) : This slot displays the gui allowing to update the required
  *      data for the given activity.
  *
  * @section Signals Signals
- * - \b activityCreated(data::activity::sptr) : This signal is emitted when the activity is built.
- * - \b activityUpdated(data::activity::sptr) : This signal is emitted when the activity is updated.
+ * - \b activity_created(data::activity::sptr) : This signal is emitted when the activity is built.
+ * - \b activity_updated(data::activity::sptr) : This signal is emitted when the activity is updated.
  * - \b canceled() : This signal is emitted when the cancel button is clicked.
  *
  * @section XML XML Configuration

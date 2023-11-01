@@ -64,29 +64,29 @@
 
         <!-- connect to hide the creator editor when the activity is created/updated. -->
         <connect>
-            <signal>activityCreatorSrv/activityIDSelected</signal>
-            <signal>activityWizardSrv/activityCreated</signal>
-            <signal>activityWizardSrv/activityUpdated</signal>
+            <signal>activityCreatorSrv/activity_id_selected</signal>
+            <signal>activityWizardSrv/activity_created</signal>
+            <signal>activityWizardSrv/activity_updated</signal>
             <slot>activityWizardSrv/hide</slot>
         </connect>
 
         <!-- connect to show the creator editor when the activity should be created. -->
         <connect channel="${CREATE_ACTIVITY_RECEIVER_CHANNEL}">
-            <signal>activityCreatorSrv/activityIDSelected</signal>
-            <slot>activityWizardSrv/createActivity</slot>
+            <signal>activityCreatorSrv/activity_id_selected</signal>
+            <slot>activityWizardSrv/create_activity</slot>
             <slot>activityCreatorSrv/hide</slot>
         </connect>
 
         <!-- connect to launch the activity when it is created/updated. -->
         <connect channel="${LAUNCH_ACTIVITY_SENDER_CHANNEL}">
-            <signal>activityWizardSrv/activityCreated</signal>
-            <signal>activityWizardSrv/activityUpdated</signal>
+            <signal>activityWizardSrv/activity_created</signal>
+            <signal>activityWizardSrv/activity_updated</signal>
             <slot>activityCreatorSrv/show</slot>
         </connect>
 
         <!-- connect to load the activity . -->
         <connect channel="${LOAD_ACTIVITY_SENDER_CHANNEL}">
-            <signal>activityCreatorSrv/loadRequested</signal>
+            <signal>activityCreatorSrv/load_requested</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

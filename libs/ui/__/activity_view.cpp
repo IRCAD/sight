@@ -41,7 +41,7 @@
 namespace sight::ui
 {
 
-const core::com::slots::key_t activity_view::LAUNCH_ACTIVITY_SLOT = "launchActivity";
+const core::com::slots::key_t activity_view::LAUNCH_ACTIVITY_SLOT = "launch_activity";
 
 //-----------------------------------------------------------------------------
 

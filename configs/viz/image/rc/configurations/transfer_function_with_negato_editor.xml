@@ -100,7 +100,7 @@ Example:
 
         <connect>
             <signal>${image}/modified</signal>
-            <slot>fieldMgr/addOrSwap</slot>
+            <slot>fieldMgr/add_or_swap</slot>
         </connect>
 
         <start uid="tfEditor" />

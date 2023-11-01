@@ -167,7 +167,7 @@
 
             <!-- ******************************* Connections ***************************************** -->
             <connect>
-                <signal>imageReaderSrv/jobSucceeded</signal>
+                <signal>imageReaderSrv/job_succeeded</signal>
                 <slot>extractImageSrv/update</slot>
             </connect>
             <connect>

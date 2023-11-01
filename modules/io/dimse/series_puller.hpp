@@ -46,8 +46,8 @@ namespace sight::module::io::dimse
  *
  * @section Signals Signals
  * - \b progressed(std::string): sent when the process start (bar id).
- * - \b progressStarted(std::string, float, std::string): sent when the process is updated (bar id,percentage,message).
- * - \b progressStopped(std::string): sent when the process ended (bar id).
+ * - \b progress_started(std::string, float, std::string): sent when the process is updated (bar id,percentage,message).
+ * - \b progress_stopped(std::string): sent when the process ended (bar id).
  *
  * @section XML XML Configuration
  * @code{.xml}

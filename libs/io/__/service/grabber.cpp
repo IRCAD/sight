@@ -28,37 +28,37 @@
 namespace sight::io::service
 {
 
-const core::com::signals::key_t grabber::POSITION_MODIFIED_SIG = "positionModified";
-const core::com::signals::key_t grabber::DURATION_MODIFIED_SIG = "durationModified";
+const core::com::signals::key_t grabber::POSITION_MODIFIED_SIG = "position_modified";
+const core::com::signals::key_t grabber::DURATION_MODIFIED_SIG = "duration_modified";
 
-const core::com::signals::key_t grabber::CAMERA_STARTED_SIG = "cameraStarted";
-const core::com::signals::key_t grabber::CAMERA_STOPPED_SIG = "cameraStopped";
+const core::com::signals::key_t grabber::CAMERA_STARTED_SIG = "camera_started";
+const core::com::signals::key_t grabber::CAMERA_STOPPED_SIG = "camera_stopped";
 
 const core::com::signals::key_t grabber::FRAME_PRESENTED_SIG = "framePresented";
 
-const core::com::signals::key_t grabber::PARAMETER_CHANGED_SIG = "parameterChanged";
+const core::com::signals::key_t grabber::PARAMETER_CHANGED_SIG = "parameter_changed";
 
-const core::com::signals::key_t grabber::JOB_CREATED_SIG = "jobCreated";
-const core::com::signals::key_t grabber::FPS_CHANGED_SIG = "fpsChanged";
+const core::com::signals::key_t grabber::JOB_CREATED_SIG = "job_created";
+const core::com::signals::key_t grabber::FPS_CHANGED_SIG = "fps_changed";
 
-const core::com::slots::key_t grabber::START_CAMERA_SLOT       = "startCamera";
-const core::com::slots::key_t grabber::STOP_CAMERA_SLOT        = "stopCamera";
-const core::com::slots::key_t grabber::PAUSE_CAMERA_SLOT       = "pauseCamera";
+const core::com::slots::key_t grabber::START_CAMERA_SLOT       = "start_camera";
+const core::com::slots::key_t grabber::STOP_CAMERA_SLOT        = "stop_camera";
+const core::com::slots::key_t grabber::PAUSE_CAMERA_SLOT       = "pause_camera";
 const core::com::slots::key_t grabber::PLAY_PAUSE_CAMERA_SLOT  = "playPauseCamera";
-const core::com::slots::key_t grabber::LOOP_VIDEO_SLOT         = "loopVideo";
-const core::com::slots::key_t grabber::SET_POSITION_VIDEO_SLOT = "setPositionVideo";
-const core::com::slots::key_t grabber::PREVIOUS_IMAGE_SLOT     = "previousImage";
-const core::com::slots::key_t grabber::NEXT_IMAGE_SLOT         = "nextImage";
-const core::com::slots::key_t grabber::SET_STEP_SLOT           = "setStep";
+const core::com::slots::key_t grabber::LOOP_VIDEO_SLOT         = "loop_video";
+const core::com::slots::key_t grabber::SET_POSITION_VIDEO_SLOT = "set_position_video";
+const core::com::slots::key_t grabber::PREVIOUS_IMAGE_SLOT     = "previous_image";
+const core::com::slots::key_t grabber::NEXT_IMAGE_SLOT         = "next_image";
+const core::com::slots::key_t grabber::SET_STEP_SLOT           = "set_step";
 
 const core::com::slots::key_t grabber::SET_PARAMETER_SLOT = "set_parameter";
 
-const core::com::slots::key_t grabber::REQUEST_SETTINGS_SLOT    = "requestSettings";
+const core::com::slots::key_t grabber::REQUEST_SETTINGS_SLOT    = "request_settings";
 const core::com::slots::key_t grabber::OPTIMIZE_SLOT            = "optimize";
-const core::com::slots::key_t grabber::FORWARD_FPS_CHANGED_SLOT = "forwardFPSChanged";
+const core::com::slots::key_t grabber::FORWARD_FPS_CHANGED_SLOT = "forward_fps_changed";
 
-const std::string grabber::ADD_ROI_CENTER_SLOT    = "addROICenter";
-const std::string grabber::REMOVE_ROI_CENTER_SLOT = "removeROICenter";
+const std::string grabber::ADD_ROI_CENTER_SLOT    = "add_roi_center";
+const std::string grabber::REMOVE_ROI_CENTER_SLOT = "remove_roi_center";
 
 // ----------------------------------------------------------------------------
 

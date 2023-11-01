@@ -161,14 +161,14 @@
             <!-- Loop the frame grabber -->
             <service uid="loopVideoAct" type="sight::module::ui::action">
                 <slots>
-                    <slot>videoGrabberSrv/loopVideo</slot>
+                    <slot>videoGrabberSrv/loop_video</slot>
                 </slots>
                 <state enabled="false" />
             </service>
 
             <service uid="registerAct" type="sight::module::ui::com::timestamp_slot_caller">
                 <slots>
-                    <slot>solvePnPSrv/computeRegistration</slot>
+                    <slot>solvePnPSrv/compute_registration</slot>
                 </slots>
             </service>
 
@@ -329,26 +329,26 @@
 
             <connect>
                 <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
+                <slot>videoGrabberSrv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
             </connect>
 
             <connect>
                 <signal>resumeVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>videoGrabberSrv/stop_camera</slot>
                 <slot>startVideoAct/show</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/hide</slot>
@@ -358,14 +358,14 @@
             </connect>
 
             <connect>
-                <signal>videoSelectorSrv/configuredFile</signal>
-                <signal>videoSelectorSrv/configuredStream</signal>
-                <signal>videoSelectorSrv/configuredDevice</signal>
+                <signal>videoSelectorSrv/configured_file</signal>
+                <signal>videoSelectorSrv/configured_stream</signal>
+                <signal>videoSelectorSrv/configured_device</signal>
                 <slot>startVideoAct/update</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/cameraStarted</signal>
+                <signal>videoGrabberSrv/camera_started</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
                 <slot>stopVideoAct/enable</slot>
@@ -373,8 +373,8 @@
             </connect>
 
             <connect>
-                <signal>camera/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <signal>camera/id_modified</signal>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
@@ -390,16 +390,16 @@
 
             <connect>
                 <signal>ARPickerAdp/picked</signal>
-                <slot>imagePickerSrv/getInteraction</slot>
+                <slot>imagePickerSrv/get_interaction</slot>
             </connect>
 
             <connect>
-                <signal>cameraSet/addedCamera</signal>
+                <signal>cameraSet/added_camera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <signal>frameUpdaterSrv/synchronization_done</signal>
                 <slot>ARSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>

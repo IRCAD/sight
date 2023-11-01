@@ -41,8 +41,8 @@ namespace sight::module::ui::qt::series
  * The output objects must be marked as "deferred" in the XML configuration.
  *
  * @section Signals Signals
- * - \b imageSelected(): Emitted when an image is selected.
- * - \b modelSelected(): Emitted when a model is selected.
+ * - \b image_selected(): Emitted when an image is selected.
+ * - \b model_selected(): Emitted when a model is selected.
  *
  * @section XML XML Configuration
  *

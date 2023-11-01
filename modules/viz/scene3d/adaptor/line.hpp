@@ -45,10 +45,10 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b update_visibility(bool): Sets whether the line is shown or not.
- * - \b toggleVisibility(): Toggle whether the line is shown or not.
+ * - \b toggle_visibility(): Toggle whether the line is shown or not.
  * - \b show(): shows the line.
  * - \b hide(): hides the line.
- * - \b updateLength(float): Update the line length
+ * - \b update_length(float): Update the line length
  *
  * @section XML XML Configuration
  * @code{.xml}

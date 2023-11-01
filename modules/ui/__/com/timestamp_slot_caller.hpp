@@ -36,14 +36,14 @@ namespace sight::module::ui::com
  * @code{.xml}
    <service uid="..." type=sight::module::ui::com::timestamp_slot_caller" auto_connect="false">
         <slots>
-            <slot>hasSlotsId/slotKey</slot>
-            <slot>hasSlots2Id/slot2Key</slot>
+            <slot>hasSlotsId/slot_key</slot>
+            <slot>hasSlots2Id/slot2_key</slot>
         </slots>
    </service>
    @endcode
  * - \b slot : defines the slot to run
  * - \b hasSlotsId : fwId of the has_slots (usually a service)
- * - \b slotKey : the identifier of the slot in the has_slots
+ * - \b slot_key : the identifier of the slot in the has_slots
  */
 class MODULE_UI_CLASS_API timestamp_slot_caller : public sight::ui::action
 {

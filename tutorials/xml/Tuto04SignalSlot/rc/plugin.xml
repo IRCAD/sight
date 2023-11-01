@@ -119,14 +119,14 @@
                 'updateCamPosition', so the cameras are synchronized between scenes.
             -->
             <connect>
-                <signal>rendering1Srv/camUpdated</signal>
-                <slot>rendering2Srv/updateCamPosition</slot>
-                <slot>rendering3Srv/updateCamPosition</slot>
+                <signal>rendering1Srv/cam_updated</signal>
+                <slot>rendering2Srv/update_cam_position</slot>
+                <slot>rendering3Srv/update_cam_position</slot>
             </connect>
 
             <connect>
-                <signal>rendering2Srv/camUpdated</signal>
-                <slot>rendering1Srv/updateCamPosition</slot>
+                <signal>rendering2Srv/cam_updated</signal>
+                <slot>rendering1Srv/update_cam_position</slot>
             </connect>
 
             <connect>

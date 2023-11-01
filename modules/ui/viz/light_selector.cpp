@@ -55,7 +55,7 @@ using sight::viz::scene3d::layer;
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t LIGHT_SELECTED_SIG = "lightSelected";
+const core::com::signals::key_t LIGHT_SELECTED_SIG = "light_selected";
 const core::com::slots::key_t INIT_LIGHT_LIST_SLOT = "initLightList";
 
 //------------------------------------------------------------------------------

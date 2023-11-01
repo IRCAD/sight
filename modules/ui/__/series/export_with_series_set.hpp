@@ -52,7 +52,7 @@ namespace series
  * on the created series_set with the given configuration.
  *
  * @section Signal Signal
- * - \b jobCreated(SPTR(core::jobs::base)) : This signal is emitted by the slot 'forwardJob' to forward job process
+ * - \b job_created(SPTR(core::jobs::base)) : This signal is emitted by the slot 'forwardJob' to forward job process
  *   between selector service (jobCreated signal) and other services.
  *
  * @section Slot Slot

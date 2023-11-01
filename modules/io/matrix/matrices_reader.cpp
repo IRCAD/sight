@@ -46,14 +46,14 @@
 namespace sight::module::io::matrix
 {
 
-static const core::com::slots::key_t START_READING    = "startReading";
-static const core::com::slots::key_t STOP_READING     = "stopReading";
+static const core::com::slots::key_t START_READING    = "start_reading";
+static const core::com::slots::key_t STOP_READING     = "stop_reading";
 static const core::com::slots::key_t PAUSE            = "pause";
-static const core::com::slots::key_t TOGGLE_LOOP_MODE = "toggleLoopMode";
+static const core::com::slots::key_t TOGGLE_LOOP_MODE = "toggle_loop_mode";
 
 static const core::com::slots::key_t READ_NEXT     = "readNext";
 static const core::com::slots::key_t READ_PREVIOUS = "readPrevious";
-static const core::com::slots::key_t SET_STEP      = "setStep";
+static const core::com::slots::key_t SET_STEP      = "set_step";
 
 //------------------------------------------------------------------------------
 
@@ -172,7 +172,7 @@ void matrices_reader::read_previous()
     {
         if(m_ts_matrices_count - m_step >= m_step_changed)
         {
-            // Compute difference between a possible step change in setStep() slot and the current step value
+            // Compute difference between a possible step change in set_step() slot and the current step value
             const std::int64_t shift   = static_cast<std::int64_t>(m_step_changed) - static_cast<std::int64_t>(m_step);
             const std::int64_t shifted = static_cast<std::int64_t>(m_ts_matrices_count) - shift;
 
@@ -199,7 +199,7 @@ void matrices_reader::read_next()
 {
     if(m_one_shot)
     {
-        // Compute difference between a possible step change in setStep() slot and the current step value
+        // Compute difference between a possible step change in set_step() slot and the current step value
         const std::int64_t shift   = static_cast<std::int64_t>(m_step_changed) - static_cast<std::int64_t>(m_step);
         const std::int64_t shifted = static_cast<std::int64_t>(m_ts_matrices_count) + shift;
 

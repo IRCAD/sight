@@ -49,7 +49,7 @@ namespace sight::module::io::dicom
  * @brief   Service to anonymize a DicomSeries.
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(core::jobs::base) ) : Emitted when a job is created.
+ * - \b job_created( SPTR(core::jobs::base) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *

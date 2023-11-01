@@ -123,13 +123,13 @@ void writer_test::basic_test()
     CPPUNIT_ASSERT_NO_THROW(matrix_writer->start().wait());
 
     // Test writing in the temporary directory
-    matrix_writer->slot("setBaseFolder")->run(tmp_dir.string());
+    matrix_writer->slot("set_base_folder")->run(tmp_dir.string());
 
-    matrix_writer->slot("startRecord")->run();
+    matrix_writer->slot("start_record")->run();
     matrix_writer->slot("write")->run(core::hires_clock::type(1));
     matrix_writer->slot("write")->run(core::hires_clock::type(2));
     matrix_writer->slot("write")->run(core::hires_clock::type(3));
-    matrix_writer->slot("stopRecord")->run();
+    matrix_writer->slot("stop_record")->run();
 
     // Stop the service
     CPPUNIT_ASSERT_NO_THROW(matrix_writer->stop().wait());
@@ -173,10 +173,10 @@ void writer_test::base_folder_test()
     CPPUNIT_ASSERT_NO_THROW(matrix_writer->start().wait());
 
     // Start recording immediately (no dialog)
-    matrix_writer->slot("startRecord")->run();
+    matrix_writer->slot("start_record")->run();
 
     // Set the base folder after
-    matrix_writer->slot("setBaseFolder")->run(tmp_dir.string());
+    matrix_writer->slot("set_base_folder")->run(tmp_dir.string());
 
     // Test writing
     matrix_writer->slot("write")->run(core::hires_clock::type(1));

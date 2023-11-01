@@ -76,7 +76,7 @@ void image_picker_test::basic_test()
         .m_event_id      = data::tools::picking_info::event::mouse_left_down,
         .m_modifier_mask = data::tools::picking_info::ctrl
     };
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
@@ -84,7 +84,7 @@ void image_picker_test::basic_test()
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->get_points()[0]);
 
     info.m_world_pos = {1, 1, 0};
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[1]);
@@ -93,7 +93,7 @@ void image_picker_test::basic_test()
 
     // Clicking with the right mouse button should remove the last added point
     info.m_event_id = data::tools::picking_info::event::mouse_right_down;
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
@@ -122,7 +122,7 @@ void image_picker_test::click_without_control_test()
         .m_event_id      = data::tools::picking_info::event::mouse_left_down,
         .m_modifier_mask = data::tools::picking_info::none
     };
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT(point_list->get_points().empty());
     CPPUNIT_ASSERT(pixel_point_list->get_points().empty());
@@ -152,7 +152,7 @@ void image_picker_test::top_left_ref_test()
         .m_event_id      = data::tools::picking_info::event::mouse_left_down,
         .m_modifier_mask = data::tools::picking_info::ctrl
     };
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
@@ -160,7 +160,7 @@ void image_picker_test::top_left_ref_test()
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pixel_point_list->get_points()[0]);
 
     info.m_world_pos = {1, 1, 0};
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[1]);
@@ -192,7 +192,7 @@ void image_picker_test::single_point_mode_test()
         .m_event_id      = data::tools::picking_info::event::mouse_left_down,
         .m_modifier_mask = data::tools::picking_info::ctrl
     };
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
@@ -200,14 +200,14 @@ void image_picker_test::single_point_mode_test()
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->get_points()[0]);
 
     // Since the single point mode is enabled, the next click removes the last added point
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT(point_list->get_points().empty());
     CPPUNIT_ASSERT(pixel_point_list->get_points().empty());
 
     // Clicking yet another time should add another point
     info.m_world_pos = {1, 1, 0};
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[0]);
@@ -241,7 +241,7 @@ void image_picker_test::no_ctrl_modifier_test()
         .m_event_id      = data::tools::picking_info::event::mouse_left_down,
         .m_modifier_mask = data::tools::picking_info::none
     };
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
@@ -251,7 +251,7 @@ void image_picker_test::no_ctrl_modifier_test()
     // Clicking with the control modifier held should still work.
     info.m_modifier_mask = data::tools::picking_info::ctrl;
     info.m_world_pos     = {1, 1, 0};
-    m_image_picker->slot("getInteraction")->run(info);
+    m_image_picker->slot("get_interaction")->run(info);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->get_points().size());
     CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[1]);

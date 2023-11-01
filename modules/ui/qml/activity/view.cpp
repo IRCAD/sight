@@ -38,9 +38,9 @@
 namespace sight::module::ui::qml::activity
 {
 
-static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activity_launched";
 
-static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT = "launchActivity";
+static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT = "launch_activity";
 
 //------------------------------------------------------------------------------
 

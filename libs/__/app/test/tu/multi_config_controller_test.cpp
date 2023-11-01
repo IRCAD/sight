@@ -115,7 +115,7 @@ void multi_config_controller_test::multi_config_test()
     //  connectionTest_2_SGenerateData : not existing
     //  startStopConnectionTest_2_TestService5Uid : started
 
-    srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("myKey"));
+    srv->slot("set_config")->run(ui::parameter_t("config2"), std::string("myKey"));
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
@@ -137,7 +137,7 @@ void multi_config_controller_test::multi_config_test()
     // set config1 =>
     //  connectionTest_2_SGenerateData : started
     //  startStopConnectionTest_2_TestService5Uid : stopped
-    srv->slot("setConfig")->run(ui::parameter_t("config1"), std::string("myKey"));
+    srv->slot("set_config")->run(ui::parameter_t("config1"), std::string("myKey"));
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
@@ -159,7 +159,7 @@ void multi_config_controller_test::multi_config_test()
     // set config2 =>
     //  connectionTest_2_SGenerateData : stopped
     //  startStopConnectionTest_2_TestService5Uid : started
-    srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("myKey"));
+    srv->slot("set_config")->run(ui::parameter_t("config2"), std::string("myKey"));
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
@@ -217,7 +217,7 @@ void multi_config_controller_test::set_config_key_test()
     //  connectionTest_2_SGenerateData : not existing
     //  startStopConnectionTest_2_TestService5Uid : started
 
-    srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("myKey"));
+    srv->slot("set_config")->run(ui::parameter_t("config2"), std::string("myKey"));
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
@@ -237,7 +237,7 @@ void multi_config_controller_test::set_config_key_test()
     CPPUNIT_ASSERT(no_data_srv != nullptr && no_data_srv->started());
 
     // set config with bad key
-    srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("badKey"));
+    srv->slot("set_config")->run(ui::parameter_t("config2"), std::string("badKey"));
     srv->slot("update")->run();
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;

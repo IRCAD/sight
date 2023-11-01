@@ -63,8 +63,8 @@ namespace sight::module::ui::qt::model
 
 //------------------------------------------------------------------------------
 
-static const core::com::signals::key_t RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-static const core::com::signals::key_t EMPTIED_SELECTION_SIG       = "emptiedSelection";
+static const core::com::signals::key_t RECONSTRUCTION_SELECTED_SIG = "reconstruction_selected";
+static const core::com::signals::key_t EMPTIED_SELECTION_SIG       = "emptied_selection";
 static const core::com::slots::key_t SHOW_RECONSTRUCTIONS_SLOT     = "showReconstructions";
 
 //------------------------------------------------------------------------------

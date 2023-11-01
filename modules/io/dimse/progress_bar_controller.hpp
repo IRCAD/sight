@@ -40,9 +40,9 @@ namespace sight::module::io::dimse
  * @brief This editor service is used to display a progress bar.
  *
  * @section Slots Slots
- * - \b startProgress(std::string): starts the progress bar (bar id).
- * - \b updateProgress(std::string, float, string): updates the progress bar (bar id, percentage, message).
- * - \b stopProgress(std::string): stops the progress bar (bar id).
+ * - \b start_progress(std::string): starts the progress bar (bar id).
+ * - \b update_progress(std::string, float, string): updates the progress bar (bar id, percentage, message).
+ * - \b stop_progress(std::string): stops the progress bar (bar id).
  *
  * @section XML XML Configuration
  * @code{.xml}

@@ -293,7 +293,7 @@
 
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
             <service uid="syncGenericSceneSrv" type="sight::module::sync::signal_gate">
-                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <signal>frameUpdaterSrv/synchronization_done</signal>
                 <signal>maskerSrv/updated</signal>
             </service>
 
@@ -372,26 +372,26 @@
 
             <connect>
                 <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
+                <slot>videoGrabberSrv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
             </connect>
 
             <connect>
                 <signal>resumeVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>videoGrabberSrv/stop_camera</slot>
                 <slot>startVideoAct/show</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/hide</slot>
@@ -402,23 +402,23 @@
 
             <connect>
                 <signal>loopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/loopVideo</slot>
+                <slot>videoGrabberSrv/loop_video</slot>
             </connect>
 
             <connect>
                 <signal>learnBackgroundAct/clicked</signal>
-                <slot>maskerSrv/setBackground</slot>
+                <slot>maskerSrv/set_background</slot>
             </connect>
 
             <connect>
-                <signal>videoSelectorSrv/configuredFile</signal>
-                <signal>videoSelectorSrv/configuredStream</signal>
-                <signal>videoSelectorSrv/configuredDevice</signal>
+                <signal>videoSelectorSrv/configured_file</signal>
+                <signal>videoSelectorSrv/configured_stream</signal>
+                <signal>videoSelectorSrv/configured_device</signal>
                 <slot>startVideoAct/update</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/cameraStarted</signal>
+                <signal>videoGrabberSrv/camera_started</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
                 <slot>stopVideoAct/enable</slot>
@@ -426,8 +426,8 @@
             </connect>
 
             <connect>
-                <signal>RGBCamera/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <signal>RGBCamera/id_modified</signal>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
@@ -438,32 +438,32 @@
 
             <connect>
                 <signal>seriesSet/modified</signal>
-                <signal>seriesSet/addedObjects</signal>
+                <signal>seriesSet/added_objects</signal>
                 <slot>extractModelSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>cameraSet/addedCamera</signal>
+                <signal>cameraSet/added_camera</signal>
                 <slot>extractCameraSrv/update</slot>
             </connect>
 
             <connect>
-                 <signal>enableHoleFillingFilterParamSrv/parameterChanged</signal>
+                 <signal>enableHoleFillingFilterParamSrv/parameter_changed</signal>
                  <slot>videoGrabberSrv/set_parameter</slot>
             </connect>
 
             <connect>
-                <signal>maskerThresholdParamSrv/intChanged</signal>
-                <slot>maskerSrv/setThreshold</slot>
+                <signal>maskerThresholdParamSrv/int_changed</signal>
+                <slot>maskerSrv/set_threshold</slot>
             </connect>
 
             <connect>
-                <signal>showSettingsAct/isChecked</signal>
-                <slot>settingsView/setVisible</slot>
+                <signal>showSettingsAct/is_checked</signal>
+                <slot>settingsView/set_visible</slot>
             </connect>
 
             <connect>
-                <signal>syncGenericSceneSrv/allReceived</signal>
+                <signal>syncGenericSceneSrv/all_received</signal>
                 <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>

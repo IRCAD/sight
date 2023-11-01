@@ -60,7 +60,7 @@ namespace sight::module::io::vtk
 
 // Register a new reader of data::image
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 
 //------------------------------------------------------------------------------
 

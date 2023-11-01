@@ -183,9 +183,9 @@
 
             <!-- ******************************* Connections ***************************************** -->
             <connect>
-                <signal>meshReaderSrv/jobCreated</signal>
-                <signal>meshWriterSrv/jobCreated</signal>
-                <slot>progressBarView/showJob</slot>
+                <signal>meshReaderSrv/job_created</signal>
+                <signal>meshWriterSrv/job_created</signal>
+                <slot>progressBarView/show_job</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

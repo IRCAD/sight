@@ -62,8 +62,8 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t selector::ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
-const core::com::signals::key_t selector::LOAD_REQUESTED_SIG       = "loadRequested";
+const core::com::signals::key_t selector::ACTIVITY_ID_SELECTED_SIG = "activity_id_selected";
+const core::com::signals::key_t selector::LOAD_REQUESTED_SIG       = "load_requested";
 
 //------------------------------------------------------------------------------
 

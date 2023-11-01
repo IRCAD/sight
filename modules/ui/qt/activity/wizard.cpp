@@ -49,10 +49,10 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t wizard::CREATE_ACTIVITY_SLOT   = "createActivity";
-const core::com::slots::key_t wizard::UPDATE_ACTIVITY_SLOT   = "updateActivity";
-const core::com::signals::key_t wizard::ACTIVITY_CREATED_SIG = "activityCreated";
-const core::com::signals::key_t wizard::ACTIVITY_UPDATED_SIG = "activityUpdated";
+const core::com::slots::key_t wizard::CREATE_ACTIVITY_SLOT   = "create_activity";
+const core::com::slots::key_t wizard::UPDATE_ACTIVITY_SLOT   = "update_activity";
+const core::com::signals::key_t wizard::ACTIVITY_CREATED_SIG = "activity_created";
+const core::com::signals::key_t wizard::ACTIVITY_UPDATED_SIG = "activity_updated";
 const core::com::signals::key_t wizard::CANCELED_SIG         = "canceled";
 
 using sight::activity::extension::activity_info;

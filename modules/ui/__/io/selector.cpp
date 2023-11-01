@@ -52,9 +52,9 @@ namespace io = sight::io;
 
 //------------------------------------------------------------------------------
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL   = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL   = "job_created";
 static const core::com::signals::key_t JOB_FAILED_SIGNAL    = "jobFailed";
-static const core::com::signals::key_t JOB_SUCCEEDED_SIGNAL = "jobSucceeded";
+static const core::com::signals::key_t JOB_SUCCEEDED_SIGNAL = "job_succeeded";
 
 static const core::com::slots::key_t FORWARD_JOB_SLOT = "forwardJob";
 
@@ -295,7 +295,7 @@ void selector::updating()
                     reader->configure();
                 }
 
-                auto job_created_signal_t = reader->signal("jobCreated");
+                auto job_created_signal_t = reader->signal("job_created");
                 if(job_created_signal_t)
                 {
                     job_created_signal_t->connect(m_slot_forward_job);
@@ -345,7 +345,7 @@ void selector::updating()
                     writer->configure();
                 }
 
-                auto job_created_signal_t = writer->signal("jobCreated");
+                auto job_created_signal_t = writer->signal("job_created");
                 if(job_created_signal_t)
                 {
                     job_created_signal_t->connect(m_slot_forward_job);

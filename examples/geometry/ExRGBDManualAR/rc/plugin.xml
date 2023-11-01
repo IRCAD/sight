@@ -181,13 +181,13 @@
 
             <service uid="learnBackgroundAct" type="sight::module::ui::action">
                 <slots>
-                    <slot>extractForegroundSrv/setBackground</slot>
+                    <slot>extractForegroundSrv/set_background</slot>
                 </slots>
             </service>
 
             <service uid="learnForegroundAct" type="sight::module::ui::action">
                 <slots>
-                    <slot>extractForegroundSrv/setForeground</slot>
+                    <slot>extractForegroundSrv/set_foreground</slot>
                 </slots>
             </service>
 
@@ -412,26 +412,26 @@
 
             <connect>
                 <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
+                <slot>videoGrabberSrv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
             </connect>
 
             <connect>
                 <signal>resumeVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>videoGrabberSrv/stop_camera</slot>
                 <slot>startVideoAct/show</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/hide</slot>
@@ -442,18 +442,18 @@
 
             <connect>
                 <signal>loopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/loopVideo</slot>
+                <slot>videoGrabberSrv/loop_video</slot>
             </connect>
 
             <connect>
-                <signal>videoSelectorSrv/configuredFile</signal>
-                <signal>videoSelectorSrv/configuredStream</signal>
-                <signal>videoSelectorSrv/configuredDevice</signal>
+                <signal>videoSelectorSrv/configured_file</signal>
+                <signal>videoSelectorSrv/configured_stream</signal>
+                <signal>videoSelectorSrv/configured_device</signal>
                 <slot>startVideoAct/update</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/cameraStarted</signal>
+                <signal>videoGrabberSrv/camera_started</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
                 <slot>stopVideoAct/enable</slot>
@@ -461,8 +461,8 @@
             </connect>
 
             <connect>
-                <signal>cameraRGB/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <signal>cameraRGB/id_modified</signal>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
@@ -474,37 +474,37 @@
             <!-- Extract the model series when it is added to SDB -->
             <connect>
                 <signal>seriesSet/modified</signal>
-                <signal>seriesSet/addedObjects</signal>
+                <signal>seriesSet/added_objects</signal>
                 <slot>extractModelSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>cameraSet/addedCamera</signal>
+                <signal>cameraSet/added_camera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>thresholdSliderSrv/intChanged</signal>
-                <slot>extractForegroundSrv/setThreshold</slot>
+                <signal>thresholdSliderSrv/int_changed</signal>
+                <slot>extractForegroundSrv/set_threshold</slot>
             </connect>
 
             <connect>
-                <signal>noiseLevelSrv/doubleChanged</signal>
-                <slot>extractForegroundSrv/setNoiseLevel</slot>
+                <signal>noiseLevelSrv/double_changed</signal>
+                <slot>extractForegroundSrv/set_noise_level</slot>
             </connect>
 
             <connect>
-                <signal>bgComponentsSrv/intChanged</signal>
-                <slot>extractForegroundSrv/setBackgroundComponents</slot>
+                <signal>bgComponentsSrv/int_changed</signal>
+                <slot>extractForegroundSrv/set_background_components</slot>
             </connect>
 
             <connect>
-                <signal>fgComponentsSrv/intChanged</signal>
-                <slot>extractForegroundSrv/setForegroundComponents</slot>
+                <signal>fgComponentsSrv/int_changed</signal>
+                <slot>extractForegroundSrv/set_foreground_components</slot>
             </connect>
 
             <connect>
-                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <signal>frameUpdaterSrv/synchronization_done</signal>
                 <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>

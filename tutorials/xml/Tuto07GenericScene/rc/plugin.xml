@@ -223,10 +223,10 @@
 
             <!-- Connects readers to status bar service -->
             <connect>
-                <signal>meshReaderSrv/jobCreated</signal>
-                <signal>imageReaderSrv/jobCreated</signal>
-                <signal>textureReaderSrv/jobCreated</signal>
-                <slot>progressBarView/showJob</slot>
+                <signal>meshReaderSrv/job_created</signal>
+                <signal>imageReaderSrv/job_created</signal>
+                <signal>textureReaderSrv/job_created</signal>
+                <slot>progressBarView/show_job</slot>
             </connect>
 
             <connect>

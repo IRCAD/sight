@@ -42,10 +42,10 @@ public:
         static inline const core::com::signals::key_t GROUP_REMOVED = "groupRemoved";
 
         using point_added = core::com::signal<void (std::string)>;
-        static inline const core::com::signals::key_t POINT_ADDED = "pointAdded";
+        static inline const core::com::signals::key_t POINT_ADDED = "point_added";
 
         using point_removed = core::com::signal<void (std::string, std::size_t)>;
-        static inline const core::com::signals::key_t POINT_REMOVED = "pointRemoved";
+        static inline const core::com::signals::key_t POINT_REMOVED = "point_removed";
 
         using point_inserted = core::com::signal<void (std::string, std::size_t)>;
         static inline const core::com::signals::key_t POINT_INSERTED = "pointInserted";

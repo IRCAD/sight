@@ -150,7 +150,7 @@
         </service>
 
         <connect channel="${CrossTypeChannel}">
-            <slot>MPRNegato/setCrossScale</slot>
+            <slot>MPRNegato/set_cross_scale</slot>
         </connect>
 
         <connect channel="${PickingChannel}">

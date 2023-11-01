@@ -34,11 +34,11 @@
 namespace sight::module::ui::qml::activity
 {
 
-const core::com::signals::key_t ACTIVITY_CREATED_SIG = "activityCreated";
-const core::com::signals::key_t DATA_REQUIRED_SIG    = "dataRequired";
+const core::com::signals::key_t ACTIVITY_CREATED_SIG = "activity_created";
+const core::com::signals::key_t DATA_REQUIRED_SIG    = "data_required";
 
-const core::com::slots::key_t GO_TO_SLOT      = "goTo";
-const core::com::slots::key_t CHECK_NEXT_SLOT = "checkNext";
+const core::com::slots::key_t GO_TO_SLOT      = "go_to";
+const core::com::slots::key_t CHECK_NEXT_SLOT = "check_next";
 const core::com::slots::key_t NEXT_SLOT       = "next";
 const core::com::slots::key_t PREVIOUS_SLOT   = "previous";
 

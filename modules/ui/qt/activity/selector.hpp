@@ -45,10 +45,10 @@ namespace sight::module::ui::qt::activity
  * It should work with the module::ui::qt::editor::wizard that creates or updates the activity.
  *
  * @section Signals Signals
- * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
+ * - \b activity_id_selected(std::string) : This signal is emitted when the activity is selected, it
  *      contains all activity identifier. It should be connected to the slot 'createActivity' of the service
  *     'wizard'.
- * - \b loadRequested() : This signal is emitted when the "load activity" button is pushed.
+ * - \b load_requested() : This signal is emitted when the "load activity" button is pushed.
  *
  * @section XML XML Configuration
  *

@@ -57,7 +57,7 @@ public:
     /// Signals
     /// @{
     using added_camera_signal_t = core::com::signal<void (camera::sptr)>;
-    DATA_API inline static const core::com::signals::key_t ADDED_CAMERA_SIG = "addedCamera";
+    DATA_API inline static const core::com::signals::key_t ADDED_CAMERA_SIG = "added_camera";
 
     using removed_camera_signal_t = core::com::signal<void (camera::sptr)>;
     DATA_API inline static const core::com::signals::key_t REMOVED_CAMERA_SIG = "removedCamera";

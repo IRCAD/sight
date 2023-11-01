@@ -49,26 +49,27 @@ namespace sight::module::io::video
  * implementation available, a dialog proposes the user to make a choice.
  *
  * @section Signals Signals
- * - \b positionModified(std::int64_t): Emitted when the position in the video is modified during playing.
- * - \b durationModified(std::int64_t): Emitted when the duration of the video is modified.
+ * - \b position_modified(std::int64_t): Emitted when the position in the video is modified during playing.
+ * - \b duration_modified(std::int64_t): Emitted when the duration of the video is modified.
  *
  * @section Slots Slots
- * - \b startCamera(): Start playing the camera or the video.
- * - \b startTargetCamera(std::string): Start playing the specified camera or the video.
- * - \b stopCamera(): Stop playing the camera or the video.
- * - \b pauseCamera(): Pause the video, it has no effect when playing a camera.
- * - \b loopVideo(): Toggle the loop of the playing.
- * - \b setPositionVideo(int): Force the current time in the video.
+ * - \b start_camera(): Start playing the camera or the video.
+ * - \b start_target_camera(std::string): Start playing the specified camera or the video.
+ * - \b stop_camera(): Stop playing the camera or the video.
+ * - \b pause_camera(): Pause the video, it has no effect when playing a camera.
+ * - \b loop_video(): Toggle the loop of the playing.
+ * - \b set_position_video(int): Force the current time in the video.
  * - \b reconfigure(): Allows to erase the implementation choice, so that the selection routine is ran again, thus,
  * potentially the selection dialog is shown.
- * - \b nextImage(): display the next image in step by step mode. Does nothing if not supported by the selected grabber.
- * - \b previousImage(): display the previous image in step by step mode. Does nothing if not supported by the
+ * - \b next_image(): display the next image in step by step mode. Does nothing if not supported by the selected
+ * grabber.
+ * - \b previous_image(): display the previous image in step by step mode. Does nothing if not supported by the
  * selected grabber.
- * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
+ * - \b set_step(): set the step value between two images when calling nextImage/previous_image. Does nothing if not
  * supported by the selected grabber.
- * - \b requestSettings(): Requests the grabber internal settings.
- * - \b addROICenter(sight::data::point::sptr): Adds a new region fo interest center.
- * - \b removeROICenter(sight::data::point::sptr): Removes a region of interest via its center.
+ * - \b request_settings(): Requests the grabber internal settings.
+ * - \b add_roi_center(sight::data::point::sptr): Adds a new region fo interest center.
+ * - \b remove_roi_center(sight::data::point::sptr): Removes a region of interest via its center.
  *
  * @section XML XML Configuration
  *
@@ -123,7 +124,7 @@ public:
         using key_t = sight::core::com::slots::key_t;
 
         static inline const key_t RECONFIGURE         = "reconfigure";
-        static inline const key_t START_TARGET_CAMERA = "startTargetCamera";
+        static inline const key_t START_TARGET_CAMERA = "start_target_camera";
 
         static inline const key_t MODIFY_POSITION = "modifyPosition";
         static inline const key_t MODIFY_DURATION = "modifyDuration";

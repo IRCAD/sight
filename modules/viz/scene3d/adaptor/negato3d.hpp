@@ -43,18 +43,18 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor displays a 3D negato.
  *
  * @section Signals Signals
- * - \b pickedVoxel(string): sends the coordinates and intensity of the voxel picked by the cross widget.
+ * - \b picked_voxel(string): sends the coordinates and intensity of the voxel picked by the cross widget.
  *
  * @section Slots Slots
- * - \b newImage(): update the image display to show the new content.
+ * - \b new_image(): update the image display to show the new content.
  * - \b sliceType(int, int): update image slice index .
  * - \b sliceIndex(int, int, int): update image slice type.
- * - \b setTransparency(double): sets the global transparency of the three image planes.
+ * - \b set_transparency(double): sets the global transparency of the three image planes.
  * - \b update_visibility(bool): sets whether the negato is shown or not.
- * - \b toggleVisibility(): toggle whether the negato is shown or not.
+ * - \b toggle_visibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
  * - \b hide(): hides the negato.
- * - \b updateSlicesFromWorld(double, double, double): updates image slices indexes according to a 3d world point
+ * - \b update_slices_from_world(double, double, double): updates image slices indexes according to a 3d world point
  * or landmark.
  *
  * @section XML XML Configuration

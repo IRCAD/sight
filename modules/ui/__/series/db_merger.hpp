@@ -48,7 +48,7 @@ namespace sight::module::ui::series
  * - \b forwardJob(core::jobs::base::sptr) : Called to forward a job.
  *
  * @section Signals Signals
- * - \b jobCreated(core::jobs::base::sptr) : This signal is emitted when a job is created
+ * - \b job_created(core::jobs::base::sptr) : This signal is emitted when a job is created
  *
  * The available reader can be configured
  * @section XML XML Configuration

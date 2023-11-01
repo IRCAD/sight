@@ -113,19 +113,19 @@
 
         <connect>
             <signal>pushSeriesController/progressed</signal>
-            <slot>progressBarController/updateProgress</slot>
+            <slot>progressBarController/update_progress</slot>
         </connect>
         <connect>
-            <signal>pushSeriesController/startedProgress</signal>
-            <slot>progressBarController/startProgress</slot>
+            <signal>pushSeriesController/started_progress</signal>
+            <slot>progressBarController/start_progress</slot>
         </connect>
         <connect>
-            <signal>pushSeriesController/stoppedProgress</signal>
-            <slot>progressBarController/stopProgress</slot>
+            <signal>pushSeriesController/stopped_progress</signal>
+            <slot>progressBarController/stop_progress</slot>
          </connect>
 
         <connect channel="${PROGRESS_CHANNEL}">
-            <signal>anonymizeController/jobCreated</signal>
+            <signal>anonymizeController/job_created</signal>
         </connect>
 
         <connect>

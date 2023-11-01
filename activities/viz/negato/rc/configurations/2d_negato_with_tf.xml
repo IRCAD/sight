@@ -134,12 +134,12 @@
 
         <!-- START AND STOP SERVICES -->
         <connect>
-            <signal>distanceNegatoEditor/distanceRequested</signal>
-            <slot>multiDistances/createDistance</slot>
+            <signal>distanceNegatoEditor/distance_requested</signal>
+            <slot>multiDistances/create_distance</slot>
         </connect>
 
         <connect channel="${CrossTypeChannel}">
-            <slot>MPRNegato/setCrossScale</slot>
+            <slot>MPRNegato/set_cross_scale</slot>
         </connect>
 
         <connect channel="${PickingChannel}">

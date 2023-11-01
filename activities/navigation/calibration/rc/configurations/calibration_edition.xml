@@ -197,20 +197,20 @@
         </connect>
 
         <connect channel="cameraModified">
-            <signal>camera0/idModified</signal>
-            <signal>camera1/idModified</signal>
+            <signal>camera0/id_modified</signal>
+            <signal>camera1/id_modified</signal>
         </connect>
 
         <connect channel="videoPositionChanged">
-            <signal>videoSliderSrv/positionChanged</signal>
+            <signal>videoSliderSrv/position_changed</signal>
         </connect>
 
         <connect channel="videoPositionModified">
-            <slot>videoSliderSrv/setPositionSlider</slot>
+            <slot>videoSliderSrv/set_position_slider</slot>
         </connect>
 
         <connect channel="videoDurationModified">
-            <slot>videoSliderSrv/setDurationSlider</slot>
+            <slot>videoSliderSrv/set_duration_slider</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

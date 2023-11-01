@@ -29,7 +29,7 @@ namespace sight::service
 
 // -----------------------------------------------------------------------------
 
-const core::com::slots::key_t registerer::COMPUTE_REGISTRATION_SLOT = "computeRegistration";
+const core::com::slots::key_t registerer::COMPUTE_REGISTRATION_SLOT = "compute_registration";
 
 // ----------------------------------------------------------------------------
 

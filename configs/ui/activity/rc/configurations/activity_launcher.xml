@@ -198,29 +198,29 @@
 
         <!-- connect to launch the activity when it is created/updated. -->
         <connect channel="launchActivityChannel">
-            <signal>activitySequencer/activityCreated</signal>
+            <signal>activitySequencer/activity_created</signal>
             <slot>dynamicView/show</slot>
-            <slot>dynamicView/launchActivity</slot>
+            <slot>dynamicView/launch_activity</slot>
             <slot>activityCreator/hide</slot>
-            <slot>activitySequencer/checkNext</slot>
+            <slot>activitySequencer/check_next</slot>
         </connect>
 
         <!-- Update the sequencer information when an activity is updated -->
         <connect>
-            <signal>activityCreator/activityUpdated</signal>
+            <signal>activityCreator/activity_updated</signal>
             <slot>activitySequencer/update</slot>
         </connect>
 
         <!-- When the activity is launched, the sequencer sends the information to enable "previous" and "next" actions -->
         <connect>
-            <signal>dynamicView/activityLaunched</signal>
-            <slot>activitySequencer/sendInfo</slot>
+            <signal>dynamicView/activity_launched</signal>
+            <slot>activitySequencer/send_info</slot>
         </connect>
 
         <!-- Display the wizard when data are missing for the next activity -->
         <connect>
-            <signal>activitySequencer/dataRequired</signal>
-            <slot>activityCreator/updateActivity</slot>
+            <signal>activitySequencer/data_required</signal>
+            <slot>activityCreator/update_activity</slot>
             <slot>activityCreator/show</slot>
             <slot>dynamicView/hide</slot>
         </connect>
@@ -244,12 +244,12 @@
 
         <!-- The activity sequencer should receive the call from the "previous" action. -->
         <connect channel="validationChannel">
-            <slot>activitySequencer/checkNext</slot>
+            <slot>activitySequencer/check_next</slot>
         </connect>
 
-        <!-- The activity sequencer should receive the call from the "goTo" action. -->
+        <!-- The activity sequencer should receive the call from the "go_to" action. -->
         <connect channel="goToChannel">
-            <slot>activitySequencer/goTo</slot>
+            <slot>activitySequencer/go_to</slot>
         </connect>
 
 

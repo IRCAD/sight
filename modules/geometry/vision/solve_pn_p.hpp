@@ -42,7 +42,7 @@ namespace sight::module::geometry::vision
  *  as well as the camera matrix and the distortion coefficients.
  *
  * @section Slots Slots
- * - \b computeRegistration(core::hires_clock::type): compute the registration using cv::solvePnP.
+ * - \b compute_registration(core::hires_clock::type): compute the registration using cv::solvePnP.
  *
  * @section XML XML Configuration
  * @code{.xml}

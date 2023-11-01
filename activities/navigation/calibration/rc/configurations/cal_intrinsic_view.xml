@@ -332,32 +332,32 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect>
-            <signal>videoSelectorSrv/configuredCameras</signal>
+            <signal>videoSelectorSrv/configured_cameras</signal>
             <slot>videoGrabberSrv/reconfigure</slot>
         </connect>
 
         <connect>
             <signal>startVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/startCamera</slot>
+            <slot>videoGrabberSrv/start_camera</slot>
         </connect>
 
         <connect>
             <signal>pauseVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/pauseCamera</slot>
+            <slot>videoGrabberSrv/pause_camera</slot>
             <slot>resumeVideoAct/show</slot>
             <slot>pauseVideoAct/hide</slot>
         </connect>
 
         <connect>
             <signal>resumeVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/pauseCamera</slot>
+            <slot>videoGrabberSrv/pause_camera</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/show</slot>
         </connect>
 
         <connect>
             <signal>stopVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/stopCamera</slot>
+            <slot>videoGrabberSrv/stop_camera</slot>
             <slot>startVideoAct/show</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/hide</slot>
@@ -368,18 +368,18 @@
 
         <connect>
             <signal>loopVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/loopVideo</slot>
+            <slot>videoGrabberSrv/loop_video</slot>
         </connect>
 
         <connect>
             <signal>distortionAct/clicked</signal>
-            <slot>distorterSrv/changeState</slot>
-            <slot>chessboardReprojectionSrv/toggleDistortion</slot>
+            <slot>distorterSrv/change_state</slot>
+            <slot>chessboardReprojectionSrv/toggle_distortion</slot>
         </connect>
 
         <connect>
             <signal>addAct/clicked</signal>
-            <slot>chessboardDetectorSrv/recordPoints</slot>
+            <slot>chessboardDetectorSrv/record_points</slot>
         </connect>
 
         <connect>
@@ -400,12 +400,12 @@
         <connect>
             <signal>goOpenCVAct/clicked</signal>
             <slot>intrinsicCalibrationSrv/update</slot>
-            <slot>detectionStatusSrv/changeToOrange</slot>
+            <slot>detectionStatusSrv/change_to_orange</slot>
         </connect>
 
         <connect>
             <signal>displayImageAct/clicked</signal>
-            <slot>calibrationInfoEditorSrv/getSelection</slot>
+            <slot>calibrationInfoEditorSrv/get_selection</slot>
         </connect>
 
         <connect>
@@ -421,14 +421,14 @@
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredFile</signal>
-            <signal>videoSelectorSrv/configuredStream</signal>
-            <signal>videoSelectorSrv/configuredDevice</signal>
+            <signal>videoSelectorSrv/configured_file</signal>
+            <signal>videoSelectorSrv/configured_stream</signal>
+            <signal>videoSelectorSrv/configured_device</signal>
             <slot>startVideoAct/update</slot>
         </connect>
 
         <connect>
-            <signal>videoGrabberSrv/cameraStarted</signal>
+            <signal>videoGrabberSrv/camera_started</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
             <slot>stopVideoAct/enable</slot>
@@ -436,8 +436,8 @@
         </connect>
 
         <connect>
-            <signal>${camera}/idModified</signal>
-            <slot>videoGrabberSrv/stopCamera</slot>
+            <signal>${camera}/id_modified</signal>
+            <slot>videoGrabberSrv/stop_camera</slot>
         </connect>
 
         <connect>
@@ -448,28 +448,28 @@
 
         <!-- Manage the video slider -->
         <connect>
-            <signal>videoSliderSrv/positionChanged</signal>
-            <slot>videoGrabberSrv/setPositionVideo</slot>
+            <signal>videoSliderSrv/position_changed</signal>
+            <slot>videoGrabberSrv/set_position_video</slot>
         </connect>
 
         <connect>
-            <signal>videoGrabberSrv/positionModified</signal>
-            <slot>videoSliderSrv/setPositionSlider</slot>
+            <signal>videoGrabberSrv/position_modified</signal>
+            <slot>videoSliderSrv/set_position_slider</slot>
         </connect>
 
         <connect>
-            <signal>videoGrabberSrv/durationModified</signal>
-            <slot>videoSliderSrv/setDurationSlider</slot>
+            <signal>videoGrabberSrv/duration_modified</signal>
+            <slot>videoSliderSrv/set_duration_slider</slot>
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredFile</signal>
+            <signal>videoSelectorSrv/configured_file</signal>
             <slot>videoSliderView/show</slot>
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredStream</signal>
-            <signal>videoSelectorSrv/configuredDevice</signal>
+            <signal>videoSelectorSrv/configured_stream</signal>
+            <signal>videoSelectorSrv/configured_device</signal>
             <slot>videoSliderView/hide</slot>
         </connect>
 
@@ -479,24 +479,24 @@
         </connect>
 
         <connect>
-            <signal>chessboardDetectorSrv/chessboardDetected</signal>
-            <slot>detectionStatusSrv/toggleGreenRed</slot>
+            <signal>chessboardDetectorSrv/chessboard_detected</signal>
+            <slot>detectionStatusSrv/toggle_green_red</slot>
         </connect>
 
         <connect>
-            <signal>${calibrationInfo}/getRecord</signal>
-            <slot>displayCalibrationInfoSrv/displayImage</slot>
+            <signal>${calibrationInfo}/get_record</signal>
+            <slot>displayCalibrationInfoSrv/display_image</slot>
         </connect>
 
         <connect>
-            <signal>${calibrationInfo}/addedRecord</signal>
-            <signal>${calibrationInfo}/removedRecord</signal>
-            <signal>${calibrationInfo}/resetRecord</signal>
+            <signal>${calibrationInfo}/added_record</signal>
+            <signal>${calibrationInfo}/removed_record</signal>
+            <signal>${calibrationInfo}/reset_record</signal>
             <slot>calibrationInfoEditorSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>intrinsicCalibrationSrv/errorComputed</signal>
+            <signal>intrinsicCalibrationSrv/error_computed</signal>
             <slot>errorLabelSrv/set_double_parameter</slot>
         </connect>
 
@@ -527,14 +527,14 @@
         </connect>
 
         <connect>
-            <signal>visibilityParameters/boolChanged</signal>
+            <signal>visibilityParameters/bool_changed</signal>
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">
-            <slot>intrinsicCalibrationSrv/updateChessboardSize</slot>
-            <slot>chessboardDetectorSrv/updateChessboardSize</slot>
-            <slot>chessboardReprojectionSrv/updateChessboardSize</slot>
-            <slot>calibrationDataReaderSrv/updateChessboardSize</slot>
+            <slot>intrinsicCalibrationSrv/update_chessboard_size</slot>
+            <slot>chessboardDetectorSrv/update_chessboard_size</slot>
+            <slot>chessboardReprojectionSrv/update_chessboard_size</slot>
+            <slot>calibrationDataReaderSrv/update_chessboard_size</slot>
             <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 

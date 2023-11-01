@@ -55,7 +55,7 @@ auto pixel_format_to_num_components =
         return s_PIXEL_FORMAT_TO_NUM_COMPONENTS[_format];
     };
 
-const core::com::signals::key_t image::BUFFER_MODIFIED_SIG      = "bufferModified";
+const core::com::signals::key_t image::BUFFER_MODIFIED_SIG      = "buffer_modified";
 const core::com::signals::key_t image::LANDMARK_ADDED_SIG       = "landmarkAdded";
 const core::com::signals::key_t image::LANDMARK_REMOVED_SIG     = "landmarkRemoved";
 const core::com::signals::key_t image::LANDMARK_DISPLAYED_SIG   = "landmarkDisplayed";

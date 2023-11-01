@@ -72,23 +72,23 @@ namespace sight::module::navigation::openvslam
  * Note: in this version of the service only monocular (MONO) mode is available, and the downsample feature is disabled.
  *
  * @section Signals Signals
- * - \b trackingInitialized(): Emitted when the tracking is initialized.
+ * - \b tracking_initialized(): Emitted when the tracking is initialized.
  * - \b trackingNotInitialized(): Emitted when the tracking must be reinitialized.
  * - \b tracked(): Emitted when openvslam is tracking.
- * - \b trackingLost(): Emitted when tracking is lost.
- * - \b vocFileUnloaded(): Emitted when the vocabulary file is unloaded.
- * - \b vocFileLoadingStarted(): Emitted when the vocabulary file is loading.
- * - \b vocFileLoaded(): Emitted when the vocabulary file is loaded.
+ * - \b tracking_lost(): Emitted when tracking is lost.
+ * - \b voc_file_unloaded(): Emitted when the vocabulary file is unloaded.
+ * - \b voc_file_loading_started(): Emitted when the vocabulary file is loading.
+ * - \b voc_file_loaded(): Emitted when the vocabulary file is loaded.
  *
  * @section Slots Slots
  * - \b start_tracking(): Initialize and start the tracking process.
  * - \b stop_tracking(): Stop the tracking process.
  * - \b track(timestamp): Call openvslam with the new frame.
- * - \b enableLocalization(bool): Enable the localization mode by stopping mapping thread.
+ * - \b enable_localization(bool): Enable the localization mode by stopping mapping thread.
  * - \b activateLocalization(): Activate the localization mode by stopping mapping thread.
- * - \b resetPointCloud(): Reset the pointcloud.
- * - \b saveMap(): Save openvslam's map.
- * - \b loadMap(): Load openvslam's map.
+ * - \b reset_point_cloud(): Reset the pointcloud.
+ * - \b save_map(): Save openvslam's map.
+ * - \b load_map(): Load openvslam's map.
  * - \b set_double_parameter(double, string): Calls a double parameter slot according to the given key.
  *   - scaleFactor: to rescale matrix and points (by default Monocular use an arbitrary scale).
  *   - initializer.parallaxDegThr: Parallax threshold in degree for openvslam initializer (advanced).

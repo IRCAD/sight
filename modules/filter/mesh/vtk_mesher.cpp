@@ -49,7 +49,7 @@ namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------
-static const sight::core::com::slots::key_t UPDATE_THRESHOLD_SLOT = "updateThreshold";
+static const sight::core::com::slots::key_t UPDATE_THRESHOLD_SLOT = "update_threshold";
 
 //-----------------------------------------------------------------------------
 

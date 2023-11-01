@@ -206,8 +206,8 @@ void icon_speed_dial::starting()
         q_action->setEnabled(service->enabled());
         auto is_enabled_slot = new_slot("setEnabledQt_" + action.sid, &QPushButton::setEnabled, q_action);
         is_enabled_slot->set_worker(worker());
-        service->signal("isEnabled")->connect(is_enabled_slot);
-        service->signal("isVisible")->connect(slot(slots::UPDATE_ACTIONS));
+        service->signal("is_enabled")->connect(is_enabled_slot);
+        service->signal("is_visible")->connect(slot(slots::UPDATE_ACTIONS));
         q_action->setToolTip(QString::fromStdString(action.name));
         q_action->setIcon(
             QIcon(

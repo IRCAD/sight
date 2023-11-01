@@ -43,11 +43,11 @@
 namespace sight::module::io::video
 {
 
-static const core::com::slots::key_t SAVE_FRAME       = "saveFrame";
-static const core::com::slots::key_t START_RECORD     = "startRecord";
-static const core::com::slots::key_t STOP_RECORD      = "stopRecord";
+static const core::com::slots::key_t SAVE_FRAME       = "save_frame";
+static const core::com::slots::key_t START_RECORD     = "start_record";
+static const core::com::slots::key_t STOP_RECORD      = "stop_record";
 static const core::com::slots::key_t RECORD           = "record";
-static const core::com::slots::key_t TOGGLE_RECORDING = "toggleRecording";
+static const core::com::slots::key_t TOGGLE_RECORDING = "toggle_recording";
 
 const std::string video_writer::P4_EXTENSION = ".mp4";
 const std::string video_writer::AV_C1_CODEC  = "avc1";

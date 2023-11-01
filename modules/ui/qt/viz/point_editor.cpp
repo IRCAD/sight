@@ -50,7 +50,7 @@
 namespace sight::module::ui::qt::viz
 {
 
-static const core::com::slots::key_t GET_INTERACTION_SLOT = "getInteraction";
+static const core::com::slots::key_t GET_INTERACTION_SLOT = "get_interaction";
 
 point_editor::point_editor() noexcept
 {

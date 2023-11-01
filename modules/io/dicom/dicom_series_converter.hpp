@@ -45,7 +45,7 @@ namespace sight::module::io::dicom
  * and push result (ImageSeries, ModelSeries, ...) in target series_set
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(core::jobs::base) ) : Emitted when a job is created.
+ * - \b job_created( SPTR(core::jobs::base) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *

@@ -166,7 +166,7 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>parameters/parameterChanged</signal>
+                <signal>parameters/parameter_changed</signal>
                 <slot>trackerSrv/set_parameter</slot>
             </connect>
             <connect>

@@ -297,28 +297,28 @@
         </connect>
 
         <connect channel="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>volumeAdp/toggleWidgets</slot>
+            <slot>volumeAdp/toggle_widgets</slot>
         </connect>
 
         <connect channel="${BOX_WIDGET_RESET_RECEIVER_CHANNEL}">
             <slot>clippingBoxResetSrv/update</slot>
-            <slot>volumeAdp/updateClippingBox</slot>
+            <slot>volumeAdp/update_clipping_box</slot>
         </connect>
 
         <connect channel="${SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL}">
-            <slot>shapeExtruderAdp/enableTool</slot>
+            <slot>shapeExtruderAdp/enable_tool</slot>
         </connect>
 
         <connect channel="${SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL}">
-            <signal>shapeExtruderAdp/toolDisabled</signal>
+            <signal>shapeExtruderAdp/tool_disabled</signal>
         </connect>
 
         <connect channel="${SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL}">
-            <slot>shapeExtruderAdp/deleteLastMesh</slot>
+            <slot>shapeExtruderAdp/delete_last_mesh</slot>
         </connect>
 
         <connect channel="${SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL}">
-            <slot>shapeExtruderAdp/cancelLastClick</slot>
+            <slot>shapeExtruderAdp/cancel_last_click</slot>
         </connect>
 
         <connect channel="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}">
@@ -330,31 +330,31 @@
         </connect>
 
         <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
-            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+            <slot>3DNegatoAdp/update_slices_from_world</slot>
         </connect>
 
         <connect channel="${NEGATO3D_TRANSPARENCY_CHANNEL}">
-            <slot>3DNegatoAdp/setTransparency</slot>
+            <slot>3DNegatoAdp/set_transparency</slot>
         </connect>
 
         <connect channel="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}">
-            <slot>landmarksAdp/changeEditMode</slot>
+            <slot>landmarksAdp/change_edit_mode</slot>
         </connect>
 
         <connect channel="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}">
-            <slot>landmarksAdp/setCurrentGroup</slot>
+            <slot>landmarksAdp/set_current_group</slot>
         </connect>
 
         <connect channel="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}">
-            <slot>landmarksAdp/removeAll</slot>
+            <slot>landmarksAdp/remove_all</slot>
         </connect>
 
         <connect channel="${REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL}">
-            <slot>multiDistancesAdp/removeAll</slot>
+            <slot>multiDistancesAdp/remove_all</slot>
         </connect>
 
         <connect channel="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}">
-            <signal>landmarksAdp/editModeChanged</signal>
+            <signal>landmarksAdp/edit_mode_changed</signal>
         </connect>
 
         <!-- Slide view -->
@@ -365,31 +365,31 @@
 
         <!-- Manage full screen -->
         <connect>
-            <signal>fullscreenAct/screenSelected</signal>
-            <slot>sceneSrv/enableFullscreen</slot>
+            <signal>fullscreenAct/screen_selected</signal>
+            <slot>sceneSrv/enable_fullscreen</slot>
         </connect>
 
         <connect>
-            <signal>sceneSrv/fullscreenSet</signal>
+            <signal>sceneSrv/fullscreen_set</signal>
             <slot>windowedAct/show</slot>
             <slot>fullscreenAct/hide</slot>
         </connect>
 
         <connect>
             <signal>windowedAct/clicked</signal>
-            <slot>sceneSrv/disableFullscreen</slot>
+            <slot>sceneSrv/disable_fullscreen</slot>
         </connect>
 
         <connect>
-            <signal>sceneSrv/fullscreenUnset</signal>
+            <signal>sceneSrv/fullscreen_unset</signal>
             <slot>windowedAct/hide</slot>
             <slot>fullscreenAct/show</slot>
         </connect>
 
         <!-- Display the picked voxel information -->
         <connect>
-            <signal>3DNegatoAdp/pickedVoxel</signal>
-            <slot>pickedVoxelTextAdp/setText</slot>
+            <signal>3DNegatoAdp/picked_voxel</signal>
+            <slot>pickedVoxelTextAdp/set_text</slot>
         </connect>
 
         <connect>
@@ -399,8 +399,8 @@
 
         <!-- Connects double click on landmark to slice moves. -->
         <connect>
-            <signal>landmarksAdp/sendWorldCoord</signal>
-            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+            <signal>landmarksAdp/send_world_coord</signal>
+            <slot>3DNegatoAdp/update_slices_from_world</slot>
         </connect>
 
 
@@ -418,11 +418,11 @@
         <!-- distance channels -->
 
         <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
-            <slot>multiDistancesAdp/activateDistanceTool</slot>
+            <slot>multiDistancesAdp/activate_distance_tool</slot>
         </connect>
 
         <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
-            <signal>multiDistancesAdp/deactivateDistanceTool</signal>
+            <signal>multiDistancesAdp/deactivate_distance_tool</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

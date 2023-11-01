@@ -77,17 +77,19 @@ namespace sight::module::ui::qt
  * - \b orange (optional): the description associated to the orange status
  *
  * @section Slots Slots
- * - \b changeToGreen(): This slot allows to change the indicator color to green. If there is more than one status, it
+ * - \b change_to_green(): This slot allows to change the indicator color to green. If there is more than one status, it
  * changes them all.
- * - \b changeToRed(): This slot allows to change the indicator color to red. If there is more than one status, it
+ * - \b change_to_red(): This slot allows to change the indicator color to red. If there is more than one status, it
  * changes them all.
- * - \b changeToOrange(): This slot allows to change the indicator color to orange. If there is more than one status, it
+ * - \b change_to_orange(): This slot allows to change the indicator color to orange. If there is more than one status,
+ * it
  * changes them all.
- * - \b toggleGreenRed(bool): This slot allows to change the indicator color to green or red. If there is more than one,
+ * - \b toggle_green_red(bool): This slot allows to change the indicator color to green or red. If there is more than
+ * one,
  * it toggle them all.
- * - \b changeNthToGreen(int): This slot allows to change the indicator color to green for the ith status.
- * - \b changeNthToRed(int): This slot allows to change the indicator color to red for the ith status.
- * - \b changeNthToOrange(int): This slot allows to change the indicator color to orange for the ith status.
+ * - \b change_nth_to_green(int): This slot allows to change the indicator color to green for the ith status.
+ * - \b change_nth_to_red(int): This slot allows to change the indicator color to red for the ith status.
+ * - \b change_nth_to_orange(int): This slot allows to change the indicator color to orange for the ith status.
  * - \b toggleNthGreenRed(int,bool): This slot allows to change the indicator color to green or red for the ith
  * status.
  */

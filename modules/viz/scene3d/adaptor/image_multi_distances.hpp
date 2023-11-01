@@ -70,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b updateVisibilityFromField(): updates the visibility of distances from the field status.
  * - \b update_visibility(bool): sets whether distances are shown or not.
  * - \b updateModifiedDistance(data::point_list::sptr): renders distances in other negato2d and negato3d adaptors.
- * - \b toggleVisibility(): toggles whether distances are shown or not.
+ * - \b toggle_visibility(): toggles whether distances are shown or not.
  * - \b show(): shows distance.
  * - \b hide(): hides distance.
  *
@@ -88,7 +88,7 @@ public:
     struct signals
     {
         using key_t = sight::core::com::signals::key_t;
-        static inline const key_t DEACTIVATE_DISTANCE_TOOL = "deactivateDistanceTool";
+        static inline const key_t DEACTIVATE_DISTANCE_TOOL = "deactivate_distance_tool";
 
         using void_signal_t = sight::core::com::signal<void ()>;
     };

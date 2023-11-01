@@ -39,11 +39,11 @@ namespace sight::module::viz::sample
  * @brief Render a 3D mesh.
  *
  * @section Slots Slots
- * - \b updateCamPosition(): update the camera position.
+ * - \b update_cam_position(): update the camera position.
  * - \b updateCamTransform(): send the signal camUpdated().
  *
  * @section Signals Signals
- * - \b camUpdated(): emitted when the camera move.
+ * - \b cam_updated(): emitted when the camera move.
  *
  * @section XML XML Configuration
  * @code{.xml}

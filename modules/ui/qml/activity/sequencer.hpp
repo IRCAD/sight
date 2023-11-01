@@ -48,13 +48,13 @@ namespace sight::module::ui::qml::activity
  * This service should be associated to the view to display the current activity
  *
  * @section Signal Signal
- * - \b activityCreated(data::activity::sptr) : This signal is emitted when an activity is created (using
+ * - \b activity_created(data::activity::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
- * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
+ * - \b data_required() : This signal is emitted when the activity can not be launch because it requires data.
  *
  * @section Slots Slots
- * - \b goTo(int) : Create the activity at the given index
- * - \b checkNext() : Check if the next activities can be enabled
+ * - \b go_to(int) : Create the activity at the given index
+ * - \b check_next() : Check if the next activities can be enabled
  *
  * @section config Configuration
  *

@@ -37,7 +37,7 @@ namespace sight::module::viz::qt3d::adaptor
  *
  * @section Slot Slot
  * - \b update_visibility(bool): shows or hides the mesh.
- * - \b toggleVisibility(): Toggle whether the adaptor is shown or not.
+ * - \b toggle_visibility(): Toggle whether the adaptor is shown or not.
  *
  * @section XML XML Configuration
  * @code{.xml}

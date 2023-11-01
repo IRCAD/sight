@@ -69,7 +69,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b update_visibility(bool): sets whether the mesh is to be seen or not.
- * - \b toggleVisibility(): toggle whether the mesh is shown or not.
+ * - \b toggle_visibility(): toggle whether the mesh is shown or not.
  * - \b show(): shows the mesh.
  * - \b hide(): hides the mesh.
  * - \b update(): called when the mesh is modified.

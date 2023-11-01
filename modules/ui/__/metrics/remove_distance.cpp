@@ -38,7 +38,7 @@
 namespace sight::module::ui::metrics
 {
 
-static const core::com::slots::key_t REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
+static const core::com::slots::key_t REMOVE_LAST_DISTANCE_SLOT = "remove_last_distance";
 
 //------------------------------------------------------------------------------
 

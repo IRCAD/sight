@@ -688,7 +688,7 @@ public:
     /// @{
     /// Type of signal when objects are added
     using added_signal_t = core::com::signal<void (container_t)>;
-    inline static const core::com::signals::key_t ADDED_OBJECTS_SIG = "addedObjects";
+    inline static const core::com::signals::key_t ADDED_OBJECTS_SIG = "added_objects";
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
     using changed_signal_t = core::com::signal<void (container_t, container_t)>;
@@ -696,7 +696,7 @@ public:
 
     /// Type of signal when objects are removed
     using removed_signal_t = core::com::signal<void (container_t)>;
-    inline static const core::com::signals::key_t REMOVED_OBJECTS_SIG = "removedObjects";
+    inline static const core::com::signals::key_t REMOVED_OBJECTS_SIG = "removed_objects";
     /// @}
 
     /// Returns a copy of the underlying container

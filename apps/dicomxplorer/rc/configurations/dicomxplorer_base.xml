@@ -136,17 +136,17 @@
          <service uid="qtSelector" type="sight::module::ui::qt::style_selector" />
 
         <connect channel="progressStatus">
-            <signal>SDBWriter/jobCreated</signal>
-            <slot>progress_statusbar/showJob</slot>
+            <signal>SDBWriter/job_created</signal>
+            <slot>progress_statusbar/show_job</slot>
         </connect>
 
         <connect channel="dynamicViewChannel">
-            <slot>dynamicView/createTab</slot>
+            <slot>dynamicView/create_tab</slot>
         </connect>
 
         <connect channel="parametersChannel">
-            <signal>action_configuration/parametersModified</signal>
-            <slot>styleSelector/updateFromPreferences</slot>
+            <signal>action_configuration/parameters_modified</signal>
+            <slot>styleSelector/update_from_preferences</slot>
         </connect>
 
         <start uid="mainFrame" />

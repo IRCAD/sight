@@ -464,19 +464,19 @@
 
         <connect>
             <signal>exportImageAct/clicked</signal>
-            <slot>exportImageSrv/addOrSwap</slot>
+            <slot>exportImageSrv/add_or_swap</slot>
         </connect>
 
         <connect>
-            <signal>lNegatoAdp/pickedVoxel</signal>
-            <slot>lTextAdp/setText</slot>
+            <signal>lNegatoAdp/picked_voxel</signal>
+            <slot>lTextAdp/set_text</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>previewSelections/addedObjects</signal>
-            <signal>previewSelections/removedObjects</signal>
+            <signal>previewSelections/added_objects</signal>
+            <signal>previewSelections/removed_objects</signal>
             <slot>pNegatoAdp/stop</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
@@ -490,8 +490,8 @@
         </connect>
 
         <connect>
-            <signal>localSelections/addedObjects</signal>
-            <signal>localSelections/removedObjects</signal>
+            <signal>localSelections/added_objects</signal>
+            <signal>localSelections/removed_objects</signal>
             <slot>extractLocalImageSeriesSrv/update</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
@@ -504,13 +504,13 @@
         </connect>
 
         <connect>
-            <signal>seriesPullerSrv/progressStarted</signal>
+            <signal>seriesPullerSrv/progress_started</signal>
             <slot>seriesPullerAct/hide</slot>
             <slot>waitAct/show</slot>
         </connect>
 
         <connect>
-            <signal>seriesPullerSrv/progressStopped</signal>
+            <signal>seriesPullerSrv/progress_stopped</signal>
             <slot>seriesPullerAct/show</slot>
             <slot>waitAct/hide</slot>
         </connect>

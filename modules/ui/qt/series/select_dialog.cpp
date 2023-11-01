@@ -26,8 +26,8 @@
 namespace sight::module::ui::qt::series
 {
 
-const core::com::signals::key_t select_dialog::IMAGE_SELECTED_SIG = "imageSelected";
-const core::com::signals::key_t select_dialog::MODEL_SELECTED_SIG = "modelSelected";
+const core::com::signals::key_t select_dialog::IMAGE_SELECTED_SIG = "image_selected";
+const core::com::signals::key_t select_dialog::MODEL_SELECTED_SIG = "model_selected";
 
 //------------------------------------------------------------------------------
 

@@ -175,11 +175,11 @@
         </service>
 
         <connect channel="${PROGRESS_CHANNEL}">
-            <signal>action_readDicomSeries/jobCreated</signal>
+            <signal>action_readDicomSeries/job_created</signal>
         </connect>
 
         <connect channel="${PROGRESS_CHANNEL}">
-            <signal>action_convertSeries/jobCreated</signal>
+            <signal>action_convertSeries/job_created</signal>
         </connect>
 
         <!-- START AND STOP SERVICES -->

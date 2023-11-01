@@ -39,7 +39,7 @@ namespace sight::module::ui::metrics
  * Choose between removing a selected point or the last added point.
  *
  * @section Slots Slots
- * - \b removeLastDistance: Remove the last added point.
+ * - \b remove_last_distance: Remove the last added point.
  *
  * @section XML XML Configuration
  * Example to remove a selected distance:
@@ -55,11 +55,11 @@ namespace sight::module::ui::metrics
             <inout key="image" uid="${image}" />
     </service>
 
-    <service uid="removeLastDistance" type="sight::module::ui::action" />
+    <service uid="remove_last_distance" type="sight::module::ui::action" />
 
     <connect>
         <signal>removeLastDistance/clicked</signal>
-        <slot>remove_distanceAct/removeLastDistance</slot>
+        <slot>remove_distanceAct/remove_last_distance</slot>
     </connect>
    @endcode
  *

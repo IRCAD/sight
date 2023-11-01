@@ -33,7 +33,8 @@ namespace sight::module::viz::scene2d::adaptor
  * @brief Render grid on the scene2d.
  *
  * @section Slots Slots
- * - \b setGridSpacing(double, double, std::string) : set the grid spacing in x and y. It is intended to be connected to
+ * - \b set_grid_spacing(double, double, std::string) : set the grid spacing in x and y. It is intended to be connected
+ * to
  * a double2Changed signal of a parameters service; the string key parameter should be set to "spacing".
  *
  * @section XML XML Configuration

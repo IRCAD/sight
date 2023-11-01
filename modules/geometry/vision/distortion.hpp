@@ -45,7 +45,7 @@ namespace sight::module::geometry::vision
  * you want to perform the distortion directly in the rendering pipeline.
  *
  * @section Slots Slots
- * - \b changeState() : enabled/disabled the distortion correction.
+ * - \b change_state() : enabled/disabled the distortion correction.
  *
  * @section XML XML Configuration
  *

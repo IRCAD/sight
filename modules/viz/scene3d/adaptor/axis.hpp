@@ -48,10 +48,10 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b update_visibility(bool): sets whether the axis is shown or not.
- * - \b toggleVisibility(): toggle whether the axis is shown or not.
+ * - \b toggle_visibility(): toggle whether the axis is shown or not.
  * - \b show(): shows the axis.
  * - \b hide(): hides the axis.
- * - \b updateOriginColor(data::color::sptr): update origin sphere with provided color.
+ * - \b update_origin_color(data::color::sptr): update origin sphere with provided color.
  *
  * @section XML XML Configuration
  * @code{.xml}

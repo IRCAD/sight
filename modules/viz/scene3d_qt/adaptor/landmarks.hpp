@@ -128,12 +128,12 @@ struct image_or_image_series_lock
  * @brief This adaptor displays landmarks.
  *
  * @section Slots Slots
- * - \b removeAll(): removes all groups.
+ * - \b remove_all(): removes all groups.
  * - \b remove_group(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
  * - \b rename_group(std::string, std::string): replaces and old group's name by a new one.
- * - \b setCurrentGroup(std::string): set the current group
- * - \b addPoint(std::string): adds the last point of a landmarks group.
+ * - \b set_current_group(std::string): set the current group
+ * - \b add_point(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
  * - \b insertPoint(std::string, std::size_t): inserts a point.
  * - \b selectPoint(std::string, std::size_t) hightlights the selected landmark.
@@ -142,20 +142,21 @@ struct image_or_image_series_lock
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
  * - \b update_visibility(bool): shows or hides the landmarks.
- * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
+ * - \b toggle_visibility(): toggles whether the landmarks are shown or not.
  * - \b show(): shows the landmarks.
  * - \b hide(): hides the landmarks.
- * - \b removeLandmarks(): Remove all visible landmarks.
+ * - \b remove_landmarks(): Remove all visible landmarks.
  *                         Which landmarks are removed depends of the "viewDistance" parameters.
- * - \b configureLandmarks(): Configure the new landmarks size, shape and color used when adding landmarks.
+ * - \b configure_landmarks(): Configure the new landmarks size, shape and color used when adding landmarks.
  * - \b enableEditMode(): enable edit mode
  * - \b disableEditMode(): disable edit mode
  * - \b toggleEditMode(): enable edit mode if it is enabled, else disable it
- * - \b changeEditMode(bool): enable edit mode if true, else disable it
+ * - \b change_edit_mode(bool): enable edit mode if true, else disable it
  *
  * @section Signals Signals
- * - \b sendWorldCoord(double, double, double): sends world coordinates of current selected landmarks (by double click).
- * - \b editModeChanged(bool): sent if the edit mode changed (typically via Escape key press or right mouse click).
+ * - \b send_world_coord(double, double, double): sends world coordinates of current selected landmarks (by double
+ * click).
+ * - \b edit_mode_changed(bool): sent if the edit mode changed (typically via Escape key press or right mouse click).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -215,13 +216,13 @@ public:
     {
         using key_t = sight::core::com::slots::key_t;
 
-        inline static const key_t REMOVE_ALL              = "removeAll";
+        inline static const key_t REMOVE_ALL              = "remove_all";
         inline static const key_t REMOVE_GROUP            = "remove_group";
         inline static const key_t MODIFY_GROUP            = "modifyGroup";
         inline static const key_t RENAME_GROUP            = "rename_group";
-        inline static const key_t SET_CURRENT_GROUP       = "setCurrentGroup";
+        inline static const key_t SET_CURRENT_GROUP       = "set_current_group";
         inline static const key_t MODIFY_POINT            = "modifyPoint";
-        inline static const key_t ADD_POINT               = "addPoint";
+        inline static const key_t ADD_POINT               = "add_point";
         inline static const key_t REMOVE_POINT            = "removePoint";
         inline static const key_t INSERT_POINT            = "insertPoint";
         inline static const key_t SELECT_POINT            = "selectPoint";
@@ -229,19 +230,19 @@ public:
         inline static const key_t INITIALIZE_IMAGE        = "initializeImage";
         inline static const key_t SLICE_TYPE              = "sliceType";
         inline static const key_t SLICE_INDEX             = "sliceIndex";
-        inline static const key_t TOGGLE_ADD_LANDMARKS    = "toggleAddLandmarks";
+        inline static const key_t TOGGLE_ADD_LANDMARKS    = "toggle_add_landmarks";
         inline static const key_t TOGGLE_REMOVE_LANDMARKS = "toggleRemoveLandmarks";
-        inline static const key_t REMOVE_LANDMARKS        = "removeLandmarks";
-        inline static const key_t CREATE_LANDMARK         = "createLandmark";
-        inline static const key_t CONFIGURE_LANDMARKS     = "configureLandmarks";
+        inline static const key_t REMOVE_LANDMARKS        = "remove_landmarks";
+        inline static const key_t CREATE_LANDMARK         = "create_landmark";
+        inline static const key_t CONFIGURE_LANDMARKS     = "configure_landmarks";
         inline static const key_t ENABLE_EDIT_MODE        = "enableEditMode";
         inline static const key_t DISABLE_EDIT_MODE       = "disableEditMode";
         inline static const key_t TOGGLE_EDIT_MODE        = "toggleEditMode";
-        inline static const key_t CHANGE_EDIT_MODE        = "changeEditMode";
+        inline static const key_t CHANGE_EDIT_MODE        = "change_edit_mode";
         inline static const key_t ENABLE_MOVE_MODE        = "enableMoveMode";
         inline static const key_t DISABLE_MOVE_MODE       = "disableMoveMode";
         inline static const key_t TOGGLE_MOVE_MODE        = "toggleMoveMode";
-        inline static const key_t CHANGE_MOVE_MODE        = "changeMoveMode";
+        inline static const key_t CHANGE_MOVE_MODE        = "change_move_mode";
     };
 
     /// Remove all manual objects group
@@ -345,10 +346,10 @@ public:
         using key_t = sight::core::com::signals::key_t;
 
         /// Signal send when double clicked on a landmark, send its world coordinates;
-        inline static const key_t SEND_WORLD_COORD = "sendWorldCoord";
+        inline static const key_t SEND_WORLD_COORD = "send_world_coord";
         using world_coordinates_signal_t = core::com::signal<void (double, double, double)>;
 
-        inline static const key_t EDIT_MODE_CHANGED = "editModeChanged";
+        inline static const key_t EDIT_MODE_CHANGED = "edit_mode_changed";
         using edit_mode_changed = core::com::signal<void (bool)>;
     };
 

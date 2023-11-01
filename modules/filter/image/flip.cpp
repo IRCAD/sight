@@ -31,7 +31,7 @@ namespace sight::module::filter::image
 {
 
 const core::com::slots::key_t flip::FLIP_AXIS_X_SLOT = "flipAxisX";
-const core::com::slots::key_t flip::FLIP_AXIS_Y_SLOT = "flipAxisY";
+const core::com::slots::key_t flip::FLIP_AXIS_Y_SLOT = "flip_axis_y";
 const core::com::slots::key_t flip::FLIP_AXIS_Z_SLOT = "flipAxisZ";
 
 //------------------------------------------------------------------------------

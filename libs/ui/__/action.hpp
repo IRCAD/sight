@@ -40,25 +40,25 @@ class action;
  * @brief   Defines the service interface managing menu or toolbar items.
  *
  * @section Signals Signals
- * - \b isChecked(bool): Emitted when the action is checked or unchecked.
+ * - \b is_checked(bool): Emitted when the action is checked or unchecked.
  * - \b checked(): Emitted when the action is checked.
  * - \b unchecked(): Emitted when the action is unchecked.
- * - \b isEnabled(bool): Emitted when the action is enabled or disabled.
+ * - \b is_enabled(bool): Emitted when the action is enabled or disabled.
  * - \b enabled(): Emitted when the action is enabled.
  * - \b disabled(): Emitted when the action is disabled.
- * - \b isVisible(bool): Emitted when the action is visible or invisible
+ * - \b is_visible(bool): Emitted when the action is visible or invisible
  *
  * @section Slots Slots
- * - \b setChecked(bool): sets whether the action is checked.
+ * - \b set_checked(bool): sets whether the action is checked.
  * - \b check(): check the action.
  * - \b uncheck(): uncheck the action.
- * - \b setVisible(bool): sets whether the action is visible in its container.
- * - \b setHidden(bool): sets whether the action is hidden in its container.
+ * - \b set_visible(bool): sets whether the action is visible in its container.
+ * - \b set_hidden(bool): sets whether the action is hidden in its container.
  * - \b show(): make the action visible.
  * - \b hide(): make the action invisible.
- * - \b toggleVisibility(): make the action visible if it was invisible or invisible if it was visible
- * - \b setEnabled(bool): sets whether the action can be interacted with.
- * - \b setDisabled(bool): opposite of setEnabled(bool).
+ * - \b toggle_visibility(): make the action visible if it was invisible or invisible if it was visible
+ * - \b set_enabled(bool): sets whether the action can be interacted with.
+ * - \b set_disabled(bool): opposite of setEnabled(bool).
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
  *

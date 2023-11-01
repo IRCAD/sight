@@ -43,10 +43,10 @@ namespace sight::module::ui::qt::video
  * @brief This editor allows to select the device to use. It updates the data camera identifier.
  *
  * @section Signals Signals
- * - \b configuredCameras(): emitted when the cameras have been successfully configured.
- * - \b configuredDevice(): emitted when the user selects a device as the video source.
- * - \b configuredFile(): emitted when the user selects a file as the video source.
- * - \b configuredStream(): emitted when the user selects a stream as the video source.
+ * - \b configured_cameras(): emitted when the cameras have been successfully configured.
+ * - \b configured_device(): emitted when the user selects a device as the video source.
+ * - \b configured_file(): emitted when the user selects a file as the video source.
+ * - \b configured_stream(): emitted when the user selects a stream as the video source.
  *
  * @section Slots Slots
  * - \b configureDevice(): configure the cameras as device sources.

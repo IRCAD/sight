@@ -83,7 +83,7 @@ namespace sight::app
  *
  *
  * @subsection slots slots:
- * - \b setConfig( sight::ui::parameter_t, std::string): allows to change the currently started config. The first
+ * - \b set_config( sight::ui::parameter_t, std::string): allows to change the currently started config. The first
  * attribute should
  * match the
  * appConfig key, otherwise the service will ignore it. The second parameter should be a supported config name.
@@ -96,7 +96,7 @@ public:
     struct slots
     {
         using key_t = sight::core::com::slots::key_t;
-        static inline const key_t SET_CONFIG = "setConfig";
+        static inline const key_t SET_CONFIG = "set_config";
     };
 
     SIGHT_DECLARE_SERVICE(multi_config_controller, service::controller);

@@ -37,7 +37,7 @@
 namespace sight::module::io::dicom
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 
 //------------------------------------------------------------------------------
 

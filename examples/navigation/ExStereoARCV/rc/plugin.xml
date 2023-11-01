@@ -529,8 +529,8 @@
 
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
             <service uid="syncGenericSceneSrv" type="sight::module::sync::signal_gate">
-                <signal>videoImage1/bufferModified</signal>
-                <signal>videoImage2/bufferModified</signal>
+                <signal>videoImage1/buffer_modified</signal>
+                <signal>videoImage2/buffer_modified</signal>
                 <signal>rightMat/modified</signal>
                 <signal>inverseMat/modified</signal>
             </service>
@@ -538,13 +538,13 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>syncPose/allReceived</signal>
+                <signal>syncPose/all_received</signal>
                 <slot>registrationSrv/update</slot>
             </connect>
             <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
             <!-- then process a new frame -->
             <connect>
-                <signal>syncGenericSceneSrv/allReceived</signal>
+                <signal>syncGenericSceneSrv/all_received</signal>
                 <slot>leftGenericSceneSrv/request_render</slot>
                 <slot>rightGenericSceneSrv/request_render</slot>
                 <slot>frameMatrixSynchronizerSrv/synchronize</slot>
@@ -557,107 +557,107 @@
 
             <connect>
                 <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabber1Srv/startCamera</slot>
-                <slot>videoGrabber2Srv/startCamera</slot>
+                <slot>videoGrabber1Srv/start_camera</slot>
+                <slot>videoGrabber2Srv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabber1Srv/stopCamera</slot>
-                <slot>videoGrabber2Srv/stopCamera</slot>
+                <slot>videoGrabber1Srv/stop_camera</slot>
+                <slot>videoGrabber2Srv/stop_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabber1Srv/pauseCamera</slot>
-                <slot>videoGrabber2Srv/pauseCamera</slot>
+                <slot>videoGrabber1Srv/pause_camera</slot>
+                <slot>videoGrabber2Srv/pause_camera</slot>
             </connect>
 
             <connect>
                 <signal>startRecordAct/clicked</signal>
-                <slot>matricesWriterSrv/startRecord</slot>
+                <slot>matricesWriterSrv/start_record</slot>
                 <slot>startRecordAct/hide</slot>
                 <slot>stopRecordAct/show</slot>
             </connect>
 
             <connect>
                 <signal>stopRecordAct/clicked</signal>
-                <slot>matricesWriterSrv/stopRecord</slot>
+                <slot>matricesWriterSrv/stop_record</slot>
                 <slot>stopRecordAct/hide</slot>
                 <slot>startRecordAct/show</slot>
             </connect>
 
             <connect>
-                <signal>reprojectionParamsSrv/parameterChanged</signal>
+                <signal>reprojectionParamsSrv/parameter_changed</signal>
                 <slot>leftReprojectionErrorSrv/set_parameter</slot>
                 <slot>rightReprojectionErrorSrv/set_parameter</slot>
             </connect>
 
             <connect>
-                <signal>leftReprojectionErrorSrv/errorComputed</signal>
+                <signal>leftReprojectionErrorSrv/error_computed</signal>
                 <slot>errorLabelLeftSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
-                <signal>rightReprojectionErrorSrv/errorComputed</signal>
+                <signal>rightReprojectionErrorSrv/error_computed</signal>
                 <slot>errorLabelRightSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
-                <signal>frameMatrixSynchronizerSrv/matrixSynchronized</signal>
-                <slot>reprojectionMatrixStatusSrv/changeToGreen</slot>
+                <signal>frameMatrixSynchronizerSrv/matrix_synchronized</signal>
+                <slot>reprojectionMatrixStatusSrv/change_to_green</slot>
             </connect>
 
             <connect>
-                <signal>frameMatrixSynchronizerSrv/matrixUnsynchronized</signal>
-                <slot>reprojectionMatrixStatusSrv/changeToRed</slot>
+                <signal>frameMatrixSynchronizerSrv/matrix_unsynchronized</signal>
+                <slot>reprojectionMatrixStatusSrv/change_to_red</slot>
             </connect>
 
             <connect>
-                <signal>frameMatrixSynchronizerSrv/synchronizationDone</signal>
+                <signal>frameMatrixSynchronizerSrv/synchronization_done</signal>
                 <slot>matricesWriterSrv/write</slot>
             </connect>
 
             <connect>
-                <signal>arucoParamsSrv/parameterChanged</signal>
+                <signal>arucoParamsSrv/parameter_changed</signal>
                 <slot>arucoTracker1Srv/set_parameter</slot>
                 <slot>arucoTracker2Srv/set_parameter</slot>
             </connect>
 
             <connect>
-                <signal>cameraSet/addedCamera</signal>
+                <signal>cameraSet/added_camera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>camera1/idModified</signal>
-                <slot>videoGrabber1Srv/stopCamera</slot>
-                <slot>videoGrabber2Srv/stopCamera</slot>
+                <signal>camera1/id_modified</signal>
+                <slot>videoGrabber1Srv/stop_camera</slot>
+                <slot>videoGrabber2Srv/stop_camera</slot>
             </connect>
 
             <connect>
-                <signal>camera2/idModified</signal>
-                <slot>videoGrabber1Srv/stopCamera</slot>
-                <slot>videoGrabber2Srv/stopCamera</slot>
+                <signal>camera2/id_modified</signal>
+                <slot>videoGrabber1Srv/stop_camera</slot>
+                <slot>videoGrabber2Srv/stop_camera</slot>
             </connect>
 
             <connect>
-                <signal>arucoTracker1Srv/markerDetected</signal>
+                <signal>arucoTracker1Srv/marker_detected</signal>
                 <slot>LAxisAdp/update_visibility</slot>
             </connect>
 
             <connect>
-                <signal>arucoTracker2Srv/markerDetected</signal>
+                <signal>arucoTracker2Srv/marker_detected</signal>
                 <slot>RAxisAdp/update_visibility</slot>
             </connect>
 
             <connect>
-                <signal>synchroParamsSrv/intChanged</signal>
-                <slot>frameMatrixSynchronizerSrv/setDelay</slot>
+                <signal>synchroParamsSrv/int_changed</signal>
+                <slot>frameMatrixSynchronizerSrv/set_delay</slot>
             </connect>
 
             <connect>
-                <signal>hideAxisSrv/isChecked</signal>
+                <signal>hideAxisSrv/is_checked</signal>
                 <slot>LAxisAdp/update_visibility</slot>
                 <slot>RAxisAdp/update_visibility</slot>
             </connect>

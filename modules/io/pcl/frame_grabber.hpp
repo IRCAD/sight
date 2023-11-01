@@ -50,15 +50,15 @@ namespace sight::module::io::pcl
  * the timestamp to order the frames and to push them in the timeline.
  *
  * @section Signals Signals
- * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
- * - \b durationModified(std::int64_t) : Emitted when the duration of the video is modified.
+ * - \b position_modified(std::int64_t) : Emitted when the position in the video is modified during playing.
+ * - \b duration_modified(std::int64_t) : Emitted when the duration of the video is modified.
  *
  * @section Slots Slots
- * - \b startCamera() : Start playing the camera or the video.
- * - \b stopCamera() : Stop playing the camera or the video.
- * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
- * - \b loopVideo() : Toggle the loop of the playing.
- * - \b setPositionVideo(int) : Force the current time in the video.
+ * - \b start_camera() : Start playing the camera or the video.
+ * - \b stop_camera() : Stop playing the camera or the video.
+ * - \b pause_camera() : Pause the video, it has no effect when playing a camera.
+ * - \b loop_video() : Toggle the loop of the playing.
+ * - \b set_position_video(int) : Force the current time in the video.
  *
  * @section XML XML Configuration
  *

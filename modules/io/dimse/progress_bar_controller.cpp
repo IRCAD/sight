@@ -31,9 +31,9 @@
 namespace sight::module::io::dimse
 {
 
-static const core::com::slots::key_t START_PROGRESS_SLOT  = "startProgress";
-static const core::com::slots::key_t UPDATE_PROGRESS_SLOT = "updateProgress";
-static const core::com::slots::key_t STOP_PROGRESS_SLOT   = "stopProgress";
+static const core::com::slots::key_t START_PROGRESS_SLOT  = "start_progress";
+static const core::com::slots::key_t UPDATE_PROGRESS_SLOT = "update_progress";
+static const core::com::slots::key_t STOP_PROGRESS_SLOT   = "stop_progress";
 
 //------------------------------------------------------------------------------
 

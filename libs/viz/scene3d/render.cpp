@@ -58,12 +58,12 @@ const std::string render::OGREBACKGROUNDID = "ogreBackground";
 //-----------------------------------------------------------------------------
 
 const core::com::slots::key_t render::COMPUTE_CAMERA_ORIG_SLOT = "computeCameraParameters";
-const core::com::slots::key_t render::RESET_CAMERAS_SLOT       = "resetCameras";
+const core::com::slots::key_t render::RESET_CAMERAS_SLOT       = "reset_cameras";
 const core::com::slots::key_t render::REQUEST_RENDER_SLOT      = "request_render";
-const core::com::slots::key_t render::DISABLE_FULLSCREEN       = "disableFullscreen";
-const core::com::slots::key_t render::ENABLE_FULLSCREEN        = "enableFullscreen";
-const core::com::slots::key_t render::SET_MANUAL_MODE          = "setManualMode";
-const core::com::slots::key_t render::SET_AUTO_MODE            = "setAutoMode";
+const core::com::slots::key_t render::DISABLE_FULLSCREEN       = "disable_fullscreen";
+const core::com::slots::key_t render::ENABLE_FULLSCREEN        = "enable_fullscreen";
+const core::com::slots::key_t render::SET_MANUAL_MODE          = "set_manual_mode";
+const core::com::slots::key_t render::SET_AUTO_MODE            = "set_auto_mode";
 
 //-----------------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ void render::configuring()
         }
 
         //create resetcamera_layerID slot
-        const core::com::slots::key_t resetcamera_slotkey = "resetCamera_" + layer_id;
+        const core::com::slots::key_t resetcamera_slotkey = "reset_camera_" + layer_id;
         auto reset_camera_layer_slot                      = new_slot(
             resetcamera_slotkey,
             [this, layer_id]()

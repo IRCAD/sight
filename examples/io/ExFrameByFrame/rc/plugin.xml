@@ -108,36 +108,36 @@
 
             <connect>
                 <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
+                <slot>videoGrabberSrv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
             </connect>
 
             <connect>
                 <signal>previousImageAct/clicked</signal>
-                <slot>videoGrabberSrv/previousImage</slot>
+                <slot>videoGrabberSrv/previous_image</slot>
             </connect>
 
             <connect>
                 <signal>nextImageAct/clicked</signal>
-                <slot>videoGrabberSrv/nextImage</slot>
+                <slot>videoGrabberSrv/next_image</slot>
             </connect>
 
             <connect>
-                <signal>camera/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <signal>camera/id_modified</signal>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
-                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <signal>frameUpdaterSrv/synchronization_done</signal>
                 <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>

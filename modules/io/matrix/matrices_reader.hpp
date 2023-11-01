@@ -46,14 +46,14 @@ namespace sight::module::io::matrix
  * Each line should contain exactly the same number of matrices.
  *
  * @section Slots Slots
- * - \b startReading(): start reading matrices
- * - \b stopReading(): stop reading matrices
+ * - \b start_reading(): start reading matrices
+ * - \b stop_reading(): stop reading matrices
  * - \b pause(): pause reading.
  * - \b readNext() : read next matrices
  * - \b readPrevious() : read previous matrices
- * - \b setStep(int step, std::string key) : set the step value between two matrices when calling readNext/readPrevious
+ * - \b set_step(int step, std::string key) : set the step value between two matrices when calling readNext/readPrevious
  * slots on oneShot mode (supported key: "step")
- * - \b toggleLoopMode() : changes the loop mode. If active, the reader loops over the file,
+ * - \b toggle_loop_mode() : changes the loop mode. If active, the reader loops over the file,
  * if false, it reads the file once only
  *
  * @section XML XML Configuration
@@ -183,7 +183,7 @@ private:
 
     /// Step between two matrices when calling readNext()/readPrevious() slots
     std::uint64_t m_step {1};
-    /// Step value updated in setStep() slot used to compute a shift value when calling readPrevious()/readNext() slots
+    /// Step value updated in set_step() slot used to compute a shift value when calling readPrevious()/readNext() slots
     std::uint64_t m_step_changed {1};
 
     static constexpr std::string_view MATRIXTL = "matrixTL";

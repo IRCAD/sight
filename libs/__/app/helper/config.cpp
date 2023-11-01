@@ -123,7 +123,7 @@ config::connection_info config::parse_connections(
             SIGHT_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", _obj);
             uid = _obj->get_id();
             key = src;
-            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem.first == "signal");
+            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/key>", elem.first == "signal");
             SIGHT_ASSERT(
                 "There must be only one signal by connection",
                 info.m_signal.first.empty() && info.m_signal.second.empty()
@@ -182,8 +182,8 @@ core::com::helper::proxy_connections config::parse_connections2(
         else if(elem.first != "<xmlattr>")
         {
             SIGHT_ASSERT(
-                _err_msg_head + "Signal or slot must be written as <signal>fwID/Key</signal> or "
-                                "<slot>fwID/Key</slot>",
+                _err_msg_head + "Signal or slot must be written as <signal>fwID/key</signal> or "
+                                "<slot>fwID/key</slot>",
                 false
             );
         }

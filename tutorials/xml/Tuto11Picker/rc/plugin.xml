@@ -213,7 +213,7 @@
 
             <connect>
                 <signal>pickerInteractorAdp/picked</signal>
-                <slot>pointEditorSrv/getInteraction</slot>
+                <slot>pointEditorSrv/get_interaction</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

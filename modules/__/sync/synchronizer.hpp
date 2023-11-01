@@ -43,16 +43,16 @@ namespace sight::module::sync
  * Once synchronized, the timeline data are pushed in output variables, which are associated through the configuration.
  *
  * @section Signals Signals
- * - \b synchronizationDone(core::hires_clock::type): Emitted when a synchronization has been done, and forward
+ * - \b synchronization_done(core::hires_clock::type): Emitted when a synchronization has been done, and forward
  * the synchronization timestamp.
- * - \b synchronizationSkipped(): Emitted when the synchronization is not done, either because the timelines are all
+ * - \b synchronization_skipped(): Emitted when the synchronization is not done, either because the timelines are all
  * empty, or because the synchronization timestamp has not changed.
  * - \b frameSynchronized(int): Emitted when a frame with sendStatus at true is synchronized while it wasn't previously.
  * - \b frameUnsynchronized(int): Emitted when a frame with sendStatus at true is unsynchronized while it wasn't
  * previously.
- * - \b matrixSynchronized(int): Emitted when a matrix with sendStatus at true is synchronized while it wasn't
+ * - \b matrix_synchronized(int): Emitted when a matrix with sendStatus at true is synchronized while it wasn't
  * previously.
- * - \b matrixUnsynchronized(int): Emitted when a matrix with sendStatus at true is unsynchronized while it wasn't
+ * - \b matrix_unsynchronized(int): Emitted when a matrix with sendStatus at true is unsynchronized while it wasn't
  * previously.
  *
  * @section Slots Slots
@@ -62,7 +62,7 @@ namespace sight::module::sync
  * with a TL and the element index in the timeline.
  * - \b setMatrixBinding( std::size_t, unsigned int, std::size_t) : change the association of a matrix output var
  * with a TL and the element index in the timeline.
- * - \b setDelay(int, std::string): Apply delay between frames and matrices
+ * - \b set_delay(int, std::string): Apply delay between frames and matrices
  *  The key needs to be either frameDelay_i or matrixDelay_i where i is the index of the timeline in the input vector
  *  The value should be a positive value.
  *  The delay will be applied to the corresponding timeline. Once synchronized, the effective frame/matrix
@@ -137,12 +137,12 @@ public:
     struct signals
     {
         using key_t = sight::core::com::signals::key_t;
-        static inline const key_t SYNCHRONIZATION_DONE_SIG    = "synchronizationDone";
-        static inline const key_t SYNCHRONIZATION_SKIPPED_SIG = "synchronizationSkipped";
+        static inline const key_t SYNCHRONIZATION_DONE_SIG    = "synchronization_done";
+        static inline const key_t SYNCHRONIZATION_SKIPPED_SIG = "synchronization_skipped";
         static inline const key_t FRAME_SYNCHRONIZED_SIG      = "frameSynchronized";
         static inline const key_t FRAME_UNSYNCHRONIZED_SIG    = "frameUnsynchronized";
-        static inline const key_t MATRIX_SYNCHRONIZED_SIG     = "matrixSynchronized";
-        static inline const key_t MATRIX_UNSYNCHRONIZED_SIG   = "matrixUnsynchronized";
+        static inline const key_t MATRIX_SYNCHRONIZED_SIG     = "matrix_synchronized";
+        static inline const key_t MATRIX_UNSYNCHRONIZED_SIG   = "matrix_unsynchronized";
 
         using timestamp_signal_t = sight::core::com::signal<void (core::hires_clock::type _timestamp)>;
         using void_signal_t      = sight::core::com::signal<void ()>;
@@ -157,7 +157,7 @@ public:
         static inline const key_t SYNCHRONIZE_SLOT            = "synchronize";
         static inline const key_t SET_FRAME_BINDING_SLOT      = "setFrameBinding";
         static inline const key_t SET_MATRIX_BINDING_SLOT     = "setMatrixBinding";
-        static inline const key_t SET_DELAY_SLOT              = "setDelay";
+        static inline const key_t SET_DELAY_SLOT              = "set_delay";
         static constexpr std::string_view FRAME_DELAY_PREFIX  = "frameDelay_";
         static constexpr std::string_view MATRIX_DELAY_PREFIX = "matrixDelay_";
     };

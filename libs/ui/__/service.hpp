@@ -68,18 +68,18 @@ class slideview;
  *
  * @section Slots Slots
  *
- * - \b setEnabled(bool isEnabled) : this slot enables the container (if isEnabled = true) or disables it.
- * - \b setEnabledByParam(ui::parameter_t isEnabled) : this slot enables the container (if isEnabled holds boolean
+ * - \b set_enabled(bool isEnabled) : this slot enables the container (if isEnabled = true) or disables it.
+ * - \b set_enabled_by_param(ui::parameter_t isEnabled) : this slot enables the container (if isEnabled holds boolean
  * alternative) or disables it.
  * - \b enable() : this slot enables the container.
  * - \b disable() : this slot disables the container
- * - \b setVisible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
- * - \b setVisibleByParam(ui::parameter_t isVisible) : this slot shows the container (if isEnabled holds boolean
+ * - \b set_visible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
+ * - \b set_visible_by_parameter(ui::parameter_t isVisible) : this slot shows the container (if isEnabled holds boolean
  * alternative) or hides it.
  * - \b show() : this slot shows the container.
  * - \b hide() : this slot hides the container.
- * - \b toggleVisibility() : this slot shows the container if it is hidden or hides it if it is shown
- * - \b modifyLayout(ui::parameter_t parameter, std::string key) : this slot modifies a layout element, depending
+ * - \b toggle_visibility() : this slot shows the container if it is hidden or hides it if it is shown
+ * - \b modify_layout(ui::parameter_t parameter, std::string key) : this slot modifies a layout element, depending
  *                                                                       of the key.
  *
  * @section XML Example of XML configuration
@@ -154,16 +154,16 @@ public:
     {
         using key_t = sight::core::com::slots::key_t;
 
-        inline static const key_t SET_ENABLED          = "setEnabled";
-        inline static const key_t SET_ENABLED_BY_PARAM = "setEnabledByParam";
+        inline static const key_t SET_ENABLED          = "set_enabled";
+        inline static const key_t SET_ENABLED_BY_PARAM = "set_enabled_by_param";
         inline static const key_t ENABLE               = "enable";
         inline static const key_t DISABLE              = "disable";
-        inline static const key_t SET_VISIBLE          = "setVisible";
+        inline static const key_t SET_VISIBLE          = "set_visible";
         inline static const key_t SET_VISIBLE_BY_PARAM = "setVisibleByParam";
         inline static const key_t SHOW                 = "show";
         inline static const key_t HIDE                 = "hide";
-        inline static const key_t TOGGLE_VISIBILITY    = "toggleVisibility";
-        inline static const key_t MODIFY_LAYOUT        = "modifyLayout";
+        inline static const key_t TOGGLE_VISIBILITY    = "toggle_visibility";
+        inline static const key_t MODIFY_LAYOUT        = "modify_layout";
     };
 
     /// SLOT: enable/disable the container

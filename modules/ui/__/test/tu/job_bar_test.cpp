@@ -159,7 +159,7 @@ void job_bar_test::basic_test()
     CPPUNIT_ASSERT_NO_THROW(m_job_bar->start().get());
 
     auto job = std::make_shared<dummy_job>(s_JOB_NAME);
-    m_job_bar->slot("showJob")->run(std::static_pointer_cast<core::jobs::base>(job));
+    m_job_bar->slot("show_job")->run(std::static_pointer_cast<core::jobs::base>(job));
 
     CPPUNIT_ASSERT_EQUAL(s_JOB_NAME, dummy_progress_dialog::s_last_dialog->get_title());
     CPPUNIT_ASSERT_EQUAL(""s, dummy_progress_dialog::s_last_dialog->get_message());

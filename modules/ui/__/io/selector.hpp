@@ -39,9 +39,9 @@ namespace sight::module::ui::io
  * @brief  This service displays a list of available readers or writers and lets you select one to load or save a data.
  *
  * @section Signals Signals
- * - \b jobCreated(core::jobs::base::sptr) : emitted when a job is created.
+ * - \b job_created(core::jobs::base::sptr) : emitted when a job is created.
  * - \b jobFailed() : emitted when the job has been cancelled by the user or has failed.
- * - \b jobSucceeded() : emitted when a job finishes correctly.
+ * - \b job_succeeded() : emitted when a job finishes correctly.
  *
  * @section Slots Slots
  * - \b forwardJob(core::jobs::base::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'

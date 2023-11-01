@@ -218,128 +218,128 @@ This example shows the possibilities of parameters:
             <!-- Connect all the parameters to each other -->
 
             <connect>
-                <signal>preferencesAct/preferenceChanged</signal>
+                <signal>preferencesAct/preference_changed</signal>
                 <slot>parameters1Srv/set_parameter</slot>
                 <slot>parameters2Srv/set_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/boolChanged</signal>
+                <signal>parameters1Srv/bool_changed</signal>
                 <slot>parameters2Srv/set_bool_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/boolChanged</signal>
+                <signal>parameters2Srv/bool_changed</signal>
                 <slot>parameters1Srv/set_bool_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/colorChanged</signal>
+                <signal>parameters1Srv/color_changed</signal>
                 <slot>parameters2Srv/set_color_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/colorChanged</signal>
+                <signal>parameters2Srv/color_changed</signal>
                 <slot>parameters1Srv/set_color_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/doubleChanged</signal>
+                <signal>parameters1Srv/double_changed</signal>
                 <slot>parameters2Srv/set_double_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/doubleChanged</signal>
+                <signal>parameters2Srv/double_changed</signal>
                 <slot>parameters1Srv/set_double_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/double2Changed</signal>
+                <signal>parameters1Srv/double2_changed</signal>
                 <slot>parameters2Srv/set_double2_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/double2Changed</signal>
+                <signal>parameters2Srv/double2_changed</signal>
                 <slot>parameters1Srv/set_double2_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/double3Changed</signal>
+                <signal>parameters1Srv/double3_changed</signal>
                 <slot>parameters2Srv/set_double3_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/double3Changed</signal>
+                <signal>parameters2Srv/double3_changed</signal>
                 <slot>parameters1Srv/set_double3_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/intChanged</signal>
+                <signal>parameters1Srv/int_changed</signal>
                 <slot>parameters2Srv/set_int_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/intChanged</signal>
+                <signal>parameters2Srv/int_changed</signal>
                 <slot>parameters1Srv/set_int_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/int2Changed</signal>
+                <signal>parameters1Srv/int2_changed</signal>
                 <slot>parameters2Srv/set_int2_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/int2Changed</signal>
+                <signal>parameters2Srv/int2_changed</signal>
                 <slot>parameters1Srv/set_int2_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/int3Changed</signal>
+                <signal>parameters1Srv/int3_changed</signal>
                 <slot>parameters2Srv/set_int3_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/int3Changed</signal>
+                <signal>parameters2Srv/int3_changed</signal>
                 <slot>parameters1Srv/set_int3_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1Srv/enumChanged</signal>
+                <signal>parameters1Srv/enum_changed</signal>
                 <slot>parameters2Srv/set_enum_parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2Srv/enumChanged</signal>
+                <signal>parameters2Srv/enum_changed</signal>
                 <slot>parameters1Srv/set_enum_parameter</slot>
             </connect>
 
             <!-- Connection to update the parameters minimum/maximum -->
             <connect>
-                <signal>minParametersSrv/intChanged</signal>
-                <slot>parameters1Srv/updateIntMinParameter</slot>
-                <slot>parameters2Srv/updateIntMinParameter</slot>
-                <slot>maxParametersSrv/updateIntMinParameter</slot>
+                <signal>minParametersSrv/int_changed</signal>
+                <slot>parameters1Srv/update_int_min_parameter</slot>
+                <slot>parameters2Srv/update_int_min_parameter</slot>
+                <slot>maxParametersSrv/update_int_min_parameter</slot>
             </connect>
 
             <connect>
-                <signal>maxParametersSrv/intChanged</signal>
-                <slot>parameters1Srv/updateIntMaxParameter</slot>
-                <slot>parameters2Srv/updateIntMaxParameter</slot>
-                <slot>minParametersSrv/updateIntMaxParameter</slot>
+                <signal>maxParametersSrv/int_changed</signal>
+                <slot>parameters1Srv/update_int_max_parameter</slot>
+                <slot>parameters2Srv/update_int_max_parameter</slot>
+                <slot>minParametersSrv/update_int_max_parameter</slot>
             </connect>
 
             <connect>
-                <signal>minParametersSrv/doubleChanged</signal>
-                <slot>parameters1Srv/updateDoubleMinParameter</slot>
-                <slot>parameters2Srv/updateDoubleMinParameter</slot>
-                <slot>maxParametersSrv/updateDoubleMinParameter</slot>
+                <signal>minParametersSrv/double_changed</signal>
+                <slot>parameters1Srv/update_double_min_parameter</slot>
+                <slot>parameters2Srv/update_double_min_parameter</slot>
+                <slot>maxParametersSrv/update_double_min_parameter</slot>
             </connect>
 
             <connect>
-                <signal>maxParametersSrv/doubleChanged</signal>
-                <slot>parameters1Srv/updateDoubleMaxParameter</slot>
-                <slot>parameters2Srv/updateDoubleMaxParameter</slot>
-                <slot>minParametersSrv/updateDoubleMaxParameter</slot>
+                <signal>maxParametersSrv/double_changed</signal>
+                <slot>parameters1Srv/update_double_max_parameter</slot>
+                <slot>parameters2Srv/update_double_max_parameter</slot>
+                <slot>minParametersSrv/update_double_max_parameter</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

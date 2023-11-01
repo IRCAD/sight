@@ -35,8 +35,8 @@
 namespace sight::module::filter::vision
 {
 
-static const core::com::signals::key_t CAMERA_MOVED_SIG    = "cameraMoved";
-static const core::com::signals::key_t CAMERA_REMAINED_SIG = "cameraRemained";
+static const core::com::signals::key_t CAMERA_MOVED_SIG    = "camera_moved";
+static const core::com::signals::key_t CAMERA_REMAINED_SIG = "camera_remained";
 
 // ----------------------------------------------------------------------------
 

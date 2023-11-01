@@ -39,7 +39,7 @@ namespace sight::ui
  * @brief Defines the base class for services displaying activity view
  *
  * @section Slots Slots
- * - \b launchActivity( data::activity::sptr ): This slot allows to create a view for the given activity.
+ * - \b launch_activity( data::activity::sptr ): This slot allows to create a view for the given activity.
  *
  *  * @section XML XML Configuration
  * @code{.xml}

@@ -189,26 +189,26 @@ Usage:
 
         <connect>
             <signal>startVideoAct/clicked</signal>
-            <slot>grabberProxySrv/startCamera</slot>
+            <slot>grabberProxySrv/start_camera</slot>
         </connect>
 
         <connect channel="${cameraPausedChannelOut}">
             <signal>pauseVideoAct/clicked</signal>
-            <slot>grabberProxySrv/pauseCamera</slot>
+            <slot>grabberProxySrv/pause_camera</slot>
             <slot>resumeVideoAct/show</slot>
             <slot>pauseVideoAct/hide</slot>
         </connect>
 
         <connect channel="${cameraResumePauseChannelOut}">
             <signal>resumeVideoAct/clicked</signal>
-            <slot>grabberProxySrv/pauseCamera</slot>
+            <slot>grabberProxySrv/pause_camera</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/show</slot>
         </connect>
 
         <connect>
             <signal>stopVideoAct/clicked</signal>
-            <slot>grabberProxySrv/stopCamera</slot>
+            <slot>grabberProxySrv/stop_camera</slot>
             <slot>startVideoAct/show</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/hide</slot>
@@ -219,34 +219,34 @@ Usage:
 
         <connect channel="${loopModeToggleChannelOut}">
             <signal>loopVideoAct/clicked</signal>
-            <slot>grabberProxySrv/loopVideo</slot>
+            <slot>grabberProxySrv/loop_video</slot>
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredCameras</signal>
+            <signal>videoSelectorSrv/configured_cameras</signal>
             <slot>grabberProxySrv/reconfigure</slot>
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredStream</signal>
-            <signal>videoSelectorSrv/configuredDevice</signal>
+            <signal>videoSelectorSrv/configured_stream</signal>
+            <signal>videoSelectorSrv/configured_device</signal>
             <slot>startVideoAct/update</slot>
         </connect>
 
         <connect channel="${configuredFileOut}">
-            <signal>videoSelectorSrv/configuredFile</signal>
+            <signal>videoSelectorSrv/configured_file</signal>
         </connect>
 
         <connect channel="${configuredStreamOut}">
-            <signal>videoSelectorSrv/configuredStream</signal>
+            <signal>videoSelectorSrv/configured_stream</signal>
         </connect>
 
         <connect channel="${configuredDeviceOut}">
-            <signal>videoSelectorSrv/configuredDevice</signal>
+            <signal>videoSelectorSrv/configured_device</signal>
         </connect>
 
         <connect channel="${cameraStartedChannelOut}" >
-            <signal>grabberProxySrv/cameraStarted</signal>
+            <signal>grabberProxySrv/camera_started</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
             <slot>stopVideoAct/enable</slot>
@@ -254,12 +254,12 @@ Usage:
         </connect>
 
         <connect>
-            <signal>camera/idModified</signal>
-            <slot>grabberProxySrv/stopCamera</slot>
+            <signal>camera/id_modified</signal>
+            <slot>grabberProxySrv/stop_camera</slot>
         </connect>
 
         <connect channel="${cameraStoppedChannelOut}" >
-            <signal>grabberProxySrv/cameraStopped</signal>
+            <signal>grabberProxySrv/camera_stopped</signal>
         </connect>
 
         <connect>
@@ -273,19 +273,19 @@ Usage:
         </connect>
 
         <connect channel="${parameterChannelOut}" >
-            <signal>grabberProxySrv/parameterChanged</signal>
+            <signal>grabberProxySrv/parameter_changed</signal>
         </connect>
 
         <connect channel="${videoPositionParameterIn}">
-            <slot>grabberProxySrv/setPositionVideo</slot>
+            <slot>grabberProxySrv/set_position_video</slot>
         </connect>
 
         <connect channel="${videoPositionParameterOut}">
-            <signal>grabberProxySrv/positionModified</signal>
+            <signal>grabberProxySrv/position_modified</signal>
         </connect>
 
         <connect channel="${videoDurationParameterOut}">
-            <signal>grabberProxySrv/durationModified</signal>
+            <signal>grabberProxySrv/duration_modified</signal>
         </connect>
 
         <connect channel="${notificationChannel}">
@@ -293,11 +293,11 @@ Usage:
         </connect>
 
         <connect channel="${addROICenterChannelIn}">
-            <slot>grabberProxySrv/addROICenter</slot>
+            <slot>grabberProxySrv/add_roi_center</slot>
         </connect>
 
         <connect channel="${removeROICenterChannelIn}">
-            <slot>grabberProxySrv/removeROICenter</slot>
+            <slot>grabberProxySrv/remove_roi_center</slot>
         </connect>
 
         <connect channel="${optimizeGrabberIn}">

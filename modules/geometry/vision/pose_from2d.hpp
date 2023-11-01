@@ -43,7 +43,7 @@ namespace sight::module::geometry::vision
  * @brief   pose_from2d Class used to compute the 3d pose of a object using 2d points.
  *
  * @section Slots Slots
- * - \b computeRegistration(core::hires_clock::type timestamp) : computes the registration.
+ * - \b compute_registration(core::hires_clock::type timestamp) : computes the registration.
  *
  * @section XML XML Configuration
  *

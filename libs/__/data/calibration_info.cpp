@@ -36,10 +36,10 @@ namespace sight::data
 
 SIGHT_REGISTER_DATA(sight::data::calibration_info);
 
-const core::com::signals::key_t calibration_info::ADDED_RECORD_SIG   = "addedRecord";
-const core::com::signals::key_t calibration_info::REMOVED_RECORD_SIG = "removedRecord";
-const core::com::signals::key_t calibration_info::RESET_RECORD_SIG   = "resetRecord";
-const core::com::signals::key_t calibration_info::GET_RECORD_SIG     = "getRecord";
+const core::com::signals::key_t calibration_info::ADDED_RECORD_SIG   = "added_record";
+const core::com::signals::key_t calibration_info::REMOVED_RECORD_SIG = "removed_record";
+const core::com::signals::key_t calibration_info::RESET_RECORD_SIG   = "reset_record";
+const core::com::signals::key_t calibration_info::GET_RECORD_SIG     = "get_record";
 
 using image_container_t            = std::list<image::sptr>;
 using point_list_container_t       = std::list<point_list::sptr>;

@@ -47,7 +47,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor transforms a Sight camera to an Ogre camera.
  *
  * @section Slots Slots
- * - \b updateTF3D(): called when the Ogre transform matrix has been updated and updates the transform service
+ * - \b update_tf3D(): called when the Ogre transform matrix has been updated and updates the transform service
  * accordingly.
  * - \b calibrate(): applies calibration information to Ogre camera.
  *
@@ -146,7 +146,7 @@ private:
     struct CameraNodeListener;
     CameraNodeListener* m_camera_node_listener {nullptr};
 
-    /// This avoids a self-call to updateTF3D() when we update() the camera
+    /// This avoids a self-call to update_tf3D() when we update() the camera
     bool m_skip_update {false};
 
     /// Indicates if the calibration has been done successfully. If not, no update can be done without a calibrate

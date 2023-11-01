@@ -39,7 +39,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateLength";
+static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "update_length";
 
 //-----------------------------------------------------------------------------
 

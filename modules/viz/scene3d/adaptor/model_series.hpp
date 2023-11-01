@@ -46,7 +46,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b changeField(): update all reconstructions visibility.
  * - \b update_visibility(bool): sets whether all reconstructions are shown or not.
- * - \b toggleVisibility(): toggle whether all reconstructions are shown or not.
+ * - \b toggle_visibility(): toggle whether all reconstructions are shown or not.
  * - \b show(): shows all reconstructions.
  * - \b hide(): hides all reconstructions.
  *

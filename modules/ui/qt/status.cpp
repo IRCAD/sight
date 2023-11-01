@@ -46,13 +46,13 @@
 namespace sight::module::ui::qt
 {
 
-const core::com::slots::key_t status::CHANGE_TO_GREEN_SLOT      = "changeToGreen";
-const core::com::slots::key_t status::CHANGE_TO_RED_SLOT        = "changeToRed";
-const core::com::slots::key_t status::CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
-const core::com::slots::key_t status::TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
-const core::com::slots::key_t status::CHANGE_NTH_TO_GREEN_SLOT  = "changeNthToGreen";
-const core::com::slots::key_t status::CHANGE_NTH_TO_RED_SLOT    = "changeNthToRed";
-const core::com::slots::key_t status::CHANGE_NTH_TO_ORANGE_SLOT = "changeNthToOrange";
+const core::com::slots::key_t status::CHANGE_TO_GREEN_SLOT      = "change_to_green";
+const core::com::slots::key_t status::CHANGE_TO_RED_SLOT        = "change_to_red";
+const core::com::slots::key_t status::CHANGE_TO_ORANGE_SLOT     = "change_to_orange";
+const core::com::slots::key_t status::TOGGLE_GREEN_RED_SLOT     = "toggle_green_red";
+const core::com::slots::key_t status::CHANGE_NTH_TO_GREEN_SLOT  = "change_nth_to_green";
+const core::com::slots::key_t status::CHANGE_NTH_TO_RED_SLOT    = "change_nth_to_red";
+const core::com::slots::key_t status::CHANGE_NTH_TO_ORANGE_SLOT = "change_nth_to_orange";
 const core::com::slots::key_t status::TOGGLE_NTH_GREEN_RED_SLOT = "toggleNthGreenRed";
 
 //-----------------------------------------------------------------------------

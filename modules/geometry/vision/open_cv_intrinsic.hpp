@@ -37,7 +37,7 @@ namespace sight::module::geometry::vision
  * @brief   open_cv_intrinsic service that computes intrinsic calibration with openCV.
  *
  * @section Slots Slots
- * - \b updateChessboardSize(unsigned int, unsigned int, float) : Received when the chessboard parameters change.
+ * - \b update_chessboard_size(unsigned int, unsigned int, float) : Received when the chessboard parameters change.
 
  * @section XML XML Configuration
  *

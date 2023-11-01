@@ -41,7 +41,7 @@
 namespace sight::module::ui::qt
 {
 
-static const core::com::slots::key_t UPDATE_FROM_PREFS_SLOT = "updateFromPreferences";
+static const core::com::slots::key_t UPDATE_FROM_PREFS_SLOT = "update_from_preferences";
 
 //-----------------------------------------------------------------------------
 

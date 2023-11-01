@@ -40,8 +40,8 @@ namespace sight::module::data
 {
 
 const core::com::slots::key_t manage::ADD_SLOT               = "add";
-const core::com::slots::key_t manage::ADD_COPY_SLOT          = "addCopy";
-const core::com::slots::key_t manage::ADD_OR_SWAP_SLOT       = "addOrSwap";
+const core::com::slots::key_t manage::ADD_COPY_SLOT          = "add_copy";
+const core::com::slots::key_t manage::ADD_OR_SWAP_SLOT       = "add_or_swap";
 const core::com::slots::key_t manage::SWAP_OBJ_SLOT          = "swapObj";
 const core::com::slots::key_t manage::REMOVE_SLOT            = "remove";
 const core::com::slots::key_t manage::REMOVE_IF_PRESENT_SLOT = "removeIfPresent";

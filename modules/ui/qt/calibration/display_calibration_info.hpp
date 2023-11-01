@@ -63,7 +63,7 @@ namespace sight::module::ui::qt::calibration
  * - \b calInfo2 [sight::data::calibration_info] (optional): calibration information for optional second camera.
  *
  * @section Slots Slots
- * - \b displayImage(std::size_t index): launches the configuration to display the calibration image at the given index
+ * - \b display_image(std::size_t index): launches the configuration to display the calibration image at the given index
  * on
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.

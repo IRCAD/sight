@@ -85,7 +85,7 @@
         <!-- ******************************* Connections ************************************** -->
 
         <connect channel="${PROGRESS_CHANNEL}">
-            <signal>anonymizeController/jobCreated</signal>
+            <signal>anonymizeController/job_created</signal>
         </connect>
 
         <connect>

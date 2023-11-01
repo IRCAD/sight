@@ -38,7 +38,7 @@ namespace sight::module::ui::qt
  *
  * @section Slots Slots
  * - \b pop(): Adds a popup in the queue & display it.
- * - \b closeNotification(std::string channel): Close the popup associated with the given channel.
+ * - \b close_notification(std::string channel): Close the popup associated with the given channel.
  * - \b set_enum_parameter(std::string value, std::string key): Changes the position of notifications (key "position"),
  * accepted values are the same than the "position" tag in the XML configuration.
  *

@@ -104,12 +104,12 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>spacingEditorSrv/double2Changed</signal>
-                <slot>gridAdp/setGridSpacing</slot>
+                <signal>spacingEditorSrv/double2_changed</signal>
+                <slot>gridAdp/set_grid_spacing</slot>
             </connect>
 
             <connect>
-                <signal>depthRangeSliderSrv/doubleChanged</signal>
+                <signal>depthRangeSliderSrv/double_changed</signal>
                 <slot>square1Adp/set_double_parameter</slot>
             </connect>
 

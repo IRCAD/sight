@@ -47,18 +47,19 @@ class layer;
  *
  * @section Signals Signals
  * - \b compositorUpdated(): sent when the compositor chain is modified.
- * - \b fullscreenSet(bool): sent when fullscreen is enabled/disabled.
+ * - \b fullscreen_set(bool): sent when fullscreen is enabled/disabled.
  *
  * @section Slots Slots
  * - \b computeCameraParameters(): resets the camera position to visualize the whole scene.
- * - \b resetCameras(): resets all layers camera.
- * - \b resetCamera_LAYER_ID(): "LAYER_ID" needs to be changed with your actual layer id. Resets the camera of the layer
+ * - \b reset_cameras(): resets all layers camera.
+ * - \b reset_camera_LAYER_ID(): "LAYER_ID" needs to be changed with your actual layer id. Resets the camera of the
+ * layer
  * specified by LAYER_ID.
  * - \b request_render(): request the service to repaint the scene.
- * - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
- * - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
- * - \b setManualMode(): switches to manual mode, the scene is rendered whenever the request_render() slot is called.
- * - \b setAutoMode(): switches to auto mode, the scene is rendered whenever an adaptor decides it.
+ * - \b disable_fullscreen(): switches to windowed rendering if fullscreen is enabled.
+ * - \b enable_fullscreen(int): switches fullscreen rendering on the given screen.
+ * - \b set_manual_mode(): switches to manual mode, the scene is rendered whenever the request_render() slot is called.
+ * - \b set_auto_mode(): switches to auto mode, the scene is rendered whenever an adaptor decides it.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -143,8 +144,8 @@ public:
         using void_signal_t               = sight::core::com::signal<void ()>;
         using compositor_updated_signal_t = core::com::signal<void (std::string, bool, viz::scene3d::layer::sptr)>;
 
-        static inline const key_t FULLSCREEN_SET     = "fullscreenSet";
-        static inline const key_t FULLSCREEN_UNSET   = "fullscreenUnset";
+        static inline const key_t FULLSCREEN_SET     = "fullscreen_set";
+        static inline const key_t FULLSCREEN_UNSET   = "fullscreen_unset";
         static inline const key_t COMPOSITOR_UPDATED = "compositorUpdated";
     };
 

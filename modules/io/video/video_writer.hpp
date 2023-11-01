@@ -36,9 +36,9 @@ namespace sight::module::io::video
 /**
  * @brief This service allows to save the timeline frames in a video file.
  *
- * - \b saveFrame(timestamp) : add the current frame in the video
- * - \b startRecord() : start recording
- * - \b stopRecord() : stop recording
+ * - \b save_frame(timestamp) : add the current frame in the video
+ * - \b start_record() : start recording
+ * - \b stop_record() : stop recording
  *
  * @section XML XML Configuration
  *

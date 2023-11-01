@@ -34,12 +34,12 @@
 namespace sight::module::filter::vision
 {
 
-const core::com::slots::key_t SET_BACKGROUND_SLOT            = "setBackground";
-const core::com::slots::key_t SET_FOREGROUND_SLOT            = "setForeground";
-const core::com::slots::key_t SET_THRESHOLD_SLOT             = "setThreshold";
-const core::com::slots::key_t SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
-const core::com::slots::key_t SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
-const core::com::slots::key_t SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
+const core::com::slots::key_t SET_BACKGROUND_SLOT            = "set_background";
+const core::com::slots::key_t SET_FOREGROUND_SLOT            = "set_foreground";
+const core::com::slots::key_t SET_THRESHOLD_SLOT             = "set_threshold";
+const core::com::slots::key_t SET_NOISE_LEVEL_SLOT           = "set_noise_level";
+const core::com::slots::key_t SET_BACKGROUND_COMPONENTS_SLOT = "set_background_components";
+const core::com::slots::key_t SET_FOREGROUND_COMPONENTS_SLOT = "set_foreground_components";
 const core::com::slots::key_t CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
 // ------------------------------------------------------------------------------

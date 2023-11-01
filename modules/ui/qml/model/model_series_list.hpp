@@ -36,8 +36,8 @@ namespace sight::module::ui::qml::model
  * @brief   model_series_list service allows to manage the ModelSeries organs.
  *
  * @section Signals Signals
- * - \b reconstructionSelected(data::object::sptr): this signal emits the selected reconstruction
- * - \b emptiedSelection(): this signal is emitted when no reconstruction is selected
+ * - \b reconstruction_selected(data::object::sptr): this signal emits the selected reconstruction
+ * - \b emptied_selection(): this signal is emitted when no reconstruction is selected
  *
  * @section QSlots Qt Slots
  * - \b onOrganSelected(int): called when an organ is selected, the index represents the index of the selected

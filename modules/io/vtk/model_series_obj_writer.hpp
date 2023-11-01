@@ -54,7 +54,7 @@ namespace sight::module::io::vtk
  * Service writing a model series as .obj files using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
+ * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
  * connected to a job_bar).
  *
  * @section XML XML Configuration

@@ -190,7 +190,7 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect>
-            <signal>modelSeriesListSrv/reconstructionSelected</signal>
+            <signal>modelSeriesListSrv/reconstruction_selected</signal>
             <slot>selectReconstructionSrv/add</slot>
         </connect>
 

@@ -84,7 +84,7 @@ void signal_gate_test::basic_test()
     auto all_received_slot = core::com::new_slot([&all_received]{all_received = true;});
     m_worker = core::thread::worker::make();
     all_received_slot->set_worker(m_worker);
-    m_signal_gate->signal("allReceived")->connect(all_received_slot);
+    m_signal_gate->signal("all_received")->connect(all_received_slot);
     boost::property_tree::ptree ptree;
     ptree.add("signal", "object1/signal");
     ptree.add("signal", "object2/signal");

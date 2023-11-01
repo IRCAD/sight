@@ -46,7 +46,7 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
+ * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
  * connected to a job_bar).
  *
  * @section XML XML Configuration
@@ -108,7 +108,7 @@ public:
         using session_path_t       = core::com::signal<void (std::filesystem::path)>;
 
         using signal_t = sight::core::com::signals::key_t;
-        inline static const signal_t SESSION_LOADED         = "sessionLoaded";
+        inline static const signal_t SESSION_LOADED         = "session_loaded";
         inline static const signal_t SESSION_LOADING_FAILED = "sessionLoadingFailed";
     };
 

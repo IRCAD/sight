@@ -50,7 +50,7 @@ namespace sight::module::io::vtk
  * @brief Service reading a VTK image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
+ * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
  * connected to a job_bar).
  *
  * @section Slots Slots

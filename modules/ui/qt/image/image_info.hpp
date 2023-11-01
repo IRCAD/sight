@@ -46,7 +46,7 @@ namespace sight::module::ui::qt::image
  *         ::visuVTKAdaptor::imagePickerInteractor)
  *
  * @section Slots Slots
- * - \b getInteraction(data::tools::picking_info): display image pixel information
+ * - \b get_interaction(data::tools::picking_info): display image pixel information
  *
  * @section XML XML Configuration
  *

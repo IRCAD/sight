@@ -33,7 +33,7 @@ namespace sight::module::ui::com
  *
  * @section Signals Signals
  * - \b triggered(type) : Emitted when the action is triggered, with the timestamp as a high_res_clock_t.
- * - \b triggeredAsString(string) : Emitted when the action is triggered, with the timestamp as a string.
+ * - \b triggered_as_string(string) : Emitted when the action is triggered, with the timestamp as a string.
  *
  * @section XML XML Configuration
  *

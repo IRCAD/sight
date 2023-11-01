@@ -42,7 +42,7 @@ namespace sight::module::geometry::vision
 {
 
 // Public slot
-const core::com::slots::key_t distortion::CHANGE_STATE_SLOT = "changeState";
+const core::com::slots::key_t distortion::CHANGE_STATE_SLOT = "change_state";
 
 // Private slot
 static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";

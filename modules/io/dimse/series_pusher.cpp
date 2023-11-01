@@ -47,8 +47,8 @@ namespace sight::module::io::dimse
 const core::com::slots::key_t series_pusher::DISPLAY_SLOT = "displayMessage";
 
 const core::com::signals::key_t series_pusher::PROGRESSED_SIG       = "progressed";
-const core::com::signals::key_t series_pusher::STARTED_PROGRESS_SIG = "startedProgress";
-const core::com::signals::key_t series_pusher::STOPPED_PROGRESS_SIG = "stoppedProgress";
+const core::com::signals::key_t series_pusher::STARTED_PROGRESS_SIG = "started_progress";
+const core::com::signals::key_t series_pusher::STOPPED_PROGRESS_SIG = "stopped_progress";
 
 //------------------------------------------------------------------------------
 

@@ -436,7 +436,7 @@
 
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
             <service uid="syncGenericSceneSrv" type="sight::module::sync::signal_gate">
-                <signal>sourceFrame/bufferModified</signal>
+                <signal>sourceFrame/buffer_modified</signal>
                 <signal>cameraToMarker/modified</signal>
             </service>
 
@@ -448,24 +448,24 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>showMeshAct/isChecked</signal>
+                <signal>showMeshAct/is_checked</signal>
                 <slot>cubeAdp/update_visibility</slot>
             </connect>
 
             <connect>
-                <signal>hideAxisSrv/isChecked</signal>
+                <signal>hideAxisSrv/is_checked</signal>
                 <slot>axisAdp/update_visibility</slot>
             </connect>
 
             <connect>
-                <signal>videoSelectorSrv/configuredFile</signal>
-                <signal>videoSelectorSrv/configuredStream</signal>
-                <signal>videoSelectorSrv/configuredDevice</signal>
+                <signal>videoSelectorSrv/configured_file</signal>
+                <signal>videoSelectorSrv/configured_stream</signal>
+                <signal>videoSelectorSrv/configured_device</signal>
                 <slot>startVideoAct/update</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/cameraStarted</signal>
+                <signal>videoGrabberSrv/camera_started</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
                 <slot>stopVideoAct/enable</slot>
@@ -473,8 +473,8 @@
             </connect>
 
             <connect>
-                <signal>camera/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <signal>camera/id_modified</signal>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
@@ -485,17 +485,17 @@
 
             <!-- signal/slot connection -->
             <connect>
-                <signal>reprojectionParamametersSrv/parameterChanged</signal>
+                <signal>reprojectionParamametersSrv/parameter_changed</signal>
                 <slot>errorSrv/set_parameter</slot>
             </connect>
 
             <connect>
-                <signal>errorSrv/errorComputed</signal>
+                <signal>errorSrv/error_computed</signal>
                 <slot>errorLabelSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
-                <signal>arucoParametersSrv/parameterChanged</signal>
+                <signal>arucoParametersSrv/parameter_changed</signal>
                 <slot>trackerSrv/set_parameter</slot>
             </connect>
 
@@ -506,14 +506,14 @@
             </connect>
 
             <connect>
-                <signal>trackerSrv/markerDetected</signal>
+                <signal>trackerSrv/marker_detected</signal>
                 <slot>axisAdp/update_visibility</slot>
             </connect>
 
             <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
             <!-- then process a new frame -->
             <connect>
-                <signal>syncGenericSceneSrv/allReceived</signal>
+                <signal>syncGenericSceneSrv/all_received</signal>
                 <slot>genericSceneSrv/request_render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
@@ -525,26 +525,26 @@
 
             <connect>
                 <signal>startVideoAct/updated</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
+                <slot>videoGrabberSrv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/updated</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
             </connect>
 
             <connect>
                 <signal>resumeVideoAct/updated</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/updated</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>videoGrabberSrv/stop_camera</slot>
                 <slot>startVideoAct/show</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/hide</slot>
@@ -555,7 +555,7 @@
 
             <connect>
                 <signal>loopVideoAct/updated</signal>
-                <slot>videoGrabberSrv/loopVideo</slot>
+                <slot>videoGrabberSrv/loop_video</slot>
             </connect>
 
             <connect>

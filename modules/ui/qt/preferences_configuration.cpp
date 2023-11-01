@@ -44,8 +44,8 @@
 namespace sight::module::ui::qt
 {
 
-const core::com::signals::key_t preferences_configuration::PARAMETERS_MODIFIED_SIG = "parametersModified";
-const core::com::signals::key_t preferences_configuration::PREFERENCE_CHANGED_SIG  = "preferenceChanged";
+const core::com::signals::key_t preferences_configuration::PARAMETERS_MODIFIED_SIG = "parameters_modified";
+const core::com::signals::key_t preferences_configuration::PREFERENCE_CHANGED_SIG  = "preference_changed";
 
 //------------------------------------------------------------------------------
 

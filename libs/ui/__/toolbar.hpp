@@ -111,8 +111,9 @@ protected:
      *   - \<editor\> represents container service (editor, view, ...)
      *
      *  * @section Slots Slots
-     * - \b setVisible(bool isVisible) : this slot shows the toolbar (if isVisible = true) or hides it.
-     * - \b setVisibleByParam(ui::parameter_t isVisible) : this slot shows the toolbar (if isEnabled holds boolean
+     * - \b set_visible(bool isVisible) : this slot shows the toolbar (if isVisible = true) or hides it.
+     * - \b set_visible_by_parameter(ui::parameter_t isVisible) : this slot shows the toolbar (if isEnabled holds
+     * boolean
      * alternative) or hides it.
      * - \b show() : this slot shows the toolbar.
      * - \b hide() : this slot hides the toolbar.
@@ -137,7 +138,7 @@ protected:
     struct slots
     {
         using key_t = sight::core::com::slots::key_t;
-        static inline const key_t SET_VISIBLE_SLOT          = "setVisible";
+        static inline const key_t SET_VISIBLE_SLOT          = "set_visible";
         static inline const key_t SET_VISIBLE_BY_PARAM_SLOT = "setVisibleByParam";
         static inline const key_t SHOW_SLOT                 = "show";
         static inline const key_t HIDE_SLOT                 = "hide";

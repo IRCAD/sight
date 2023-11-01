@@ -39,13 +39,13 @@ namespace sight::io::service
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
  * @section Signals Signals
- * - \b prefixSet(): Emitted when the prefix has been correctly updated,
- * - \b baseFolderSet(): Emitted When the base folder has been correctly updated.
+ * - \b prefix_set(): Emitted when the prefix has been correctly updated,
+ * - \b base_folder_set(): Emitted When the base folder has been correctly updated.
  *
  * @section Slots Slots
- * - \b setPrefix(std::string): When connected to a string-emitting signal (or function),
+ * - \b set_prefix(std::string): When connected to a string-emitting signal (or function),
  *   this slot will concatenate the string as a prefix of the output file/folder.
- * - \b setBaseFolder(std::string): When connected to a string-emitting signal (or function),
+ * - \b set_base_folder(std::string): When connected to a string-emitting signal (or function),
  *   this slot will set the base folder used by writers.
  *
  * @subsection Configuration Configuration

@@ -32,8 +32,8 @@
 namespace sight::module::filter::vision
 {
 
-static const core::com::slots::key_t SET_BACKGROUND_SLOT = "setBackground";
-static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "setThreshold";
+static const core::com::slots::key_t SET_BACKGROUND_SLOT = "set_background";
+static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "set_threshold";
 
 // ------------------------------------------------------------------------------
 

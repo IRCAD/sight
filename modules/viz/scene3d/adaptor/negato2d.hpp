@@ -49,10 +49,10 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b sliceType(int, int): updates image slice index .
  * - \b sliceIndex(int, int, int): updates image slice type.
  * - \b update_visibility(bool): shows or hides the negato.
- * - \b toggleVisibility(): toggle whether the negato is shown or not.
+ * - \b toggle_visibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
  * - \b hide(): hides the negato.
- * - \b updateSlicesFromWorld(double, double, double): updates image slices indexes according to a 3d world point
+ * - \b update_slices_from_world(double, double, double): updates image slices indexes according to a 3d world point
  * or landmark.
  *
  * @section XML XML Configuration

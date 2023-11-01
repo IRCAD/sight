@@ -47,8 +47,8 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b update_visibility(bool): Sets whether the vector is shown or not.
- * - \b toggleVisibility(): Toggle whether the vector is shown or not.
- * - \b updateLength(float): set the length of the vector.
+ * - \b toggle_visibility(): Toggle whether the vector is shown or not.
+ * - \b update_length(float): set the length of the vector.
  * - \b show(): Shows the vector.
  * - \b hide(): Hides the vector.
  *

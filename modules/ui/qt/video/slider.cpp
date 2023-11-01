@@ -41,10 +41,10 @@
 namespace sight::module::ui::qt::video
 {
 
-const core::com::signals::key_t slider::POSITION_CHANGED_SIG = "positionChanged";
+const core::com::signals::key_t slider::POSITION_CHANGED_SIG = "position_changed";
 
-const core::com::slots::key_t slider::SET_POSITION_SLIDER_SLOT = "setPositionSlider";
-const core::com::slots::key_t slider::SET_DURATION_SLIDER_SLOT = "setDurationSlider";
+const core::com::slots::key_t slider::SET_POSITION_SLIDER_SLOT = "set_position_slider";
+const core::com::slots::key_t slider::SET_DURATION_SLIDER_SLOT = "set_duration_slider";
 
 static const char* s_unknown_time = "--:--:--";
 

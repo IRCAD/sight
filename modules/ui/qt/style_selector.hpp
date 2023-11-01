@@ -56,7 +56,7 @@ namespace sight::module::ui::qt
     </service>
  * @endcode
  *
- * Next connect the "parametersModified" signal to the "updateFromPreferences" slot of this service.
+ * Next connect the "parameters_modified" signal to the "update_from_preferences" slot of this service.
  *
  * @section Slots Slots
  * - \b updateFromPrefs(): called when changing the preference key "THEME", apply the selected theme

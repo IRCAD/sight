@@ -45,9 +45,9 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_TF_SLOT     = "updateTF";
+static const core::com::slots::key_t UPDATE_TF_SLOT     = "update_tf";
 static const core::com::slots::key_t UPDATE_PL_SLOT     = "updatePL";
-static const core::com::slots::key_t SET_FILTERING_SLOT = "setFiltering";
+static const core::com::slots::key_t SET_FILTERING_SLOT = "set_filtering";
 static const core::com::slots::key_t SCALE_SLOT         = "scale";
 
 static const std::string VIDEO_MATERIAL_NAME             = "Video";

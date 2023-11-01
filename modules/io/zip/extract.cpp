@@ -60,7 +60,7 @@ public:
     /// Constructor
     inline explicit ExtractImpl(extract* const _reader) noexcept :
         m_reader(_reader),
-        m_job_created_signal(_reader->new_signal<job_created_signal_t>("jobCreated"))
+        m_job_created_signal(_reader->new_signal<job_created_signal_t>("job_created"))
     {
     }
 

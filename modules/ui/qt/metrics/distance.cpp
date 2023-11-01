@@ -37,7 +37,7 @@ namespace sight::module::ui::qt::metrics
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t distance::DISTANCE_REQUESTED_SIG = "distanceRequested";
+const core::com::signals::key_t distance::DISTANCE_REQUESTED_SIG = "distance_requested";
 
 //------------------------------------------------------------------------------
 

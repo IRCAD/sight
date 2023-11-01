@@ -36,7 +36,7 @@ class CompositorListener;
  *
  * @section Slots Slots
  * - \b update_visibility(bool): sets whether the compositor is enabled or not.
- * - \b toggleVisibility(): toggle whether the compositor is enabled or not.
+ * - \b toggle_visibility(): toggle whether the compositor is enabled or not.
  * - \b show(): enables the compositor.
  * - \b hide(): enables the compositor.
  * - \b set_bool_parameter(bool, std::string): set the uniform from an integer value.

@@ -51,10 +51,10 @@
 namespace sight::module::ui::qt::video
 {
 
-static const core::com::signals::key_t CONFIGURED_CAMERAS_SIG = "configuredCameras";
-static const core::com::signals::key_t CONFIGURED_DEVICE_SIG  = "configuredDevice";
-static const core::com::signals::key_t CONFIGURED_FILE_SIG    = "configuredFile";
-static const core::com::signals::key_t CONFIGURED_STREAM_SIG  = "configuredStream";
+static const core::com::signals::key_t CONFIGURED_CAMERAS_SIG = "configured_cameras";
+static const core::com::signals::key_t CONFIGURED_DEVICE_SIG  = "configured_device";
+static const core::com::signals::key_t CONFIGURED_FILE_SIG    = "configured_file";
+static const core::com::signals::key_t CONFIGURED_STREAM_SIG  = "configured_stream";
 
 static const core::com::slots::key_t CONFIGURE_DEVICE_SLOT = "configureDevice";
 static const core::com::slots::key_t CONFIGURE_FILE_SLOT   = "configureFile";

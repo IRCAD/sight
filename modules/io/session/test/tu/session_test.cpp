@@ -158,7 +158,7 @@ inline static void basic_test(const bool _raw = false)
                 session_loaded_path = _path;
             });
         session_loaded_slot->set_worker(sight::core::thread::get_default_worker());
-        auto conn1 = reader->signal("sessionLoaded")->connect(session_loaded_slot);
+        auto conn1 = reader->signal("session_loaded")->connect(session_loaded_slot);
 
         bool session_loading_failed = false;
         std::filesystem::path session_loading_failed_path;
@@ -281,7 +281,7 @@ void session_test::reader_bad_file()
                 session_loaded_path = _path;
             });
         session_loaded_slot->set_worker(sight::core::thread::get_default_worker());
-        auto conn1 = reader->signal("sessionLoaded")->connect(session_loaded_slot);
+        auto conn1 = reader->signal("session_loaded")->connect(session_loaded_slot);
 
         bool session_loading_failed = false;
         std::filesystem::path session_loading_failed_path;

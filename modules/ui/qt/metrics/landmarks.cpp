@@ -166,7 +166,7 @@ namespace
 static const char* s_group_property_name = "group";
 static const int GROUP_NAME_ROLE         = Qt::UserRole + 1;
 
-static const core::com::slots::key_t ADD_POINT_SLOT      = "addPoint";
+static const core::com::slots::key_t ADD_POINT_SLOT      = "add_point";
 static const core::com::slots::key_t MODIFY_POINT_SLOT   = "modifyPoint";
 static const core::com::slots::key_t SELECT_POINT_SLOT   = "selectPoint";
 static const core::com::slots::key_t DESELECT_POINT_SLOT = "deselectPoint";
@@ -181,8 +181,8 @@ static const std::string OPACITY_CONFIG  = "opacity";
 static const std::string ADVANCED_CONFIG = "advanced";
 static const std::string TEXT_CONFIG     = "text";
 
-const core::com::signals::key_t landmarks::SEND_WORLD_COORD = "sendWorldCoord";
-const core::com::signals::key_t landmarks::GROUP_SELECTED   = "groupSelected";
+const core::com::signals::key_t landmarks::SEND_WORLD_COORD = "send_world_coord";
+const core::com::signals::key_t landmarks::GROUP_SELECTED   = "group_selected";
 
 //------------------------------------------------------------------------------
 

@@ -45,7 +45,7 @@ namespace sight::module::ui::viz
  * @brief This service creates a user interface to manage a light adaptor.
  *
  * @section Slots Slots
- * - \b editLight(viz::scene3d::light_adaptor::sptr): loads the editor with the parameters from the selected light.
+ * - \b edit_light(viz::scene3d::light_adaptor::sptr): loads the editor with the parameters from the selected light.
  *
  * @section XML XML Configuration
  *

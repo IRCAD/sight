@@ -46,7 +46,7 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
+ * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
  * connected to a job_bar).
  *
  * @section XML XML Configuration

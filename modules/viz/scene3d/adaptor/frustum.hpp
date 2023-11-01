@@ -41,7 +41,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b update_visibility(bool): sets whether the frustum is shown or not.
- * - \b toggleVisibility(): toggles whether the frustum is shown or not.
+ * - \b toggle_visibility(): toggles whether the frustum is shown or not.
  * - \b show(): shows the frustum.
  * - \b hide(): hides the frustum.
  *

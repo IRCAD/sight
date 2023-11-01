@@ -39,10 +39,10 @@ namespace sight::module::filter::point
  *          with a point in the reference list according to their order or to their labels if they have any.
  *          The output is a transformation matrix.
  * @section Signals Signals
- * - \b errorComputed(double): emitted when registration error is computed.
+ * - \b error_computed(double): emitted when registration error is computed.
  * @section Slots Slots
  * - \b changeMode(std::string): called when registration mode is changed.
- * - \b computeRegistration(core::hires_clock::type timestamp): computes the registration.
+ * - \b compute_registration(core::hires_clock::type timestamp): computes the registration.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}

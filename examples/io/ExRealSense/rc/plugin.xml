@@ -280,7 +280,7 @@
 
             <service uid="configureRecordingPathAct" type="sight::module::ui::action">
                 <slots>
-                    <slot>videoGrabberSrv/configureRecordingPath</slot>
+                    <slot>videoGrabberSrv/configure_recording_path</slot>
                 </slots>
             </service>
 
@@ -609,26 +609,26 @@
 
             <connect>
                 <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
+                <slot>videoGrabberSrv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
             </connect>
 
             <connect>
                 <signal>resumeVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>videoGrabberSrv/stop_camera</slot>
                 <slot>startVideoAct/show</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/hide</slot>
@@ -639,7 +639,7 @@
 
             <connect>
                 <signal>loopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/loopVideo</slot>
+                <slot>videoGrabberSrv/loop_video</slot>
             </connect>
 
             <connect>
@@ -648,14 +648,14 @@
             </connect>
 
             <connect>
-                <signal>videoSelectorSrv/configuredFile</signal>
-                <signal>videoSelectorSrv/configuredStream</signal>
-                <signal>videoSelectorSrv/configuredDevice</signal>
+                <signal>videoSelectorSrv/configured_file</signal>
+                <signal>videoSelectorSrv/configured_stream</signal>
+                <signal>videoSelectorSrv/configured_device</signal>
                 <slot>startVideoAct/update</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/cameraStarted</signal>
+                <signal>videoGrabberSrv/camera_started</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
                 <slot>stopVideoAct/enable</slot>
@@ -663,8 +663,8 @@
             </connect>
 
             <connect>
-                <signal>RGBCamera/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <signal>RGBCamera/id_modified</signal>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
@@ -674,42 +674,42 @@
             </connect>
 
             <connect>
-                <signal>rangeEditorSrv/parameterChanged</signal>
-                <signal>spacialFilterParamsSrv/parameterChanged</signal>
-                <signal>temporalFilterParamsSrv/parameterChanged</signal>
-                <signal>holeFillingFilterParamsSrv/parameterChanged</signal>
-                <signal>presetsSrv/parameterChanged</signal>
-                <signal>alignmentSrv/parameterChanged</signal>
-                <signal>infraredEmitterSrv/parameterChanged</signal>
-                <signal>switchInfraToColorSrv/parameterChanged</signal>
-                <signal>enableSpacialFilterParamsSrv/parameterChanged</signal>
-                <signal>enableTemporalFilterParamsSrv/parameterChanged</signal>
-                <signal>enableHoleFillingFilterParamsSrv/parameterChanged</signal>
+                <signal>rangeEditorSrv/parameter_changed</signal>
+                <signal>spacialFilterParamsSrv/parameter_changed</signal>
+                <signal>temporalFilterParamsSrv/parameter_changed</signal>
+                <signal>holeFillingFilterParamsSrv/parameter_changed</signal>
+                <signal>presetsSrv/parameter_changed</signal>
+                <signal>alignmentSrv/parameter_changed</signal>
+                <signal>infraredEmitterSrv/parameter_changed</signal>
+                <signal>switchInfraToColorSrv/parameter_changed</signal>
+                <signal>enableSpacialFilterParamsSrv/parameter_changed</signal>
+                <signal>enableTemporalFilterParamsSrv/parameter_changed</signal>
+                <signal>enableHoleFillingFilterParamsSrv/parameter_changed</signal>
                  <slot>videoGrabberSrv/set_parameter</slot>
             </connect>
 
             <connect>
-                <signal>enableSpacialFilterParamsSrv/parameterChanged</signal>
-                <slot>spacialFilterParamsSrv/setEnabledByParam</slot>
+                <signal>enableSpacialFilterParamsSrv/parameter_changed</signal>
+                <slot>spacialFilterParamsSrv/set_enabled_by_param</slot>
             </connect>
 
             <connect>
-                <signal>enableTemporalFilterParamsSrv/parameterChanged</signal>
-                <slot>temporalFilterParamsSrv/setEnabledByParam</slot>
+                <signal>enableTemporalFilterParamsSrv/parameter_changed</signal>
+                <slot>temporalFilterParamsSrv/set_enabled_by_param</slot>
             </connect>
 
             <connect>
-                <signal>enableHoleFillingFilterParamsSrv/parameterChanged</signal>
-                <slot>holeFillingFilterParamsSrv/setEnabledByParam</slot>
+                <signal>enableHoleFillingFilterParamsSrv/parameter_changed</signal>
+                <slot>holeFillingFilterParamsSrv/set_enabled_by_param</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/distanceComputed</signal>
+                <signal>videoGrabberSrv/distance_computed</signal>
                 <slot>distanceSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/filePlayed</signal>
+                <signal>videoGrabberSrv/file_played</signal>
                 <slot>recordAct/disable</slot>
                 <slot>infraredEmitterSrv/disable</slot>
                 <slot>presetsSrv/disable</slot>
@@ -718,7 +718,7 @@
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/devicePlayed</signal>
+                <signal>videoGrabberSrv/device_played</signal>
                 <slot>recordAct/enable</slot>
                 <slot>infraredEmitterSrv/enable</slot>
                 <slot>presetsSrv/enable</slot>
@@ -727,7 +727,7 @@
             </connect>
 
             <connect>
-                <signal>syncGenericSceneSrv/allReceived</signal>
+                <signal>syncGenericSceneSrv/all_received</signal>
                 <slot>videoRenderSrv/request_render</slot>
                 <slot>distanceMapRenderSrv/request_render</slot>
                 <slot>reconstructionRenderSrv/request_render</slot>
@@ -735,18 +735,18 @@
             </connect>
 
             <connect>
-                <signal>showPCDepthAct/isChecked</signal>
+                <signal>showPCDepthAct/is_checked</signal>
                 <slot>DMPointAdp/update_visibility</slot>
             </connect>
 
             <connect>
-                <signal>showPCColorAct/isChecked</signal>
+                <signal>showPCColorAct/is_checked</signal>
                 <slot>VPointAdp/update_visibility</slot>
             </connect>
 
             <connect>
-                <signal>showfilterSettingsAct/isChecked</signal>
-                <slot>filterSettingsView/setVisible</slot>
+                <signal>showfilterSettingsAct/is_checked</signal>
+                <slot>filterSettingsView/set_visible</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

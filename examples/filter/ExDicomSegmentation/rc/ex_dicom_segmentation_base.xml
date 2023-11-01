@@ -128,8 +128,8 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${DYNAMICVIEW_SENDER_CHANNEL}" >
-            <signal>thresholdAct/activityLaunched</signal>
-            <signal>mesherAct/activityLaunched</signal>
+            <signal>thresholdAct/activity_launched</signal>
+            <signal>mesherAct/activity_launched</signal>
         </connect>
 
         <!-- ******************************* Start services ***************************************** -->

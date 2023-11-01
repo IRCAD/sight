@@ -73,7 +73,7 @@ namespace sight::module::ui::qt
  * - \b selected(int): This signal is emitted when the user select an item. Sends the item value.
  *
  * @section Slots Slots
- * - \b setEnabled(bool): This slots allows to enable/disable the button
+ * - \b set_enabled(bool): This slots allows to enable/disable the button
  * - \b enable(): This slot allows to enable the button
  * - \b disable(): This slots allows to disable the button
  */

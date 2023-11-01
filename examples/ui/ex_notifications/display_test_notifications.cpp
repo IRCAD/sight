@@ -32,7 +32,7 @@ namespace ex_notifications
 
 static const sight::core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "set_enum_parameter";
 static const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "set_bool_parameter";
-static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "closeChannel1";
+static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "close_channel1";
 
 //------------------------------------------------------------------------------
 

@@ -32,10 +32,10 @@
 namespace sight::module::viz::sample
 {
 
-const core::com::slots::key_t mesh::UPDATE_CAM_POSITION_SLOT   = "updateCamPosition";
+const core::com::slots::key_t mesh::UPDATE_CAM_POSITION_SLOT   = "update_cam_position";
 static const core::com::slots::key_t UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
 
-const core::com::signals::key_t mesh::CAM_UPDATED_SIG = "camUpdated";
+const core::com::signals::key_t mesh::CAM_UPDATED_SIG = "cam_updated";
 
 static const std::string MESH_INPUT = "mesh";
 

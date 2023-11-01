@@ -40,8 +40,8 @@ namespace sight::module::io::dimse
 {
 
 static const core::com::signals::key_t PROGRESSED_SIG       = "progressed";
-static const core::com::signals::key_t STARTED_PROGRESS_SIG = "progressStarted";
-static const core::com::signals::key_t STOPPED_PROGRESS_SIG = "progressStopped";
+static const core::com::signals::key_t STARTED_PROGRESS_SIG = "progress_started";
+static const core::com::signals::key_t STOPPED_PROGRESS_SIG = "progress_stopped";
 
 static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
 

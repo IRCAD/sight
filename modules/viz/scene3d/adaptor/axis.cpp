@@ -43,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 axis::axis() noexcept
 {
-    new_slot("updateOriginColor", &axis::update_origin_color, this);
+    new_slot("update_origin_color", &axis::update_origin_color, this);
 }
 
 //-----------------------------------------------------------------------------

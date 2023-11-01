@@ -42,7 +42,7 @@ struct signals
     using removed_t = core::com::signal<void (core::hires_clock::type _timestamp)>;
     using cleared_t = core::com::signal<void ()>;
 
-    inline static const core::com::signals::key_t PUSHED  = "objectPushed";
+    inline static const core::com::signals::key_t PUSHED  = "object_pushed";
     inline static const core::com::signals::key_t REMOVED = "objectRemoved";
     inline static const core::com::signals::key_t CLEARED = "objectCleared";
 };

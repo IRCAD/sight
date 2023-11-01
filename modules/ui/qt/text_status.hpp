@@ -43,7 +43,7 @@ namespace sight::module::ui::qt
  * - \b set_int_parameter(int): display the value in the QLabel.
  * - \b set_double_parameter(double): display the value in the QLabel.
  * - \b set_bool_parameter(int): display the value in the QLabel.
- * - \b setStringParameter(int): display the value in the QLabel.
+ * - \b set_string_parameter(int): display the value in the QLabel.
  *
  * @section XML XML Configuration
  * @code{.xml}

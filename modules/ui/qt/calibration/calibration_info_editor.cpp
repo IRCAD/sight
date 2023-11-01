@@ -41,7 +41,7 @@ namespace sight::module::ui::qt::calibration
 
 const core::com::slots::key_t calibration_info_editor::REMOVE_SLOT        = "remove";
 const core::com::slots::key_t calibration_info_editor::RESET_SLOT         = "reset";
-const core::com::slots::key_t calibration_info_editor::GET_SELECTION_SLOT = "getSelection";
+const core::com::slots::key_t calibration_info_editor::GET_SELECTION_SLOT = "get_selection";
 
 // ----------------------------------------------------------------------------
 

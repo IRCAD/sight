@@ -44,7 +44,7 @@ namespace sight::module::ui::qt
 
 static const core::com::signals::key_t SELECTED_SIG = "selected";
 
-static const core::com::slots::key_t SET_ENABLED_SIG = "setEnabled";
+static const core::com::slots::key_t SET_ENABLED_SIG = "set_enabled";
 static const core::com::slots::key_t SENABLE_SIG     = "enable";
 static const core::com::slots::key_t DISABLE_SIG     = "disable";
 

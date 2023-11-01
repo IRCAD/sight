@@ -40,8 +40,8 @@ namespace sight::module::filter::vision
  * @see service::filter
  *
  * @section Slots Slots
- * - \b setBackground() : Slot to learn the background depth image.
- * - \b setThreshold() : Slot to change the difference value tolerance between the larned depth image and the current.
+ * - \b set_background() : Slot to learn the background depth image.
+ * - \b set_threshold() : Slot to change the difference value tolerance between the larned depth image and the current.
  *
  * @section XML XML Configuration
  *

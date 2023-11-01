@@ -58,7 +58,7 @@ Example
         </service>
 
         <connect>
-            <signal>listOrganEditor/reconstructionSelected</signal>
+            <signal>listOrganEditor/reconstruction_selected</signal>
             <slot>reconstructionSelector/add</slot>
         </connect>
 

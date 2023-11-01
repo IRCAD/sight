@@ -40,12 +40,12 @@ namespace sight::module::geometry::vision
  * the chessboard positions in the CalibrationInfo structure after a successful detection.
  *
  * @section Signals Signals
- * - \b chessboardDetected(bool): Emitted after trying to detect a chessboard. Sends whether it was detected or not.
+ * - \b chessboard_detected(bool): Emitted after trying to detect a chessboard. Sends whether it was detected or not.
  * - \b chessboardFound(): Emitted if a chessboard pattern was recognized in the image.
  *
  * @section Slots Slots
- * - \b recordPoints(): Request to store the current image in the calibration data, if the chessboard is detected.
- * - \b updateChessboardSize(): update the parameters of the chessboard from preferences.
+ * - \b record_points(): Request to store the current image in the calibration data, if the chessboard is detected.
+ * - \b update_chessboard_size(): update the parameters of the chessboard from preferences.
  *
  * @section XML XML Configuration
  *

@@ -46,7 +46,7 @@ static const core::com::slots::key_t UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex
 static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 static const core::com::slots::key_t UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const core::com::slots::key_t UPDATE_VISIBILITY_SLOT  = "update_visibility";
-static const core::com::slots::key_t UPDATE_TF_SLOT          = "updateTF";
+static const core::com::slots::key_t UPDATE_TF_SLOT          = "update_tf";
 
 namespace medHelper = data::helper::medical_image;
 

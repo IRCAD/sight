@@ -151,34 +151,34 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
-            <signal>landmarksAdp/sendWorldCoord</signal>
+            <signal>landmarksAdp/send_world_coord</signal>
         </connect>
 
         <!-- Display the picked voxel information -->
         <connect>
-            <signal>negatoAdp/pickedVoxel</signal>
-            <slot>pickedVoxelTextAdp/setText</slot>
+            <signal>negatoAdp/picked_voxel</signal>
+            <slot>pickedVoxelTextAdp/set_text</slot>
         </connect>
 
         <!-- distance channels -->
         <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
-            <slot>negatoMultiDistancesAdp/activateDistanceTool</slot>
+            <slot>negatoMultiDistancesAdp/activate_distance_tool</slot>
         </connect>
 
         <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
-            <signal>negatoMultiDistancesAdp/deactivateDistanceTool</signal>
+            <signal>negatoMultiDistancesAdp/deactivate_distance_tool</signal>
         </connect>
 
         <connect channel="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}">
-            <slot>landmarksAdp/changeEditMode</slot>
+            <slot>landmarksAdp/change_edit_mode</slot>
         </connect>
 
         <connect channel="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}">
-            <slot>landmarksAdp/setCurrentGroup</slot>
+            <slot>landmarksAdp/set_current_group</slot>
         </connect>
 
         <connect channel="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}">
-            <signal>landmarksAdp/editModeChanged</signal>
+            <signal>landmarksAdp/edit_mode_changed</signal>
         </connect>
 
         <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
@@ -189,8 +189,8 @@
 
         <connect>
             <signal>eventAdp/triggered</signal>
-            <slot>maximizeAct/toggleVisibility</slot>
-            <slot>minimizeAct/toggleVisibility</slot>
+            <slot>maximizeAct/toggle_visibility</slot>
+            <slot>minimizeAct/toggle_visibility</slot>
         </connect>
 
         <connect>

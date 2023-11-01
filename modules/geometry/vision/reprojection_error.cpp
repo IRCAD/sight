@@ -39,7 +39,7 @@ namespace sight::module::geometry::vision
 const core::com::slots::key_t reprojection_error::COMPUTE_SLOT       = "compute";
 const core::com::slots::key_t reprojection_error::SET_PARAMETER_SLOT = "set_parameter";
 
-static const core::com::signals::key_t ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
 
 //-----------------------------------------------------------------------------
 

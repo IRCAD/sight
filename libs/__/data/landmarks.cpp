@@ -35,8 +35,8 @@ namespace sight::data
 
 const core::com::signals::key_t landmarks::GROUP_ADDED_SIG      = "groupAdded";
 const core::com::signals::key_t landmarks::GROUP_REMOVED_SIG    = "groupMoved";
-const core::com::signals::key_t landmarks::POINT_ADDED_SIG      = "pointAdded";
-const core::com::signals::key_t landmarks::POINT_REMOVED_SIG    = "pointRemoved";
+const core::com::signals::key_t landmarks::POINT_ADDED_SIG      = "point_added";
+const core::com::signals::key_t landmarks::POINT_REMOVED_SIG    = "point_removed";
 const core::com::signals::key_t landmarks::POINT_INSERTED_SIG   = "pointInserted";
 const core::com::signals::key_t landmarks::GROUP_MODIFIED_SIG   = "groupModified";
 const core::com::signals::key_t landmarks::POINT_MODIFIED_SIG   = "pointModified";

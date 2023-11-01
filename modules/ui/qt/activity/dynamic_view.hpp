@@ -53,7 +53,7 @@ namespace sight::module::ui::qt::activity
 /**
  * @brief   This editor manages tabs containing activities.
  *
- * This service should received signals containing Activity connected to the slot \b launchActivity. It will
+ * This service should received signals containing Activity connected to the slot \b launch_activity. It will
  * launch the activity in a new tab.
  *
  * @note The same activity cannot be launch in two different tabs.
@@ -65,8 +65,8 @@ namespace sight::module::ui::qt::activity
  * - \b nothingSelected(): this signal is emitted when no tab are selected.
  *
  * @section Slots Slots
- * - \b launchActivity( data::activity::sptr ): this slot allows to create a tab with the given activity.
- * - \b createTab( activity::message ): this slot allows to create a tab with the given activity information.
+ * - \b launch_activity( data::activity::sptr ): this slot allows to create a tab with the given activity.
+ * - \b create_tab( activity::message ): this slot allows to create a tab with the given activity information.
  *
  * @section XML XML Configuration
  * @code{.xml}

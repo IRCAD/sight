@@ -60,7 +60,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b update_visibility(bool): Sets whether the points are visible or not.
- * - \b toggleVisibility(): Toggle whether the points are visible or not.
+ * - \b toggle_visibility(): Toggle whether the points are visible or not.
  * - \b show(): shows the video.
  * - \b hide(): hides the video.
  *

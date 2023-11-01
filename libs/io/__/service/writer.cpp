@@ -34,12 +34,12 @@ namespace sight::io::service
 {
 
 // Public signal
-const core::com::signals::key_t writer::PREFIX_SET_SIG      = "prefixSet";
-const core::com::signals::key_t writer::BASE_FOLDER_SET_SIG = "baseFolderSet";
+const core::com::signals::key_t writer::PREFIX_SET_SIG      = "prefix_set";
+const core::com::signals::key_t writer::BASE_FOLDER_SET_SIG = "base_folder_set";
 
 // Public slot
-const core::com::slots::key_t writer::SET_PREFIX      = "setPrefix";
-const core::com::slots::key_t writer::SET_BASE_FOLDER = "setBaseFolder";
+const core::com::slots::key_t writer::SET_PREFIX      = "set_prefix";
+const core::com::slots::key_t writer::SET_BASE_FOLDER = "set_base_folder";
 
 // Private slot
 static const core::com::slots::key_t OPEN_LOCATION_DIALOG = "open_location_dialog";

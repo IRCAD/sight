@@ -40,11 +40,11 @@ namespace sight::module::io::video
  * @todo Only image of type 'uint8' (RGB and RGBA) and grayscale image of type 'uint8' and 'uint16' are managed.
  *
  * @section Slots Slots
- * - \b saveFrame(timestamp): adds the current frame in the video
- * - \b startRecord(): starts recording
- * - \b stopRecord(): stops recording
+ * - \b save_frame(timestamp): adds the current frame in the video
+ * - \b start_record(): starts recording
+ * - \b stop_record(): stops recording
  * - \b record(state): starts/stops the recording, according to the state in parameter
- * - \b setFormatParameter(value, key): changes format
+ * - \b set_format_parameter(value, key): changes format
  *
  * @section XML XML Configuration
  *

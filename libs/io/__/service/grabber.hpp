@@ -43,30 +43,30 @@ namespace sight::io::service
  *          Must be implemented for services that grabs frames.
  *
  * @section Signals Signals
- * - \b positionModified(std::int64_t): Emitted when the position in the video is modified during playing.
- * - \b durationModified(std::int64_t): Emitted when the duration of the video is modified.
- * - \b cameraStarted(): Emitted when camera is started.
- * - \b cameraStopped(): Emitted when camera is stopped.
+ * - \b position_modified(std::int64_t): Emitted when the position in the video is modified during playing.
+ * - \b duration_modified(std::int64_t): Emitted when the duration of the video is modified.
+ * - \b camera_started(): Emitted when camera is started.
+ * - \b camera_stopped(): Emitted when camera is stopped.
  * - \b framePresented(): Emitted when a frame is presented.
- * - \b parameterChanged(): Emitted when a named parameter is changed.
- * - \b jobCreated(sight::core::jobs::base::sptr): Emitted when a long running job has been launched.
+ * - \b parameter_changed(): Emitted when a named parameter is changed.
+ * - \b job_created(sight::core::jobs::base::sptr): Emitted when a long running job has been launched.
  *
  * @section Slots Slots
- * - \b startCamera(): Start playing the camera or the video.
- * - \b stopCamera(): Stop playing the camera or the video.
- * - \b pauseCamera(): Pause the video, it has no effect when playing a camera.
+ * - \b start_camera(): Start playing the camera or the video.
+ * - \b stop_camera(): Stop playing the camera or the video.
+ * - \b pause_camera(): Pause the video, it has no effect when playing a camera.
  * - \b playPauseCamera(): Pauses or unpauses camera if it is started, if not, it starts it.
- * - \b loopVideo(): Toggle the loop of the playing.
- * - \b setPositionVideo(int): Force the current time in the video.
- * - \b nextImage(): display the next image in step by step mode. Does nothing if not overridden.
- * - \b previousImage(): display the previous image in step by step mode. Does nothing if not overridden.
- * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
+ * - \b loop_video(): Toggle the loop of the playing.
+ * - \b set_position_video(int): Force the current time in the video.
+ * - \b next_image(): display the next image in step by step mode. Does nothing if not overridden.
+ * - \b previous_image(): display the previous image in step by step mode. Does nothing if not overridden.
+ * - \b set_step(): set the step value between two images when calling nextImage/previous_image. Does nothing if not
  * overridden.
- * - \b setParameters(parameters_t, std::string): Sets a parameters with value (variant) and key.
- * - \b requestSettings(): Requests the grabber internal settings.
+ * - \b set_parameters(parameters_t, std::string): Sets a parameters with value (variant) and key.
+ * - \b request_settings(): Requests the grabber internal settings.
  * - \b optimize(): Calls grabber-specific optimization function (e.g. hardware related).
- * - \b addROICenter(sight::data::point::sptr): Adds a new region fo interest center.
- * - \b removeROICenter(sight::data::point::sptr): Removes a region of interest via its center.
+ * - \b add_roi_center(sight::data::point::sptr): Adds a new region fo interest center.
+ * - \b remove_roi_center(sight::data::point::sptr): Removes a region of interest via its center.
  */
 class IO_CLASS_API grabber : public sight::service::base,
                              public sight::service::notifier

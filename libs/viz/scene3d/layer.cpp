@@ -70,7 +70,7 @@ const core::com::signals::key_t layer::RESIZE_LAYER_SIG         = "layerResized"
 const core::com::signals::key_t layer::CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
 const core::com::slots::key_t layer::INTERACTION_SLOT  = "interaction";
-const core::com::slots::key_t layer::RESET_CAMERA_SLOT = "resetCamera";
+const core::com::slots::key_t layer::RESET_CAMERA_SLOT = "reset_camera";
 
 //-----------------------------------------------------------------------------
 

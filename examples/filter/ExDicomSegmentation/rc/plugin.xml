@@ -85,7 +85,7 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect channel="DYNAMICVIEW_RECIEVER_CHANNEL">
-                <slot>dynamicViewSrv/createTab</slot>
+                <slot>dynamicViewSrv/create_tab</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -37,7 +37,7 @@ namespace sight::module::geometry::vision
  * @brief   open_cv_extrinsic service that computes extrinsic calibration with openCV.
  *
  * @section Slots Slots
- * - \b updateChessboardSize() : Received when the chessboard preferences parameters change.
+ * - \b update_chessboard_size() : Received when the chessboard preferences parameters change.
 
  * @section XML XML Configuration
  *

@@ -166,7 +166,7 @@
 
             <connect>
                 <signal>imageFlipperAct/updated</signal>
-                <slot>imageFlipperSrv/flipAxisY</slot>
+                <slot>imageFlipperSrv/flip_axis_y</slot>
             </connect>
 
             <start uid="mainFrame" />

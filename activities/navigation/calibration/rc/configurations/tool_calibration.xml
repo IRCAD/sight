@@ -84,7 +84,7 @@
 
         <service uid="actionComputeCalibration" type="sight::module::ui::com::timestamp_slot_caller">
             <slots>
-                <slot>toolCalibration/computeRegistration</slot>
+                <slot>toolCalibration/compute_registration</slot>
             </slots>
         </service>
 
@@ -247,8 +247,8 @@
 
         <connect>
             <signal>actionAddPoint/clicked</signal>
-            <slot>originToPoint/addPoint</slot>
-            <slot>manageVector/addCopy</slot>
+            <slot>originToPoint/add_point</slot>
+            <slot>manageVector/add_copy</slot>
         </connect>
 
         <connect>
@@ -257,13 +257,13 @@
         </connect>
 
         <connect>
-            <signal>trackerTLMatrixSynchronizer/matrixSynchronized</signal>
-            <slot>status/changeNthToGreen</slot>
+            <signal>trackerTLMatrixSynchronizer/matrix_synchronized</signal>
+            <slot>status/change_nth_to_green</slot>
         </connect>
 
         <connect>
-            <signal>trackerTLMatrixSynchronizer/matrixUnsynchronized</signal>
-            <slot>status/changeNthToRed</slot>
+            <signal>trackerTLMatrixSynchronizer/matrix_unsynchronized</signal>
+            <slot>status/change_nth_to_red</slot>
         </connect>
 
         <connect>

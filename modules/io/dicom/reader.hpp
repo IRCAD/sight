@@ -40,7 +40,7 @@ namespace sight::module::io::dicom
  *          typeFilter configuration parameters.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is read (it should be
+ * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is read (it should be
  * connected to a job_bar).
  *
  * @section XML XML Configuration

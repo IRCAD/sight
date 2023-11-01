@@ -152,7 +152,7 @@
 
         <!-- connect to launch the activity when it is created/updated. -->
         <connect channel="LAUNCH_ACTIVITY_RECEIVER_CHANNEL">
-            <slot>dynamicView/launchActivity</slot>
+            <slot>dynamicView/launch_activity</slot>
         </connect>
 
         <!-- connect to load the activity . -->
@@ -161,7 +161,7 @@
         </connect>
 
         <connect channel="dynamicView">
-            <slot>dynamicView/createTab</slot>
+            <slot>dynamicView/create_tab</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

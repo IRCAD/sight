@@ -33,7 +33,7 @@
 namespace sight::module::geometry::vision
 {
 
-const core::com::slots::key_t marker_to_point::ADD_POINT_SLOT = "addPoint";
+const core::com::slots::key_t marker_to_point::ADD_POINT_SLOT = "add_point";
 const core::com::slots::key_t marker_to_point::CLEAR_SLOT     = "clear";
 
 // ----------------------------------------------------------------------------

@@ -49,18 +49,18 @@ namespace sight::module::ui::qt
  * @note This service doesn't need any data.
  *
  * @section Signals Signals
- * - \b parameterChanged(ui::parameter_t, std::string): Emitted when any parameter changes.
- * - \b boolChanged(bool, std::string): Emitted when a boolean parameter changes.
- * - \b colorChanged(std::array<std::uint8_t, 4>, std::string): Emitted when a color parameter changes.
- * - \b doubleChanged(double, std::string): Emitted when a real parameter changes.
- * - \b double2Changed(double, double, std::string): Emitted when two real parameters change.
- * - \b double3Changed(double, double, double, std::string): Emitted when three real parameters change.
- * - \b intChanged(int, std::string): Emitted when an integer parameter changes.
- * - \b int2Changed(int, int, std::string): Emitted when two integer parameters change.
- * - \b int3Changed(int, int, int, std::string): Emitted when three integer parameters change.
- * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes, returns the the label of the
+ * - \b parameter_changed(ui::parameter_t, std::string): Emitted when any parameter changes.
+ * - \b bool_changed(bool, std::string): Emitted when a boolean parameter changes.
+ * - \b color_changed(std::array<std::uint8_t, 4>, std::string): Emitted when a color parameter changes.
+ * - \b double_changed(double, std::string): Emitted when a real parameter changes.
+ * - \b double2_changed(double, double, std::string): Emitted when two real parameters change.
+ * - \b double3_changed(double, double, double, std::string): Emitted when three real parameters change.
+ * - \b int_changed(int, std::string): Emitted when an integer parameter changes.
+ * - \b int2_changed(int, int, std::string): Emitted when two integer parameters change.
+ * - \b int3_changed(int, int, int, std::string): Emitted when three integer parameters change.
+ * - \b enum_changed(std::string, std::string): Emitted when enum parameter changes, returns the the label of the
  * currently selected item.
- * - \b enumIndexChanged(int, std::string): Emitted when enum parameter changes, returns the index of the currently
+ * - \b enum_index_changed(int, std::string): Emitted when enum parameter changes, returns the index of the currently
  * selected item.
  *
  * @section Slots Slots
@@ -77,11 +77,11 @@ namespace sight::module::ui::qt
  * - \b set_enum_index_parameter(int, std::string): set an enum parameter using the index of the enum.
  * - \b updateEnumRange(std::string, std::string): update range of an existing enum (value can contains a tokenized list
  * such as value1;value2;value3=test;...)
- * - \b updateIntMinParameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
- * - \b updateIntMaxParameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
- * - \b updateDoubleMinParameter(double, std::string): set the minimum value of a double parameter (double, double2,
+ * - \b update_int_min_parameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
+ * - \b update_int_max_parameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
+ * - \b update_double_min_parameter(double, std::string): set the minimum value of a double parameter (double, double2,
  * double3)
- * - \b updateDoubleMaxParameter(double, std::string): set the maximum value of a double parameter (double, double2,
+ * - \b update_double_max_parameter(double, std::string): set the maximum value of a double parameter (double, double2,
  * double3)
  *
  * @section XML XML Configuration
@@ -173,17 +173,17 @@ public:
         using enum_changed_signal_t       = core::com::signal<void (std::string, std::string)>;
         using enum_changed_index_signal_t = core::com::signal<void (int, std::string)>;
 
-        inline static const signal_t PARAMETER_CHANGED_SIG  = "parameterChanged";
-        inline static const signal_t BOOLEAN_CHANGED_SIG    = "boolChanged";
-        inline static const signal_t COLOR_CHANGED_SIG      = "colorChanged";
-        inline static const signal_t DOUBLE_CHANGED_SIG     = "doubleChanged";
-        inline static const signal_t DOUBLE2_CHANGED_SIG    = "double2Changed";
-        inline static const signal_t DOUBLE3_CHANGED_SIG    = "double3Changed";
-        inline static const signal_t INTEGER_CHANGED_SIG    = "intChanged";
-        inline static const signal_t INTEGER2_CHANGED_SIG   = "int2Changed";
-        inline static const signal_t INTEGER3_CHANGED_SIG   = "int3Changed";
-        inline static const signal_t ENUM_CHANGED_SIG       = "enumChanged";
-        inline static const signal_t ENUM_INDEX_CHANGED_SIG = "enumIndexChanged";
+        inline static const signal_t PARAMETER_CHANGED_SIG  = "parameter_changed";
+        inline static const signal_t BOOLEAN_CHANGED_SIG    = "bool_changed";
+        inline static const signal_t COLOR_CHANGED_SIG      = "color_changed";
+        inline static const signal_t DOUBLE_CHANGED_SIG     = "double_changed";
+        inline static const signal_t DOUBLE2_CHANGED_SIG    = "double2_changed";
+        inline static const signal_t DOUBLE3_CHANGED_SIG    = "double3_changed";
+        inline static const signal_t INTEGER_CHANGED_SIG    = "int_changed";
+        inline static const signal_t INTEGER2_CHANGED_SIG   = "int2_changed";
+        inline static const signal_t INTEGER3_CHANGED_SIG   = "int3_changed";
+        inline static const signal_t ENUM_CHANGED_SIG       = "enum_changed";
+        inline static const signal_t ENUM_INDEX_CHANGED_SIG = "enum_index_changed";
     };
 
     /// @brief  Struct to handle all slots
@@ -203,10 +203,10 @@ public:
         inline static const slots_t SET_ENUM_PARAMETER_SLOT          = "set_enum_parameter";
         inline static const slots_t SET_ENUM_INDEX_PARAMETER_SLOT    = "set_enum_index_parameter";
         inline static const slots_t UPDATE_ENUM_RANGE_SLOT           = "updateEnumRange";
-        inline static const slots_t UPDATE_INT_MIN_PARAMETER_SLOT    = "updateIntMinParameter";
-        inline static const slots_t UPDATE_INT_MAX_PARAMETER_SLOT    = "updateIntMaxParameter";
-        inline static const slots_t UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "updateDoubleMinParameter";
-        inline static const slots_t UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "updateDoubleMaxParameter";
+        inline static const slots_t UPDATE_INT_MIN_PARAMETER_SLOT    = "update_int_min_parameter";
+        inline static const slots_t UPDATE_INT_MAX_PARAMETER_SLOT    = "update_int_max_parameter";
+        inline static const slots_t UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "update_double_min_parameter";
+        inline static const slots_t UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "update_double_max_parameter";
     };
 
     struct enum_button_param

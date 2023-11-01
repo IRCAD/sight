@@ -58,8 +58,8 @@ namespace sight::module::ui::qt::model
  * module::ui::qt::reconstruction::RepresentationEditor to update the reconstrution color, transparency, ....
  *
  * @section Signals Signals
- * - \b reconstructionSelected(data::object::sptr): this signal emits the selected reconstruction
- * - \b emptiedSelection(): this signal is emitted when no reconstruction is selected
+ * - \b reconstruction_selected(data::object::sptr): this signal emits the selected reconstruction
+ * - \b emptied_selection(): this signal is emitted when no reconstruction is selected
  *
  * @section Slots Slots
  * - \b showReconstructions(bool): slot called to show or hide all the reconstructions

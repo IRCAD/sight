@@ -34,7 +34,7 @@ namespace sight::viz::qt3d
 //-----------------------------------------------------------------------------
 
 const sight::core::com::slots::key_t adaptor::UPDATE_VISIBILITY_SLOT = "update_visibility";
-const sight::core::com::slots::key_t adaptor::TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const sight::core::com::slots::key_t adaptor::TOGGLE_VISIBILITY_SLOT = "toggle_visibility";
 const sight::core::com::slots::key_t adaptor::SHOW_SLOT              = "show";
 const sight::core::com::slots::key_t adaptor::HIDE_SLOT              = "hide";
 

@@ -136,14 +136,14 @@
         </connect>
 
         <connect channel="preferencesModifiedProxy">
-            <signal>chessboardSizeAct/parametersModified</signal>
+            <signal>chessboardSizeAct/parameters_modified</signal>
         </connect>
 
         <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application configuration.-->
         <connect channel="${hasPreviousChannel}">
             <slot>exportAct/hide</slot>
             <slot>previousAct/show</slot>
-            <slot>previousAct/setEnabled</slot>
+            <slot>previousAct/set_enabled</slot>
         </connect>
 
         <!-- Connection to called 'previous' slot of the application's sequencer. -->
@@ -155,7 +155,7 @@
         <connect channel="${hasNextChannel}">
             <slot>exportAct/hide</slot>
             <slot>nextAct/show</slot>
-            <slot>nextAct/setEnabled</slot>
+            <slot>nextAct/set_enabled</slot>
         </connect>
 
         <!-- Connection to called 'next' slot of the application's sequencer. -->

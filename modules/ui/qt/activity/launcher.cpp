@@ -58,10 +58,10 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t launcher::LAUNCH_SERIES_SLOT      = "launchSeries";
-const core::com::slots::key_t launcher::LAUNCH_ACTIVITY_SLOT    = "launchActivity";
-const core::com::slots::key_t launcher::UPDATE_STATE_SLOT       = "updateState";
-const core::com::signals::key_t launcher::ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+const core::com::slots::key_t launcher::LAUNCH_SERIES_SLOT      = "launch_series";
+const core::com::slots::key_t launcher::LAUNCH_ACTIVITY_SLOT    = "launch_activity";
+const core::com::slots::key_t launcher::UPDATE_STATE_SLOT       = "update_state";
+const core::com::signals::key_t launcher::ACTIVITY_LAUNCHED_SIG = "activity_launched";
 
 using sight::activity::extension::activity;
 using sight::activity::extension::activity_info;

@@ -38,13 +38,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t ENABLE_TOOL_SLOT       = "enableTool";
-static const core::com::slots::key_t DELETE_LAST_MESH_SLOT  = "deleteLastMesh";
-static const core::com::slots::key_t CANCEL_LAST_CLICK_SLOT = "cancelLastClick";
+static const core::com::slots::key_t ENABLE_TOOL_SLOT       = "enable_tool";
+static const core::com::slots::key_t DELETE_LAST_MESH_SLOT  = "delete_last_mesh";
+static const core::com::slots::key_t CANCEL_LAST_CLICK_SLOT = "cancel_last_click";
 static const core::com::slots::key_t RESET_SLOT             = "reset";
 static const core::com::slots::key_t VALIDATE_SLOT          = "validate";
 
-static const core::com::slots::key_t TOOL_DISABLED_SIG = "toolDisabled";
+static const core::com::slots::key_t TOOL_DISABLED_SIG = "tool_disabled";
 
 shape_extruder::triangle2_d::triangle2_d(
     const Ogre::Vector2& _a,

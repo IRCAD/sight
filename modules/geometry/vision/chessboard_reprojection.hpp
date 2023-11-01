@@ -42,11 +42,11 @@ namespace sight::module::geometry::vision
  * Computes the reprojection error and sends it through a signal.
  *
  * @section Slots Slots
- *  - \b toggleDistortion(): toggles distortion for the reprojected points.
- *  - \b updateChessboardSize(): updates the chessboard model from the preferences.
+ *  - \b toggle_distortion(): toggles distortion for the reprojected points.
+ *  - \b update_chessboard_size(): updates the chessboard model from the preferences.
  *
  * @section Signal Signal
- *  -\b errorComputed(double): sends the computed RMSE in pixels.
+ *  -\b error_computed(double): sends the computed RMSE in pixels.
  *
  * @section XML XML Configuration
  *

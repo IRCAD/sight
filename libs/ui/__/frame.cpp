@@ -41,7 +41,7 @@ const std::string frame::CLOSE_POLICY_EXIT    = "exit";
 const std::string frame::CLOSE_POLICY_NOTIFY  = "notify";
 const std::string frame::CLOSE_POLICY_MESSAGE = "message";
 
-const core::com::slots::key_t frame::SET_VISIBLE_SLOT = "setVisible";
+const core::com::slots::key_t frame::SET_VISIBLE_SLOT = "set_visible";
 const core::com::slots::key_t frame::SHOW_SLOT        = "show";
 const core::com::slots::key_t frame::HIDE_SLOT        = "hide";
 

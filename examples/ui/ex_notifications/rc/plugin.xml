@@ -166,42 +166,42 @@ are already displayed and where they are displayed on screen.
             </connect>
 
             <connect>
-                <signal>testNotifierSrv/notificationClosed</signal>
-                <slot>notifierSrv/closeNotification</slot>
+                <signal>testNotifierSrv/notification_closed</signal>
+                <slot>notifierSrv/close_notification</slot>
             </connect>
 
             <!-- Others connections -->
             <connect>
-                <signal>positionAct/enumChanged</signal>
+                <signal>positionAct/enum_changed</signal>
                 <slot>testNotifierSrv/set_enum_parameter</slot>
                 <slot>notifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
-                <signal>durationAct/enumChanged</signal>
+                <signal>durationAct/enum_changed</signal>
                 <slot>testNotifierSrv/set_enum_parameter</slot>
                 <slot>notifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
-                <signal>typeAct/enumChanged</signal>
+                <signal>typeAct/enum_changed</signal>
                 <slot>testNotifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
-                <signal>channelAct/enumChanged</signal>
+                <signal>channelAct/enum_changed</signal>
                 <slot>testNotifierSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
-                <signal>useNotifierAct/boolChanged</signal>
-                <signal>maxChar/boolChanged</signal>
+                <signal>useNotifierAct/bool_changed</signal>
+                <signal>maxChar/bool_changed</signal>
                 <slot>testNotifierSrv/set_bool_parameter</slot>
             </connect>
 
             <connect>
-                <signal>changeThemeAct/parametersModified</signal>
-                <slot>styleChangerSrv/updateFromPreferences</slot>
+                <signal>changeThemeAct/parameters_modified</signal>
+                <slot>styleChangerSrv/update_from_preferences</slot>
             </connect>
 
             <connect>
@@ -211,7 +211,7 @@ are already displayed and where they are displayed on screen.
 
             <connect>
                 <signal>closeAct/clicked</signal>
-                <slot>testNotifierSrv/closeChannel1</slot>
+                <slot>testNotifierSrv/close_channel1</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

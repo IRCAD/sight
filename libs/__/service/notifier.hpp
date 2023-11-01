@@ -69,7 +69,7 @@ struct SERVICE_CLASS_API notification final
  *
  * @section Signals Signals
  * - \b notified(Notification notification): Emitted when the service wants to pop a notification.
- * - \b notificationClosed(std::string channel): Emitted when the service wants to close a notification.
+ * - \b notification_closed(std::string channel): Emitted when the service wants to close a notification.
  *
  * @section XML XML Configuration
  *
@@ -103,7 +103,7 @@ public:
         static inline const core::com::signals::key_t NOTIFIED = "notified";
 
         using channel_t = core::com::signal<void (std::string)>;
-        static inline const core::com::signals::key_t NOTIFICATION_CLOSED = "notificationClosed";
+        static inline const core::com::signals::key_t NOTIFICATION_CLOSED = "notification_closed";
     };
 
 protected:

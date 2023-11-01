@@ -66,7 +66,7 @@ void series_signal_test::basic_test()
     m_worker = core::thread::worker::make();
     series_added_slot->set_worker(m_worker);
     m_series_signal->signal("seriesAdded")->connect(series_added_slot);
-    series_set->signal("addedObjects")->connect(m_series_signal->slot("reportSeries"));
+    series_set->signal("added_objects")->connect(m_series_signal->slot("reportSeries"));
     CPPUNIT_ASSERT_NO_THROW(m_series_signal->configure());
     CPPUNIT_ASSERT_NO_THROW(m_series_signal->start().get());
 
@@ -96,7 +96,7 @@ void series_signal_test::include_test()
     m_worker = core::thread::worker::make();
     series_added_slot->set_worker(m_worker);
     m_series_signal->signal("seriesAdded")->connect(series_added_slot);
-    series_set->signal("addedObjects")->connect(m_series_signal->slot("reportSeries"));
+    series_set->signal("added_objects")->connect(m_series_signal->slot("reportSeries"));
     boost::property_tree::ptree ptree;
     ptree.put("filter.mode", "include");
     ptree.put("filter.type", "sight::data::image_series");
@@ -131,7 +131,7 @@ void series_signal_test::exclude_test()
     m_worker = core::thread::worker::make();
     series_added_slot->set_worker(m_worker);
     m_series_signal->signal("seriesAdded")->connect(series_added_slot);
-    series_set->signal("addedObjects")->connect(m_series_signal->slot("reportSeries"));
+    series_set->signal("added_objects")->connect(m_series_signal->slot("reportSeries"));
     boost::property_tree::ptree ptree;
     ptree.put("filter.mode", "exclude");
     ptree.put("filter.type", "sight::data::image_series");

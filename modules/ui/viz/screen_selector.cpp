@@ -36,7 +36,7 @@
 namespace sight::module::ui::viz
 {
 
-static const core::com::signals::key_t SCREEN_SELECTED_SIG = "screenSelected";
+static const core::com::signals::key_t SCREEN_SELECTED_SIG = "screen_selected";
 
 //------------------------------------------------------------------------------
 

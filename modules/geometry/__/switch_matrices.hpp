@@ -35,10 +35,10 @@ namespace sight::module::geometry
  * @brief  Switches between several matrices.
  *
  * @section Slots Slots
- * - \b switchMatrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is
+ * - \b switch_matrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is
  * copied on the matrix bound
  * to the service
- * - \b switchToMatrix(int index) : switch to the matrix at the given index
+ * - \b switch_to_matrix(int index) : switch to the matrix at the given index
  *
  * @section XML XML Configuration
  *

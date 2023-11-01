@@ -47,7 +47,7 @@ namespace sight::module::navigation::optics
 //-----------------------------------------------------------------------------
 
 const core::com::signals::key_t aruco_tracker::DETECTION_DONE_SIG  = "detectionDone";
-const core::com::signals::key_t aruco_tracker::MARKER_DETECTED_SIG = "markerDetected";
+const core::com::signals::key_t aruco_tracker::MARKER_DETECTED_SIG = "marker_detected";
 
 const core::com::slots::key_t aruco_tracker::SET_PARAMETER_SLOT = "set_parameter";
 

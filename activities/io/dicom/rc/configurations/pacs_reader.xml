@@ -185,17 +185,17 @@
 
         <connect>
             <signal>pullSeriesController/progressed</signal>
-            <slot>progressBarController/updateProgress</slot>
+            <slot>progressBarController/update_progress</slot>
         </connect>
 
         <connect>
-            <signal>pullSeriesController/progressStarted</signal>
-            <slot>progressBarController/startProgress</slot>
+            <signal>pullSeriesController/progress_started</signal>
+            <slot>progressBarController/start_progress</slot>
         </connect>
 
         <connect>
-            <signal>pullSeriesController/progressStopped</signal>
-            <slot>progressBarController/stopProgress</slot>
+            <signal>pullSeriesController/progress_stopped</signal>
+            <slot>progressBarController/stop_progress</slot>
         </connect>
 
         <connect>

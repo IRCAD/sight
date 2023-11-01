@@ -38,7 +38,7 @@ namespace sight::module::ui::qt
 static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
 static const core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "set_int_parameter";
 static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "set_bool_parameter";
-static const core::com::slots::key_t SET_STRING_PARAMETER_SLOT = "setStringParameter";
+static const core::com::slots::key_t SET_STRING_PARAMETER_SLOT = "set_string_parameter";
 
 //-----------------------------------------------------------------------------
 

@@ -30,8 +30,8 @@
 namespace sight::module::geometry
 {
 
-const core::com::slots::key_t switch_matrices::SWITCH_SLOT    = "switchMatrix";
-const core::com::slots::key_t switch_matrices::SWITCH_TO_SLOT = "switchToMatrix";
+const core::com::slots::key_t switch_matrices::SWITCH_SLOT    = "switch_matrix";
+const core::com::slots::key_t switch_matrices::SWITCH_TO_SLOT = "switch_to_matrix";
 
 // ----------------------------------------------------------------------------
 

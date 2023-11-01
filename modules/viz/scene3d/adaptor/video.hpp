@@ -40,12 +40,12 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b update_visibility(bool): sets whether the video is visible or not.
- * - \b toggleVisibility(): toggle whether the video is visible or not.
+ * - \b toggle_visibility(): toggle whether the video is visible or not.
  * - \b show(): shows the video.
  * - \b hide(): hides the video.
- * - \b updateTF(): updates the displayed transfer function.
+ * - \b update_tf(): updates the displayed transfer function.
  * - \b updatePL(): updates the displayed point list.
- * - \b setFiltering(bool): toggles between nearest (false) and bilinear (true) filtering.
+ * - \b set_filtering(bool): toggles between nearest (false) and bilinear (true) filtering.
  * - \b scale(bool): displays the video at its original size (false) or scales the video to the viewport size (true).
  *
  * @section XML XML Configuration

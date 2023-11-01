@@ -35,7 +35,7 @@ namespace sight::module::ui::com
 //-----------------------------------------------------------------------------
 
 static const core::com::signals::key_t TRIGGERED_SIG           = "triggered";
-static const core::com::signals::key_t TRIGGERED_AS_STRING_SIG = "triggeredAsString";
+static const core::com::signals::key_t TRIGGERED_AS_STRING_SIG = "triggered_as_string";
 
 //-----------------------------------------------------------------------------
 

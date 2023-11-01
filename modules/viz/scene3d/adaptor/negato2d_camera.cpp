@@ -35,8 +35,8 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t RESET_CAMERA_SLOT       = "resetCamera";
-static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT    = "resizeViewport";
+static const core::com::slots::key_t RESET_CAMERA_SLOT       = "reset_camera";
+static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT    = "resize_viewport";
 static const core::com::slots::key_t CHANGE_ORIENTATION_SLOT = "changeOrientation";
 
 namespace interactor_3d = sight::viz::scene3d::interactor;

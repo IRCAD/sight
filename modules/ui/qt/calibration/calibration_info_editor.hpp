@@ -43,7 +43,7 @@ namespace sight::module::ui::qt::calibration
  * @section Slots Slots
  * - \b remove() : removes the current selected image.
  * - \b reset() : clears all the calibration information.
- * - \b getSelection() : emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
+ * - \b get_selection() : emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
  *
  * @section XML XML Configuration
  * @code{.xml}

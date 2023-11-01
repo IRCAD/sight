@@ -70,7 +70,7 @@ void manage_test::generic_add_in_composite_test(const std::string& _slot_name, b
 
     m_manage->slot(_slot_name)->run();
 
-    if(_slot_name == "addCopy")
+    if(_slot_name == "add_copy")
     {
         CPPUNIT_ASSERT(object != container->get<sight::data::string>("myKey"));
         CPPUNIT_ASSERT_EQUAL(*object, *container->get<sight::data::string>("myKey"));
@@ -100,7 +100,7 @@ void manage_test::generic_add_in_vector_test(const std::string& _slot_name, bool
     m_manage->slot(_slot_name)->run();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-    if(_slot_name == "addCopy")
+    if(_slot_name == "add_copy")
     {
         CPPUNIT_ASSERT(object != std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
         CPPUNIT_ASSERT_EQUAL(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
@@ -112,9 +112,9 @@ void manage_test::generic_add_in_vector_test(const std::string& _slot_name, bool
 
     m_manage->slot(_slot_name)->run();
 
-    std::size_t expected_size = 2 - static_cast<std::size_t>(_slot_name == "addOrSwap");
+    std::size_t expected_size = 2 - static_cast<std::size_t>(_slot_name == "add_or_swap");
     CPPUNIT_ASSERT_EQUAL(expected_size, container->size());
-    if(_slot_name == "addCopy")
+    if(_slot_name == "add_copy")
     {
         CPPUNIT_ASSERT(object != std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
         CPPUNIT_ASSERT_EQUAL(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
@@ -145,7 +145,7 @@ void manage_test::generic_add_in_series_set_test(const std::string& _slot_name, 
     m_manage->slot(_slot_name)->run();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-    if(_slot_name == "addCopy")
+    if(_slot_name == "add_copy")
     {
         CPPUNIT_ASSERT(object != (*container)[0]);
         CPPUNIT_ASSERT(*object == *(*container)[0]);
@@ -157,7 +157,7 @@ void manage_test::generic_add_in_series_set_test(const std::string& _slot_name, 
 
     m_manage->slot(_slot_name)->run();
 
-    if(_slot_name == "addCopy")
+    if(_slot_name == "add_copy")
     {
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), container->size());
         CPPUNIT_ASSERT(object != (*container)[0]);
@@ -191,7 +191,7 @@ void manage_test::generic_add_in_field_test(const std::string& _slot_name, bool 
 
     m_manage->slot(_slot_name)->run();
 
-    if(_slot_name == "addCopy")
+    if(_slot_name == "add_copy")
     {
         CPPUNIT_ASSERT(object != container->get_field<sight::data::string>("myField"));
         CPPUNIT_ASSERT_EQUAL(*object, *container->get_field<sight::data::string>("myField"));
@@ -234,84 +234,84 @@ void manage_test::add_in_field_test()
 
 void manage_test::add_copy_in_composite_test()
 {
-    generic_add_in_composite_test("addCopy");
+    generic_add_in_composite_test("add_copy");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_copy_in_vector_test()
 {
-    generic_add_in_vector_test("addCopy");
+    generic_add_in_vector_test("add_copy");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_copy_in_series_set_test()
 {
-    generic_add_in_series_set_test("addCopy");
+    generic_add_in_series_set_test("add_copy");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_copy_in_field_test()
 {
-    generic_add_in_field_test("addCopy");
+    generic_add_in_field_test("add_copy");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_not_present_in_composite_test()
 {
-    generic_add_in_composite_test("addOrSwap");
+    generic_add_in_composite_test("add_or_swap");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_not_present_in_vector_test()
 {
-    generic_add_in_vector_test("addOrSwap");
+    generic_add_in_vector_test("add_or_swap");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_not_present_in_series_set_test()
 {
-    generic_add_in_series_set_test("addOrSwap");
+    generic_add_in_series_set_test("add_or_swap");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_not_present_in_field_test()
 {
-    generic_add_in_field_test("addOrSwap");
+    generic_add_in_field_test("add_or_swap");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_present_in_composite_test()
 {
-    generic_add_in_composite_test("addOrSwap", true);
+    generic_add_in_composite_test("add_or_swap", true);
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_present_in_vector_test()
 {
-    generic_add_in_vector_test("addOrSwap", true);
+    generic_add_in_vector_test("add_or_swap", true);
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_present_in_series_set_test()
 {
-    generic_add_in_series_set_test("addOrSwap", true);
+    generic_add_in_series_set_test("add_or_swap", true);
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::add_or_swap_and_present_in_field_test()
 {
-    generic_add_in_field_test("addOrSwap", true);
+    generic_add_in_field_test("add_or_swap", true);
 }
 
 //------------------------------------------------------------------------------

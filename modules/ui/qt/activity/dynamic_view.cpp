@@ -44,7 +44,7 @@
 namespace sight::module::ui::qt::activity
 {
 
-static const core::com::slots::key_t CREATE_TAB_SLOT = "createTab";
+static const core::com::slots::key_t CREATE_TAB_SLOT = "create_tab";
 
 static const core::com::signals::key_t ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const core::com::signals::key_t NOTHING_SELECTED_SLOT  = "nothingSelected";

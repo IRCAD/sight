@@ -38,7 +38,7 @@ namespace sight::module::viz::scene2d::adaptor
 
 //---------------------------------------------------------------------------------------------------------------
 
-const core::com::slots::key_t grid2d::SET_GRID_SPACING_SLOT = "setGridSpacing";
+const core::com::slots::key_t grid2d::SET_GRID_SPACING_SLOT = "set_grid_spacing";
 
 //---------------------------------------------------------------------------------------------------------------
 

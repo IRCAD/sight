@@ -44,7 +44,7 @@
 namespace sight::module::io::vision
 {
 
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
 
 //------------------------------------------------------------------------------
 

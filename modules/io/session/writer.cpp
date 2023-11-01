@@ -60,7 +60,7 @@ public:
     /// Constructor
     inline explicit writer_impl(writer* const _writer) noexcept :
         m_writer(_writer),
-        m_job_created_signal(_writer->new_signal<job_created_signal_t>("jobCreated"))
+        m_job_created_signal(_writer->new_signal<job_created_signal_t>("job_created"))
     {
     }
 

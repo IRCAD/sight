@@ -32,7 +32,7 @@ namespace sight::module::ui::video
 
 //-----------------------------------------------------------------------------
 
-const core::com::slots::key_t GET_INTERACTION_SLOT = "getInteraction";
+const core::com::slots::key_t GET_INTERACTION_SLOT = "get_interaction";
 
 image_picker::image_picker() noexcept
 {

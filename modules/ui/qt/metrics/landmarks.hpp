@@ -130,7 +130,7 @@ struct image_or_image_series_lock
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - \b addPoint(std::string): adds a point to editor.
+ * - \b add_point(std::string): adds a point to editor.
  * - \b modifyPoint(std::string, std::size_t): updates the editor when a point has moved.
  * - \b selectPoint(std::string, std::size_t): selects a point in the editor.
  * - \b deselectPoint(std::string, std::size_t): deselect a point in the editor.
@@ -141,7 +141,7 @@ struct image_or_image_series_lock
  * - \b rename_group(std::string, std::string): renames a group in the editor.
  *
  * @section Signals Signals
- * - \b groupSelected(std::string groupName): triggered when a new group is selected from the editor
+ * - \b group_selected(std::string groupName): triggered when a new group is selected from the editor
  *
  * @section XML XML Configuration
  *

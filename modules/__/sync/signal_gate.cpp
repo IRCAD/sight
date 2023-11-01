@@ -34,7 +34,7 @@ namespace sight::module::sync
 {
 
 // Public signal
-const core::com::signals::key_t signal_gate::ALL_RECEIVED_SIG = "allReceived";
+const core::com::signals::key_t signal_gate::ALL_RECEIVED_SIG = "all_received";
 
 //-----------------------------------------------------------------------------
 

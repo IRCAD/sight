@@ -55,9 +55,9 @@ namespace sight::module::ui::qt::activity
  * activities. Be careful to store them in the right order.
  *
  * @section Signal Signal
- * - \b activityCreated(data::activity::sptr) : This signal is emitted when an activity is created (using
+ * - \b activity_created(data::activity::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
- * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
+ * - \b data_required() : This signal is emitted when the activity can not be launch because it requires data.
  * - \b hasNext(bool): This signal is emitted on sendInfo() slot, with the information if an activity is present after
  * the current one.
  * - \b hasPrevious(bool): This signal is emitted on sendInfo() slot, with the information if an activity is present
@@ -67,8 +67,8 @@ namespace sight::module::ui::qt::activity
  * @section Slots Slots
  * - \b next() : Create the next activity
  * - \b previous() : Create the next activity
- * - \b goTo(int) : Create the activity at the given index
- * - \b sendInfo() : Send the 'hasNext' and 'hasPrevious' signals for the current activity
+ * - \b go_to(int) : Create the activity at the given index
+ * - \b send_info() : Send the 'hasNext' and 'hasPrevious' signals for the current activity
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -136,27 +136,27 @@ public:
     {
         using key_t = sight::core::com::slots::key_t;
 
-        inline static const key_t GO_TO         = "goTo";
-        inline static const key_t CHECK_NEXT    = "checkNext";
-        inline static const key_t VALIDATE_NEXT = "validateNext";
+        inline static const key_t GO_TO         = "go_to";
+        inline static const key_t CHECK_NEXT    = "check_next";
+        inline static const key_t VALIDATE_NEXT = "validate_next";
         inline static const key_t NEXT          = "next";
         inline static const key_t PREVIOUS      = "previous";
-        inline static const key_t SEND_INFO     = "sendInfo";
+        inline static const key_t SEND_INFO     = "send_info";
     };
 
     struct MODULE_UI_QT_CLASS_API signals final
     {
         using key_t = sight::core::com::signals::key_t;
 
-        inline static const key_t ACTIVITY_CREATED = "activityCreated";
-        inline static const key_t DATA_REQUIRED    = "dataRequired";
+        inline static const key_t ACTIVITY_CREATED = "activity_created";
+        inline static const key_t DATA_REQUIRED    = "data_required";
         inline static const key_t HAS_PREVIOUS     = "hasPrevious";
         inline static const key_t HAS_NEXT         = "hasNext";
         inline static const key_t NEXT_ENABLED     = "nextEnabled";
 
-        inline static const key_t NEXT_VALIDATED = "nextValidated";
-        inline static const key_t NEXT_VALID     = "nextValid";
-        inline static const key_t NEXT_INVALID   = "nextInvalid";
+        inline static const key_t NEXT_VALIDATED = "next_validated";
+        inline static const key_t NEXT_VALID     = "next_valid";
+        inline static const key_t NEXT_INVALID   = "next_invalid";
 
         using void_signal_t     = core::com::signal<void ()>;
         using bool_signal_t     = core::com::signal<void (bool)>;

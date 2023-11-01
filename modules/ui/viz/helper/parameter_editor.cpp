@@ -87,7 +87,7 @@ service::config_t parameter_editor::create_config(
 
     if(obj_type == "sight::data::boolean")
     {
-        _connections.connect(_param_srv, "boolChanged", _adaptor, "set_bool_parameter");
+        _connections.connect(_param_srv, "bool_changed", _adaptor, "set_bool_parameter");
 
         param_config.add("<xmlattr>.type", "bool");
         param_config.add("<xmlattr>.name", _adaptor->get_param_name());
@@ -96,7 +96,7 @@ service::config_t parameter_editor::create_config(
     }
     else if(obj_type == "sight::data::color")
     {
-        _connections.connect(_param_srv, "colorChanged", _adaptor, "set_color_parameter");
+        _connections.connect(_param_srv, "color_changed", _adaptor, "set_color_parameter");
 
         auto color_value = std::dynamic_pointer_cast<data::color>(shader_obj.get_shared());
 
@@ -119,7 +119,7 @@ service::config_t parameter_editor::create_config(
     }
     else if(obj_type == "sight::data::real")
     {
-        _connections.connect(_param_srv, "doubleChanged", _adaptor, "set_double_parameter");
+        _connections.connect(_param_srv, "double_changed", _adaptor, "set_double_parameter");
 
         auto float_value         = std::dynamic_pointer_cast<data::real>(shader_obj.get_shared());
         const auto default_value = static_cast<double>(float_value->value());
@@ -136,7 +136,7 @@ service::config_t parameter_editor::create_config(
     }
     else if(obj_type == "sight::data::integer")
     {
-        _connections.connect(_param_srv, "intChanged", _adaptor, "set_int_parameter");
+        _connections.connect(_param_srv, "int_changed", _adaptor, "set_int_parameter");
 
         auto int_value          = std::dynamic_pointer_cast<data::integer>(shader_obj.get_shared());
         const int default_value = int(int_value->value());

@@ -53,7 +53,7 @@
 namespace sight::module::ui::qt::image
 {
 
-static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTF";
+static const core::com::slots::key_t UPDATE_TF_SLOT = "update_tf";
 
 //------------------------------------------------------------------------------
 

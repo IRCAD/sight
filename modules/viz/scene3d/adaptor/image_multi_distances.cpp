@@ -49,7 +49,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::slots::key_t REMOVE_DISTANCES_SLOT              = "removeDistances";
 static const core::com::slots::key_t UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
-static const core::com::slots::key_t ACTIVATE_DISTANCE_TOOL_SLOT        = "activateDistanceTool";
+static const core::com::slots::key_t ACTIVATE_DISTANCE_TOOL_SLOT        = "activate_distance_tool";
 static const core::com::slots::key_t UPDATE_MODIFIED_DISTANCE_SLOT      = "updateModifiedDistance";
 
 static constexpr std::uint8_t DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
@@ -464,7 +464,7 @@ void image_multi_distances::button_press_event(mouse_button _button, modifier /*
                     m_points.push_back(first_point);
                     m_points.push_back(second_point);
 
-                    //createDistance equal to 0, firstPoint = secondPoint
+                    //create_distance equal to 0, firstPoint = secondPoint
                     auto point_list = std::make_shared<data::point_list>();
                     point_list->set_points(m_points);
                     this->create_distance(point_list);

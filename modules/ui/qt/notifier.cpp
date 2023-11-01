@@ -35,7 +35,7 @@ namespace sight::module::ui::qt
 {
 
 static const core::com::slots::key_t POP_NOTIFICATION_SLOT   = "pop";
-static const core::com::slots::key_t CLOSE_NOTIFICATION_SLOT = "closeNotification";
+static const core::com::slots::key_t CLOSE_NOTIFICATION_SLOT = "close_notification";
 static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "set_enum_parameter";
 
 static const std::string POSITION_KEY("position");

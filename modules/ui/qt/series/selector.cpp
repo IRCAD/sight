@@ -43,7 +43,7 @@ namespace sight::module::ui::qt::series
 
 //------------------------------------------------------------------------------
 
-static const core::com::signals::key_t SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
+static const core::com::signals::key_t SERIES_DOUBLE_CLICKED_SIG = "series_double_clicked";
 
 static const core::com::slots::key_t ADD_SERIES_SLOT    = "addSeries";
 static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";

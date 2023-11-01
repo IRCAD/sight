@@ -44,7 +44,7 @@ namespace sight::module::ui::qt::metrics
  * distance.
  *
  * @section Signals Signals
- *  \b distanceRequested() : signal to request a distance. It should be connected to an ImageMultidistance
+ *  \b distance_requested() : signal to request a distance. It should be connected to an ImageMultidistance
  * adaptor to create the distance.
  *
  * @section XML XML Configuration

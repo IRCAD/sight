@@ -52,12 +52,12 @@ namespace sight::module::io::realsense
  * \b Tags: FILE, DEVICE
  *
  * @section Signals Signals
- * - \b distanceComputed(double): Signal sent when the distance (at the center of depth map) is computed.
+ * - \b distance_computed(double): Signal sent when the distance (at the center of depth map) is computed.
  *
  * @section Slots Slots
- * - \b startCamera() : This slot is called to initialize and start camera (restart camera if is already started).
- * - \b stopCamera()  : This slot is called to stop camera streams.
- * - \b pauseCamera() : This slot is called to pause/unpause the camera streams.
+ * - \b start_camera() : This slot is called to initialize and start camera (restart camera if is already started).
+ * - \b stop_camera()  : This slot is called to stop camera streams.
+ * - \b pause_camera() : This slot is called to pause/unpause the camera streams.
  * - \b record(): This slot is called to record current device in a .bag file.
  * - \b set_bool_parameter(bool value, std::string key) : Slot called when a boolean parameter changes:
  *   - key 'switchToIR': switch the color stream by infrared stream if true.
@@ -343,7 +343,7 @@ private:
     static std::string selectDevice();
 
     /**
-     * @brief initialize is called at "startCamera" and will do the initialization of sight data.
+     * @brief initialize is called at "start_camera" and will do the initialization of sight data.
      * @param[in] _profile: realsense pipeline_profile created in 'startCamera'
      */
     void initialize(const rs2::pipeline_profile& _profile);

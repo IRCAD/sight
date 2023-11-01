@@ -65,8 +65,8 @@
             </connect>
 
             <connect>
-                <signal>extractArchiveSrv/jobCreated</signal>
-                <slot>progressStatusbar/showJob</slot>
+                <signal>extractArchiveSrv/job_created</signal>
+                <slot>progressStatusbar/show_job</slot>
             </connect>
 
             <!-- ******************************* Start/Stop services ***************************************** -->

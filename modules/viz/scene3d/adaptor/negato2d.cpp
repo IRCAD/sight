@@ -42,12 +42,12 @@ namespace sight::module::viz::scene3d::adaptor
 
 const core::com::slots::key_t SLICETYPE_SLOT        = "sliceType";
 const core::com::slots::key_t SLICEINDEX_SLOT       = "sliceIndex";
-static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTF";
+static const core::com::slots::key_t UPDATE_TF_SLOT = "update_tf";
 
-static const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
+static const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
 
 static const core::com::signals::key_t SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
-static const core::com::signals::key_t PICKED_VOXEL_SIG        = "pickedVoxel";
+static const core::com::signals::key_t PICKED_VOXEL_SIG        = "picked_voxel";
 
 //------------------------------------------------------------------------------
 

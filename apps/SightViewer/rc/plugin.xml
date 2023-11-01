@@ -578,24 +578,24 @@
             </connect>
 
             <connect channel="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL" >
-                <slot>negatoViewAct/toggleVisibility</slot>
-                <slot>volumeViewAct/toggleVisibility</slot>
+                <slot>negatoViewAct/toggle_visibility</slot>
+                <slot>volumeViewAct/toggle_visibility</slot>
             </connect>
 
             <connect channel="VR_VISIBILITY_SENDER_CHANNEL" >
-                <signal>volumeVisibilityAct/isChecked</signal>
+                <signal>volumeVisibilityAct/is_checked</signal>
             </connect>
 
             <connect channel="3DNEGATO_VISIBILITY_SENDER_CHANNEL" >
-                <signal>negato3DVisibilityAct/isChecked</signal>
+                <signal>negato3DVisibilityAct/is_checked</signal>
             </connect>
 
             <connect channel="MESHES_VISIBILITY_SENDER_CHANNEL" >
-                <signal>meshVisibilityAct/isChecked</signal>
+                <signal>meshVisibilityAct/is_checked</signal>
             </connect>
 
             <connect channel="BOX_WIDGET_VISIBILITY_SENDER_CHANNEL" >
-                <signal>boxWidgetVisibilityAct/isChecked</signal>
+                <signal>boxWidgetVisibilityAct/is_checked</signal>
             </connect>
 
             <connect channel="BOX_WIDGET_RESET_SENDER_CHANNEL" >
@@ -603,7 +603,7 @@
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" >
-                <signal>shapeExtruderAct/isChecked</signal>
+                <signal>shapeExtruderAct/is_checked</signal>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" >
@@ -615,7 +615,7 @@
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" >
-                <signal>extractSeriesSrv/imageSelected</signal>
+                <signal>extractSeriesSrv/image_selected</signal>
                 <signal>extractPacsImageSrv/updated</signal>
             </connect>
 
@@ -624,11 +624,11 @@
             </connect>
 
             <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL" >
-                <signal>axisVisibilityAct/isChecked</signal>
+                <signal>axisVisibilityAct/is_checked</signal>
             </connect>
 
             <connect channel="NEGATO3D_TRANSPARENCY_CHANNEL" >
-                <signal>transparencyParameterSrv/doubleChanged</signal>
+                <signal>transparencyParameterSrv/double_changed</signal>
             </connect>
 
             <connect>
@@ -644,7 +644,7 @@
             </connect>
 
             <connect channel="DISTANCE_ACTIVATION_CHANNEL">
-                <signal>addDistanceAct/isChecked</signal>
+                <signal>addDistanceAct/is_checked</signal>
             </connect>
 
             <connect channel="DISTANCE_DEACTIVATION_CHANNEL">
@@ -667,23 +667,23 @@
             </connect>
 
             <connect>
-                <signal>seriesSet/addedObjects</signal>
+                <signal>seriesSet/added_objects</signal>
                 <slot>extractSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>pacsSeriesSet/addedObjects</signal>
+                <signal>pacsSeriesSet/added_objects</signal>
                 <slot>extractPacsImageSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>extractSeriesSrv/modelSelected</signal>
+                <signal>extractSeriesSrv/model_selected</signal>
                 <slot>meshVisibilityAct/enable</slot>
                 <slot>meshVisibilityAct/check</slot>
             </connect>
 
             <connect>
-                <signal>extractSeriesSrv/imageSelected</signal>
+                <signal>extractSeriesSrv/image_selected</signal>
                 <signal>extractPacsImageSrv/updated</signal>
                 <slot>volumeVisibilityAct/enable</slot>
                 <slot>volumeVisibilityAct/check</slot>
@@ -699,20 +699,20 @@
             </connect>
 
             <connect channel="VOLUME_BOOL_SENDER_CHANNEL" >
-                <signal>volumeParameterSrv/boolChanged</signal>
+                <signal>volumeParameterSrv/bool_changed</signal>
             </connect>
 
             <connect channel="VOLUME_INT_SENDER_CHANNEL" >
-                <signal>volumeParameterSrv/intChanged</signal>
+                <signal>volumeParameterSrv/int_changed</signal>
             </connect>
 
             <connect channel="VOLUME_DOUBLE_SENDER_CHANNEL" >
-                <signal>volumeParameterSrv/doubleChanged</signal>
+                <signal>volumeParameterSrv/double_changed</signal>
             </connect>
 
             <connect>
-                <signal>lightSelectorSrv/lightSelected</signal>
-                <slot>lightEditorSrv/editLight</slot>
+                <signal>lightSelectorSrv/light_selected</signal>
+                <slot>lightEditorSrv/edit_light</slot>
             </connect>
 
             <!-- Allow to check button in the advanced toolbar -->
@@ -772,15 +772,15 @@
             <!-- Manage landmarks -->
 
             <connect channel="WORLD_COORDS_LANDMARKS_CHANNEL">
-                <signal>landmarksParameterSrv/sendWorldCoord</signal>
+                <signal>landmarksParameterSrv/send_world_coord</signal>
             </connect>
 
             <connect channel="LANDMARKS_EDIT_MODE_SENDER_CHANNEL">
-                <signal>landmarksEditModeAct/isChecked</signal>
+                <signal>landmarksEditModeAct/is_checked</signal>
             </connect>
 
             <connect channel="LANDMARKS_GROUP_SELECTED_SENDER_CHANNEL" >
-                <signal>landmarksParameterSrv/groupSelected</signal>
+                <signal>landmarksParameterSrv/group_selected</signal>
             </connect>
 
             <connect channel="REMOVE_ALL_LANDMARKS_SENDER_CHANNEL" >
@@ -792,7 +792,7 @@
             </connect>
 
             <connect channel="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL" >
-                <slot>landmarksEditModeAct/setChecked</slot>
+                <slot>landmarksEditModeAct/set_checked</slot>
             </connect>
 
             <!-- ******************************* Start/Stop services ***************************************** -->

@@ -46,7 +46,7 @@ class view;
  *
  * @section Slots Slots
  *
- * - \b setVisible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
+ * - \b set_visible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
  * - \b show() : this slot shows the container.
  * - \b hide() : this slot hides the container.
  *

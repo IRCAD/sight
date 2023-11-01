@@ -32,8 +32,8 @@
 namespace sight::module::ui::qml::model
 {
 
-const core::com::signals::key_t model_series_list::RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-const core::com::signals::key_t model_series_list::EMPTIED_SELECTION_SIG       = "emptiedSelection";
+const core::com::signals::key_t model_series_list::RECONSTRUCTION_SELECTED_SIG = "reconstruction_selected";
+const core::com::signals::key_t model_series_list::EMPTIED_SELECTION_SIG       = "emptied_selection";
 
 model_series_list::model_series_list() noexcept
 {

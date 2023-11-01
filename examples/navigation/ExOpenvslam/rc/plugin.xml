@@ -398,22 +398,22 @@
 
             <connect>
                 <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
+                <slot>videoGrabberSrv/start_camera</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>videoGrabberSrv/pause_camera</slot>
             </connect>
 
             <connect>
                 <signal>loopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/loopVideo</slot>
+                <slot>videoGrabberSrv/loop_video</slot>
             </connect>
 
             <connect>
@@ -424,44 +424,44 @@
                 <slot>stopOpenvslamAct/show</slot>
                 <slot>openvslamSrv/start_tracking</slot>
                 <slot>EditorViews/hide</slot>
-                <slot>openvslamInitSrvStatus/changeToOrange</slot>
+                <slot>openvslamInitSrvStatus/change_to_orange</slot>
                 <slot>saveMapAct/show</slot>
                 <slot>savePCAct/show</slot>
             </connect>
 
             <connect>
                 <signal>pauseOpenvslamAct/clicked</signal>
-                <slot>openvslamSrv/pauseTracker</slot>
+                <slot>openvslamSrv/pause_tracker</slot>
             </connect>
 
             <connect>
                 <signal>showHidePointCloudAct/clicked</signal>
-                <slot>pointCloudAdp/toggleVisibility</slot>
+                <slot>pointCloudAdp/toggle_visibility</slot>
             </connect>
 
             <connect>
-                <signal>enableLocalizationAct/isChecked</signal>
-                <slot>openvslamSrv/enableLocalization</slot>
+                <signal>enableLocalizationAct/is_checked</signal>
+                <slot>openvslamSrv/enable_localization</slot>
             </connect>
 
             <connect>
                 <signal>saveMapAct/clicked</signal>
-                <slot>openvslamSrv/saveMap</slot>
+                <slot>openvslamSrv/save_map</slot>
             </connect>
 
             <connect>
                 <signal>saveTrajectoriesAct/clicked</signal>
-                <slot>openvslamSrv/saveTrajectories</slot>
+                <slot>openvslamSrv/save_trajectories</slot>
             </connect>
 
             <connect>
                 <signal>loadMapAct/clicked</signal>
-                <slot>openvslamSrv/loadMap</slot>
+                <slot>openvslamSrv/load_map</slot>
             </connect>
 
             <connect>
                 <signal>resetOpenvslamAct/clicked</signal>
-                <slot>openvslamSrv/resetPointCloud</slot>
+                <slot>openvslamSrv/reset_point_cloud</slot>
                 <slot>frustumListAdp/clear</slot>
             </connect>
 
@@ -477,8 +477,8 @@
                 <slot>startOpenvslamAct/show</slot>
                 <slot>openvslamSrv/stop_tracking</slot>
                 <slot>EditorViews/show</slot>
-                <slot>openvslamTrackingStatusSrv/changeToRed</slot>
-                <slot>openvslamInitSrvStatus/changeToRed</slot>
+                <slot>openvslamTrackingStatusSrv/change_to_red</slot>
+                <slot>openvslamInitSrvStatus/change_to_red</slot>
             </connect>
 
             <connect>
@@ -492,97 +492,97 @@
             </connect>
 
             <connect>
-                <signal>camera/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
+                <signal>camera/id_modified</signal>
+                <slot>videoGrabberSrv/stop_camera</slot>
             </connect>
 
             <!-- Connect openvslam status -->
             <connect>
-                <signal>openvslamSrv/trackingInitialized</signal>
-                <slot>openvslamInitSrvStatus/changeToGreen</slot>
+                <signal>openvslamSrv/tracking_initialized</signal>
+                <slot>openvslamInitSrvStatus/change_to_green</slot>
             </connect>
 
             <connect>
                 <signal>openvslamSrv/tracked</signal>
-                <slot>openvslamTrackingStatusSrv/changeToGreen</slot>
+                <slot>openvslamTrackingStatusSrv/change_to_green</slot>
                 <slot>saveTrajectoriesAct/show</slot>
             </connect>
 
 
             <connect>
-                <signal>openvslamSrv/trackingLost</signal>
+                <signal>openvslamSrv/tracking_lost</signal>
                 <signal>openvslamSrv/stopped</signal>
-                <slot>openvslamTrackingStatusSrv/changeToRed</slot>
+                <slot>openvslamTrackingStatusSrv/change_to_red</slot>
             </connect>
 
             <connect>
-                <signal>openvslamSrv/vocFileLoaded</signal>
-                <slot>openvslamVocStatusSrv/changeToGreen</slot>
+                <signal>openvslamSrv/voc_file_loaded</signal>
+                <slot>openvslamVocStatusSrv/change_to_green</slot>
             </connect>
 
             <connect>
-                <signal>openvslamSrv/vocFileLoadingStarted</signal>
-                <slot>openvslamVocStatusSrv/changeToOrange</slot>
+                <signal>openvslamSrv/voc_file_loading_started</signal>
+                <slot>openvslamVocStatusSrv/change_to_orange</slot>
             </connect>
 
             <connect>
-                <signal>openvslamSrv/vocFileUnloaded</signal>
-                <slot>openvslamVocStatusSrv/changeToRed</slot>
+                <signal>openvslamSrv/voc_file_unloaded</signal>
+                <slot>openvslamVocStatusSrv/change_to_red</slot>
             </connect>
 
             <!-- Connect video slider and frame grabber -->
             <connect>
-                <signal>videoSliderSrv/positionChanged</signal>
-                <slot>videoGrabberSrv/setPositionVideo</slot>
+                <signal>videoSliderSrv/position_changed</signal>
+                <slot>videoGrabberSrv/set_position_video</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/positionModified</signal>
-                <slot>videoSliderSrv/setPositionSlider</slot>
+                <signal>videoGrabberSrv/position_modified</signal>
+                <slot>videoSliderSrv/set_position_slider</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/durationModified</signal>
-                <slot>videoSliderSrv/setDurationSlider</slot>
+                <signal>videoGrabberSrv/duration_modified</signal>
+                <slot>videoSliderSrv/set_duration_slider</slot>
             </connect>
 
             <!-- Connect parameters to Sopenvslam -->
             <connect>
-                <signal>openvslamOrbSrv/intChanged</signal>
-                <signal>openvslamInitSrv/intChanged</signal>
+                <signal>openvslamOrbSrv/int_changed</signal>
+                <signal>openvslamInitSrv/int_changed</signal>
                 <slot>openvslamSrv/set_int_parameter</slot>
             </connect>
 
             <connect>
-                <signal>openvslamOrbSrv/doubleChanged</signal>
-                <signal>openvslamInitSrv/doubleChanged</signal>
+                <signal>openvslamOrbSrv/double_changed</signal>
+                <signal>openvslamInitSrv/double_changed</signal>
                 <slot>openvslamSrv/set_double_parameter</slot>
             </connect>
 
             <connect>
-                <signal>openvslamOrbSrv/boolChanged</signal>
+                <signal>openvslamOrbSrv/bool_changed</signal>
                 <slot>openvslamSrv/set_bool_parameter</slot>
             </connect>
 
             <connect>
-                <signal>openvslamOrbSrv/enumChanged</signal>
+                <signal>openvslamOrbSrv/enum_changed</signal>
                 <slot>openvslamSrv/set_enum_parameter</slot>
             </connect>
 
             <connect>
-                <signal>cameraSet/addedCamera</signal>
+                <signal>cameraSet/added_camera</signal>
                 <slot>cameraExtractorSrv/update</slot>
                 <slot>loadMapAct/show</slot>
             </connect>
 
             <connect>
-                <signal>openvslam/mapLoaded</signal>
+                <signal>openvslam/map_loaded</signal>
                 <slot>resetOpenvslamAct/show</slot>
                 <slot>startOpenvslamAct/hide</slot>
                 <slot>stopOpenvslamAct/show</slot>
                 <slot>openvslamSrv/start_tracking</slot>
                 <slot>EditorViews/hide</slot>
-                <slot>openvslamInitSrvStatus/changeToOrange</slot>
+                <slot>openvslamInitSrvStatus/change_to_orange</slot>
                 <slot>saveMapAct/show</slot>
                 <slot>savePCAct/show</slot>
             </connect>

@@ -209,25 +209,25 @@
         </service>
 
         <connect>
-            <signal>selector/seriesDoubleClicked</signal>
-            <slot>action_newActivity/launchSeries</slot>
+            <signal>selector/series_double_clicked</signal>
+            <slot>action_newActivity/launch_series</slot>
         </connect>
 
         <connect channel="${PROGRESS_CHANNEL}">
-            <signal>action_import/jobCreated</signal>
+            <signal>action_import/job_created</signal>
         </connect>
 
         <connect channel="${DYNAMICVIEW_CHANNEL}">
-            <signal>action_newActivity/activityLaunched</signal>
-            <signal>action_2DVisualization/activityLaunched</signal>
-            <signal>action_3DVisualization/activityLaunched</signal>
-            <signal>action_volumeRendering/activityLaunched</signal>
-            <signal>action_blend/activityLaunched</signal>
-            <signal>action_dicomPacsReader/activityLaunched</signal>
-            <signal>action_dicomPacsWriter/activityLaunched</signal>
-            <signal>action_dicomFiltering/activityLaunched</signal>
-            <signal>action_dicomWebReader/activityLaunched</signal>
-            <signal>action_dicomWebWriter/activityLaunched</signal>
+            <signal>action_newActivity/activity_launched</signal>
+            <signal>action_2DVisualization/activity_launched</signal>
+            <signal>action_3DVisualization/activity_launched</signal>
+            <signal>action_volumeRendering/activity_launched</signal>
+            <signal>action_blend/activity_launched</signal>
+            <signal>action_dicomPacsReader/activity_launched</signal>
+            <signal>action_dicomPacsWriter/activity_launched</signal>
+            <signal>action_dicomFiltering/activity_launched</signal>
+            <signal>action_dicomWebReader/activity_launched</signal>
+            <signal>action_dicomWebWriter/activity_launched</signal>
         </connect>
 
         <start uid="mainview" />

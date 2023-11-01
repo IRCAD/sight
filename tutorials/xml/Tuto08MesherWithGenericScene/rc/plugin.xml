@@ -278,19 +278,19 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>modelSeriesWriterSrv/jobCreated</signal>
-                <slot>progressBarView/showJob</slot>
+                <signal>modelSeriesWriterSrv/job_created</signal>
+                <slot>progressBarView/show_job</slot>
             </connect>
 
             <connect>
-                <signal>listOrganEditorSrv/reconstructionSelected</signal>
+                <signal>listOrganEditorSrv/reconstruction_selected</signal>
                 <slot>updaterReconstSrv/add</slot>
             </connect>
 
              <connect>
-                <signal>thresholdSliderSrv/intChanged</signal>
-                <slot>mesher50Srv/updateThreshold</slot>
-                <slot>mesher80Srv/updateThreshold</slot>
+                <signal>thresholdSliderSrv/int_changed</signal>
+                <slot>mesher50Srv/update_threshold</slot>
+                <slot>mesher80Srv/update_threshold</slot>
             </connect>
 
 

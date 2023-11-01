@@ -42,8 +42,8 @@
 namespace sight::module::geometry::vision
 {
 
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
-static const core::com::signals::key_t ERROR_COMPUTED_SIG        = "errorComputed";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG        = "error_computed";
 
 // ----------------------------------------------------------------------------
 

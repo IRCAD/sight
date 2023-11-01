@@ -325,7 +325,7 @@ void synchronizer_test::single_frame_tl_population()
             last_timestamp_synch = _timestamp;
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
-    auto synch_done_connection = tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto synch_done_connection = tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     // populate the TLs
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -359,7 +359,7 @@ void synchronizer_test::single_matrix_tl_population()
             last_timestamp_synch = _timestamp;
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
-    auto synch_done_connection = tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto synch_done_connection = tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
     tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
@@ -420,14 +420,14 @@ void synchronizer_test::basic_synchronisation()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
     auto slot_synchronization_skipped_received = sight::core::com::new_slot(
         [&synchronization_skipped_received]()
         {
             synchronization_skipped_received = true;
         });
     slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
         slot_synchronization_skipped_received
     );
 
@@ -562,14 +562,14 @@ void synchronizer_test::time_gap_synchronisation()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
     auto slot_synchronization_skipped_received = sight::core::com::new_slot(
         [&synchronization_skipped_received]()
         {
             synchronization_skipped_received = true;
         });
     slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
         slot_synchronization_skipped_received
     );
 
@@ -682,14 +682,14 @@ void synchronizer_test::reset_timeline_synchronisation()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
     auto slot_synchronization_skipped_received = sight::core::com::new_slot(
         [&synchronization_skipped_received]()
         {
             synchronization_skipped_received = true;
         });
     slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
         slot_synchronization_skipped_received
     );
 
@@ -792,14 +792,14 @@ void synchronizer_test::reset_and_loop_synchronisation()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
     auto slot_synchronization_skipped_received = sight::core::com::new_slot(
         [&synchronization_skipped_received]()
         {
             synchronization_skipped_received = true;
         });
     slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
         slot_synchronization_skipped_received
     );
 
@@ -945,7 +945,7 @@ void synchronizer_test::single_matrix_tl_config_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     tester.add_matrix_to_matrix_tl(matrix_t_l1, {0, 1, 2}, 1);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
@@ -1022,14 +1022,14 @@ void synchronizer_test::mixt_matrix_tl_config_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
     auto slot_synchronization_skipped_received = sight::core::com::new_slot(
         [&synchronization_skipped_received]()
         {
             synchronization_skipped_received = true;
         });
     slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
         slot_synchronization_skipped_received
     );
 
@@ -1105,7 +1105,7 @@ void synchronizer_test::single_frame_tl_config_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     tester.add_frame_to_frame_tl(frame_tl, 1);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
@@ -1232,7 +1232,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     tester.add_frame_to_frame_tl(frame_t_l1, 1);
     tester.add_frame_to_frame_tl(frame_t_l4, 1);
@@ -1395,14 +1395,14 @@ void synchronizer_test::full_config_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
     auto slot_synchronization_skipped_received = sight::core::com::new_slot(
         [&synchronization_skipped_received]()
         {
             synchronization_skipped_received = true;
         });
     slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
         slot_synchronization_skipped_received
     );
 
@@ -1490,7 +1490,7 @@ void synchronizer_test::update_config_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     // This is done just to handle automatic synch at first data push
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -1587,7 +1587,7 @@ void synchronizer_test::send_status_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     std::vector<bool> frame_var_index_synch_signal = {false, false};
     auto slot_frame_synchronized                   =
@@ -1620,7 +1620,7 @@ void synchronizer_test::send_status_test()
         });
     slot_matrix_synchronized->set_worker(sight::core::thread::get_default_worker());
     auto matrix_synchronized_connection =
-        tester.srv->signal("matrixSynchronized")->connect(slot_matrix_synchronized);
+        tester.srv->signal("matrix_synchronized")->connect(slot_matrix_synchronized);
 
     int matrix_var_index_un_synch_signal = -1;
     auto slot_matrix_unsynchronized      =
@@ -1631,7 +1631,7 @@ void synchronizer_test::send_status_test()
         });
     slot_matrix_unsynchronized->set_worker(sight::core::thread::get_default_worker());
     auto matrix_unsynchronized_connection =
-        tester.srv->signal("matrixUnsynchronized")->connect(slot_matrix_unsynchronized);
+        tester.srv->signal("matrix_unsynchronized")->connect(slot_matrix_unsynchronized);
 
     // This is done just to handle automatic synch at first data push
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -1761,7 +1761,7 @@ void synchronizer_test::delay_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     //time 1: synch on timestamp 4, expected (2,4,1)
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -1790,12 +1790,12 @@ void synchronizer_test::delay_test()
     synchronizer_tester::check_frame(tester.frame2, 5);
     synchronizer_tester::check_matrix(tester.matrix1, 2);
 
-    tester.srv->slot("setDelay")->run(1, std::string("frameDelay_0"));
-    tester.srv->slot("setDelay")->run(-1, std::string("frameDelay_1"));
-    tester.srv->slot("setDelay")->run(-1, std::string("frameDelay_2"));
-    tester.srv->slot("setDelay")->run(-1, std::string("matrixDelay_0"));
-    tester.srv->slot("setDelay")->run(2, std::string("matrixDelay_0"));
-    tester.srv->slot("setDelay")->run(1, std::string("matrixDelay_1"));
+    tester.srv->slot("set_delay")->run(1, std::string("frameDelay_0"));
+    tester.srv->slot("set_delay")->run(-1, std::string("frameDelay_1"));
+    tester.srv->slot("set_delay")->run(-1, std::string("frameDelay_2"));
+    tester.srv->slot("set_delay")->run(-1, std::string("matrixDelay_0"));
+    tester.srv->slot("set_delay")->run(2, std::string("matrixDelay_0"));
+    tester.srv->slot("set_delay")->run(1, std::string("matrixDelay_1"));
 
     //time 3: synch on timestamp 6, expected (5,6,4)
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 6);
@@ -1806,8 +1806,8 @@ void synchronizer_test::delay_test()
     synchronizer_tester::check_frame(tester.frame2, 6);
     synchronizer_tester::check_matrix(tester.matrix1, 4);
 
-    tester.srv->slot("setDelay")->run(0, std::string("frameDelay_0"));
-    tester.srv->slot("setDelay")->run(0, std::string("matrixDelay_0"));
+    tester.srv->slot("set_delay")->run(0, std::string("frameDelay_0"));
+    tester.srv->slot("set_delay")->run(0, std::string("matrixDelay_0"));
 
     //time 4: synch on timestamp 7, expected (7,7,7)
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 7);
@@ -1843,7 +1843,7 @@ void synchronizer_test::tolerance_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     // This is done just to handle automatic synch at first data push
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -1966,7 +1966,7 @@ void synchronizer_test::image_series_time_tagging_test()
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
-        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+        tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     // This is done just to handle automatic synch at first data push
     const std::uint64_t timestamp = 13;
@@ -2088,7 +2088,7 @@ void synchronizer_test::single_image_series_tl_population()
             last_timestamp_synch = _timestamp;
         });
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
-    auto synch_done_connection = tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto synch_done_connection = tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
     // populate the TLs
     tester.add_frame_to_frame_tl(frame_t_l1, 1);

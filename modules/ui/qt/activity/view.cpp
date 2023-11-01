@@ -39,7 +39,7 @@
 namespace sight::module::ui::qt::activity
 {
 
-const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activity_launched";
 
 static const std::string BORDER_CONFIG = "border";
 

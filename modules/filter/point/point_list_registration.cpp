@@ -44,7 +44,7 @@ namespace sight::module::filter::point
 {
 
 const core::com::slots::key_t point_list_registration::CHANGE_MODE = "changeMode";
-static const core::com::signals::key_t ERROR_COMPUTED_SIG          = "errorComputed";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG          = "error_computed";
 
 point_list_registration::point_list_registration()
 {

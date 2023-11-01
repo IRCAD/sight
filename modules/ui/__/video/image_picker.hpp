@@ -42,7 +42,7 @@ namespace sight::module::ui::video
  * @brief This service listens to a picking interaction and fills the clicked point list.
  *
  * @section Slots Slots
- * - \b getInteraction(data::tools::picking_info info): retrieves the 2d coordinates (z= 0) from picking info.
+ * - \b get_interaction(data::tools::picking_info info): retrieves the 2d coordinates (z= 0) from picking info.
  *
  * @code{.xml}
    <service uid="..." type="sight::module::ui::video::image_picker" >

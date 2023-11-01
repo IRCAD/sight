@@ -56,7 +56,7 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::Writer
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written
+ * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written
  *
  * @section XML XML Configuration
  *
@@ -151,7 +151,7 @@ private:
     dialog_policy m_dialog_policy {dialog_policy::never};
 
     /// Signal emitted when job created.
-    job_created_signal_t::sptr m_job_created_signal {new_signal<job_created_signal_t>("jobCreated")};
+    job_created_signal_t::sptr m_job_created_signal {new_signal<job_created_signal_t>("job_created")};
 
     /// Selected backend
     sight::io::bitmap::backend m_selected_backend {sight::io::bitmap::backend::libtiff};

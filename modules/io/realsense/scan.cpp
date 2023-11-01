@@ -70,13 +70,13 @@ static const std::string s_TEMPORAL_SMOOTH_DELTA       = "temporalSmoothDelta";
 static const std::string s_TEMPORAL_PERSISTENCY        = "temporalPersistency";
 static const std::string s_HOLE_FILLING                = "holeFilling";
 
-static const core::com::slots::key_t CONFIGURE_RECORDING_PATH_SLOT = "configureRecordingPath";
+static const core::com::slots::key_t CONFIGURE_RECORDING_PATH_SLOT = "configure_recording_path";
 
 static const core::com::slots::key_t RECORD = "record";
 
-static const core::com::signals::key_t DISTANCE_COMPUTED_SIG = "distanceComputed";
-static const core::com::signals::key_t DEVICE_PLAYED_SIG     = "devicePlayed";
-static const core::com::signals::key_t FILE_PLAYED_SIG       = "filePlayed";
+static const core::com::signals::key_t DISTANCE_COMPUTED_SIG = "distance_computed";
+static const core::com::signals::key_t DEVICE_PLAYED_SIG     = "device_played";
+static const core::com::signals::key_t FILE_PLAYED_SIG       = "file_played";
 
 // Determine depth value corresponding to one meter
 static const float s_METERS_TO_MMS = 1000.F;

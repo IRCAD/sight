@@ -36,7 +36,7 @@ namespace sight::module::sync
  * it resets its internal state and wait again for all signals to be received.
  *
  * @section Signals Signals
- * - \b allReceived(int) : Emitted each time all configured signals are received.
+ * - \b all_received(int) : Emitted each time all configured signals are received.
  *
  * @section XML XML Configuration
  *

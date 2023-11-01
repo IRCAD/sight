@@ -43,11 +43,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @deprecated Use sight::module::viz::scene3d_qt::adaptor::landmarks instead.
  *
  * @section Slots Slots
- * - \b removeAll(): removes all groups.
+ * - \b remove_all(): removes all groups.
  * - \b remove_group(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
  * - \b rename_group(std::string, std::string): replaces and old group's name by a new one.
- * - \b addPoint(std::string): adds the last point of a landmarks group.
+ * - \b add_point(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
  * - \b insertPoint(std::string, std::size_t): inserts a point.
  * - \b selectPoint(std::string, std::size_t) hightlights the selected landmark.
@@ -56,17 +56,18 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
  * - \b update_visibility(bool): shows or hides the landmarks.
- * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
+ * - \b toggle_visibility(): toggles whether the landmarks are shown or not.
  * - \b show(): shows the landmarks.
  * - \b hide(): hides the landmarks.
- * - \b toggleAddLandmarks(bool): Allow to add landmarks by clicking on the scene.
+ * - \b toggle_add_landmarks(bool): Allow to add landmarks by clicking on the scene.
  * - \b toggleRemoveLandmarks(bool): Allow to remove landmarks by clicking on the scene.
- * - \b removeLandmarks(): Remove all visible landmarks.
+ * - \b remove_landmarks(): Remove all visible landmarks.
  *                         Which landmarks are removed depends of the "viewDistance" parameters.
- * - \b configureLandmarks(): Configure the new landmarks size, shape and color used when adding landmarks.
+ * - \b configure_landmarks(): Configure the new landmarks size, shape and color used when adding landmarks.
  *
  * @section Signals Signals
- * - \b sendWorldCoord(double, double, double): sends world coordinates of current selected landmarks (by double click).
+ * - \b send_world_coord(double, double, double): sends world coordinates of current selected landmarks (by double
+ * click).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -124,12 +125,12 @@ public:
     {
         using key_t = sight::core::com::slots::key_t;
 
-        inline static const key_t REMOVE_ALL              = "removeAll";
+        inline static const key_t REMOVE_ALL              = "remove_all";
         inline static const key_t REMOVE_GROUP            = "remove_group";
         inline static const key_t MODIFY_GROUP            = "modifyGroup";
         inline static const key_t RENAME_GROUP            = "rename_group";
         inline static const key_t MODIFY_POINT            = "modifyPoint";
-        inline static const key_t ADD_POINT               = "addPoint";
+        inline static const key_t ADD_POINT               = "add_point";
         inline static const key_t REMOVE_POINT            = "removePoint";
         inline static const key_t INSERT_POINT            = "insertPoint";
         inline static const key_t SELECT_POINT            = "selectPoint";
@@ -137,11 +138,11 @@ public:
         inline static const key_t INITIALIZE_IMAGE        = "initializeImage";
         inline static const key_t SLICE_TYPE              = "sliceType";
         inline static const key_t SLICE_INDEX             = "sliceIndex";
-        inline static const key_t TOGGLE_ADD_LANDMARKS    = "toggleAddLandmarks";
+        inline static const key_t TOGGLE_ADD_LANDMARKS    = "toggle_add_landmarks";
         inline static const key_t TOGGLE_REMOVE_LANDMARKS = "toggleRemoveLandmarks";
-        inline static const key_t REMOVE_LANDMARKS        = "removeLandmarks";
-        inline static const key_t CREATE_LANDMARK         = "createLandmark";
-        inline static const key_t CONFIGURE_LANDMARKS     = "configureLandmarks";
+        inline static const key_t REMOVE_LANDMARKS        = "remove_landmarks";
+        inline static const key_t CREATE_LANDMARK         = "create_landmark";
+        inline static const key_t CONFIGURE_LANDMARKS     = "configure_landmarks";
     };
 
     /// SLOT: removes all groups.
@@ -241,7 +242,7 @@ public:
         using key_t = sight::core::com::signals::key_t;
 
         /// Signal send when double clicked on a landmark, send its world coordinates;
-        inline static const key_t SEND_WORLD_COORD = "sendWorldCoord";
+        inline static const key_t SEND_WORLD_COORD = "send_world_coord";
 
         using world_coordinates_signal_t = core::com::signal<void (double, double, double)>;
     };

@@ -48,7 +48,7 @@ using sight::viz::scene3d::layer;
 
 //------------------------------------------------------------------------------
 
-static const core::com::slots::key_t EDIT_LIGHT_SLOT = "editLight";
+static const core::com::slots::key_t EDIT_LIGHT_SLOT = "edit_light";
 
 //------------------------------------------------------------------------------
 

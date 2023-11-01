@@ -42,7 +42,7 @@
             </service>
 
             <connect channel="${LOGO_VISIBILITY_CHANNEL}">
-                <signal>view5VisibilityAct/isChecked</signal>
+                <signal>view5VisibilityAct/is_checked</signal>
             </connect>
 
             <start uid="view" />
@@ -424,7 +424,7 @@
         </connect>
 
         <connect channel="LOGO_VISIBILITY_CHANNEL">
-            <slot>sub5View/setVisible</slot>
+            <slot>sub5View/set_visible</slot>
         </connect>
 
         <connect>
@@ -449,7 +449,7 @@
 
         <connect>
             <signal>hideShowToolbar/triggered</signal>
-            <slot>toolbar2View/setVisible</slot>
+            <slot>toolbar2View/set_visible</slot>
         </connect>
 
         <connect>

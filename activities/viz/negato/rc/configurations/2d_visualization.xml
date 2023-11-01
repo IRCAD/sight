@@ -96,7 +96,7 @@
              configuration.-->
         <connect channel="${hasPreviousChannel}">
             <slot>ActionPrevious/show</slot>
-            <slot>ActionPrevious/setEnabled</slot>
+            <slot>ActionPrevious/set_enabled</slot>
         </connect>
 
         <!-- Connection to called 'previous' slot of the application's sequencer. -->
@@ -108,7 +108,7 @@
              configuration.-->
         <connect channel="${hasNextChannel}">
             <slot>ActionNext/show</slot>
-            <slot>ActionNext/setEnabled</slot>
+            <slot>ActionNext/set_enabled</slot>
         </connect>
 
         <!-- Connection to called 'next' slot of the application's sequencer. -->

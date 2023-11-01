@@ -70,12 +70,12 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect>
-            <signal>listOrganEditorSrv/reconstructionSelected</signal>
+            <signal>listOrganEditorSrv/reconstruction_selected</signal>
             <slot>selectReconstructionSrv/add</slot>
         </connect>
 
         <connect>
-            <signal>listOrganEditorSrv/emptiedSelection</signal>
+            <signal>listOrganEditorSrv/emptied_selection</signal>
             <slot>selectReconstructionSrv/remove</slot>
         </connect>
 

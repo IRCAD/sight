@@ -44,14 +44,14 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t NEWIMAGE_SLOT            = "newImage";
+static const core::com::slots::key_t NEWIMAGE_SLOT            = "new_image";
 static const core::com::slots::key_t SLICETYPE_SLOT           = "sliceType";
 static const core::com::slots::key_t SLICEINDEX_SLOT          = "sliceIndex";
-static const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
-static const core::com::slots::key_t SET_TRANSPARENCY_SLOT    = "setTransparency";
-static const core::com::slots::key_t UPDATE_TF_SLOT           = "updateTF";
+static const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
+static const core::com::slots::key_t SET_TRANSPARENCY_SLOT    = "set_transparency";
+static const core::com::slots::key_t UPDATE_TF_SLOT           = "update_tf";
 
-static const core::com::signals::key_t PICKED_VOXEL_SIG = "pickedVoxel";
+static const core::com::signals::key_t PICKED_VOXEL_SIG = "picked_voxel";
 
 //------------------------------------------------------------------------------
 
