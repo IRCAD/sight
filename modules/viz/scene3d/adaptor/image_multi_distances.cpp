@@ -36,7 +36,9 @@
 
 #include <ui/__/cursor.hpp>
 
+#include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
@@ -53,54 +55,6 @@ static const core::com::slots::key_t ACTIVATE_DISTANCE_TOOL_SLOT        = "activ
 static const core::com::slots::key_t UPDATE_MODIFIED_DISTANCE_SLOT      = "updateModifiedDistance";
 
 static constexpr std::uint8_t DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
-
-//------------------------------------------------------------------------------
-
-Ogre::ColourValue image_multi_distances::generate_color()
-{
-    if(std::getenv("GUI_TESTS_ARE_RUNNING") != nullptr)
-    {
-        // on windows and linux, the color is not the same and prevent comparison with a reference image in GUI tests.
-        // For that reason, the color is fixed in gui tests.
-        return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
-    }
-
-    ++m_color_index;
-    switch(m_color_index % 7)
-    {
-        case 0:
-            return Ogre::ColourValue(63 / 255.0F, 105 / 255.0F, 170 / 255.0F);
-
-        case 1:
-            return Ogre::ColourValue(249 / 255.0F, 103 / 255.0F, 20 / 255.0F);
-
-        case 2:
-            return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
-
-        case 3:
-            return Ogre::ColourValue(233 / 255.0F, 75 / 255.0F, 60 / 255.0F);
-
-        case 4:
-            return Ogre::ColourValue(121 / 255.0F, 199 / 255.0F, 83 / 255.0F);
-
-        case 5:
-            return Ogre::ColourValue(149 / 255.0F, 222 / 255.0F, 227 / 255.0F);
-
-        case 6:
-        default:
-            return Ogre::ColourValue(29 / 255.0F, 45 / 255.0F, 168 / 255.0F);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-Ogre::Vector3 image_multi_distances::get_cam_direction(const Ogre::Camera* const _cam)
-{
-    const Ogre::Matrix4 view = _cam->getViewMatrix();
-    Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
-    direction.normalise();
-    return -direction;
-}
 
 //------------------------------------------------------------------------------
 
@@ -126,14 +80,6 @@ void image_multi_distances::generate_dashed_line(
     }
 
     _object->end();
-}
-
-//------------------------------------------------------------------------------
-
-std::string image_multi_distances::get_length(const Ogre::Vector3& _begin, const Ogre::Vector3& _end)
-{
-    const int length = static_cast<int>(std::round((_end - _begin).length()));
-    return std::to_string(length) + "mm";
 }
 
 //------------------------------------------------------------------------------
@@ -481,7 +427,7 @@ void image_multi_distances::button_press_event(mouse_button _button, modifier /*
                     break;
                 }
 
-                if(object_type == "manual_object" && object->isVisible())
+                if(object_type == "ManualObject" && object->isVisible())
                 {
                     const Ogre::Real scale = 1.15F;
                     for(auto& distance : m_distances)
@@ -571,7 +517,7 @@ void image_multi_distances::mouse_move_event(
                                    / static_cast<float>(vp->getActualHeight());
 
                 const Ogre::Ray ray           = cam->getCameraToViewportRay(vp_x, vp_y);
-                const Ogre::Vector3 direction = this->get_cam_direction(cam);
+                const Ogre::Vector3 direction = sight::viz::scene3d::helper::camera::get_cam_direction(cam);
 
                 Ogre::Vector3 position;
                 if(m_picked_data.m_first)
@@ -645,7 +591,7 @@ void image_multi_distances::mouse_move_event(
                     const Ogre::MovableObject* const object = query_result_vect[qr_idx].movable;
                     const auto object_type                  = object->getMovableType();
 
-                    if(object_type == "manual_object" && object->isVisible())
+                    if(object_type == "ManualObject" && object->isVisible())
                     {
                         for(auto& distance : m_distances)
                         {
@@ -813,7 +759,7 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
     Ogre::SceneNode* const root_node    = scene_mgr->getRootSceneNode();
 
     // Retrieve data used to create Ogre resources.
-    const Ogre::ColourValue colour = image_multi_distances::generate_color();
+    const Ogre::ColourValue colour = sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
 
     const std::array<double, 3> front = _pl->get_points().front()->get_coord();
     const std::array<double, 3> back  = _pl->get_points().back()->get_coord();
@@ -894,7 +840,7 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
     sight::viz::scene3d::text::sptr label = sight::viz::scene3d::text::make(layer);
 
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = image_multi_distances::get_length(begin, end);
+    const std::string length = sight::viz::scene3d::helper::scene::get_length(begin, end);
     label->set_text(length);
     label->set_text_color(colour);
     label->set_font_size(m_font_size);
@@ -960,7 +906,7 @@ void image_multi_distances::update_distance(
 
     // Update the label.
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = image_multi_distances::get_length(_begin, _end);
+    const std::string length = sight::viz::scene3d::helper::scene::get_length(_begin, _end);
     _data->m_label->set_text(length);
     _data->m_label_node->setPosition(_end);
 

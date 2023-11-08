@@ -64,6 +64,25 @@ public:
         const Ogre::Camera& _camera,
         const Ogre::SceneNode* _root_scene_node
     );
+
+    /**
+     * @brief Generates a color from a distance ID.
+     * @param _id ID of the distance.
+     * @return The generated color.
+     */
+    VIZ_SCENE3D_API static Ogre::ColourValue generate_color(int _color_index);
+
+    /**
+     * @brief Gets the formatted string used to display the length of a distance.
+     * @return The formatted string.
+     */
+    VIZ_SCENE3D_API static std::string get_length(const Ogre::Vector3& _begin, const Ogre::Vector3& _end);
+
+    /**
+     * @brief Return the image spacing as a vector.
+     * @return The output vector.
+     */
+    VIZ_SCENE3D_API static Ogre::Vector3 spacing_as_vector3(const sight::data::image::spacing_t& spacing);
 };
 
 } // namespace sight::viz::scene3d::helper

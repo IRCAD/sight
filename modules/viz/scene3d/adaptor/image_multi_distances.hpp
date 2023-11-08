@@ -201,13 +201,6 @@ private:
     using distance_map = std::map<core::tools::id::type, distance_data>;
 
     /**
-     * @brief Generates a color from a distance ID.
-     * @param _id ID of the distance.
-     * @return The generated color.
-     */
-    Ogre::ColourValue generate_color();
-
-    /**
      * @brief Generates a dashed line in a Ogre::ManualObject.
      * @param _object Object where generate the dashed line.
      * @param _begin Begin position of the line.
@@ -220,18 +213,6 @@ private:
         const Ogre::Vector3& _end,
         float _thickness
     );
-
-    /**
-     * @brief Gets the formatted string used to display the length of a distance.
-     * @return The formatted string.
-     */
-    static std::string get_length(const Ogre::Vector3& /*_begin*/, const Ogre::Vector3& /*_end*/);
-
-    /**
-     * @brief Gets the normalized camera direction vector.
-     * @return A vector representing the camera direction
-     */
-    static Ogre::Vector3 get_cam_direction(const Ogre::Camera* /*_cam*/);
 
     /// Saves the created distances to image's field
     void update_image_distance_field(data::point_list::sptr _pl);

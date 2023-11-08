@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#include "data/landmarks.hpp"
-
-#include "landmarks.hpp"
+#include "point.hpp"
 
 #include "core/thread/worker.hpp"
 
 #include "data/dicom/attribute.hpp"
 #include "data/fiducials_series.hpp"
+#include "data/helper/fiducials_series.hpp"
 #include "data/image_series.hpp"
 
 #include "viz/scene3d/material_adaptor.hpp"
@@ -40,12 +39,13 @@
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <modules/viz/scene3d_qt/window_interactor.hpp>
 
 #include <QHBoxLayout>
 
-namespace sight::module::viz::scene3d_qt::adaptor
+namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
 static constexpr Ogre::Real SELECTED_SCALE = 1.35F;
@@ -192,7 +192,7 @@ void set_point(
     }
 
     std::vector<data::fiducials_series::fiducial> point_fiducials =
-        data::fiducials_series::get_point_fiducials(*fiducial_set);
+        data::helper::fiducials_series::filter_fiducials(*fiducial_set, data::fiducials_series::shape::point);
     if(point_fiducials.size() <= _index)
     {
         return std::nullopt;
@@ -305,7 +305,7 @@ std::array<float, 3> get_current_slice_pos(const data::image& _image)
 
 //------------------------------------------------------------------------------
 
-Ogre::Vector3 landmarks::get_cam_direction(const Ogre::Camera* const _cam)
+Ogre::Vector3 point::get_cam_direction(const Ogre::Camera* const _cam)
 {
     const Ogre::Matrix4 view = _cam->getViewMatrix();
     Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
@@ -315,26 +315,26 @@ Ogre::Vector3 landmarks::get_cam_direction(const Ogre::Camera* const _cam)
 
 //-----------------------------------------------------------------------------
 
-landmarks::landmarks() noexcept
+point::point() noexcept
 {
-    new_slot(slots::REMOVE_ALL, &landmarks::remove_all, this);
-    new_slot(slots::REMOVE_GROUP, &landmarks::remove_group, this);
-    new_slot(slots::MODIFY_GROUP, &landmarks::modify_group, this);
-    new_slot(slots::MODIFY_POINT, &landmarks::modify_point, this);
-    new_slot(slots::ADD_POINT, &landmarks::add_point, this);
-    new_slot(slots::REMOVE_POINT, &landmarks::remove_point, this);
-    new_slot(slots::INSERT_POINT, &landmarks::insert_point, this);
-    new_slot(slots::SELECT_POINT, &landmarks::select_point, this);
-    new_slot(slots::DESELECT_POINT, &landmarks::deselect_point, this);
-    new_slot(slots::SLICE_TYPE, &landmarks::change_slice_type, this);
-    new_slot(slots::SLICE_INDEX, &landmarks::change_slice_index, this);
-    new_slot(slots::RENAME_GROUP, &landmarks::rename_group, this);
-    new_slot(slots::SET_CURRENT_GROUP, &landmarks::set_current_group, this);
-    new_slot(slots::REMOVE_LANDMARKS, &landmarks::remove_landmarks, this);
-    new_slot(slots::CREATE_LANDMARK, &landmarks::create_landmark, this);
-    new_slot(slots::CONFIGURE_LANDMARKS, &landmarks::configure_landmarks, this);
-    new_slot(slots::ENABLE_EDIT_MODE, &landmarks::enable_edit_mode, this);
-    new_slot(slots::DISABLE_EDIT_MODE, &landmarks::disable_edit_mode, this);
+    new_slot(slots::REMOVE_ALL, &point::remove_all, this);
+    new_slot(slots::REMOVE_GROUP, &point::remove_group, this);
+    new_slot(slots::MODIFY_GROUP, &point::modify_group, this);
+    new_slot(slots::MODIFY_POINT, &point::modify_point, this);
+    new_slot(slots::ADD_POINT, &point::add_point, this);
+    new_slot(slots::REMOVE_POINT, &point::remove_point, this);
+    new_slot(slots::INSERT_POINT, &point::insert_point, this);
+    new_slot(slots::SELECT_POINT, &point::select_point, this);
+    new_slot(slots::DESELECT_POINT, &point::deselect_point, this);
+    new_slot(slots::SLICE_TYPE, &point::change_slice_type, this);
+    new_slot(slots::SLICE_INDEX, &point::change_slice_index, this);
+    new_slot(slots::RENAME_GROUP, &point::rename_group, this);
+    new_slot(slots::SET_CURRENT_GROUP, &point::set_current_group, this);
+    new_slot(slots::REMOVE_LANDMARKS, &point::remove_landmarks, this);
+    new_slot(slots::CREATE_LANDMARK, &point::create_landmark, this);
+    new_slot(slots::CONFIGURE_LANDMARKS, &point::configure_landmarks, this);
+    new_slot(slots::ENABLE_EDIT_MODE, &point::enable_edit_mode, this);
+    new_slot(slots::DISABLE_EDIT_MODE, &point::disable_edit_mode, this);
     new_slot(
         slots::TOGGLE_EDIT_MODE,
         [this]
@@ -342,8 +342,8 @@ landmarks::landmarks() noexcept
             (m_edit_mode& edit_mode::edit) == edit_mode::edit ? disable_edit_mode() : enable_edit_mode();
         });
     new_slot(slots::CHANGE_EDIT_MODE, [this](bool _edit_mode){_edit_mode ? enable_edit_mode() : disable_edit_mode();});
-    new_slot(slots::ENABLE_MOVE_MODE, &landmarks::enable_move_mode, this);
-    new_slot(slots::DISABLE_MOVE_MODE, &landmarks::disable_move_mode, this);
+    new_slot(slots::ENABLE_MOVE_MODE, &point::enable_move_mode, this);
+    new_slot(slots::DISABLE_MOVE_MODE, &point::disable_move_mode, this);
     new_slot(
         slots::TOGGLE_MOVE_MODE,
         [this]
@@ -355,7 +355,7 @@ landmarks::landmarks() noexcept
 
 //-----------------------------------------------------------------------------
 
-void landmarks::configuring()
+void point::configuring()
 {
     configure_params();
 
@@ -496,7 +496,7 @@ void landmarks::configuring()
 
 //-----------------------------------------------------------------------------
 
-void landmarks::starting()
+void point::starting()
 {
     initialize();
 
@@ -601,7 +601,7 @@ void landmarks::starting()
 
 //-----------------------------------------------------------------------------
 
-service::connections_t landmarks::auto_connections() const
+service::connections_t point::auto_connections() const
 {
     service::connections_t connections;
 
@@ -640,7 +640,7 @@ service::connections_t landmarks::auto_connections() const
 
 //-----------------------------------------------------------------------------
 
-void landmarks::updating()
+void point::updating()
 {
     // Delete all groups.
     remove_all_manual_objects();
@@ -660,7 +660,7 @@ void landmarks::updating()
 
 //-----------------------------------------------------------------------------
 
-void landmarks::stopping()
+void point::stopping()
 {
     if(m_interactive)
     {
@@ -684,7 +684,7 @@ void landmarks::stopping()
 
 //------------------------------------------------------------------------------
 
-void landmarks::remove_all_manual_objects()
+void point::remove_all_manual_objects()
 {
     // Make the context as current.
     render_service()->make_current();
@@ -716,7 +716,7 @@ void landmarks::remove_all_manual_objects()
 
 //------------------------------------------------------------------------------
 
-void landmarks::remove_all()
+void point::remove_all()
 {
     m_contextual_menu->hide();
 
@@ -785,7 +785,7 @@ void landmarks::remove_all()
 
 //------------------------------------------------------------------------------
 
-void landmarks::remove_group(std::string _group_name)
+void point::remove_group(std::string _group_name)
 {
     // Make the context as current.
     render_service()->make_current();
@@ -824,7 +824,7 @@ void landmarks::remove_group(std::string _group_name)
 
 //------------------------------------------------------------------------------
 
-void landmarks::modify_group(std::string _group_name)
+void point::modify_group(std::string _group_name)
 {
     // Make the context as current.
     render_service()->make_current();
@@ -863,7 +863,7 @@ void landmarks::modify_group(std::string _group_name)
 
 //------------------------------------------------------------------------------
 
-void landmarks::rename_group(std::string _old_group_name, std::string _new_group_name)
+void point::rename_group(std::string _old_group_name, std::string _new_group_name)
 {
     for(const std::shared_ptr<landmark>& landmark : m_manual_objects)
     {
@@ -885,14 +885,14 @@ void landmarks::rename_group(std::string _old_group_name, std::string _new_group
 
 //------------------------------------------------------------------------------
 
-void landmarks::set_current_group(std::string _new_current_group_name)
+void point::set_current_group(std::string _new_current_group_name)
 {
     m_current_group = _new_current_group_name;
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::modify_point(std::string _group_name, std::size_t _index)
+void point::modify_point(std::string _group_name, std::size_t _index)
 {
     std::optional<std::array<double, 3> > maybe_point = get_point(_group_name, _index, const_lock_landmarks());
 
@@ -925,7 +925,7 @@ void landmarks::modify_point(std::string _group_name, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::add_point(std::string _group_name)
+void point::add_point(std::string _group_name)
 {
     // Make the context as current.
     render_service()->make_current();
@@ -947,7 +947,7 @@ void landmarks::add_point(std::string _group_name)
 
 //------------------------------------------------------------------------------
 
-void landmarks::remove_point(std::string _group_name, std::size_t _index)
+void point::remove_point(std::string _group_name, std::size_t _index)
 {
     // Make the context as current.
     this->render_service()->make_current();
@@ -996,7 +996,7 @@ void landmarks::remove_point(std::string _group_name, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::insert_point(std::string _group_name, std::size_t _index)
+void point::insert_point(std::string _group_name, std::size_t _index)
 {
     // Make the context as current
     render_service()->make_current();
@@ -1006,7 +1006,7 @@ void landmarks::insert_point(std::string _group_name, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<landmarks::landmark> landmarks::create_manual_object(
+std::shared_ptr<point::landmark> point::create_manual_object(
     const std::string& _group_name,
     std::size_t _index,
     data::landmarks::landmarks_group _group_data,
@@ -1150,7 +1150,7 @@ std::shared_ptr<landmarks::landmark> landmarks::create_manual_object(
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<landmarks::landmark> landmarks::create_manual_object(
+std::shared_ptr<point::landmark> point::create_manual_object(
     const std::string& _group_name,
     std::size_t _index,
     data::landmarks::csptr _landmarks
@@ -1162,7 +1162,7 @@ std::shared_ptr<landmarks::landmark> landmarks::create_manual_object(
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<landmarks::landmark> landmarks::create_manual_object(
+std::shared_ptr<point::landmark> point::create_manual_object(
     const std::string& _group_name,
     std::size_t _index,
     landmarks_or_image_series_const_ptr _lf
@@ -1198,7 +1198,7 @@ std::shared_ptr<landmarks::landmark> landmarks::create_manual_object(
 
 //------------------------------------------------------------------------------
 
-void landmarks::select_point(std::string _group_name, std::size_t _index)
+void point::select_point(std::string _group_name, std::size_t _index)
 {
     // Make the context as current.
     this->render_service()->make_current();
@@ -1224,7 +1224,7 @@ void landmarks::select_point(std::string _group_name, std::size_t _index)
 
                 // Create thread data.
                 std::shared_ptr<selected_landmark> selected_landmark =
-                    std::make_shared<landmarks::selected_landmark>(this->worker()->create_timer(), m_manual_object);
+                    std::make_shared<point::selected_landmark>(this->worker()->create_timer(), m_manual_object);
                 m_selected_landmarks.push_back(selected_landmark);
 
                 // Run a thread that change the selected point.
@@ -1245,7 +1245,7 @@ void landmarks::select_point(std::string _group_name, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::deselect_point(std::string _group_name, std::size_t _index)
+void point::deselect_point(std::string _group_name, std::size_t _index)
 {
     // Make the context as current.
     render_service()->make_current();
@@ -1274,7 +1274,7 @@ void landmarks::deselect_point(std::string _group_name, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::hightlight(std::shared_ptr<selected_landmark> _selected_landmark)
+void point::hightlight(std::shared_ptr<selected_landmark> _selected_landmark)
 {
     // Make the context as current.
     this->render_service()->make_current();
@@ -1303,7 +1303,7 @@ void landmarks::hightlight(std::shared_ptr<selected_landmark> _selected_landmark
 
 //------------------------------------------------------------------------------
 
-void landmarks::change_slice_type(int _from, int _to)
+void point::change_slice_type(int _from, int _to)
 {
     // Make the context as current.
     this->render_service()->make_current();
@@ -1325,7 +1325,7 @@ void landmarks::change_slice_type(int _from, int _to)
 
 //------------------------------------------------------------------------------
 
-void landmarks::change_slice_index(int /*_axialIndex*/, int /*_frontalIndex*/, int /*_sagittalIndex*/)
+void point::change_slice_index(int /*_axialIndex*/, int /*_frontalIndex*/, int /*_sagittalIndex*/)
 {
     // Make the context as current.
     this->render_service()->make_current();
@@ -1353,7 +1353,7 @@ void landmarks::change_slice_index(int /*_axialIndex*/, int /*_frontalIndex*/, i
 
 //------------------------------------------------------------------------------
 
-void landmarks::remove_landmarks()
+void point::remove_landmarks()
 {
     std::optional<std::int64_t> slice_index;
     {
@@ -1460,7 +1460,7 @@ void landmarks::remove_landmarks()
 
 //------------------------------------------------------------------------------
 
-void landmarks::configure_landmarks(sight::viz::scene3d::landmarks_configuration _configuration)
+void point::configure_landmarks(sight::viz::scene3d::landmarks_configuration _configuration)
 {
     if(_configuration.group)
     {
@@ -1526,7 +1526,7 @@ void landmarks::configure_landmarks(sight::viz::scene3d::landmarks_configuration
 
 //------------------------------------------------------------------------------
 
-void landmarks::enable_edit_mode()
+void point::enable_edit_mode()
 {
     if((m_edit_mode& edit_mode::edit) == edit_mode::edit)
     {
@@ -1551,7 +1551,7 @@ void landmarks::enable_edit_mode()
 
 //------------------------------------------------------------------------------
 
-void landmarks::disable_edit_mode()
+void point::disable_edit_mode()
 {
     if((m_edit_mode& edit_mode::edit) != edit_mode::edit)
     {
@@ -1580,7 +1580,7 @@ void landmarks::disable_edit_mode()
 
 //------------------------------------------------------------------------------
 
-void landmarks::enable_move_mode()
+void point::enable_move_mode()
 {
     if((m_edit_mode& edit_mode::move) == edit_mode::move)
     {
@@ -1594,7 +1594,7 @@ void landmarks::enable_move_mode()
 
 //------------------------------------------------------------------------------
 
-void landmarks::disable_move_mode()
+void point::disable_move_mode()
 {
     if((m_edit_mode& edit_mode::move) != edit_mode::move)
     {
@@ -1614,14 +1614,14 @@ void landmarks::disable_move_mode()
 
 //------------------------------------------------------------------------------
 
-void landmarks::create_landmark(sight::data::landmarks::point_t _point)
+void point::create_landmark(sight::data::landmarks::point_t _point)
 {
     create_and_pick_landmark(_point, false);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::create_and_pick_landmark(const sight::data::landmarks::point_t& _point, bool _pick)
+void point::create_and_pick_landmark(const sight::data::landmarks::point_t& _point, bool _pick)
 {
     if(is_max_landmarks_reached())
     {
@@ -1697,7 +1697,10 @@ void landmarks::create_and_pick_landmark(const sight::data::landmarks::point_t& 
 
             data::fiducials_series::fiducial fiducial;
             fiducial.shape_type = data::fiducials_series::shape::point;
-            index               = data::fiducials_series::get_point_fiducials(fiducial_set).size();
+            index               = data::helper::fiducials_series::filter_fiducials(
+                fiducial_set,
+                data::fiducials_series::shape::point
+            ).size();
             std::string fiducial_name = m_current_group + '_' + std::to_string(index);
             fiducial.fiducial_description = fiducial_name; // TODO: Add a more appropriate description?
             fiducial.fiducial_identifier  = fiducial_name;
@@ -1740,7 +1743,7 @@ void landmarks::create_and_pick_landmark(const sight::data::landmarks::point_t& 
 
 //------------------------------------------------------------------------------
 
-bool landmarks::is_max_landmarks_reached()
+bool point::is_max_landmarks_reached()
 {
     if(!m_total_max && !m_visible_max && m_group_max.empty())
     {
@@ -1809,7 +1812,7 @@ bool landmarks::is_max_landmarks_reached()
 
 //------------------------------------------------------------------------------
 
-void landmarks::update_landmarks_visibility()
+void point::update_landmarks_visibility()
 {
     // Make the context as current.
     render_service()->make_current();
@@ -1832,7 +1835,7 @@ void landmarks::update_landmarks_visibility()
 
 //------------------------------------------------------------------------------
 
-void landmarks::update_landmark_visibility(std::shared_ptr<landmark> _landmark)
+void point::update_landmark_visibility(std::shared_ptr<landmark> _landmark)
 {
     // Make the context as current.
     render_service()->make_current();
@@ -1842,7 +1845,7 @@ void landmarks::update_landmark_visibility(std::shared_ptr<landmark> _landmark)
 
 //------------------------------------------------------------------------------
 
-void landmarks::update_landmark_visibility(landmark& _landmark, std::optional<data::landmarks::landmarks_group> _group)
+void point::update_landmark_visibility(landmark& _landmark, std::optional<data::landmarks::landmarks_group> _group)
 {
     const bool must_show =
         [&]
@@ -1868,14 +1871,14 @@ void landmarks::update_landmark_visibility(landmark& _landmark, std::optional<da
 
 //------------------------------------------------------------------------------
 
-void landmarks::update_landmark_visibility(landmark& _landmark, const landmarks_or_image_series_const_lock& _lock)
+void point::update_landmark_visibility(landmark& _landmark, const landmarks_or_image_series_const_lock& _lock)
 {
     update_landmark_visibility(_landmark, get_group(_landmark.m_group_name, _lock));
 }
 
 //------------------------------------------------------------------------------
 
-bool landmarks::is_landmark_visible(
+bool point::is_landmark_visible(
     const data::landmarks::point_t& _point,
     data::landmarks::size_t _group_size
 ) const
@@ -1917,7 +1920,7 @@ bool landmarks::is_landmark_visible(
 
 //------------------------------------------------------------------------------
 
-void landmarks::set_visible(bool _visible)
+void point::set_visible(bool _visible)
 {
     landmarks_or_image_series_const_lock lock = const_lock_landmarks();
     for(const auto& landmark : m_manual_objects)
@@ -1941,7 +1944,7 @@ void landmarks::set_visible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-std::optional<Ogre::Vector3> landmarks::get_nearest_picked_position(int _x, int _y)
+std::optional<Ogre::Vector3> point::get_nearest_picked_position(int _x, int _y)
 {
     Ogre::SceneManager* sm = this->get_scene_manager();
     const auto result      = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *sm);
@@ -1968,7 +1971,7 @@ std::optional<Ogre::Vector3> landmarks::get_nearest_picked_position(int _x, int 
 
 //------------------------------------------------------------------------------
 
-void landmarks::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
+void point::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
     m_contextual_menu->hide();
 
@@ -2013,7 +2016,7 @@ void landmarks::button_press_event(mouse_button _button, modifier /*_mods*/, int
 
 //------------------------------------------------------------------------------
 
-void landmarks::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
+void point::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
 {
     if(m_picked_data != nullptr)
     {
@@ -2135,7 +2138,7 @@ void landmarks::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, i
 
 //------------------------------------------------------------------------------
 
-void landmarks::button_release_event(mouse_button _button, modifier /*_mods*/, int /*_x*/, int /*_y*/)
+void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_picked_data != nullptr)
     {
@@ -2235,7 +2238,7 @@ void landmarks::button_release_event(mouse_button _button, modifier /*_mods*/, i
 
 //------------------------------------------------------------------------------
 
-void landmarks::button_double_press_event(mouse_button /*_button*/, modifier /*_mods*/, int _x, int _y)
+void point::button_double_press_event(mouse_button /*_button*/, modifier /*_mods*/, int _x, int _y)
 {
     m_contextual_menu->hide();
 
@@ -2274,14 +2277,14 @@ void landmarks::button_double_press_event(mouse_button /*_button*/, modifier /*_
 
 //------------------------------------------------------------------------------
 
-void landmarks::wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
+void point::wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
 {
     m_contextual_menu->hide();
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
+void point::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
 {
     if(m_edit_mode != edit_mode::display && _key == Qt::Key_Escape)
     {
@@ -2292,7 +2295,7 @@ void landmarks::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, i
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<landmarks::landmark> landmarks::try_pick(int _x, int _y, bool _for_modification) const
+std::shared_ptr<point::landmark> point::try_pick(int _x, int _y, bool _for_modification) const
 {
     const auto layer = this->layer();
 
@@ -2363,7 +2366,7 @@ std::shared_ptr<landmarks::landmark> landmarks::try_pick(int _x, int _y, bool _f
 
 //------------------------------------------------------------------------------
 
-void landmarks::set_cursor(QCursor _cursor)
+void point::set_cursor(QCursor _cursor)
 {
     auto interactor     = layer()->render_service()->get_interactor_manager();
     auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
@@ -2373,49 +2376,49 @@ void landmarks::set_cursor(QCursor _cursor)
 
 //------------------------------------------------------------------------------
 
-landmarks_or_image_series_lock landmarks::lock_landmarks()
+landmarks_or_image_series_lock point::lock_landmarks()
 {
     return {.landmarks = m_landmarks.lock(), .image_series = m_image_series.lock()};
 }
 
 //------------------------------------------------------------------------------
 
-landmarks_or_image_series_const_lock landmarks::const_lock_landmarks() const
+landmarks_or_image_series_const_lock point::const_lock_landmarks() const
 {
     return {.landmarks = m_landmarks.const_lock(), .image_series = m_image_series.const_lock()};
 }
 
 //------------------------------------------------------------------------------
 
-image_or_image_series_lock landmarks::lock_image()
+image_or_image_series_lock point::lock_image()
 {
     return {.image = m_image.lock(), .image_series = m_image_series.lock()};
 }
 
 //------------------------------------------------------------------------------
 
-image_or_image_series_const_lock landmarks::const_lock_image() const
+image_or_image_series_const_lock point::const_lock_image() const
 {
     return {.image = m_image.const_lock(), .image_series = m_image_series.const_lock()};
 }
 
-landmarks::delete_contextual_menu_when_focus_out::delete_contextual_menu_when_focus_out(landmarks* _s_landmarks) :
-    m_s_landmarks(_s_landmarks)
+point::delete_contextual_menu_when_focus_out::delete_contextual_menu_when_focus_out(point* _point) :
+    m_point(_point)
 {
 }
 
 //------------------------------------------------------------------------------
 
-bool landmarks::delete_contextual_menu_when_focus_out::eventFilter(QObject* /*o*/, QEvent* _e)
+bool point::delete_contextual_menu_when_focus_out::eventFilter(QObject* /*o*/, QEvent* _e)
 {
-    if(m_s_landmarks->m_contextual_menu != nullptr
-       && !m_s_landmarks->m_contextual_menu->findChild<QPushButton*>()->hasFocus()
+    if(m_point->m_contextual_menu != nullptr
+       && !m_point->m_contextual_menu->findChild<QPushButton*>()->hasFocus()
        && (_e->type() == QEvent::FocusOut || _e->type() == QEvent::Resize))
     {
-        m_s_landmarks->m_contextual_menu->hide();
+        m_point->m_contextual_menu->hide();
     }
 
     return false;
 }
 
-} // namespace sight::module::viz::scene3d_qt::adaptor.
+} // namespace sight::module::viz::scene3d_qt::adaptor::fiducials.

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
- * Copyright (C) 2015-2021 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,30 +23,23 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <OGRE/OgreRoot.h>
-
-namespace sight::viz::scene3d::helper::ut
+namespace sight::data::helper::ut
 {
 
-class scene_test : public CPPUNIT_NS::TestFixture
+class fiducials_series_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(scene_test);
-CPPUNIT_TEST(get_node_by_id);
-CPPUNIT_TEST(generate_color);
-CPPUNIT_TEST(get_length);
-CPPUNIT_TEST(spacing_as_vector3);
+CPPUNIT_TEST_SUITE(fiducials_series_test);
+CPPUNIT_TEST(to_point_list);
+CPPUNIT_TEST(filter_fiducials);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    // interface
     void setUp() override;
     void tearDown() override;
 
-    static void get_node_by_id();
-    static void generate_color();
-    static void get_length();
-    static void spacing_as_vector3();
+    static void to_point_list();
+    static void filter_fiducials();
 };
 
-} // namespace sight::viz::scene3d::helper::ut
+} // namespace sight::data::ut

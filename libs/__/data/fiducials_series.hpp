@@ -369,6 +369,7 @@ public:
      * @return The fiducial sequence as a vector of Fiducial struct.
      */
     DATA_API std::vector<fiducial> get_fiducials(std::size_t _fiducial_set_number) const noexcept;
+
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Replaces the existing content with the provided vector
      * of fiducials.
@@ -376,6 +377,17 @@ public:
      * @param fiducials The fiducial sequence which will replace the existing one.
      */
     DATA_API void set_fiducials(std::size_t _fiducial_set_number, const std::vector<fiducial>& _fiducials);
+
+    /**
+     * Get all the fiducials satisfying one or several features.
+     * @param fiducialSet The fiducial set whose fiducials must be filtered
+     * @return The list of fiducial whose shape type is point
+     */
+    [[nodiscard]] DATA_API std::vector<data::fiducials_series::fiducial> filter_fiducials(
+        const std::optional<data::fiducials_series::shape> _shape  = std::nullopt,
+        const std::optional<std::int32_t> _referenced_frame_number = std::nullopt
+    ) const;
+
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Replaces the element at index fiducialNumber with the
      * provided fiducial. If the element or the previous elements don't exist, they are created first.
@@ -384,6 +396,7 @@ public:
      * @param fiducial The fiducial which will replace the existing one.
      */
     DATA_API void set_fiducial(std::size_t _fiducial_set_number, std::size_t _fiducial_number, fiducial _fiducial);
+
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Appends the provided fiducial at the end of the
      * sequence.
@@ -733,13 +746,6 @@ public:
         const std::string& _group_name,
         std::size_t _index
     ) const;
-
-    /**
-     * Get all the fiducials whose shape type is point in the given fiducial set
-     * @param fiducialSet The fiducial set whose fiducials must be filtered
-     * @return The list of fiducial whose shape type is point
-     */
-    [[nodiscard]] DATA_API static std::vector<fiducial> get_point_fiducials(const fiducial_set& _fiducial_set);
 
     /**
      * Get a fiducial set as a structure compatible with data::landmarks

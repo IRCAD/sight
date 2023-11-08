@@ -41,7 +41,7 @@
 
 #include <QPushButton>
 
-namespace sight::module::viz::scene3d_qt::adaptor
+namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
 struct landmarks_or_image_series_const_ptr
@@ -160,7 +160,7 @@ struct image_or_image_series_lock
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="sight::module::viz::scene3d::adaptor::landmarks">
+    <service uid="..." type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
         <inout key="landmarks" uid="..." />
         <in key="image" uid="..." />
         <config transform="transformUID" visible="true" priority="2" />
@@ -196,7 +196,7 @@ struct image_or_image_series_lock
  * - \b modify (optional, all/group, default="all"): if "all", all the landmarks can be modified, ignoring the current
         group; if "group", only the landmarks belonging to the current group can be modified
  */
-class MODULE_VIZ_SCENE3D_QT_CLASS_API landmarks final :
+class MODULE_VIZ_SCENE3D_QT_CLASS_API point final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable,
     public sight::viz::scene3d::interactor::base
@@ -204,45 +204,46 @@ class MODULE_VIZ_SCENE3D_QT_CLASS_API landmarks final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(landmarks, sight::viz::scene3d::adaptor);
+    SIGHT_DECLARE_SERVICE(point, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE3D_QT_API landmarks() noexcept;
+    MODULE_VIZ_SCENE3D_QT_API point() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_QT_API ~landmarks() noexcept final = default;
+    MODULE_VIZ_SCENE3D_QT_API ~point() noexcept final = default;
 
     struct MODULE_VIZ_SCENE3D_QT_CLASS_API slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
-        inline static const key_t REMOVE_ALL              = "remove_all";
-        inline static const key_t REMOVE_GROUP            = "remove_group";
-        inline static const key_t MODIFY_GROUP            = "modifyGroup";
-        inline static const key_t RENAME_GROUP            = "rename_group";
-        inline static const key_t SET_CURRENT_GROUP       = "set_current_group";
-        inline static const key_t MODIFY_POINT            = "modifyPoint";
-        inline static const key_t ADD_POINT               = "add_point";
-        inline static const key_t REMOVE_POINT            = "removePoint";
-        inline static const key_t INSERT_POINT            = "insertPoint";
-        inline static const key_t SELECT_POINT            = "selectPoint";
-        inline static const key_t DESELECT_POINT          = "deselectPoint";
-        inline static const key_t INITIALIZE_IMAGE        = "initializeImage";
-        inline static const key_t SLICE_TYPE              = "sliceType";
-        inline static const key_t SLICE_INDEX             = "sliceIndex";
-        inline static const key_t TOGGLE_ADD_LANDMARKS    = "toggle_add_landmarks";
-        inline static const key_t TOGGLE_REMOVE_LANDMARKS = "toggleRemoveLandmarks";
-        inline static const key_t REMOVE_LANDMARKS        = "remove_landmarks";
-        inline static const key_t CREATE_LANDMARK         = "create_landmark";
-        inline static const key_t CONFIGURE_LANDMARKS     = "configure_landmarks";
-        inline static const key_t ENABLE_EDIT_MODE        = "enableEditMode";
-        inline static const key_t DISABLE_EDIT_MODE       = "disableEditMode";
-        inline static const key_t TOGGLE_EDIT_MODE        = "toggleEditMode";
-        inline static const key_t CHANGE_EDIT_MODE        = "change_edit_mode";
-        inline static const key_t ENABLE_MOVE_MODE        = "enableMoveMode";
-        inline static const key_t DISABLE_MOVE_MODE       = "disableMoveMode";
-        inline static const key_t TOGGLE_MOVE_MODE        = "toggleMoveMode";
-        inline static const key_t CHANGE_MOVE_MODE        = "change_move_mode";
+        inline static const key_t REMOVE_ALL        = "remove_all";
+        inline static const key_t REMOVE_GROUP      = "remove_group";
+        inline static const key_t MODIFY_GROUP      = "modifyGroup";
+        inline static const key_t RENAME_GROUP      = "rename_group";
+        inline static const key_t SET_CURRENT_GROUP = "set_current_group";
+        inline static const key_t MODIFY_POINT      = "modifyPoint";
+        inline static const key_t ADD_POINT         = "add_point";
+        inline static const key_t REMOVE_POINT      = "removePoint";
+        inline static const key_t INSERT_POINT      = "insertPoint";
+        inline static const key_t SELECT_POINT      = "selectPoint";
+        inline static const key_t DESELECT_POINT    = "deselectPoint";
+        inline static const key_t INITIALIZE_IMAGE  = "initializeImage";
+        inline static const key_t SLICE_TYPE        = "sliceType";
+        inline static const key_t SLICE_INDEX       = "sliceIndex";
+        // Not implemented
+        // inline static const key_t TOGGLE_ADD_LANDMARKS    = "toggle_add_landmarks";
+        // inline static const key_t TOGGLE_REMOVE_LANDMARKS = "toggleRemoveLandmarks";
+        inline static const key_t REMOVE_LANDMARKS    = "remove_landmarks";
+        inline static const key_t CREATE_LANDMARK     = "create_landmark";
+        inline static const key_t CONFIGURE_LANDMARKS = "configure_landmarks";
+        inline static const key_t ENABLE_EDIT_MODE    = "enableEditMode";
+        inline static const key_t DISABLE_EDIT_MODE   = "disableEditMode";
+        inline static const key_t TOGGLE_EDIT_MODE    = "toggleEditMode";
+        inline static const key_t CHANGE_EDIT_MODE    = "change_edit_mode";
+        inline static const key_t ENABLE_MOVE_MODE    = "enableMoveMode";
+        inline static const key_t DISABLE_MOVE_MODE   = "disableMoveMode";
+        inline static const key_t TOGGLE_MOVE_MODE    = "toggleMoveMode";
+        inline static const key_t CHANGE_MOVE_MODE    = "change_move_mode";
     };
 
     /// Remove all manual objects group
@@ -504,9 +505,9 @@ private:
     {
     public:
 
-        explicit delete_contextual_menu_when_focus_out(landmarks* _s_landmarks);
+        explicit delete_contextual_menu_when_focus_out(point* _point);
         bool eventFilter(QObject* _o, QEvent* _e) override;
-        landmarks* m_s_landmarks;
+        point* m_point;
     };
 
     /**

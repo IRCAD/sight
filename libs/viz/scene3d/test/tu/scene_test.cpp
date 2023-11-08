@@ -106,4 +106,48 @@ void scene_test::get_node_by_id()
 
 //------------------------------------------------------------------------------
 
+void scene_test::generate_color()
+{
+    CPPUNIT_ASSERT_EQUAL(
+        Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F),
+        viz::scene3d::helper::scene::generate_color(0)
+    );
+
+    CPPUNIT_ASSERT_EQUAL(
+        Ogre::ColourValue(29 / 255.0F, 45 / 255.0F, 168 / 255.0F),
+        viz::scene3d::helper::scene::generate_color(6)
+    );
+
+    CPPUNIT_ASSERT_EQUAL(
+        Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F),
+        viz::scene3d::helper::scene::generate_color(7)
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void scene_test::get_length()
+{
+    CPPUNIT_ASSERT_EQUAL(
+        viz::scene3d::helper::scene::get_length(
+            Ogre::Vector3(0.0F, 0.0F, 0.0F),
+            Ogre::Vector3(1.0F, 0.0F, 0.0F)
+        ),
+        std::string("1mm")
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void scene_test::spacing_as_vector3()
+{
+    const data::image::spacing_t spacing = {1., 1., 1.};
+    CPPUNIT_ASSERT_EQUAL(
+        viz::scene3d::helper::scene::spacing_as_vector3(spacing),
+        Ogre::Vector3(1.0F, 1.0F, 1.0F)
+    );
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace sight::viz::scene3d::helper::ut

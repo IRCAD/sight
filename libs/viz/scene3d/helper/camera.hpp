@@ -96,6 +96,12 @@ public:
         const Ogre::Camera& _camera,
         const Ogre::Vector3& _world_pos
     );
+
+    /**
+     * @brief Gets the normalized camera direction vector.
+     * @return A vector representing the camera direction
+     */
+    static VIZ_SCENE3D_API Ogre::Vector3 get_cam_direction(const Ogre::Camera* _cam);
 };
 
 } // namespace sight::viz::scene3d::helper

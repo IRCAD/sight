@@ -220,6 +220,16 @@ Ogre::Vector2 camera::convert_world_space_to_screen_space(const Ogre::Camera& _c
     return screen_pos;
 }
 
+//------------------------------------------------------------------------------
+
+Ogre::Vector3 camera::get_cam_direction(const Ogre::Camera* const _cam)
+{
+    const Ogre::Matrix4 view = _cam->getViewMatrix();
+    Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
+    direction.normalise();
+    return -direction;
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace sight::viz::scene3d::helper

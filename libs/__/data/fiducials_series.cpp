@@ -27,6 +27,8 @@
 
 #include <core/tools/uuid.hpp>
 
+#include <data/helper/fiducials_series.hpp>
+
 #include <gdcmSequenceOfItems.h>
 #include <gdcmSmartPointer.h>
 #include <gdcmTagKeywords.h>
@@ -735,6 +737,25 @@ std::vector<fiducials_series::fiducial> fiducials_series::get_fiducials(std::siz
             }
             })
     ).value_or(std::vector<fiducial> {});
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<data::fiducials_series::fiducial> fiducials_series::filter_fiducials(
+    const std::optional<data::fiducials_series::shape> _shape,
+    const std::optional<std::int32_t> _referenced_frame_number
+) const
+{
+    std::vector<data::fiducials_series::fiducial> fiducials;
+    std::vector<data::fiducials_series::fiducial_set> fiducial_sets = this->get_fiducial_sets();
+
+    for(auto& fiducial_set : fiducial_sets)
+    {
+        auto tmp = helper::fiducials_series::filter_fiducials(fiducial_set, _shape, _referenced_frame_number);
+        std::copy(tmp.begin(), tmp.end(), std::back_inserter(fiducials));
+    }
+
+    return fiducials;
 }
 
 //------------------------------------------------------------------------------
@@ -1509,23 +1530,6 @@ std::optional<std::size_t> fiducials_series::get_number_of_points_in_group(const
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] std::vector<fiducials_series::fiducial> fiducials_series::get_point_fiducials(
-    const fiducials_series::fiducial_set& _fiducial_set
-)
-{
-    std::vector<fiducial> point_fiducials;
-    std::ranges::copy_if(
-        _fiducial_set.fiducial_sequence,
-        std::back_inserter(point_fiducials),
-        [](const auto _f)
-        {
-            return _f.shape_type == shape::point;
-        });
-    return point_fiducials;
-}
-
-//------------------------------------------------------------------------------
-
 [[nodiscard]] std::optional<std::array<double, 3> > fiducials_series::get_point(
     const fiducials_series::fiducial& _fiducial
 )
@@ -1609,7 +1613,7 @@ const
 
     landmarks::landmarks_group group(color, size, shape, visibility);
     std::ranges::for_each(
-        get_point_fiducials(fiducial_set->first),
+        data::helper::fiducials_series::filter_fiducials(fiducial_set->first, data::fiducials_series::shape::point),
         [&group](const data::fiducials_series::fiducial& _fiducial)
         {
             if(auto point = get_point(_fiducial))
@@ -1682,7 +1686,13 @@ void fiducials_series::add_point(const std::string& _group_name, const std::arra
         return;
     }
 
-    std::string fiducial_name = _group_name + '_' + std::to_string(get_point_fiducials(fiducial_set->first).size());
+    std::string fiducial_name = _group_name + '_'
+                                + std::to_string(
+        data::helper::fiducials_series::filter_fiducials(
+            fiducial_set->first,
+            data::fiducials_series::shape::point
+        ).size()
+                                );
     fiducial fiducial;
     fiducial.shape_type           = shape::point;
     fiducial.fiducial_description = fiducial_name;

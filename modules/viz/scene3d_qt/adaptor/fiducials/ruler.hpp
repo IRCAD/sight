@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "data/fiducials_series.hpp"
+
 #include "modules/viz/scene3d_qt/config.hpp"
 
 #include <data/point_list.hpp>
@@ -39,16 +41,15 @@
 #include <memory>
 #include <optional>
 
-namespace sight::module::viz::scene3d_qt::adaptor
+namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
 /**
  * @brief This adaptor displays distances retrieved from the image fields.
  *
-
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="sight::module::viz::scene3d::adaptor::image_multi_distances" auto_connect="true" >
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::fiducials::ruler" auto_connect="true" >
         <inout key="image" uid="..." />
         <config fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
     </service>
@@ -65,6 +66,9 @@ namespace sight::module::viz::scene3d_qt::adaptor
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
  *      snapped.
  * - \b distanceQueryFlags (optional, uint32, default=0x40000000): mask apply to distances spheres.
+ * - \b color (optional, string, default=""): color applied to the rulers, generated if empty.
+ * - \b apply_spacing (optional, bool, default=false): whether computed positions require the spacing
+ *      to be taken into account or not.
  *
  * @section Slots Slots
  * - \b remove_all(): remove all distances.
@@ -81,7 +85,7 @@ namespace sight::module::viz::scene3d_qt::adaptor
  *
  *
  */
-class image_multi_distances final :
+class ruler final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::interactor::base
 {
@@ -96,13 +100,25 @@ public:
     };
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(image_multi_distances, sight::viz::scene3d::adaptor);
+    SIGHT_DECLARE_SERVICE(ruler, sight::viz::scene3d::adaptor);
 
     /// Initialize slots.
-    MODULE_VIZ_SCENE3D_QT_API image_multi_distances() noexcept;
+    MODULE_VIZ_SCENE3D_QT_API ruler() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_QT_API ~image_multi_distances() noexcept override = default;
+    MODULE_VIZ_SCENE3D_QT_API ~ruler() noexcept override = default;
+
+    struct MODULE_VIZ_SCENE3D_QT_CLASS_API slots final
+    {
+        using key_t = sight::core::com::slots::key_t;
+
+        inline static const key_t REMOVE_ALL                    = "remove_all";
+        inline static const key_t REMOVE_DISTANCES              = "removeDistances";
+        inline static const key_t UPDATE_VISIBILITY_FROM_FIELDS = "updateVisibilityFromField";
+        inline static const key_t ACTIVATE_DISTANCE_TOOL        = "activate_distance_tool";
+        inline static const key_t UPDATE_MODIFIED_DISTANCE      = "updateModifiedDistance";
+        inline static const key_t RESTRICT_TO_CURRENT_SLICE     = "restrict_to_current_slice";
+    };
 
     /**
      * @brief Retrieves the picked distance and stores the result in m_pickedData.
@@ -174,13 +190,15 @@ protected:
      */
     MODULE_VIZ_SCENE3D_QT_API void set_visible(bool _visible) override;
 
+    MODULE_VIZ_SCENE3D_QT_API void set_visible(std::string _id, bool _visible);
+
 private:
 
     /// Stores Ogre resources used to display a distance.
     /// Two spheres each attached to a node, a label to display millimeters,
     /// one line rendered with the depth check and a dashed line rendered without depth check.
     /// The point list is used to update each points when the interactor move a distance sphere,
-    /// it's retrieve from the image via a field.
+    /// it is retrieved from the image via a field.
     struct distance_data
     {
         data::point_list::sptr m_point_list;
@@ -208,43 +226,10 @@ private:
     {
     public:
 
-        explicit delete_bin_button_when_focus_out(image_multi_distances* _s_image_multi_distances);
+        explicit delete_bin_button_when_focus_out(ruler* _ruler);
         bool eventFilter(QObject* _o, QEvent* _e) override;
-        image_multi_distances* m_s_image_multi_distances;
+        ruler* m_ruler;
     };
-
-    /**
-     * @brief Generates a color from a distance ID.
-     * @param _id ID of the distance.
-     * @return The generated color.
-     */
-    Ogre::ColourValue generate_color();
-
-    /**
-     * @brief Generates a dashed line in a Ogre::ManualObject.
-     * @param _object Object where generate the dashed line.
-     * @param _begin Begin position of the line.
-     * @param _end End position of the line.
-     * @param _thickness Thickness of dash.
-     */
-    static void generate_dashed_line(
-        Ogre::ManualObject* _object,
-        const Ogre::Vector3& _begin,
-        const Ogre::Vector3& _end,
-        float _thickness
-    );
-
-    /**
-     * @brief Gets the formatted string used to display the length of a distance.
-     * @return The formatted string.
-     */
-    static std::string get_length(const Ogre::Vector3& /*_begin*/, const Ogre::Vector3& /*_end*/);
-
-    /**
-     * @brief Gets the normalized camera direction vector.
-     * @return A vector representing the camera direction
-     */
-    static Ogre::Vector3 get_cam_direction(const Ogre::Camera* /*_cam*/);
 
     /// Saves the created distances to image's field
     void update_image_distance_field(data::point_list::sptr _pl);
@@ -297,8 +282,12 @@ private:
 
     void remove_distance(data::point_list::sptr _pl);
 
+    void update_from_fiducials();
+
+    void restrict_to_current_slice();
+
     /// Defines the radius of distances spheres.
-    float m_distance_sphere_radius {3.5F};
+    float m_sphere_radius {3.5F};
 
     /// Defines the font size in points.
     std::size_t m_font_size {12};
@@ -323,6 +312,9 @@ private:
 
     /// Counter to swap color at each new distance
     int m_color_index {0};
+
+    /// Color extracted from the configuration
+    std::string m_config_color {""};
 
     /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
     picked_data m_picked_data {nullptr, true};
@@ -354,6 +346,13 @@ private:
     /// Stores all generated distances.
     distance_map m_distances;
     std::vector<data::point::sptr> m_points;
+
+    // Cached fiducials from the input image
+    std::vector<sight::data::fiducials_series::fiducial> m_cached_fiducials;
+
+    // Image spacing to be applied on measures
+    bool m_apply_spacing {false};
+    Ogre::Vector3 m_spacing;
 
     QPushButton* m_bin_button = nullptr;
 

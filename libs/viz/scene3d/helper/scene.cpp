@@ -164,6 +164,49 @@ std::pair<Ogre::Vector2, Ogre::Vector2> scene::compute_bounding_rect(
     };
 }
 
+//------------------------------------------------------------------------------
+
+Ogre::ColourValue scene::generate_color(int _color_index)
+{
+    static std::vector<Ogre::ColourValue> colors = {
+        Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F),
+        Ogre::ColourValue(63 / 255.0F, 105 / 255.0F, 170 / 255.0F),
+        Ogre::ColourValue(249 / 255.0F, 103 / 255.0F, 20 / 255.0F),
+        Ogre::ColourValue(233 / 255.0F, 75 / 255.0F, 60 / 255.0F),
+        Ogre::ColourValue(121 / 255.0F, 199 / 255.0F, 83 / 255.0F),
+        Ogre::ColourValue(149 / 255.0F, 222 / 255.0F, 227 / 255.0F),
+        Ogre::ColourValue(29 / 255.0F, 45 / 255.0F, 168 / 255.0F)
+    };
+
+    if(std::getenv("GUI_TESTS_ARE_RUNNING") != nullptr)
+    {
+        // on windows and linux, the color is not the same and prevent comparison
+        // with a reference image in GUI tests.
+        // For that reason, the color is fixed in gui tests.
+        return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
+    }
+
+    return colors.at(static_cast<std::size_t>(std::abs(_color_index)) % colors.size());
+}
+
+//------------------------------------------------------------------------------
+
+std::string scene::get_length(const Ogre::Vector3& _begin, const Ogre::Vector3& _end)
+{
+    const int length = static_cast<int>(std::round((_end - _begin).length()));
+    return std::to_string(length) + "mm";
+}
+
+//------------------------------------------------------------------------------
+
+Ogre::Vector3 scene::spacing_as_vector3(const sight::data::image::spacing_t& _spacing)
+{
+    return {static_cast<Ogre::Real>(_spacing[0]),
+            static_cast<Ogre::Real>(_spacing[1]),
+            static_cast<Ogre::Real>(_spacing[2])
+    };
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace sight::viz::scene3d::helper

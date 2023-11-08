@@ -22,7 +22,7 @@
 
 // cspell:ignore NOLINTNEXTLINE
 
-#include "image_multi_distances.hpp"
+#include "ruler.hpp"
 
 #include "core/runtime/path.hpp"
 
@@ -32,21 +32,23 @@
 #include <core/tools/uuid.hpp>
 
 #include <data/boolean.hpp>
+#include <data/helper/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/material.hpp>
 #include <data/point_list.hpp>
+#include <data/tools/color.hpp>
 
 #include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 
+#include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
-
-#include <libs/viz/scene3d/helper/scene.hpp>
 
 #include <modules/viz/scene3d_qt/window_interactor.hpp>
 
@@ -54,186 +56,32 @@
 #include <OgreNode.h>
 #include <OgreSceneNode.h>
 
-namespace sight::module::viz::scene3d_qt::adaptor
+namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
-
-static const core::com::slots::key_t REMOVE_ALL_SLOT                    = "remove_all";
-static const core::com::slots::key_t REMOVE_DISTANCES_SLOT              = "removeDistances";
-static const core::com::slots::key_t UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
-static const core::com::slots::key_t ACTIVATE_DISTANCE_TOOL_SLOT        = "activate_distance_tool";
-static const core::com::slots::key_t UPDATE_MODIFIED_DISTANCE_SLOT      = "updateModifiedDistance";
 
 static constexpr std::uint8_t DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
 
 //------------------------------------------------------------------------------
 
-namespace
+ruler::ruler() noexcept
 {
-
-//------------------------------------------------------------------------------
-
-data::point_list::sptr to_point_list(const data::fiducials_series::fiducial& _fiducial)
-{
-    SIGHT_ASSERT(
-        "Only RULER-shaped fiducials are supported",
-        _fiducial.shape_type == data::fiducials_series::shape::ruler
-    );
-    data::point_list::sptr res;
-    if(_fiducial.fiducial_uid.has_value())
-    {
-        core::tools::object::sptr o = core::tools::id::get_object(*_fiducial.fiducial_uid);
-        if(o == nullptr)
-        {
-            res = std::make_shared<data::point_list>();
-            res->set_id(*_fiducial.fiducial_uid);
-        }
-        else
-        {
-            res = std::dynamic_pointer_cast<data::point_list>(o);
-            SIGHT_ASSERT(
-                "The ID " << *_fiducial.fiducial_uid << " is already set to an object which isn't a point list.",
-                res
-            );
-        }
-    }
-    else
-    {
-        // The fiducial doesn't have a meaningful way to uniquely identify it, ignore it.
-        return nullptr;
-    }
-
-    if(!_fiducial.contour_data.empty())
-    {
-        SIGHT_ASSERT("Contour Data should have two elements", _fiducial.contour_data.size() == 2);
-        res->clear();
-        res->push_back(
-            std::make_shared<data::point>(
-                _fiducial.contour_data[0].x,
-                _fiducial.contour_data[0].y,
-                _fiducial.contour_data[0].z
-            )
-        );
-        res->push_back(
-            std::make_shared<data::point>(
-                _fiducial.contour_data[1].x,
-                _fiducial.contour_data[1].y,
-                _fiducial.contour_data[1].z
-            )
-        );
-    }
-    else
-    {
-        // Position with Graphic Coordinates Data Sequence isn't supported
-        return nullptr;
-    }
-
-    return res;
-}
-
-} // namespace
-
-//------------------------------------------------------------------------------
-
-Ogre::ColourValue image_multi_distances::generate_color()
-{
-    if(std::getenv("GUI_TESTS_ARE_RUNNING") != nullptr)
-    {
-        // on windows and linux, the color is not the same and prevent comparison with a reference image in GUI tests.
-        // For that reason, the color is fixed in gui tests.
-        return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
-    }
-
-    ++m_color_index;
-    switch(m_color_index % 7)
-    {
-        case 0:
-            return Ogre::ColourValue(63 / 255.0F, 105 / 255.0F, 170 / 255.0F);
-
-        case 1:
-            return Ogre::ColourValue(249 / 255.0F, 103 / 255.0F, 20 / 255.0F);
-
-        case 2:
-            return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
-
-        case 3:
-            return Ogre::ColourValue(233 / 255.0F, 75 / 255.0F, 60 / 255.0F);
-
-        case 4:
-            return Ogre::ColourValue(121 / 255.0F, 199 / 255.0F, 83 / 255.0F);
-
-        case 5:
-            return Ogre::ColourValue(149 / 255.0F, 222 / 255.0F, 227 / 255.0F);
-
-        case 6:
-        default:
-            return Ogre::ColourValue(29 / 255.0F, 45 / 255.0F, 168 / 255.0F);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-Ogre::Vector3 image_multi_distances::get_cam_direction(const Ogre::Camera* const _cam)
-{
-    const Ogre::Matrix4 view = _cam->getViewMatrix();
-    Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
-    direction.normalise();
-    return -direction;
-}
-
-//------------------------------------------------------------------------------
-
-void image_multi_distances::generate_dashed_line(
-    Ogre::ManualObject* const _object,
-    const Ogre::Vector3& _begin,
-    const Ogre::Vector3& _end,
-    float _thickness
-)
-{
-    const Ogre::Vector3 dashed_line_dir = (_end - _begin);
-    const float len                     = dashed_line_dir.length();
-    Ogre::Vector3 dashed_line_dir_n     = (_end - _begin);
-    dashed_line_dir_n.normalise();
-
-    Ogre::Vector3 dashed_line_pos = _begin;
-    for(std::size_t i = 0 ; i <= static_cast<std::size_t>((len - _thickness * 1.5) / (_thickness * 2)) ; i++)
-    {
-        _object->position(dashed_line_pos);
-        dashed_line_pos += dashed_line_dir_n * _thickness;
-        _object->position(dashed_line_pos);
-        dashed_line_pos += dashed_line_dir_n * _thickness;
-    }
-
-    _object->end();
-}
-
-//------------------------------------------------------------------------------
-
-std::string image_multi_distances::get_length(const Ogre::Vector3& _begin, const Ogre::Vector3& _end)
-{
-    const int length = static_cast<int>(std::round((_end - _begin).length()));
-    return std::to_string(length) + "mm";
-}
-
-//------------------------------------------------------------------------------
-
-image_multi_distances::image_multi_distances() noexcept
-{
-    new_slot(REMOVE_ALL_SLOT, &image_multi_distances::remove_all, this);
-    new_slot(REMOVE_DISTANCES_SLOT, &image_multi_distances::remove_distances, this);
-    new_slot(UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &image_multi_distances::update_visibility_from_field, this);
-    new_slot(ACTIVATE_DISTANCE_TOOL_SLOT, &image_multi_distances::activate_distance_tool, this);
-    new_slot(UPDATE_MODIFIED_DISTANCE_SLOT, &image_multi_distances::update_modified_distance, this);
+    new_slot(slots::REMOVE_ALL, &ruler::remove_all, this);
+    new_slot(slots::REMOVE_DISTANCES, &ruler::remove_distances, this);
+    new_slot(slots::UPDATE_VISIBILITY_FROM_FIELDS, &ruler::update_visibility_from_field, this);
+    new_slot(slots::ACTIVATE_DISTANCE_TOOL, &ruler::activate_distance_tool, this);
+    new_slot(slots::UPDATE_MODIFIED_DISTANCE, &ruler::update_modified_distance, this);
+    new_slot(slots::RESTRICT_TO_CURRENT_SLICE, &ruler::restrict_to_current_slice, this);
 
     new_signal<signals::void_signal_t>(signals::DEACTIVATE_DISTANCE_TOOL);
 }
 
 //------------------------------------------------------------------------------
 
-service::connections_t image_multi_distances::auto_connections() const
+service::connections_t ruler::auto_connections() const
 {
-    connections_t connections;
-    connections.push(IMAGE_INOUT, data::image::DISTANCE_MODIFIED_SIG, UPDATE_MODIFIED_DISTANCE_SLOT);
-    connections.push(IMAGE_INOUT, data::image::DISTANCE_REMOVED_SIG, REMOVE_DISTANCES_SLOT);
+    service::connections_t connections;
+    connections.push(IMAGE_INOUT, data::image::DISTANCE_MODIFIED_SIG, slots::UPDATE_MODIFIED_DISTANCE);
+    connections.push(IMAGE_INOUT, data::image::DISTANCE_REMOVED_SIG, slots::REMOVE_DISTANCES);
     connections.push(IMAGE_INOUT, data::image::DISTANCE_DISPLAYED_SIG, UPDATE_VISIBILITY_SLOT);
     connections.push(IMAGE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
@@ -241,23 +89,27 @@ service::connections_t image_multi_distances::auto_connections() const
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::configuring()
+void ruler::configuring()
 {
     this->configure_params();
 
     const config_t config = this->get_config();
 
-    static const std::string s_FONT_SIZE_CONFIG   = CONFIG + "fontSize";
-    static const std::string s_RADIUS_CONFIG      = CONFIG + "radius";
-    static const std::string s_INTERACTIVE_CONFIG = CONFIG + "interactive";
-    static const std::string s_PRIORITY_CONFIG    = CONFIG + "priority";
-    static const std::string s_QUERY_MASK_CONFIG  = CONFIG + "queryMask";
-    static const std::string s_QUERY_FLAGS_CONFIG = CONFIG + "distanceQueryFlags";
+    static const std::string s_FONT_SIZE_CONFIG     = CONFIG + "fontSize";
+    static const std::string s_RADIUS_CONFIG        = CONFIG + "radius";
+    static const std::string s_INTERACTIVE_CONFIG   = CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG      = CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG    = CONFIG + "queryMask";
+    static const std::string s_QUERY_FLAGS_CONFIG   = CONFIG + "distanceQueryFlags";
+    static const std::string s_COLOR_CONFIG         = CONFIG + "color";
+    static const std::string s_APPLY_SPACING_CONFIG = CONFIG + "apply_spacing";
 
-    m_font_size              = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
-    m_distance_sphere_radius = config.get<float>(s_RADIUS_CONFIG, m_distance_sphere_radius);
-    m_interactive            = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
-    m_priority               = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_font_size     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
+    m_sphere_radius = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
+    m_interactive   = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
+    m_priority      = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_config_color  = config.get<std::string>(s_COLOR_CONFIG, m_config_color);
+    m_apply_spacing = config.get<bool>(s_APPLY_SPACING_CONFIG, m_apply_spacing);
 
     std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexa_mask.empty())
@@ -286,7 +138,7 @@ void image_multi_distances::configuring()
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::starting()
+void ruler::starting()
 {
     this->initialize();
 
@@ -348,11 +200,13 @@ void image_multi_distances::starting()
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
         layer->add_interactor(interactor, m_priority);
     }
+
+    this->update_from_fiducials();
 }
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::updating()
+void ruler::updating()
 {
     this->render_service()->make_current();
 
@@ -365,7 +219,103 @@ void image_multi_distances::updating()
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::stopping()
+void ruler::update_from_fiducials()
+{
+    std::vector<sight::data::point_list::sptr> plv;
+
+    m_cached_fiducials.clear();
+
+    // First collect the point lists to be added (to prevent deadlocks on function calls)
+    {
+        const auto image = m_image.lock();
+
+        if(m_apply_spacing)
+        {
+            m_spacing = sight::viz::scene3d::helper::scene::spacing_as_vector3(image->spacing());
+        }
+        else
+        {
+            m_spacing = Ogre::Vector3(1.0, 1.0, 1.0);
+        }
+
+        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
+        {
+            auto fiducials = image_series->get_fiducials()->filter_fiducials(
+                data::fiducials_series::shape::ruler
+            );
+
+            std::copy(fiducials.begin(), fiducials.end(), std::back_inserter(m_cached_fiducials));
+        }
+    }
+
+    for(const auto& fiducial : m_cached_fiducials)
+    {
+        std::string id = fiducial.fiducial_identifier;
+        if( /* Check that the distance hasn't been already inserted */
+            m_distances.find(id) == m_distances.end())
+        {
+            plv.push_back(sight::data::helper::fiducials_series::to_point_list(fiducial));
+            plv.back()->set_id(id);
+        }
+    }
+
+    // Then create the shapes from the point lists
+    for(auto& pl : plv)
+    {
+        this->create_distance(pl);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::restrict_to_current_slice()
+{
+    const auto image = m_image.lock();
+    if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
+    {
+        const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
+                                                     *image_series,
+                                                     sight::data::helper::medical_image::orientation_t::axial
+        ).value_or(-1));
+
+        if(slice_index < 0)
+        {
+            SIGHT_ERROR("Invalid slice index. Cannot extract inferred data.");
+            return;
+        }
+
+        auto fiducials = image_series->get_fiducials()->filter_fiducials(
+            data::fiducials_series::shape::ruler,
+            slice_index
+        );
+
+        for(const auto& cached_fiducial : m_cached_fiducials)
+        {
+            bool found = false;
+            for(const auto& fiducial : fiducials)
+            {
+                if(fiducial.fiducial_identifier == cached_fiducial.fiducial_identifier)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if(found)
+            {
+                this->set_visible(cached_fiducial.fiducial_identifier, true);
+            }
+            else
+            {
+                this->set_visible(cached_fiducial.fiducial_identifier, false);
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::stopping()
 {
     this->render_service()->make_current();
 
@@ -389,7 +339,7 @@ void image_multi_distances::stopping()
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::remove_all()
+void ruler::remove_all()
 {
     if(m_bin_button != nullptr)
     {
@@ -411,7 +361,7 @@ void image_multi_distances::remove_all()
             {
                 if(it_fiducial->shape_type == data::fiducials_series::shape::ruler)
                 {
-                    distance_list_copy->push_back(to_point_list(*it_fiducial));
+                    distance_list_copy->push_back(sight::data::helper::fiducials_series::to_point_list(*it_fiducial));
                     it_fiducial = it_fiducial_set->fiducial_sequence.erase(it_fiducial);
                 }
                 else
@@ -449,7 +399,7 @@ void image_multi_distances::remove_all()
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::remove_distances()
+void ruler::remove_distances()
 {
     this->render_service()->make_current();
 
@@ -466,7 +416,7 @@ void image_multi_distances::remove_distances()
             {
                 if(fiducial.shape_type == data::fiducials_series::shape::ruler)
                 {
-                    if(data::point_list::sptr pl = to_point_list(fiducial))
+                    if(data::point_list::sptr pl = sight::data::helper::fiducials_series::to_point_list(fiducial))
                     {
                         distance_field->push_back(pl);
                     }
@@ -514,10 +464,8 @@ void image_multi_distances::remove_distances()
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::update_visibility_from_field()
+void ruler::update_visibility_from_field()
 {
-    this->render_service()->make_current();
-
     const auto image = m_image.lock();
 
     m_visible = data::helper::medical_image::get_distance_visibility(*image);
@@ -531,13 +479,32 @@ void image_multi_distances::update_visibility_from_field()
         data.m_dashed_line->setVisible(m_visible);
         data.m_label->set_visible(m_visible);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::set_visible(std::string _id, bool _visible)
+{
+    this->render_service()->make_current();
+
+    auto it_distance = m_distances.find(_id);
+
+    if(it_distance != m_distances.end())
+    {
+        const distance_data& data = it_distance->second;
+        data.m_sphere1->setVisible(_visible);
+        data.m_sphere2->setVisible(_visible);
+        data.m_line->setVisible(_visible);
+        data.m_dashed_line->setVisible(_visible);
+        data.m_label->set_visible(_visible);
+    }
 
     this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::set_visible(bool _visible)
+void ruler::set_visible(bool _visible)
 {
     this->render_service()->make_current();
 
@@ -558,7 +525,7 @@ void image_multi_distances::set_visible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-std::optional<Ogre::Vector3> image_multi_distances::get_nearest_picked_position(int _x, int _y)
+std::optional<Ogre::Vector3> ruler::get_nearest_picked_position(int _x, int _y)
 {
     Ogre::SceneManager* sm = this->get_scene_manager();
     const auto result      = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *sm);
@@ -585,7 +552,7 @@ std::optional<Ogre::Vector3> image_multi_distances::get_nearest_picked_position(
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
+void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
     if(m_bin_button != nullptr)
     {
@@ -616,40 +583,13 @@ void image_multi_distances::button_press_event(mouse_button _button, modifier /*
         {
             const Ogre::RaySceneQueryResult& query_result_vect = ray_scene_query->getLastResults();
 
+            // First iterate over the ManualObjects to try to find an already existing matching point
             for(std::size_t qr_idx = 0 ; qr_idx < query_result_vect.size() && !found ; qr_idx++)
             {
                 const Ogre::MovableObject* const object = query_result_vect[qr_idx].movable;
                 const auto object_type                  = object->getMovableType();
 
-                if(object_type == "Entity" && object->isVisible())
-                {
-                    //First point
-                    auto first_point      = std::make_shared<data::point>();
-                    auto clicked_position = this->get_nearest_picked_position(_x, _y);
-                    first_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
-                    //Second Point
-                    auto second_point = std::make_shared<data::point>();
-                    second_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
-                    m_points.push_back(first_point);
-                    m_points.push_back(second_point);
-
-                    //create_distance equal to 0, firstPoint = secondPoint
-                    auto point_list = std::make_shared<data::point_list>();
-                    point_list->set_points(m_points);
-                    this->create_distance(point_list);
-                    this->update_image_distance_field(point_list);
-                    auto& distance_data = m_distances[point_list->get_id()];
-                    m_picked_data = {&distance_data, false};
-
-                    //remember that this is a creation.
-                    m_creation_mode = true;
-
-                    set_cursor(Qt::ClosedHandCursor);
-
-                    break;
-                }
-
-                if(object_type == "manual_object" && object->isVisible())
+                if(object_type == "ManualObject" && object->isVisible())
                 {
                     const Ogre::Real scale = 1.15F;
                     for(auto& distance : m_distances)
@@ -662,7 +602,6 @@ void image_multi_distances::button_press_event(mouse_button _button, modifier /*
                             found         = true;
 
                             set_cursor(Qt::ClosedHandCursor);
-                            break;
                         }
 
                         if(distance_data.m_sphere2 == object)
@@ -672,20 +611,61 @@ void image_multi_distances::button_press_event(mouse_button _button, modifier /*
                             found         = true;
 
                             set_cursor(Qt::ClosedHandCursor);
-                            break;
                         }
                     }
                 }
             }
 
-            delete ray_scene_query;
+            // Otherwise, we might have to create a new distance
+            if(!found)
+            {
+                for(std::size_t qr_idx = 0 ; qr_idx < query_result_vect.size() && !found ; qr_idx++)
+                {
+                    const Ogre::MovableObject* const object = query_result_vect[qr_idx].movable;
+                    const auto object_type                  = object->getMovableType();
+
+                    if(object_type == "Entity" && object->isVisible())
+                    {
+                        //First point
+                        auto first_point      = std::make_shared<data::point>();
+                        auto clicked_position = this->get_nearest_picked_position(_x, _y);
+
+                        if(clicked_position.has_value())
+                        {
+                            first_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
+                            //Second Point
+                            auto second_point = std::make_shared<data::point>();
+                            second_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
+                            m_points.push_back(first_point);
+                            m_points.push_back(second_point);
+
+                            //create_distance equal to 0, firstPoint = secondPoint
+                            auto point_list = std::make_shared<data::point_list>();
+                            point_list->set_points(m_points);
+                            this->create_distance(point_list);
+                            this->update_image_distance_field(point_list);
+                            auto& distance_data = m_distances[point_list->get_id()];
+                            m_picked_data = {&distance_data, false};
+
+                            //remember that this is a creation.
+                            m_creation_mode = true;
+
+                            set_cursor(Qt::ClosedHandCursor);
+
+                            break;
+                        }
+                    }
+                }
+            }
         }
+
+        scene_mgr->destroyQuery(ray_scene_query);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::mouse_move_event(
+void ruler::mouse_move_event(
     mouse_button /*_button*/,
     modifier /*_mods*/,
     int _x,
@@ -735,7 +715,7 @@ void image_multi_distances::mouse_move_event(
                                    / static_cast<float>(vp->getActualHeight());
 
                 const Ogre::Ray ray           = cam->getCameraToViewportRay(vp_x, vp_y);
-                const Ogre::Vector3 direction = this->get_cam_direction(cam);
+                const Ogre::Vector3 direction = sight::viz::scene3d::helper::camera::get_cam_direction(cam);
 
                 Ogre::Vector3 position;
                 if(m_picked_data.m_first)
@@ -808,7 +788,7 @@ void image_multi_distances::mouse_move_event(
                     const Ogre::MovableObject* const object = query_result_vect[qr_idx].movable;
                     const auto object_type                  = object->getMovableType();
 
-                    if(object_type == "manual_object" && object->isVisible())
+                    if(object_type == "ManualObject" && object->isVisible())
                     {
                         for(auto& distance : m_distances)
                         {
@@ -836,7 +816,7 @@ void image_multi_distances::mouse_move_event(
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::button_release_event(mouse_button _button, modifier /*_mods*/, int /*_x*/, int /*_y*/)
+void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(_button == left && m_picked_data.m_data != nullptr)
     {
@@ -978,7 +958,7 @@ void image_multi_distances::button_release_event(mouse_button _button, modifier 
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
+void ruler::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
 {
     if(m_tool_activated && _key == Qt::Key_Escape)
     {
@@ -989,7 +969,7 @@ void image_multi_distances::key_press_event(int _key, modifier /*_mods*/, int /*
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
+void ruler::wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
 {
     if(m_bin_button != nullptr)
     {
@@ -1001,7 +981,7 @@ void image_multi_distances::wheel_event(modifier /*_mods*/, double /*_angleDelta
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::create_distance(data::point_list::sptr& _pl)
+void ruler::create_distance(data::point_list::sptr& _pl)
 {
     const core::tools::id::type id = _pl->get_id();
     SIGHT_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
@@ -1009,26 +989,45 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
     Ogre::SceneNode* const root_node    = scene_mgr->getRootSceneNode();
 
-    // Retrieve data used to create Ogre resources.
-    const Ogre::ColourValue colour = image_multi_distances::generate_color();
+    std::optional<Ogre::ColourValue> colour = std::nullopt;
+    if(!m_config_color.empty())
+    {
+        std::array<unsigned char, 4> color_array {};
+        data::tools::color::hexa_string_to_rgba(m_config_color, color_array);
+        colour = Ogre::ColourValue(
+            static_cast<float>(color_array[0]) / 255.F,
+            static_cast<float>(color_array[1]) / 255.F,
+            static_cast<float>(color_array[2]) / 255.F
+        );
+    }
+
+    // If no color has been assigned, we generate one
+    if(!colour.has_value())
+    {
+        colour = sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
+    }
 
     const std::array<double, 3> front = _pl->get_points().front()->get_coord();
     const std::array<double, 3> back  = _pl->get_points().back()->get_coord();
 
-    const Ogre::Vector3 begin(static_cast<float>(front[0]),
-                              static_cast<float>(front[1]),
-                              static_cast<float>(front[2]));
-    const Ogre::Vector3 end(static_cast<float>(back[0]),
-                            static_cast<float>(back[1]),
-                            static_cast<float>(back[2]));
+    const Ogre::Vector3 begin = Ogre::Vector3(
+        static_cast<float>(front[0]),
+        static_cast<float>(front[1]),
+        static_cast<float>(front[2])
+                                ) * m_spacing;
+    const Ogre::Vector3 end = Ogre::Vector3(
+        static_cast<float>(back[0]),
+        static_cast<float>(back[1]),
+        static_cast<float>(back[2])
+                              ) * m_spacing;
 
     // First sphere.
     Ogre::ManualObject* const sphere1 = scene_mgr->createManualObject(this->get_id() + "_sphere1_" + id);
     sight::viz::scene3d::helper::manual_object::create_sphere(
         sphere1,
         m_sphere_material_name,
-        colour,
-        m_distance_sphere_radius
+        *colour,
+        m_sphere_radius * m_spacing.x
     );
     sphere1->setQueryFlags(m_distance_query_flag);
     // Render this sphere over all others objects.
@@ -1043,8 +1042,8 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
     sight::viz::scene3d::helper::manual_object::create_sphere(
         sphere2,
         m_sphere_material_name,
-        colour,
-        m_distance_sphere_radius
+        *colour,
+        m_sphere_radius * m_spacing.x
     );
     sphere2->setQueryFlags(m_distance_query_flag);
     // Render this sphere over all others objects.
@@ -1058,7 +1057,7 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
     Ogre::ManualObject* const line = scene_mgr->createManualObject(this->get_id() + "_line_" + id);
     SIGHT_ASSERT("Can't create the line", line);
     line->begin(m_line_material_name, Ogre::RenderOperation::OT_LINE_LIST, sight::viz::scene3d::RESOURCE_GROUP);
-    line->colour(colour);
+    line->colour(*colour);
     line->position(begin);
     line->position(end);
     line->end();
@@ -1067,19 +1066,22 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
 
     // Dashed line.
     Ogre::ManualObject* const dashed_line = scene_mgr->createManualObject(this->get_id() + "_dashedLine_" + id);
-    SIGHT_ASSERT("Can't create the dashed line", dashed_line);
-    dashed_line->begin(
-        m_dashed_line_material_name,
-        Ogre::RenderOperation::OT_LINE_LIST,
-        sight::viz::scene3d::RESOURCE_GROUP
-    );
-    dashed_line->colour(colour);
-    image_multi_distances::generate_dashed_line(
-        dashed_line,
-        begin,
-        end,
-        m_distance_sphere_radius
-    );
+    // FIXME Currently breaking the usage of rulers
+    // SIGHT_ASSERT("Can't create the dashed line", dashed_line);
+    // dashed_line->begin(
+    //     m_dashed_line_material_name,
+    //     Ogre::RenderOperation::OT_LINE_LIST,
+    //     sight::viz::scene3d::RESOURCE_GROUP
+    // );
+    // sight::viz::scene3d::helper::manual_object::draw_dashed_line(
+    //     dashed_line,
+    //     begin,
+    //     end,
+    //     m_sphere_radius * m_spacing.x * 2.0F,
+    //     m_sphere_radius * m_spacing.x * 1.5F,
+    //     colour
+    // );
+    // dashed_line->end();
     dashed_line->setQueryFlags(0x0);
     // Render this line over all others objects.
     dashed_line->setRenderQueueGroup(DISTANCE_RQ_GROUP_ID);
@@ -1091,9 +1093,9 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
     sight::viz::scene3d::text::sptr label = sight::viz::scene3d::text::make(layer);
 
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = image_multi_distances::get_length(begin, end);
+    const std::string length = sight::viz::scene3d::helper::scene::get_length(begin, end);
     label->set_text(length);
-    label->set_text_color(colour);
+    label->set_text_color(*colour);
     label->set_font_size(m_font_size);
     Ogre::SceneNode* const label_node = root_node->createChildSceneNode(this->get_id() + "_labelNode_" + id, end);
     SIGHT_ASSERT("Can't create the label node", label_node);
@@ -1113,7 +1115,7 @@ void image_multi_distances::create_distance(data::point_list::sptr& _pl)
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::update_image_distance_field(data::point_list::sptr _pl)
+void ruler::update_image_distance_field(data::point_list::sptr _pl)
 {
     const auto image = m_image.lock();
     if(data::helper::medical_image::check_image_validity(image.get_shared()))
@@ -1175,7 +1177,7 @@ void image_multi_distances::update_image_distance_field(data::point_list::sptr _
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::update_distance(
+void ruler::update_distance(
     const distance_data* const _data,
     Ogre::Vector3 _begin,
     Ogre::Vector3 _end
@@ -1195,15 +1197,24 @@ void image_multi_distances::update_distance(
     line->end();
 
     // Update the label.
+
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = image_multi_distances::get_length(_begin, _end);
+    const std::string length = sight::viz::scene3d::helper::scene::get_length(_begin, _end);
     _data->m_label->set_text(length);
     _data->m_label_node->setPosition(_end);
 
+    // FIXME Currently breaking the usage of rulers
     // Update the dashed line
-    Ogre::ManualObject* const dashed_line = _data->m_dashed_line;
-    dashed_line->beginUpdate(0);
-    image_multi_distances::generate_dashed_line(dashed_line, _begin, _end, m_distance_sphere_radius);
+    // Ogre::ManualObject* const dashed_line = _data->m_dashed_line;
+    // dashed_line->beginUpdate(0);
+    // sight::viz::scene3d::helper::manual_object::draw_dashed_line(
+    //     dashed_line,
+    //     _begin,
+    //     _end,
+    //     m_sphere_radius * m_spacing.x * 2.0F,
+    //     m_sphere_radius * m_spacing.x * 1.5F
+    // );
+    // dashed_line->end();
 
     // Update the field data.
     const data::mt::locked_ptr lock(_data->m_point_list);
@@ -1248,7 +1259,7 @@ void image_multi_distances::update_distance(
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::destroy_distance(core::tools::id::type _id)
+void ruler::destroy_distance(core::tools::id::type _id)
 {
     const auto it = m_distances.find(_id);
     SIGHT_ASSERT("The distance is not found", it != m_distances.end());
@@ -1274,11 +1285,12 @@ void image_multi_distances::destroy_distance(core::tools::id::type _id)
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::activate_distance_tool(bool _activate)
+void ruler::activate_distance_tool(bool _activate)
 {
     if(_activate)
     {
         m_tool_activated = true;
+        m_picked_data    = {nullptr, true};
         set_cursor(Qt::CrossCursor);
         auto interactor     = layer()->render_service()->get_interactor_manager();
         auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
@@ -1310,7 +1322,7 @@ void image_multi_distances::activate_distance_tool(bool _activate)
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::update_modified_distance(data::point_list::sptr _pl)
+void ruler::update_modified_distance(data::point_list::sptr _pl)
 {
     if(m_distances.find(_pl->get_id()) == m_distances.end())
     {
@@ -1325,21 +1337,23 @@ void image_multi_distances::update_modified_distance(data::point_list::sptr _pl)
         const std::array<double, 3> front = _pl->get_points().front()->get_coord();
         const std::array<double, 3> back  = _pl->get_points().back()->get_coord();
 
-        const Ogre::Vector3 begin(static_cast<float>(front[0]),
-                                  static_cast<float>(front[1]),
-                                  static_cast<float>(front[2]));
-        const Ogre::Vector3 end(static_cast<float>(back[0]),
-                                static_cast<float>(back[1]),
-                                static_cast<float>(back[2]));
+        const Ogre::Vector3 begin = Ogre::Vector3(
+            static_cast<float>(front[0]),
+            static_cast<float>(front[1]),
+            static_cast<float>(front[2])
+                                    ) * m_spacing;
+        const Ogre::Vector3 end = Ogre::Vector3(
+            static_cast<float>(back[0]),
+            static_cast<float>(back[1]),
+            static_cast<float>(back[2])
+                                  ) * m_spacing;
         this->update_distance(&distance_to_update, begin, end);
     }
-
-    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::set_cursor(QCursor _cursor)
+void ruler::set_cursor(QCursor _cursor)
 {
     auto interactor     = layer()->render_service()->get_interactor_manager();
     auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
@@ -1349,7 +1363,7 @@ void image_multi_distances::set_cursor(QCursor _cursor)
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::remove_distance(data::point_list::sptr _pl)
+void ruler::remove_distance(data::point_list::sptr _pl)
 {
     const auto image = m_image.lock();
     if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
@@ -1397,23 +1411,23 @@ void image_multi_distances::remove_distance(data::point_list::sptr _pl)
     sig->async_emit(_pl);
 }
 
-image_multi_distances::delete_bin_button_when_focus_out::delete_bin_button_when_focus_out(
-    image_multi_distances* _s_image_multi_distances
+ruler::delete_bin_button_when_focus_out::delete_bin_button_when_focus_out(
+    ruler* _ruler
 ) :
-    m_s_image_multi_distances(_s_image_multi_distances)
+    m_ruler(_ruler)
 {
 }
 
 //------------------------------------------------------------------------------
 
-bool image_multi_distances::delete_bin_button_when_focus_out::eventFilter(QObject* /*o*/, QEvent* _e)
+bool ruler::delete_bin_button_when_focus_out::eventFilter(QObject* /*o*/, QEvent* _e)
 {
-    if(m_s_image_multi_distances->m_bin_button != nullptr && !m_s_image_multi_distances->m_bin_button->hasFocus()
+    if(m_ruler->m_bin_button != nullptr && !m_ruler->m_bin_button->hasFocus()
        && (_e->type() == QEvent::FocusOut || _e->type() == QEvent::Resize))
     {
-        m_s_image_multi_distances->m_bin_button->hide();
-        delete m_s_image_multi_distances->m_bin_button;
-        m_s_image_multi_distances->m_bin_button = nullptr;
+        m_ruler->m_bin_button->hide();
+        delete m_ruler->m_bin_button;
+        m_ruler->m_bin_button = nullptr;
         return true;
     }
 
@@ -1422,4 +1436,4 @@ bool image_multi_distances::delete_bin_button_when_focus_out::eventFilter(QObjec
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module::viz::scene3d_qt::adaptor
+} // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

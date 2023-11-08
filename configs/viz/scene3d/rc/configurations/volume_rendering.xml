@@ -174,12 +174,12 @@
             <config queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::landmarks" auto_connect="true">
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
             <inout key="imageSeries" uid="${image}" />
             <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::image_multi_distances" auto_connect="true">
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
             <config fontSize="16" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>

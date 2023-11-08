@@ -4,16 +4,23 @@
 
     <extension implements="sight::service::extension::factory">
          <type>sight::viz::scene3d::adaptor</type>
-         <service>sight::module::viz::scene3d_qt::adaptor::landmarks</service>
+         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::point</service>
          <object key="landmarks">sight::data::landmarks</object>
          <object key="image">sight::data::image</object>
-         <desc>This adaptor displays landmarks.</desc>
+         <desc>Displays point fiducials.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
          <type>sight::viz::scene3d::adaptor</type>
-         <service>sight::module::viz::scene3d_qt::adaptor::image_multi_distances</service>
+         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::ruler</service>
          <object key="image">sight::data::image</object>
-         <desc>This adaptor displays distances retrieved from an image fields.</desc>
+         <desc>Displays ruler fiducials.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+         <type>sight::viz::scene3d::adaptor</type>
+         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::shape</service>
+         <object key="image">sight::data::image</object>
+         <desc>Displays shape fiducials.</desc>
     </extension>
 </plugin>
