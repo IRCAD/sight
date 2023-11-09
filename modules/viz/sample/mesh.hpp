@@ -40,7 +40,7 @@ namespace sight::module::viz::sample
  *
  * @section Slots Slots
  * - \b update_cam_position(): update the camera position.
- * - \b updateCamTransform(): send the signal camUpdated().
+ * - \b update_cam_transform(): send the signal cam_updated().
  *
  * @section Signals Signals
  * - \b cam_updated(): emitted when the camera move.
@@ -71,7 +71,7 @@ public:
     MODULE_VIZ_SAMPLE_API mesh() noexcept;
 
     /// Destroys the service.
-    MODULE_VIZ_SAMPLE_API ~mesh() noexcept override;
+    MODULE_VIZ_SAMPLE_API ~mesh() noexcept override = default;
 
 private:
 
@@ -80,16 +80,6 @@ private:
 
     /// Registers and starts sub-services.
     MODULE_VIZ_SAMPLE_API void starting() override;
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     * @note This is actually useless since the sub-service already listens to the data,
-     * but this prevents a warning in fwServices from being raised.
-     *
-     * Connect data::mesh::MODIFIED_SIG to service::slots::UPDATE
-     */
-    MODULE_VIZ_SAMPLE_API connections_t auto_connections() const override;
 
     /// Does nothing.
     MODULE_VIZ_SAMPLE_API void updating() override;

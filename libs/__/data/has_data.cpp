@@ -145,6 +145,19 @@ void has_data::set_deferred_id(std::string_view _key, const std::string& _id, st
 
 //------------------------------------------------------------------------------
 
+void has_data::reset_all_out()
+{
+    for(auto& [key, ptr] : m_data_container)
+    {
+        if(auto out = ptr->get(); ptr->access() == data::access::out && out)
+        {
+            ptr->set(nullptr, {}, {}, {}, true);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void has_data::register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index)
 {
     m_data_container[{_key, _index}] = _data;

@@ -33,11 +33,9 @@ namespace sight::module::viz::sample
 {
 
 const core::com::slots::key_t mesh::UPDATE_CAM_POSITION_SLOT   = "update_cam_position";
-static const core::com::slots::key_t UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
+static const core::com::slots::key_t UPDATE_CAM_TRANSFORM_SLOT = "update_cam_transform";
 
 const core::com::signals::key_t mesh::CAM_UPDATED_SIG = "cam_updated";
-
-static const std::string MESH_INPUT = "mesh";
 
 //------------------------------------------------------------------------------
 
@@ -48,11 +46,6 @@ mesh::mesh() noexcept
 
     m_sig_cam_updated = new_signal<cam_updated_signal_t>(CAM_UPDATED_SIG);
 }
-
-//------------------------------------------------------------------------------
-
-mesh::~mesh() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +96,10 @@ void mesh::starting()
     m_interactor_srv->set_id(this->get_id() + "interactorAdaptor");
     m_interactor_srv->configure();
 
+    service::config_t mesh_cfg;
+    mesh_cfg.put("config.<xmlattr>.autoresetcamera", true);
     m_mesh_srv = sight::service::add("sight::module::viz::scene3d::adaptor::mesh");
+    m_mesh_srv->set_config(mesh_cfg);
     m_mesh_srv->set_input(std::const_pointer_cast<data::object>(mesh->get_const_sptr()), "mesh", true);
     m_mesh_srv->set_id(this->get_id() + "meshAdaptor");
     m_mesh_srv->configure();
@@ -123,20 +119,8 @@ void mesh::starting()
 
     m_render_srv->start().wait();
     m_interactor_srv->start().wait();
-    m_mesh_srv->start().wait();
     m_camera_srv->start().wait();
-}
-
-//------------------------------------------------------------------------------
-
-service::connections_t mesh::auto_connections() const
-{
-    // This is actually useless since the sub-service already listens to the data,
-    // but this prevents a warning in fwServices from being raised.
-    connections_t connections;
-    connections.push(MESH_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
-
-    return connections;
+    m_mesh_srv->start().wait();
 }
 
 //------------------------------------------------------------------------------

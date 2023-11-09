@@ -175,6 +175,11 @@ protected:
         const std::string& _id,
         std::optional<std::size_t> _index = {});
 
+    /**
+     * @brief Reset all output objects
+     */
+    DATA_API void reset_all_out();
+
     using container_t = std::map<std::pair<std::string_view, std::optional<std::size_t> >, base_ptr*>;
     DATA_API const container_t& container() const;
 

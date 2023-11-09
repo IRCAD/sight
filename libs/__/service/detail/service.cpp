@@ -191,31 +191,8 @@ base::shared_future_t service::stop(bool _async)
 
     m_connections.disconnect(m_service);
 
-    // check if the service manage outputs that are not maintained by someone else.
-    std::string object_keys;
-    for(const auto& [key, ptr] : m_service.container())
-    {
-        if(ptr->access() == data::access::out)
-        {
-            const data::object::cwptr output = ptr->get();
-            if(output.use_count() == 1)
-            {
-                if(!object_keys.empty())
-                {
-                    object_keys += ", ";
-                }
-
-                object_keys += "'" + std::string(key.first) + "'(nbRef: " + std::to_string(output.use_count()) + ")";
-            }
-        }
-    }
-
-    SIGHT_WARN_IF(
-        "service " + m_service.get_id() + " still contains registered outputs: " + object_keys + ". They will no "
-                                                                                                 "longer be maintained. You should call set_output(key, nullptr) before stopping the service to inform "
-                                                                                                 "AppManager and other services that the object will be destroyed.",
-        !object_keys.empty()
-    );
+    // Reset all output objects to inform other services they are no longer available
+    m_service.reset_all_out();
 
     return future;
 }

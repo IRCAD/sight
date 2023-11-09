@@ -198,7 +198,14 @@ private:
                 const auto ptr = this->lock();
                 if(ptr)
                 {
-                    m_holder->notify_unregister_out(ptr.get_shared(), m_deferred_id);
+                    if(!m_deferred_id.empty())
+                    {
+                        m_holder->notify_unregister_out(ptr.get_shared(), m_deferred_id);
+                    }
+                    else
+                    {
+                        SIGHT_WARN("Object id is empty");
+                    }
                 }
             }
         }
@@ -232,7 +239,14 @@ private:
             {
                 if(_signal)
                 {
-                    m_holder->notify_register_out(_obj, m_deferred_id);
+                    if(!m_deferred_id.empty())
+                    {
+                        m_holder->notify_register_out(_obj, m_deferred_id);
+                    }
+                    else
+                    {
+                        SIGHT_WARN("Object id is empty");
+                    }
                 }
             }
         }
@@ -242,6 +256,7 @@ private:
 
     void set_deferred_id(const std::string& _id, std::optional<std::size_t> = std::nullopt) final
     {
+        SIGHT_ASSERT("Object id can not be empty", !_id.empty());
         m_deferred_id = _id;
     }
 
@@ -390,6 +405,8 @@ private:
 
     void set_deferred_id(const std::string& _id, std::optional<std::size_t> _index = std::nullopt) final
     {
+        SIGHT_ASSERT("Object id can not be empty", !_id.empty());
+
         if(m_ptrs.find(*_index) == m_ptrs.end())
         {
             m_ptrs.emplace(

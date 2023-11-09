@@ -988,6 +988,8 @@ void config_manager::destroy_proxies()
 
 void config_manager::add_objects(data::object::sptr _obj, const std::string& _id)
 {
+    SIGHT_ASSERT("Object id can not be empty", !_id.empty());
+
     core::mt::scoped_lock lock(m_mutex);
     if(m_state != state_started)
     {
@@ -1085,6 +1087,10 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
                         if(registered_obj != object)
                         {
+                            // We need to register the deferred id for ptr_vector, in case we are running
+                            // a remove_object/add_object sequence
+                            set_deferred_id(srv, key.first, objCfg.m_uid, key.second);
+
                             // Register the key on the service
                             set_object(
                                 srv,
@@ -1171,6 +1177,8 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
 void config_manager::remove_objects(data::object::sptr _obj, const std::string& _id)
 {
+    SIGHT_ASSERT("Object id can not be empty", !_id.empty());
+
     core::mt::scoped_lock lock(m_mutex);
     if(m_state != state_started)
     {

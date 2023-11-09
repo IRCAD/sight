@@ -68,7 +68,6 @@ void vtk_mesher::starting()
 
 void vtk_mesher::stopping()
 {
-    m_model = nullptr;
 }
 
 //-----------------------------------------------------------------------------

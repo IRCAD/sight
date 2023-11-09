@@ -74,8 +74,7 @@ void select_dialog::updating()
     }
     else if(auto image_series = std::dynamic_pointer_cast<sight::data::image_series>(first_element); image_series)
     {
-        m_image_series = image_series;
-        m_image        = image_series;
+        m_image = image_series;
         auto sig = this->signal<data::object::modified_signal_t>(IMAGE_SELECTED_SIG);
         sig->async_emit();
     }
