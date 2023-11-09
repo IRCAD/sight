@@ -477,4 +477,22 @@ transfer_function_piece::color_t transfer_function::sample(
 
 //------------------------------------------------------------------------------
 
+void transfer_function::merge(sight::data::transfer_function& _dst, const sight::data::transfer_function& _src)
+{
+    for(auto& dst_pieces = _dst.pieces() ; const auto& piece : _src.pieces())
+    {
+        SIGHT_ASSERT("Invalid transfer function", piece != nullptr);
+
+        // Include only if not already existing in the destination
+        if(not std::ranges::any_of(
+               dst_pieces,
+               [&piece](const auto& _p) noexcept {return *_p == *piece;}))
+        {
+            auto copy = sight::data::transfer_function_piece::make();
+            *copy = *piece;
+            dst_pieces.emplace_back(std::move(copy));
+        }
+    }
+}
+
 } // end namespace sight::data

@@ -44,6 +44,7 @@ private:
     CPPUNIT_TEST(map_values_test);
     CPPUNIT_TEST(piecewise_function_test);
     CPPUNIT_TEST(equality_test);
+    CPPUNIT_TEST(merge_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -63,6 +64,7 @@ public:
     static void map_values_test();
     static void piecewise_function_test();
     static void equality_test();
+    static void merge_test();
 
     static data::transfer_function::sptr create_tf_color();
     static void check_tf_color(data::transfer_function::sptr _tf);

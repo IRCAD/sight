@@ -28,6 +28,9 @@
 #include <core/type.hpp>
 
 #include <glm/vec4.hpp>
+
+#include <span>
+
 namespace sight::data
 {
 
@@ -221,6 +224,18 @@ public:
 
     /// Creates a default TF according to the pixel type.
     DATA_API static transfer_function::sptr create_default_tf(core::type _type);
+
+    /**
+     * Merges a range of transfer functions into one.
+     * @param _dst Destination transfer function. Its pieces are conserved too.
+     * @param _src Source transfer function.
+     * @pre None of the pieces of _src must be nullptr.
+     */
+    DATA_API
+    static void merge(
+        sight::data::transfer_function& _dst,
+        const sight::data::transfer_function& _src
+    );
 
     /// Gets the transfert function name.
     [[nodiscard]] const std::string& name() const;
@@ -440,7 +455,5 @@ inline bool transfer_function::empty() const
 {
     return m_pieces.empty();
 }
-
-//-----------------------------------------------------------------------------
 
 } // namespace sight::data

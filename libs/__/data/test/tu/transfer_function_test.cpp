@@ -553,4 +553,71 @@ void transfer_function_test::equality_test()
     #undef TEST
 }
 
+//------------------------------------------------------------------------------
+
+void transfer_function_test::merge_test()
+{
+    auto function_0      = std::make_shared<data::transfer_function>();
+    auto function_1      = std::make_shared<data::transfer_function>();
+    auto function_backup = std::make_shared<data::transfer_function>();
+
+    auto piece_0 = std::make_shared<data::transfer_function_piece>();
+    {
+        {
+            piece_0->set_clamped(false);
+            piece_0->set_window_min_max({-10, 0.});
+            piece_0->insert({-10.0, {0.0, 0.0, 0.0, 0.0}});
+            piece_0->insert({-5.0, {1.0, 0.3, 0.0, 1.0}});
+            piece_0->insert({0.0, {0.0, 0.0, 1.0, 0.4}});
+            function_0->pieces().push_back(piece_0);
+        }
+
+        // Copy this piece
+        {
+            auto a_piece_copy = std::make_shared<data::transfer_function_piece>();
+            *a_piece_copy = *piece_0;
+            function_1->pieces().push_back(a_piece_copy);
+        }
+
+        // The same as the snippet above, but for function_backup
+        {
+            auto another_piece_copy = std::make_shared<data::transfer_function_piece>();
+            *another_piece_copy = *piece_0;
+            function_backup->pieces().push_back(another_piece_copy);
+        }
+    }
+
+    auto piece_1 = std::make_shared<data::transfer_function_piece>();
+    {
+        piece_1->set_clamped(false);
+        piece_1->set_window_min_max({0, 100.});
+        piece_1->insert({0.0, {0.0, 0.6, 0.0, 0.5}});
+        piece_1->insert({50.0, {1.0, 1.0, 0.0, 1.0}});
+        piece_1->insert({100.0, {1.0, 0.0, 1.0, 0.5}});
+
+        function_1->pieces().push_back(piece_1);
+    }
+
+    // 1: Test that attempting to merge one TF into itself doesn't do anything
+    {
+        CPPUNIT_ASSERT_MESSAGE("Initialisation of the copy failed.", *function_0 == *function_backup);
+        sight::data::transfer_function::merge(*function_0, *function_0);
+        CPPUNIT_ASSERT_MESSAGE("Merging a TF into itself mustn't affect it.", *function_0 == *function_backup);
+    }
+
+    // 2: Add another piece to the second TF, and confirm that only new pieces were added
+    {
+        sight::data::transfer_function::merge(*function_0, *function_1);
+        CPPUNIT_ASSERT_MESSAGE("Pieces should match.", *function_0 == *function_1);
+        CPPUNIT_ASSERT_MESSAGE("No piece was inserted.", *function_0 != *function_backup);
+        CPPUNIT_ASSERT_MESSAGE("Unexpected piece was added.", function_0->pieces().size() == 2);
+
+        // Check that the information was correctly forwarded (no piece got modified in the process)
+        for(const auto& piece : function_0->pieces())
+        {
+            CPPUNIT_ASSERT_MESSAGE("Pieces must not have been modified.", *piece == *piece_0 or * piece == *piece_1);
+        }
+    }
+}
+
 } // namespace sight::data::ut
