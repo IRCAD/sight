@@ -142,6 +142,10 @@ public:
         inline static const key_t NEXT          = "next";
         inline static const key_t PREVIOUS      = "previous";
         inline static const key_t SEND_INFO     = "send_info";
+
+        inline static const key_t ENABLE_USER_WARNING  = "enable_user_warning";
+        inline static const key_t DISABLE_USER_WARNING = "disable_user_warning";
+        inline static const key_t SET_USER_WARNING     = "set_user_warning";
     };
 
     struct MODULE_UI_QT_CLASS_API signals final
@@ -177,6 +181,18 @@ public:
 
     /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
     MODULE_UI_QT_API void send_info() const;
+
+    /// Slot: Enables the user warning dialog about possible loss of un-validated data
+    /// Does nothing if "warning_message" wasn't configured.
+    MODULE_UI_QT_API void enable_user_warning();
+
+    /// Slot: Disables the user warning dialog about possible loss of un-validated data
+    /// Does nothing if "warning_message" wasn't configured.
+    MODULE_UI_QT_API void disable_user_warning();
+
+    /// Slot: Configures the user warning according to _state value.
+    /// Does nothing if "warning_message" wasn't configured.
+    MODULE_UI_QT_API void set_user_warning(bool _state);
 
 public Q_SLOTS:
 
@@ -221,6 +237,11 @@ private:
 
     /// Defines if the activities should be cleared when going backward
     bool m_clear_activities {false};
+
+    /// Display a warning message if changing activities without validating it.
+    bool m_warn_user {false};
+    /// Configured warning message, if empty no warnings are displayed.
+    std::string m_warning_message;
 
     /// Colors used to customize sequencer
     std::string m_theme;

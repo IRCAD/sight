@@ -52,6 +52,7 @@ static const std::string PRIMARY_CONFIG          = "primary";
 static const std::string ELEVATION_CONFIG        = "elevation";
 static const std::string BUTTON_WIDTH            = "buttonWidth";
 static const std::string FONT_SIZE               = "fontSize";
+static const std::string WARNING_MESSAGE         = "warning_message";
 
 //------------------------------------------------------------------------------
 
@@ -63,6 +64,9 @@ sequencer::sequencer() noexcept
     new_slot(slots::NEXT, &sequencer::next, this);
     new_slot(slots::PREVIOUS, &sequencer::previous, this);
     new_slot(slots::SEND_INFO, &sequencer::send_info, this);
+    new_slot(slots::ENABLE_USER_WARNING, &sequencer::enable_user_warning, this);
+    new_slot(slots::DISABLE_USER_WARNING, &sequencer::disable_user_warning, this);
+    new_slot(slots::SET_USER_WARNING, &sequencer::set_user_warning, this);
 }
 
 //------------------------------------------------------------------------------
@@ -83,15 +87,18 @@ void sequencer::configuring()
 
     m_clear_activities = config.get<bool>(CLEAR_ACTIVITIES_CONFIG, m_clear_activities);
 
-    m_theme        = config.get<std::string>(THEME_CONFIG, m_theme);
-    m_clear        = config.get<std::string>(CLEAR_CONFIG, m_clear);
-    m_accent       = config.get<std::string>(ACCENT_CONFIG, m_accent);
-    m_foreground   = config.get<std::string>(FOREGROUND_CONFIG, m_foreground);
-    m_background   = config.get<std::string>(BACKGROUND_CONFIG, m_background);
-    m_primary      = config.get<std::string>(PRIMARY_CONFIG, m_primary);
-    m_elevation    = config.get<std::string>(ELEVATION_CONFIG, m_elevation);
-    m_button_width = config.get<std::string>(BUTTON_WIDTH, m_button_width);
-    m_font_size    = config.get<double>(FONT_SIZE, m_font_size);
+    m_theme           = config.get<std::string>(THEME_CONFIG, m_theme);
+    m_clear           = config.get<std::string>(CLEAR_CONFIG, m_clear);
+    m_accent          = config.get<std::string>(ACCENT_CONFIG, m_accent);
+    m_foreground      = config.get<std::string>(FOREGROUND_CONFIG, m_foreground);
+    m_background      = config.get<std::string>(BACKGROUND_CONFIG, m_background);
+    m_primary         = config.get<std::string>(PRIMARY_CONFIG, m_primary);
+    m_elevation       = config.get<std::string>(ELEVATION_CONFIG, m_elevation);
+    m_button_width    = config.get<std::string>(BUTTON_WIDTH, m_button_width);
+    m_font_size       = config.get<double>(FONT_SIZE, m_font_size);
+    m_warning_message = config.get<std::string>(WARNING_MESSAGE, m_warning_message);
+
+    m_warn_user = !m_warning_message.empty();
 }
 
 //------------------------------------------------------------------------------
@@ -258,12 +265,57 @@ void sequencer::updating()
 
 //------------------------------------------------------------------------------
 
+void sequencer::set_user_warning(bool _state)
+{
+    // If warning message wasn't configured, force value to false.
+    if(m_warning_message.empty())
+    {
+        SIGHT_ERROR("No warning message is configured in sequencer");
+        m_warn_user = false;
+    }
+    else
+    {
+        m_warn_user = _state;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void sequencer::enable_user_warning()
+{
+    this->set_user_warning(true);
+}
+
+//------------------------------------------------------------------------------
+void sequencer::disable_user_warning()
+{
+    this->set_user_warning(false);
+}
+
+//------------------------------------------------------------------------------
+
 void sequencer::go_to(int _index)
 {
     if(_index < 0 || _index >= static_cast<int>(m_activity_ids.size()))
     {
         SIGHT_ERROR("no activity to launch at index " << _index)
         return;
+    }
+
+    if(m_warn_user && m_current_activity != _index && m_current_activity >= 0)
+    {
+        auto dialog = sight::ui::dialog::message(
+            "Warning",
+            m_warning_message + "\nDo you want to continue?",
+            sight::ui::dialog::message::warning
+        );
+        dialog.add_button(sight::ui::dialog::message::yes_no);
+        const auto button = dialog.show();
+
+        if((button == sight::ui::dialog::message::no))
+        {
+            return;
+        }
     }
 
     auto activity_set = m_activity_set.lock();
