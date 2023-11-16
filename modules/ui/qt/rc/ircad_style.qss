@@ -19,9 +19,6 @@ QMainWindow
     border: none;
     background: #303A65;
     padding: 3px;
-
-    
-    
 }
 
 QFrame
@@ -318,6 +315,33 @@ QToolButton::menu-button:pressed
 }
 
 /************************************************************************/
+/*********************** QToolButton in button bar **********************/
+/************************************************************************/
+
+QToolButton.buttonBar:pressed,
+QToolButton.buttonBar:checked
+{
+    background: #C0B3D8;
+    border: 1px solid #C0B3D8;
+}
+
+QToolButton.buttonBar
+{
+    margin-left:32px;
+    margin-right:32px;
+    width:128px;
+}
+
+/************************************************************************/
+/************* QToolButton used in module::ui::qt::status ***************/
+/************************************************************************/
+
+QToolButton.status
+{
+    color: rgb(255, 255, 255);
+}
+
+/************************************************************************/
 /******************************** QLabel ********************************/
 /************************************************************************/
 
@@ -350,8 +374,8 @@ QLineEdit
 
 QLineEdit:disabled
 {
-    background: rgba(255, 255, 255, 50%);
-    color: #AAAAAA
+    background: rgba(255, 255, 255, 4%);
+    color: rgb(145, 145, 145);
 }
 
 QLineEdit[type="error"]
@@ -1363,7 +1387,7 @@ QProgressBar::chunk
     border-radius: 10%;
 }
 
-#Bracket 
+#Bracket
 {
     padding: 0;
     background: none;
@@ -1459,22 +1483,4 @@ QProgressBar::chunk
     font-weight: bold;
     font-size: 16px;
     border-radius: 4px;
-}
-
-/************************************************************************/
-/*********************** QToolButton in button bar **********************/
-/************************************************************************/
-
-QToolButton.buttonBar:pressed,
-QToolButton.buttonBar:checked
-{
-    background: #C0B3D8;
-    border: 1px solid #C0B3D8;
-}
-
-QToolButton.buttonBar
-{
-    margin-left:32px;
-    margin-right:32px;
-    width:128px;
 }

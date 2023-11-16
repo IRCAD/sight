@@ -48,12 +48,17 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Start Tracker client" icon="sight::module::ui::icons/Network-Receiving.svg" />
-                    <menuItem name="Stop Tracker client" icon="sight::module::ui::icons/Network-Stop-Receiving.svg" />
-                    <menuItem name="Configure Tracker client" icon="sight::module::ui::icons/Settings.svg" />
+                    <menuItem name="Start Tracker client"
+                        icon="sight::module::ui::icons/Network-Receiving.svg" />
+                    <menuItem name="Stop Tracker client"
+                        icon="sight::module::ui::icons/Network-Stop-Receiving.svg" />
+                    <menuItem name="Configure Tracker client"
+                        icon="sight::module::ui::icons/Settings.svg" />
                     <menuItem name="Add point" icon="sight::module::ui::icons/Import.svg" />
-                    <menuItem name="Compute tool calibration" icon="sight::module::ui::icons/CheckButton.svg" />
-                    <menuItem name="Save calibration matrix" icon="sight::module::ui::icons/Export.svg" />
+                    <menuItem name="Compute tool calibration"
+                        icon="sight::module::ui::icons/CheckButton.svg" />
+                    <menuItem name="Save calibration matrix"
+                        icon="sight::module::ui::icons/Export.svg" />
                 </layout>
             </gui>
             <registry>
@@ -113,14 +118,15 @@
                 <key uid="matrixTL" />
             </in>
             <inout group="matrix">
-                <key uid="trackerMatrix0"/>
+                <key uid="trackerMatrix0" />
             </inout>
             <legacyAutoSync>true</legacyAutoSync>
         </service>
 
         <service uid="status" type="sight::module::ui::qt::status">
-            <form>circle</form>
-            <labelStatus>Sensor status</labelStatus>
+            <labels display="beside">
+                <name>Sensor status</name>
+            </labels>
             <green>Sensor is tracked</green>
             <red>Sensor is not tracked</red>
         </service>
@@ -146,7 +152,8 @@
             </preference>
         </service>
 
-        <service uid="toolCalibration" type="sight::module::navigation::calibration::tool_calibration">
+        <service uid="toolCalibration"
+            type="sight::module::navigation::calibration::tool_calibration">
             <out key="matrixCenter" uid="toolMatrix" />
             <out key="matrixCalibration" uid="matrixCalibration" />
             <in key="matricesVector" uid="matricesVector" />
@@ -195,30 +202,36 @@
             </scene>
         </service>
 
-        <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+        <service uid="trackballInteractorAdp"
+            type="sight::module::viz::scene3d::adaptor::trackball_camera">
             <config priority="0" />
         </service>
 
-        <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+        <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::transform"
+            auto_connect="true">
             <inout key="transform" uid="trackerMatrix0" />
             <config transform="trackerMatrix0Trf" />
         </service>
 
-        <service uid="calibMatAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+        <service uid="calibMatAdp" type="sight::module::viz::scene3d::adaptor::transform"
+            auto_connect="true">
             <inout key="transform" uid="matrixCalibration" />
             <config transform="calibrationTrf" />
         </service>
 
-        <service uid="calibAxisMatAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+        <service uid="calibAxisMatAdp" type="sight::module::viz::scene3d::adaptor::transform"
+            auto_connect="true">
             <inout key="transform" uid="calibrationAxisMatrix" />
             <config transform="calibrationAxisTrf" />
         </service>
 
         <service uid="calibrationAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="calibrationAxisTrf" label="false" origin="true" originColor="#0000FF" />
+            <config length="20" transform="calibrationAxisTrf" label="false" origin="true"
+                originColor="#0000FF" />
         </service>
 
-        <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+        <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::transform"
+            auto_connect="true">
             <inout key="transform" uid="toolMatrix" />
             <config transform="toolCalibrationTrf" />
         </service>
@@ -228,17 +241,21 @@
         </service>
 
         <service uid="toolAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="toolCalibrationTrf" label="false" origin="true" originColor="#FF0000" />
+            <config length="20" transform="toolCalibrationTrf" label="false" origin="true"
+                originColor="#FF0000" />
         </service>
 
         <service uid="trackerAxis0Adp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="trackerMatrix0Trf" label="false" origin="true" originColor="#00FF00" />
+            <config length="20" transform="trackerMatrix0Trf" label="false" origin="true"
+                originColor="#00FF00" />
         </service>
 
-        <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
+        <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::point_list"
+            auto_connect="true">
             <in key="pointList" uid="pointlist" />
             <config radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16"
-                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false" />
+                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000"
+                displayLabel="false" />
         </service>
 
         <!-- *************************** End resultView *************************** -->

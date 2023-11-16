@@ -392,8 +392,9 @@
 
             <!-- GUI to display a state -->
             <service uid="reprojectionMatrixStatusSrv" type="sight::module::ui::qt::status">
-                <form>circle</form>
-                <labelStatus>Reprojection matrix computed</labelStatus>
+                <labels display="beside">
+                    <name>Reprojection matrix computed</name>
+                </labels>
                 <red>No reprojection matrix</red>
                 <green>Reprojection matrix is present</green>
             </service>

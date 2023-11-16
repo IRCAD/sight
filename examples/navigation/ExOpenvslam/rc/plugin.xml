@@ -277,36 +277,27 @@
             <service uid="videoSliderSrv" type="sight::module::ui::qt::video::slider" />
 
             <service uid="openvslamInitSrvStatus" type="sight::module::ui::qt::status">
-                <form>circle</form>
-                <size>
-                    <width>20</width>
-                    <height>20</height>
-                </size>
-                <labelStatus>Initialization</labelStatus>
+                <labels>
+                    <name>Initialization</name>
+                </labels>
                 <red>Stopped</red>
                 <green>Initialized</green>
                 <orange>Initializing...</orange>
             </service>
 
             <service uid="openvslamTrackingStatusSrv" type="sight::module::ui::qt::status">
-                <form>circle</form>
-                <size>
-                    <width>20</width>
-                    <height>20</height>
-                </size>
-                <labelStatus>Tracking</labelStatus>
+                <labels display="beside">
+                    <name>Tracking</name>
+                </labels>
                 <red>Lost</red>
                 <green>Tracking</green>
                 <orange>relocalization</orange>
             </service>
 
             <service uid="openvslamVocStatusSrv" type="sight::module::ui::qt::status">
-                <form>circle</form>
-                <size>
-                    <width>20</width>
-                    <height>20</height>
-                </size>
-                <labelStatus>Vocabulary File</labelStatus>
+                <labels>
+                    <name>Vocabulary File</name>
+                </labels>
                 <red>Unloaded</red>
                 <orange>Loading</orange>
                 <green>Loaded</green>

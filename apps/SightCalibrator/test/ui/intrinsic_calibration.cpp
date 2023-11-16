@@ -28,6 +28,7 @@
 #include <ui/testCore/helper/label.hpp>
 #include <ui/testCore/helper/list_widget.hpp>
 #include <ui/testCore/helper/preferences_configuration.hpp>
+#include <ui/testCore/helper/tool_button.hpp>
 #include <ui/testCore/helper/video_controls.hpp>
 #include <ui/testCore/tester.hpp>
 
@@ -72,7 +73,7 @@ void intrinsic_calibration::test()
             helper::preferences_configuration::fill(_tester, {{"CHESSBOARD_WIDTH", "10"}, {"CHESSBOARD_HEIGHT", "8"}});
 
             // We didn't load the chessboard yet: trying to add captures gives no result
-            helper::label::tool_tip_matches(_tester, "detectionStatusSrv/0", "Points are NOT visible");
+            helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/0", "Points are NOT visible");
             helper::label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is not calibrated.");
             for(int i = 0 ; i < 3 ; i++)
             {
@@ -86,7 +87,7 @@ void intrinsic_calibration::test()
             helper::video_controls::load(_tester, "videoToolbarView", video_path);
 
             // The chessboard is loaded, trying to add captures effectively add them to the list
-            helper::label::tool_tip_matches(_tester, "detectionStatusSrv/0", "Point are visible");
+            helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/0", "Point are visible");
             helper::button::push(_tester, "intrinsicCameraView/Add");
             for(int i = 0 ; i < 3 ; i++)
             {

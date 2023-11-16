@@ -153,12 +153,9 @@
             <!-- ************************************* Services ************************************ -->
 
             <service uid="motionStatusSrv" type="sight::module::ui::qt::status">
-                <form>circle</form>
-                <size>
-                    <width>20</width>
-                    <height>20</height>
-                </size>
-                <labelStatus>Motion</labelStatus>
+                <labels display="beside">
+                    <name>Motion</name>
+                </labels>
                 <red>No motion</red>
                 <green>Motion</green>
                 <orange>Computing...</orange>

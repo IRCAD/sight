@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,20 +23,16 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/failed.hpp>
-
 #include <ui/__/editor.hpp>
 
-#include <QLabel>
 #include <QPointer>
-
-class QPushButton;
+#include <QToolButton>
 
 namespace sight::module::ui::qt
 {
 
 /**
- * @brief   status service shows a colored square (red, orange, green) representing a status.
+ * @brief Shows a colored circle (red, orange, green) representing a status.
  *
  * @note To change the status color, you should call the slots 'changeToGreen', * 'changeToOrange', 'changeToRed'
  * or 'toggleGreenRed'.
@@ -47,31 +42,22 @@ namespace sight::module::ui::qt
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::ui::qt::status">
-       <form>square|circle</form>
-       <count>2</count>
        <layout>horizontal|vertical</layout>
-       <size>
-           <width>20</width>
-           <height>20</height>
-       </size>
-       <labels>
-            <labelStatus>SCP Server</labelStatus>
-            <labelStatus>TCP Server</labelStatus>
+       <labels display="under|beside">
+           <name>SCP Server</name>
+           <name>TCP Server</name>
        </labels>
        <red>Stopped</red>
        <green>Tracking</green>
        <orange>Started</orange>
    </service>
    @endcode
- * - \b form (optional, 'square' by default): the form of the indicator
  * - \b count (optional, '1' by default): the number of status
  * - \b layout(optional, 'horizontal' by default): orientation of the layout
- * - \b size (optional): the size of the indicator
- *   - \b width (optional, 20 by default): the width of the indicator
- *   - \b height (optional, 20 by default): the height of the indicator
  * - \b labels (optional): the description associated to the indicators when count > 1
- *   - \b labelStatus (optional): the description associated to each indicator
- * - \b labelStatus (optional): the description associated to the indicator when count = 1 or is missing
+ *   - \b display (optional, 'under' by default): location of the label display
+ *   - \b name (optional): the description associated to each indicator
+ * - \b name (optional): the description associated to the indicator when count = 1 or is missing
  * - \b red (optional): the description associated to the red status
  * - \b green (optional): the description associated to the green status
  * - \b orange (optional): the description associated to the orange status
@@ -90,7 +76,7 @@ namespace sight::module::ui::qt
  * - \b change_nth_to_green(int): This slot allows to change the indicator color to green for the ith status.
  * - \b change_nth_to_red(int): This slot allows to change the indicator color to red for the ith status.
  * - \b change_nth_to_orange(int): This slot allows to change the indicator color to orange for the ith status.
- * - \b toggleNthGreenRed(int,bool): This slot allows to change the indicator color to green or red for the ith
+ * - \b toggle_nth_green_red(int,bool): This slot allows to change the indicator color to green or red for the ith
  * status.
  */
 class MODULE_UI_QT_CLASS_API status : public QObject,
@@ -104,62 +90,48 @@ public:
     MODULE_UI_QT_API status() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~status() noexcept override;
+    MODULE_UI_QT_API ~status() noexcept override = default;
 
-    /**
-     * @name Slots API
-     *@{
-     */
-    MODULE_UI_QT_API static const core::com::slots::key_t CHANGE_TO_GREEN_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t CHANGE_TO_RED_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t CHANGE_TO_ORANGE_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t TOGGLE_GREEN_RED_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t CHANGE_NTH_TO_GREEN_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t CHANGE_NTH_TO_RED_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t CHANGE_NTH_TO_ORANGE_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t TOGGLE_NTH_GREEN_RED_SLOT;
-/** @} */
+    struct slots
+    {
+        static inline const core::com::slots::key_t CHANGE_TO_GREEN_SLOT      = "change_to_green";
+        static inline const core::com::slots::key_t CHANGE_TO_RED_SLOT        = "change_to_red";
+        static inline const core::com::slots::key_t CHANGE_TO_ORANGE_SLOT     = "change_to_orange";
+        static inline const core::com::slots::key_t TOGGLE_GREEN_RED_SLOT     = "toggle_green_red";
+        static inline const core::com::slots::key_t CHANGE_NTH_TO_GREEN_SLOT  = "change_nth_to_green";
+        static inline const core::com::slots::key_t CHANGE_NTH_TO_RED_SLOT    = "change_nth_to_red";
+        static inline const core::com::slots::key_t CHANGE_NTH_TO_ORANGE_SLOT = "change_nth_to_orange";
+        static inline const core::com::slots::key_t TOGGLE_NTH_GREEN_RED_SLOT = "toggle_nth_green_red";
+    };
 
 protected:
 
-    /**
-     * @brief Install the layout.
-     */
+    void configuring(const config_t& _config) override;
     void starting() override;
-
-    /**
-     * @brief Destroy the layout.
-     */
     void stopping() override;
 
     /// Does nothing
     void updating() override;
 
-    /// Configures the service
-    void configuring() override;
-
-    /// Overrides
-    void info(std::ostream& _sstream) override;
-
-    /// SLOT : change label color
+    /// SLOT : change label color to green
     void change_to_green();
 
-    /// SLOT : change label color
+    /// SLOT : change label color to red
     void change_to_red();
 
-    /// SLOT : change label color
+    /// SLOT : change label color to orange
     void change_to_orange();
 
     /// SLOT : change label color (true = green, false = red)
     void toggle_green_red(bool _green);
 
-    /// SLOT : change nth label color
+    /// SLOT : change nth label color to green
     void change_nth_to_green(int _index);
 
-    /// SLOT : change nth label color
+    /// SLOT : change nth label color to red
     void change_nth_to_red(int _index);
 
-    /// SLOT : change nth label color
+    /// SLOT : change nth label color to orange
     void change_nth_to_orange(int _index);
 
     /// SLOT : change nth label color (true = green, false = red)
@@ -167,22 +139,18 @@ protected:
 
 private:
 
-    /// Number of status
-    std::size_t m_count {1};
-
-    QVector<QPointer<QLabel> > m_indicator;
-    QVector<QPointer<QLabel> > m_label_status;
+    QVector<QPointer<QToolButton> > m_label_status;
 
     std::string m_green_tooltip;  ///< Tooltip for green status
     std::string m_red_tooltip;    ///< Tooltip for red status
     std::string m_orange_tooltip; ///< Tooltip for orange status
-    std::string m_layout;         ///< Layout orientation
+    std::string m_orientation;    ///< Layout orientation
 
-    bool m_is_circular {false}; ///< label is a circle if true (else it's a square)
-    QString m_border_radius = "0";
-
-    std::size_t m_width {20};  ///< width of indicator
-    std::size_t m_height {20}; ///< height of indicator
+    enum class label_display
+    {
+        UNDER,
+        BESIDE
+    } m_label_display {label_display::UNDER};
 };
 
 } // namespace sight::module::ui::qt

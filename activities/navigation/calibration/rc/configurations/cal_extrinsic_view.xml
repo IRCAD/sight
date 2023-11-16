@@ -278,6 +278,9 @@
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
+            <labels>
+                <name></name>
+            </labels>
         </service>
 
         <service uid="errorLabelSrv" type="sight::module::ui::qt::text_status">
