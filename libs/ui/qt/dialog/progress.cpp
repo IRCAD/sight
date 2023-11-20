@@ -74,8 +74,9 @@ progress::progress(
         m_progressbar->setValue(0);
         m_main_window->statusBar()->addPermanentWidget(m_progressbar, 0);
         m_main_window->statusBar()->addPermanentWidget(m_cancel_button, 0);
-        m_main_window->statusBar()->setMinimumHeight(25);
-        m_main_window->statusBar()->setMaximumHeight(25);
+        m_main_window->statusBar()->setFixedHeight(28);
+
+        m_cancel_button->setFixedHeight(25);
     }
     else
     {
