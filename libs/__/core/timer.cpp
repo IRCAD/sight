@@ -20,43 +20,43 @@
  *
  ***********************************************************************/
 
-#include "core/hires_timer.hpp"
+#include "core/timer.hpp"
 
 #include <cstdlib>
 
 namespace sight::core
 {
 
-hires_timer::hires_timer()
+timer::timer()
 {
     this->reset();
 }
 
-hires_timer::~hires_timer()
+timer::~timer()
 = default;
 
 //------------------------------------------------------------------------------
 
-void hires_timer::start()
+void timer::start()
 {
     m_stopped = false;
 
     m_cumul_time_in_micro_sec = m_end_time_in_micro_sec - m_start_time_in_micro_sec;
-    m_start_time_in_micro_sec = core::hires_clock::get_time_in_micro_sec();
+    m_start_time_in_micro_sec = core::clock::get_time_in_micro_sec();
 }
 
 //------------------------------------------------------------------------------
 
-void hires_timer::stop()
+void timer::stop()
 {
     m_stopped = true;
 
-    m_end_time_in_micro_sec = core::hires_clock::get_time_in_micro_sec();
+    m_end_time_in_micro_sec = core::clock::get_time_in_micro_sec();
 }
 
 //------------------------------------------------------------------------------
 
-void hires_timer::reset(core::hires_clock::type _initial_value)
+void timer::reset(core::clock::type _initial_value)
 {
     bool was_stopped = m_stopped;
     if(!was_stopped)
@@ -75,11 +75,11 @@ void hires_timer::reset(core::hires_clock::type _initial_value)
 
 //------------------------------------------------------------------------------
 
-core::hires_clock::type hires_timer::get_elapsed_time_in_micro_sec()
+core::clock::type timer::get_elapsed_time_in_micro_sec()
 {
     if(!m_stopped)
     {
-        m_end_time_in_micro_sec = core::hires_clock::get_time_in_micro_sec();
+        m_end_time_in_micro_sec = core::clock::get_time_in_micro_sec();
     }
 
     return m_cumul_time_in_micro_sec + (m_end_time_in_micro_sec - m_start_time_in_micro_sec);
@@ -87,14 +87,14 @@ core::hires_clock::type hires_timer::get_elapsed_time_in_micro_sec()
 
 //------------------------------------------------------------------------------
 
-core::hires_clock::type hires_timer::get_elapsed_time_in_milli_sec()
+core::clock::type timer::get_elapsed_time_in_milli_sec()
 {
     return this->get_elapsed_time_in_micro_sec() * 0.001;
 }
 
 //------------------------------------------------------------------------------
 
-core::hires_clock::type hires_timer::get_elapsed_time_in_sec()
+core::clock::type timer::get_elapsed_time_in_sec()
 {
     return this->get_elapsed_time_in_micro_sec() * 0.000001;
 }

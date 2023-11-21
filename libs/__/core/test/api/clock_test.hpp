@@ -1,6 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,9 +27,9 @@
 namespace sight::core::ut
 {
 
-class hires_timer_test : public CPPUNIT_NS::TestFixture
+class clock_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(hires_timer_test);
+CPPUNIT_TEST_SUITE(clock_test);
 CPPUNIT_TEST(get_time_test);
 CPPUNIT_TEST_SUITE_END();
 

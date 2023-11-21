@@ -61,7 +61,7 @@ public:
     SIGHT_DECLARE_SERVICE(timestamp_signal, sight::ui::action);
 
     /// Type of triggered signal
-    using triggered_signal_t_t         = core::com::signal<void (sight::core::hires_clock::type)>;
+    using triggered_signal_t_t         = core::com::signal<void (sight::core::clock::type)>;
     using triggered_as_string_signal_t = core::com::signal<void (std::string)>;
 
     /**
@@ -93,7 +93,7 @@ protected:
 
     /// Whether to use system clock or high resolution clock
     /// to compute the timestamp.
-    bool m_use_system_clock {false};
+    bool m_use_system_clock {true};
 
     /// Whether to format the timestamp as a date representation (true),
     /// or to convert the timestamp plainly.

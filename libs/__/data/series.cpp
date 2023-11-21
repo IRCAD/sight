@@ -28,7 +28,7 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/hires_clock.hpp>
+#include <core/clock.hpp>
 #include <core/tools/compare.hpp>
 
 #include <gdcmDict.h>
@@ -2872,7 +2872,7 @@ std::optional<std::chrono::system_clock::time_point> series::get_frame_acquisiti
 //------------------------------------------------------------------------------
 
 void series::set_frame_acquisition_time_point(
-    sight::core::hires_clock::type _time_point,
+    sight::core::clock::type _time_point,
     std::size_t _frame_index
 )
 {

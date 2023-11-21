@@ -33,7 +33,7 @@ namespace sight::service
  *          Must be implemented for services that register objects together.
  *
  * @section Slots Slots
- * - \b compute_registration(core::hires_clock::type) : Compute the registration matrix.
+ * - \b compute_registration(core::clock::type) : Compute the registration matrix.
  */
 class SERVICE_CLASS_API registerer : public service::base
 {
@@ -61,7 +61,7 @@ public:
 protected:
 
     /// Register matrix slot
-    SERVICE_API virtual void compute_registration(core::hires_clock::type _timestamp) = 0;
+    SERVICE_API virtual void compute_registration(core::clock::type _timestamp) = 0;
 };
 
 } // namespace sight::service

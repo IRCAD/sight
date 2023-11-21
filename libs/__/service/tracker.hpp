@@ -24,7 +24,7 @@
 
 #include "service/config.hpp"
 
-#include <core/hires_clock.hpp>
+#include <core/clock.hpp>
 
 #include <data/frame_tl.hpp>
 
@@ -42,7 +42,7 @@ namespace sight::service
  * received timestamp is greater than the last processed timestamp.
  *
  * @section Slots Slots
- * - \b track(core::hires_clock::type  timestamp) : performs the tracking, does nothing if the tracking is
+ * - \b track(core::clock::type  timestamp) : performs the tracking, does nothing if the tracking is
  *   not started.
  * - \b start_tracking() : start the tracking
  * - \b stop_tracking() : stop the tracking
@@ -103,7 +103,7 @@ protected:
      * @warning If tracking is stopped, this method does nothing.
      * @note You should connect this method to the input timeline
      */
-    SERVICE_API virtual void track(core::hires_clock::type _timestamp);
+    SERVICE_API virtual void track(core::clock::type _timestamp);
 
     /// start the tracking
     SERVICE_API virtual void start_tracking();
@@ -115,10 +115,10 @@ protected:
      * @brief process the tracking
      * @param[in,out] timestamp the timestamp of the processes object of the timeline
      */
-    SERVICE_API virtual void tracking(core::hires_clock::type& _timestamp) = 0;
+    SERVICE_API virtual void tracking(core::clock::type& _timestamp) = 0;
 
     /// timestamp of the last tracking
-    core::hires_clock::type m_last_timestamp {0};
+    core::clock::type m_last_timestamp {0};
 
     /// If true, only last object is retrived
     bool m_drop_obj {true};

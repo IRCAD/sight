@@ -108,7 +108,7 @@ void point_list_registration::stopping()
 
 //-----------------------------------------------------------------------------
 
-void point_list_registration::compute_registration(core::hires_clock::type /*timestamp*/)
+void point_list_registration::compute_registration(core::clock::type /*timestamp*/)
 {
     const auto registered_pl = m_registered_pl.lock();
     SIGHT_ASSERT("No 'registeredPL' found", registered_pl);
@@ -263,7 +263,7 @@ void point_list_registration::compute_registration(core::hires_clock::type /*tim
 
 void point_list_registration::updating()
 {
-    const core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
+    const core::clock::type timestamp = core::clock::get_time_in_milli_sec();
     this->compute_registration(timestamp);
 }
 

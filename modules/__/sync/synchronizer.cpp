@@ -67,7 +67,7 @@ void synchronizer::configuring()
 
     m_legacy_auto_sync = cfg.get<bool>(config_key::LEGACY_AUTO_SYNCH, m_legacy_auto_sync);
 
-    m_tolerance = cfg.get<core::hires_clock::type>(config_key::TOLERANCE, m_tolerance);
+    m_tolerance = cfg.get<core::clock::type>(config_key::TOLERANCE, m_tolerance);
 }
 
 //-----------------------------------------------------------------------------
@@ -252,7 +252,7 @@ void synchronizer::synchronize()
     // do the synchronisation
     // step 1: get the TL implicated in the synchronization
     std::vector<std::size_t> frame_tl_populated_index;
-    std::vector<core::hires_clock::type> frame_tl_populated_timestamp;
+    std::vector<core::clock::type> frame_tl_populated_timestamp;
 
     for(std::size_t i = 0 ; i != m_frame_t_ls.size() ; ++i)
     {
@@ -273,7 +273,7 @@ void synchronizer::synchronize()
     }
 
     std::vector<std::size_t> matrix_tl_populated_index;
-    std::vector<core::hires_clock::type> matrix_tl_populated_timestamp;
+    std::vector<core::clock::type> matrix_tl_populated_timestamp;
 
     for(std::size_t i = 0 ; i != m_matrix_t_ls.size() ; ++i)
     {
@@ -309,7 +309,7 @@ void synchronizer::synchronize()
                                                                                            .end()
     ));
 
-    core::hires_clock::type max_synchronization_timestamp = std::max(
+    core::clock::type max_synchronization_timestamp = std::max(
         frame_tl_max_timestamp,
         matrix_tl_max_timestamp
     );
@@ -330,7 +330,7 @@ void synchronizer::synchronize()
         return;
     }
 
-    core::hires_clock::type synchronization_timestamp = max_synchronization_timestamp;
+    core::clock::type synchronization_timestamp = max_synchronization_timestamp;
     std::vector<std::size_t> frame_tl_to_synch_index;
     for(std::size_t i = 0 ; i < frame_tl_populated_timestamp.size() ; i++)
     {
@@ -403,7 +403,7 @@ std::vector<synchronizer::out_var_parameter> synchronizer::get_frame_tl_output_v
 
 void synchronizer::copy_frame_from_t_lto_output(
     std::size_t _frame_tl_index,
-    core::hires_clock::type _synchronization_timestamp
+    core::clock::type _synchronization_timestamp
 )
 {
     const auto frame_tl = m_frame_t_ls[_frame_tl_index].lock();
@@ -516,7 +516,7 @@ std::vector<synchronizer::out_var_parameter> synchronizer::get_matrix_tl_output_
 
 void synchronizer::copy_matrix_from_t_lto_output(
     std::size_t _matrix_tl_index,
-    core::hires_clock::type _synchronization_timestamp
+    core::clock::type _synchronization_timestamp
 )
 {
     const auto matrix_tl = m_matrix_t_ls[_matrix_tl_index].lock();

@@ -725,7 +725,7 @@ void openvslam::reset_point_cloud()
 
 //------------------------------------------------------------------------------
 
-void openvslam::tracking(core::hires_clock::type& _timestamp)
+void openvslam::tracking(core::clock::type& _timestamp)
 {
     const std::unique_lock<std::mutex> lock(m_slam_lock);
     if(m_slam_system && !m_is_paused)

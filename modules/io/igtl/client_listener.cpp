@@ -206,7 +206,7 @@ void client_listener::stopping()
 
 void client_listener::manage_timeline(data::object::sptr _obj, std::size_t _index)
 {
-    core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
+    core::clock::type timestamp = core::clock::get_time_in_milli_sec();
 
     const auto data     = m_objects[_index].lock();
     const auto mat_tl   = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());

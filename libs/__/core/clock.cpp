@@ -20,21 +20,21 @@
  *
  ***********************************************************************/
 
-#include "core/hires_clock.hpp"
+#include "core/clock.hpp"
 
 #include <core/spy_log.hpp>
 
 #include <chrono>
 #include <cstdlib>
 
-namespace sight::core::hires_clock
+namespace sight::core::clock
 {
 
 //------------------------------------------------------------------------------
 
 type get_time_in_micro_sec()
 {
-    const auto now = std::chrono::high_resolution_clock::now();
+    const auto now = std::chrono::system_clock::now();
     const auto res = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
     return static_cast<type>(res);
 }
@@ -43,7 +43,7 @@ type get_time_in_micro_sec()
 
 type get_time_in_milli_sec()
 {
-    const auto now = std::chrono::high_resolution_clock::now();
+    const auto now = std::chrono::system_clock::now();
     const auto res = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     return static_cast<type>(res);
 }
@@ -52,9 +52,9 @@ type get_time_in_milli_sec()
 
 type get_time_in_sec()
 {
-    const auto now = std::chrono::high_resolution_clock::now();
+    const auto now = std::chrono::system_clock::now();
     const auto res = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
     return static_cast<type>(res);
 }
 
-} // namespace sight::core::hires_clock
+} // namespace sight::core::clock

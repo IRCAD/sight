@@ -56,7 +56,7 @@ static const std::shared_ptr<const sight::data::matrix_tl> SOURCE_TL =
         matrix_tl->init_pool_size(4);
 
         const auto fill_tl =
-            [&matrix_tl](const core::hires_clock::type _timestamp)
+            [&matrix_tl](const core::clock::type _timestamp)
             {
                 auto data = matrix_tl->create_buffer(_timestamp);
 
@@ -126,9 +126,9 @@ void writer_test::basic_test()
     matrix_writer->slot("set_base_folder")->run(tmp_dir.string());
 
     matrix_writer->slot("start_record")->run();
-    matrix_writer->slot("write")->run(core::hires_clock::type(1));
-    matrix_writer->slot("write")->run(core::hires_clock::type(2));
-    matrix_writer->slot("write")->run(core::hires_clock::type(3));
+    matrix_writer->slot("write")->run(core::clock::type(1));
+    matrix_writer->slot("write")->run(core::clock::type(2));
+    matrix_writer->slot("write")->run(core::clock::type(3));
     matrix_writer->slot("stop_record")->run();
 
     // Stop the service
@@ -179,9 +179,9 @@ void writer_test::base_folder_test()
     matrix_writer->slot("set_base_folder")->run(tmp_dir.string());
 
     // Test writing
-    matrix_writer->slot("write")->run(core::hires_clock::type(1));
-    matrix_writer->slot("write")->run(core::hires_clock::type(2));
-    matrix_writer->slot("write")->run(core::hires_clock::type(3));
+    matrix_writer->slot("write")->run(core::clock::type(1));
+    matrix_writer->slot("write")->run(core::clock::type(2));
+    matrix_writer->slot("write")->run(core::clock::type(3));
 
     // Stop the service (the recording should be also stopped)
     CPPUNIT_ASSERT_NO_THROW(matrix_writer->stop().wait());

@@ -163,8 +163,8 @@ void frame_tl_test::push_test()
     CPPUNIT_ASSERT_EQUAL(core::type::UINT8, timeline->type());
     CPPUNIT_ASSERT_EQUAL(data::frame_tl::pixel_format::rgb, timeline->pixel_format());
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2 = time1 + 42;
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
+    core::clock::type time2 = time1 + 42;
 
     SPTR(data::frame_tl::buffer_t) data1 = timeline->create_buffer(time1);
     std::uint8_t* buffer_data1 = data1->add_element(0);
@@ -195,7 +195,7 @@ void frame_tl_test::push_test()
     CSPTR(data::timeline::object) data_pushed2_bis = timeline->get_newer_object();
     CPPUNIT_ASSERT(data2 == data_pushed2_bis);
 
-    core::hires_clock::type time2_pushed = timeline->get_newer_timestamp();
+    core::clock::type time2_pushed = timeline->get_newer_timestamp();
     CPPUNIT_ASSERT_EQUAL(time2, time2_pushed);
 
     timeline->clear_timeline();
@@ -216,8 +216,8 @@ void frame_tl_test::copy_test()
     CPPUNIT_ASSERT_EQUAL(core::type::UINT8, timeline->type());
     CPPUNIT_ASSERT_EQUAL(data::frame_tl::pixel_format::rgba, timeline->pixel_format());
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2 = time1 + 125;
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
+    core::clock::type time2 = time1 + 125;
 
     SPTR(data::frame_tl::buffer_t) data1 = timeline->create_buffer(time1);
     std::uint8_t* buffer_data1 = data1->add_element(0);
@@ -252,7 +252,7 @@ void frame_tl_test::copy_test()
         CPPUNIT_ASSERT_EQUAL(buff_data[i], copied_buff_data[i]);
     }
 
-    const core::hires_clock::type copied_time2 = copied_timeline->get_newer_timestamp();
+    const core::clock::type copied_time2 = copied_timeline->get_newer_timestamp();
     CPPUNIT_ASSERT_EQUAL(time2, copied_time2);
 
     timeline->clear_timeline();

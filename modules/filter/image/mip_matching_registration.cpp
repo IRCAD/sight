@@ -89,7 +89,7 @@ void mip_matching_registration::updating()
 
 //------------------------------------------------------------------------------
 
-void mip_matching_registration::compute_registration(core::hires_clock::type /*timestamp*/)
+void mip_matching_registration::compute_registration(core::clock::type /*timestamp*/)
 {
     this->updating();
 }

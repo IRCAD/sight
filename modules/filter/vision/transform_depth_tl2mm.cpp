@@ -64,7 +64,7 @@ void transform_depth_tl2mm::configuring()
 
 //------------------------------------------------------------------------------
 
-void transform_depth_tl2mm::compute(core::hires_clock::type _timestamp)
+void transform_depth_tl2mm::compute(core::clock::type _timestamp)
 {
     if(_timestamp > m_last_timestamp)
     {

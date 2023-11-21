@@ -117,13 +117,13 @@ protected:
 
 private:
 
-    void compute(core::hires_clock::type _timestamp);
+    void compute(core::clock::type _timestamp);
 
     ///Slot called when a parameter is changed
     void set_parameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Last timestamp
-    core::hires_clock::type m_last_timestamp {0};
+    core::clock::type m_last_timestamp {0};
 
     /// Marker pattern width.
     double m_pattern_width {80};

@@ -24,7 +24,7 @@
 
 #include "data/config.hpp"
 
-#include <core/hires_clock.hpp>
+#include <core/clock.hpp>
 
 #include <array>
 #include <cstdint>
@@ -69,7 +69,7 @@ struct  picking_info
     /// Key event
     char m_key_pressed = 0;
 
-    core::hires_clock::type m_timestamp {};
+    core::clock::type m_timestamp {};
 };
 
 } // namespace sight::data::tools

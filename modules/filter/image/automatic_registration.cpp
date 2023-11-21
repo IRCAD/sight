@@ -172,7 +172,7 @@ void automatic_registration::updating()
     auto transfo_modified_sig = transform->signal<data::matrix4::modified_signal_t>
                                     (data::matrix4::MODIFIED_SIG);
 
-    std::chrono::time_point<std::chrono::high_resolution_clock> reg_start_time;
+    std::chrono::time_point<std::chrono::system_clock> reg_start_time;
     std::size_t i = 0;
 
     automatic_registration::iteration_callback_t iteration_callback =
@@ -204,8 +204,8 @@ void automatic_registration::updating()
                     }
                 }
 
-                const std::chrono::time_point<std::chrono::high_resolution_clock> now =
-                    std::chrono::high_resolution_clock::now();
+                const std::chrono::time_point<std::chrono::system_clock> now =
+                    std::chrono::system_clock::now();
 
                 const auto duration = now - reg_start_time;
 

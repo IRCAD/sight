@@ -82,7 +82,7 @@ void tool_calibration::updating()
 
 // -----------------------------------------------------------------------------
 
-void tool_calibration::compute_registration(core::hires_clock::type /*timestamp*/)
+void tool_calibration::compute_registration(core::clock::type /*timestamp*/)
 {
     const auto matrices_vector = m_matrices_vector.lock();
 

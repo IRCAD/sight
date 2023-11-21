@@ -28,7 +28,7 @@
 #include <any>
 
 #include <core/base.hpp>
-#include <core/hires_clock.hpp>
+#include <core/clock.hpp>
 
 #include "core/config.hpp"
 
@@ -50,7 +50,7 @@ class CORE_CLASS_API worker : public core::base_object
 {
 public:
 
-    using period_t         = core::hires_clock::type;
+    using period_t         = core::clock::type;
     using task_t           = std::function<void ()>;
     using exit_return_type = std::any;
 

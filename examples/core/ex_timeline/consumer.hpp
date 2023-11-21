@@ -92,7 +92,7 @@ protected:
     void updating() final;
 
     /// Called by a signal to consume a message
-    void consume(sight::core::hires_clock::type _timestamp);
+    void consume(sight::core::clock::type _timestamp);
 
 private:
 

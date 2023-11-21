@@ -65,10 +65,10 @@ protected:
     /// Constructor
     DATA_API generic_object_base(
         unsigned int _max_element_num,
-        core::hires_clock::type _timestamp = 0,
-        buffer_data_t _buffer              = nullptr,
-        std::size_t _size                  = 0,
-        deleter_t _d                       = nullptr
+        core::clock::type _timestamp = 0,
+        buffer_data_t _buffer        = nullptr,
+        std::size_t _size            = 0,
+        deleter_t _d                 = nullptr
     );
 
     /// Number of elements that are actually set
@@ -130,10 +130,10 @@ public:
     /// Constructor
     generic_object(
         unsigned int _m_max_element_num,
-        core::hires_clock::type _timestamp = 0,
-        buffer_data_t _buffer              = nullptr,
-        std::size_t _size                  = 0,
-        deleter_t _d                       = nullptr
+        core::clock::type _timestamp = 0,
+        buffer_data_t _buffer        = nullptr,
+        std::size_t _size            = 0,
+        deleter_t _d                 = nullptr
     );
 
     /// Destructor

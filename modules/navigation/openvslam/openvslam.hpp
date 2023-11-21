@@ -27,9 +27,9 @@
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
-#include <core/hires_timer.hpp>
 #include <core/location/single_file.hpp>
 #include <core/thread/timer.hpp>
+#include <core/timer.hpp>
 
 #include <data/camera.hpp>
 #include <data/frame_tl.hpp>
@@ -234,7 +234,7 @@ private:
     void reset_point_cloud();
 
     /// Slot: call openvslam with the new frame.
-    void tracking(core::hires_clock::type& _timestamp) final;
+    void tracking(core::clock::type& _timestamp) final;
     /** @} */
 
     /**

@@ -69,7 +69,7 @@ void tracker::configuring()
 
 //-----------------------------------------------------------------------------
 
-void tracker::track(core::hires_clock::type _timestamp)
+void tracker::track(core::clock::type _timestamp)
 {
     SIGHT_DEBUG_IF("[" + this->get_classname() + "] Tracking is not started: does nothing", !m_is_tracking);
     SIGHT_DEBUG_IF(

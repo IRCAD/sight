@@ -22,9 +22,9 @@
 
 #include "timestamp_slot_caller.hpp"
 
+#include <core/clock.hpp>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
-#include <core/hires_clock.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -72,7 +72,7 @@ void timestamp_slot_caller::starting()
 
 void timestamp_slot_caller::updating()
 {
-    core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
+    core::clock::type timestamp = core::clock::get_time_in_milli_sec();
 
     for(const slot_info_t& info : m_slot_infos)
     {

@@ -127,13 +127,13 @@ void matrix_writer::stopping()
 
 void matrix_writer::updating()
 {
-    const auto& timestamp = core::hires_clock::get_time_in_milli_sec();
+    const auto& timestamp = core::clock::get_time_in_milli_sec();
     this->save_matrix(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::save_matrix(core::hires_clock::type _timestamp)
+void matrix_writer::save_matrix(core::clock::type _timestamp)
 {
     // Protect operation
     std::unique_lock lock(m_mutex);
@@ -145,7 +145,7 @@ void matrix_writer::save_matrix(core::hires_clock::type _timestamp)
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::write(core::hires_clock::type _timestamp)
+void matrix_writer::write(core::clock::type _timestamp)
 {
     // Protect operation
     std::unique_lock lock(m_mutex);

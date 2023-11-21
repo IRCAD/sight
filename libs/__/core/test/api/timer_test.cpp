@@ -19,29 +19,29 @@
  *
  ***********************************************************************/
 
-#include "hires_timer_test.hpp"
+#include "timer_test.hpp"
 
-#include "core/hires_timer.hpp"
+#include "core/timer.hpp"
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <array>
 #include <thread>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::hires_timer_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::timer_test);
 
 namespace sight::core::ut
 {
 
 //------------------------------------------------------------------------------
 
-void hires_timer_test::setUp()
+void timer_test::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void hires_timer_test::tearDown()
+void timer_test::tearDown()
 {
 }
 
@@ -59,40 +59,40 @@ struct test_data
     bool stop;
     comparison comp;
     int reset;
-    core::hires_clock::type (hires_timer::* get_elapsed_time_in_x)();
+    core::clock::type (timer::* get_elapsed_time_in_x)();
 };
 
 //------------------------------------------------------------------------------
 
-void hires_timer_test::get_time_test()
+void timer_test::get_time_test()
 {
     const std::array data {
         // Start the timer, stop the timer and get the time
-        test_data {1, true, true, true, comparison::ge, -1, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, true, comparison::ge, -1, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, true, comparison::ge, -1, &hires_timer::get_elapsed_time_in_micro_sec},
+        test_data {1, true, true, true, comparison::ge, -1, &timer::get_elapsed_time_in_sec},
+        test_data {1000, true, true, true, comparison::ge, -1, &timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, true, true, true, comparison::ge, -1, &timer::get_elapsed_time_in_micro_sec},
 
         // Start the timer, reset it in the middle, stop it and get the time
-        test_data {1, true, true, true, comparison::ge, 0, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, true, comparison::ge, 0, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, true, comparison::ge, 0, &hires_timer::get_elapsed_time_in_micro_sec},
+        test_data {1, true, true, true, comparison::ge, 0, &timer::get_elapsed_time_in_sec},
+        test_data {1000, true, true, true, comparison::ge, 0, &timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, true, true, true, comparison::ge, 0, &timer::get_elapsed_time_in_micro_sec},
 
         // Start the timer and get the time
-        test_data {1, true, true, false, comparison::ge, -1, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, false, comparison::ge, -1, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, false, comparison::ge, -1, &hires_timer::get_elapsed_time_in_micro_sec},
+        test_data {1, true, true, false, comparison::ge, -1, &timer::get_elapsed_time_in_sec},
+        test_data {1000, true, true, false, comparison::ge, -1, &timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, true, true, false, comparison::ge, -1, &timer::get_elapsed_time_in_micro_sec},
 
         // Reset the timer and get the time
-        test_data {1, false, false, false, comparison::eq, 1000000, &hires_timer::get_elapsed_time_in_sec},
-        test_data {1000, false, false, false, comparison::eq, 1000000, &hires_timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, false, false, false, comparison::eq, 1000000, &hires_timer::get_elapsed_time_in_micro_sec}
+        test_data {1, false, false, false, comparison::eq, 1000000, &timer::get_elapsed_time_in_sec},
+        test_data {1000, false, false, false, comparison::eq, 1000000, &timer::get_elapsed_time_in_milli_sec},
+        test_data {1000000, false, false, false, comparison::eq, 1000000, &timer::get_elapsed_time_in_micro_sec}
     };
 
     for(size_t i = 0 ; i < sizeof(data) / sizeof(data[0]) ; i++)
     {
         const test_data& d = data[i];
         const double time  = d.time;
-        hires_timer timer;
+        timer timer;
 
         if(d.start)
         {

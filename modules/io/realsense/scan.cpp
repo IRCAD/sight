@@ -45,7 +45,7 @@
 namespace sight::module::io::realsense
 {
 
-namespace fwClock = core::hires_clock;
+namespace fwClock = core::clock;
 
 static const std::string s_FPS           = "fps";
 static const std::string s_COLOR_FRAME_H = "colorH";

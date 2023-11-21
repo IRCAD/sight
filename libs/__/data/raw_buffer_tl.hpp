@@ -50,12 +50,12 @@ public:
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
     DATA_API virtual CSPTR(timeline::raw_buffer) get_closest_buffer(
-        core::hires_clock::type _timestamp,
+        core::clock::type _timestamp,
         timeline::direction_t _direction = timeline::both
     ) const;
 
     /// Return the buffer matching the specified timestamp, returns NULL if object is not found
-    DATA_API virtual CSPTR(timeline::raw_buffer) get_buffer(core::hires_clock::type _timestamp)
+    DATA_API virtual CSPTR(timeline::raw_buffer) get_buffer(core::clock::type _timestamp)
     const;
 
     /// Initialize the size of the pool buffer.
@@ -66,14 +66,14 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    DATA_API SPTR(timeline::object) create_object(core::hires_clock::type _timestamp) override;
+    DATA_API SPTR(timeline::object) create_object(core::clock::type _timestamp) override;
 
     /**
      * @brief Return a new buffer_t with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    DATA_API SPTR(timeline::raw_buffer) create_buffer(core::hires_clock::type _timestamp);
+    DATA_API SPTR(timeline::raw_buffer) create_buffer(core::clock::type _timestamp);
 
     /// Check if the type of an object is compatible with this timeline
     DATA_API bool is_object_valid(const CSPTR(timeline::object)& _obj) const override;

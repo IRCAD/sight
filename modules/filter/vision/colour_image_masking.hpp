@@ -140,7 +140,7 @@ private:
     std::unique_ptr<sight::filter::vision::masker> m_masker;
 
     /// Current timestamp.
-    core::hires_clock::type m_last_video_timestamp {0.};
+    core::clock::type m_last_video_timestamp {0.};
 
     /// Reduction factor.
     float m_scale_factor {1.};

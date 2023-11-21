@@ -30,7 +30,7 @@ namespace sight::data::timeline
 template<typename TYPE>
 generic_object<TYPE>::generic_object(
     unsigned int _m_max_element_num,
-    core::hires_clock::type _timestamp,
+    core::clock::type _timestamp,
     buffer_data_t _buffer,
     std::size_t _size,
     deleter_t _d

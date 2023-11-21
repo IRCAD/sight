@@ -103,9 +103,9 @@ void generic_tl_test::push_pop_test()
     data::float4_tl::sptr timeline = std::make_shared<data::float4_tl>();
     timeline->init_pool_size(3);
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2 = time1 + 42;
-    core::hires_clock::type time3 = time1 + 81;
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
+    core::clock::type time2 = time1 + 42;
+    core::clock::type time3 = time1 + 81;
 
     float4 values1 = {1.0F, 5.2F, 7.5F, 1.F};
     float4 values2 = {4.0F, 5.5F, 1.5F, 2.F};
@@ -201,7 +201,7 @@ void generic_tl_test::push_pop_test()
         CSPTR(data::timeline::object) data_pushed3_bis = timeline->get_newer_object();
         CPPUNIT_ASSERT(data3 == data_pushed3_bis);
 
-        core::hires_clock::type time3_pushed = timeline->get_newer_timestamp();
+        core::clock::type time3_pushed = timeline->get_newer_timestamp();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(time3, time3_pushed, 0.00001);
 
         CSPTR(data::float4_tl::buffer_t) obj =
@@ -280,8 +280,8 @@ void generic_tl_test::push_class_test()
     data::test_class_tl::sptr timeline = std::make_shared<data::test_class_tl>();
     timeline->init_pool_size(3);
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2 = time1 + 42;
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
+    core::clock::type time2 = time1 + 42;
 
     test_contained test_data1;
     test_data1.m_int       = 87;
@@ -366,12 +366,12 @@ void generic_tl_test::copy_test()
     data::float3_tl::sptr timeline = std::make_shared<data::float3_tl>();
     timeline->init_pool_size(3);
 
-    core::hires_clock::type time1  = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2  = time1 + 42;
-    core::hires_clock::type time2b = time2 + 12;
-    core::hires_clock::type time3  = time2 + 52;
-    core::hires_clock::type time4  = time3 + 52;
-    core::hires_clock::type time4b = time4 + 12;
+    core::clock::type time1  = core::clock::get_time_in_milli_sec();
+    core::clock::type time2  = time1 + 42;
+    core::clock::type time2b = time2 + 12;
+    core::clock::type time3  = time2 + 52;
+    core::clock::type time4  = time3 + 52;
+    core::clock::type time4b = time4 + 12;
 
     std::array<float, 3> values1 = {1.0F, 5.2F, 7.5F};
     std::array<float, 3> values2 = {4.0F, 5.5F, 1.5F};
@@ -546,10 +546,10 @@ void generic_tl_test::iterator_test()
     data::float3_tl::sptr timeline = std::make_shared<data::float3_tl>();
     timeline->init_pool_size(5);
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2 = time1 + 42;
-    core::hires_clock::type time3 = time2 + 52;
-    core::hires_clock::type time4 = time3 + 52;
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
+    core::clock::type time2 = time1 + 42;
+    core::clock::type time3 = time2 + 52;
+    core::clock::type time4 = time3 + 52;
 
     std::array<float, 3> values1 = {1.0F, 5.2F, 7.5F};
     std::array<float, 3> values2 = {4.0F, 5.5F, 1.5F};
@@ -655,7 +655,7 @@ void generic_tl_test::object_valid()
     data::float4_tl::sptr timeline2 = std::make_shared<data::float4_tl>();
     timeline2->init_pool_size(3);
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
     SPTR(data::float3_tl::buffer_t) data1 = timeline1->create_buffer(time1);
     SPTR(data::float4_tl::buffer_t) data2 = timeline2->create_buffer(time1);
 

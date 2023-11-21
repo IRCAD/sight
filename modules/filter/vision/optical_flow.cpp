@@ -90,7 +90,7 @@ void optical_flow::updating()
     {
         const auto frame_tl = m_timeline.lock();
         SIGHT_ASSERT(" Input " << FRAME_TIMELINE_INPUT << " cannot be null", frame_tl);
-        core::hires_clock::type timestamp = frame_tl->get_newer_timestamp();
+        core::clock::type timestamp = frame_tl->get_newer_timestamp();
         if(timestamp < m_last_timestamp + m_latency)
         {
             return;

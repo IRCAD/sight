@@ -23,29 +23,29 @@
 #pragma once
 
 #include "core/base_object.hpp"
+#include "core/clock.hpp"
 #include "core/config.hpp"
-#include "core/hires_clock.hpp"
 
 namespace sight::core
 {
 
 /**
  * @brief This class provide a timer (stopwatch).
- * HiResTimer is able to measure the elapsed time with a few micro-seconds.
+ * Timer is able to measure the elapsed time with a few micro-seconds.
  * accuracy, on Linux, Mac OS and Windows
  */
-class CORE_CLASS_API hires_timer : public base_object
+class CORE_CLASS_API timer : public base_object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(hires_timer, base_object);
+    SIGHT_DECLARE_CLASS(timer, base_object);
 
     /**
      * @name Constructor/Destructor
      * @{ */
 
-    CORE_API hires_timer();
-    CORE_API ~hires_timer() override;
+    CORE_API timer();
+    CORE_API ~timer() override;
 
     /**  @} */
 
@@ -66,7 +66,7 @@ public:
      * @param initial_value Initial value in microseconds from which the timer
      * will start to count.
      */
-    CORE_API void reset(hires_clock::type _initial_value = 0.);
+    CORE_API void reset(clock::type _initial_value = 0.);
 
     /**
      * @name Elapsed time
@@ -78,17 +78,17 @@ public:
     /**
      * @return Elapsed time in seconds
      */
-    CORE_API core::hires_clock::type get_elapsed_time_in_sec();
+    CORE_API core::clock::type get_elapsed_time_in_sec();
 
     /**
      * @return Elapsed time in milliseconds
      */
-    CORE_API core::hires_clock::type get_elapsed_time_in_milli_sec();
+    CORE_API core::clock::type get_elapsed_time_in_milli_sec();
 
     /**
      * @return Elapsed time in microseconds
      */
-    CORE_API core::hires_clock::type get_elapsed_time_in_micro_sec();
+    CORE_API core::clock::type get_elapsed_time_in_micro_sec();
 
 /**  @} */
 
@@ -99,15 +99,15 @@ private:
     /**
      * @brief Last start time.
      */
-    core::hires_clock::type m_start_time_in_micro_sec {};
+    core::clock::type m_start_time_in_micro_sec {};
     /**
      * @brief Last "break" time.
      */
-    core::hires_clock::type m_end_time_in_micro_sec {};
+    core::clock::type m_end_time_in_micro_sec {};
     /**
      * @brief accumulated running time.
      */
-    core::hires_clock::type m_cumul_time_in_micro_sec {};
+    core::clock::type m_cumul_time_in_micro_sec {};
     /**
      * @brief timer status.
      */

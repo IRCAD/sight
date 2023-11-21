@@ -58,7 +58,7 @@ static std::pair<data::frame_tl::sptr, SPTR(data::frame_tl::buffer_t)> gen_frame
         ? data::frame_tl::pixel_format::rgba
         : data::frame_tl::pixel_format::undefined
     );
-    auto buffer = frame_tl->create_buffer(core::hires_clock::get_time_in_milli_sec());
+    auto buffer = frame_tl->create_buffer(core::clock::get_time_in_milli_sec());
 
     return std::make_pair(frame_tl, buffer);
 }

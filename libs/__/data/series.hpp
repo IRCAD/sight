@@ -367,7 +367,7 @@ public:
     );
 
     DATA_API void set_frame_acquisition_time_point(
-        sight::core::hires_clock::type _time_point,
+        sight::core::clock::type _time_point,
         std::size_t _frame_index = 0
     );
 

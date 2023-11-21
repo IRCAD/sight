@@ -127,7 +127,7 @@ private:
     bool m_motion {false};
 
     /// Stores last processed frame timestamp.
-    core::hires_clock::type m_last_timestamp {0};
+    core::clock::type m_last_timestamp {0};
 
     static constexpr std::string_view FRAME_TIMELINE_INPUT = "timeline";
 

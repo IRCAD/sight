@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "hires_clock_test.hpp"
+#include "clock_test.hpp"
 
-#include "core/hires_clock.hpp"
+#include "core/clock.hpp"
 
 #include <ios>
 #include <thread>
@@ -32,33 +32,33 @@
 #endif
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::hires_clock_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::clock_test);
 
 namespace sight::core::ut
 {
 
 //------------------------------------------------------------------------------
 
-void hires_clock_test::setUp()
+void clock_test::setUp()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void hires_clock_test::tearDown()
+void clock_test::tearDown()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void hires_clock_test::get_time_test()
+void clock_test::get_time_test()
 {
     {
         const std::uint16_t time = 1;
 
-        const double start = hires_clock::get_time_in_sec();
+        const double start = clock::get_time_in_sec();
         std::this_thread::sleep_for(std::chrono::seconds(time));
-        const double end = hires_clock::get_time_in_sec();
+        const double end = clock::get_time_in_sec();
 
         CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), end - start);
     }
@@ -66,9 +66,9 @@ void hires_clock_test::get_time_test()
     {
         const std::uint16_t time = 1000;
 
-        const double start = hires_clock::get_time_in_milli_sec();
+        const double start = clock::get_time_in_milli_sec();
         std::this_thread::sleep_for(std::chrono::milliseconds(time));
-        const double end = hires_clock::get_time_in_milli_sec();
+        const double end = clock::get_time_in_milli_sec();
 
         CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), end - start);
     }
@@ -76,9 +76,9 @@ void hires_clock_test::get_time_test()
     {
         const unsigned time = 1000000;
 
-        const double start = hires_clock::get_time_in_micro_sec();
+        const double start = clock::get_time_in_micro_sec();
         std::this_thread::sleep_for(std::chrono::microseconds(time));
-        const double end = hires_clock::get_time_in_micro_sec();
+        const double end = clock::get_time_in_micro_sec();
 
         CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), end - start);
     }

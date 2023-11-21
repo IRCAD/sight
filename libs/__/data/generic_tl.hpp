@@ -51,12 +51,12 @@ public:
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
     CSPTR(buffer_t) get_closest_buffer(
-        core::hires_clock::type _timestamp,
+        core::clock::type _timestamp,
         timeline::direction_t _direction = timeline::both
     ) const;
 
     /// Returns the buffer matching the specified timestamp, returns NULL if object is not found
-    CSPTR(buffer_t) get_buffer(core::hires_clock::type _timestamp) const;
+    CSPTR(buffer_t) get_buffer(core::clock::type _timestamp) const;
 
     /// Initializes the size of the pool buffer.
     virtual void init_pool_size(unsigned int _max_element_num);
@@ -66,14 +66,14 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(timeline::object) create_object(core::hires_clock::type _timestamp) override;
+    SPTR(timeline::object) create_object(core::clock::type _timestamp) override;
 
     /**
      * @brief Returns a new buffer_t with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(buffer_t) create_buffer(core::hires_clock::type _timestamp);
+    SPTR(buffer_t) create_buffer(core::clock::type _timestamp);
 
     /// Check if the type of an object is compatible with this timeline
     bool is_object_valid(const CSPTR(timeline::object)& _obj) const override;

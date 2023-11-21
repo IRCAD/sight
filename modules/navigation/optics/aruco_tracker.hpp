@@ -43,7 +43,7 @@ namespace sight::module::navigation::optics
  * @see service::tracker
  *
  * @section Signals Signals
- * - \b detectionDone(core::hires_clock::type) : This signal is emitted when the tracker find tags.
+ * - \b detectionDone(core::clock::type) : This signal is emitted when the tracker find tags.
  *
  * @section Slots Slots
  * @subsection Inherited Inherited slots (from tracker)
@@ -96,7 +96,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(aruco_tracker, service::tracker);
 
-    using detection_done_signal_t  = core::com::signal<void (core::hires_clock::type)>;
+    using detection_done_signal_t  = core::com::signal<void (core::clock::type)>;
     using marker_detected_signal_t = core::com::signal<void (bool)>;
 
     /**
@@ -158,7 +158,7 @@ protected:
     MODULE_NAVIGATION_OPTICS_API void stopping() override;
 
     /// Detect marker
-    MODULE_NAVIGATION_OPTICS_API void tracking(core::hires_clock::type& _timestamp) override;
+    MODULE_NAVIGATION_OPTICS_API void tracking(core::clock::type& _timestamp) override;
 
 private:
 

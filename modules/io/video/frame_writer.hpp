@@ -100,10 +100,10 @@ protected:
 private:
 
     /// SLOT: Adds the current frame in the video
-    void save_frame(core::hires_clock::type _timestamp);
+    void save_frame(core::clock::type _timestamp);
 
     /// Writes frame on the disk
-    void write(core::hires_clock::type _timestamp);
+    void write(core::clock::type _timestamp);
 
     /// SLOT: Starts recording
     void start_record();

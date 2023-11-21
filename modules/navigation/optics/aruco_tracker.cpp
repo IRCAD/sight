@@ -156,13 +156,13 @@ void aruco_tracker::updating()
     // When working with a frame (newest design), we do not rely on the timestamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = core::hires_clock::get_time_in_milli_sec();
+    auto timestamp = core::clock::get_time_in_milli_sec();
     this->tracking(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
+void aruco_tracker::tracking(core::clock::type& _timestamp)
 {
     if(!m_is_initialized)
     {

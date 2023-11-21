@@ -42,7 +42,7 @@ namespace sight::module::geometry::vision
  *  as well as the camera matrix and the distortion coefficients.
  *
  * @section Slots Slots
- * - \b compute_registration(core::hires_clock::type): compute the registration using cv::solvePnP.
+ * - \b compute_registration(core::clock::type): compute the registration using cv::solvePnP.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -84,7 +84,7 @@ public:
      * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
      * @param _timestamp: not used by the method.
      */
-    MODULE_GEOMETRY_VISION_API void compute_registration(core::hires_clock::type _timestamp) override;
+    MODULE_GEOMETRY_VISION_API void compute_registration(core::clock::type _timestamp) override;
 
 protected:
 

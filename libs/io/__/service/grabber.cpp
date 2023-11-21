@@ -168,7 +168,7 @@ void grabber::clear_timeline(data::frame_tl& _tl)
     if(_tl.is_allocated())
     {
         // Clear the timeline: send a black frame
-        const core::hires_clock::type timestamp = _tl.get_newer_timestamp() + 1;
+        const core::clock::type timestamp = _tl.get_newer_timestamp() + 1;
 
         SPTR(data::frame_tl::buffer_t) buffer = _tl.create_buffer(timestamp);
         auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->add_element(0));

@@ -29,7 +29,7 @@ namespace sight::core
 
 void time_stamp::modified()
 {
-    m_modified_time = core::hires_clock::get_time_in_milli_sec();
+    m_modified_time = core::clock::get_time_in_milli_sec();
 }
 
 } //namespace sight::core

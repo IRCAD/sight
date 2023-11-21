@@ -170,7 +170,7 @@ void video_writer::write_buffer(int _width, int _height, CSPTR(data::frame_tl::b
 
 //------------------------------------------------------------------------------
 
-void video_writer::save_frame(core::hires_clock::type _timestamp)
+void video_writer::save_frame(core::clock::type _timestamp)
 {
     if(m_is_recording)
     {

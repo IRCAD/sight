@@ -77,7 +77,7 @@ void generic_tl<BUFFER_TYPE>::deep_copy(const object::csptr& _source, const std:
 template<class BUFFER_TYPE>
 CSPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
 generic_tl<BUFFER_TYPE>::get_closest_buffer(
-    core::hires_clock::type _timestamp,
+    core::clock::type _timestamp,
     timeline::direction_t _direction
 ) const
 {
@@ -89,7 +89,7 @@ generic_tl<BUFFER_TYPE>::get_closest_buffer(
 
 template<class BUFFER_TYPE>
 CSPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
-generic_tl<BUFFER_TYPE>::get_buffer(core::hires_clock::type _timestamp) const
+generic_tl<BUFFER_TYPE>::get_buffer(core::clock::type _timestamp) const
 {
     CSPTR(data::timeline::object) buffer = this->get_object(_timestamp);
     return std::dynamic_pointer_cast<const buffer_t>(buffer);
@@ -108,7 +108,7 @@ void generic_tl<BUFFER_TYPE>::init_pool_size(unsigned int _max_element_num)
 
 template<class BUFFER_TYPE>
 SPTR(data::timeline::object)
-generic_tl<BUFFER_TYPE>::create_object(core::hires_clock::type _timestamp)
+generic_tl<BUFFER_TYPE>::create_object(core::clock::type _timestamp)
 {
     return this->create_buffer(_timestamp);
 }
@@ -117,7 +117,7 @@ generic_tl<BUFFER_TYPE>::create_object(core::hires_clock::type _timestamp)
 
 template<class BUFFER_TYPE>
 SPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
-generic_tl<BUFFER_TYPE>::create_buffer(core::hires_clock::type _timestamp)
+generic_tl<BUFFER_TYPE>::create_buffer(core::clock::type _timestamp)
 {
     SPTR(buffer_t) obj = std::make_shared<buffer_t>(
         m_max_element_num,

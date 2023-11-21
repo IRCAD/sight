@@ -97,10 +97,10 @@ protected:
 private:
 
     /// Apply the scale on the depth map
-    void compute(core::hires_clock::type _timestamp);
+    void compute(core::clock::type _timestamp);
 
     /// timestamp of the last process
-    core::hires_clock::type m_last_timestamp {0};
+    core::clock::type m_last_timestamp {0};
 
     static constexpr std::string_view CAMERA_SET_INPUT      = "cameraSet";
     static constexpr std::string_view ORIGIN_FRAME_TL_INPUT = "originDepthTL";

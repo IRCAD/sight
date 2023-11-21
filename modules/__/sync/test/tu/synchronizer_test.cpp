@@ -317,10 +317,10 @@ public:
 void synchronizer_test::single_frame_tl_population()
 {
     synchronizer_tester tester;
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -351,10 +351,10 @@ void synchronizer_test::single_frame_tl_population()
 void synchronizer_test::single_matrix_tl_population()
 {
     synchronizer_tester tester;
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -410,11 +410,11 @@ void synchronizer_test::basic_synchronisation()
     synchronizer_tester tester;
 
     //signal - slot connections for tests
-    core::hires_clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received        = false;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received  = false;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -552,11 +552,11 @@ void synchronizer_test::basic_synchronisation()
 void synchronizer_test::time_gap_synchronisation()
 {
     synchronizer_tester tester;
-    core::hires_clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received        = false;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received  = false;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -672,11 +672,11 @@ void synchronizer_test::time_gap_synchronisation()
 void synchronizer_test::reset_timeline_synchronisation()
 {
     synchronizer_tester tester;
-    core::hires_clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received        = false;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received  = false;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -782,11 +782,11 @@ void synchronizer_test::reset_timeline_synchronisation()
 void synchronizer_test::reset_and_loop_synchronisation()
 {
     synchronizer_tester tester;
-    core::hires_clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received        = false;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received  = false;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -936,10 +936,10 @@ void synchronizer_test::single_matrix_tl_config_test()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1012,11 +1012,11 @@ void synchronizer_test::mixt_matrix_tl_config_test()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received        = false;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received  = false;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1096,10 +1096,10 @@ void synchronizer_test::single_frame_tl_config_test()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1223,10 +1223,10 @@ void synchronizer_test::mixt_frame_tl_config_test()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1385,11 +1385,11 @@ void synchronizer_test::full_config_test()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received        = false;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received  = false;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1481,10 +1481,10 @@ void synchronizer_test::full_config_test()
 void synchronizer_test::update_config_test()
 {
     synchronizer_tester tester;
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1578,10 +1578,10 @@ void synchronizer_test::send_status_test()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1752,10 +1752,10 @@ void synchronizer_test::delay_test()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1834,10 +1834,10 @@ void synchronizer_test::delay_test()
 void synchronizer_test::tolerance_test()
 {
     synchronizer_tester tester;
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -1957,10 +1957,10 @@ void synchronizer_test::image_series_time_tagging_test()
 
     tester.srv->set_inout(frame1, "frames", false, false, 0);
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });
@@ -2080,10 +2080,10 @@ void synchronizer_test::single_image_series_tl_population()
     tester.srv->set_inout(frame2, "frames", false, false, 1);
     tester.srv->set_inout(matrix1, "matrix", false, false, 0);
 
-    core::hires_clock::type last_timestamp_synch = 0;
-    auto slot_synchronization_done               =
+    core::clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done         =
         sight::core::com::new_slot(
-            [&last_timestamp_synch](core::hires_clock::type _timestamp)
+            [&last_timestamp_synch](core::clock::type _timestamp)
         {
             last_timestamp_synch = _timestamp;
         });

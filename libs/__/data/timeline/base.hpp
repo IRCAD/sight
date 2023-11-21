@@ -38,8 +38,8 @@ enum direction_t
 
 struct signals
 {
-    using pushed_t  = core::com::signal<void (core::hires_clock::type _timestamp)>;
-    using removed_t = core::com::signal<void (core::hires_clock::type _timestamp)>;
+    using pushed_t  = core::com::signal<void (core::clock::type _timestamp)>;
+    using removed_t = core::com::signal<void (core::clock::type _timestamp)>;
     using cleared_t = core::com::signal<void ()>;
 
     inline static const core::com::signals::key_t PUSHED  = "object_pushed";
@@ -65,17 +65,17 @@ public:
     DATA_API virtual void push_object(const SPTR(timeline::object)& _obj) = 0;
 
     /// Removes an object from the base
-    DATA_API virtual SPTR(timeline::object) pop_object(core::hires_clock::type _timestamp) = 0;
+    DATA_API virtual SPTR(timeline::object) pop_object(core::clock::type _timestamp) = 0;
 
     /// modify an object timestamp
     DATA_API virtual void modify_time(
-        core::hires_clock::type _timestamp,
-        core::hires_clock::type _new_timestamp
+        core::clock::type _timestamp,
+        core::clock::type _new_timestamp
     ) = 0;
 
     /// Change an object to the specified timestamp
     DATA_API virtual void set_object(
-        core::hires_clock::type _timestamp,
+        core::clock::type _timestamp,
         const SPTR(timeline::object)& _obj
     ) = 0;
 
@@ -84,7 +84,7 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the base. You must call pushObject() to register it.
      */
-    DATA_API virtual SPTR(timeline::object) create_object(core::hires_clock::type _timestamp) = 0;
+    DATA_API virtual SPTR(timeline::object) create_object(core::clock::type _timestamp) = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
@@ -92,12 +92,12 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     DATA_API virtual CSPTR(timeline::object) get_closest_object(
-        core::hires_clock::type _timestamp,
+        core::clock::type _timestamp,
         direction_t _direction = both
     ) const = 0;
 
     /// Return the object with the specified timestamp
-    DATA_API virtual CSPTR(timeline::object) get_object(core::hires_clock::type _timestamp) const = 0;
+    DATA_API virtual CSPTR(timeline::object) get_object(core::clock::type _timestamp) const = 0;
 
     /// Equality comparison operators
     /// @{

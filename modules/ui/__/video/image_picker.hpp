@@ -25,7 +25,7 @@
 #include "modules/ui/__/config.hpp"
 
 #include <core/base.hpp>
-#include <core/hires_clock.hpp>
+#include <core/clock.hpp>
 #include <core/tools/id.hpp>
 
 #include <data/camera.hpp>

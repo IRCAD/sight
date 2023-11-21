@@ -43,7 +43,7 @@ namespace sight::module::sync
  * Once synchronized, the timeline data are pushed in output variables, which are associated through the configuration.
  *
  * @section Signals Signals
- * - \b synchronization_done(core::hires_clock::type): Emitted when a synchronization has been done, and forward
+ * - \b synchronization_done(core::clock::type): Emitted when a synchronization has been done, and forward
  * the synchronization timestamp.
  * - \b synchronization_skipped(): Emitted when the synchronization is not done, either because the timelines are all
  * empty, or because the synchronization timestamp has not changed.
@@ -144,7 +144,7 @@ public:
         static inline const key_t MATRIX_SYNCHRONIZED_SIG     = "matrix_synchronized";
         static inline const key_t MATRIX_UNSYNCHRONIZED_SIG   = "matrix_unsynchronized";
 
-        using timestamp_signal_t = sight::core::com::signal<void (core::hires_clock::type _timestamp)>;
+        using timestamp_signal_t = sight::core::com::signal<void (core::clock::type _timestamp)>;
         using void_signal_t      = sight::core::com::signal<void ()>;
         using int_signal_t       = sight::core::com::signal<void (int)>;
     };
@@ -302,7 +302,7 @@ private:
      */
     void copy_frame_from_t_lto_output(
         std::size_t _frame_tl_index,
-        core::hires_clock::type _synchronization_timestamp
+        core::clock::type _synchronization_timestamp
     );
 
     /**
@@ -320,7 +320,7 @@ private:
      */
     void copy_matrix_from_t_lto_output(
         std::size_t _matrix_tl_index,
-        core::hires_clock::type _synchronization_timestamp
+        core::clock::type _synchronization_timestamp
     );
 
     /**
@@ -386,9 +386,9 @@ private:
     unsigned int m_time_step {15};
 
     /// Tolerance to take into account matrix
-    core::hires_clock::type m_tolerance {500.};
+    core::clock::type m_tolerance {500.};
 
-    core::hires_clock::type m_last_time_stamp {0.};
+    core::clock::type m_last_time_stamp {0.};
 
     /// Contains the input video timelines.
     data::ptr_vector<data::frame_tl, data::access::in> m_frame_t_ls {this, config_key::FRAMETL_INPUT, true};

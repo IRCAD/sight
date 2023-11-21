@@ -88,7 +88,7 @@ protected:
 private:
 
     /// SLOT: adds the current frame in the video
-    void save_frame(core::hires_clock::type _timestamp);
+    void save_frame(core::clock::type _timestamp);
 
     /// saves current buffer with OpenCV video writer (m_writer must be initialized)
     void write_buffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t) _buffer);
@@ -115,7 +115,7 @@ private:
     bool m_is_recording {false};
 
     /// container used to store first video frame timestamps to compute framerate of the video stream
-    std::vector<core::hires_clock::type> m_timestamps;
+    std::vector<core::clock::type> m_timestamps;
 
     /// Extension selected in file dialog
     std::string m_selected_extension;

@@ -81,7 +81,7 @@ void marker_to_point::add_point()
 
     data::matrix4::sptr matrix_3d = std::make_shared<data::matrix4>();
 
-    core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
+    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
     CSPTR(data::matrix_tl::buffer_t) buffer = matrix_tl->get_closest_buffer(current_timestamp);
     SIGHT_ASSERT("Buffer not found with timestamp " << current_timestamp, buffer);
 

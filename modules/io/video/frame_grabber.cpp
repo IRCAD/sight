@@ -572,8 +572,7 @@ void frame_grabber::grab_video()
 
     if(m_video_capture.isOpened())
     {
-        const double timestamp = static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>
-                                                         (std::chrono::system_clock::now().time_since_epoch()).count());
+        const double timestamp = core::clock::get_time_in_milli_sec();
 
         const bool is_grabbed = m_video_capture.grab();
 
@@ -703,7 +702,7 @@ void frame_grabber::grab_video()
 
 void frame_grabber::grab_image()
 {
-    const double t0 = core::hires_clock::get_time_in_milli_sec();
+    const double t0 = core::clock::get_time_in_milli_sec();
 
     core::mt::scoped_lock lock(m_mutex);
 
@@ -715,13 +714,13 @@ void frame_grabber::grab_image()
 
         const std::filesystem::path image_path = m_image_to_read[m_image_count];
 
-        const cv::Mat image               = cv::imread(image_path.string(), cv::IMREAD_UNCHANGED);
-        core::hires_clock::type timestamp = NAN;
+        const cv::Mat image         = cv::imread(image_path.string(), cv::IMREAD_UNCHANGED);
+        core::clock::type timestamp = NAN;
 
         //create a new timestamp
         if(m_create_new_ts)
         {
-            timestamp = core::hires_clock::get_time_in_milli_sec();
+            timestamp = core::clock::get_time_in_milli_sec();
         }
         //use the image timestamp
         else
@@ -769,7 +768,7 @@ void frame_grabber::grab_image()
                 frame_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
             sig->async_emit(timestamp);
 
-            const double t1           = core::hires_clock::get_time_in_milli_sec();
+            const double t1           = core::clock::get_time_in_milli_sec();
             const double elapsed_time = t1 - t0;
 
             if(m_use_timelapse)

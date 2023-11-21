@@ -23,7 +23,7 @@
 #pragma once
 
 #include "core/base.hpp"
-#include "core/hires_clock.hpp"
+#include "core/clock.hpp"
 
 namespace sight::core
 {
@@ -41,7 +41,7 @@ public:
     /**
      * @brief Type used in logical typestamp.
      */
-    using time_stamp_type = core::hires_clock::type;
+    using time_stamp_type = core::clock::type;
 
     /**
      * @brief Update the timestamp to the current EPOCH time
@@ -112,7 +112,7 @@ public:
      */
     CORE_API bool period_expired() const
     {
-        return (core::hires_clock::get_time_in_milli_sec() - this->m_modified_time) > m_life_period;
+        return (core::clock::get_time_in_milli_sec() - this->m_modified_time) > m_life_period;
     }
 
 private:

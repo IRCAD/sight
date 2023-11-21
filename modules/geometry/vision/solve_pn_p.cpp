@@ -34,7 +34,7 @@ namespace sight::module::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-void solve_pn_p::compute_registration(core::hires_clock::type /*timestamp*/)
+void solve_pn_p::compute_registration(core::clock::type /*timestamp*/)
 {
     const auto camera = m_calibration.lock();
 

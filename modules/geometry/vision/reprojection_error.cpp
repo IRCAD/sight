@@ -124,7 +124,7 @@ void reprojection_error::stopping()
 
 //-----------------------------------------------------------------------------
 
-void reprojection_error::compute(core::hires_clock::type _timestamp)
+void reprojection_error::compute(core::clock::type _timestamp)
 {
     if(!this->started())
     {
@@ -247,7 +247,7 @@ void reprojection_error::updating()
     // When working with a frame (newest design), we do not rely on the timetamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = core::hires_clock::get_time_in_milli_sec();
+    auto timestamp = core::clock::get_time_in_milli_sec();
     this->compute(timestamp);
 }
 

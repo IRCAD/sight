@@ -71,7 +71,7 @@ void raw_buffer_tl::deep_copy(const object::csptr& _source, const std::unique_pt
 //------------------------------------------------------------------------------
 
 CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_closest_buffer(
-    core::hires_clock::type _timestamp,
+    core::clock::type _timestamp,
     timeline::direction_t _direction
 ) const
 {
@@ -81,7 +81,7 @@ CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_closest_buffer(
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_buffer(core::hires_clock::type _timestamp) const
+CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_buffer(core::clock::type _timestamp) const
 {
     CSPTR(data::timeline::object) buffer = this->get_object(_timestamp);
     return std::dynamic_pointer_cast<const data::timeline::raw_buffer>(buffer);
@@ -96,14 +96,14 @@ void raw_buffer_tl::init_pool_size(std::size_t _size)
 
 //------------------------------------------------------------------------------
 
-SPTR(data::timeline::object) raw_buffer_tl::create_object(core::hires_clock::type _timestamp)
+SPTR(data::timeline::object) raw_buffer_tl::create_object(core::clock::type _timestamp)
 {
     return this->create_buffer(_timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(data::timeline::raw_buffer) raw_buffer_tl::create_buffer(core::hires_clock::type _timestamp)
+SPTR(data::timeline::raw_buffer) raw_buffer_tl::create_buffer(core::clock::type _timestamp)
 {
     return std::make_shared<data::timeline::raw_buffer>(
         _timestamp,

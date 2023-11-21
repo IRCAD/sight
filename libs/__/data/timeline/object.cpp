@@ -27,7 +27,7 @@ namespace sight::data::timeline
 
 //-----------------------------------------------------------------------------
 
-object::object(core::hires_clock::type _timestamp) :
+object::object(core::clock::type _timestamp) :
     m_timestamp(_timestamp)
 {
 }

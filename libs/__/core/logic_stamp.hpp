@@ -23,7 +23,7 @@
 #pragma once
 
 #include "core/base.hpp"
-#include "core/hires_clock.hpp"
+#include "core/clock.hpp"
 
 namespace sight::core
 {

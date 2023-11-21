@@ -44,8 +44,8 @@ namespace sight::module::io::matrix
  * @section Slots Slots
  * - \b start_record() : start recording
  * - \b stop_record() : stop recording
- * - \b write(core::hires_clock::type) : write matrix in a csv file
- * - \b saveMatrix(core::hires_clock::type) : save current matrices
+ * - \b write(core::clock::type) : write matrix in a csv file
+ * - \b saveMatrix(core::clock::type) : save current matrices
  *
  * @section XML XML Configuration
  *
@@ -88,10 +88,10 @@ public:
     MODULE_IO_MATRIX_API sight::io::service::path_type_t get_path_type() const override;
 
     /// SLOT: Save current matrices.
-    MODULE_IO_MATRIX_API void save_matrix(core::hires_clock::type _timestamp);
+    MODULE_IO_MATRIX_API void save_matrix(core::clock::type _timestamp);
 
     /// SLOT: Write matrices in csv file
-    MODULE_IO_MATRIX_API void write(core::hires_clock::type _timestamp);
+    MODULE_IO_MATRIX_API void write(core::clock::type _timestamp);
 
     /// SLOT: Start recording
     MODULE_IO_MATRIX_API void start_record();

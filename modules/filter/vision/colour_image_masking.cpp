@@ -182,7 +182,7 @@ void colour_image_masking::updating()
         core::com::connection::blocker blocker(sig->get_connection(slot(service::slots::UPDATE)));
 
         // Get the timestamp from the latest video frame
-        core::hires_clock::type current_timestamp = video_tl->get_newer_timestamp();
+        core::clock::type current_timestamp = video_tl->get_newer_timestamp();
 
         // Get image from the video timeline
         CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
@@ -195,7 +195,7 @@ void colour_image_masking::updating()
 
         const std::uint8_t* frame_buff_out_video = &video_buffer->get_element(0);
 
-        core::hires_clock::type video_timestamp = video_buffer->get_timestamp();
+        core::clock::type video_timestamp = video_buffer->get_timestamp();
         if(video_timestamp <= m_last_video_timestamp)
         {
             SIGHT_WARN(
@@ -244,7 +244,7 @@ void colour_image_masking::set_background()
     const auto mask     = m_mask.lock();
     const auto video_tl = m_video_tl.lock();
 
-    core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
+    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
     CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {
@@ -304,7 +304,7 @@ void colour_image_masking::set_foreground()
 {
     const auto video_tl = m_video_tl.lock();
 
-    core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
+    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
     CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {

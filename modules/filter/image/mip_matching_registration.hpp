@@ -107,7 +107,7 @@ protected:
     /**
      * @brief Compute the registration by calling the `update` slot. The timestamp parameter is discarded.
      */
-    MODULE_FILTER_IMAGE_API void compute_registration(core::hires_clock::type _timestamp) override;
+    MODULE_FILTER_IMAGE_API void compute_registration(core::clock::type _timestamp) override;
 
 private:
 

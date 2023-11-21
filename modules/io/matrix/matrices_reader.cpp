@@ -416,16 +416,16 @@ void matrices_reader::read_matrices()
 {
     if(!m_is_paused && m_ts_matrices_count < m_ts_matrices.size())
     {
-        const auto t_start   = core::hires_clock::get_time_in_milli_sec();
+        const auto t_start   = core::clock::get_time_in_milli_sec();
         const auto matrix_tl = m_matrix_tl.lock();
 
         time_stamped_matrices current_matrices = m_ts_matrices[m_ts_matrices_count];
 
-        core::hires_clock::type timestamp = NAN;
+        core::clock::type timestamp = NAN;
 
         if(m_create_new_ts)
         {
-            timestamp = core::hires_clock::get_time_in_milli_sec();
+            timestamp = core::clock::get_time_in_milli_sec();
         }
         else
         {
@@ -445,7 +445,7 @@ void matrices_reader::read_matrices()
 
         if(m_use_timelapse && (m_ts_matrices_count + m_step) < m_ts_matrices.size())
         {
-            const auto elapsed_time          = core::hires_clock::get_time_in_milli_sec() - t_start;
+            const auto elapsed_time          = core::clock::get_time_in_milli_sec() - t_start;
             const std::size_t current_matrix = m_ts_matrices_count;
             const double current_time        = m_ts_matrices[current_matrix].timestamp + elapsed_time;
             double next_duration             = m_ts_matrices[m_ts_matrices_count + m_step].timestamp - current_time;

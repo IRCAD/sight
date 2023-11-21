@@ -24,9 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <core/clock.hpp>
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
-#include <core/hires_clock.hpp>
 
 #include <data/frame_tl.hpp>
 #include <data/vector.hpp>
@@ -45,7 +45,7 @@ namespace sight::module::ui::qt::calibration
  * @brief   This editor allows to add images to a data::vector from a data::frame_tl.
  *
  * @section Slots Slots
- * - \b add(core::hires_clock::type): .
+ * - \b add(core::clock::type): .
  * - \b remove(): .
  * - \b reset(): .
 
@@ -82,7 +82,7 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::slots::key_t ADD_SLOT;
-    using add_slot_t = core::com::slot<void (core::hires_clock::type)>;
+    using add_slot_t = core::com::slot<void (core::clock::type)>;
 
     MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_SLOT;
     using remove_slot_t = core::com::slot<void ()>;
@@ -114,7 +114,7 @@ protected:
     MODULE_UI_QT_API void reset();
 
     /// Slot: to add an image in the vector.
-    MODULE_UI_QT_API void add(core::hires_clock::type _timestamp);
+    MODULE_UI_QT_API void add(core::clock::type _timestamp);
 
 private:
 

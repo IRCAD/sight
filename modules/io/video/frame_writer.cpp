@@ -136,13 +136,13 @@ void frame_writer::stopping()
 
 void frame_writer::updating()
 {
-    core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
+    core::clock::type timestamp = core::clock::get_time_in_milli_sec();
     this->save_frame(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void frame_writer::save_frame(core::hires_clock::type _timestamp)
+void frame_writer::save_frame(core::clock::type _timestamp)
 {
     this->start_record();
     this->write(_timestamp);
@@ -151,7 +151,7 @@ void frame_writer::save_frame(core::hires_clock::type _timestamp)
 
 //------------------------------------------------------------------------------
 
-void frame_writer::write(core::hires_clock::type _timestamp)
+void frame_writer::write(core::clock::type _timestamp)
 {
     if(m_is_recording)
     {

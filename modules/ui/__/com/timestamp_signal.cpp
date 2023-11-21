@@ -84,13 +84,11 @@ void timestamp_signal::updating()
     double ts = 0.0;
     if(m_use_system_clock)
     {
-        const auto now = std::chrono::system_clock::now();
-        const auto res = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
-        ts = static_cast<double>(res);
+        ts = core::clock::get_time_in_sec();
     }
     else
     {
-        const auto now = std::chrono::high_resolution_clock::now();
+        const auto now = std::chrono::steady_clock::now();
         const auto res = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
         ts = static_cast<double>(res);
     }

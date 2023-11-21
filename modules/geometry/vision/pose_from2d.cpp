@@ -123,13 +123,13 @@ void pose_from2d::updating()
     // When working with a frame (newest design), we do not rely on the timetamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = core::hires_clock::get_time_in_milli_sec();
+    auto timestamp = core::clock::get_time_in_milli_sec();
     this->compute_registration(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void pose_from2d::compute_registration(core::hires_clock::type /*timestamp*/)
+void pose_from2d::compute_registration(core::clock::type /*timestamp*/)
 {
     SIGHT_WARN_IF("Invoking computeRegistration while service is STOPPED", this->stopped());
 

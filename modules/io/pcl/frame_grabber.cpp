@@ -271,7 +271,7 @@ void frame_grabber::grabImage()
             return;
         }
 
-        const core::hires_clock::type timestamp = std::stod(timestampStr);
+        const core::clock::type timestamp = std::stod(timestampStr);
 
         const std::size_t width  = static_cast<std::size_t>(inputCloud.width);
         const std::size_t height = static_cast<std::size_t>(inputCloud.height);

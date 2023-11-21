@@ -23,7 +23,7 @@
 #pragma once
 #include "modules/geometry/vision/config.hpp"
 
-#include <core/hires_clock.hpp>
+#include <core/clock.hpp>
 #include <core/mt/types.hpp>
 
 #include <data/camera.hpp>
@@ -43,7 +43,7 @@ namespace sight::module::geometry::vision
  * @brief   pose_from2d Class used to compute the 3d pose of a object using 2d points.
  *
  * @section Slots Slots
- * - \b compute_registration(core::hires_clock::type timestamp) : computes the registration.
+ * - \b compute_registration(core::clock::type timestamp) : computes the registration.
  *
  * @section XML XML Configuration
  *
@@ -115,7 +115,7 @@ protected:
     MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Register matrix slot
-    void compute_registration(core::hires_clock::type _timestamp) override;
+    void compute_registration(core::clock::type _timestamp) override;
 
 private:
 
@@ -164,7 +164,7 @@ private:
     cv::Matx44f camera_pose_from_mono(const marker& _marker_cam1) const;
 
     /// Last timestamp
-    core::hires_clock::type m_last_timestamp {0};
+    core::clock::type m_last_timestamp {0};
 
     /// Marker pattern width.
     double m_pattern_width {80};

@@ -118,7 +118,7 @@ void buffer_tl::set_object(timestamp_t _timestamp, const SPTR(data::timeline::ob
 //------------------------------------------------------------------------------
 
 CSPTR(data::timeline::object) buffer_tl::get_closest_object(
-    core::hires_clock::type _timestamp,
+    core::clock::type _timestamp,
     timeline::direction_t _direction
 ) const
 {
@@ -142,7 +142,7 @@ CSPTR(data::timeline::object) buffer_tl::get_closest_object(
         }
         else
         {
-            core::hires_clock::type next_ts = iter->first;
+            core::clock::type next_ts = iter->first;
             SPTR(data::timeline::buffer) next_obj = iter->second;
 
             switch(_direction)
@@ -153,7 +153,7 @@ CSPTR(data::timeline::object) buffer_tl::get_closest_object(
 
                 case timeline::both:
                 {
-                    core::hires_clock::type previous_ts = (--iter)->first;
+                    core::clock::type previous_ts = (--iter)->first;
                     SPTR(data::timeline::buffer) previous_obj = iter->second;
                     result                                    =
                         ((next_ts - _timestamp) > (_timestamp - previous_ts)) ? previous_obj : next_obj;
@@ -180,7 +180,7 @@ CSPTR(data::timeline::object) buffer_tl::get_closest_object(
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::object) buffer_tl::get_object(core::hires_clock::type _timestamp) const
+CSPTR(data::timeline::object) buffer_tl::get_object(core::clock::type _timestamp) const
 {
     SPTR(data::timeline::buffer) result;
     auto iter = m_timeline.find(_timestamp);
@@ -214,9 +214,9 @@ CSPTR(data::timeline::object) buffer_tl::get_newer_object() const
 
 //------------------------------------------------------------------------------
 
-core::hires_clock::type buffer_tl::get_newer_timestamp() const
+core::clock::type buffer_tl::get_newer_timestamp() const
 {
-    core::hires_clock::type result = 0;
+    core::clock::type result = 0;
 
     if(!m_timeline.empty())
     {

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,40 +21,24 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core
+namespace sight::core::ut
 {
 
-/**
- * @brief This namespace provides several function that returns a hi
- * resolution EPOCH time.
- *
- * @deprecated This class is deprecated, use std::chrono instead.
- */
-namespace hires_clock
+class timer_test : public CPPUNIT_NS::TestFixture
 {
+CPPUNIT_TEST_SUITE(timer_test);
+CPPUNIT_TEST(get_time_test);
+CPPUNIT_TEST_SUITE_END();
 
-/**
- * @brief Type returned by hires_clock Functions
- */
-using type = double;
+public:
 
-/**
- * @return EPOCH time in microseconds
- */
-CORE_API type get_time_in_micro_sec();
+    void setUp() override;
 
-/**
- * @return EPOCH time in milliseconds
- */
-CORE_API type get_time_in_milli_sec();
+    void tearDown() override;
 
-/**
- * @return EPOCH time in seconds
- */
-CORE_API type get_time_in_sec();
+    static void get_time_test();
+};
 
-} //namespace hires_clock
-
-} //namespace sight::core
+} // namespace sight::core::ut

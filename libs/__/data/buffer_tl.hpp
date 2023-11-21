@@ -43,7 +43,7 @@ public:
 
     SIGHT_DECLARE_CLASS(buffer_tl, timeline::base);
 
-    using timestamp_t   = core::hires_clock::type;
+    using timestamp_t   = core::clock::type;
     using timeline_t    = std::map<timestamp_t, std::shared_ptr<timeline::buffer> >;
     using buffer_pair_t = std::pair<timestamp_t, std::shared_ptr<timeline::buffer> >;
     using pool_t        = boost::pool<>;
@@ -60,12 +60,12 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     DATA_API CSPTR(timeline::object) get_closest_object(
-        core::hires_clock::type _timestamp,
+        core::clock::type _timestamp,
         timeline::direction_t _direction = timeline::both
     ) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
-    DATA_API CSPTR(timeline::object) get_object(core::hires_clock::type _timestamp)
+    DATA_API CSPTR(timeline::object) get_object(core::clock::type _timestamp)
     const override;
 
     /// Clear the timeline
@@ -87,7 +87,7 @@ public:
     DATA_API CSPTR(timeline::object) get_newer_object() const;
 
     /// Return the last timestamp in the timeline
-    DATA_API core::hires_clock::type get_newer_timestamp() const;
+    DATA_API core::clock::type get_newer_timestamp() const;
 
     /// Change the maximum size of the timeline
     void set_maximum_size(std::size_t _maximum_size)

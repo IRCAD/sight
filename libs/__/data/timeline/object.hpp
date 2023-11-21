@@ -24,7 +24,7 @@
 
 #include "data/config.hpp"
 
-#include <core/hires_clock.hpp>
+#include <core/clock.hpp>
 #include <core/mt/types.hpp>
 
 #include <data/object.hpp>
@@ -41,7 +41,7 @@ class DATA_CLASS_API object
 public:
 
     /// Constructor
-    DATA_API object(core::hires_clock::type _timestamp = 0);
+    DATA_API object(core::clock::type _timestamp = 0);
 
     /// Destructor
     DATA_API virtual ~object();
@@ -50,7 +50,7 @@ public:
     DATA_API virtual void deep_copy(const object& _source);
 
     /// Return timestamp
-    [[nodiscard]] core::hires_clock::type get_timestamp() const
+    [[nodiscard]] core::clock::type get_timestamp() const
     {
         return m_timestamp;
     }
@@ -64,7 +64,7 @@ public:
 protected:
 
     /// Timestamp
-    core::hires_clock::type m_timestamp;
+    core::clock::type m_timestamp;
 };
 
 } // namespace sight::data::timeline

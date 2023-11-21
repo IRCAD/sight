@@ -28,7 +28,7 @@ namespace sight::data::timeline
 //-----------------------------------------------------------------------------
 
 raw_buffer::raw_buffer(
-    core::hires_clock::type _timestamp,
+    core::clock::type _timestamp,
     buffer_data_t _buffer,
     std::size_t _size,
     deleter_t _d

@@ -42,7 +42,7 @@ namespace sight::module::filter::point
  * - \b error_computed(double): emitted when registration error is computed.
  * @section Slots Slots
  * - \b changeMode(std::string): called when registration mode is changed.
- * - \b compute_registration(core::hires_clock::type timestamp): computes the registration.
+ * - \b compute_registration(core::clock::type timestamp): computes the registration.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
@@ -91,7 +91,7 @@ public:
 protected:
 
     /// Register a point list slot
-    MODULE_FILTER_POINT_API void compute_registration(core::hires_clock::type _timestamp) override;
+    MODULE_FILTER_POINT_API void compute_registration(core::clock::type _timestamp) override;
 
     /// Registration Mode (default: RIGID)
     enum registration_mode_t

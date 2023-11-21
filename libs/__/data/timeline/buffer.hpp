@@ -40,10 +40,10 @@ public:
 
     /// Constructor
     DATA_API buffer(
-        core::hires_clock::type _timestamp = 0,
-        buffer_data_t _buffer              = nullptr,
-        std::size_t _size                  = 0,
-        deleter_t _d                       = nullptr
+        core::clock::type _timestamp = 0,
+        buffer_data_t _buffer        = nullptr,
+        std::size_t _size            = 0,
+        deleter_t _d                 = nullptr
     );
 
     /// Destructor

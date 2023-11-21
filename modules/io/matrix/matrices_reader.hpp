@@ -110,7 +110,7 @@ public:
     struct time_stamped_matrices
     {
         ///timestamp
-        core::hires_clock::type timestamp {};
+        core::clock::type timestamp {};
         ///vector of matrices (std::array<float, 16>).
         std::vector<std::array<float, 16> > matrices;
     };

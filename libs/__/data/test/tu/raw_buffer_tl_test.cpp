@@ -56,8 +56,8 @@ void raw_buffer_tl_test::push_test()
     auto timeline = std::make_shared<data::raw_buffer_tl>();
     timeline->init_pool_size(3 * sizeof(float));
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2 = time1 + 42;
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
+    core::clock::type time2 = time1 + 42;
 
     std::array values1 = {1.0F, 5.2F, 7.5F};
     std::array values2 = {8.0F, 9.0F, 66.F};
@@ -88,7 +88,7 @@ void raw_buffer_tl_test::push_test()
     CSPTR(data::timeline::object) data_pushed2_bis = timeline->get_newer_object();
     CPPUNIT_ASSERT(data2 == data_pushed2_bis);
 
-    core::hires_clock::type time2_pushed = timeline->get_newer_timestamp();
+    core::clock::type time2_pushed = timeline->get_newer_timestamp();
     CPPUNIT_ASSERT_EQUAL(time2, time2_pushed);
 
     timeline->clear_timeline();
@@ -305,8 +305,8 @@ void raw_buffer_tl_test::copy_test()
     auto timeline = std::make_shared<data::raw_buffer_tl>();
     timeline->init_pool_size(3 * sizeof(float));
 
-    core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
-    core::hires_clock::type time2 = time1 + 42;
+    core::clock::type time1 = core::clock::get_time_in_milli_sec();
+    core::clock::type time2 = time1 + 42;
 
     std::array values1 = {1.0F, 5.2F, 7.5F};
     std::array values2 = {8.0F, 9.0F, 66.F};

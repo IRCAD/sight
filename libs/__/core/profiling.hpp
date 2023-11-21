@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "core/hires_timer.hpp"
 #include "core/spy_log.hpp"
+#include "core/timer.hpp"
 
 // Define FW_PROFILING_DISABLED before including this header if you need to disable profiling output
 
@@ -51,7 +51,7 @@ public:
     }
 
     /// Timer
-    core::hires_timer m_timer;
+    core::timer m_timer;
     /// Timer label
     const char* m_label;
 };
@@ -79,7 +79,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    bool tick(core::hires_clock::type _time)
+    bool tick(core::clock::type _time)
     {
         m_average = (m_average * m_count + _time) / (m_count + 1);
         ++m_count;
@@ -96,7 +96,7 @@ public:
     }
 
     /// Timer
-    core::hires_timer m_timer;
+    core::timer m_timer;
     /// Timer label
     double m_interval;
     /// Actual elapsed time average
@@ -134,7 +134,7 @@ public:
     }
 
     /// Timer
-    core::hires_timer m_timer;
+    core::timer m_timer;
     /// Timer label
     const char* m_label;
     /// Timer used to get the elapsed time between two profiling scopes
