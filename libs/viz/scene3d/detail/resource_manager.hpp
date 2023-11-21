@@ -173,6 +173,7 @@ void resource_manager<OBJECT, RESOURCE, LOADER>::release(Ogre::SharedPtr<RESOURC
     if(--it->second.use_count == 0)
     {
         m_registry.erase(it);
+        _resource->unload();
         resource_manager_traits_t<RESOURCE>::getSingleton().remove(_resource);
     }
 }
