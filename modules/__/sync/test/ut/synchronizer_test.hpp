@@ -48,7 +48,7 @@ namespace sight::module::sync::ut
                 <key uid="matrixTL1" />
                 <key uid="matrixTL2" />
             </in>
-            <inout group="matrices">
+            <inout group="matrix">
                 <key uid="matrix0" index="1" sendStatus="true" >
                 <key uid="matrix1" tl="0" index="0" />
                 <key uid="matrix2" tl="1" index="0" sendStatus="false"/>

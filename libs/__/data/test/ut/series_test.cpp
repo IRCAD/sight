@@ -2337,7 +2337,10 @@ void series_test::image_transform_patient_test()
         series->set_sop_keyword(data::dicom::sop::Keyword::CTImageStorage);
 
         series->set_image_transform_patient(matrix);
-        CPPUNIT_ASSERT(matrix == series->get_image_transform_patient());
+        CPPUNIT_ASSERT(
+            series->get_image_transform_patient().has_value()
+            && matrix == *(series->get_image_transform_patient())
+        );
     }
 }
 

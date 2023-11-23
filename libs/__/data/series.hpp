@@ -327,7 +327,11 @@ public:
         std::size_t _instance = 0
     );
 
-    DATA_API sight::data::matrix4 get_image_transform_patient(std::size_t _instance                         = 0) const;
+    DATA_API std::optional<sight::data::matrix4> get_image_transform_patient(std::size_t _instance = 0) const;
+
+    // Dicom only stores x and y axis for the transformation, so we must make sure that the cross has the correct
+    // orientation
+    DATA_API static bool check_image_transform_patient_validity(const sight::data::matrix4& _transform);
     DATA_API void set_image_transform_patient(const sight::data::matrix4& _transform, std::size_t _instance = 0);
 
     DATA_API std::optional<double> get_slice_thickness() const noexcept;

@@ -123,7 +123,7 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
 {
     // Pre Condition
     SIGHT_ASSERT(
-        "Sorry, itk image dimension not correspond to fwData image",
+        "The itk image dimensions do not correspond to the input image",
         _image_data->num_dimensions() == ITKIMAGE::ImageDimension
     );
 

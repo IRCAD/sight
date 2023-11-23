@@ -55,6 +55,12 @@ public:
     using token_container_t = std::vector<std::string>;
 
     /**
+     * @brief Returns whether end of file has been reached or not.
+     *
+     */
+    IO_API bool eof() const;
+
+    /**
      * @brief Returns tokens on next line to read, using comma separator
      *
      * Other separators can be used

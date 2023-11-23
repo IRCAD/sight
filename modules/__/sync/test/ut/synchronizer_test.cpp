@@ -899,7 +899,7 @@ void synchronizer_test::reset_and_loop_synchronisation()
 //     <in group="matrixTL">
 //         <key uid="matrixTL1" />
 //     </in>
-//     <inout group="matrices">
+//     <inout group="matrix">
 //         <key uid="matrix0" tl="0" index="1" sendStatus="true" >
 //         <key uid="matrix1" tl="0" index="0" />
 //     </inout>

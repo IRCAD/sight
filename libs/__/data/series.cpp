@@ -2539,7 +2539,7 @@ std::vector<double> series::get_image_position_patient(std::size_t _instance) co
 {
     // Assert if the SOP class is not set
     SIGHT_ASSERT(
-        "SOP class is not set, please call series::setSOPClassUID before calling series::getImagePositionPatient",
+        "SOP class is not set, please call series::set_sop_class_uid before calling series::get_image_position_patient",
         get_sop_keyword() != dicom::sop::Keyword::INVALID
     );
 
@@ -2576,7 +2576,7 @@ void series::set_image_position_patient(const std::vector<double>& _image_positi
 {
     // Assert if the SOP class is not set
     SIGHT_ASSERT(
-        "SOP class is not set, please call series::setSOPClassUID before calling series::setImagePositionPatient",
+        "SOP class is not set, please call series::set_sop_class_uid before calling series::set_image_position_patient",
         get_sop_keyword() != dicom::sop::Keyword::INVALID
     );
 
@@ -2613,7 +2613,7 @@ void series::set_image_position_patient(const std::vector<double>& _image_positi
 std::vector<double> series::get_image_orientation_patient(std::size_t _instance) const
 {
     SIGHT_ASSERT(
-        "SOP class is not set, please call series::setSOPClassUID before calling series::getImageOrientationPatient",
+        "SOP class is not set, please call series::set_sop_class_uid before calling series::get_image_orientation_patient",
         get_sop_keyword() != dicom::sop::Keyword::INVALID
     );
 
@@ -2649,7 +2649,7 @@ std::vector<double> series::get_image_orientation_patient(std::size_t _instance)
 void series::set_image_orientation_patient(const std::vector<double>& _image_orientation_patient, std::size_t _instance)
 {
     SIGHT_ASSERT(
-        "SOP class is not set, please call series::setSOPClassUID before calling series::setImageOrientationPatient",
+        "SOP class is not set, please call series::set_sop_class_uid before calling series::set_image_orientation_patient",
         get_sop_keyword() != dicom::sop::Keyword::INVALID
     );
 
@@ -3020,24 +3020,39 @@ void series::set_frame_label(const std::optional<std::string>& _frame_label, std
 
 //------------------------------------------------------------------------------
 
-sight::data::matrix4 series::get_image_transform_patient(std::size_t _instance) const
+std::optional<sight::data::matrix4> series::get_image_transform_patient(std::size_t _instance) const
 {
-    const auto position = this->get_image_position_patient(_instance);
-    SIGHT_ASSERT("Unexpected orientation vector size", position.size() == 3);
-
+    const auto position    = this->get_image_position_patient(_instance);
     const auto orientation = this->get_image_orientation_patient(_instance);
-    SIGHT_ASSERT("Unexpected orientation vector size", orientation.size() == 6);
+
+    if(position.size() != 3 || orientation.size() != 6)
+    {
+        return std::nullopt;
+    }
 
     const glm::dvec3 x(orientation[0], orientation[1], orientation[2]);
     const glm::dvec3 y(orientation[3], orientation[4], orientation[5]);
     const glm::dvec3 z = glm::cross(x, y);
 
-    return {
-        orientation[0], orientation[3], z[0], position[0],
-        orientation[1], orientation[4], z[1], position[1],
-        orientation[2], orientation[5], z[2], position[2],
-        0., 0., 0., 1.
-    };
+    return std::make_optional<sight::data::matrix4>(
+        {
+            orientation[0], orientation[3], z[0], position[0],
+            orientation[1], orientation[4], z[1], position[1],
+            orientation[2], orientation[5], z[2], position[2],
+            0., 0., 0., 1.
+        });
+}
+
+//------------------------------------------------------------------------------
+
+bool series::check_image_transform_patient_validity(const sight::data::matrix4& _transform)
+{
+    [[maybe_unused]] const glm::dvec3 x(_transform[0], _transform[4], _transform[8]);
+    [[maybe_unused]] const glm::dvec3 y(_transform[1], _transform[5], _transform[9]);
+    [[maybe_unused]] const glm::dvec3 z(_transform[2], _transform[6], _transform[10]);
+    [[maybe_unused]] const glm::dvec3 computed_z = glm::cross(x, y);
+
+    return glm::all(glm::epsilonEqual(computed_z, z, 1e-2));
 }
 
 //------------------------------------------------------------------------------
@@ -3046,11 +3061,7 @@ void series::set_image_transform_patient(const sight::data::matrix4& _transform,
 {
     this->set_image_position_patient({_transform[3], _transform[7], _transform[11]}, _instance);
 
-    [[maybe_unused]] const glm::dvec3 x(_transform[0], _transform[4], _transform[8]);
-    [[maybe_unused]] const glm::dvec3 y(_transform[1], _transform[5], _transform[9]);
-    [[maybe_unused]] const glm::dvec3 z(_transform[2], _transform[6], _transform[10]);
-    [[maybe_unused]] const glm::dvec3 computed_z = glm::cross(x, y);
-    SIGHT_ASSERT("Unexpected orientation vector size", glm::all(glm::epsilonEqual(computed_z, z, 1e-2)));
+    SIGHT_ASSERT("Unexpected orientation vector size", series::check_image_transform_patient_validity(_transform));
 
     this->set_image_orientation_patient(
         {_transform[0], _transform[4], _transform[8], _transform[1], _transform[5], _transform[9]},

@@ -56,6 +56,13 @@ using tokenizer_t      = boost::tokenizer<char_separator_t>;
 
 //------------------------------------------------------------------------------
 
+bool csv_reader::eof() const
+{
+    return m_stream.eof();
+}
+
+//------------------------------------------------------------------------------
+
 csv_reader::token_container_t csv_reader::get_line(const std::string& _separator)
 {
     std::string line;

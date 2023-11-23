@@ -39,7 +39,7 @@ Please find here some example of frame matrix synchronizer
         <key uid="matrixTL1" />
         <key uid="matrixTL2" delay="56" />
     </in>
-    <inout group="matrices">
+    <inout group="matrix">
         <key uid="matrix0" index="1" sendStatus="true" >
         <key uid="matrix1" />
         <key uid="matrix2" tl="1" index="0" sendStatus="false"/>
