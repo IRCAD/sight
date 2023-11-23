@@ -206,12 +206,6 @@ void grid::draw_grid(bool _existing_line)
     }
 
     m_line->end();
-
-    // Set the bounding box
-    Ogre::Vector3 bb_min(-half_size, 0.F, -half_size);
-    Ogre::Vector3 bb_max(half_size, 0.F, half_size);
-    Ogre::AxisAlignedBox box(bb_min, bb_max);
-    m_line->setBoundingBox(box);
 }
 
 //-----------------------------------------------------------------------------
