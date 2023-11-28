@@ -109,16 +109,6 @@ activity_requirement::activity_requirement(const config_t& _config) :
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << max_occurs << ")",
         min_occurs <= max_occurs
     );
-
-    const std::string& reset_string = _config.get<std::string>("<xmlattr>.reset", "false");
-    SIGHT_ASSERT("'reset' attribute must be 'true' or 'false'", reset_string == "true" || reset_string == "false");
-
-    reset = (reset_string == "true");
-
-    SIGHT_ASSERT(
-        "'Reset' option is only available if 'create' = 'true' or 'minOccurs' = '0'",
-        !reset || create || min_occurs == 0
-    );
 }
 
 //-----------------------------------------------------------------------------

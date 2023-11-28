@@ -93,11 +93,8 @@ protected:
      * @brief Reset all data created by activities (create="true", minOccurs="0") at index and beyond.
      *
      * This is used to clean activities when previous one changed their requirements.
-     *
-     * @param activity_set ActivitySet containing all the activities
-     * @param index the activity in index and all the following will be cleaned
      */
-    ACTIVITY_API void clean_requirements(std::size_t _index);
+    ACTIVITY_API void reset_requirements();
 
     /// List of the activity to create.
     std::vector<std::string> m_activity_ids;

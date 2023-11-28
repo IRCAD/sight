@@ -64,6 +64,7 @@ sequencer::sequencer() noexcept
     new_slot(slots::NEXT, &sequencer::next, this);
     new_slot(slots::PREVIOUS, &sequencer::previous, this);
     new_slot(slots::SEND_INFO, &sequencer::send_info, this);
+    new_slot(slots::RESET_REQUIREMENTS, &sequencer::reset_requirements, this);
     new_slot(slots::ENABLE_USER_WARNING, &sequencer::enable_user_warning, this);
     new_slot(slots::DISABLE_USER_WARNING, &sequencer::disable_user_warning, this);
     new_slot(slots::SET_USER_WARNING, &sequencer::set_user_warning, this);
@@ -513,9 +514,6 @@ void sequencer::validate_next()
 void sequencer::next()
 {
     const auto next_index = m_current_activity + 1;
-
-    // Reset requirements created by next activities
-    clean_requirements(std::size_t(next_index));
 
     go_to(next_index);
 }

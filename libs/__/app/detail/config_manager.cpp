@@ -629,7 +629,9 @@ void config_manager::create_objects(const core::runtime::config_t& _cfg_elem)
                     obj_parser->create_config(obj);
                 }
 
-                m_created_objects[id.first] = std::make_pair(obj, obj_parser);
+                // If there is no uid defined in the config, we use the one generated from get_id()
+                const auto real_id = id.second ? id.first : obj->get_id();
+                m_created_objects[real_id] = std::make_pair(obj, obj_parser);
             }
         }
     }

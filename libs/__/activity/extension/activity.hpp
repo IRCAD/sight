@@ -127,9 +127,6 @@ struct ACTIVITY_CLASS_API activity_requirement
     /// True if the data must be created if it is not present (only if minOccurs = 0 and maxOccurs = 1)
     bool create {};
 
-    /// True if data must be reset before activity launch (only if the data has been created by the activity)
-    bool reset {};
-
     /// Parameter key if the container == "composite"
     key_t keys;
 

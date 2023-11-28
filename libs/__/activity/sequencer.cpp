@@ -186,35 +186,33 @@ void sequencer::remove_last_activities(data::activity_set& _activity_set, std::s
 
 //------------------------------------------------------------------------------
 
-void sequencer::clean_requirements(std::size_t _index)
+void sequencer::reset_requirements()
 {
-    // For all registered activities at index and after
-    for(auto i = _index, end = m_activity_ids.size() ; i < end ; ++i)
+    // For all registered activities
+    for(const auto& id : m_activity_ids)
     {
         // Get the information about the activity
-        const auto& id   = m_activity_ids[i];
-        const auto& info = extension::activity::get_default()->get_info(id);
+        const auto& info =
+            sight::activity::extension::activity::get_default()->get_info(id);
 
         // For all registered requirements of the current activity
         for(const auto& requirement : info.requirements)
         {
-            // Only reset the requirements that are resettable
-            if(requirement.reset && m_requirements.contains(requirement.name))
+            // Only reset the requirements that are created here
+            if((requirement.create || requirement.min_occurs == 0)
+               && m_requirements.contains(requirement.name))
             {
                 // Get the data object and lock it
-                const auto& object = m_requirements[requirement.name];
+                auto object = m_requirements[requirement.name];
                 data::mt::locked_ptr locked_object(object);
 
-                // Reset the data object
-                if(requirement.create || (requirement.min_occurs == 0 && requirement.max_occurs == 0))
+                if(!requirement.create && requirement.max_occurs != 0)
                 {
-                    const auto& clean_object = detail::data::create(requirement.type, requirement.object_config);
-                    object->shallow_copy(clean_object);
+                    object->shallow_copy(std::make_shared<data::composite>());
                 }
-                else if(requirement.min_occurs == 0)
+                else
                 {
-                    const auto& composite = std::make_shared<data::composite>();
-                    object->shallow_copy(composite);
+                    object->shallow_copy(detail::data::create(requirement.type, requirement.object_config));
                 }
             }
         }

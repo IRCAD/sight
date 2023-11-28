@@ -69,6 +69,7 @@ namespace sight::module::ui::qt::activity
  * - \b previous() : Create the next activity
  * - \b go_to(int) : Create the activity at the given index
  * - \b send_info() : Send the 'hasNext' and 'hasPrevious' signals for the current activity
+ * - \b reset_requirements() : Reset requirements that have been created by the activity
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -143,6 +144,8 @@ public:
         inline static const key_t PREVIOUS      = "previous";
         inline static const key_t SEND_INFO     = "send_info";
 
+        inline static const key_t RESET_REQUIREMENTS = "reset_requirements";
+
         inline static const key_t ENABLE_USER_WARNING  = "enable_user_warning";
         inline static const key_t DISABLE_USER_WARNING = "disable_user_warning";
         inline static const key_t SET_USER_WARNING     = "set_user_warning";
@@ -181,6 +184,9 @@ public:
 
     /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
     MODULE_UI_QT_API void send_info() const;
+
+    // Slot: Reset requirements of activities
+    using sight::activity::sequencer::reset_requirements;
 
     /// Slot: Enables the user warning dialog about possible loss of un-validated data
     /// Does nothing if "warning_message" wasn't configured.
