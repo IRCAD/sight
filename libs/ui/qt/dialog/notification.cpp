@@ -70,6 +70,15 @@ void notification::build()
         // Checks if we have a Parent widget.
         m_parent = qApp->activeWindow();
 
+        if(m_parent == nullptr)
+        {
+            // When the Parent widget is inactive
+            if(auto widgets = qApp->allWidgets(); !widgets.empty())
+            {
+                m_parent = widgets.first()->topLevelWidget();
+            }
+        }
+
         if(const auto* slide_bar = qobject_cast<ui::qt::widget::slide_bar*>(m_parent); slide_bar != nullptr)
         {
             m_parent = slide_bar->nativeParentWidget();
