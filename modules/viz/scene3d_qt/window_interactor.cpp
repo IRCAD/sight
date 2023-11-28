@@ -179,7 +179,7 @@ void window_interactor::disconnect_interactor()
 
 void window_interactor::make_current()
 {
-    m_ogre_widget->makeCurrent();
+    m_ogre_widget->make_current();
 }
 
 //-----------------------------------------------------------------------------

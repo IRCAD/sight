@@ -115,6 +115,8 @@ void fragments_info::starting()
 {
     this->initialize();
 
+    this->render_service()->make_current();
+
     m_compositor_name          = this->get_id() + "_Snapshot_C";
     m_target_name              = this->get_id() + "_global_RTT";
     m_target_primitive_id_name = this->get_id() + "_primitiveID_RTT";

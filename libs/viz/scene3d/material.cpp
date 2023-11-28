@@ -439,6 +439,13 @@ void material::set_template(const std::string& _template_name)
     ogre_material.get()->copyDetailsTo(m_material);
 }
 
+//------------------------------------------------------------------------------
+
+std::string material::name() const
+{
+    return m_material->getName();
+}
+
 //-----------------------------------------------------------------------------
 
 void material::remove_pass(const std::string& _name)

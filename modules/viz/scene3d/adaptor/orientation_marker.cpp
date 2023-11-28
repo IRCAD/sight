@@ -64,28 +64,26 @@ void orientation_marker::starting()
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
 
-    // Sets the material
-    m_material = std::make_shared<data::material>();
-
-    // Creates the material for the marker
-    const sight::module::viz::scene3d::adaptor::material::sptr material_adaptor =
-        this->register_service<sight::module::viz::scene3d::adaptor::material>(
-            "sight::module::viz::scene3d::adaptor::material"
-        );
-    material_adaptor->set_inout(m_material, sight::module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    material_adaptor->configure(
-        this->get_id() + material_adaptor->get_id(),
-        this->get_id() + material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id
+    // Set the material
+    m_material = std::make_unique<sight::viz::scene3d::material>(
+        this->get_id() + "_patient_mesh_material",
+        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
     );
-    material_adaptor->start();
-    material_adaptor->update();
+    m_material->update_shading_mode(
+        data::material::shading_t::phong,
+        this->layer()->num_lights(),
+        false,
+        false
+    );
 
     // Loads and attaches the marker
-    m_patient_mesh = scene_mgr->createEntity(m_patient_mesh_rc);
-    m_patient_mesh->setMaterialName(material_adaptor->get_material_name(), sight::viz::scene3d::RESOURCE_GROUP);
-    m_scene_node->attachObject(m_patient_mesh);
+    m_patient_entity = scene_mgr->createEntity(m_patient_mesh_rc);
+    m_patient_entity->setMaterialName(m_material->name(), sight::viz::scene3d::RESOURCE_GROUP);
+    m_scene_node->attachObject(m_patient_entity);
+
+    auto& mesh_mgr = Ogre::MeshManager::getSingleton();
+    auto mesh      = mesh_mgr.createOrRetrieve(m_patient_mesh_rc, sight::viz::scene3d::RESOURCE_GROUP);
+    mesh.first->load();
 
     this->update_visibility(m_visible);
 
@@ -119,7 +117,7 @@ void orientation_marker::update_camera_matrix()
         }
     }
 
-    // Convert to quaterion.
+    // Convert to quaternion.
     Ogre::Quaternion orientation(ogre_matrix);
 
     const Ogre::Quaternion rotate_x(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
@@ -140,7 +138,13 @@ void orientation_marker::update_camera_matrix()
 
 void orientation_marker::stopping()
 {
-    this->unregister_services();
+    Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
+
+    m_patient_entity->detachFromParent();
+    scene_mgr->destroyEntity(m_patient_entity);
+    m_patient_entity = nullptr;
+
+    m_material.reset();
 }
 
 //-----------------------------------------------------------------------------

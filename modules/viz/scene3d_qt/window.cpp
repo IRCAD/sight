@@ -116,9 +116,11 @@ void window::request_render()
 
 //------------------------------------------------------------------------------
 
-void window::makeCurrent()
+void window::make_current()
 {
     QOpenGLWidget::makeCurrent();
+
+    bind_context();
 }
 
 // ----------------------------------------------------------------------------
@@ -147,6 +149,9 @@ void window::destroy_window()
     Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
     mesh_manager.remove(m_fs_quad_plane);
     m_fs_quad_plane.reset();
+
+    m_context_switch_window->destroy();
+    m_context_switch_window = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -558,6 +563,8 @@ void window::ogre_resize(const QSize& _new_size)
 
 void window::create_render_textures(int _w, int _h)
 {
+    bind_context();
+
     FW_PROFILE("createRenderTextures");
     auto& mgr = Ogre::TextureManager::getSingleton();
 
@@ -689,6 +696,27 @@ void window::initializeGL()
 
     init_resources();
 
+    {
+        // Create the dummy window that allows to set the OpenGL context in the GL3PlusRenderSystem
+        // This triggers a call to  glXGetCurrentContext(), which will be set in the render system
+        // Then each subsequent render target creation will use this context as reference
+        Ogre::NameValuePairList parameters;
+        parameters["currentGLContext"]  = "true";
+        parameters["externalGLControl"] = "true";
+        parameters["hidden"]            = "true";
+        m_context_switch_window         = m_ogre_root->createRenderWindow(
+            "Widget-RenderWindow_" + std::to_string(m_id),
+            static_cast<unsigned int>(1),
+            static_cast<unsigned int>(1),
+            false,
+            &parameters
+        );
+        m_context_switch_window->setVisible(false);
+        m_context_switch_window->setAutoUpdated(false);
+    }
+
+    bind_context();
+
     const auto ratio = devicePixelRatioF();
     const int width  = static_cast<int>(this->width() * ratio);
     const int height = static_cast<int>(this->height() * ratio);
@@ -732,6 +760,8 @@ void window::paintGL()
     ++m_frame_id;
 
     FW_PROFILE("paintGL");
+
+    bind_context();
 
     try
     {
@@ -789,6 +819,15 @@ void window::paintGL()
 void window::resizeGL(int _w, int _h)
 {
     ogre_resize(QSize(_w, _h));
+}
+
+//------------------------------------------------------------------------------
+
+void window::bind_context()
+{
+    Ogre::RenderSystem* render_system = m_ogre_root->getRenderSystem();
+    SIGHT_ASSERT("RenderSystem is null", render_system);
+    render_system->_setRenderTarget(m_context_switch_window);
 }
 
 // ----------------------------------------------------------------------------

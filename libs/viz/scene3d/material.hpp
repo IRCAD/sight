@@ -85,6 +85,9 @@ public:
     /// Set the material template used
     VIZ_SCENE3D_API void set_template(const std::string& _template_name);
 
+    /// Return the name of the material instance
+    VIZ_SCENE3D_API std::string name() const;
+
 private:
 
     /// Remove a rendering pass in all techniques on the current material

@@ -39,8 +39,6 @@
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
-#include <OGRE/Overlay/OgreOverlayContainer.h>
-#include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 

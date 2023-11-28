@@ -65,7 +65,7 @@ public:
     [[nodiscard]] int get_id() const;
 
     /// Makes the OpenGL context as current one on this thread against this window.
-    void makeCurrent();
+    void make_current();
 
     /// Destroy the Ogre window.
     void destroy_window();
@@ -137,6 +137,9 @@ private:
     /// @param _newSize size in hidpi, you must multiplicate with devicePixelRatioF to get the real pixel value
     void ogre_resize(const QSize& _new_size);
 
+    /// Inform Ogre about the OpenGL context change made by Qt
+    void bind_context();
+
     /// Defines a counter to get the widget ID.
     static int s_counter;
 
@@ -165,6 +168,10 @@ private:
     bool m_init {false};
 
     Ogre::MeshPtr m_fs_quad_plane {};
+
+    /// We use a special trick to inform Ogre about the GLX context changes
+    /// This window is not used for rendering, but just to bind the current GLX context
+    Ogre::RenderWindow* m_context_switch_window {};
 
     struct render_target
     {

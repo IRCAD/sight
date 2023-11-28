@@ -27,7 +27,6 @@
 
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>
-#include <OGRE/Overlay/OgreOverlayContainer.h>
 
 #include <sstream>
 

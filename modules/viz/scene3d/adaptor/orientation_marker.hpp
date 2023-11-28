@@ -88,8 +88,8 @@ protected:
 
 private:
 
-    /// Contains the material data.
-    data::material::sptr m_material {nullptr};
+    /// Contains the material used to display the patient.
+    sight::viz::scene3d::material::uptr m_material {nullptr};
 
     /// Updates the internal camera matrix from the input transform
     void update_camera_matrix();
@@ -98,7 +98,7 @@ private:
     Ogre::SceneNode* m_scene_node {nullptr};
 
     /// Stores the entity associated to the marker mesh
-    Ogre::Entity* m_patient_mesh {nullptr};
+    Ogre::Entity* m_patient_entity {nullptr};
 
     /// Resource used for the marker
     std::string m_patient_mesh_rc {"human.mesh"};
