@@ -59,5 +59,5 @@ target_link_libraries(io_bitmap PRIVATE openjp2)
 target_include_directories(io_bitmap PRIVATE ${OPENJPEG_INCLUDE_DIRS})
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

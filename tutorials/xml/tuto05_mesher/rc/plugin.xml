@@ -1,0 +1,212 @@
+<plugin id="tuto05_mesher">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <extension implements="sight::app::extension::config">
+        <id>Tuto05Mesher_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <!-- Deferred Mesh object associated to the uid 'myMesh' -->
+            <object uid="myMesh" type="sight::data::mesh" src="deferred" />
+
+            <!-- Deferred ModelSeries object associated to the key 'myModelSeries' -->
+            <object uid="myModelSeries" type="sight::data::model_series" src="deferred" />
+
+            <!-- ImageSeries object associated to the key 'imageSeries' -->
+            <object uid="imageSeries" type="sight::data::image_series" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+            <service uid="mainFrame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>tuto05_mesher</name>
+                        <icon>tuto05_mesher/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menubar />
+                </gui>
+                <registry>
+                    <menubar sid="menuBarView" start="true" />
+                    <view sid="containerView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::menubar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Mesher" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuMesherView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menuItem name="Open image" shortcut="Ctrl+O" />
+                        <menuItem name="Save image" />
+                        <separator />
+                        <menuItem name="Save mesh" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="saveImageAct" start="true" />
+                    <menuItem sid="saveMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuMesherView" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menuItem name="Compute Mesh (VTK)" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="createMeshAct" start="true" />
+                </registry>
+            </service>
+
+            <!--
+                Default view service:
+                The type 'sight::ui::layout::line' represents a layout where the view are aligned
+                horizontally or vertically (set orientation value 'horizontal' or 'vertical').
+                It is possible to add a 'proportion' attribute for the <view> to defined the proportion
+                used by the view compared to the others.
+            -->
+            <service uid="containerView" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view />
+                        <view />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="imageSrv" start="true" />
+                    <view sid="meshSrv" start="false" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+            <service uid="quitAct" type="sight::module::ui::quit" />
+            <service uid="openImageAct" type="sight::module::ui::action" />
+            <service uid="saveImageAct" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+            <service uid="saveMeshAct" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+            <service uid="createMeshAct" type="sight::module::ui::action"/>
+
+            <service uid="mesherSrv" type="sight::module::filter::mesh::vtk_mesher">
+                <in key="imageSeries" uid="imageSeries"/>
+                <out key="modelSeries" uid="myModelSeries" />
+                <config percentReduction="0" threshold="255" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- Add a shortcut in the application (key "v") -->
+            <service uid="shortcutSrv" type="sight::module::ui::qt::com::signal_shortcut">
+                <config shortcut="v" sid="containerView" />
+            </service>
+
+            <!--
+                Services associated to the image data :
+                Visualization, reading and writing service creation.
+            -->
+            <service uid="imageSrv" type="sight::module::viz::sample::image">
+                <in key="image" uid="imageSeries" auto_connect="true" />
+            </service>
+
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="imageSeries" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="imageWriterSrv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="imageSeries" />
+                <type mode="writer" />
+            </service>
+
+            <!--
+                Services associated to the Mesh data :
+                Visualization, reading and writing service creation.
+            -->
+            <service uid="meshSrv" type="sight::module::viz::sample::mesh">
+                <in key="mesh" uid="myMesh" />
+            </service>
+
+            <service uid="meshWriterSrv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="myMesh" />
+                <type mode="writer" />
+            </service>
+
+            <!-- Extract mesh from ModelSeries-->
+            <service uid="extractMeshSrv" type="sight::module::data::get_mesh">
+                <in key="modelSeries" uid="myModelSeries" />
+                <out group="mesh">
+                    <key index="0" uid="myMesh" />
+                </out>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+            <connect>
+                <signal>shortcutSrv/activated</signal>
+                <slot>createMeshAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>createMeshAct/clicked</signal>
+                <slot>mesherSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>myModelSeries/modified</signal>
+                <slot>extractMeshSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>extractMeshSrv/updated</signal>
+                <slot>saveMeshAct/enable</slot>
+            </connect>
+
+            <!-- Connections for general menu services -->
+            <connect>
+                <signal>openImageAct/clicked</signal>
+                <slot>imageReaderSrv/update</slot>
+                <slot>saveImageAct/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>saveImageAct/clicked</signal>
+                <slot>imageWriterSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>saveMeshAct/clicked</signal>
+                <slot>meshWriterSrv/update</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+            <start uid="mainFrame" />
+            <start uid="imageReaderSrv" />
+            <start uid="imageWriterSrv" />
+            <start uid="meshWriterSrv" />
+            <start uid="extractMeshSrv" />
+            <start uid="shortcutSrv" />
+            <start uid="mesherSrv" />
+            <start uid="meshSrv" />
+            <update uid="extractMeshSrv" />
+        </config>
+    </extension>
+</plugin>

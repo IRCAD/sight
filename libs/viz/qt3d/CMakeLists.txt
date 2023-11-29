@@ -39,5 +39,5 @@ target_compile_options(viz_qt3d PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4251>)
 target_link_libraries(viz_qt3d PUBLIC core data geometry_data ui viz service)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

@@ -1,2 +1,2 @@
-add_subdirectory(api)
+add_subdirectory(ut)
 add_subdirectory(detail)

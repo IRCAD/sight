@@ -376,7 +376,7 @@
 
         <service uid="configurePACSInitializerSrv" type="sight::module::io::dimse::pacs_configuration_initializer">
             <inout key="config" uid="pacsConfiguration" auto_connect="true" />
-            <config localApplicationTitle="SightViewer" pacsHostName="localhost" pacsApplicationTitle="PACSNAME" pacsApplicationPort="4242" moveApplicationTitle="SightViewer" moveApplicationPort="104" retrieveMethod="MOVE" preferenceKey="SIGHTVIEWER_PACS_CONFIGURATION" />
+            <config localApplicationTitle="sight_viewer" pacsHostName="localhost" pacsApplicationTitle="PACSNAME" pacsApplicationPort="4242" moveApplicationTitle="sight_viewer" moveApplicationPort="104" retrieveMethod="MOVE" preferenceKey="SIGHTVIEWER_PACS_CONFIGURATION" />
         </service>
 
         <service uid="configurePACSEditorSrv" type="sight::module::io::dimse::pacs_configuration_editor">

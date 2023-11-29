@@ -1,0 +1,6 @@
+sight_add_target(navigation_openvslam_ut TYPE TEST)
+
+find_package(openvslam QUIET COMPONENTS openvslam REQUIRED)
+target_link_libraries(navigation_openvslam_ut PUBLIC openvslam::openvslam)
+
+target_link_libraries(navigation_openvslam_ut PUBLIC utest_data navigation_openvslam)

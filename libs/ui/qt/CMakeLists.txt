@@ -10,5 +10,5 @@ set_target_properties(ui_qt PROPERTIES AUTOMOC TRUE)
 target_link_libraries(ui_qt PUBLIC core data ui service)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

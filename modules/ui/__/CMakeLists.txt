@@ -5,5 +5,5 @@ add_dependencies(module_ui module_service)
 target_link_libraries(module_ui PUBLIC app activity io ui)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif()

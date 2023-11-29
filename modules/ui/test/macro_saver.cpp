@@ -304,7 +304,7 @@ interaction_helper_api::interaction_helper_api(
     intptr_t _receiver_id,
     const QVector<find_strategy>& _how_to_find_receiver,
     QString _method_name,
-    std::optional<sight::ui::test_core::helper::selector> _select,
+    std::optional<sight::ui::test::helper::selector> _select,
     QStringList _args
 ) :
     post_interaction(_receiver_id, _how_to_find_receiver, {}, helper_api), method_name(std::move(_method_name)),
@@ -538,29 +538,29 @@ QVector<find_strategy> macro_saver::find(QObject* _o)
 
 //------------------------------------------------------------------------------
 
-static QString select_to_code(const sight::ui::test_core::helper::selector& _select)
+static QString select_to_code(const sight::ui::test::helper::selector& _select)
 {
     switch(_select.type())
     {
-        case sight::ui::test_core::helper::selector::type::from_main:
+        case sight::ui::test::helper::selector::type::from_main:
             return QString("\"%1\"").arg(std::get<std::string>(_select.data()).c_str());
 
-        case sight::ui::test_core::helper::selector::type::from_dialog:
+        case sight::ui::test::helper::selector::type::from_dialog:
             return QString("selector::fromDialog(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
 
-        case sight::ui::test_core::helper::selector::type::from_parent:
+        case sight::ui::test::helper::selector::type::from_parent:
         {
             auto [parentName, childName] = std::get<std::pair<std::string, std::string> >(_select.data());
             return QString(R"(selector::fromParent("%1", "%2"))").arg(parentName.c_str()).arg(childName.c_str());
         }
 
-        case sight::ui::test_core::helper::selector::type::from_current:
+        case sight::ui::test::helper::selector::type::from_current:
             return QString("selector::fromCurrent(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
 
-        case sight::ui::test_core::helper::selector::type::current:
+        case sight::ui::test::helper::selector::type::current:
             return "Select::current()";
 
-        case sight::ui::test_core::helper::selector::type::dialog:
+        case sight::ui::test::helper::selector::type::dialog:
             return "Select::dialog()";
     }
 
@@ -573,22 +573,22 @@ static QString select_to_code(const sight::ui::test_core::helper::selector& _sel
 
 //------------------------------------------------------------------------------
 
-[[nodiscard]] static std::pair<QVector<find_strategy>, sight::ui::test_core::helper::selector> compute_select(
+[[nodiscard]] static std::pair<QVector<find_strategy>, sight::ui::test::helper::selector> compute_select(
     QVector<find_strategy> _how_to_find_receiver
 )
 {
-    sight::ui::test_core::helper::selector select = sight::ui::test_core::helper::selector::current();
+    sight::ui::test::helper::selector select = sight::ui::test::helper::selector::current();
     if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::object_name
        && _how_to_find_receiver[1].type == find_strategy_t::root)
     {
-        select = sight::ui::test_core::helper::selector(_how_to_find_receiver[0].string.toStdString());
+        select = sight::ui::test::helper::selector(_how_to_find_receiver[0].string.toStdString());
         _how_to_find_receiver.pop_front();
         _how_to_find_receiver.pop_front();
     }
     else if(_how_to_find_receiver.size() >= 2 && _how_to_find_receiver[0].type == find_strategy_t::object_name
             && _how_to_find_receiver[1].type == find_strategy_t::active_modal_widget)
     {
-        select = sight::ui::test_core::helper::selector::from_dialog(_how_to_find_receiver[0].string.toStdString());
+        select = sight::ui::test::helper::selector::from_dialog(_how_to_find_receiver[0].string.toStdString());
         _how_to_find_receiver.pop_front();
         _how_to_find_receiver.pop_front();
     }
@@ -596,7 +596,7 @@ static QString select_to_code(const sight::ui::test_core::helper::selector& _sel
             && _how_to_find_receiver[1].type == find_strategy_t::object_name
             && _how_to_find_receiver[2].type == find_strategy_t::root)
     {
-        select = sight::ui::test_core::helper::selector::from_parent(
+        select = sight::ui::test::helper::selector::from_parent(
             _how_to_find_receiver[1].string.toStdString(),
             _how_to_find_receiver[0].string.toStdString()
         );
@@ -606,7 +606,7 @@ static QString select_to_code(const sight::ui::test_core::helper::selector& _sel
     }
     else if(!_how_to_find_receiver.empty() && _how_to_find_receiver[0].type == find_strategy_t::active_modal_widget)
     {
-        select = sight::ui::test_core::helper::selector::dialog();
+        select = sight::ui::test::helper::selector::dialog();
         _how_to_find_receiver.pop_front();
     }
 
@@ -845,8 +845,8 @@ void macro_saver::save()
             }
             else
             {
-                QVector<find_strategy> how_to_find_receiver   = pre_post_interactions[i]->how_to_find_receiver;
-                sight::ui::test_core::helper::selector select = sight::ui::test_core::helper::selector::current();
+                QVector<find_strategy> how_to_find_receiver = pre_post_interactions[i]->how_to_find_receiver;
+                sight::ui::test::helper::selector select    = sight::ui::test::helper::selector::current();
                 if(how_to_find_receiver.front().type == find_strategy_t::action)
                 {
                     // helper::Button::push already handles the "action" case.
@@ -1120,8 +1120,8 @@ void macro_saver::save()
 
             const auto& nim =
                 static_cast<post_interaction_number_input_modification&>(*pre_post_interactions[i]);
-            QVector<find_strategy> how_to_find_receiver   = nim.how_to_find_receiver;
-            sight::ui::test_core::helper::selector select = sight::ui::test_core::helper::selector::current();
+            QVector<find_strategy> how_to_find_receiver = nim.how_to_find_receiver;
+            sight::ui::test::helper::selector select    = sight::ui::test::helper::selector::current();
             if(how_to_find_receiver.front().type == find_strategy_t::local_type
                && how_to_find_receiver.front().class_name == "QSlider")
             {
@@ -1273,7 +1273,7 @@ void macro_saver::save()
             }
 
             QVector<find_strategy> how_to_find_receiver;
-            std::optional<sight::ui::test_core::helper::selector> select;
+            std::optional<sight::ui::test::helper::selector> select;
             if(interaction_helper_api* iha =
                    nullptr;
                post_interactions.back()->type == helper_api
@@ -1337,7 +1337,7 @@ void macro_saver::save()
             }
             else if(strategy.type == find_strategy_t::active_modal_widget)
             {
-                dependencies.append("ui/testCore/helper/dialog.hpp");
+                dependencies.append("ui/test/helper/dialog.hpp");
                 dependencies.append(strategy.class_name);
             }
         }
@@ -1355,12 +1355,12 @@ void macro_saver::save()
         {
             use_helpers = true;
             const auto& iha = static_cast<interaction_helper_api&>(*interaction);
-            if(iha.select && iha.select.value().type() != sight::ui::test_core::helper::selector::type::from_main)
+            if(iha.select && iha.select.value().type() != sight::ui::test::helper::selector::type::from_main)
             {
                 use_select_constructor = true;
             }
 
-            dependencies.append(QString("ui/testCore/helper/%1.hpp").arg(iha.method_name.split("::")[0]));
+            dependencies.append(QString("ui/test/helper/%1.hpp").arg(iha.method_name.split("::")[0]));
         }
     }
 
@@ -1380,13 +1380,13 @@ void macro_saver::save()
                                         }
                                     };
 
-    QFile cpp("GuiTest.cpp");
+    QFile cpp("gui_test.cpp");
     cpp.open(QIODevice::WriteOnly);
 
-    s_WRITE(cpp, 0, "#include \"GuiTest.hpp\"");
+    s_WRITE(cpp, 0, "#include \"gui_test.hpp\"");
     s_WRITE(cpp, 0, "");
     s_WRITE(cpp, 0, "#include <core/runtime/path.hpp>");
-    s_WRITE(cpp, 0, "#include <ui/testCore/tester.hpp>");
+    s_WRITE(cpp, 0, "#include <ui/test/tester.hpp>");
     s_WRITE(cpp, 0, "");
     s_WRITE(cpp, 0, "#include <boost/dll.hpp>");
     s_WRITE(cpp, 0, "");
@@ -1396,11 +1396,11 @@ void macro_saver::save()
     }
 
     s_WRITE(cpp, 0, "");
-    s_WRITE(cpp, 0, "CPPUNIT_TEST_SUITE_REGISTRATION(GuiTest);");
+    s_WRITE(cpp, 0, "CPPUNIT_TEST_SUITE_REGISTRATION(gui_test);");
     s_WRITE(cpp, 0, "");
     s_WRITE(cpp, 0, "//------------------------------------------------------------------------------");
     s_WRITE(cpp, 0, "");
-    s_WRITE(cpp, 0, "std::filesystem::path GuiTest::getProfilePath()");
+    s_WRITE(cpp, 0, "std::filesystem::path gui_test::getProfilePath()");
     s_WRITE(cpp, 0, "{");
     s_WRITE(cpp, 4, "const std::filesystem::path cwd = std::filesystem::path(");
     s_WRITE(cpp, 8, "boost::dll::this_line_location().parent_path().parent_path().string()");
@@ -1411,9 +1411,9 @@ void macro_saver::save()
     s_WRITE(cpp, 0, "}");
     s_WRITE(cpp, 0, "");
 
-    s_WRITE(cpp, 0, "void GuiTest::test()");
+    s_WRITE(cpp, 0, "void gui_test::test()");
     s_WRITE(cpp, 0, "{");
-    s_WRITE(cpp, 4, "start(\"GuiTest\",");
+    s_WRITE(cpp, 4, "start(\"gui_test\",");
     s_WRITE(cpp, 8, "[](sight::ui::testCore::Tester& tester)");
     s_WRITE(cpp, 4, "{");
 
@@ -1654,19 +1654,19 @@ void macro_saver::save()
     s_WRITE(cpp, 4, "});");
     s_WRITE(cpp, 0, "}");
 
-    QFile hpp("GuiTest.hpp");
+    QFile hpp("gui_test.hpp");
     hpp.open(QIODevice::WriteOnly);
     s_WRITE(hpp, 0, "#pragma once");
     s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 0, "#include <ui/testCore/test.hpp>");
+    s_WRITE(hpp, 0, "#include <ui/test/test.hpp>");
     s_WRITE(hpp, 0, "");
     s_WRITE(hpp, 0, "#include <core/runtime/profile/profile.hpp>");
     s_WRITE(hpp, 0, "");
     s_WRITE(hpp, 0, "#include <cppunit/extensions/HelperMacros.h>");
     s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 0, "class GuiTest : public sight::ui::testCore::test");
+    s_WRITE(hpp, 0, "class gui_test : public sight::ui::testCore::test");
     s_WRITE(hpp, 0, "{");
-    s_WRITE(hpp, 0, "CPPUNIT_TEST_SUITE(GuiTest);");
+    s_WRITE(hpp, 0, "CPPUNIT_TEST_SUITE(gui_test);");
     s_WRITE(hpp, 0, "CPPUNIT_TEST(test);");
     s_WRITE(hpp, 0, "CPPUNIT_TEST_SUITE_END();");
     s_WRITE(hpp, 0, "");

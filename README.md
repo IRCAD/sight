@@ -62,9 +62,9 @@ Such combination includes:
 
 ## Applications
 
-### SightViewer
+### sight_viewer
 
-**SightViewer** is a full featured medical image and mesh viewer with advanced rendering features such as volume
+**sight_viewer** is a full featured medical image and mesh viewer with advanced rendering features such as volume
 rendering. It supports most medical image formats, and can also retrieve DICOM files from a PACS. It demonstrates many
 useful features of Sight.
 
@@ -109,9 +109,9 @@ and MRI images.
 </figure>
 </div>
 
-### SightCalibrator
+### sight_calibrator
 
-**SightCalibrator** is a user-friendly application to calibrate mono and stereo cameras.
+**sight_calibrator** is a user-friendly application to calibrate mono and stereo cameras.
 This software is a must-have since camera calibration is a mandatory step in any AR application.
 
 <div align=center style="text-align: center; display: flex; flex-flow: row wrap; justify-content: space-around;">

@@ -22,5 +22,5 @@ module_param(module_app PARAM_LIST config PARAM_VALUES ex_parameters_app_cfg)
 sight_generate_profile(ex_parameters)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/uit)
 endif()

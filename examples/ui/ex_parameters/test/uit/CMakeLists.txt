@@ -1,0 +1,3 @@
+sight_add_target(ex_parameters_uit TYPE GUI_TEST)
+
+target_link_libraries(ex_parameters_uit ui_test ex_parameters)

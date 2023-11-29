@@ -1,4 +1,4 @@
-add_subdirectory(SightCalibrator)
+add_subdirectory(sight_calibrator)
 add_subdirectory(dicomxplorer)
-add_subdirectory(SightViewer)
-add_subdirectory(ArchiveExtractor)
+add_subdirectory(sight_viewer)
+add_subdirectory(archive_extractor)

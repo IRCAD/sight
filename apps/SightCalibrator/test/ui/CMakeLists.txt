@@ -1,3 +1,0 @@
-sight_add_target(sightCalibratorGuiTest TYPE GUI_TEST)
-
-target_link_libraries(sightCalibratorGuiTest guiTest SightCalibrator)

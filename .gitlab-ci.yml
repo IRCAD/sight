@@ -78,9 +78,9 @@ lint:sheldon:
       else
         TIMEOUT="600"
       fi
-    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
     - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j10 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
+    - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -88,10 +88,10 @@ lint:sheldon:
       fi
     - >
       if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
-        ninja -j${RUNNER_THREADS} SightViewer_package
+        ninja -j${RUNNER_THREADS} sight_viewer_package
         rm -rf ${CI_PROJECT_DIR}/.install
 
-        ninja -j${RUNNER_THREADS} SightCalibrator_package
+        ninja -j${RUNNER_THREADS} sight_calibrator_package
         rm -rf ${CI_PROJECT_DIR}/.install
       fi
     - >
@@ -127,23 +127,23 @@ lint:sheldon:
     - cd .build
     - >
       if [ "${SIGHT_TEST_PACKAGES}" == "ON" ]; then
-        tar -xf packages/SightViewer-*.tar.zst
-        echo Testing SightViewer:
-        timeout 5s xvfb-run -a SightViewer-*/bin/sightviewer || [ $? -eq 124 ]
+        tar -xf packages/sight_viewer-*.tar.zst
+        echo Testing sight_viewer:
+        timeout 5s xvfb-run -a sight_viewer-*/bin/sight_viewer || [ $? -eq 124 ]
 
-        tar -xf packages/SightCalibrator-*.tar.zst
-        echo Testing SightCalibrator:
-        timeout 5s xvfb-run -a SightCalibrator-*/bin/sightcalibrator || [ $? -eq 124 ]
+        tar -xf packages/sight_calibrator-*.tar.zst
+        echo Testing sight_calibrator:
+        timeout 5s xvfb-run -a sight_calibrator-*/bin/sight_calibrator || [ $? -eq 124 ]
       fi
     - >
       if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
         tar -xf packages/sight-*.tar.zst
         PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
-        for program in sight-*/bin/{ex*,tuto*,sightviewer,sightcalibrator,dicomxplorer}; do
+        for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator,dicomxplorer}; do
             echo Testing $(basename $program):
             LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
         done
-        for program in sight-*/bin/{arucomarker,dicomanonymizer,networkproxy}; do
+        for program in sight-*/bin/{aruco_marker,dicom_anonymizer,network_proxy}; do
             echo Testing $(basename $program):
             $program --help
         done
@@ -276,7 +276,7 @@ deploy:apps-linux-release:
       artifacts: true
     - job: deploy-test:linux-release
   variables:
-    APPS: "SightViewer,SightCalibrator"
+    APPS: "sight_viewer,sight_calibrator"
     URL: "IRCAD%20-%20Open/"
   rules:
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
@@ -316,15 +316,15 @@ deploy:apps-linux-release:
         $env:TIMEOUT="600"
       }
     # Launch tests
-    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
     - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctes3.log -j6 --output-junit junit3.xml --repeat until-pass:2
+    - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
-        ninja SightViewer_package
+        ninja sight_viewer_package
         (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
 
-        ninja SightCalibrator_package
+        ninja sight_calibrator_package
         (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
       }
     - |
@@ -373,26 +373,26 @@ deploy:apps-linux-release:
     - cd build
     - |
       if("${SIGHT_TEST_PACKAGES}" -eq "ON"){
-        Start-Process -Wait .\packages\SightViewer-*.exe /S,/D=${pwd}\SightViewer
-        $process = Start-Process -PassThru -NoNewWindow SightViewer\bin\sightviewer.bat --no-abort-dialog,--clog
+        Start-Process -Wait .\packages\sight_viewer-*.exe /S,/D=${pwd}\sight_viewer
+        $process = Start-Process -PassThru -NoNewWindow sight_viewer\bin\sight_viewer.bat --no-abort-dialog,--clog
         $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
         ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
           (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
           $process | Wait-Process
         }
         if($process.ExitCode -ne 0){
-          Write-Error "SightViewer crashed." -ErrorAction Stop
+          Write-Error "sight_viewer crashed." -ErrorAction Stop
         }
 
-        Start-Process -Wait .\packages\SightCalibrator-*.exe /S,/D=${pwd}\SightCalibrator
-        $process = Start-Process -PassThru -NoNewWindow SightCalibrator\bin\sightcalibrator.bat --no-abort-dialog,--clog
+        Start-Process -Wait .\packages\sight_calibrator-*.exe /S,/D=${pwd}\sight_calibrator
+        $process = Start-Process -PassThru -NoNewWindow sight_calibrator\bin\sight_calibrator.bat --no-abort-dialog,--clog
         $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
         ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
           (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
           $process | Wait-Process
         }
         if($process.ExitCode -ne 0){
-          Write-Error "SightCalibrator crashed." -ErrorAction Stop
+          Write-Error "sight_calibrator crashed." -ErrorAction Stop
         }
       }
     - |
@@ -405,7 +405,7 @@ deploy:apps-linux-release:
           $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
         }
         cd sight-*/*/bin
-        ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sightviewer.bat,sightcalibrator.bat,dicomxplorer.bat){
+        ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat,dicomxplorer.bat){
           $programName = Split-Path -Leaf $program
           Write-Host Testing $programName
           $process = Start-Process -PassThru -NoNewWindow $program --no-abort-dialog,--clog
@@ -422,7 +422,7 @@ deploy:apps-linux-release:
               Write-Error "$programName crashed." -ErrorAction Stop
           }
         }
-        ForEach($program in Get-ChildItem arucomarker.exe,dicomanonymizer.exe){
+        ForEach($program in Get-ChildItem aruco_marker.exe,dicom_anonymizer.exe){
           $programName = Split-Path -Leaf $program
           Write-Host Testing $programName
           Start-Process -NoNewWindow -Wait $program --help
@@ -515,7 +515,7 @@ deploy:apps-windows-release:
       artifacts: true
     - job: deploy-test:windows-release
   variables:
-    APPS: "SightViewer,SightCalibrator"
+    APPS: "sight_viewer,sight_calibrator"
     URL: "IRCAD%20-%20Open/"
   rules:
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"

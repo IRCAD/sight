@@ -14,5 +14,5 @@ endif()
 target_link_libraries(io_igtl PUBLIC core data service io_zip)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

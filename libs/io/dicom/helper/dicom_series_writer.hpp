@@ -60,7 +60,7 @@ class dicom_anonymizer;
 /**
  * @brief Write a DicomSeries in DICOM format.
  *
- * This writer optionally manages anonymization if an instance of DicomAnonymizer is set.
+ * This writer optionally manages anonymization if an instance of dicom_anonymizer is set.
  * The output DICOM files can be exported into an archive (folder or zipped file) if output archive is set.
  *
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).

@@ -147,10 +147,14 @@ macro(init_project PRJ_NAME PRJ_TYPE)
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
         list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/uit")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/ut")
         list(FILTER HEADERS EXCLUDE REGEX "/test/api")
         list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
         list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
         list(FILTER HEADERS EXCLUDE REGEX "/test/ui")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/uit")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/ut")
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -164,7 +168,9 @@ macro(init_project PRJ_NAME PRJ_TYPE)
     set(${SIGHT_TARGET}_HEADERS ${${SIGHT_TARGET}_HEADERS} PARENT_SCOPE)
     set(${SIGHT_TARGET}_SOURCES ${${SIGHT_TARGET}_SOURCES} PARENT_SCOPE)
 
-    file(GLOB_RECURSE ${SIGHT_TARGET}_RC_FILES "${PRJ_SOURCE_DIR}/rc/*" "${PRJ_SOURCE_DIR}/tu/rc/*")
+    file(GLOB_RECURSE ${SIGHT_TARGET}_RC_FILES "${PRJ_SOURCE_DIR}/rc/*" "${PRJ_SOURCE_DIR}/ut/rc/*"
+         "${PRJ_SOURCE_DIR}/tu/rc/*"
+    )
     set(${SIGHT_TARGET}_RC_FILES ${${SIGHT_TARGET}_RC_FILES} PARENT_SCOPE)
     set_source_files_properties(${${SIGHT_TARGET}_RC_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
@@ -366,8 +372,7 @@ macro(sight_generic_test SIGHT_TARGET)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
     endif()
 
-    string(REGEX REPLACE "Test$" "" DIRNAME "${SIGHT_TARGET}")
-    set(TU_NAME "tu_exec_${DIRNAME}")
+    string(REGEX REPLACE "_ui?t$" "" DIRNAME "${SIGHT_TARGET}")
 
     set(BASE_TARGET "${DIRNAME}")
 
@@ -413,13 +418,15 @@ macro(sight_generic_test SIGHT_TARGET)
 
     configure_project(${SIGHT_TARGET})
 
-    if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
-        set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/tu/rc")
+    if(EXISTS "${PRJ_SOURCE_DIR}/ut/rc")
+        set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/ut/rc")
+    elseif(EXISTS "${PRJ_SOURCE_DIR}/rc")
+        set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/rc")
     elseif(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/rc")
     endif()
     if(TEST_RC_DIR)
-        set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}")
+        set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}")
 
         create_resources_target(${SIGHT_TARGET} ${SIGHT_TARGET}_rc "${TEST_RC_DIR}" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
         add_dependencies(${SIGHT_TARGET} ${SIGHT_TARGET}_rc)

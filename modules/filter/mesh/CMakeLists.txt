@@ -7,5 +7,5 @@ target_link_libraries(module_filter_mesh PRIVATE VTK::FiltersCore VTK::FiltersSo
 target_link_libraries(module_filter_mesh PUBLIC data ui service io_vtk geometry_data core)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

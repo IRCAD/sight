@@ -1,3 +1,0 @@
-sight_add_target(sightViewerGuiTest TYPE GUI_TEST)
-
-target_link_libraries(sightViewerGuiTest guiTest SightViewer)

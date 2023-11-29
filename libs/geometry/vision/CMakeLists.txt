@@ -7,5 +7,5 @@ target_link_libraries(geometry_vision PUBLIC opencv_calib3d opencv_aruco)
 target_link_libraries(geometry_vision PRIVATE ceres)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

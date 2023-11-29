@@ -1,6 +1,6 @@
 add_subdirectory(history)
 add_subdirectory(__)
 add_subdirectory(dicom)
-add_subdirectory(testCore)
+add_subdirectory(test)
 add_subdirectory(qml)
 add_subdirectory(qt)

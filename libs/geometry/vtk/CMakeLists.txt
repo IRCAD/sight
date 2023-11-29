@@ -14,5 +14,5 @@ endif()
 
 target_link_libraries(geometry_vtk PUBLIC data core io_vtk)
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

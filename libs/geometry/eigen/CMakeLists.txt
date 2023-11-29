@@ -7,5 +7,5 @@ target_link_libraries(geometry_eigen PUBLIC Eigen3::Eigen)
 target_link_libraries(geometry_eigen PUBLIC core data)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

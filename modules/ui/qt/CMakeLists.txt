@@ -60,5 +60,5 @@ add_dependencies(module_ui_qt module_ui_qt_IRCAD_RCC)
 target_link_libraries(module_ui_qt PUBLIC activity app geometry_data io ui_qt)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

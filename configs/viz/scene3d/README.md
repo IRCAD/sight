@@ -1,6 +1,6 @@
 # config::viz::scene3d
 
-Contains xml configurations related to 3D visualization. These configurations are used by SightViewer and can be reused in any custom application or activity, since they implement the extension `sight::app::extension::config`.
+Contains xml configurations related to 3D visualization. These configurations are used by sight_viewer and can be reused in any custom application or activity, since they implement the extension `sight::app::extension::config`.
 
 ## Configurations
 

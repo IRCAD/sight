@@ -55,7 +55,7 @@ You can achieve this in two different ways:
    ```
 
 
-2. By using a SParameter (see **ExRealSense** example for a real-case use)
+2. By using a SParameter (see **ex_real_sense** example for a real-case use)
 
 ```xml
 <service uid="presets" type="sight::module::ui::qt::parameters">

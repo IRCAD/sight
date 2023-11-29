@@ -17,5 +17,5 @@ target_link_libraries(
 target_link_libraries(io_vtk PUBLIC core data io geometry_data)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

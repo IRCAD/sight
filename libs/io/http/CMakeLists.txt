@@ -10,5 +10,5 @@ target_link_libraries(io_http PUBLIC core data ui ui_qt)
 target_link_libraries(io_http PRIVATE CURL::libcurl)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

@@ -9,5 +9,5 @@ endif()
 target_link_libraries(filter_dicom PUBLIC core data geometry_data)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

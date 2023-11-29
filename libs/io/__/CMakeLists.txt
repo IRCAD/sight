@@ -12,5 +12,5 @@ target_link_libraries(io PRIVATE ${ZLIB_LIBRARIES})
 target_link_libraries(io PUBLIC core data service ui Boost::date_time)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

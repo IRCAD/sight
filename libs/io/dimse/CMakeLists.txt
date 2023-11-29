@@ -30,5 +30,5 @@ unset(STORESCP)
 target_link_libraries(io_dimse PUBLIC core data)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

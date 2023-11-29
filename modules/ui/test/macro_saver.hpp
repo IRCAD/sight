@@ -24,7 +24,7 @@
 
 #include "modules/ui/test/config.hpp"
 
-#include <ui/testCore/helper/select.hpp>
+#include <ui/test/helper/select.hpp>
 
 #include <QEvent>
 #include <QList>
@@ -311,11 +311,11 @@ struct interaction_helper_api : public post_interaction
         intptr_t _receiver_id,
         const QVector<find_strategy>& _how_to_find_receiver,
         QString _method_name,
-        std::optional<sight::ui::test_core::helper::selector> _select,
+        std::optional<sight::ui::test::helper::selector> _select,
         QStringList _args = {});
 
     QString method_name;
-    std::optional<sight::ui::test_core::helper::selector> select;
+    std::optional<sight::ui::test::helper::selector> select;
     QStringList args;
 };
 
