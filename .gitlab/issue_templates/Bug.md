@@ -2,6 +2,9 @@
 
 _Summarize the bug encountered concisely_
 
+_Switch severity to minor if the bug is not crash or a major malfunction_
+/label ~"Severity::major"
+
 ### Steps to reproduce
 
 _How one can reproduce the issue - this is very important._

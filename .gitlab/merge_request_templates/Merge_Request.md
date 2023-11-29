@@ -1,24 +1,30 @@
 ## Description
 
-(Briefly describe what this merge request is about)
+_Briefly describe what this merge request is about_
 
 Closes #number
 
+### Breaking change
+
+_Fill this section if there is a breaking change or remove it otherwise_
+
+/label ~"Breaking change"
+
 ## How to test it?
 
-(Describe how to test this feature step by step)
+_Describe how to test this feature step by step_
 
 ## Data
 
-(Links to the needed data)
+_Links to the needed data_
 
 ## Some results
 
-(Some interesting results, screenshots, perfs, ...)
+_Some interesting results, screenshots, perfs, ..._
 
 ## Additional tests/tasks to run
 
-(If you need some specific tests/tasks...)
+_If you need some specific tests/tasks..._
 
-- [ ] Additional test 1
-- [ ] ...
+- [ ] _Additional test 1_
+- [ ] _..._
