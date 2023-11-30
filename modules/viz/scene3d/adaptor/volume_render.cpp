@@ -664,7 +664,7 @@ void volume_render::set_double_parameter(double _val, std::string _key)
 
 void volume_render::create_widget()
 {
-    auto clipping_mx_update = [this]{update_clipping_t_m_3d();};
+    auto clipping_mx_update = [this]{update_clipping_matrix();};
 
     Ogre::Matrix4 ogre_clipping_mx = Ogre::Matrix4::IDENTITY;
 
@@ -788,7 +788,7 @@ void volume_render::update_clipping_box()
 
 //-----------------------------------------------------------------------------
 
-void volume_render::update_clipping_t_m_3d()
+void volume_render::update_clipping_matrix()
 {
     auto clipping_matrix = m_clipping_matrix.lock();
     if(clipping_matrix)

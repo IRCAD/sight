@@ -25,6 +25,7 @@
 #include "viz/scene3d/compositor/core.hpp"
 #include "viz/scene3d/compositor/listener/ray_exit_depth.hpp"
 #include "viz/scene3d/helper/camera.hpp"
+#include "viz/scene3d/helper/image.hpp"
 #include "viz/scene3d/helper/shading.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/render.hpp"
@@ -344,6 +345,14 @@ void ray_tracing_volume_renderer::update_mask(const data::image::csptr _mask)
 
     this->load_mask();
 
+    auto clipping_box               = sight::viz::scene3d::helper::image::compute_bounding_box_from_mask(_mask);
+    const auto current_bounding_box = m_entry_point_geometry->getBoundingBox();
+    m_freehand_crop_box = clipping_box;
+
+    clipping_box = current_bounding_box.intersection(clipping_box);
+
+    m_entry_point_geometry->setBoundingBox(clipping_box);
+
     m_proxy_geometry->compute_grid();
 }
 
@@ -628,7 +637,8 @@ void ray_tracing_volume_renderer::set_focal_length(float _focal_length)
 void ray_tracing_volume_renderer::clip_image(const Ogre::AxisAlignedBox& _clipping_box)
 {
     const Ogre::AxisAlignedBox max_box_size(Ogre::Vector3::ZERO, Ogre::Vector3(1.F, 1.F, 1.F));
-    const Ogre::AxisAlignedBox clamped_clipping_box = max_box_size.intersection(_clipping_box);
+    Ogre::AxisAlignedBox clamped_clipping_box = max_box_size.intersection(_clipping_box);
+    clamped_clipping_box = m_freehand_crop_box.intersection(clamped_clipping_box);
 
     volume_renderer::clip_image(clamped_clipping_box);
 
@@ -654,6 +664,8 @@ void ray_tracing_volume_renderer::clip_image(const Ogre::AxisAlignedBox& _clippi
     m_entry_point_geometry->end();
 
     m_proxy_geometry->clip_grid(clamped_clipping_box);
+
+    m_entry_point_geometry->setBoundingBox(clamped_clipping_box);
 
     m_rtv_shared_parameters->setNamedConstant("u_f3VolumeClippingBoxMinPos_Ms", clamped_clipping_box.getMinimum());
     m_rtv_shared_parameters->setNamedConstant("u_f3VolumeClippingBoxMaxPos_Ms", clamped_clipping_box.getMaximum());

@@ -429,7 +429,7 @@ private:
     void update_clipping_box();
 
     /// Updates the inout clipping matrix from the clipping box positions.
-    void update_clipping_t_m_3d();
+    void update_clipping_matrix();
 
     ///Prevents concurrent access on certain operations (texture update, etc.)
     std::mutex m_mutex;

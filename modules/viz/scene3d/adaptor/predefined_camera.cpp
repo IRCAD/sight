@@ -63,15 +63,16 @@ void predefined_camera::configuring()
 
     const config_t config = this->get_config();
 
-    m_priority              = config.get<int>(CONFIG + "priority", m_priority);
-    m_layer_order_dependant = config.get<bool>(CONFIG + "layerOrderDependant", m_layer_order_dependant);
+    m_priority              = config.get(CONFIG + "priority", m_priority);
+    m_layer_order_dependant = config.get(CONFIG + "layerOrderDependant", m_layer_order_dependant);
 
-    m_manual_rotation = config.get<bool>(CONFIG + "mouseRotation", m_manual_rotation);
+    m_manual_rotation = config.get(CONFIG + "mouseRotation", m_manual_rotation);
 
     const auto& default_position = config.get_optional<std::string>(CONFIG + "defaultPosition");
     m_default_position = default_position ? std::make_optional(*default_position) : std::nullopt;
 
-    m_animate = config.get<bool>(CONFIG + "animate", m_animate);
+    m_animate = config.get(CONFIG + "animate", m_animate);
+    m_zoom    = config.get(CONFIG + "zoom", m_zoom);
 
     const auto positions = config.get_child("positions");
 
@@ -109,7 +110,8 @@ void predefined_camera::starting()
             m_layer_order_dependant,
             m_camera_positions,
             m_default_position,
-            m_animate
+            m_animate,
+            m_zoom
         );
 
     m_interactor->set_mouse_rotation(m_manual_rotation);

@@ -59,7 +59,8 @@ public:
         bool _layer_order_dependant                         = true,
         std::vector<predefined_position_t> _positions       = {},
         const std::optional<std::string>& _default_position = std::nullopt,
-        bool _animate                                       = true
+        bool _animate                                       = true,
+        float _zoom                                         = 1.F
     );
 
     /// Destroys the trackball.
@@ -205,6 +206,9 @@ private:
 
     /// Curent percentage for animation
     float m_percentage {0.F};
+
+    /// Zoom ratio
+    float m_zoom_config {1.0};
 
     /// last time step
     std::chrono::system_clock::time_point m_last_step_time {};

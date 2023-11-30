@@ -378,7 +378,8 @@ protected:
     /// SAT used for the ambient occlusion.
     illum_ambient_occlusion_sat m_sat;
 
-    //------------------------------------------------------------
+    /// Last computed freehand crop box
+    Ogre::AxisAlignedBox m_freehand_crop_box;
 
     /// Camera listener class used to compute the entry points textures before rendering.
     class CameraListener;

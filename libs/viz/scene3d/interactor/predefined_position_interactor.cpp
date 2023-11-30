@@ -44,12 +44,14 @@ predefined_position_interactor::predefined_position_interactor(
     bool _layer_order_dependant,
     std::vector<predefined_position_t> _positions,
     const std::optional<std::string>& _default_position,
-    bool _animate
+    bool _animate,
+    float _zoom
 ) :
     base(_layer, _layer_order_dependant),
     m_timer(core::thread::get_default_worker()->create_timer()),
     m_predefined_positions(std::move(_positions)),
-    m_animate(_animate)
+    m_animate(_animate),
+    m_zoom_config(_zoom)
 {
     this->init();
 
@@ -257,7 +259,7 @@ void predefined_position_interactor::camera_rotate_by_mouse(int _dx, int _dy)
 void predefined_position_interactor::set_scene_length(float _scene_length)
 {
     m_mouse_scale = static_cast<float>(MOUSE_SCALE_FACTOR) / _scene_length;
-    m_look_at_z   = _scene_length;
+    m_look_at_z   = _scene_length * 1.F / m_zoom_config;
     m_zoom        = 1.F;
 
     this->update_camera_focal_length();

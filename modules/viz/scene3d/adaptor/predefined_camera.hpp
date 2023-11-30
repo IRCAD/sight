@@ -48,7 +48,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::predefined_camera">
-        <config priority="0" mouseRotation="true" defaultPosition="pos3" />
+        <config priority="0" mouseRotation="true" defaultPosition="pos3" zoom="1.5"/>
         <in key="transform" uid="..." auto_connect="true"/>
         <positions>
             <position name="pos1" rx="-30.0" />
@@ -68,6 +68,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b mouseRotation (optional, bool, default=true): defines if mouse rotation through mouse is activated or not.
  * - \b defaultPosition (optional, string, default=""): defines the default position to use.
  * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
+ * - \b zoom (optional, default="1.0"): defines the zoom ratio against the size of the scene.
  *
  * @section Slots Slots
  * - \b set_parameter(parameter_t value, std::string key): If key = "position", looking for value in the position name,
@@ -142,6 +143,9 @@ private:
 
     /// Defines if an animation is performed when switching positions
     bool m_animate {true};
+
+    /// Zoom ratio
+    float m_zoom {1.0};
 
     /// Input transform.
     static constexpr std::string_view REGISTRATION_TRANSFORM_IN = "transform";
