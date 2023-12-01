@@ -53,15 +53,16 @@ namespace sight::module::viz::scene3d::adaptor
  * points list with a constrained Bowyer-Watson algorithm. Then, for each segment of the shape, two triangles are
  * created between the segment at the near plane and the far plane.
  *
+ * @section Signal Signals
+ * - \b tool_disabled(): sent when interactions are finished.
+ *
  * @section Slots Slots
  * - \b enable_tool(bool): enable or disable the tool, it will be automatically disabled when interactions are finished.
  * - \b delete_last_mesh(): delete the last extruded mesh.
- * - \b cancel_last_click(): cancel the last point clicked during the extrusion
+ * - \b cancel_last_click(): cancel the last point clicked during the extrusion.
+ * - \b undo(): delete the last extruded mesh or cancel the last point clicked during the extrusion
  * - \b reset(): delete all extruded meshes.
  * - \b validate(): validate points and generates the extrusion mesh.
- *
- * @section Signal Signals
- * - \b tool_disabled(): sent when interactions are finished.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -87,6 +88,22 @@ class MODULE_VIZ_SCENE3D_CLASS_API shape_extruder final :
     private service::notifier
 {
 public:
+
+    struct signals
+    {
+        using tool_disabled_signal_t = core::com::signal<void ()>;
+        static inline const core::com::signals::key_t TOOL_DISABLED = "tool_disabled";
+    };
+
+    struct slots
+    {
+        static inline const core::com::slots::key_t ENABLE_TOOL       = "enable_tool";
+        static inline const core::com::slots::key_t UNDO              = "undo";
+        static inline const core::com::slots::key_t DELETE_LAST_MESH  = "delete_last_mesh";
+        static inline const core::com::slots::key_t CANCEL_LAST_CLICK = "cancel_last_click";
+        static inline const core::com::slots::key_t RESET             = "reset";
+        static inline const core::com::slots::key_t VALIDATE          = "validate";
+    };
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(shape_extruder, sight::viz::scene3d::adaptor);
@@ -217,6 +234,9 @@ private:
 
     /// Cancel the last clicked point during the extrusion
     void cancel_last_click();
+
+    /// Deletes the last extruded mesh or cancel the last clicked point during the extrusion
+    void undo();
 
     /// Reset all extrusions
     void reset();
@@ -377,9 +397,6 @@ private:
 
     /// Contains the last lasso line, this line is drawn between the last position and the current mouse position.
     Ogre::ManualObject* m_last_lasso_line {nullptr};
-
-    /// Contains the signal sent when interactions are finished.
-    core::com::signal<void()>::sptr m_tool_disabled_sig;
 
     sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_extruded_meshes {this, "extrudedMeshes"};
 

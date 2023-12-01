@@ -240,21 +240,18 @@ QToolBar QWidget
 QToolBar::separator
 {
     border-radius: 1px;
-    background: #FFFFFF
+    background: rgba(255,255,255,50%);
+    margin: 10%;
 }
 
 QToolBar::separator:vertical
 {
     height: 2px;
-    margin-left: 5px;
-    margin-left: 5px;
 }
 
 QToolBar::separator:horizontal
 {
     width: 2px;
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
 
 QToolBar::handle
@@ -291,20 +288,18 @@ QToolButton
     border-radius: 4px;
     border: none;
     background: transparent;
-    margin: 3px;
-    padding: 1px;
+    padding: 5px;
 }
 
 QToolButton:disabled
 {
-    background: transparent;
-    color: rgba(255,255,255,50%);
+    color: rgba(255,255,255,25%);
 }
 
 QToolButton:hover,
 QToolButton::menu-button:hover
 {
-    background: #C0B3D8;
+    background: rgba(255,255,255,50%);
 }
 
 QToolButton:checked,
@@ -1387,11 +1382,12 @@ QProgressBar::chunk
     border-radius: 10%;
 }
 
-#Bracket
+.Bracket
 {
-    padding: 0;
-    background: none;
-    border: none;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    border-radius: 0px;
 }
 
 .Background
@@ -1463,7 +1459,7 @@ QProgressBar::chunk
     background-color: #51AF3B;
     color: rgb(255, 255, 255);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 20px;
     border-radius: 4px;
 }
 
@@ -1472,15 +1468,15 @@ QProgressBar::chunk
     background-color: #BA292A;
     color: rgb(255, 255, 255);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 20px;
     border-radius: 4px;
 }
 
 #NotificationDialog_Info
 {
-    background-color: #303A65;
+    background-color: #51566b;
     color: rgb(255, 255, 255);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 20px;
     border-radius: 4px;
 }

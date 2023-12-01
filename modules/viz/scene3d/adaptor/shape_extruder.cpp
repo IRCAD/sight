@@ -38,14 +38,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t ENABLE_TOOL_SLOT       = "enable_tool";
-static const core::com::slots::key_t DELETE_LAST_MESH_SLOT  = "delete_last_mesh";
-static const core::com::slots::key_t CANCEL_LAST_CLICK_SLOT = "cancel_last_click";
-static const core::com::slots::key_t RESET_SLOT             = "reset";
-static const core::com::slots::key_t VALIDATE_SLOT          = "validate";
-
-static const core::com::slots::key_t TOOL_DISABLED_SIG = "tool_disabled";
-
 shape_extruder::triangle2_d::triangle2_d(
     const Ogre::Vector2& _a,
     const Ogre::Vector2& _b,
@@ -145,13 +137,14 @@ Ogre::Vector3 shape_extruder::get_cam_direction(const Ogre::Camera* const _cam)
 shape_extruder::shape_extruder() noexcept :
     service::notifier(m_signals)
 {
-    new_slot(ENABLE_TOOL_SLOT, &shape_extruder::enable_tool, this);
-    new_slot(DELETE_LAST_MESH_SLOT, &shape_extruder::delete_last_mesh, this);
-    new_slot(CANCEL_LAST_CLICK_SLOT, &shape_extruder::cancel_last_click, this);
-    new_slot(RESET_SLOT, &shape_extruder::reset, this);
-    new_slot(VALIDATE_SLOT, &shape_extruder::validate, this);
+    new_slot(slots::ENABLE_TOOL, &shape_extruder::enable_tool, this);
+    new_slot(slots::DELETE_LAST_MESH, &shape_extruder::delete_last_mesh, this);
+    new_slot(slots::CANCEL_LAST_CLICK, &shape_extruder::cancel_last_click, this);
+    new_slot(slots::UNDO, &shape_extruder::undo, this);
+    new_slot(slots::RESET, &shape_extruder::reset, this);
+    new_slot(slots::VALIDATE, &shape_extruder::validate, this);
 
-    m_tool_disabled_sig = this->new_signal<core::com::signal<void()> >(TOOL_DISABLED_SIG);
+    new_signal<signals::tool_disabled_signal_t>(signals::TOOL_DISABLED);
 }
 
 //-----------------------------------------------------------------------------
@@ -322,6 +315,20 @@ void shape_extruder::delete_last_mesh()
 void shape_extruder::cancel_last_click()
 {
     modify_lasso(action::remove);
+}
+
+//------------------------------------------------------------------------------
+
+void shape_extruder::undo()
+{
+    if(m_interaction_enable_state)
+    {
+        cancel_last_click();
+    }
+    else
+    {
+        delete_last_mesh();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -529,7 +536,9 @@ void shape_extruder::validate()
     this->triangulate_points();
 
     this->enable_tool(false);
-    m_tool_disabled_sig->async_emit();
+
+    auto sig = this->signal<signals::tool_disabled_signal_t>(signals::TOOL_DISABLED);
+    sig->async_emit();
 
     // Send a render request.
     this->request_render();

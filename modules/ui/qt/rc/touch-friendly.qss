@@ -20,6 +20,13 @@ QCheckBox::indicator {
 QPushButton {
     min-width: 1.5em;
     min-height: 1.5em;
+    border: 0px;
+    border-radius: 8px;
+}
+
+QPushButton.Bracket {
+    min-width: 0.4em;
+    min-height: 0.4em;
 }
 
 QPushButton.signal-button {

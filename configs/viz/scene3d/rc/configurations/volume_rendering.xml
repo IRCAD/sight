@@ -13,9 +13,8 @@
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
-        <param name="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
-        <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
@@ -313,12 +312,8 @@
             <signal>shapeExtruderAdp/tool_disabled</signal>
         </connect>
 
-        <connect channel="${SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL}">
-            <slot>shapeExtruderAdp/delete_last_mesh</slot>
-        </connect>
-
-        <connect channel="${SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL}">
-            <slot>shapeExtruderAdp/cancel_last_click</slot>
+        <connect channel="${SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL}">
+            <slot>shapeExtruderAdp/undo</slot>
         </connect>
 
         <connect channel="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}">

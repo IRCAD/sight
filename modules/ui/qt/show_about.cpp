@@ -110,10 +110,10 @@ void show_about::updating()
     search_paths.append(QString::fromStdString(m_fs_about_path.parent_path().string()));
     html_view->setSearchPaths(search_paths);
 #endif
-    auto* ok_button = new QPushButton(QObject::tr("Ok"));
-    auto* h_layout  = new QHBoxLayout();
+    auto* close_button = new QPushButton(QObject::tr("Close"));
+    auto* h_layout     = new QHBoxLayout();
     h_layout->addStretch();
-    h_layout->addWidget(ok_button);
+    h_layout->addWidget(close_button);
     h_layout->setContentsMargins(5, 5, 5, 5);
 
     auto* line = new QFrame(dialog);
@@ -128,7 +128,7 @@ void show_about::updating()
     layout->setSpacing(0);
     dialog->setLayout(layout);
 
-    QObject::connect(ok_button, SIGNAL(clicked()), dialog, SLOT(accept()));
+    QObject::connect(close_button, SIGNAL(clicked()), dialog, SLOT(accept()));
     QObject::connect(dialog, SIGNAL(accepted()), dialog, SLOT(deleteLater()));
     dialog->setModal(true);
     dialog->show();

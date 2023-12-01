@@ -299,20 +299,16 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
     // Parse all QToolButton and resize to the greater one.
     if(m_unify_button_size)
     {
-        int max         = -1;
         const auto list = tool_bar->findChildren<QToolButton*>();
+        QSize max;
         for(auto* const tb : list)
         {
-            // Check width if horizontal toolbar, height for vertical.
-            const auto size =
-                (tool_bar->orientation() == Qt::Horizontal) ? tb->sizeHint().width() : tb->sizeHint().height();
-            max = std::max(max, size);
+            max = max.expandedTo(tb->sizeHint());
         }
 
         for(auto* const tb : list)
         {
-            // Set minimum width on horizontal toolbar, set minimum height for vertical.
-            (tool_bar->orientation() == Qt::Horizontal) ? tb->setMinimumWidth(max) : tb->setMaximumHeight(max);
+            tb->setFixedSize(max);
         }
     }
 

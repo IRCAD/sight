@@ -1454,9 +1454,13 @@ QProgressBar::chunk
     margin: 1px;
 }
 
-#Bracket
+.Bracket
 {
   padding: 0;
   background: none;
 }
 
+QPushButton.Bracket:disabled
+{
+  background: none;
+}

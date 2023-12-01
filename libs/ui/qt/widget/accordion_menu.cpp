@@ -47,6 +47,7 @@ accordion_menu::accordion_menu(QWidget* _parent, Qt::Orientation _orientation) :
     m_orientation(_orientation)
 {
     m_bracket->setObjectName("Bracket");
+    m_bracket->setProperty("class", "Bracket");
     // TODO: load bracket.svg or bracket_white following current stylesheet ?
     m_pixmap =
         QPixmap(
@@ -56,10 +57,12 @@ accordion_menu::accordion_menu(QWidget* _parent, Qt::Orientation _orientation) :
                 ).string()
             )
         );
-    m_pixmap = m_pixmap.scaled(m_pixmap.size() / 20);
     m_bracket->setIcon(m_pixmap);
     m_bracket->setParent(this);
     m_bracket->setAttribute(Qt::WA_TransparentForMouseEvents);
+    m_bracket->setFixedSize(6, 6);
+    m_bracket->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
     setProperty("folded", true);
     setProperty("class", "accordion_menu");
     QObject::connect(
@@ -259,22 +262,14 @@ void accordion_menu::update()
         widgets[i]->move(anim->currentValue().toPoint());
     }
 
-    if(auto* tool_button = qobject_cast<QToolButton*>(first_button);
-       !first_button->text().isEmpty() && tool_button != nullptr
-       && tool_button->toolButtonStyle() != Qt::ToolButtonIconOnly)
-    {
-        m_bracket->move(
-            (first_button->size().width() - first_button->iconSize().width()) / 2 + first_button->iconSize().width() - m_bracket->iconSize().width(),
-            first_button->iconSize().height() - m_bracket->iconSize().height()
-        );
-    }
-    else
-    {
-        m_bracket->move(
-            first_button->width() - m_bracket->width() - 2,
-            first_button->height() - m_bracket->height() - 2
-        );
-    }
+    m_bracket->move(
+        first_button->mapToParent(
+            QPoint(
+                first_button->width() - m_bracket->width(),
+                first_button->height() - m_bracket->height()
+            )
+        )
+    );
 
     m_bracket->raise();
     auto* bracket_anim = new QVariantAnimation;

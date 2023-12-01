@@ -273,8 +273,7 @@
                         <menuItem name="Reset cropping box" icon="sight::module::ui::flaticons/ResetCroppingBox.svg" />
                         <accordion>
                             <menuItem name="Draw a new freehand cropping region" icon="sight::module::ui::flaticons/cutVolume.svg" style="check" />
-                            <menuItem name="Undo last freehand cropping point" icon="sight::module::ui::flaticons/undoCutVolume.svg" />
-                            <menuItem name="Revert last freehand cropping region" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
+                            <menuItem name="Undo" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
                         </accordion>
                         <separator/>
                         <accordion>
@@ -301,8 +300,7 @@
                     <menuItem sid="boxWidgetVisibilityAct" start="true" />
                     <menuItem sid="boxWidgetResetAct" start="true" />
                     <menuItem sid="shapeExtruderAct" start="true" />
-                    <menuItem sid="shapeExtruderCancelAct" start="true" />
-                    <menuItem sid="shapeExtruderRevertAct" start="true" />
+                    <menuItem sid="shapeExtruderUndoAct" start="true" />
                     <menuItem sid="landmarksEditModeAct" start="true" />
                     <menuItem sid="removeAllLandmarksAct" start="true" />
                     <menuItem sid="addDistanceAct" start="true" />
@@ -427,11 +425,7 @@
                 <state enabled="true" />
             </service>
 
-            <service uid="shapeExtruderCancelAct" type="sight::module::ui::action" >
-                <state enabled="true" />
-            </service>
-
-            <service uid="shapeExtruderRevertAct" type="sight::module::ui::action" >
+            <service uid="shapeExtruderUndoAct" type="sight::module::ui::action" >
                 <state enabled="true" />
             </service>
 
@@ -472,8 +466,7 @@
                 <parameter replace="BOX_WIDGET_RESET_RECEIVER_CHANNEL" by="BOX_WIDGET_RESET_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
-                <parameter replace="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" />
-                <parameter replace="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" />
+                <parameter replace="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_UNDO_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -610,17 +603,13 @@
                 <slot>shapeExtruderAct/uncheck</slot>
             </connect>
 
-            <connect channel="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" >
-                <signal>shapeExtruderCancelAct/clicked</signal>
-            </connect>
-
             <connect channel="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" >
                 <signal>extractSeriesSrv/image_selected</signal>
                 <signal>extractPacsImageSrv/updated</signal>
             </connect>
 
-            <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
-                <signal>shapeExtruderRevertAct/clicked</signal>
+            <connect channel="SHAPE_EXTRUDER_UNDO_SENDER_CHANNEL" >
+                <signal>shapeExtruderUndoAct/clicked</signal>
             </connect>
 
             <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL" >

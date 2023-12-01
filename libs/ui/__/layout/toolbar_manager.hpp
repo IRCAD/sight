@@ -230,7 +230,7 @@ protected:
     std::string m_style {"ToolButtonIconOnly"};
 
     ///If set to true (uniformSize="true"), button will be expended to match the wider one.
-    bool m_unify_button_size {false};
+    bool m_unify_button_size {true};
 };
 
 } // namespace sight::ui::layout
