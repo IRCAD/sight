@@ -53,7 +53,8 @@ public:
         const std::string& _title,
         Stuff _stuff,
         const std::string& _msg                                         = std::string(),
-        ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh = 100
+        ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh = 100,
+        bool _cancellable                                               = true
     );
 
     ///set the title for the dialog
@@ -61,6 +62,9 @@ public:
 
     ///set the message for the dialog
     UI_API void set_message(const std::string& _message) override;
+
+    ///allow to cancel the dialog
+    UI_API void set_cancellable(bool _cancellable) override;
 
     ///show the pulse progress dialog
     UI_API void show() override;

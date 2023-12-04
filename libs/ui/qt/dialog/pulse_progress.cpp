@@ -28,6 +28,7 @@
 
 #include <QApplication>
 #include <QFutureWatcher>
+#include <QPushButton>
 #include <QString>
 #include <QtConcurrent>
 #include <QtCore>
@@ -69,14 +70,34 @@ void pulse_progress::set_message(const std::string& _msg)
 
 //------------------------------------------------------------------------------
 
+void pulse_progress::set_cancellable(bool _cancellable)
+{
+    if(!_cancellable)
+    {
+        m_dialog->setCancelButton(nullptr);
+    }
+    else if(!m_cancellable)
+    {
+        m_dialog->setCancelButton(new QPushButton("Cancel", m_dialog));
+    }
+
+    m_cancellable = _cancellable;
+}
+
+//------------------------------------------------------------------------------
+
 void pulse_progress::show()
 {
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> future_watcher;
     QObject::connect(&future_watcher, SIGNAL(finished()), m_dialog, SLOT(reset()));
-    QObject::connect(m_dialog, SIGNAL(canceled()), &future_watcher, SLOT(cancel()));
     QObject::connect(&future_watcher, SIGNAL(progressRangeChanged(int,int)), m_dialog, SLOT(setRange(int,int)));
     QObject::connect(&future_watcher, SIGNAL(progressValueChanged(int)), m_dialog, SLOT(setValue(int)));
+
+    if(m_cancellable)
+    {
+        QObject::connect(m_dialog, SIGNAL(canceled()), &future_watcher, SLOT(cancel()));
+    }
 
     // Start the computation.
     future_watcher.setFuture(QtConcurrent::run(m_stuff));

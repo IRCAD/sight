@@ -33,12 +33,12 @@ pulse_progress::pulse_progress(
     const std::string& _title,
     ui::dialog::pulse_progress_base::Stuff _stuff,
     const std::string& _msg,
-    ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh
+    ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh,
+    bool _cancellable
 )
 {
     core::thread::get_default_worker()->post_task<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             ui::object::sptr gui_obj = ui::factory::make(pulse_progress_base::REGISTRY_KEY);
             m_implementation         = std::dynamic_pointer_cast<ui::dialog::pulse_progress_base>(gui_obj);
@@ -48,13 +48,14 @@ pulse_progress::pulse_progress(
                 m_implementation->set_title(_title);
                 m_implementation->set_message(_msg);
                 m_implementation->set_frequence(_frequence_refresh);
+                m_implementation->set_cancellable(_cancellable);
             }
             else
             {
                 this->set_stuff(_stuff);
+                this->set_cancellable(_cancellable);
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,6 +75,20 @@ void pulse_progress::set_message(const std::string& _msg)
     if(m_implementation)
     {
         m_implementation->set_message(_msg);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void pulse_progress::set_cancellable(bool _cancellable)
+{
+    if(m_implementation)
+    {
+        core::thread::get_default_worker()->post_task<void>(
+            [this, _cancellable]
+            {
+                m_implementation->set_cancellable(_cancellable);
+            }).wait();
     }
 }
 

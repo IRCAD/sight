@@ -28,14 +28,6 @@ namespace sight::ui::dialog
 const pulse_progress_base::factory_registry_key_t pulse_progress_base::REGISTRY_KEY =
     "::ui::dialog::pulse_progress";
 
-pulse_progress_base::pulse_progress_base()
-= default;
-
-//-----------------------------------------------------------------------------
-
-pulse_progress_base::~pulse_progress_base()
-= default;
-
 //-----------------------------------------------------------------------------
 
 void pulse_progress_base::set_stuff(Stuff _stuff)
@@ -48,6 +40,13 @@ void pulse_progress_base::set_stuff(Stuff _stuff)
 void pulse_progress_base::set_frequence(MilliSecond _frequence)
 {
     m_frequence = _frequence;
+}
+
+//------------------------------------------------------------------------------
+
+void pulse_progress_base::set_cancellable(bool _cancellable)
+{
+    m_cancellable = _cancellable;
 }
 
 //-----------------------------------------------------------------------------

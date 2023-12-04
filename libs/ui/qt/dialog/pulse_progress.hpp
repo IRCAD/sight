@@ -60,11 +60,18 @@ public:
     /// override
     UI_QT_API void set_message(const std::string& _message) override;
 
+    /// override
+    UI_QT_API void set_cancellable(bool _cancellable) override;
+
     UI_QT_API void show() override;
 
 protected:
 
     QPointer<QProgressDialog> m_dialog;
+
+private:
+
+    bool m_cancellable {true};
 };
 
 } // namespace sight::ui::qt::dialog

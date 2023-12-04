@@ -50,8 +50,8 @@ public:
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
     UI_API static const factory_registry_key_t REGISTRY_KEY;
 
-    UI_API ~pulse_progress_base() override;
-    UI_API pulse_progress_base();
+    UI_API ~pulse_progress_base() override = default;
+    UI_API pulse_progress_base()           = default;
 
     ///set the title for the dialog
     UI_API virtual void set_title(const std::string& _title) = 0;
@@ -65,6 +65,9 @@ public:
     ///set the frequence
     UI_API virtual void set_frequence(MilliSecond _frequence);
 
+    ///allow to cancel the dialog
+    UI_API virtual void set_cancellable(bool _cancellable);
+
     ///show the pulse progress dialog
     UI_API virtual void show() = 0;
 
@@ -72,6 +75,7 @@ protected:
 
     Stuff m_stuff;
     MilliSecond m_frequence {1};
+    bool m_cancellable {true};
 };
 
 } // namespace sight::ui::dialog
