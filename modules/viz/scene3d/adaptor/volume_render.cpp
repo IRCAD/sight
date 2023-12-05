@@ -782,6 +782,10 @@ void volume_render::update_clipping_box()
 
             // updateFromTransform is called outside of the lock of the InOut data to prevent a deadlock
             m_widget->update_from_transform(clipping_mx);
+
+            std::lock_guard<std::mutex> swap_lock(m_mutex);
+            m_volume_renderer->clip_image(m_widget->get_clipping_box());
+            this->request_render();
         }
     }
 }

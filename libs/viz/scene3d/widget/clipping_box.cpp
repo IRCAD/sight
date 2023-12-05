@@ -601,7 +601,6 @@ Ogre::Matrix4 clipping_box::get_clipping_transform() const
 void clipping_box::update_from_transform(const Ogre::Matrix4& _clipping_mx)
 {
     this->apply_transform(_clipping_mx);
-    m_clipping_update_callback();
 }
 
 //-----------------------------------------------------------------------------
