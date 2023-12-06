@@ -728,9 +728,9 @@
 
             <connect>
                 <signal>syncGenericSceneSrv/all_received</signal>
-                <slot>videoRenderSrv/request_render</slot>
-                <slot>distanceMapRenderSrv/request_render</slot>
-                <slot>reconstructionRenderSrv/request_render</slot>
+                <slot>videoRenderSrv/render</slot>
+                <slot>distanceMapRenderSrv/render</slot>
+                <slot>reconstructionRenderSrv/render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

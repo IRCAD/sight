@@ -58,6 +58,7 @@ const std::string render::OGREBACKGROUNDID = "ogreBackground";
 const core::com::slots::key_t render::COMPUTE_CAMERA_ORIG_SLOT = "computeCameraParameters";
 const core::com::slots::key_t render::RESET_CAMERAS_SLOT       = "reset_cameras";
 const core::com::slots::key_t render::REQUEST_RENDER_SLOT      = "request_render";
+const core::com::slots::key_t render::RENDER_SLOT              = "render";
 const core::com::slots::key_t render::DISABLE_FULLSCREEN       = "disable_fullscreen";
 const core::com::slots::key_t render::ENABLE_FULLSCREEN        = "enable_fullscreen";
 const core::com::slots::key_t render::SET_MANUAL_MODE          = "set_manual_mode";
@@ -74,7 +75,14 @@ render::render() noexcept :
 
     new_slot(COMPUTE_CAMERA_ORIG_SLOT, &render::reset_camera_coordinates, this);
     new_slot(RESET_CAMERAS_SLOT, &render::reset_cameras, this);
-    new_slot(REQUEST_RENDER_SLOT, &render::request_render, this);
+    new_slot(
+        REQUEST_RENDER_SLOT,
+        [this]()
+        {
+            FW_DEPRECATED_MSG("Slot 'requestRender' is deprecated, please use 'render' instead", "25.0");
+            render_now();
+        });
+    new_slot(RENDER_SLOT, &render::render_now, this);
     new_slot(DISABLE_FULLSCREEN, &render::disable_fullscreen, this);
     new_slot(ENABLE_FULLSCREEN, &render::enable_fullscreen, this);
     new_slot(SET_MANUAL_MODE, [this](){this->m_render_mode = render_mode::manual;});
@@ -436,16 +444,24 @@ layer::viewport_config_t render::configure_layer_viewport(const service::config_
 
 //-----------------------------------------------------------------------------
 
-void render::request_render()
+void render::render_now()
 {
     if(m_render_mode == render_mode::manual)
     {
         m_interactor_manager->render_now();
     }
-    else
+}
+
+//-----------------------------------------------------------------------------
+
+void render::request_render()
+{
+    if(m_render_mode == render_mode::manual)
     {
-        m_interactor_manager->request_render();
+        return;
     }
+
+    m_interactor_manager->request_render();
 
     if(m_off_screen)
     {
@@ -487,13 +503,6 @@ void render::reset_cameras()
         layer.second->reset_camera_coordinates();
     }
 
-    this->request_render();
-}
-
-//-----------------------------------------------------------------------------
-
-void render::paint()
-{
     this->request_render();
 }
 

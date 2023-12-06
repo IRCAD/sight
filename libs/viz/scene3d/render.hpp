@@ -55,7 +55,8 @@ class layer;
  * - \b reset_camera_LAYER_ID(): "LAYER_ID" needs to be changed with your actual layer id. Resets the camera of the
  * layer
  * specified by LAYER_ID.
- * - \b request_render(): request the service to repaint the scene.
+ * - \b render(): render the scene immediately, when the service is configured in manual render mode.
+ * - \b request_render(): request the service to repaint the scene. DEPRECATED, use render() instead.
  * - \b disable_fullscreen(): switches to windowed rendering if fullscreen is enabled.
  * - \b enable_fullscreen(int): switches fullscreen rendering on the given screen.
  * - \b set_manual_mode(): switches to manual mode, the scene is rendered whenever the request_render() slot is called.
@@ -173,6 +174,9 @@ public:
     /// Contains the slot name that requests a rendering.
     VIZ_SCENE3D_API static const core::com::slots::key_t REQUEST_RENDER_SLOT;
 
+    /// Contains the slot name that requests a rendering.
+    VIZ_SCENE3D_API static const core::com::slots::key_t RENDER_SLOT;
+
     /// Contains the slot name that disables fullscreen rendering if it was enabled.
     VIZ_SCENE3D_API static const core::com::slots::key_t DISABLE_FULLSCREEN;
 
@@ -243,8 +247,8 @@ protected:
 
 private:
 
-    /// Renders the scene.
-    void paint();
+    /// Trigger a rendering right now of the current frame.
+    void render_now();
 
     /// Configures background layer of the scene.
     void configure_background_layer(const config_t& _cfg);

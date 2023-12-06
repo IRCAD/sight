@@ -130,7 +130,7 @@
 
         <connect>
             <signal>frameSynchronizerSrv/synchronization_done</signal>
-            <slot>genericSceneSrv/request_render</slot>
+            <slot>genericSceneSrv/render</slot>
             <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 

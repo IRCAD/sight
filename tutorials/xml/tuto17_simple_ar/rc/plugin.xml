@@ -514,7 +514,7 @@
             <!-- then process a new frame -->
             <connect>
                 <signal>syncGenericSceneSrv/all_received</signal>
-                <slot>genericSceneSrv/request_render</slot>
+                <slot>genericSceneSrv/render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

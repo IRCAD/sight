@@ -150,12 +150,7 @@ Ogre::SceneManager* adaptor::get_scene_manager()
 void adaptor::request_render()
 {
     auto render_service = this->render_service();
-    if((render_service->status() == service::base::global_status::started
-        || render_service->status() == service::base::global_status::swapping)
-       && render_service->get_render_mode() == viz::scene3d::render::render_mode::AUTO)
-    {
-        render_service->request_render();
-    }
+    render_service->request_render();
 }
 
 //-----------------------------------------------------------------------------

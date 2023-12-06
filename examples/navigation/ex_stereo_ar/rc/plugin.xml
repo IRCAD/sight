@@ -546,8 +546,8 @@
             <!-- then process a new frame -->
             <connect>
                 <signal>syncGenericSceneSrv/all_received</signal>
-                <slot>leftGenericSceneSrv/request_render</slot>
-                <slot>rightGenericSceneSrv/request_render</slot>
+                <slot>leftGenericSceneSrv/render</slot>
+                <slot>rightGenericSceneSrv/render</slot>
                 <slot>frameMatrixSynchronizerSrv/synchronize</slot>
             </connect>
 

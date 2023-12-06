@@ -400,7 +400,7 @@
 
             <connect>
                 <signal>frameUpdaterSrv/synchronization_done</signal>
-                <slot>ARSceneSrv/request_render</slot>
+                <slot>ARSceneSrv/render</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 

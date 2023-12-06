@@ -503,7 +503,7 @@
 
         <connect>
             <signal>chessboardDetectorSrv/updated</signal>
-            <slot>genericSceneSrv/request_render</slot>
+            <slot>genericSceneSrv/render</slot>
             <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
