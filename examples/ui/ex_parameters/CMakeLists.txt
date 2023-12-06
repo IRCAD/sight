@@ -1,14 +1,6 @@
 sight_add_target(ex_parameters TYPE APP)
 
-add_dependencies(
-    ex_parameters
-    sightrun
-    module_app
-    module_ui
-    module_ui_qt
-    module_service
-    module_ui
-)
+add_dependencies(ex_parameters sightrun module_app module_ui module_ui_qt module_service)
 
 # Allow dark theme via module_ui_qt
 module_param(

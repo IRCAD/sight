@@ -11,7 +11,8 @@ Contains all needed interfaces, helper classes and resources to build a Qt inter
 - **QtMainFame**: defines the Qt main frame.
 - **slice_selector**: defines a Qt panel used to control a VTK 2D Negatoscope view.
 - **worker_qt**: provides an implementation of core::thread::Worker using boost::asio.
-
+- **collapsible_section**: defines a collapsible section. 
+ 
 ### _builder_
 
 - **widget**: defines the generic layout manager.
