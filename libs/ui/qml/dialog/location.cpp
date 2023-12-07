@@ -100,7 +100,9 @@ core::location::base::sptr location::show()
     QEventLoop loop;
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
-    QMetaObject::invokeMethod(dialog, "open");
+
+    [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(dialog, "open");
+    SIGHT_ASSERT("The slot `open` was not found.", ok);
 
     loop.exec();
     delete dialog;

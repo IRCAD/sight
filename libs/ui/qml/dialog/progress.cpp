@@ -94,7 +94,9 @@ progress::progress(
         m_window->setProperty("title", QString::fromStdString(_title));
         m_dialog = m_window->findChild<QObject*>("dialog");
         SIGHT_ASSERT("The dialog is not found inside the window", m_dialog);
-        QMetaObject::invokeMethod(m_dialog, "open");
+
+        [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(m_dialog, "open");
+        SIGHT_ASSERT("The slot `open` was not found.", ok);
     }
 
     m_visible = true;
@@ -170,7 +172,13 @@ void progress::set_message(const std::string& _msg)
     message = message + QString::fromStdString(_msg);
     if(m_visible)
     {
-        QMetaObject::invokeMethod(m_dialog, "changeValue", Q_ARG(QVariant, message), Q_ARG(QVariant, qreal(m_value)));
+        [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(
+            m_dialog,
+            "changeValue",
+            Q_ARG(QVariant, message),
+            Q_ARG(QVariant, qreal(m_value))
+        );
+        SIGHT_ASSERT("The slot `changeValue` was not found.", ok);
     }
 }
 

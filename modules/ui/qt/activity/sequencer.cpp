@@ -367,8 +367,12 @@ void sequencer::go_to(int _index)
 
         m_current_activity = _index;
         QObject* object = m_widget->rootObject();
-        QMetaObject::invokeMethod(object, "setCurrentActivity", Q_ARG(QVariant, _index));
-        QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
+
+        ok = QMetaObject::invokeMethod(object, "setCurrentActivity", Q_ARG(QVariant, _index));
+        SIGHT_ASSERT("The slot `setCurrentActivity` was not found.", ok);
+
+        ok = QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
+        SIGHT_ASSERT("The slot `enableActivity` was not found.", ok);
     }
     else
     {
@@ -541,7 +545,9 @@ void sequencer::send_info() const
 void sequencer::enable_activity(int _index)
 {
     QObject* object = m_widget->rootObject();
-    QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
+
+    [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
+    SIGHT_ASSERT("The slot `enableActivity` was not found.", ok);
 }
 
 //------------------------------------------------------------------------------
@@ -549,7 +555,9 @@ void sequencer::enable_activity(int _index)
 void sequencer::disable_activity(int _index)
 {
     QObject* object = m_widget->rootObject();
-    QMetaObject::invokeMethod(object, "disableActivity", Q_ARG(QVariant, _index));
+
+    [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(object, "disableActivity", Q_ARG(QVariant, _index));
+    SIGHT_ASSERT("The slot `disableActivity` was not found.", ok);
 }
 
 //------------------------------------------------------------------------------

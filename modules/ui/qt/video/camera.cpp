@@ -477,7 +477,13 @@ void camera::on_choose_device()
             }
             else if(m_preference_mode)
             {
-                QMetaObject::invokeMethod(this, "setPreference", Qt::QueuedConnection);
+                [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(
+                    this,
+                    &camera::set_preference,
+                    Qt::QueuedConnection
+                );
+
+                SIGHT_ASSERT("The slot `set_preference` was not found.", ok);
             }
         }
 

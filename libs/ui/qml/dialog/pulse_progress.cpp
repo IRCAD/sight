@@ -88,7 +88,10 @@ void pulse_progress::show()
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
     QObject::connect(&future_watcher, SIGNAL(finished()), &loop, SLOT(quit()));
-    QMetaObject::invokeMethod(dialog, "open");
+
+    [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(dialog, "open");
+    SIGHT_ASSERT("The slot `open` was not found.", ok);
+
     future_watcher.setFuture(QtConcurrent::run(m_stuff));
     qGuiApp->installEventFilter(this);
     loop.exec();
