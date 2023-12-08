@@ -30,7 +30,9 @@
 
 #include <core/crypto/password_keeper.hpp>
 #include <core/runtime/profile/profile.hpp>
+#include <core/os/temp_path.hpp>
 #include <core/tools/os.hpp>
+#include <core/tools/system.hpp>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -135,22 +137,17 @@ inline static std::filesystem::path build_log_file_path(const std::filesystem::p
 
 inline static std::filesystem::path find_log_file_path(
     const std::filesystem::path& _log_file,
-    const std::filesystem::path& _profile_file,
+    const std::string& _profile_name,
     bool _encrypted_log
 )
 {
     if(_log_file.empty())
     {
-        // Parse the profile.xml to get the name
-        boost::property_tree::ptree profile_tree;
-        boost::property_tree::read_xml(_profile_file.string(), profile_tree);
-        const auto& profile_name = profile_tree.get<std::string>("profile.<xmlattr>.name");
-
         try
         {
             // Try the user cache directory
             return build_log_file_path(
-                sight::core::tools::os::get_user_cache_dir(profile_name),
+                sight::core::tools::os::get_user_cache_dir(_profile_name),
                 _encrypted_log
             );
         }
@@ -158,7 +155,7 @@ inline static std::filesystem::path find_log_file_path(
         {
             // Fallback: take temporary directory
             return build_log_file_path(
-                std::filesystem::temp_directory_path() / "sight" / profile_name,
+                std::filesystem::temp_directory_path() / "sight" / _profile_name,
                 _encrypted_log
             );
         }
@@ -359,6 +356,55 @@ int main(int argc, char* argv[])
         !std::filesystem::is_regular_file(profile_file)
     );
 
+    // Check if the same application is already running and if we are in "UNIQUE" mode
+    // Parse the profile.xml
+    boost::property_tree::ptree profile_tree;
+    boost::property_tree::read_xml(profile_file.string(), profile_tree);
+    const auto& profile_name = profile_tree.get<std::string>("profile.<xmlattr>.name");
+
+    // This will hold the pid file if required
+    std::unique_ptr<sight::core::os::temp_file> temp_pid_file;
+
+    // check-single-instance
+    if(profile_tree.get<bool>("profile.<xmlattr>.check-single-instance", false))
+    {
+        // Check if we already have a .pid file
+        const auto& cache_dir    = sight::core::tools::os::get_user_cache_dir(profile_name);
+        const auto& pid_filename = cache_dir / (profile_name + ".pid");
+
+        // If we have a .pid file, check if the process is still running
+        if(std::filesystem::exists(pid_filename) && std::filesystem::is_regular_file(pid_filename))
+        {
+            try
+            {
+                std::ifstream existing_pid_stream(pid_filename);
+                std::string existing_pid_str;
+                std::getline(existing_pid_stream, existing_pid_str);
+                const int existing_pid = std::stoi(existing_pid_str);
+
+                // If the process is still running, we exit
+                if(sight::core::tools::system::is_process_running(existing_pid))
+                {
+                    SIGHT_ERROR("An instance of " << profile_name << " is already running.");
+                    return 5;
+                }
+            }
+            catch(...)
+            {
+                // If we cannot read the pid, we continue
+                SIGHT_WARN("Cannot read pid file " << pid_filename);
+            }
+        }
+
+        // If we are here, there is no other instance running or the pid file is invalid
+        // We create a new pid file - It should be automatically deleted when the program exit
+        temp_pid_file = std::make_unique<sight::core::os::temp_file>(std::ios::out | std::ios::trunc, pid_filename);
+        (*temp_pid_file) << sight::core::tools::system::get_pid() << std::endl;
+        temp_pid_file->stream().close();
+
+        SIGHT_DEBUG("Created pid file " << temp_pid_file->string());
+    }
+
     // Log file
     spy_logger& logger = spy_logger::get();
 
@@ -369,7 +415,7 @@ int main(int argc, char* argv[])
 
     if(file_log)
     {
-        std::filesystem::path log_file_path = find_log_file_path(log_file, profile_file, encrypted_log);
+        const auto& log_file_path = find_log_file_path(log_file, profile_name, encrypted_log);
 
         if(encrypted_log)
         {
