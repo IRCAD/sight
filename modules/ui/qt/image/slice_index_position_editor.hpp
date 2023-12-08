@@ -68,7 +68,7 @@ public:
     MODULE_UI_QT_API slice_index_position_editor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~slice_index_position_editor() noexcept override;
+    MODULE_UI_QT_API ~slice_index_position_editor() noexcept override = default;
 
 protected:
 

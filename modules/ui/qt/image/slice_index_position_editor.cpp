@@ -62,11 +62,6 @@ slice_index_position_editor::slice_index_position_editor() noexcept
 
 //------------------------------------------------------------------------------
 
-slice_index_position_editor::~slice_index_position_editor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void slice_index_position_editor::starting()
 {
     this->create();
@@ -79,7 +74,12 @@ void slice_index_position_editor::starting()
 
     auto* layout = new QVBoxLayout();
 
-    m_slice_selector_panel = new sight::ui::qt::slice_selector(m_display_axis_selector, m_display_step_buttons);
+    m_slice_selector_panel = new sight::ui::qt::slice_selector(
+        m_display_axis_selector,
+        m_display_step_buttons,
+        1
+    );
+
     m_slice_selector_panel->setProperty("class", "slice_selector");
     m_slice_selector_panel->set_enable(false);
     m_slice_selector_panel->setObjectName(service_id);
@@ -230,11 +230,15 @@ void slice_index_position_editor::update_slice_index_from_img(const sight::data:
         int max = 0;
         if(_image.num_dimensions() > m_orientation)
         {
-            max = static_cast<int>(_image.size()[m_orientation] - 1);
+            max = static_cast<int>(image_size[m_orientation] - 1);
         }
 
         m_slice_selector_panel->set_slice_range(0, max);
         m_slice_selector_panel->set_slice_value(static_cast<int>(index));
+
+        // Find the max value for each dimension
+        const int absolute_max = int(*std::ranges::max_element(image_size) - 1);
+        m_slice_selector_panel->set_index_digits(std::uint8_t(std::to_string(absolute_max).length()));
     }
 }
 

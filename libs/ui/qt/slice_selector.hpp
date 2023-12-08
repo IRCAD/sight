@@ -42,33 +42,6 @@ class QStringList;
 namespace sight::ui::qt
 {
 
-// This proxy style class provides a way to set slider positions in an absolute way
-// which is very useful in general and especially for touchscreen input.
-// See: https://stackoverflow.com/questions/11132597/qslider-mouse-direct-jump
-class absolute_proxy_style : public QProxyStyle
-{
-public:
-
-    using QProxyStyle::QProxyStyle;
-
-    //------------------------------------------------------------------------------
-
-    int styleHint(
-        QStyle::StyleHint _hint,
-        const QStyleOption* _option    = 0,
-        const QWidget* _widget         = 0,
-        QStyleHintReturn* _return_data = 0
-    ) const
-    {
-        if(_hint == QStyle::SH_Slider_AbsoluteSetButtons)
-        {
-            return Qt::LeftButton | Qt::MiddleButton | Qt::RightButton;
-        }
-
-        return QProxyStyle::styleHint(_hint, _option, _widget, _return_data);
-    }
-};
-
 /**
  * @brief A Qt panel used to control a VTK 2D Negatoscope view.
  *
@@ -86,11 +59,14 @@ public:
     UI_QT_API_QT slice_selector(
         bool _display_axis_selector,
         bool _display_step_buttons,
-        QWidget* _parent = nullptr
+        std::uint8_t _index_digits = 1,
+        QWidget* _parent           = nullptr
     ) noexcept;
 
     /// @brief Destructor.
     UI_QT_API_QT ~slice_selector() noexcept override;
+
+    UI_QT_API_QT void set_index_digits(std::uint8_t _index_digits);
 
     UI_QT_API_QT void set_slice_range(int _min, int _max);
 
@@ -127,7 +103,7 @@ private:
     /// @brief The slice index slider widget.
     QPointer<QStyle> m_slice_index_style;
     QPointer<QSlider> m_slice_index;
-    QPointer<QLineEdit> m_p_slice_index_text;
+    QPointer<QLineEdit> m_slice_index_text;
 
     void print_index(int _index);
     void print_type(int _type);

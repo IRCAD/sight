@@ -97,11 +97,11 @@ Example:
             <state visible="${enableSliceSlider}" />
         </service>
 
-        <service uid="windowingAct" type="sight::module::ui::action" >
+        <service uid="windowingAct" type="sight::module::ui::action">
             <state checked="true" />
         </service>
 
-        <service uid="opacityAct" type="sight::module::ui::action" >
+        <service uid="opacityAct" type="sight::module::ui::action">
             <state visible="${enableOpacity}" />
         </service>
 
@@ -154,7 +154,7 @@ Example:
             <slot>sliceAct/check</slot>
             <slot>sliceAct/update</slot>
         </connect>
-    
+
         <start uid="view" />
 
     </config>
