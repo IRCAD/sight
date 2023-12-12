@@ -179,7 +179,7 @@ private:
     {
         text,
         checkbox,
-        u_int,
+        INT,
         path,
         file,
         combobox,
@@ -200,6 +200,7 @@ private:
         std::pair<int, int> m_i_min_max {0, 999999};
         std::pair<double, double> m_d_min_max {-1000000.0, 1000000.0};
         std::string m_separator;
+        std::vector<std::string> m_values;
     };
 
     /// @brief Converts string value from PreferenceElt.m_preferenceValue to real type regarding PreferenceElt.m_type.
@@ -210,6 +211,8 @@ private:
     static void on_select_dir(QPointer<QLineEdit> _line_edit);
 
     static void on_select_file(QPointer<QLineEdit> _line_edit);
+
+    void update_from_preferences() noexcept;
 
     parameters_modified_signal_t::sptr m_sig_parameters_modified;
     changed_signal_t::sptr m_sig_preference_changed;

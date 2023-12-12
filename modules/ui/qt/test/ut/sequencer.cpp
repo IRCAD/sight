@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,6 +21,8 @@
 
 #include "sequencer.hpp"
 
+#include "loader.hpp"
+
 #include <activity/extension/activity.hpp>
 
 #include <core/runtime/path.hpp>
@@ -37,69 +38,12 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <QApplication>
-#include <QMainWindow>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::sequencer);
 
 namespace sight::module::ui::qt::ut
 {
-
-struct service_launcher
-{
-    explicit service_launcher(
-        const std::string& _name,
-        const service::config_t& _config = {},
-        const std::string& _uid          = {}) :
-        m_frame(service::add("sight::module::ui::frame")),
-        m_service(service::add(_name, _uid.empty() ? _name : _uid))
-    {
-        CPPUNIT_ASSERT(m_frame);
-        CPPUNIT_ASSERT(m_service);
-
-        service::config_t frame_config;
-        frame_config.put("gui.frame.name", "guiQtUnitTest");
-        frame_config.put("gui.frame.minSize.<xmlattr>.width", "640");
-        frame_config.put("gui.frame.minSize.<xmlattr>.height", "480");
-        frame_config.put("registry.view.<xmlattr>.sid", _uid.empty() ? _name : _uid);
-
-        // Configure the services
-        CPPUNIT_ASSERT_NO_THROW(m_frame->set_config(frame_config));
-        CPPUNIT_ASSERT_NO_THROW(m_frame->configure());
-
-        CPPUNIT_ASSERT_NO_THROW(m_service->set_config(_config));
-        CPPUNIT_ASSERT_NO_THROW(m_service->configure());
-    }
-
-    ~service_launcher()
-    {
-        if(m_service->started())
-        {
-            CPPUNIT_ASSERT_NO_THROW(m_service->stop().wait());
-        }
-
-        CPPUNIT_ASSERT_NO_THROW(service::unregister_service(m_service));
-
-        if(m_frame->started())
-        {
-            CPPUNIT_ASSERT_NO_THROW(m_frame->stop().wait());
-        }
-
-        CPPUNIT_ASSERT_NO_THROW(service::unregister_service(m_frame));
-    }
-
-    //------------------------------------------------------------------------------
-
-    void start()
-    {
-        // Start the services
-        CPPUNIT_ASSERT_NO_THROW(m_frame->start().wait());
-        CPPUNIT_ASSERT_NO_THROW(m_service->start().wait());
-    }
-
-    const service::base::sptr m_frame;
-    const service::base::sptr m_service;
-};
 
 //------------------------------------------------------------------------------
 
@@ -111,61 +55,41 @@ void sequencer::setUp()
     static bool done = false;
     if(!done)
     {
-        CPPUNIT_ASSERT_NO_THROW(
-            core::runtime::add_modules(
-                core::runtime::get_resource_file_path(
-                    "module_ui_qt_ut"
-                )
-            )
-        );
         CPPUNIT_ASSERT_NO_THROW(core::runtime::load_module("ut_sequencer"));
-
         done = true;
     }
 
     CPPUNIT_ASSERT_NO_THROW(sight::activity::extension::activity::get_default()->parse_plugin_infos());
+
+    // Build container
+    std::tie(m_container, m_child_uuid) = make_container();
 }
 
 //------------------------------------------------------------------------------
 
 void sequencer::tearDown()
 {
+    // Destroy container
+    destroy_container(m_container);
+
     // Clean up after the test run.
     CPPUNIT_ASSERT_NO_THROW(sight::activity::extension::activity::get_default()->clear_registry());
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::basic_test()
-{
-    // Build sequencer configuration
-    service::config_t sequencer_config;
-
-    for(int i = 0 ; i < 3 ; ++i)
-    {
-        auto& activity = sequencer_config.add("activity", "");
-        activity.put("<xmlattr>.id", "id_" + std::to_string(i));
-        activity.put("<xmlattr>.name", "name_" + std::to_string(i));
-    }
-
-    // Register the service
-    service_launcher sequencer("sight::module::ui::qt::activity::sequencer", sequencer_config);
-
-    // Set inout
-    auto activity_set = std::make_shared<data::activity_set>();
-    sequencer.m_service->set_inout(activity_set, "activitySet", true);
-
-    // Start the service
-    sequencer.start();
-
-    // This should go to the first activity
-    sequencer.m_service->update().wait();
-}
-
-//------------------------------------------------------------------------------
-
 void sequencer::reset_requirements_test()
 {
+    // Register the service
+    sight::service::base::sptr sequencer(service::add("sight::module::ui::qt::activity::sequencer", m_child_uuid));
+
+    // Will stop the service and unregister it when destroyed
+    service_cleaner cleaner(sequencer);
+
+    // Set inout
+    auto activity_set = std::make_shared<data::activity_set>();
+    sequencer->set_inout(activity_set, "activitySet", true);
+
     // Build sequencer configuration
     service::config_t sequencer_config;
 
@@ -176,26 +100,21 @@ void sequencer::reset_requirements_test()
         activity.put("<xmlattr>.name", "name_" + std::to_string(i));
     }
 
-    // Register the service
-    service_launcher sequencer("sight::module::ui::qt::activity::sequencer", sequencer_config);
+    // Configure the service
+    CPPUNIT_ASSERT_NO_THROW(sequencer->configure(sequencer_config));
 
-    // Set inout
-    auto activity_set = std::make_shared<data::activity_set>();
-    sequencer.m_service->set_inout(activity_set, "activitySet", true);
-
-    // Start the service
-    sequencer.start();
+    CPPUNIT_ASSERT_NO_THROW(sequencer->start().get());
 
     // This should go to the first activity
-    sequencer.m_service->update().wait();
+    CPPUNIT_ASSERT_NO_THROW(sequencer->update().get());
 
     // Add some requirements from "outside"
     activity_set->at(0)->insert_or_assign("outside_1", std::make_shared<data::integer>(1));
     activity_set->at(0)->insert_or_assign("outside_2", std::make_shared<data::integer>(2));
 
     // Go to the last activity, so all requirements are created
-    sequencer.m_service->slot("next")->run();
-    sequencer.m_service->slot("next")->run();
+    CPPUNIT_ASSERT_NO_THROW(sequencer->slot("next")->run());
+    CPPUNIT_ASSERT_NO_THROW(sequencer->slot("next")->run());
 
     // 3 activities should be in the set
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), activity_set->size());
@@ -247,14 +166,17 @@ void sequencer::reset_requirements_test()
     check_activity(true, true);
 
     // Just to be sure, check that nothing change
-    sequencer.m_service->update().wait();
+    CPPUNIT_ASSERT_NO_THROW(sequencer->update().get());
     check_activity(false);
 
     // Reset the requirements
-    sequencer.m_service->slot("reset_requirements")->run();
+    CPPUNIT_ASSERT_NO_THROW(sequencer->slot("reset_requirements")->run());
 
     // Check that the requirements are reset
     check_activity(true);
+
+    // cleanup
+    CPPUNIT_ASSERT_NO_THROW(sequencer->stop().get());
 }
 
 //------------------------------------------------------------------------------

@@ -25,27 +25,36 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <filesystem>
+
 namespace sight::module::ui::qt::ut
 {
 
 /**
  * @brief Test many methods to create mesh.
  */
-class sequencer : public CPPUNIT_NS::TestFixture
+class preferences_configuration : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(sequencer);
-CPPUNIT_TEST(reset_requirements_test);
+CPPUNIT_TEST_SUITE(preferences_configuration);
+CPPUNIT_TEST(widgets_test);
+CPPUNIT_TEST(preferences_changed_after_start_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
+    ~preferences_configuration() override;
 
     // interface
     void setUp() override;
     void tearDown() override;
 
-    void reset_requirements_test();
+    void widgets_test();
+    void preferences_changed_after_start_test();
 
 private:
+
+    /// The path where the preference file is stored.
+    std::filesystem::path m_preferences_path;
 
     /// The container service
     sight::service::base::sptr m_container;
