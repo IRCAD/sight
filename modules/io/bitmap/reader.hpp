@@ -67,11 +67,7 @@ namespace sight::module::io::bitmap
         <inout key="data" uid="..." />
         <file>...</file>
         <dialog>...</dialog>
-        <backends>
-            <libtiff>
-            <libpng>
-            ...
-        <backends/>
+        <gpu_required>true|false</gpu_required>
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -85,20 +81,7 @@ namespace sight::module::io::bitmap
  *          - \b "never": never show the file load / extension change dialog. (DEFAULT)
  *          - \b "once": show only once, store the location as long as the service is started
  *          - \b "always": always show the location dialog / extension change dialog
- * - \b backends (optional): defines the backend available. If nothing is defined the default (LIBTIFF) backend is used.
- *               @see sight::io::bitmap::Reader
- *      \b enable (optional): enable group of backends.
- *          - \b "all": enable everything. GPU backends, if available have precedence over CPU ones.
- *          - \b "cpu": enable all CPU backends.
- *          - \b "gpu": enable all GPU backends.
- *      - \b libjpeg (optional): enable LibJPEG backend.
- *      - \b libtiff (optional): enable libTIFF backend.
- *      - \b libpng (optional): enable libPNG backend.
- *      - \b openjpeg (optional): enable openJPEG backend.
- *
- * If the support has been compiled in and if a CUDA capable GPU is found:
- *      - \b nvjpeg (optional): enable nvjpeg backend
- *      - \b nvjpeg2k (optional): enable nvjpeg2k backend
+ * - \b gpu_required (optional): returns an error if GPU support is not enabled.
  */
 class MODULE_IO_BITMAP_CLASS_API reader final : public sight::io::service::reader
 {

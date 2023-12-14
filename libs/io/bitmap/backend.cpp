@@ -42,7 +42,7 @@ data::sequenced_set<std::string> extensions(backend _backend)
             return {detail::JPG_EXT, detail::JPEG_EXT};
 
         case backend::nvjpeg2k_j2k:
-        case backend::openjpeg_j2_k:
+        case backend::openjpeg_j2k:
             return {detail::J2K_EXT};
 
         case backend::nvjpeg2k:
@@ -132,7 +132,7 @@ std::pair<std::string, std::string> wildcard_filter(backend _backend)
             return std::make_pair(detail::J2K_LABEL, std::string("*") + detail::JP2_EXT);
 
         case backend::nvjpeg2k_j2k:
-        case backend::openjpeg_j2_k:
+        case backend::openjpeg_j2k:
             return std::make_pair(detail::J2K_LABEL, std::string("*") + detail::J2K_EXT);
 
         case backend::libtiff:

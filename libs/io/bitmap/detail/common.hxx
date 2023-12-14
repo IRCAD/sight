@@ -88,7 +88,7 @@ inline static backend extension_to_backend(const std::string& _extension)
             return backend::nvjpeg2k_j2k;
         }
 
-        return backend::openjpeg_j2_k;
+        return backend::openjpeg_j2k;
     }
 
     if(_extension.ends_with(detail::JP2_EXT))

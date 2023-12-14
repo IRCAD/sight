@@ -336,7 +336,7 @@ void writer_test::extensions_test()
     std::vector<backend> backends {
         io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
         io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2_k,
+        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
         backend::libtiff,
         backend::libpng
     };
@@ -363,7 +363,7 @@ void writer_test::wildcard_test()
     std::vector<backend> backends {
         io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
         io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2_k,
+        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
         backend::libtiff,
         backend::libpng
     };

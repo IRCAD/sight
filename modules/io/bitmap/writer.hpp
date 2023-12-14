@@ -65,11 +65,8 @@ namespace sight::module::io::bitmap
         <in key="data" uid="..." />
         <file>...</file>
         <dialog>...</dialog>
-        <backends mode="fast">
-            <libtiff mode="best">
-            <libpng mode="fast">
-            ...
-        <backends/>
+        <gpu_required>true|false</gpu_required>
+        <mode>best|fast</mode>
     </service>
    @endcode
  * @subsection Input Input
@@ -83,29 +80,10 @@ namespace sight::module::io::bitmap
  *          - \b "never": never show the file save / extension change dialog. (DEFAULT)
  *          - \b "once": show only once, store the location as long as the service is started
  *          - \b "always": always show the location dialog / extension change dialog
- * - \b backends (optional): defines the backend available. If nothing is defined the default (LIBTIFF) backend is used.
- *               @see sight::io::bitmap::Writer
- *      \b enable (optional): enable group of backends.
- *          - \b "all": enable everything. GPU backends, if available have precedence over CPU ones.
- *          - \b "cpu": enable all CPU backends.
- *          - \b "gpu": enable all GPU backends.
- *      \b mode (optional): set the mode, which defines the compression/speed ratio
- *          - \b "best": emphasis compression over speed
- *          - \b "fast": emphasis speed over compression (DEFAULT)
- *      - \b libjpeg (optional): enable LibJPEG backend.
- *          \b mode (optional)
- *      - \b libtiff (optional): enable libTIFF backend.
- *          \b mode (optional)
- *      - \b libpng (optional): enable libPNG backend.
- *          \b mode (optional)
- *      - \b openjpeg (optional): enable openJPEG backend.
- *          \b mode (optional)
- *
- * If the support has been compiled in and if a CUDA capable GPU is found:
- *      - \b nvjpeg (optional): enable nvjpeg backend
- *          \b mode (optional)
- *      - \b nvjpeg2k (optional): enable nvjpeg2k backend
- *          \b mode (optional)
+ * - \b gpu_required (optional): returns an error if GPU support is not enabled.
+ *   \b mode (optional): set the mode, which defines the compression/speed ratio
+ *       - \b "best": emphasis compression over speed
+ *       - \b "fast": emphasis speed over compression (DEFAULT)
  */
 class MODULE_IO_BITMAP_CLASS_API writer final : public sight::io::service::writer
 {

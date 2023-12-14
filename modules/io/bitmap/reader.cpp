@@ -188,164 +188,59 @@ void reader::configuring()
         m_selected_backend = sight::io::bitmap::backend::any;
     }
 
-    const auto& tree = get_config();
+    const auto& config = this->get_config();
 
     // Dialog configuration
-    if(const auto& dialog_tree = tree.get_child_optional("dialog.<xmlattr>"); dialog_tree.is_initialized())
+    if(const auto& dialog_tree = config.get_child_optional("dialog.<xmlattr>"); dialog_tree.is_initialized())
     {
         m_dialog_policy = string_to_dialog_policy(dialog_tree->get<std::string>("policy", "default"));
-
-        SIGHT_THROW_IF(
-            "Cannot read dialog policy.",
-            m_dialog_policy == dialog_policy::invalid
-        );
+        SIGHT_THROW_IF("Cannot read dialog policy.", m_dialog_policy == dialog_policy::invalid);
     }
 
-    // Backend configuration
-    if(const auto& backends_tree = tree.get_child_optional("backends"); backends_tree.is_initialized())
+    [[maybe_unused]] const bool gpu_required = config.get("gpu_required", false);
+
+    // Backend configuration, add everything, use GPU backend if available
+    m_backends.emplace(sight::io::bitmap::backend::libpng);
+    m_backends.emplace(sight::io::bitmap::backend::libtiff);
+
+#if defined(SIGHT_ENABLE_NVJPEG)
+    if(sight::io::bitmap::nv_jpeg())
     {
-        // Remove default configuration
-        m_backends.clear();
-
-        if(const auto& enabled = backends_tree->get_optional<std::string>("<xmlattr>.enable");
-           enabled.is_initialized() && *enabled == "all")
-        {
-            // We add everything. Use GPU backend if available
-            m_backends.emplace(sight::io::bitmap::backend::libpng);
-            m_backends.emplace(sight::io::bitmap::backend::libtiff);
-
-#if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nv_jpeg())
-            {
-                m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
-            }
-            else
- #endif
-            {
-                m_backends.emplace(sight::io::bitmap::backend::libjpeg);
-            }
+        m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
+    }
+    else
+#else
+    if(gpu_required)
+    {
+        ui::dialog::message::show(
+            "Error",
+            "GPU support required to read jpeg bitmaps but it was not built.",
+            ui::dialog::message::critical
+        );
+    }
+#endif
+    {
+        m_backends.emplace(sight::io::bitmap::backend::libjpeg);
+    }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nv_jpeg_2k())
-            {
-                m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
-            }
-            else
- #endif
-            {
-                m_backends.emplace(sight::io::bitmap::backend::openjpeg);
-            }
-        }
-        else if(enabled.is_initialized() && *enabled == "cpu")
-        {
-            // We add only cpu backends
-            m_backends.emplace(sight::io::bitmap::backend::libjpeg);
-            m_backends.emplace(sight::io::bitmap::backend::libpng);
-            m_backends.emplace(sight::io::bitmap::backend::libtiff);
-            m_backends.emplace(sight::io::bitmap::backend::openjpeg);
-        }
-        else if(enabled.is_initialized() && *enabled == "gpu")
-        {
-            // We add only gpu backends, if possible
-#if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nv_jpeg())
-            {
-                m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
-            }
+    if(sight::io::bitmap::nv_jpeg_2k())
+    {
+        m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
+    }
+    else
+#else
+    if(gpu_required)
+    {
+        ui::dialog::message::show(
+            "Error",
+            "GPU support required to read jpeg2k bitmaps but it was not built.",
+            ui::dialog::message::critical
+        );
+    }
 #endif
-
-#if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nv_jpeg_2k())
-            {
-                m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
-            }
-#endif
-
-            SIGHT_THROW_IF(
-                "No GPU backend available.",
-                !sight::io::bitmap::nv_jpeg() && !sight::io::bitmap::nv_jpeg_2k()
-            );
-        }
-
-        // Add hand selected backends
-        if(const auto& node = backends_tree->get_child_optional("default"); node.is_initialized())
-        {
-            m_backends.emplace(sight::io::bitmap::backend::libtiff);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("libjpeg");
-           node.is_initialized()
-#if defined(SIGHT_ENABLE_NVJPEG)
-           && !m_backends.contains(sight::io::bitmap::backend::nvjpeg)
-#endif
-        )
-        {
-            m_backends.emplace(sight::io::bitmap::backend::libjpeg);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("libpng"); node.is_initialized())
-        {
-            m_backends.emplace(sight::io::bitmap::backend::libpng);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("libtiff"); node.is_initialized())
-        {
-            m_backends.emplace(sight::io::bitmap::backend::libtiff);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("openjpeg");
-           node.is_initialized()
-#if defined(SIGHT_ENABLE_NVJPEG2K)
-           && !m_backends.contains(sight::io::bitmap::backend::nvjpeg2k)
-#endif
-        )
-        {
-            m_backends.emplace(sight::io::bitmap::backend::openjpeg);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("nvjpeg"); node.is_initialized())
-        {
-#if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nv_jpeg())
-            {
-                m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
-
-                // Remove libjpeg since we have a better alternative...
-                m_backends.erase(sight::io::bitmap::backend::libjpeg);
-            }
-            else
-#endif
-            {
-                SIGHT_WARN("nvjpeg GPU backend is not available. It will be replaced by libjpeg.");
-
-                if(!m_backends.contains(sight::io::bitmap::backend::libjpeg))
-                {
-                    m_backends.emplace(sight::io::bitmap::backend::libjpeg);
-                }
-            }
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("nvjpeg2k"); node.is_initialized())
-        {
-#if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nv_jpeg_2k())
-            {
-                m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
-
-                // Remove openjpeg since we have a better alternative...
-                m_backends.erase(sight::io::bitmap::backend::openjpeg);
-            }
-            else
-#endif
-            {
-                SIGHT_WARN("nvjpeg2k GPU backend is not available. It will be replaced by openJPEG.");
-
-                if(!m_backends.contains(sight::io::bitmap::backend::openjpeg))
-                {
-                    m_backends.emplace(sight::io::bitmap::backend::openjpeg);
-                }
-            }
-        }
+    {
+        m_backends.emplace(sight::io::bitmap::backend::openjpeg);
     }
 }
 
@@ -440,7 +335,7 @@ void reader::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto write_job = std::make_shared<core::jobs::job>(
+    const auto read_job = std::make_shared<core::jobs::job>(
         "Writing '" + file_path.string() + "' file",
         [&](core::jobs::job& _running_job)
         {
@@ -467,7 +362,7 @@ void reader::updating()
     );
 
     core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(file_path.string() + " reader");
-    jobs->add(write_job);
+    jobs->add(read_job);
     jobs->set_cancelable(false);
 
     m_job_created_signal->emit(jobs);
@@ -495,6 +390,13 @@ void reader::updating()
             "Reading process aborted",
             sight::ui::dialog::message::warning
         );
+    }
+
+    auto image = m_data.lock();
+    auto sig   = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+    {
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 
     m_dialog_shown = false;

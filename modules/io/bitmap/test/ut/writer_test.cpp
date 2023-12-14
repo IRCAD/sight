@@ -126,30 +126,27 @@ inline static data::image::csptr get_synthetic_image()
 inline static void test_enable(
     const std::filesystem::path& _temp_folder,
     const data::image::csptr& _expected_image,
-    const std::vector<sight::io::bitmap::backend>& _backends,
     const std::vector<sight::io::bitmap::writer::mode>& _modes,
-    const std::string _enabled
+    bool _gpu_required
 )
 {
-    for(const auto& backend : _backends)
+    const std::array<std::string, 4> extensions = {".jp2", ".jpg", ".png", ".tiff"};
+
+    for(const auto& ext : extensions)
     {
+        const auto filename   = "config_" + ext;
+        const auto& file_path = _temp_folder / filename;
+
         std::map<sight::io::bitmap::writer::mode, std::size_t> sizes;
 
         for(const auto& mode : _modes)
         {
             const std::string mode_string(mode == sight::io::bitmap::writer::mode::best ? "best" : "fast");
-            const auto& file_path = _temp_folder / (
-                "config_" + mode_string + sight::io::bitmap::extensions(backend).front()
-            );
 
             // Add file
             service::config_t config;
             config.add("file", file_path.string());
-
-            boost::property_tree::ptree backends_tree;
-            backends_tree.put("<xmlattr>.enable", _enabled);
-            backends_tree.put("<xmlattr>.mode", mode_string);
-            config.add_child("backends", backends_tree);
+            config.add("gpu_required", _gpu_required);
 
             // Run the service
             runwriter(config, _expected_image);
@@ -174,23 +171,10 @@ inline static void test_enable(
             sizes[sight::io::bitmap::writer::mode::fast]
         );
 
-        // openJPEG have no "BEST" or "FAST" mode and nvJPEG2000 can be equal
-        if(backend == sight::io::bitmap::backend::openjpeg
-           || backend == sight::io::bitmap::backend::nvjpeg2k)
-        {
-            CPPUNIT_ASSERT_LESSEQUAL(
-                sizes[sight::io::bitmap::writer::mode::fast],
-                sizes[sight::io::bitmap::writer::mode::best]
-            );
-        }
-        else
-        {
-            // Best should compress better
-            CPPUNIT_ASSERT_LESSEQUAL(
-                sizes[sight::io::bitmap::writer::mode::fast],
-                sizes[sight::io::bitmap::writer::mode::best]
-            );
-        }
+        CPPUNIT_ASSERT_LESSEQUAL(
+            sizes[sight::io::bitmap::writer::mode::fast],
+            sizes[sight::io::bitmap::writer::mode::best]
+        );
     }
 }
 
@@ -234,26 +218,6 @@ void writer_test::config_test()
 {
     core::os::temp_dir tmp_dir;
 
-    // Build backend list
-    std::vector backends {
-        sight::io::bitmap::backend::libpng,
-        sight::io::bitmap::backend::libtiff
-    };
-
-    if(sight::io::bitmap::nv_jpeg())
-    {
-        backends.push_back(sight::io::bitmap::backend::nvjpeg);
-    }
-
-    backends.push_back(sight::io::bitmap::backend::libjpeg);
-
-    if(sight::io::bitmap::nv_jpeg_2k())
-    {
-        backends.push_back(sight::io::bitmap::backend::nvjpeg2k);
-    }
-
-    backends.push_back(sight::io::bitmap::backend::openjpeg);
-
     // Build mode list
     const std::vector modes {
         sight::io::bitmap::writer::mode::best,
@@ -261,120 +225,13 @@ void writer_test::config_test()
     };
 
     const auto& expected_image = get_synthetic_image();
-
-    // Test enable="all"
     {
-        // For each backend and each mode ("all" means ".jpeg, .tiff, .png, .jp2")
-        test_enable(tmp_dir, expected_image, backends, modes, "all");
+        test_enable(tmp_dir, expected_image, modes, false);
     }
 
-    // Test enable="cpu"
+    if(sight::io::bitmap::nv_jpeg())
     {
-        // For each backend and each mode ("cpu" means ".jpeg, .tiff, .png, .jp2")
-        test_enable(tmp_dir, expected_image, backends, modes, "cpu");
-    }
-
-    // Test enable="gpu"
-    if(sight::io::bitmap::nv_jpeg()
-       || sight::io::bitmap::nv_jpeg_2k())
-    {
-        std::vector<sight::io::bitmap::backend> gpu_backend;
-
-        if(sight::io::bitmap::nv_jpeg())
-        {
-            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg);
-        }
-
-        if(sight::io::bitmap::nv_jpeg_2k())
-        {
-            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg2k);
-        }
-
-        // For each backend and each mode ("cpu" means ".jpeg, .jp2")
-        test_enable(tmp_dir, expected_image, gpu_backend, modes, "gpu");
-    }
-
-    // Test custom backend choice
-    {
-        for(const auto& backend : backends)
-        {
-            std::map<sight::io::bitmap::writer::mode, std::size_t> sizes;
-
-            for(const auto& mode : modes)
-            {
-                const std::string mode_string(mode == sight::io::bitmap::writer::mode::best ? "best" : "fast");
-                const auto& file_path = tmp_dir / (
-                    "config_" + mode_string + sight::io::bitmap::extensions(backend).front()
-                );
-
-                // Add file
-                service::config_t config;
-                config.add("file", file_path.string());
-
-                // Add tiff and png backend
-                boost::property_tree::ptree tiff_backend_tree;
-                tiff_backend_tree.put("<xmlattr>.mode", mode_string);
-
-                boost::property_tree::ptree png_backend_tree;
-                png_backend_tree.put("<xmlattr>.mode", mode_string);
-
-                boost::property_tree::ptree backends_tree;
-                backends_tree.add_child("libtiff", tiff_backend_tree);
-                backends_tree.add_child("libpng", png_backend_tree);
-                config.add_child("backends", backends_tree);
-
-                if(backend == sight::io::bitmap::backend::libtiff
-                   || backend == sight::io::bitmap::backend::libpng)
-                {
-                    // Run the service
-                    runwriter(config, expected_image);
-
-                    // Only test if the file exists. Conformance tests are already done in the writer
-                    CPPUNIT_ASSERT_MESSAGE(
-                        "File '" + file_path.string() + "' doesn't exist.",
-                        std::filesystem::exists(file_path) && std::filesystem::is_regular_file(file_path)
-                    );
-
-                    sizes.insert_or_assign(mode, std::filesystem::file_size(file_path));
-                }
-                else
-                {
-                    // Run the service -> Write should work, but the extension should be changed
-                    runwriter(config, expected_image);
-
-                    auto tiff_file_path = file_path;
-                    tiff_file_path.replace_extension(
-                        sight::io::bitmap::extensions(sight::io::bitmap::backend::libtiff).front()
-                    );
-
-                    CPPUNIT_ASSERT_MESSAGE(
-                        "File '" + tiff_file_path.string() + "' doesn't exist.",
-                        std::filesystem::exists(tiff_file_path) && std::filesystem::is_regular_file(tiff_file_path)
-                    );
-                }
-            }
-
-            if(backend == sight::io::bitmap::backend::libtiff
-               || backend == sight::io::bitmap::backend::libpng)
-            {
-                // Sizes should be bigger than 0..
-                CPPUNIT_ASSERT_GREATER(
-                    std::size_t(0),
-                    sizes[sight::io::bitmap::writer::mode::best]
-                );
-
-                CPPUNIT_ASSERT_GREATER(
-                    std::size_t(0),
-                    sizes[sight::io::bitmap::writer::mode::fast]
-                );
-
-                // Best should compress better
-                CPPUNIT_ASSERT_LESSEQUAL(
-                    sizes[sight::io::bitmap::writer::mode::fast],
-                    sizes[sight::io::bitmap::writer::mode::best]
-                );
-            }
-        }
+        test_enable(tmp_dir, expected_image, modes, true);
     }
 }
 

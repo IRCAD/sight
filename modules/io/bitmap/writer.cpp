@@ -188,193 +188,78 @@ void writer::configuring()
         m_selected_backend = sight::io::bitmap::backend::any;
     }
 
-    const auto& tree = get_config();
+    const auto& config = get_config();
 
     // Dialog configuration
-    if(const auto& dialog_tree = tree.get_child_optional("dialog.<xmlattr>"); dialog_tree.is_initialized())
+    if(const auto& dialog_tree = config.get_child_optional("dialog.<xmlattr>"); dialog_tree.is_initialized())
     {
         m_dialog_policy = string_to_dialog_policy(dialog_tree->get<std::string>("policy", "default"));
 
-        SIGHT_THROW_IF(
-            "Cannot read dialog policy.",
-            m_dialog_policy == dialog_policy::invalid
-        );
+        SIGHT_THROW_IF("Cannot read dialog policy.", m_dialog_policy == dialog_policy::invalid);
     }
 
-    // Backend configuration
-    if(const auto& backends_tree = tree.get_child_optional("backends"); backends_tree.is_initialized())
+    [[maybe_unused]] const bool gpu_required = config.get("gpu_required", false);
+
+    // Lambda to parse "mode" string
+    const auto& string_to_mode = [](const std::string& _mode_string)
+                                 {
+                                     if(_mode_string == "default" || _mode_string == "fast")
+                                     {
+                                         return sight::io::bitmap::writer::mode::fast;
+                                     }
+
+                                     if(_mode_string == "best")
+                                     {
+                                         return sight::io::bitmap::writer::mode::best;
+                                     }
+
+                                     SIGHT_THROW("Unknown mode: '" << _mode_string << "'.");
+                                 };
+
+    const auto mode = string_to_mode(config.get("mode", std::string("default")));
+
+    // We add everything. Use GPU backend if available
+    m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libpng, mode);
+    m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, mode);
+
+#if defined(SIGHT_ENABLE_NVJPEG)
+    if(sight::io::bitmap::nv_jpeg())
     {
-        // Remove default configuration
-        m_mode_by_backend.clear();
-
-        // Lambda to parse "mode" string
-        const auto& string_to_mode =
-            [](const std::string& _mode_string)
-            {
-                if(_mode_string == "default" || _mode_string == "fast")
-                {
-                    return sight::io::bitmap::writer::mode::fast;
-                }
-
-                if(_mode_string == "best")
-                {
-                    return sight::io::bitmap::writer::mode::best;
-                }
-
-                SIGHT_THROW("Unknown mode: '" << _mode_string << "'.");
-            };
-
-        const auto& backends_mode_string = backends_tree->get<std::string>("<xmlattr>.mode", "default");
-        const auto& backends_mode        = string_to_mode(backends_mode_string);
-
-        if(const auto& enabled = backends_tree->get_optional<std::string>("<xmlattr>.enable");
-           enabled.is_initialized() && *enabled == "all")
-        {
-            // We add everything. Use GPU backend if available
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libpng, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, backends_mode);
-
-#if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nv_jpeg())
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, backends_mode);
-            }
-            else
- #endif
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, backends_mode);
-            }
+        m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, mode);
+    }
+    else
+#else
+    if(gpu_required)
+    {
+        ui::dialog::message::show(
+            "Error",
+            "GPU support required to write jpeg bitmaps but it was not built.",
+            ui::dialog::message::critical
+        );
+    }
+#endif
+    {
+        m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, mode);
+    }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nv_jpeg_2k())
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, backends_mode);
-            }
-            else
- #endif
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::openjpeg, backends_mode);
-            }
-        }
-        else if(enabled.is_initialized() && *enabled == "cpu")
-        {
-            // We add only cpu backends
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libpng, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::openjpeg, backends_mode);
-        }
-        else if(enabled.is_initialized() && *enabled == "gpu")
-        {
-            // We add only gpu backends, if possible
-#if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nv_jpeg())
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, backends_mode);
-            }
+    if(sight::io::bitmap::nv_jpeg_2k())
+    {
+        m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, mode);
+    }
+    else
+#else
+    if(gpu_required)
+    {
+        ui::dialog::message::show(
+            "Error",
+            "GPU support required to write jpeg2k bitmaps but it was not built.",
+            ui::dialog::message::critical
+        );
+    }
 #endif
-
-#if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nv_jpeg_2k())
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, backends_mode);
-            }
-#endif
-
-            SIGHT_THROW_IF(
-                "No GPU backend available.",
-                !sight::io::bitmap::nv_jpeg() && !sight::io::bitmap::nv_jpeg_2k()
-            );
-        }
-
-        // Add hand selected backends
-        if(const auto& node = backends_tree->get_child_optional("default"); node.is_initialized())
-        {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, mode);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("libjpeg");
-           node.is_initialized()
-#if defined(SIGHT_ENABLE_NVJPEG)
-           && !m_mode_by_backend.contains(sight::io::bitmap::backend::nvjpeg)
-#endif
-        )
-        {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, mode);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("libpng"); node.is_initialized())
-        {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libpng, mode);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("libtiff"); node.is_initialized())
-        {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, mode);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("openjpeg");
-           node.is_initialized()
-#if defined(SIGHT_ENABLE_NVJPEG2K)
-           && !m_mode_by_backend.contains(sight::io::bitmap::backend::nvjpeg2k)
-#endif
-        )
-        {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::openjpeg, mode);
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("nvjpeg"); node.is_initialized())
-        {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-
-#if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nv_jpeg())
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, mode);
-
-                // Remove libjpeg since we have a better alternative...
-                m_mode_by_backend.erase(sight::io::bitmap::backend::libjpeg);
-            }
-            else
-#endif
-            {
-                SIGHT_WARN("nvjpeg GPU backend is not available. It will be replaced by libjpeg.");
-
-                if(!m_mode_by_backend.contains(sight::io::bitmap::backend::libjpeg))
-                {
-                    m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, mode);
-                }
-            }
-        }
-
-        if(const auto& node = backends_tree->get_child_optional("nvjpeg2k"); node.is_initialized())
-        {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-
-#if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nv_jpeg_2k())
-            {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, mode);
-
-                // Remove openjpeg since we have a better alternative...
-                m_mode_by_backend.erase(sight::io::bitmap::backend::openjpeg);
-            }
-            else
-#endif
-            {
-                SIGHT_WARN("nvjpeg2k GPU backend is not available. It will be replaced by openJPEG.");
-
-                if(!m_mode_by_backend.contains(sight::io::bitmap::backend::openjpeg))
-                {
-                    m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::openjpeg, mode);
-                }
-            }
-        }
+    {
+        m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::openjpeg, mode);
     }
 }
 

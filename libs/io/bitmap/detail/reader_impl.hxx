@@ -94,7 +94,7 @@ public:
         {
             read<open_jpeg_reader>(m_open_jpeg, *image, _istream);
         }
-        else if(_backend == backend::openjpeg_j2_k)
+        else if(_backend == backend::openjpeg_j2k)
         {
             read<open_jpeg_reader>(
                 m_open_jpeg,

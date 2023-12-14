@@ -31,15 +31,15 @@ namespace sight::io::bitmap
 /// @brief Supported backends. Some of them require an NVidia GPU
 enum class backend : std::uint8_t
 {
-    any           = 0,    ///< Use the file extension to guess the backend. Use DEFAULT if the extension is unknown.
-    nvjpeg        = 1,
-    nvjpeg2k      = 2,
-    nvjpeg2k_j2k  = 3,
-    libjpeg       = 4,
-    libtiff       = 5,
-    libpng        = 6,
-    openjpeg      = 7,
-    openjpeg_j2_k = 8
+    any          = 0,     ///< Use the file extension to guess the backend. Use DEFAULT if the extension is unknown.
+    nvjpeg       = 1,
+    nvjpeg2k     = 2,
+    nvjpeg2k_j2k = 3,
+    libjpeg      = 4,
+    libtiff      = 5,
+    libpng       = 6,
+    openjpeg     = 7,
+    openjpeg_j2k = 8
 };
 
 /// Return the extension associated with the given backend

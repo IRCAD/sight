@@ -57,9 +57,9 @@ inline static void runreader(
 
     CPPUNIT_ASSERT_NO_THROW(sreader->set_config(_config));
     CPPUNIT_ASSERT_NO_THROW(sreader->configure());
-    CPPUNIT_ASSERT_NO_THROW(sreader->start().wait());
-    CPPUNIT_ASSERT_NO_THROW(sreader->update().wait());
-    CPPUNIT_ASSERT_NO_THROW(sreader->stop().wait());
+    CPPUNIT_ASSERT_NO_THROW(sreader->start().get());
+    CPPUNIT_ASSERT_NO_THROW(sreader->update().get());
+    CPPUNIT_ASSERT_NO_THROW(sreader->stop().get());
     service::remove(sreader);
 
     // Check the result...
@@ -71,24 +71,19 @@ inline static void runreader(
 
 //------------------------------------------------------------------------------
 
-inline static void test_enable(
-    data::image::sptr _actual_image,
-    const std::vector<sight::io::bitmap::backend>& _backends,
-    const std::string _enabled
-)
+inline static void test_enable(data::image::sptr _actual_image, bool _gpu_required)
 {
-    for(const auto& backend : _backends)
+    const std::array<std::string, 4> extensions = {".jp2", ".jpg", ".png", ".tiff"};
+
+    for(const auto& ext : extensions)
     {
-        const auto& filename = "wild" + sight::io::bitmap::extensions(backend).front();
-        const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
+        const auto filename = "wild" + ext;
+        const auto filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
 
         // Add file
         service::config_t config;
         config.add("file", filepath.string());
-
-        boost::property_tree::ptree backends_tree;
-        backends_tree.put("<xmlattr>.enable", _enabled);
-        config.add_child("backends", backends_tree);
+        config.add("gpu_required", _gpu_required);
 
         // Run the service
         runreader(config, _actual_image);
@@ -137,59 +132,15 @@ void reader_test::basic_test()
 
 void reader_test::config_test()
 {
-    // Build backend list
-    std::vector backends {
-        sight::io::bitmap::backend::libpng,
-        sight::io::bitmap::backend::libtiff
-    };
+    {
+        auto actual_image = std::make_shared<sight::data::image>();
+        test_enable(actual_image, false);
+    }
 
     if(sight::io::bitmap::nv_jpeg())
     {
-        backends.push_back(sight::io::bitmap::backend::nvjpeg);
-    }
-
-    backends.push_back(sight::io::bitmap::backend::libjpeg);
-
-    if(sight::io::bitmap::nv_jpeg_2k())
-    {
-        backends.push_back(sight::io::bitmap::backend::nvjpeg2k);
-    }
-
-    backends.push_back(sight::io::bitmap::backend::openjpeg);
-
-    // Test enable="all"
-    {
-        // For each backend and each mode ("all" means ".jpeg, .tiff, .png, .jp2")
         auto actual_image = std::make_shared<sight::data::image>();
-        test_enable(actual_image, backends, "all");
-    }
-
-    // Test enable="cpu"
-    {
-        // For each backend and each mode ("cpu" means ".jpeg, .tiff, .png, .jp2")
-        auto actual_image = std::make_shared<sight::data::image>();
-        test_enable(actual_image, backends, "cpu");
-    }
-
-    // Test enable="gpu"
-    if(sight::io::bitmap::nv_jpeg()
-       || sight::io::bitmap::nv_jpeg_2k())
-    {
-        std::vector<sight::io::bitmap::backend> gpu_backend;
-
-        if(sight::io::bitmap::nv_jpeg())
-        {
-            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg);
-        }
-
-        if(sight::io::bitmap::nv_jpeg_2k())
-        {
-            gpu_backend.push_back(sight::io::bitmap::backend::nvjpeg2k);
-        }
-
-        // For each backend and each mode ("cpu" means ".jpeg, .jp2")
-        auto actual_image = std::make_shared<sight::data::image>();
-        test_enable(actual_image, gpu_backend, "gpu");
+        test_enable(actual_image, true);
     }
 }
 

@@ -138,7 +138,7 @@ public:
         {
             return write<open_jpeg_writer>(m_open_jpeg, *image, _output, _mode);
         }
-        else if(_backend == backend::openjpeg_j2_k)
+        else if(_backend == backend::openjpeg_j2k)
         {
             return write<open_jpeg_writer>(
                 m_open_jpeg,

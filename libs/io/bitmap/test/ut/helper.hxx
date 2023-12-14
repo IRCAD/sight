@@ -259,7 +259,7 @@ inline static std::pair<std::string, std::string> backend_to_string(const backen
         ? std::make_pair(std::string("LIBPNG"), std::string(".png"))
         : _backend == backend::openjpeg
         ? std::make_pair(std::string("OPENJPEG"), std::string(".jp2"))
-        : _backend == backend::openjpeg_j2_k
+        : _backend == backend::openjpeg_j2k
         ? std::make_pair(std::string("OPENJPEG"), std::string(".j2k"))
         : _backend == backend::nvjpeg
         ? std::make_pair(std::string("NVJPEG"), std::string(".jpg"))
