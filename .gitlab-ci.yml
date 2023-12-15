@@ -311,9 +311,9 @@ deploy:apps-linux-release:
     - $env:DISABLE_ABORT_DIALOG="1"
     - |
       if ("${SIGHT_ENABLE_COVERAGE}" -eq "ON" -or "${BUILD_TYPE}" -eq "Debug") {
-        $env:TIMEOUT="1200"
+        $TIMEOUT="1200"
       } else {
-        $env:TIMEOUT="600"
+        $TIMEOUT="600"
       }
     # Launch tests
     - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
