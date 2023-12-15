@@ -107,7 +107,6 @@ void status::configuring(const config_t& _config)
         // Fill the label_status vector
         for(int i = 0 ; const service::config_t::value_type& v : boost::make_iterator_range(label_status_config))
         {
-            std::cout << i << std::endl;
             const auto label = v.second.get<std::string>("");
             auto* status     = new QToolButton();
             status->setText(QString::fromStdString(label));
