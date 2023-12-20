@@ -65,10 +65,9 @@ void os::get_shared_library_path()
         const auto actual_path       = core::tools::os::get_shared_library_path("sight_core.dll");
         const fs::path expected_path = fs::path(exec_path.string()) / "sight_core.dll";
 #else
-        const auto actual_path =
-            core::tools::os::get_shared_library_path("sight_core").replace_extension().replace_extension();
+        const auto actual_path       = core::tools::os::get_shared_library_path("sight_core");
         const fs::path expected_path = fs::path(exec_path.parent_path().string()) / MODULE_LIB_PREFIX
-                                       / "libsight_core.so";
+                                       / "libsight_core.so." SIGHT_VERSION;
 #endif
         CPPUNIT_ASSERT_EQUAL(expected_path, actual_path);
     }
@@ -80,12 +79,13 @@ void os::get_shared_library_path()
     CPPUNIT_ASSERT_THROW(core::tools::os::get_shared_library_path("Qt5Core"), core::exception);
 
     // Now load that library and check that we find it
+    const auto boost_path = fs::canonical(fs::path(BOOST_LIB_DIR));
 #if defined(WIN32)
     const auto lib      = "zstd";
-    const auto lib_path = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstd.dll");
+    const auto lib_path = boost_path / "zstd.dll";
 #else
     const auto* const lib = "boost_date_time";
-    const auto lib_path   = fs::path(BOOST_LIB_DIR) / "libboost_date_time.so.1.74.0";
+    const auto lib_path   = boost_path / ("libboost_date_time.so." BOOST_MAJOR_VERSION);
 #endif
     auto handle = boost::dll::shared_library(lib_path.string());
     CPPUNIT_ASSERT_MESSAGE("Could not load library for testing", handle);

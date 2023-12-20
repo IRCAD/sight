@@ -79,7 +79,7 @@ runtime::runtime()
 
     const auto dist = std::distance(it, core_path.rend());
     const std::filesystem::path lib_path(core_path.begin(), core_path.begin() + dist - 1);
-    m_working_path = lib_path.parent_path().make_preferred();
+    m_working_path = std::filesystem::weakly_canonical(lib_path.parent_path().make_preferred());
     SIGHT_INFO("Located Sight runtime in folder: " + m_working_path.string());
 }
 

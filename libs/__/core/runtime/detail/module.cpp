@@ -60,7 +60,7 @@ module::module(
     std::string _c,
     int _priority
 ) :
-    m_resources_location(_location.lexically_normal()),
+    m_resources_location(std::filesystem::weakly_canonical(_location)),
     m_identifier(std::move(_id)),
     m_class(std::move(_c)),
     m_priority(_priority)

@@ -127,7 +127,7 @@ std::string native::name() const
 
 void native::set_search_path(const std::filesystem::path& _path) noexcept
 {
-    m_search_path = _path;
+    m_search_path = std::filesystem::canonical(_path);
 }
 
 //------------------------------------------------------------------------------

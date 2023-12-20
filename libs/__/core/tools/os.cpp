@@ -253,7 +253,7 @@ std::string find_module_functor::s_lib_name;
 std::filesystem::path get_shared_library_path(const std::string& _lib_name)
 {
 #if defined(WIN32)
-    return _get_win32shared_library_path(_lib_name);
+    return std::filesystem::weakly_canonical(_get_win32shared_library_path(_lib_name));
 #else
     find_module_functor::s_location.clear();
     find_module_functor::s_lib_name = _lib_name;
@@ -268,7 +268,7 @@ std::filesystem::path get_shared_library_path(const std::string& _lib_name)
             )
         );
     }
-    return sight::core::tools::os::find_module_functor::s_location;
+    return std::filesystem::weakly_canonical(sight::core::tools::os::find_module_functor::s_location);
 #endif
 }
 
