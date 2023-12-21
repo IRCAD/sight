@@ -55,19 +55,16 @@ void os::tearDown()
 void os::get_shared_library_path()
 {
     namespace fs = std::filesystem;
-    const auto cwd = fs::current_path();
-
     {
-        const auto exec_path = boost::dll::program_location().remove_filename();
+        const auto exec_path = fs::canonical(boost::dll::program_location().remove_filename().string());
 
         // cspell: disable
 #if defined(WIN32)
         const auto actual_path       = core::tools::os::get_shared_library_path("sight_core.dll");
-        const fs::path expected_path = fs::path(exec_path.string()) / "sight_core.dll";
+        const fs::path expected_path = exec_path / "sight_core.dll";
 #else
         const auto actual_path       = core::tools::os::get_shared_library_path("sight_core");
-        const fs::path expected_path = fs::path(exec_path.parent_path().string()) / MODULE_LIB_PREFIX
-                                       / "libsight_core.so." SIGHT_VERSION;
+        const fs::path expected_path = exec_path.parent_path() / MODULE_LIB_PREFIX / "libsight_core.so." SIGHT_VERSION;
 #endif
         CPPUNIT_ASSERT_EQUAL(expected_path, actual_path);
     }
