@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -810,6 +810,15 @@ public:
     {
         /// @note We assume that multi-frame dicom have only one instance, IE no instance "Concatenation" here
         /// @note See "Concatenation" related attributes ((0020,9228) and (0020,9162))
+
+        // Prevent proceeding when we have no dataset
+        // This notably prevent assertions in dataset storage
+        // And allows the error to be handled in the calling code
+        if(m_frame_datasets.size() == 0)
+        {
+            return {};
+        }
+
         const auto& dataset   = get_data_set(0);
         const auto& group_tag = G::GetTag();
 
