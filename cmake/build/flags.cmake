@@ -254,8 +254,10 @@ endif()
 
 if(NOT TARGET coverage)
     if(SIGHT_ENABLE_COVERAGE)
-        add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:--coverage>")
-        add_link_options("$<$<CXX_COMPILER_ID:GNU,Clang>:--coverage>")
+        add_compile_options("$<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:--coverage>")
+        add_compile_options("$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:--coverage>")
+        add_link_options("$<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:--coverage>")
+        add_link_options("$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:--coverage>")
 
         if(CMAKE_COMPILER_IS_GNUCXX)
             link_libraries(gcov)
