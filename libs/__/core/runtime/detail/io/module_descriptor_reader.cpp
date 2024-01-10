@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ static const std::string POINT("point");
 
 //------------------------------------------------------------------------------
 
-module_descriptor_reader::module_container module_descriptor_reader::create_modules(
+std::pair<std::filesystem::path, module_descriptor_reader::module_container> module_descriptor_reader::create_modules(
     const std::filesystem::path& _location
 )
 {
@@ -126,7 +126,7 @@ module_descriptor_reader::module_container module_descriptor_reader::create_modu
         load_module_fn(normalized_path);
     }
 
-    return modules;
+    return {normalized_path, modules};
 }
 
 //------------------------------------------------------------------------------

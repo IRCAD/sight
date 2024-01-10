@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,7 +142,7 @@ void runtime::add_modules(const std::filesystem::path& _repository)
 
     try
     {
-        const auto modules = core::runtime::detail::io::module_descriptor_reader::create_modules(_repository);
+        const auto&& [abs_repo_path, modules] = detail::io::module_descriptor_reader::create_modules(_repository);
         std::for_each(
             modules.begin(),
             modules.end(),
@@ -157,8 +157,7 @@ void runtime::add_modules(const std::filesystem::path& _repository)
         );
         m_repositories.emplace_back(
             std::filesystem::weakly_canonical(std::filesystem::path(lib_repo_str)),
-            _repository
-
+            abs_repo_path
         );
     }
     catch(const std::exception& exception)

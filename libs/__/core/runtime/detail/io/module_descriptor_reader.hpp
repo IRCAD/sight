@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,11 +62,11 @@ public:
     /**
      * @brief       Creates all modules that are found at the given location.
      *
-     * @param[in]   location    a path to a directory containing modules
+     * @param[in]   location    a relative or absolute path to a directory containing modules
      *
-     * @return      a container with all created modules
+     * @return      path to the absolute location path and a vector of all created modules
      */
-    static module_container create_modules(const std::filesystem::path& _location);
+    static std::pair<std::filesystem::path, module_container> create_modules(const std::filesystem::path& _location);
 
     /**
      * @brief       Look for a descriptor at the specified location,
