@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -346,14 +346,14 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
                     if(has_primitive_color)
                     {
                         // Use r2vb pipeline for per-primitive color
-                        m_sub_mesh                = m_r2vb_mesh->createSubMesh(name);
-                        m_sub_mesh->operationType = Ogre::RenderOperation::OT_TRIANGLE_LIST_ADJ;
+                        m_sub_mesh = m_r2vb_mesh->createSubMesh(name);
                     }
                     else
                     {
-                        m_sub_mesh                = m_ogre_mesh->createSubMesh(name);
-                        m_sub_mesh->operationType = Ogre::RenderOperation::OT_TRIANGLE_LIST;
+                        m_sub_mesh = m_ogre_mesh->createSubMesh(name);
                     }
+
+                    m_sub_mesh->operationType = Ogre::RenderOperation::OT_TRIANGLE_LIST;
                 }
                 else if(cell_type == data::mesh::cell_type_t::line)
                 {
