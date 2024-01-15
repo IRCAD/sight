@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,27 +43,6 @@ namespace sight::ui::qml
 qml_engine::qml_engine() :
     m_engine(new QQmlApplicationEngine())
 {
-#ifdef WIN32
-    // To get Qml initialized properly, we need to find its plugins
-    // This is difficult to do, especially because the location of the deps is different whether
-    // you are executing the application in the build tree or in the install tree
-    // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
-    // This work in all cases when we use VCPkg.
-    std::filesystem::path qt5LibDir =
-        core::tools::os::get_shared_library_path("Qt5Core").remove_filename();
-    const std::filesystem::path qt5QmlPluginsDir = (qt5LibDir.parent_path().parent_path()) / "qml";
-
-    QDir pluginDir(QString::fromStdString(qt5QmlPluginsDir.string()));
-    if(pluginDir.exists())
-    {
-        SIGHT_INFO("Load Qml plugins from: " + qt5QmlPluginsDir.string());
-        m_engine->addImportPath(pluginDir.absolutePath());
-    }
-    else
-    {
-        SIGHT_ERROR("Could not determine Qml plugins path, tried with: " + qt5QmlPluginsDir.string());
-    }
-#endif
 }
 
 //-----------------------------------------------------------------------------
