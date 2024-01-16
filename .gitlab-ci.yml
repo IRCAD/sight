@@ -360,40 +360,18 @@ deploy:apps-linux-release:
     reports:
       junit: build/junit.xml
 
-.windows_deploy_test:
-  stage: deploy-test
-  variables:
-    SIGHT_TEST_PACKAGES: "OFF"
-    SIGHT_TEST_SDK: "OFF"
-    CACHE: "D:\\gitlab-cache"
-    # Ideally, we would like to use `none` but we need the `git clean -ddfx` to be performed to clean previous artifacts
-    GIT_STRATEGY: fetch
+.windows_sight_deploy_test:
+  extends: .windows_deploy_test
   script:
     - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
     - cd build
     - |
       if("${SIGHT_TEST_PACKAGES}" -eq "ON"){
         Start-Process -Wait .\packages\sight_viewer-*.exe /S,/D=${pwd}\sight_viewer
-        $process = Start-Process -PassThru -NoNewWindow sight_viewer\bin\sight_viewer.bat --no-abort-dialog,--clog
-        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
-        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
-          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
-          $process | Wait-Process
-        }
-        if($process.ExitCode -ne 0){
-          Write-Error "sight_viewer crashed." -ErrorAction Stop
-        }
+        Start-SightProcess -path "sight_viewer\bin\sight_viewer.bat"
 
         Start-Process -Wait .\packages\sight_calibrator-*.exe /S,/D=${pwd}\sight_calibrator
-        $process = Start-Process -PassThru -NoNewWindow sight_calibrator\bin\sight_calibrator.bat --no-abort-dialog,--clog
-        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
-        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
-          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
-          $process | Wait-Process
-        }
-        if($process.ExitCode -ne 0){
-          Write-Error "sight_calibrator crashed." -ErrorAction Stop
-        }
+        Start-SightProcess -path "sight_calibrator\bin\sight_calibrator.bat"
       }
     - |
       Expand-Archive packages/sight-*.zip
@@ -408,19 +386,7 @@ deploy:apps-linux-release:
         ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat,dicomxplorer.bat){
           $programName = Split-Path -Leaf $program
           Write-Host Testing $programName
-          $process = Start-Process -PassThru -NoNewWindow $program --no-abort-dialog,--clog
-          $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
-          ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
-              (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
-              $process | Wait-Process -Timeout 5
-              if(!$process.HasExited){
-                (Get-Process -Id $p.ProcessId).Kill()
-                $process | Wait-Process
-              }
-          }
-          if(!($process.ExitCode -in -1,0)){
-              Write-Error "$programName crashed." -ErrorAction Stop
-          }
+          Start-SightProcess -path $program
         }
         ForEach($program in Get-ChildItem aruco_marker.exe,dicom_anonymizer.exe){
           $programName = Split-Path -Leaf $program
@@ -428,8 +394,6 @@ deploy:apps-linux-release:
           Start-Process -NoNewWindow -Wait $program --help
         }
       }
-  tags:
-    - windows
 
 build:windows-debug:
   extends: .windows_build
@@ -460,7 +424,7 @@ build:windows-release-draft:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
 
 deploy-test:windows-debug:
-  extends: .windows_deploy_test
+  extends: .windows_sight_deploy_test
   needs:
     - job: build:windows-debug
       artifacts: true
@@ -484,7 +448,7 @@ deploy:windows-debug:
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:windows-release:
-  extends: .windows_deploy_test
+  extends: .windows_sight_deploy_test
   needs:
     - job: build:windows-release
       artifacts: true
