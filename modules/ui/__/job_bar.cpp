@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,11 +50,6 @@ job_bar::job_bar() noexcept
 
 //-----------------------------------------------------------------------------
 
-job_bar::~job_bar() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void job_bar::starting()
 {
 }
@@ -63,6 +58,7 @@ void job_bar::starting()
 
 void job_bar::stopping()
 {
+    m_progress_dialogs.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -91,28 +87,36 @@ void job_bar::show_job(core::jobs::base::sptr _job)
     auto progress_dialog = std::make_shared<sight::ui::dialog::progress>();
     progress_dialog->set_title(_job->name());
 
+    std::weak_ptr<sight::ui::dialog::progress> weak_progress_dialog = progress_dialog;
+
     if(!_job->is_cancelable())
     {
         progress_dialog->hide_cancel_button();
     }
 
     _job->add_done_work_hook(
-        [ = ](core::jobs::base& _job, std::uint64_t)
+        [weak_progress_dialog](core::jobs::base& _job, std::uint64_t)
         {
-            std::string msg = (_job.get_logs().empty()) ? "" : _job.get_logs().back();
-            (*progress_dialog)(float(_job.get_done_work_units()) / float(_job.get_total_work_units()), msg);
+            if(auto progress_dialog = weak_progress_dialog.lock(); progress_dialog)
+            {
+                std::string msg = (_job.get_logs().empty()) ? "" : _job.get_logs().back();
+                (*progress_dialog)(float(_job.get_done_work_units()) / float(_job.get_total_work_units()), msg);
+            }
         });
 
     _job->add_state_hook(
-        [progress_dialog, this](core::jobs::base::state _state)
+        [weak_progress_dialog, this](core::jobs::base::state _state)
         {
             if(_state == core::jobs::base::canceled || _state == core::jobs::base::finished)
             {
                 m_sig_ended->emit();
                 this->worker()->post_task<void>(
-                    [progress_dialog, this]
+                    [weak_progress_dialog, this]
                 {
-                    m_progress_dialogs.erase(progress_dialog);
+                    if(auto progress_dialog = weak_progress_dialog.lock(); progress_dialog)
+                    {
+                        m_progress_dialogs.erase(progress_dialog);
+                    }
                 });
             }
             else if(_state == core::jobs::base::running)
@@ -121,11 +125,11 @@ void job_bar::show_job(core::jobs::base::sptr _job)
             }
         });
 
-    core::jobs::base::wptr w_i_job = _job;
+    core::jobs::base::wptr weak_job = _job;
     progress_dialog->set_cancel_callback(
-        [ = ]
+        [weak_job]
         {
-            core::jobs::base::sptr job = w_i_job.lock();
+            core::jobs::base::sptr job = weak_job.lock();
             if(job)
             {
                 job->cancel();
