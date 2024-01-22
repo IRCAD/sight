@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,8 +64,7 @@ namespace sight::data
  * @section Access Buffer access
  *
  * You can access buffer values using at<type>(const std::size_t& offset) or at<type>({x, y, z}) methods. These methods
- * are
- * slow and should not be used to parse the entire buffer (see iterators).
+ * are slow and should not be used to parse the entire buffer (see iterators).
  *
  * @warning The array must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
  * disk.
@@ -108,8 +107,9 @@ namespace sight::data
  *
  * To get an iterator on the array, use begin<T>() and end<T>() methods.
  *
- * @warning The iterator does not assert that the array type is the same as the given format. It only asserts (in debug)
- * that the iterator does not iterate outside of the buffer bounds).
+ * @warning The iterator does not assert that the array type is not the same as the given format. It only asserts (in
+ * debug)
+ * that the iterator does iterate outside of the buffer bounds).
  *
  * \b Example :
  */
@@ -170,7 +170,6 @@ public:
 
     /**
      * @brief Constructor
-     * @param key Private construction key
      */
     DATA_API array();
 
@@ -187,9 +186,9 @@ public:
      *  - else if reallocate is false, the array will update the view's information
      *  - else, the reallocation is performed.
      *
-     * @param size           New size of the array or the view.
-     * @param type           New type of the array or the view
-     * @param reallocate     If true, allow buffer reallocation
+     * @param _size           New size of the array or the view.
+     * @param _type           New type of the array or the view
+     * @param _reallocate     If true, allow buffer reallocation
      *
      * @return return the size of the array view
      *
@@ -210,8 +209,8 @@ public:
      *  - else if reallocate is false, the array will update the view informations
      *  - else, the reallocation is performed.
      *
-     * @param size           Size of the array view
-     * @param reallocate     If true, allow buffer reallocation
+     * @param _size           Size of the array view
+     * @param _reallocate     If true, allow buffer reallocation
      *
      * @return return the size of the array view
      *
@@ -279,7 +278,7 @@ public:
     /**
      * @brief Set array's buffer ownership
      *
-     * @param own New ownership value
+     * @param _own New ownership value
      */
     DATA_API void set_is_buffer_owner(bool _own);
 
@@ -300,8 +299,8 @@ public:
     /**
      * @brief Compute strides for given parameters
      *
-     * @param size array size
-     * @param sizeOfType size of a component
+     * @param _size         array size
+     * @param _size_of_type size of a component
      */
     DATA_API static offset_t compute_strides(size_t _size, std::size_t _size_of_type);
 
@@ -326,7 +325,7 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
-     * @param id Item array index
+     * @param _id Item array index
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
@@ -340,7 +339,7 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
-     * @param id Item id
+     * @param _id Item id
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
@@ -354,7 +353,7 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
-     * @param offset Index of the item in the buffer cast to T
+     * @param _offset Index of the item in the buffer cast to T
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
@@ -368,7 +367,7 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
-     * @param offset Index of the item in the buffer cast to T
+     * @param _offset Index of the item in the buffer cast to T
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
@@ -394,11 +393,11 @@ public:
      *
      * An existing buffer will be released if the array own it.
      *
-     * @param buf            Buffer to set as array's buffer
-     * @param takeOwnership  if true, the array will manage allocation and destroy the buffer when needed.
-     * @param size           Size of the array view
-     * @param type           Type of the array view
-     * @param policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
+     * @param _buf            Buffer to set as array's buffer
+     * @param _take_ownership  if true, the array will manage allocation and destroy the buffer when needed.
+     * @param _size           Size of the array view
+     * @param _type           Type of the array view
+     * @param _policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      */
     DATA_API void set_buffer(
@@ -492,13 +491,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
@@ -511,9 +510,9 @@ protected:
      *
      * Releases the previous buffer if it is owned by the array.
      *
-     * @param buf Buffer to set as array's buffer
-     * @param takeOwnership if true, the array will manage allocation and destroy the buffer when needed.
-     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
+     * @param _buf Buffer to set as array's buffer
+     * @param _take_ownership if true, the array will manage allocation and destroy the buffer when needed.
+     * @param _policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
     DATA_API void set_buffer(
         void* _buf,
@@ -524,7 +523,7 @@ protected:
     /**
      * @brief Retrieves a pointer to the value at the given index.
      *
-     * @param id Item array index
+     * @param _id Item array index
      * @return buffer item pointer
      * @{
      */
@@ -534,7 +533,7 @@ protected:
 
     /**
      * @brief Compute the offset of an element in the buffer.
-     * @param id Item array index
+     * @param _id Item array index
      * @return buffer offset
      */
     DATA_API std::size_t get_buffer_offset(const array::index_t& _id) const;

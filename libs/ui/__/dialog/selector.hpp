@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,8 +45,8 @@ public:
     /**
      * Constructor. Create a selector with the specified title, message and choices.
      *
-     * @param title Title of the selector
-     * @param message Message of the selector
+     * @param _title Title of the selector
+     * @param _message Message of the selector
      * @param _selections list of choices in the selector
      * @param _multiple allow multiple selections
      */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -75,11 +75,11 @@ public:
     CORE_API static core::crypto::secure_string get_global_password();
 
     /// Sets the global password
-    /// @param password the new global password
+    /// @param _password the new global password
     CORE_API static void set_global_password(const core::crypto::secure_string& _password, bool _restart_logger = true);
 
     /// Returns true if the password matches
-    /// @param password the password to verify against global stored password
+    /// @param _password the password to verify against global stored password
     CORE_API static bool check_global_password(const core::crypto::secure_string& _password);
 
     /// Reset the global password
@@ -95,11 +95,11 @@ public:
     CORE_API void reset_password();
 
     /// Sets the password
-    /// @param password the new password
+    /// @param _password the new password
     CORE_API void set_password(const core::crypto::secure_string& _password);
 
     /// Returns true if the password matches
-    /// @param password the password to verify against stored password
+    /// @param _password the password to verify against stored password
     [[nodiscard]] CORE_API bool check_password(const core::crypto::secure_string& _password) const;
 
     /// Convenience function to convert from password_policy enum value to string

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ public:
     /**
      * @brief       Set profile name.
      *
-     * @param[in]   _sName  profile name
+     * @param[in]   _s_name  profile name
      */
     void set_name(std::string _s_name)
     {
@@ -98,7 +98,7 @@ public:
     /**
      * @brief       Set profile version.
      *
-     * @param[in]   _sVersion   profile version
+     * @param[in]   _s_version   profile version
      */
     void set_version(std::string _s_version)
     {
@@ -118,7 +118,7 @@ public:
     /**
      * @brief Returns internal arg count.
      * The returned int shall not be modified. This is provided for external
-     * library needs (QApplication contructor for example)
+     * library needs (QApplication constructor for example)
      */
     int& get_raw_arg_count()
     {
@@ -128,7 +128,7 @@ public:
     /**
      * @brief Returns a raw pointer on internal arguments.
      * The returned data shall not be modified. This is provided for external
-     * library needs (QApplication contructor for example)
+     * library needs (QApplication constructor for example)
      */
     char** get_raw_params() const
     {

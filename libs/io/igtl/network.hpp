@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,13 +79,13 @@ public:
      * @brief generic method to send a object the type of object is determined by classname
      *        this method call the correct sender method. If the client is not connected you receive
      *        a sigpipe signal
-     * @param[in] dest object to send
+     * @param[in] _dest object to send
      */
     IO_IGTL_API bool send_object(const data::object::csptr& _dest);
 
     /**
      * @brief generic method to send a igtl Msg, this method is useful for redirect message
-     * @param[in] msg message to send
+     * @param[in] _msg message to send
      */
     IO_IGTL_API bool send_msg(::igtl::MessageBase::Pointer _msg);
 
@@ -99,7 +99,7 @@ public:
 
     /** @brief receive body pack
      *
-     *  @param[in] header msg header
+     *  @param[in] _header msg header
      *  @throw igtl::exception on error (network error or timeout).
      *  @return Message
      */
@@ -114,7 +114,7 @@ public:
 
     /**
      * @brief add a new authorized device name
-     * @param[in] std::string device name
+     * @param[in] _device_name the device name to add
      */
     IO_IGTL_API void add_authorized_device(const std::string& _device_name);
 
@@ -129,7 +129,7 @@ public:
      * @brief activate/desactivate the filtering by device name
      * note that if add_authorized_device() is never called this option is automatically disabled
      *
-     * @param[in] boolean
+     * @param[in] _filtering
      */
     IO_IGTL_API void set_filtering_by_device_name(bool _filtering);
 

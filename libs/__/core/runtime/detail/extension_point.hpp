@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,11 +61,11 @@ public:
     /**
      * @brief       constructor
      *
-     * @param[in]   module  a shared pointer to the module where the extension
-     *                      point is declared
-     * @param[in]   id      a string containing the extension point identifier
-     * @param[in]   schema  a path to a file containing an XML schema used to
-     *                      validate extensions contributed to the point.
+     * @param[in]   _module  a shared pointer to the module where the extension
+     *                       point is declared
+     * @param[in]   _id      a string containing the extension point identifier
+     * @param[in]   _schema  a path to a file containing an XML schema used to
+     *                       validate extensions contributed to the point.
      */
     extension_point(
         const std::shared_ptr<core::runtime::module> _module,

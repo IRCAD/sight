@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,23 +57,23 @@ public:
     /**
      * @brief       Adds a new activator.
      *
-     * @param[in]   activater   a shared pointer to an activator
+     * @param[in]   _activater   a shared pointer to an activator
      */
     void add(SPTR(activater) _activater);
 
     /**
      * @brief       Adds a new starter.
      *
-     * @param[in]   starter a shared pointer to a starter
+     * @param[in]   _starterIdentifier  identifier of the starter to add
      */
-    void add_starter(const std::string& _identifier);
+    void add_starter(const std::string& _starterIdentifier);
 
     /**
      * @brief       Adds a new stopper.
      *
-     * @param[in]   stopper a shared pointer to a stopper
+     * @param[in]   _stopperIdentifier identifier of the stopper to add
      */
-    void add_stopper(const std::string& _identifier, int _priority);
+    void add_stopper(const std::string& _stopperIdentifier, int _priority);
 
     /**
      * @brief   Starts the profile.
@@ -100,7 +100,7 @@ public:
     /**
      * @brief       Set profile CheckSingleInstance.
      *
-     * @param[in]   _checkSingleInstance    profile CheckSingleInstance
+     * @param[in]   _check_single_instance    profile CheckSingleInstance
      */
     void set_check_single_instance(bool _check_single_instance)
     {
@@ -125,7 +125,7 @@ private:
 /**
  * @brief       Set current profile.
  *
- * @param       prof profile
+ * @param       _prof profile
  */
 void set_current_profile(profile::sptr _prof);
 

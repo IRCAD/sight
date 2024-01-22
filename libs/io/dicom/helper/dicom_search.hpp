@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,11 +49,11 @@ public:
 
     /**
      * @brief Search Dicom files recursively by excluding files with known extensions
-     * @param[in] dirPath Root directory
-     * @param[out] dicomFiles Dicom files
-     * @param[in] checkIsDicom If set to true, each file is read to verify that
+     * @param[in] _dir_path Root directory
+     * @param[out] _dicom_files Dicom files
+     * @param[in] _check_is_dicom If set to true, each file is read to verify that
      * it is a DICOM file
-     * @param[in] fileLookupObserver lookup observer
+     * @param[in] _file_lookup_observer lookup observer
      */
     IO_DICOM_API static void search_recursively(
         const std::filesystem::path& _dir_path,
@@ -66,9 +66,9 @@ protected:
 
     /**
      * @brief retrieve files according to extension.
-     * @param[in] dirPath Root directory
-     * @param[out] dicomFiles Dicom files
-     * @param[in] fileLookupObserver lookup observer
+     * @param[in] _dir_path Root directory
+     * @param[out] _dicom_files Dicom files
+     * @param[in] _file_lookup_observer lookup observer
      */
     static void check_filename_extension(
         const std::filesystem::path& _dir_path,

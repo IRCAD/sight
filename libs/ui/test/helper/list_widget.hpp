@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,25 +34,25 @@ public:
 
     /**
      * Checks if a list widget has the correct number of elements.
-     * @param tester The current tester
-     * @param list How to get the list widget to check
-     * @param count The number of element the list widget should have
+     * @param _tester The current tester
+     * @param _list How to get the list widget to check
+     * @param _count The number of element the list widget should have
      */
     UI_TEST_API static void count_equals(tester& _tester, const selector& _list, int _count);
 
     /**
      * Sets the row of the specified index as current in a list widget
-     * @param tester The current tester
-     * @param list How to get the list widget to set
-     * @param index The index of the new current row
+     * @param _tester The current tester
+     * @param _list How to get the list widget to set
+     * @param _index The index of the new current row
      */
     UI_TEST_API static void set_current_row(tester& _tester, const selector& _list, int _index);
 
     /**
      * Sets the row which has the specified text as current in a list widget
-     * @param tester The current tester
-     * @param list How to get the list widget to set
-     * @param text The text of the new current row
+     * @param _tester The current tester
+     * @param _list How to get the list widget to set
+     * @param _text The text of the new current row
      */
     UI_TEST_API static void set_current_text(tester& _tester, const selector& _list, const std::string& _text);
 };

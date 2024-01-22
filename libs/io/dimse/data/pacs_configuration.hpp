@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -180,7 +180,7 @@ protected:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& _source) override;
 
     /// Local application title

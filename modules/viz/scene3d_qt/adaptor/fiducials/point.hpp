@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -253,24 +253,24 @@ public:
     MODULE_VIZ_SCENE3D_QT_API void remove_all();
 
     /// SLOT: removes an entire group.
-    /// @param _groupName name of the group to remove.
+    /// @param _group_name name of the group to remove.
     MODULE_VIZ_SCENE3D_QT_API void remove_group(std::string _group_name);
 
     /// SLOT: removes an entire group and re-create it.
-    /// @param _groupName name of the group to update.
+    /// @param _group_name name of the group to update.
     MODULE_VIZ_SCENE3D_QT_API void modify_group(std::string _group_name);
 
     /// SLOT: replaces an entire group and re-create it.
-    /// @param _oldGroupName old group name to update.
-    /// @param _newGroupName new group name to replace the old one.
+    /// @param _old_group_name old group name to update.
+    /// @param _new_group_name new group name to replace the old one.
     MODULE_VIZ_SCENE3D_QT_API void rename_group(std::string _old_group_name, std::string _new_group_name);
 
     /// SLOT: set the current group name
-    /// @param _newCurrentGroupName the new current group name.
+    /// @param _new_current_group_name the new current group name.
     MODULE_VIZ_SCENE3D_QT_API void set_current_group(std::string _new_current_group_name);
 
     /// SLOT: removes a point group and update it.
-    /// @param _groupName name of the group to update.
+    /// @param _group_name name of the group to update.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_QT_API void modify_point(std::string _group_name, std::size_t _index);
 
@@ -279,22 +279,22 @@ public:
     MODULE_VIZ_SCENE3D_QT_API void add_point(std::string _group_name);
 
     /// SLOT: removes a point.
-    /// @param _groupName group name of the landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_QT_API void remove_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: inserts a point.
-    /// @param _groupName group name of the landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_QT_API void insert_point(std::string _group_name, std::size_t _index);
 
-    /// SLOT: hightlights the selected landmark.
-    /// @param _groupName group name of the landmark.
+    /// SLOT: highlights the selected landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_QT_API void select_point(std::string _group_name, std::size_t _index);
 
-    /// SLOT: resets the hightlights the selected landmark.
-    /// @param _groupName group name of the landmark.
+    /// SLOT: resets the highlights the selected landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_QT_API void deselect_point(std::string _group_name, std::size_t _index);
 
@@ -307,17 +307,17 @@ public:
     MODULE_VIZ_SCENE3D_QT_API void change_slice_type(int _from, int _to);
 
     /// SLOT: updates the image slice index to show or hide landmarks.
-    /// @param _axialIndex new axial slice index.
-    /// @param _frontalIndex new frontal slice index.
-    /// @param _sagittalIndex new sagittal slice index.
+    /// @param _axial_index new axial slice index.
+    /// @param _frontal_index new frontal slice index.
+    /// @param _sagittal_index new sagittal slice index.
     MODULE_VIZ_SCENE3D_QT_API void change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index);
 
     /// SLOT: Toggle landmarks addition
-    /// @param toggle set or unset landmarks addition mode.
+    /// @param _toggle set or unset landmarks addition mode.
     MODULE_VIZ_SCENE3D_QT_API void toggle_add_landmarks(bool _toggle);
 
     /// SLOT: Toggle landmarks removal
-    /// @param toggle set or unset landmarks removal mode.
+    /// @param _toggle set or unset landmarks removal mode.
     MODULE_VIZ_SCENE3D_QT_API void toggle_remove_landmarks(bool _toggle);
 
     /// SLOT: Remove all visible landmarks
@@ -528,10 +528,10 @@ private:
 
     /**
      * Creates a manual object which represents the landmark whose information is in parameter.
-     * @param groupName The group name of the landmark
-     * @param index The index of the landmark in its group
-     * @param groupData Graphical hints for the appearance of the landmark (color, size and shape)
-     * @param pointPos The position of the landmark
+     * @param _group_name The group name of the landmark
+     * @param _index The index of the landmark in its group
+     * @param _group_data Graphical hints for the appearance of the landmark (color, size and shape)
+     * @param _point_pos The position of the landmark
      * @returns The created manual object
      */
     std::shared_ptr<landmark> create_manual_object(
@@ -543,9 +543,10 @@ private:
 
     /**
      * Creates a manual object which represents the landmark whose information is in parameter.
-     * @param groupName The group name of the landmark
-     * @param index The index of the landmark in its group
-     * @param landmarks Landmarks container which provides information about the landmark (graphical hints and position)
+     * @param _group_name The group name of the landmark
+     * @param _index The index of the landmark in its group
+     * @param _landmarks Landmarks container which provides information about the landmark (graphical hints and
+     * position)
      * @returns The created manual object
      */
     std::shared_ptr<landmark> create_manual_object(
@@ -556,9 +557,9 @@ private:
 
     /**
      * Creates a manual object which represents the landmark whose information is in parameter.
-     * @param groupName The group name of the landmark
-     * @param index The index of the landmark in its group
-     * @param lock Landmarks container which provides information about the landmark (graphical hints and position)
+     * @param _group_name The group name of the landmark
+     * @param _index The index of the landmark in its group
+     * @param _lf Landmarks container which provides information about the landmark (graphical hints and position)
      * @returns The created manual object
      */
     std::shared_ptr<landmark> create_manual_object(
@@ -568,8 +569,8 @@ private:
     );
 
     /**
-     * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
-     * @param _selectedLandmark which landmarks to manage.
+     * @brief Manages the highlighting of the landmarks at the given index (must be run in a thread).
+     * @param _selected_landmark which landmarks to manage.
      */
     void hightlight(std::shared_ptr<selected_landmark> _selected_landmark);
 
@@ -601,15 +602,15 @@ private:
 
     /**
      * Hides the landmark if it's not on the current image slice index (if one is given).
-     * @param landmark The landmark to hide
-     * @param group The group information of the landmark to hide
+     * @param _landmark The landmark to hide
+     * @param _group The group information of the landmark to hide
      */
     void update_landmark_visibility(landmark& _landmark, std::optional<data::landmarks::landmarks_group> _group);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
-     * @param landmark the landmark whose visibility must be updated.
-     * @param lock landmarks data in which the landmarks should be updated.
+     * @param _landmark the landmark whose visibility must be updated.
+     * @param _lock landmarks data in which the landmarks should be updated.
      */
     void update_landmark_visibility(landmark& _landmark, const landmarks_or_image_series_const_lock& _lock);
 

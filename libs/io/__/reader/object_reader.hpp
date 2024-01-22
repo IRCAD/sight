@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::io::reader
  *
  * This class defines the API to use basic object readers. This reader is not a
  * service. Their equivalent exist as services. See io::service::reader. To read an
- * object with this class, use setLocation and setOject method before executing
+ * object with this class, use setLocation and setObject method before executing
  * the method read. Reading modifies the object given in parameter with the
  * method set_object.
  */
@@ -81,7 +81,7 @@ public:
 
     /**
      * @brief m_object setter.
-     * @param[out] _pObject replaces weakptr m_object of the instance reader
+     * @param[out] _p_object replaces weakptr m_object of the instance reader
      * @note m_object is saved in class with a weakptr
      * @note This object can be get with the method get_object()
      */

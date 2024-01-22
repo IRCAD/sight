@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,8 @@ public:
 
     /**
      * @brief Apply a filter to the DicomSeries
-     * @param[in,out] dicomSeriesContainer DicomSeries that must be filtered
-     * @param[in] filter filter that must be applied
+     * @param[in,out] _dicom_series_container DicomSeries that must be filtered
+     * @param[in] _filter filter that must be applied
      * @return Return true if errors have been ignored
      */
     FILTER_DICOM_API static bool apply_filter(

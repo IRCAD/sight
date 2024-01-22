@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ GEOMETRY_DATA_API void mult_vec_matrix(const fw_matrix4x4& _matrix, const fw_vec
 /**
  * @brief Compute a matrix rotation
  * @deprecated The function implementation seems very dodgy, prefer glm::yawPitchRoll() or glm::orientate4()
- *  @param [in]  _vecNorm
+ *  @param [in]  _vec_norm
  *  @return rotation matrix
  *
  */
@@ -50,7 +50,7 @@ GEOMETRY_DATA_API fw_matrix4x4 get_rotation_matrix(const fw_vec3d& _vec_norm);
 
 /**
  * @brief Computes the inverse of a matrix
- *  @param [in]  matrix
+ *  @param [in]  _matrix
  *  @return inverted matrix
  *
  */
@@ -60,8 +60,8 @@ GEOMETRY_DATA_API fw_matrix4x4 get_inverse(const fw_matrix4x4& _matrix);
 
 /**
  * @brief Multiplies a matrix by a matrix
- *  @param [in]  matrix1
- *  @param [in]  matrix2
+ *  @param [in]  _matrix1
+ *  @param [in]  _matrix2
  *  @return matrix
  *
  */

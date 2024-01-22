@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,8 +32,8 @@ public:
 
     /**
      * Select a file from a file dialog and close it
-     * @param tester The tester
-     * @param path The file to be selected
+     * @param _tester The tester
+     * @param _path The file to be selected
      * @warning This method assumes that the file dialog is already open.
      */
     UI_TEST_API static void fill(tester& _tester, const std::filesystem::path& _path);

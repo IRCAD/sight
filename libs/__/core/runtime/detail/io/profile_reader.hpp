@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
     /**
      * @brief       Creates a profile from an xml file located at the given path.
      *
-     * @param[in]   path    a path to an xml profile file
+     * @param[in]   _path    a path to an xml profile file
      */
     static std::shared_ptr<core::runtime::detail::profile::profile> create_profile(
         const std::filesystem::path& _path
@@ -62,7 +62,7 @@ public:
     /**
      * @brief       Processes the given xml node as a profile.
      *
-     * @param[in]   node    a pointer to the xml node to process
+     * @param[in]   _node    a pointer to the xml node to process
      *
      * @return      a shared pointer to the created profile
      */
@@ -72,7 +72,7 @@ public:
     /**
      * @brief       Processes the given xml node as an activater.
      *
-     * @param[in]   node    a pointer to the xml node to process
+     * @param[in]   _node    a pointer to the xml node to process
      *
      * @return      a shared pointer to the created activater
      */
@@ -82,8 +82,8 @@ public:
      * @brief       Processes the given xml node as an activater parameter and
      *              stores it in the given activater.
      *
-     * @param[in]   node        a pointer to the xml node to process
-     * @param[out]  activater   a shared pointer to an activater
+     * @param[in]   _node        a pointer to the xml node to process
+     * @param[out]  _activater   a shared pointer to an activater
      */
     static void process_activater_param(
         xmlNodePtr _node,
@@ -94,8 +94,8 @@ public:
      * @brief       Processes the given xml node as an activater disable extension point and
      *              stores it in the given activater.
      *
-     * @param[in]   node        a pointer to the xml node to process
-     * @param[out]  activater   a shared pointer to an activater
+     * @param[in]   _node        a pointer to the xml node to process
+     * @param[out]  _activater   a shared pointer to an activater
      */
     static void process_activater_disable_extension_point(
         xmlNodePtr _node,
@@ -106,8 +106,8 @@ public:
      * @brief       Processes the given xml node as an activater disable extension and
      *              stores it in the given activater.
      *
-     * @param[in]   node        a pointer to the xml node to process
-     * @param[out]  activater   a shared pointer to an activater
+     * @param[in]   _node        a pointer to the xml node to process
+     * @param[out]  _activater   a shared pointer to an activater
      */
     static void process_activater_disable_extension(
         xmlNodePtr _node,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -176,13 +176,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
@@ -228,26 +228,28 @@ public:
     /**
      * Setter for the FiducialSetSequence (0070,031C) data element. Replaces the existing content with the provided
      * vector of fiducial sets.
-     * @param fiducialSets The vector of fiducial sets which will replace the existing content.
+     * @param _fiducial_sets The vector of fiducial sets which will replace the existing content.
      */
     DATA_API void set_fiducial_sets(const std::vector<fiducial_set>& _fiducial_sets);
     /**
-     * Setter for the FiducialSetSequence (0070,031C) data element. Replaces the element at index fiducialSetNumber with
+     * Setter for the FiducialSetSequence (0070,031C) data element. Replaces the element at index _fiducial_set_number
+     * with
      * the provided fiducial set. If the element or the previous elements don't exist, they are created first.
-     * @param fiducialSetNumber The 0-indexed index of the sequence to be replaced.
-     * @param fiducialSet The fiducial set which will replace the existing one.
+     * @param _fiducial_set_number  The 0-indexed index of the sequence to be replaced.
+     * @param _fiducial_set         The fiducial set which will replace the existing one.
      */
     DATA_API void set_fiducial_set(std::size_t _fiducial_set_number, fiducial_set _fiducial_set);
     /**
      * Setter for the FiducialSetSequence (0070,031C) data element. Appends the provided fiducial set at the end of the
      * sequence.
-     * @param fiducialSet The fiducialSet to be appended to the sequence.
+     * @param _fiducial_set The fiducialSet to be appended to the sequence.
      */
     DATA_API void append_fiducial_set(fiducial_set _fiducial_set);
 
     /**
      * Getter for the ReferencedImageSequence (0008,1140) data element at fiducial set level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * fetched.
      * @return The referenced image sequence as a vector of ReferencedImage struct; or nullopt if it isn't defined.
      */
     DATA_API std::optional<std::vector<referenced_image> > get_referenced_images(std::size_t _fiducial_set_number) const
@@ -255,8 +257,9 @@ public:
     /**
      * Setter for the ReferencedImageSequence (0008,1140) data element at fiducial set level. Replaces the existing
      * content with the provided vector of fiducial sets.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be modified
-     * @param referencedImages The referenced image sequence which will replace the existing one.
+     * @param _fiducial_set_number  The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * modified
+     * @param _referenced_images    The referenced image sequence which will replace the existing one.
      */
     DATA_API void set_referenced_images(
         std::size_t _fiducial_set_number,
@@ -264,11 +267,12 @@ public:
     );
     /**
      * Setter for the ReferencedImageSequence (0008,1140) data element at fiducial set level. Replaces the element at
-     * index referencedImageNumber with the provided referenced image. If the element or the previous elements don't
+     * index _referenced_image_number with the provided referenced image. If the element or the previous elements don't
      * exist, they are created first.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be modified
-     * @param referencedImageNumber The 0-indexed index of the sequence to be replaced.
-     * @param referencedImage The referenced image which will replace the existing one.
+     * @param _fiducial_set_number      The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * modified
+     * @param _referenced_image_number  The 0-indexed index of the sequence to be replaced.
+     * @param _referenced_image         The referenced image which will replace the existing one.
      */
     DATA_API void set_referenced_image(
         std::size_t _fiducial_set_number,
@@ -278,15 +282,17 @@ public:
     /**
      * Setter for the ReferencedImageSequence (0008,1140) data element at fiducial set level. Appends the provided
      * referenced image at the end of the sequence.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be modified
-     * @param referencedImage The referenced image to be appended to the sequence.
+     * @param _fiducial_set_number  The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * modified
+     * @param _referenced_image     The referenced image to be appended to the sequence.
      */
     DATA_API void append_referenced_image(std::size_t _fiducial_set_number, referenced_image _referenced_image);
 
     /**
      * Getter/Setter for the ReferencedSOPClassUID (0008,1150) data element at fiducial set level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be fetched.
-     * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
+     * @param _fiducial_set_number      The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * fetched.
+     * @param _referenced_image_number  The 0-indexed index of the referenced image to be fetched.
      * @{
      */
     DATA_API std::optional<std::string> get_referenced_sop_class_uid(
@@ -302,8 +308,9 @@ public:
 
     /**
      * Getter/Setter for the ReferencedSOPInstanceUID (0008,1155) data element at fiducial set level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be fetched.
-     * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * fetched.
+     * @param _referenced_image_number The 0-indexed index of the referenced image to be fetched.
      * @{
      */
     DATA_API std::optional<std::string> get_referenced_sop_instance_uid(
@@ -319,8 +326,9 @@ public:
 
     /**
      * Getter/Setter for the ReferencedFrameNumber (0008,1160) data element at fiducial set level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be fetched.
-     * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * fetched.
+     * @param _referenced_image_number The 0-indexed index of the referenced image to be fetched.
      * @{
      */
     DATA_API std::vector<std::int32_t> get_referenced_frame_number(
@@ -336,8 +344,9 @@ public:
 
     /**
      * Getter/Setter for the ReferencedSegmentNumber (0062,000B) data element at fiducial set level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose referenced image sequence must be fetched.
-     * @param referencedImageNumber The 0-indexed index of the referenced image to be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose referenced image sequence must be
+     * fetched.
+     * @param _referenced_image_number The 0-indexed index of the referenced image to be fetched.
      * @{
      */
     DATA_API std::vector<std::uint16_t> get_referenced_segment_number(
@@ -353,7 +362,7 @@ public:
 
     /**
      * Getter/Setter for the FrameOfReferenceUID (0020,0052) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
     DATA_API std::optional<std::string> get_frame_of_reference_uid(std::size_t _fiducial_set_number) const noexcept;
@@ -365,7 +374,7 @@ public:
 
     /**
      * Getter for the FiducialSequence (0070,031E) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose fiducial sequence must be fetched.
      * @return The fiducial sequence as a vector of Fiducial struct.
      */
     DATA_API std::vector<fiducial> get_fiducials(std::size_t _fiducial_set_number) const noexcept;
@@ -373,42 +382,42 @@ public:
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Replaces the existing content with the provided vector
      * of fiducials.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
-     * @param fiducials The fiducial sequence which will replace the existing one.
+     * @param _fiducial_set_number  The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
+     * @param _fiducials            The fiducial sequence which will replace the existing one.
      */
     DATA_API void set_fiducials(std::size_t _fiducial_set_number, const std::vector<fiducial>& _fiducials);
 
     /**
      * Get all the fiducials satisfying one or several features.
-     * @param fiducialSet The fiducial set whose fiducials must be filtered
+     * @param _fiducial_set The fiducial set whose fiducials must be filtered
      * @return The list of fiducial whose shape type is point
      */
     [[nodiscard]] DATA_API std::vector<data::fiducials_series::fiducial> filter_fiducials(
-        const std::optional<data::fiducials_series::shape> _shape  = std::nullopt,
-        const std::optional<std::int32_t> _referenced_frame_number = std::nullopt
+        const std::optional<data::fiducials_series::shape> _fiducial_set = std::nullopt,
+        const std::optional<std::int32_t> _referenced_frame_number       = std::nullopt
     ) const;
 
     /**
-     * Setter for the FiducialSequence (0070,031E) data element. Replaces the element at index fiducialNumber with the
+     * Setter for the FiducialSequence (0070,031E) data element. Replaces the element at index _fiducial_number with the
      * provided fiducial. If the element or the previous elements don't exist, they are created first.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
-     * @param fiducialNumber The 0-indexed index of the sequence to be replaced.
-     * @param fiducial The fiducial which will replace the existing one.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
+     * @param _fiducial_number The 0-indexed index of the sequence to be replaced.
+     * @param _fiducial The fiducial which will replace the existing one.
      */
     DATA_API void set_fiducial(std::size_t _fiducial_set_number, std::size_t _fiducial_number, fiducial _fiducial);
 
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Appends the provided fiducial at the end of the
      * sequence.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
-     * @param fiducial The fiducial to be appended to the sequence.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
+     * @param _fiducial The fiducial to be appended to the sequence.
      */
     DATA_API void append_fiducial(std::size_t _fiducial_set_number, fiducial _fiducial);
 
     /**
      * Getter/Setter for the shape_t (0070,0306) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
     DATA_API shape get_shape_type(std::size_t _fiducial_set_number, std::size_t _fiducial_number) const noexcept;
@@ -417,8 +426,8 @@ public:
 
     /**
      * Getter/Setter for the FiducialDescription (0070,030F) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
     DATA_API std::string get_fiducial_description(
@@ -434,8 +443,8 @@ public:
 
     /**
      * Getter/Setter for the FiducialIdentifier (0070,0310) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
     DATA_API std::string get_fiducial_identifier(
@@ -451,8 +460,8 @@ public:
 
     /**
      * Getter for the GraphicCoordinatesDataSequence (0070,0318) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinates data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose graphic coordinates data must be fetched.
      * @return The graphic coordinates data sequence as a vector for GraphicCoordinatesData struct.
      */
     DATA_API std::optional<std::vector<graphic_coordinates_data> > get_graphic_coordinates_data_sequence(
@@ -462,9 +471,11 @@ public:
     /**
      * Setter for the GraphicCoordinatesDataSequence (0070,0318) data element. Replaces the existing content with the
      * provided vector of graphic coordinates data.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinate data sequence must be modified
-     * @param graphicCoordinatesDataSequence The graphic coordinates data sequence which will replace the existing one.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose graphic coordinate data sequence must be
+     * modified
+     * @param _graphic_coordinates_data_sequence The graphic coordinates data sequence which will replace the existing
+     * one.
      */
     DATA_API void set_graphic_coordinates_data_sequence(
         std::size_t _fiducial_set_number,
@@ -475,10 +486,11 @@ public:
      * Setter for the GraphicCoordinatesDataSequence (0070,0318) data element. Replaces the element at index
      * graphicCoordinatesDataNumber with the provided fiducial. If the element or the previous elements don't exist,
      * they are created first.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinate data sequence must be modified
-     * @param graphicCoordinatesDataNumber The 0-indexed index of the sequence to be replaced.
-     * @param graphicCoordinatesData The graphic coordinates data which will replace the existing one.
+     * @param _fiducial_set_number  The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
+     * @param _fiducial_number  The 0-indexed index of the fiducial whose graphic coordinate data sequence must be
+     * modified
+     * @param _graphic_coordinates_data_number  The 0-indexed index of the sequence to be replaced.
+     * @param _graphic_coordinates_data         The graphic coordinates data which will replace the existing one.
      */
     DATA_API void set_graphic_coordinates_data(
         std::size_t _fiducial_set_number,
@@ -489,9 +501,10 @@ public:
     /**
      * Setter for the GraphicCoordinatesDataSequence (0070,0318) data element. Appends the provided graphic coordinates
      * data at the end of the sequence.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinate data sequence must be modified
-     * @param graphicCoordinatesData The graphic coordinates data to be appended to the sequence.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose graphic coordinate data sequence must be
+     * modified
+     * @param _graphic_coordinates_data The graphic coordinates data to be appended to the sequence.
      */
     DATA_API void append_graphic_coordinates_data(
         std::size_t _fiducial_set_number,
@@ -501,9 +514,10 @@ public:
 
     /**
      * Getter/Setter for the ReferencedImage (0008,1140) data element at fiducial level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose graphic coordinate data sequence must be modified
-     * @param graphicCoordinatesData The graphic coordinates data to be appended to the sequence.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose fiducial sequence must be modified.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose graphic coordinate data sequence must be
+     * modified
+     * @param _graphic_coordinates_data_number The graphic coordinates data to be appended to the sequence.
      * @{
      */
     DATA_API referenced_image get_referenced_image(
@@ -521,9 +535,10 @@ public:
 
     /**
      * Getter/Setter for the ReferencedSOPClassUID (0008,1150) data element at graphic coordinates data level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
-     * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _graphic_coordinates_data_number The 0-indexed index of the graphic coordinate data whose data must be
+     * fetched
      * @{
      */
     DATA_API std::string get_referenced_sop_class_uid(
@@ -541,9 +556,10 @@ public:
 
     /**
      * Getter/Setter for the ReferencedSOPInstanceUID (0008,1155) data element at graphic coordinates data level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
-     * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _graphic_coordinates_data_number The 0-indexed index of the graphic coordinate data whose data must be
+     * fetched
      * @{
      */
     DATA_API std::string get_referenced_sop_instance_uid(
@@ -561,9 +577,10 @@ public:
 
     /**
      * Getter/Setter for the ReferencedFrameNumber (0008,1160) data element at graphic coordinates data level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
-     * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _graphic_coordinates_data_number The 0-indexed index of the graphic coordinate data whose data must be
+     * fetched
      * @{
      */
     DATA_API std::vector<std::int32_t> get_referenced_frame_number(
@@ -581,9 +598,10 @@ public:
 
     /**
      * Getter/Setter for the ReferencedSegmentNumber (0062,000B) data element at graphic coordinates data level.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
-     * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _graphic_coordinates_data_number The 0-indexed index of the graphic coordinate data whose data must be
+     * fetched
      * @{
      */
     DATA_API std::vector<std::uint16_t> get_referenced_segment_number(
@@ -601,9 +619,10 @@ public:
 
     /**
      * Getter/Setter for the GraphicData (0070,0022) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
-     * @param graphicCoordinatesDataNumber The 0-indexed index of the graphic coordinate data whose data must be fetched
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _graphic_coordinates_data_number The 0-indexed index of the graphic coordinate data whose data must be
+     * fetched
      * @{
      */
     DATA_API std::vector<point2> get_graphic_data(
@@ -621,8 +640,8 @@ public:
 
     /**
      * Getter/Setter for the FiducialUID (0070,031A) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
     DATA_API std::optional<std::string> get_fiducial_uid(
@@ -638,8 +657,8 @@ public:
 
     /**
      * Getter/Setter for the ContourData (3006,0050) data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
-     * @param fiducialNumber The 0-indexed index of the fiducial whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_number The 0-indexed index of the fiducial whose data must be fetched.
      * @{
      */
     DATA_API std::vector<point3> get_contour_data(
@@ -654,7 +673,7 @@ public:
     /// @}
 
     /** Getter/Setter for the GroupName private tag data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
     DATA_API std::optional<std::string> get_group_name(std::size_t _fiducial_set_number) const noexcept;
@@ -663,7 +682,7 @@ public:
 
     /**
      * Getter/Setter for the Color private tag data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
     DATA_API std::optional<std::array<float, 4> > get_color(std::size_t _fiducial_set_number) const noexcept;
@@ -672,7 +691,7 @@ public:
 
     /**
      * Getter/Setter for the Size private tag data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
     DATA_API std::optional<float> get_size(std::size_t _fiducial_set_number) const noexcept;
@@ -681,7 +700,7 @@ public:
 
     /**
      * Getter/Setter for the Shape private tag data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
     DATA_API std::optional<private_shape> get_shape(std::size_t _fiducial_set_number) const noexcept;
@@ -690,7 +709,7 @@ public:
 
     /**
      * Getter/Setter for the Visibility private tag data element.
-     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
     DATA_API std::optional<bool> get_visibility(std::size_t _fiducial_set_number) const noexcept;
@@ -712,7 +731,7 @@ public:
 
     /**
      * Get the fiducial set which has the name in parameter and its index
-     * @param groupName The name of the group to fetch
+     * @param _group_name The name of the group to fetch
      * @return A pair with the fiducial set and its index, or std::nullopt if the group name doesn't exist
      */
     [[nodiscard]] DATA_API std::optional<std::pair<fiducial_set, std::size_t> > get_fiducial_set_and_index(
@@ -721,7 +740,7 @@ public:
 
     /**
      * Get the number of point fiducials in a group
-     * @param groupName The name of the group to fetch
+     * @param _group_name The name of the group to fetch
      * @return The number of points in the group, or std::nullopt if the group name doesn't exist
      */
     [[nodiscard]] DATA_API std::optional<std::size_t> get_number_of_points_in_group(const std::string& _group_name)
@@ -729,7 +748,7 @@ public:
 
     /**
      * Returns the 3D position of the point fiducial using Contour Data.
-     * @param fiducial The fiducial whose 3D position must be found
+     * @param _fiducial The fiducial whose 3D position must be found
      * @return The 3D position of the fiducial, or std::nullopt if it has no Contour Data (getting 3D position using
      * Graphic Coordinates Data Sequence isn't supported) or if its shape type isn't point.
      */
@@ -737,8 +756,8 @@ public:
 
     /**
      * Returns the 3D position of the point INDEX in group GROUP_NAME
-     * @param groupName The name of the group of the point
-     * @param index The index of the point in its group
+     * @param _group_name The name of the group of the point
+     * @param _index The index of the point in its group
      * @return The 3D position of the fiducial, or std::nullopt if the group doesn't exist or if it has no Contour Data
      * (getting 3D position using Graphic Coordinates Data Sequence isn't supported) or if its shape type isn't point.
      */
@@ -749,38 +768,38 @@ public:
 
     /**
      * Get a fiducial set as a structure compatible with data::landmarks
-     * @param groupName The name of the group to fetch
+     * @param _group_name The name of the group to fetch
      * @return The fiducial set as a structure compatible with data::landmarks
      */
     [[nodiscard]] DATA_API std::optional<landmarks::landmarks_group> get_group(const std::string& _group_name) const;
 
     /**
      * Remove the point INDEX in group GROUP_NAME
-     * @param groupName The name of the group of the point
-     * @param index The index of the point in its group
+     * @param _group_name The name of the group of the point
+     * @param _index The index of the point in its group
      */
     DATA_API void remove_point(const std::string& _group_name, std::size_t _index);
 
     /**
      * Remove the group GROUP_NAME
-     * @param groupName The name of the group to be removed
+     * @param _group_name The name of the group to be removed
      */
-    DATA_API void remove_group(const std::string& _group);
+    DATA_API void remove_group(const std::string& _group_name);
 
     /**
      * Add a new fiducial set with the given parameters
-     * @param groupName The name of the new fiducial set
-     * @param color The color of the new fiducial set
-     * @param size The size of the points in the new fiducial set
+     * @param _group_name The name of the new fiducial set
+     * @param _color The color of the new fiducial set
+     * @param _size The size of the points in the new fiducial set
      */
     DATA_API void add_group(const std::string& _group_name, const std::array<float, 4>& _color, float _size);
 
     /**
      * Add a point fiducial in a fiducial set
-     * @param groupName The name of the group of the point
-     * @param point The 3D position of the new point
+     * @param _group_name   The name of the group of the point
+     * @param _position     The 3D position of the new point
      */
-    DATA_API void add_point(const std::string& _group_name, const std::array<double, 3>& _pos);
+    DATA_API void add_point(const std::string& _group_name, const std::array<double, 3>& _position);
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -161,7 +161,7 @@ private:
 
     /**
      * @brief Creates lines and gradient polygons of a pieceView.
-     * @param _pieceView the pieceView used to create the gradient and store the generated graphic item.
+     * @param _piece_view the pieceView used to create the gradient and store the generated graphic item.
      */
     void create_tf_polygon(piece_view* _piece_view);
 
@@ -174,16 +174,16 @@ private:
 
     /**
      * @brief Removes graphic gradient of the pieceView from the layer and deletes them.
-     * @param _pieceView to where destory the polygon.
+     * @param _piece_view to where destory the polygon.
      */
     void destroy_tf_polygon(piece_view* _piece_view);
 
     /**
      * @brief Creates lines and linear gradient polygons of a pieceView.
-     * @param _pieceView the pieceView used to create the gradient.
+     * @param _piece_view   the pieceView used to create the gradient.
      * @param _position the position vector to fill.
      * @param _grad the gradient to create.
-     * @param _distanceMax the maximum distance used by the gradient.
+     * @param _distance_max the maximum distance used by the gradient.
      */
     static void build_linear_polygons(
         piece_view* _piece_view,
@@ -194,10 +194,10 @@ private:
 
     /**
      * @brief Creates lines and nearest gradient polygons of a pieceView.
-     * @param _pieceView the pieceView used to create the gradient.
-     * @param _position the position vector to fill.
-     * @param _grad the gradient to create.
-     * @param _distanceMax the maximum distance used by the gradient.
+     * @param _piece_view   the pieceView used to create the gradient.
+     * @param _position     the position vector to fill.
+     * @param _grad         the gradient to create.
+     * @param _distance_max the maximum distance used by the gradient.
      */
     static void build_nearest_polygons(
         piece_view* _piece_view,
@@ -214,7 +214,7 @@ private:
      *
      * Sets the new current TF as output of this adaptor and updates z-index of each pieceView in @ref m_pieceView.
      *
-     * @param _pieceView the new current pieceView.
+     * @param _piece_view the new current pieceView.
      */
     void set_current_tf(piece_view* _piece_view);
 
@@ -251,8 +251,8 @@ private:
 
     /**
      * @brief Sets @ref m_capturedTFPoint and highlight the captured clicked point.
-     * @param _pieceView the selected pieceView.
-     * @param _TFPoint the selected TF point.
+     * @param _piece_view the selected pieceView.
+     * @param _tf_point the selected TF point.
      */
     void left_button_click_on_point_event(
         piece_view* _piece_view,
@@ -279,8 +279,8 @@ private:
 
     /**
      * @brief Removes a TF point from the current pieceView and update the related TF.
-     * @param _pieceView the selected pieceView.
-     * @param _TFPoint the selected TF point.
+     * @param _piece_view the selected pieceView.
+     * @param _tf_point the selected TF point.
      */
     void right_button_click_on_point_event(
         piece_view* _piece_view,
@@ -289,8 +289,8 @@ private:
 
     /**
      * @brief Changes the TF point color by opening a color dialog and update the related TF.
-     * @param _pieceView the selected pieceView.
-     * @param _TFPoint the selected TF point.
+     * @param _piece_view the selected pieceView.
+     * @param _tf_point the selected TF point.
      */
     void left_button_double_click_on_point_event(
         piece_view* _piece_view,

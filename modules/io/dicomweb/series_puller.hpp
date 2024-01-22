@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,13 +113,13 @@ private:
 
     /**
      * @brief Read local series.
-     * @param[in] selectedSeries Series to read
+     * @param[in] _selected_series Series to read
      */
     void read_local_series(dicom_series_container_t _selected_series);
 
     /**
      * @brief Display an error message.
-     * @param[in] message Error message to display
+     * @param[in] _message Error message to display
      */
     static void display_error_message(const std::string& _message);
 

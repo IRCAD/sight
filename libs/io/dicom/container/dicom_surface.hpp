@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,17 +55,17 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] reconstruction Source reconstruction
+     * @param[in] _reconstruction Source reconstruction
      */
     IO_DICOM_API dicom_surface(const data::reconstruction::csptr& _reconstruction);
 
     /**
      * @brief Constructor
-     * @param[in] pointBuffer Points buffer
-     * @param[in] pointBufferSize Points buffer size
-     * @param[in] cellBuffer Cells buffer
-     * @param[in] cellBufferSize Cells buffer size
-     * @param[in] normalBuffer Normals buffer
+     * @param[in] _point_buffer Points buffer
+     * @param[in] _point_buffer_size Points buffer size
+     * @param[in] _cell_buffer Cells buffer
+     * @param[in] _cell_buffer_size Cells buffer size
+     * @param[in] _normal_buffer Normals buffer
      */
     IO_DICOM_API dicom_surface(
         const data::mesh::position_t* _point_buffer,

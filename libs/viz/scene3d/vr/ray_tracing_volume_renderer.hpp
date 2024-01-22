@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,15 +114,16 @@ public:
 
     /**
      * @brief Constructor.
-     * @param parentId                  ID of the service using this renderer
-     * @param sceneManager              The scene manager being used.
-     * @param volumeNode                This object's node.
-     * @param image                     texture holding the 3D image to be rendered. Created if not specified.
-     * @param buffer (optional)         Enable buffering for the textures updates. Default is false.
-     * @param preintegration (optional) Enable preintegration. Default is false.
-     * @param shadows (optional)        Shadows parameters. Uses default if not specified.
-     * @param sat (optional)            SAT parameters. Uses default if not specified.
-     * @param shader (optional)         Raycasting fragment shader. Default is "RayTracedVolume_FP.glsl".
+     * @param _parent_id                 ID of the service using this renderer
+     * @param _scene_manager             The scene manager being used.
+     * @param _volume_node               This object's node.
+     * @param _image                     texture holding the 3D image to be rendered. Created if not specified.
+     * @param _buffer (optional)         Enable buffering for the textures updates. Default is false.
+     * @param _preintegration (optional) Enable preintegration. Default is false.
+     * @param _shadows (optional)        Shadows parameters. Uses default if not specified.
+     * @param _sat (optional)            SAT parameters. Uses default if not specified.
+     * @param _shader (optional)         Raycasting fragment shader. Default is "RayTracedVolume_FP.glsl".
+     * @todo update this comment
      */
     VIZ_SCENE3D_API ray_tracing_volume_renderer(
         std::string _parent_id,
@@ -209,31 +210,31 @@ public:
 
     /**
      * @brief Sets the SAT size ratio.
-     * @param ratio value of the SAT size ratio.
+     * @param _ratio value of the SAT size ratio.
      */
     VIZ_SCENE3D_API void update_sat_size_ratio(unsigned _ratio);
 
     /**
      * @brief Sets the SAT shells number.
-     * @param count the number of shells used by the SAT.
+     * @param _count the number of shells used by the SAT.
      */
     VIZ_SCENE3D_API void update_sat_shells_number(unsigned _count);
 
     /**
      * @brief Sets the SAT shells radius.
-     * @param radius the shells radius used by the SAT.
+     * @param _radius the shells radius used by the SAT.
      */
     VIZ_SCENE3D_API void update_sat_shell_radius(unsigned _radius);
 
     /**
      * @brief Sets the SAT cone angle.
-     * @param angle the cone angle size of the SAT. Cones ares used to compute soft shadows.
+     * @param _angle the cone angle size of the SAT. Cones ares used to compute soft shadows.
      */
     VIZ_SCENE3D_API void update_sat_cone_angle(float _angle);
 
     /**
      * @brief Sets the SAT cone samples.
-     * @param samples the cone sample number of the SAT. Cones ares used to compute soft shadows.
+     * @param _samples the cone sample number of the SAT. Cones ares used to compute soft shadows.
      */
     VIZ_SCENE3D_API void update_sat_cone_samples(unsigned _samples);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,11 +120,11 @@ public:
 
     /**
      * @brief Constructor.
-     * @param parentId                  ID of the service using this renderer
-     * @param sceneManager              The scene manager being used.
-     * @param volumeNode                This object's node.
-     * @param buffer (optional)         Enable buffering for the textures updates. Default is false.
-     * @param preintegration (optional) Enable preintegration. Default is false.
+     * @param _parent_id                  ID of the service using this renderer
+     * @param _scene_manager              The scene manager being used.
+     * @param _volume_node                This object's node.
+     * @param _with_buffer (optional)     Enable buffering for the textures updates. Default is false.
+     * @param _preintegration (optional)  Enable preintegration. Default is false.
      */
     VIZ_SCENE3D_API volume_renderer(
         std::string _parent_id,

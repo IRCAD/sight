@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,14 +79,14 @@ public:
 
     /**
      * @brief add an Image and a pointList into calibration_info
-     * @param[in] img the new image
-     * @param[in] pl the corresponding point list
+     * @param[in] _img the new image
+     * @param[in] _pl the corresponding point list
      */
     DATA_API void add_record(const image::sptr& _img, const point_list::sptr& _pl);
 
     /**
      * @brief remove the desired record (both image and pointList)
-     * @param[in] idx index of the record to be removed
+     * @param[in] _idx index of the record to be removed
      */
     DATA_API void remove_record(std::size_t _idx);
 
@@ -108,7 +108,7 @@ public:
     /**
      * @brief Get the pointList corresponding to the specified image, if the specified image is not found
      * a null pointer is returned
-     * @param[in] img image
+     * @param[in] _img image
      * @return pointList corresponding to the image
      *
      */
@@ -117,7 +117,7 @@ public:
     /**
      * @brief Get the image corresponding to the specified pointList, if the specified pointList is not found
      *  a null pointer is returned
-     * @param[in] pl the pointList
+     * @param[in] _pl the pointList
      * @return image corresponding to the pointList
      */
     DATA_API image::csptr get_image(const point_list::csptr& _pl) const;
@@ -125,7 +125,7 @@ public:
     /**
      * @brief Get the image corresponding to the specified index, if the index is not found
      *  a null pointer is returned
-     * @param[in] idx index of image
+     * @param[in] _idx index of image
      * @return image corresponding to the index
      * @{
      */
@@ -142,13 +142,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()

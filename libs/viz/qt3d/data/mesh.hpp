@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ private:
 
     /**
      * @brief Adds the compute shader that change a quad mesh to a triangle mesh.
-     * @param _numberOfCells the cells number of the mesh.
+     * @param _number_of_cells the cells number of the mesh.
      */
     void add_compute_entity_to_scene(int _number_of_cells);
 

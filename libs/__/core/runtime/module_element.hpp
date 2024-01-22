@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
      *
      * @see         isEnabled
      *
-     * @param[in]   enable To know if module element is enabled
+     * @param[in]   _enable To know if module element is enabled
      */
     CORE_API void set_enable(bool _enable);
 
@@ -83,7 +83,7 @@ protected:
      *          consider that module as its owning module
      *
      * @post    The module isn't null.
-     * @see     core::runtime::module::getLoadingmodule()
+     * @see     core::runtime::module::get_loading_module()
      */
     CORE_API module_element();
 
@@ -91,7 +91,7 @@ protected:
      * @brief       Constructor
      *
      * @post        The module isn't null.
-     * @param[in]   module  a shared pointer to the managing module
+     * @param[in]   _module  a shared pointer to the managing module
      */
     CORE_API module_element(std::shared_ptr<module> _module);
 

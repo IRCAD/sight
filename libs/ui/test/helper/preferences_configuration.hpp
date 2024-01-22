@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,8 +32,8 @@ public:
 
     /**
      * Fill the preferences configuration window and close it.
-     * @param tester The current tester
-     * @param values The values to be set
+     * @param _tester The current tester
+     * @param _values The values to be set
      * @warning This method assumes that the preferences configuration window is already open.
      */
     UI_TEST_API static void fill(tester& _tester, const std::map<std::string, std::string>& _values);

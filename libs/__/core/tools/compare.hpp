@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -656,8 +656,8 @@ struct is_pair<
 >: std::true_type {};
 
 /// This is a floating point comparison helper. It mainly use a scaled epsilon with some fallback.
-/// @param a left floating point number to compare
-/// @param b right floating point number to compare
+/// @param _a left floating point number to compare
+/// @param _b right floating point number to compare
 template<
     typename T1,
     typename T2,
@@ -709,8 +709,8 @@ constexpr static bool is_equal(T1 _a, T2 _b)
 }
 
 /// This is a mixed comparison helper. It cast the integral type to floating point or use == operator as needed
-/// @param a left number to compare
-/// @param b right number to compare
+/// @param _a left number to compare
+/// @param _b right number to compare
 template<
     typename T1,
     typename T2,
@@ -743,8 +743,8 @@ constexpr static bool is_equal(const T1& _a, const T2& _b)
 }
 
 /// This is a weak pointer comparison helper. It automatically dereferences the pointer and compare the values
-/// @param a left weak pointer to compare
-/// @param b right weak pointer to compare
+/// @param _a left weak pointer to compare
+/// @param _b right weak pointer to compare
 template<
     typename T1,
     typename T2,
@@ -756,8 +756,8 @@ constexpr static bool is_equal(T1 _a, T2 _b)
 }
 
 /// This is a weak pointer comparison helper. It automatically dereferences the pointer and compare the values
-/// @param a left weak pointer to compare
-/// @param b right weak pointer to compare
+/// @param _a left weak pointer to compare
+/// @param _b right weak pointer to compare
 template<
     typename T1,
     typename T2,
@@ -784,8 +784,8 @@ constexpr static bool is_equal(T1 _a, T2 _b)
 }
 
 /// This is a pointer comparison helper. It automatically dereferences the pointer and compare the values
-/// @param a left pointer to compare
-/// @param b right pointer to compare
+/// @param _a left pointer to compare
+/// @param _b right pointer to compare
 template<
     typename T1,
     typename T2,
@@ -817,8 +817,8 @@ constexpr static bool is_equal(T1 _a, T2 _b)
 }
 
 /// This is a comparison helper for container. It uses internally is_equal() for each element.
-/// @param a left container to compare
-/// @param b right container to compare
+/// @param _a left container to compare
+/// @param _b right container to compare
 template<
     typename T1,
     typename T2,
@@ -861,8 +861,8 @@ constexpr static bool is_equal(const T1& _a, const T2& _b)
 }
 
 /// This is a comparison helper for unordered container. It may be a bit inefficient due to the unordered nature.
-/// @param a left map to compare
-/// @param b right map to compare
+/// @param _a left map to compare
+/// @param _b right map to compare
 template<
     typename T1,
     typename T2,
@@ -922,8 +922,8 @@ constexpr static bool is_equal(const T1& _a, const T2& _b)
 
 /// This is a floating point less than comparison helper. It mainly use a scaled epsilon with some fallback.
 /// This is not perfect, as no perfect solution exists
-/// @param a left floating point number to compare
-/// @param b right floating point number to compare
+/// @param _a left floating point number to compare
+/// @param _b right floating point number to compare
 template<
     typename T1,
     typename T2,
@@ -970,8 +970,8 @@ constexpr static bool is_less(T1 _a, T2 _b)
 
 /// This is a floating point greater than comparison helper. It mainly use a scaled epsilon with some fallback.
 /// This is not perfetc, as no perfect solution exists
-/// @param a left floating point number to compare
-/// @param b right floating point number to compare
+/// @param _a left floating point number to compare
+/// @param _b right floating point number to compare
 template<
     typename T1,
     typename T2,

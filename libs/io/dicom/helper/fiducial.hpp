@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,19 +47,19 @@ public:
 
     /**
      * @brief Return true if the series contains at least one image containing landmarks.
-     * @param[in] seriesSet series_set where to look for landmarks
+     * @param[in] _series_set series_set where to look for landmarks
      */
     IO_DICOM_API static bool contains_landmarks(const SPTR(data::series_set)& _series_set);
 
     /**
      * @brief Return true if the series contains at least one image containing distances.
-     * @param[in] seriesSet series_set where to look for distances
+     * @param[in] _series_set series_set where to look for distances
      */
     IO_DICOM_API static bool contains_distances(const SPTR(data::series_set)& _series_set);
 
     /**
      * @brief Return true if the series contains at least one image containing 3D distances.
-     * @param[in] seriesSet series_set where to look for 3D distances
+     * @param[in] _series_set series_set where to look for 3D distances
      */
     IO_DICOM_API static bool contains_3d_distances(const SPTR(data::series_set)& _series_set);
 };

@@ -62,7 +62,7 @@ public:
     /**
      * @brief       Creates all modules that are found at the given location.
      *
-     * @param[in]   location    a relative or absolute path to a directory containing modules
+     * @param[in]   _location    a relative or absolute path to a directory containing modules
      *
      * @return      path to the absolute location path and a vector of all created modules
      */
@@ -72,7 +72,7 @@ public:
      * @brief       Look for a descriptor at the specified location,
      *              reads it and creates a module with it.
      *
-     * @param[in]   location    a path to a directory that should contain a module description
+     * @param[in]   _location    a path to a directory that should contain a module description
      *
      * @return      a shared pointer to the created module
      */
@@ -81,8 +81,8 @@ public:
     /**
      * @brief   Processes a configuration element XML node.
      *
-     * @param   node          a pointer to the XML node that represents a configuration element
-     * @param   parentConfig  the configuration of the parent
+     * @param   _node          a pointer to the XML node that represents a configuration element
+     * @param   _parent_config  the configuration of the parent
      *
      * @return  a pointer to the created configuration element
      */
@@ -91,8 +91,8 @@ public:
     /**
      * @brief   Processes an extension XML node.
      *
-     * @param   node    a pointer to the XML node that represents an extension
-     * @param   module  a pointer to the module the extension will be attached to
+     * @param   _node    a pointer to the XML node that represents an extension
+     * @param   _module  a pointer to the module the extension will be attached to
      *
      * @return  a pointer to the created extension
      */
@@ -101,8 +101,8 @@ public:
     /**
      * Processes a node that is a point
      *
-     * @param   node    a pointer to the xml document node that represents a requirement
-     * @param   module  a pointer to the module the extension will be attached to
+     * @param   _node    a pointer to the xml document node that represents a requirement
+     * @param   _module  a pointer to the module the extension will be attached to
      * @return  a pair with the created extension point and extensions
      */
     static point_extensions_pair_type process_point(xmlNodePtr _node, const std::shared_ptr<module> _module);
@@ -110,8 +110,8 @@ public:
     /**
      * @brief   Processes an extension point XML node.
      *
-     * @param   node    a pointer to the XML node that represents an extension point
-     * @param   module  a pointer to the module declaring the extension point
+     * @param   _node    a pointer to the XML node that represents an extension point
+     * @param   _module  a pointer to the module declaring the extension point
      *
      * @return  a pointer to the created extension point
      */
@@ -123,8 +123,8 @@ public:
     /**
      * Processes a node that is a plugin element.
      *
-     * @param   node        a pointer to the xml document node that represents a module
-     * @param   location    a path to a directory containing the module
+     * @param   _node        a pointer to the xml document node that represents a module
+     * @param   _location    a path to a directory containing the module
      *
      * @return  a pointer to the created module
      */
@@ -133,7 +133,7 @@ public:
     /**
      * Processes a node that is a requirement
      *
-     * @param   node        a pointer to the xml document node that represents a requirement
+     * @param   _node        a pointer to the xml document node that represents a requirement
      *
      * @return  a string containing the requirement's value
      */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,10 +33,11 @@ public:
     /**
      * Take the current modal window, setting it as the current graphic component in tester. If the template version is
      * used, it checks if the modal window has the good type first. Fails if there is no modal window. @see Tester::take
-     * @param tester The current tester
-     * @param desc The description of the window
-     * @param childName The objectName of a child the dialog must have. Useful to disambiguate if multiple dialogs might
-     *                  appear in a row
+     * @param _tester The current tester
+     * @param _desc The description of the window
+     * @param _child_name The objectName of a child the dialog must have. Useful to disambiguate if multiple dialogs
+     * might
+     *                    appear in a row
      * @{
      */
     template<typename T>
@@ -48,10 +49,11 @@ public:
      * Take the current modal window, setting it as the current graphic component in tester. If the template version is
      * used, it checks if the modal window has the good type first. Continues if there is no modal window.
      * @see Tester::maybe_take
-     * @param tester The current tester
-     * @param desc The description of the window
-     * @param childName The objectName of a child the dialog must have. Useful to disambiguate if multiple dialogs might
-     *                  appear in a row
+     * @param _tester The current tester
+     * @param _desc The description of the window
+     * @param _child_name The objectName of a child the dialog must have. Useful to disambiguate if multiple dialogs
+     * might
+     *                    appear in a row
      * @{
      */
     template<typename T>

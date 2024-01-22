@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ public:
 
     /**
      * @brief m_object setter.
-     * @param[in] _pObject replaces m_object of the instance writer
+     * @param[in] _object replaces m_object of the instance writer
      * @note m_object is saved in class as a weakptr
      * @note This object can be get with the method get_object()
      */

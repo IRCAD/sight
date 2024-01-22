@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,9 +96,9 @@ public:
 
     /**
      * @brief Zooms in the scene at the current cursor position.
-     * @param _scalingFactor distance of the fingers
-     * @param _centerX the width coordinate of the center of the pinch
-     * @param _centerY the height coordinate of the center of the pinch
+     * @param _scale_factor distance of the fingers
+     * @param _center_x the width coordinate of the center of the pinch
+     * @param _center_y the height coordinate of the center of the pinch
      */
     MODULE_VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
 

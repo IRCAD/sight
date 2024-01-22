@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,12 +47,11 @@ public:
 
     /**
      * @brief ReprojectionError constructor
-     * @param _cameraMat: camera matrix 3x3 (with Fx, Fy, Cx, Cy)
-     * @param _distCoef: distorsion coefficients
-     * @param _imagePoints: a 2d point in the image
-     * @param _objectPoints: the coressponding 3d point
-     * @param _rotMat: rotation matrix
-     * @param _tvec: translation vector
+     * @param _camera_mat: camera matrix 3x3 (with Fx, Fy, Cx, Cy)
+     * @param _dist_coef: distortion coefficients
+     * @param _image_points: a 2d point in the image
+     * @param _object_points: the corresponding 3d point
+     * @param _extrinsic    extrinsic matrix
      */
     GEOMETRY_VISION_API reprojection_error(
         cv::Mat _camera_mat,
@@ -66,20 +65,19 @@ public:
      *  The use of templating here allows Ceres to call CostFunctor::operator<T>(),
      * with T=double when just the value of the residual is needed,
      * and with a special type T=Jet when the Jacobians are needed
-     * @param pose: inputs parameters (here 3 rotations and 3 translations)
-     * @param residuals: differences in x and y between a 2d point and it's reprojection.
+     * @param _pose         inputs parameters (here 3 rotations and 3 translations)
+     * @param _residuals    differences in x and y between a 2d point and it's reprojection.
      */
     template<typename T>
     bool operator()(const T* _pose, T* _residuals) const;
 
     /**
      * @brief factory to hide the construction of the CostFunction object from the client code.
-     * @param _cameraMat: camera matrix 3x3 (with Fx, Fy, Cx, Cy)
-     * @param _distCoef: distorsion coefficients
-     * @param _imagePoints: a 2d point in the image
-     * @param _objectPoints: the coressponding 3d point
-     * @param _rotMat: rotation matrix
-     * @param _tvec: translation vector
+     * @param _camera_matrix camera matrix 3x3 (with Fx, Fy, Cx, Cy)
+     * @param _dist_coef distortion coefficients
+     * @param _image_points: a 2d point in the image
+     * @param _object_points: the corresponding 3d point
+     * @param _extrinsic    the extrinsic matrix
      * @return a pointer to a ::ceres::CostFunction
      */
 

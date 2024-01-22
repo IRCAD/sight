@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,8 +32,8 @@ public:
 
     /**
      * Select an item from a selection dialog and close it
-     * @param tester The current tester
-     * @param selection The item to be selected
+     * @param _tester The current tester
+     * @param _selection The item to be selected
      * @warning This method assumes that the selection dialog is already open.
      */
     UI_TEST_API static void select(tester& _tester, const std::string& _selection);

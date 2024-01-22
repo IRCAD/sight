@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ struct type_translator
  * @brief Allocate a new vtkImageData* from a data::image::sptr.
  *
  * @param[in] _data data::image::sptr.
- * @param[out] dst the vtk image to fill if provided
+ * @param[out] _dst the vtk image to fill if provided
  *
  * if dst is provided the new image will be imported into the dst image else
  * allocate a new vtkImage from a data::image, vtkImage doesn't manage its buffer (the buffer is not copied)
@@ -76,15 +76,15 @@ IO_VTK_API void from_vtk_image(vtkImageData* _source, data::image::sptr _destina
 /*!
  * @brief Configure a vtkImageImport* from a data::image::sptr.
  *
- * @param[in] _pDataImage data::image::sptr.
- * @param[out] _pImageImport vtkImageImport*.
+ * @param[out] _p_image_import vtkImageImport*.
+ * @param[in] _p_data_image data::image::sptr.
  */
 IO_VTK_API void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::csptr _p_data_image);
 
 /*!
  * @brief Convert a data::matrix4::sptr to a vtkMatrix4x4*.
  *
- * @param[in] _transfoMatrix data::matrix4::sptr.
+ * @param[in] _transfo_matrix data::matrix4::sptr.
  * @return vtkPolyData*.
  */
 IO_VTK_API vtkSmartPointer<vtkMatrix4x4> to_vtk_matrix(data::matrix4::csptr _transfo_matrix);
@@ -93,7 +93,7 @@ IO_VTK_API vtkSmartPointer<vtkMatrix4x4> to_vtk_matrix(data::matrix4::csptr _tra
  * @brief Convert a vtkMatrix4x4* to a data::matrix4::sptr.
  *
  * @param[in] _matrix vtkMatrix4x4*.
- * @param[out] _transfoMatrix data::matrix4::sptr.
+ * @param[out] _transfo_matrix data::matrix4::sptr.
  * @return bool.
  *
  * Returns \b true if the conversion is a success and \b false if it fails

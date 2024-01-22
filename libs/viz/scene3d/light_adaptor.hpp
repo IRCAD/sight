@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ public:
 
     /**
      * @brief Destroys a light adaptor.
-     * @param _lightManager the light adaptor to unregister.
+     * @param _light_manager the light adaptor to unregister.
      */
     VIZ_SCENE3D_API static void destroy_light_adaptor(light_adaptor::sptr _light_manager);
 
@@ -143,7 +143,7 @@ public:
 
     /**
      * @brief Sets the diffuse color of the light.
-     * @param _diffuseColor the Ogre diffuse color of the light.
+     * @param _diffuse_color the Ogre diffuse color of the light.
      */
     VIZ_SCENE3D_API virtual void set_diffuse_color(Ogre::ColourValue _diffuse_color) = 0;
 
@@ -155,7 +155,7 @@ public:
 
     /**
      * @brief Sets the specular color of the light.
-     * @param _diffuseColor the Ogre specular color of the light.
+     * @param _specular_color the Ogre specular color of the light.
      */
     VIZ_SCENE3D_API virtual void set_specular_color(Ogre::ColourValue _specular_color) = 0;
 
@@ -179,7 +179,7 @@ public:
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
-     * @param _thetaOffset the value of the theta offset.
+     * @param _theta_offset the value of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     VIZ_SCENE3D_API virtual void set_theta_offset(float _theta_offset) = 0;
@@ -192,7 +192,7 @@ public:
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
-     * @param _phiOffset the phi of the theta offset.
+     * @param _phi_offset the phi of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     VIZ_SCENE3D_API virtual void set_phi_offset(float _phi_offset) = 0;

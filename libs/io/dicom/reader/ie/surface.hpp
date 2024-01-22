@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,13 +50,13 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] dicomSeries DicomSeries used to access computed tag values.
-     * @param[in] reader GDCM reader that must be enriched
-     * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] series Series data
-     * @param[in] logger Logger
-     * @param[in] progress Progress callback
-     * @param[in] cancel Cancel requested callback
+     * @param[in] _dicom_series DicomSeries used to access computed tag values.
+     * @param[in] _reader GDCM reader that must be enriched
+     * @param[in] _instance DICOM instance used to share informations between modules
+     * @param[in] _series Series data
+     * @param[in] _logger Logger
+     * @param[in] _progress Progress callback
+     * @param[in] _cancel Cancel requested callback
      */
     IO_DICOM_API surface(
         const CSPTR(data::dicom_series)& _dicom_series,
@@ -70,7 +70,7 @@ public:
 
     /**
      * @brief Load Segmented Property Registry
-     * @param[in] filepath Path to the registry CSV file
+     * @param[in] _filepath Path to the registry CSV file
      * @return True on success
      */
     IO_DICOM_API bool load_segmented_property_registry(const std::filesystem::path& _filepath);
@@ -88,9 +88,9 @@ protected:
 
     /**
      * @brief Read Surface Segmentation Module tags
-     * @param[in,out] reconstruction Reconstruction data
-     * @param[in] segment GDCM segment
-     * @param[in] segmentItem GDCM segment item
+     * @param[in,out] _reconstruction Reconstruction data
+     * @param[in] _segment GDCM segment
+     * @param[in] _segment_item GDCM segment item
      * @see PS 3.3 C.8.23.1
      */
     virtual void read_surface_segmentation_module(
@@ -100,8 +100,8 @@ protected:
     );
     /**
      * @brief Read Surface Mesh Module tags
-     * @param[in,out] reconstruction Reconstruction data
-     * @param[in] surface GDCM surface
+     * @param[in,out] _reconstruction Reconstruction data
+     * @param[in] _surface GDCM surface
      * @see PS 3.3 C.27.1
      */
     IO_DICOM_API virtual void read_surface_mesh_module(

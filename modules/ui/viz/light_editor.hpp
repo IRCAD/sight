@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,13 +89,13 @@ private:
 
     /**
      * @brief SLOT: sets the current light adaptor to edit.
-     * @param _lightAdaptor The light adaptor to edit.
+     * @param _light_adaptor The light adaptor to edit.
      */
     void edit_light(sight::viz::scene3d::light_adaptor::sptr _light_adaptor);
 
     /**
      * @brief Opens a QColorDialog to pick a new color that is returned.
-     * @param _currentColor the curent light color.
+     * @param _current_color the current light color.
      * @param _title the title of the dialog.
      */
     Ogre::ColourValue edit_color(const Ogre::ColourValue& _current_color, const std::string& _title);
@@ -169,7 +169,7 @@ private Q_SLOTS:
 
     /**
      * @brief Sets the new type on the light adaptor accurately.
-     * @param _value value of the current type.
+     * @param _type value of the current type.
      * @see m_lightTypeBox
      */
     void on_edit_type(const QString& _type);

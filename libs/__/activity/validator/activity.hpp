@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,8 +78,8 @@ public:
 
     /**
      * @brief Calls the object validator if it is defined.
-     * @param object object to validate
-     * @param validatorImpl implementation of the validator to apply (if it is empty, check is assumed as valid).
+     * @param _object object to validate
+     * @param _validator_impl implementation of the validator to apply (if it is empty, check is assumed as valid).
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see activity::validator::object
      */

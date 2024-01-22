@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,49 +48,49 @@ public:
     /**
      * @brief Generate cell normals for the mesh.
      *
-     * @param[out]  mesh data::mesh structure to fill with cell normals.
+     * @param[out]  _mesh data::mesh structure to fill with cell normals.
      */
     GEOMETRY_DATA_API static void generate_cell_normals(sight::data::mesh::sptr _mesh);
 
     /**
      * @brief Generate point normals for the mesh.
      *
-     * @param[out]  mesh data::mesh structure to fill with cell normals.
+     * @param[out]  _mesh data::mesh structure to fill with cell normals.
      */
     GEOMETRY_DATA_API static void generate_point_normals(sight::data::mesh::sptr _mesh);
 
     /**
      * @brief Shake point Normals.
      *
-     * @param[out]  mesh data::mesh structure to shake normals.
+     * @param[out]  _mesh data::mesh structure to shake normals.
      */
     GEOMETRY_DATA_API static void shake_point_normals(sight::data::mesh::sptr _mesh);
 
     /**
      * @brief Shake cell Normals.
      *
-     * @param[out]  mesh data::mesh structure to shake normals.
+     * @param[out]  _mesh data::mesh structure to shake normals.
      */
     GEOMETRY_DATA_API static void shake_cell_normals(sight::data::mesh::sptr _mesh);
 
     /**
      * @brief Shake points of the mesh.
      *
-     * @param[out]  mesh data::mesh structure to shake.
+     * @param[out]  _mesh data::mesh structure to shake.
      */
     GEOMETRY_DATA_API static void shake_point(sight::data::mesh::sptr _mesh);
 
     /**
      * @brief Colorize mesh (vertex point color).
      *
-     * @param[in]  mesh data::mesh mesh structure to colorize.
+     * @param[in]  _mesh data::mesh mesh structure to colorize.
      */
     GEOMETRY_DATA_API static void colorize_mesh_points(sight::data::mesh::sptr _mesh);
 
     /**
      * @brief Colorize mesh (cell color).
      *
-     * @param[in]  mesh data::mesh mesh structure to colorize.
+     * @param[in]  _mesh data::mesh mesh structure to colorize.
      */
     GEOMETRY_DATA_API static void colorize_mesh_cells(sight::data::mesh::sptr _mesh);
 

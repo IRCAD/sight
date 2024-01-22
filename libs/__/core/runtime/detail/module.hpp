@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,25 +66,24 @@ public:
     /**
      * @brief       Constructor.
      *
-     * @param[in]   location        a path to the directory containing the module
-     * @param[in]   id              a string containing the module identifier
-     * @param[in]   version         a string containing the module version
-     * @param[in]   pluginClass     a string containing the module's pugin class name
+     * @param[in]   _location        a path to the directory containing the module
+     * @param[in]   _id              a string containing the module identifier
+     * @param[in]   _plugin_class    a string containing the module's plugin class name
+     * @param[in]   _priority        start order, lower is more favorable
      *
      * @todo        test parameters validity
-     *
      */
     module(
         const std::filesystem::path& _location,
         std::string _id,
-        std::string _c = "",
-        int _priority  = 0
+        std::string _plugin_class = "",
+        int _priority             = 0
     );
 
     /**
-     * @brief   Assignement operator.
+     * @brief   Assignment operator.
      *
-     * @remark  Assignement is forbidden for this class.
+     * @remark  Assignment is forbidden for this class.
      */
     void operator=(const module&) = delete;
 
@@ -170,7 +169,7 @@ public:
     /**
      * @brief       Sets the specified library to the module.
      *
-     * @param[in]   library a shared pointer to the library to add
+     * @param[in]   _library a shared pointer to the library to add
      */
     void set_library(SPTR(dl::library) _library);
     //@}
@@ -182,14 +181,14 @@ public:
     /**
      * @brief       Adds an executable factory instance to the module.
      *
-     * @param[in]   factory a shared pointer to the executable factory instance to add
+     * @param[in]   _factory a shared pointer to the executable factory instance to add
      */
     void add_executable_factory(SPTR(executable_factory) _factory);
 
     /**
      * @brief   Create an instance of the given executable object type.
      *
-     * @param   type    a string containing an executable type
+     * @param   _type    a string containing an executable type
      *
      * @return  a pointer to the created executable instance
      *
@@ -216,7 +215,7 @@ public:
     /**
      * @brief       Retrieves the executable factory instance for the specified type name.
      *
-     * @param[in]   type    a string containing a type name
+     * @param[in]   _type    a string containing a type name
      *
      * @return      a shared pointer to the found executable factory instance or null if none
      */
@@ -230,14 +229,14 @@ public:
     /**
      * @brief       Adds the specified extension to the module.
      *
-     * @param[in]   extension   a shared pointer to the extension to add
+     * @param[in]   _extension   a shared pointer to the extension to add
      */
     void add_extension(SPTR(detail::extension) _extension);
 
     /**
      * @brief       Tells if an specific extension exists.
      *
-     * @param[in]   identifier  the extension identifier
+     * @param[in]   _identifier  the extension identifier
      *
      * @return      true or false
      */
@@ -249,8 +248,8 @@ public:
      *
      * @remark      if the extension is not found, the method do nothing.
      *
-     * @param[in]   identifier  the extension identifier
-     * @param[in]   enable      enable or disable this extension
+     * @param[in]   _identifier  the extension identifier
+     * @param[in]   _enable      enable or disable this extension
      */
     void set_enable_extension(const std::string& _identifier, bool _enable);
 
@@ -278,14 +277,14 @@ public:
     /**
      * @brief       Adds the specified extension point to the module.
      *
-     * @param[in]   extension   a shared pointer to the extension point to add
+     * @param[in]   _extension   a shared pointer to the extension point to add
      */
     void add_extension_point(SPTR(extension_point) _extension);
 
     /**
      * @brief       Retrieves the extension point for the given identifier.
      *
-     * @param[in]   identifier  a string containing the extension point identifier
+     * @param[in]   _identifier  a string containing the extension point identifier
      *
      * @return      a shared pointer to the found extension point, may be empty if none
      */
@@ -294,7 +293,7 @@ public:
     /**
      * @brief       Tells if a specific extension point exists.
      *
-     * @param[in]   identifier  the extension point identifier
+     * @param[in]   _identifier  the extension point identifier
      *
      * @return      true or false
      */
@@ -306,8 +305,8 @@ public:
      *
      * @remark      if the extension point is not found, the method do nothing.
      *
-     * @param[in]   identifier  the extension point identifier
-     * @param[in]   enable      enable or disable this extension point
+     * @param[in]   _identifier  the extension point identifier
+     * @param[in]   _enable      enable or disable this extension point
      */
     void set_enable_extension_point(const std::string& _identifier, bool _enable);
 
@@ -335,7 +334,7 @@ public:
     /**
      * @brief       Adds a requirement to the module.
      *
-     * @param[in]   requirement a string containing a module identifier that is required
+     * @param[in]   _requirement a string containing a module identifier that is required
      */
     void add_requirement(const std::string& _requirement);
     //@}
@@ -370,8 +369,8 @@ public:
     /**
      * @brief       Adds a parameter to the module.
      *
-     * @param[in]   identifier  a string containing the parameter identifier
-     * @param[in]   value       a string containing the parameter value
+     * @param[in]   _identifier  a string containing the parameter identifier
+     * @param[in]   _value       a string containing the parameter value
      */
     void add_parameter(const std::string& _identifier, const std::string& _value);
     //@}

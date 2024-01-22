@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,8 +47,8 @@ public:
 
     /**
      * @brief Returns the closest buffer to the given timestamp
-     * @param timestamp timestamp used to find the closest buffer
-     * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
+     * @param _timestamp timestamp used to find the closest buffer
+     * @param _direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
     CSPTR(buffer_t) get_closest_buffer(
         core::clock::type _timestamp,
@@ -89,13 +89,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()

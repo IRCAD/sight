@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,21 +46,21 @@ public:
     /**
      * @brief Constructor from a typeinfo object
      *
-     * @param t Typeinfo to demangle
+     * @param _t Typeinfo to demangle
      */
     CORE_API demangler(const std::type_info& _t);
 
     /**
      * @brief Constructor from a std::string
      *
-     * @param s string to demangle
+     * @param _s string to demangle
      */
     CORE_API demangler(std::string _s);
 
     /**
      * @brief Constructor from any type
      *
-     * @param s object which type has to be demangled
+     * @param _s object which type has to be demangled
      */
     template<typename T>
     demangler(T& _s) :

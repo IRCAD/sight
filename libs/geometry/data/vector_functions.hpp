@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,22 +37,22 @@ GEOMETRY_DATA_API double normalize(fw_vec3d& _vec);
 
 /**
  *  @brief Return a normalized vector
- *  @param [in] vec vector to normalize
+ *  @param [in] _vec vector to normalize
  *  @return normalized vector
  */
 GEOMETRY_DATA_API fw_vec3d normalized(const fw_vec3d& _vec);
 
 /**
  *  @brief Compute the Dot product between two vectors.
- *  @param [in] v1
- *  @param [in] v2
+ *  @param [in] _v1
+ *  @param [in] _v2
  *  @return the dot product.
  */
 GEOMETRY_DATA_API double dot(const fw_vec3d& _v1, const fw_vec3d& _v2);
 /**
  *  @brief Compute the Cross product between two vectors.
- *  @param [in] v1
- *  @param [in] v2
+ *  @param [in] _v1
+ *  @param [in] _v2
  *  @return the cross product.
  */
 GEOMETRY_DATA_API fw_vec3d cross(const fw_vec3d& _v1, const fw_vec3d& _v2);
@@ -75,32 +75,32 @@ GEOMETRY_DATA_API void negate(fw_vec3d& _vec);
 
 /**
  *  @brief operator *= for fw_vec3d
- *  @param [in] vec1 vector to multiply
- *  @param [in] val value to multiply with vector
+ *  @param [in] _vec1 vector to multiply
+ *  @param [in] _val value to multiply with vector
  *  @return vec1[0]*=vec2[0], vec1[1]*=vec2[1], vec1[2]*=vec2[2]
  */
 GEOMETRY_DATA_API fw_vec3d& operator*=(fw_vec3d& _vec1, double _val);
 
 /**
  *  @brief operator /= for fw_vec3d
- *  @param [in] vec
- *  @param [in] val
+ *  @param [in] _vec
+ *  @param [in] _val
  *  @return vec[0]/=val, vec[1]/=val, vec[2]/=val
  */
 GEOMETRY_DATA_API fw_vec3d& operator/=(fw_vec3d& _vec, double _val);
 
 /**
  *  @brief operator += for fw_vec3d
- *  @param [in] vec1
- *  @param [in] vec2
+ *  @param [in] _vec1
+ *  @param [in] _vec2
  *  @return  vec1 => vec1[0]+=vec2[0], vec1[1]+=vec2[1], vec1[2]+=vec2[2]
  */
 GEOMETRY_DATA_API fw_vec3d& operator+=(fw_vec3d& _vec1, const fw_vec3d& _vec2);
 
 /**
  *  @brief
- *  @param [in] vec1
- *  @param [in] vec2
+ *  @param [in] _vec1
+ *  @param [in] _vec2
  *  @return vec1[0]-=vec2[0], vec1[1]-=vec2[1], vec1[2]-=vec2[2]
  */
 GEOMETRY_DATA_API fw_vec3d& operator-=(fw_vec3d& _vec1, const fw_vec3d& _vec2);
@@ -124,7 +124,7 @@ GEOMETRY_DATA_API fw_vec3d operator*(double _val, const fw_vec3d& _vec);
 /**
  *  @brief operator / between fw_vec3d and value.
  *  @param [in] _vec
- *  @param [in] val
+ *  @param [in] _val
  *  @return the result of the operation _vec/val
  */
 GEOMETRY_DATA_API fw_vec3d operator/(const fw_vec3d& _vec, double _val);

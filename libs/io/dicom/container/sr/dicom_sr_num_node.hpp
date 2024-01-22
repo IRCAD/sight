@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
 
     /**
      * @brief Write the SR node in the dataset
-     * @param[in] dataset Destination dataset
+     * @param[in] _dataset Destination dataset
      */
     IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
@@ -87,7 +87,7 @@ protected:
     /**
      * @brief Write a Measured Value Sequence
      * @see PS 3.3  Table C.18.1
-     * @param[in] dataset Destination dataset
+     * @param[in] _dataset Destination dataset
      */
     void write_measured_value_sequence(gdcm::DataSet& _dataset) const;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ private:
 
     /**
      * @brief Slots to launch the given activity.
-     * @param activity the activity to be launched.
+     * @param _activity the activity to be launched.
      */
     void launch_activity(data::activity::sptr _activity);
 

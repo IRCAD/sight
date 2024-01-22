@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,9 +64,9 @@ public:
     /**
      * @brief Construct a new job
      *
-     * @param name name of the new job
-     * @param task The task managed by the job
-     * @param core::thread::worker An optional worker to run the task on
+     * @param _name name of the new job
+     * @param _task The task managed by the job
+     * @param _worker An optional worker to run the task on
      */
     CORE_API job(const std::string& _name, task _task, SPTR(core::thread::worker)_worker = nullptr);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,16 +40,16 @@ namespace dl
 
 /**
  * @brief   Implements a win32 native module.
- * @struct  Win32
+ * @struct  win32
  */
 struct win32 : public native
 {
     /**
      * @brief       Constructor.
      *
-     * @param[in]   modulePath      a path to the module to manage
+     * @param[in]   _module_path      a path to the module to manage
      */
-    win32(const std::filesystem::path& module_path) noexcept;
+    win32(const std::filesystem::path& _module_path) noexcept;
 
     /**
      * @brief   Tells if the module is loaded.
@@ -61,11 +61,11 @@ struct win32 : public native
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
      *
-     * @param[in]   name    a string containing the symbol name.
+     * @param[in]   _name    a string containing the symbol name.
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* get_symbol(const std::string& name) const override;
+    void* get_symbol(const std::string& _name) const override;
 
     /**
      * @brief   Loads the module.
@@ -73,7 +73,7 @@ struct win32 : public native
     void load() override;
 
     /**
-     * @brief   Undloads the module.
+     * @brief   Unloads the module.
      */
     void unload() override;
 

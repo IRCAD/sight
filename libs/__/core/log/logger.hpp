@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,25 +55,25 @@ public:
 
     /**
      * @brief Add information log into the logger
-     * @param[in] message Log message
+     * @param[in] _message Log message
      */
     CORE_API void information(const std::string& _message);
 
     /**
      * @brief Add warning log into the logger
-     * @param[in] message Log message
+     * @param[in] _message Log message
      */
     CORE_API void warning(const std::string& _message);
 
     /**
      * @brief Add critical log into the logger
-     * @param[in] message Log message
+     * @param[in] _message Log message
      */
     CORE_API void critical(const std::string& _message);
 
     /**
      * @brief Return the log matching the specified index
-     * @param[in] index Log's index
+     * @param[in] _index Log's index
      */
     CORE_API core::log::log get_log(unsigned int _index);
 
@@ -82,7 +82,7 @@ public:
 
     /**
      * @brief Return the number of logs matching the specified level
-     * @param[in] level Log level
+     * @param[in] _level Log level
      */
     CORE_API std::size_t count(core::log::log::level_t _level) const;
 
@@ -162,8 +162,8 @@ protected:
 
     /**
      * @brief Function used to sort logs
-     * @param logA First log
-     * @param logB Second log
+     * @param _log_a First log
+     * @param _log_b Second log
      */
     static bool log_sorter(const core::log::log& _log_a, const core::log::log& _log_b);
 

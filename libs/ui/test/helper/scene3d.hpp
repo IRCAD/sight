@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,20 +34,23 @@ public:
 
     /**
      * Rotates the camera in the specified scene
-     * @param tester The current tester
-     * @param scene How to get the scene
-     * @param rotation the rotation to be applied, in radian divided by pi. (eg to apply an horizontal rotation of PI/2,
-     *                 use QPointF(1/2., 0)
+     * @param _tester The current tester
+     * @param _scene How to get the scene
+     * @param _rotation the rotation to be applied, in radian divided by pi. (eg to apply an horizontal rotation of
+     * PI/2,
+     *                  use QPointF(1/2., 0)
      */
     UI_TEST_API static void rotate(tester& _tester, const selector& _scene, QPointF _rotation);
 
     /**
      * Zooms the camera in the specified scene using the mouse wheel
-     * @param tester The current tester
-     * @param scene How to get the scene
-     * @param mouseSteps the number of mouse steps to be applied. A positive value zooms in while a negative value zooms
-     *                   out. Don't be mistaken: the value is NOT the scale, for example, mouseSteps=2 will zoom in with
-     *                   two mouse wheel steps, not making the image twice as large.
+     * @param _tester The current tester
+     * @param _scene How to get the scene
+     * @param _mouse_steps the number of mouse steps to be applied. A positive value zooms in while a negative value
+     * zooms
+     *                     out. Don't be mistaken: the value is NOT the scale, for example, mouseSteps=2 will zoom in
+     * with
+     *                     two mouse wheel steps, not making the image twice as large.
      */
     UI_TEST_API static void zoom(tester& _tester, const selector& _scene, int _mouse_steps);
 };

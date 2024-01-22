@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,8 +84,8 @@ private:
     /**
      * @brief method to send data.
      *
-     * @param[in] obj obj to send
-     * @param[in] index index of the object in the group
+     * @param[in] _obj obj to send
+     * @param[in] _index index of the object in the group
      */
     void send_object(const data::object::csptr& _obj, std::size_t _index) override;
 

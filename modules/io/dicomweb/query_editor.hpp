@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,13 +105,13 @@ private:
 
     /**
      * @brief Display an error message
-     * @param[in] message Error message to display
+     * @param[in] _message Error message to display
      */
     static void display_error_message(const std::string& _message);
 
     /**
      * @brief Update the series_set with the series retrieved from the pacs
-     * @param[in] series Series which must be added to the series_set
+     * @param[in] _series Series which must be added to the series_set
      */
     void update_series_set(const data::series_set::container_t& _series);
 

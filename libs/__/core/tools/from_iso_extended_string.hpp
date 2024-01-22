@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,28 +38,28 @@ namespace sight::core::tools
 
 /**
  * @brief       Construct a boost ptime from a string in iso extended format (YYYY-MM-DDTHH:MM:SS)
- * @param[in]   time_string time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
+ * @param[in]   _time_string time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
  * @return      Time in the boost format
  */
 CORE_API boost::posix_time::ptime from_iso_extended_string(const std::string& _time_string);
 
 /**
  * @brief   Construct a boost ptime from a string in xsd format (YYYY-MM-DD)
- * @param   date_string date in the xsd format YYYY-MM-DD
+ * @param   _date_string date in the xsd format YYYY-MM-DD
  * @return  Time in the boost format
  */
 CORE_API boost::posix_time::ptime from_date_in_xsd_format(const std::string& _date_string);
 
 /**
  * @brief       Construct a string in iso extended format from a boost ptime
- * @param[in]   ptime time in the boost format
+ * @param[in]   _ptime time in the boost format
  * @return      Time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
  */
 CORE_API std::string to_iso_extended_string(boost::posix_time::ptime _ptime);
 
 /**
  * @brief       Construct a string in the format YYYY-MM-DD from a boost ptime
- * @param[in]   date_and_time time in the boost format
+ * @param[in]   _date_and_time time in the boost format
  * @return      Time in the format YYYY-MM-DD (example : 2007-02-25 )
  */
 CORE_API std::string get_date_in_xsd_format(const boost::posix_time::ptime& _date_and_time);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace itk
 {
 
 /**
- * \class InrImageIOFactory
+ * \class inr_image_io_factory
  * \brief Create instances of InrImageIO objects using an object factory.
  */
 class ITK_EXPORT inr_image_io_factory : public ObjectFactoryBase

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ public:
 
     /**
      * @brief Return the menu_item associated with the actionSid.
-     * @param actionSid sid of the action service
-     * @param menuItems  vector containing the menu_item manages by this registry.
+     * @param _action_sid sid of the action service
+     * @param _menu_items  vector containing the menu_item manages by this registry.
      */
     virtual ui::container::menu_item::sptr get_menu_item(
         std::string _action_sid,

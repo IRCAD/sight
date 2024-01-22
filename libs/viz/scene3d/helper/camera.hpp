@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,8 +53,8 @@ public:
     /**
      * @brief Returns a render window's position relatively to the camera's viewport.
      * @param[in] _camera viewport in which the coordinates are transformed.
-     * @param[in] _renderWindowX width position in the render window.
-     * @param[in] _renderWindowY height position in the render window.
+     * @param[in] _render_window_x width position in the render window.
+     * @param[in] _render_window_y height position in the render window.
      *
      * @return screen position relatively to the viewport.
      */
@@ -67,7 +67,7 @@ public:
     /**
      * @brief Converts from screen space (u, v, w) to view space (x, y, z).
      * @param _camera ogre camera.
-     * @param _screenPos screen position (u, v, w).
+     * @param _screen_pos screen position (u, v, w).
      * @return view space coordinates (x, y, z).
      */
     static VIZ_SCENE3D_API Ogre::Vector3 convert_screen_space_to_view_space(
@@ -78,7 +78,7 @@ public:
     /**
      * @brief Converts from NDC space to view space (call by @ref convert_screen_space_to_view_space)
      * @param _camera ogre camera.
-     * @param _ndcPos NDC coordinates (3 components).
+     * @param _ndc_pos NDC coordinates (3 components).
      * @return the view space coordinates (x, y, z).
      */
     static VIZ_SCENE3D_API Ogre::Vector3 convert_ndc_to_view_space(
@@ -89,7 +89,7 @@ public:
     /**
      * @brief Converts from world space (x, y, z) to screen space (u, v, w).
      * @param _camera ogre camera.
-     * @param _worldPos world position (x, y, z).
+     * @param _world_pos world position (x, y, z).
      * @return screen space coordinates in pixels (x, y).
      */
     static VIZ_SCENE3D_API Ogre::Vector2 convert_world_space_to_screen_space(

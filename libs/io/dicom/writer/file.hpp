@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -96,7 +96,7 @@ public:
     static constexpr transfer_syntax string_to_transfer_syntax(const std::string_view& _string);
 
     /// Set the transfer syntax to use when writing the DICOM file
-    /// @param transferSyntax the transfer syntax
+    /// @param _transfer_syntax the transfer syntax
     IO_DICOM_API void set_transfer_syntax(transfer_syntax _transfer_syntax);
 
 private:

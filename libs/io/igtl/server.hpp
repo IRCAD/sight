@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,14 +64,14 @@ public:
     /**
      * @brief method to start the server on a port
      *
-     * @param[in] port the port to listen
+     * @param[in] _port the port to listen
      */
     IO_IGTL_API void start(std::uint16_t _port);
 
     /**
      * @brief method to wait a connection
      *
-     * @param[in] msec time to wait in millisecond
+     * @param[in] _msec time to wait in millisecond
      */
     IO_IGTL_API client::sptr wait_for_connection(int _msec = 0);
 
@@ -121,8 +121,8 @@ public:
 
     /** @brief receive body pack of a specific connected client
      *
-     *  @param[in] header msg header
-     *  @param[in] client num
+     *  @param[in] _header msg header
+     *  @param[in] _client num
      *
      *  @return Message
      */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,10 +35,10 @@ namespace sight::geometry::glm
  * @brief Converts an intersection point with a triangle from world coordinates to barycentric coordinates.
  * Assert if the _A_B_C triangle is flat to avoid zero division.
  * Note: no tests are performed in release mode to avoid performance issue.
- * @param _P world coordinates of the point (x, y, z), need to belongs to the ABC triangle.
- * @param _A first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
- * @param _B second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
- * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
+ * @param _p world coordinates of the point (x, y, z), need to belongs to the ABC triangle.
+ * @param _a first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _b second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
+ * @param _c third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return barycentric coordinates (u, v, w).
  */
 GEOMETRY_GLM_API ::glm::dvec3 to_barycentric_coord(
@@ -51,10 +51,10 @@ GEOMETRY_GLM_API ::glm::dvec3 to_barycentric_coord(
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w isn't equal to 1.
  * Note: no tests are performed in release mode to avoid performance issue.
- * @param _baryCoord barycentric coordinates (u, v, w) that belongs to the _A_B_C triangle.
- * @param _A first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
- * @param _B second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
- * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
+ * @param _bary_coord barycentric coordinates (u, v, w) that belongs to the _A_B_C triangle.
+ * @param _a first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _b second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
+ * @param _c third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return world coordinates (x, y, z).
  */
 GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
@@ -68,11 +68,11 @@ GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
  * @brief Converts the barycentric coordinates of a point inside a tetrahedron, from the world coordinates.
  * Assert if the _A_B_C_D triangle is flat to avoid zero division.
  * @note no tests are performed in release mode to avoid performance issue.
- * @param _P world coordinates of the point (x, y, z).
- * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
- * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
- * @param _C third vertex of the tetrahedron (_Cx, _Cy, _Cz) (can also be called v3).
- * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
+ * @param _p world coordinates of the point (x, y, z).
+ * @param _a first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _b second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
+ * @param _c third vertex of the tetrahedron (_Cx, _Cy, _Cz) (can also be called v3).
+ * @param _d fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return barycentric coordinates (u, v, w, h).
  */
 GEOMETRY_GLM_API ::glm::dvec4 to_barycentric_coord(
@@ -86,11 +86,11 @@ GEOMETRY_GLM_API ::glm::dvec4 to_barycentric_coord(
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w+h isn't equal to 1.
  * @note no tests are performed in release mode to avoid performance issue.
- * @param _baryCoord barycentric coordinates (u, v, w, h) that belongs to the _A_B_C_D tetrahedron.
- * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
- * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
- * @param _C third vertex of the tetrahedron (_Cx, _Cy, _Cz) (can also be called v3).
- * @param _C fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
+ * @param _bary_coord barycentric coordinates (u, v, w, h) that belongs to the _A_B_C_D tetrahedron.
+ * @param _a first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _b second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
+ * @param _c third vertex of the tetrahedron (_Cx, _Cy, _Cz) (can also be called v3).
+ * @param _d fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return world coordinates (x, y, z).
  */
 GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
@@ -103,11 +103,11 @@ GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
 
 /**
  * @brief Determine if the point _P is inside the tetrahedron made of (ABCD).
- * @param _P world coordinates of the point (x, y, z).
- * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az).
- * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz).
- * @param _C third vertex of the tetrahedron (_Cx, _Cy, _Cz).
- * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
+ * @param _p world coordinates of the point (x, y, z).
+ * @param _a first vertex of the tetrahedron (_Ax, _Ay, _Az).
+ * @param _b second vertex of the tetrahedron (_Bx, _By, _Bz).
+ * @param _c third vertex of the tetrahedron (_Cx, _Cy, _Cz).
+ * @param _d fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
 GEOMETRY_GLM_API bool is_inside_tetrahedron(
@@ -121,7 +121,7 @@ GEOMETRY_GLM_API bool is_inside_tetrahedron(
 /**
  * @brief Determine if the point _P is inside the tetrahedron made of (ABCD) based on P barycentric coordinates in
  *(ABCD).
- * @param barycentricCoordPInsideABCD: P coordinates expressed as barycentric coordinates in (ABCD).
+ * @param _barycentric_coord_p_inside_abcd: P coordinates expressed as barycentric coordinates in (ABCD).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
 GEOMETRY_GLM_API bool is_inside_tetrahedron(::glm::dvec4 _barycentric_coord_p_inside_abcd);

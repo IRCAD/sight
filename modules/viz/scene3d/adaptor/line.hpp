@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,11 +107,11 @@ private:
      * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
-    void attach_node(Ogre::MovableObject* _object);
+    void attach_node(Ogre::MovableObject* _node);
 
     /**
      * @brief Draws a line.
-     * @param _existingLine use true if the line already exist.
+     * @param _existing_line use true if the line already exist.
      */
     void draw_line(bool _existing_line);
 

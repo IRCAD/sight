@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,8 +76,7 @@ public:
 
     /**
      * @brief Sets the size
-     * @param _width width of the notification in pixel.
-     * @param _height height of the notification in pixel.
+     * @param _size (width, height) of the notification in pixel.
      */
     UI_API virtual void set_size(std::array<int, 2> _size);
     UI_API virtual std::array<int, 2> size() const;
@@ -90,7 +89,7 @@ public:
 
     /**
      * @brief Sets the duration in ms.
-     * @param _durationInMs duration of the notification before closing (+ 1 sec of fade in/out effects).
+     * @param _duration_in_ms duration of the notification before closing (+ 1 sec of fade in/out effects).
      *                      std::nullopt means infinite duration.
      */
     UI_API virtual void set_duration(std::optional<std::chrono::milliseconds> _duration_in_ms);
@@ -98,7 +97,7 @@ public:
 
     /// Set the channel property
     /// @param _channel the channel. Empty string for default global channel.
-    UI_API virtual void set_channel(std::string);
+    UI_API virtual void set_channel(std::string _channel);
     UI_API virtual std::string get_channel() const;
 
     /// Set the closable property

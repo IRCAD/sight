@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,6 @@ public:
 
     /**
      * @brief Constructor
-     * @param key Private construction key
      */
     DATA_API marker_tl() :
         data::generic_tl<std::array<float, 8> >()

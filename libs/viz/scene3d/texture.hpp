@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,8 +47,8 @@ public:
 
     /// Instantiates a texture. If a texture matching the image name does not exist, it creates a new one, otherwise
     /// it wraps the existing one.
-    /// @param object input image
-    /// @param suffixId optional suffix to the object identifier, this allows to create different copies of the object
+    /// @param _image input image
+    /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
     VIZ_SCENE3D_API texture(const data::image::csptr& _image, const std::string& _suffix_id = "");
     VIZ_SCENE3D_API ~texture() override;
 

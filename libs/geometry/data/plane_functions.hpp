@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,8 +124,8 @@ GEOMETRY_DATA_API void offset(fw_plane& _plane, double _offset);
 
 /**
  *  @brief Compares if two planes are equal
- *  @param [in]  plane1
- *  @param [in]  plane2
+ *  @param [in]  _plane1
+ *  @param [in]  _plane2
  *  @return true if the planes are equal and false if they are not.
  */
 GEOMETRY_DATA_API bool operator==(fw_plane& _plane1, fw_plane& _plane2);

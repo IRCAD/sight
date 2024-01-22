@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,8 +98,8 @@ private:
 
     /**
      * @brief Write a Series to a folder in DICOM format
-     * @param[in] filename DICOM file name
-     * @param[in] model ModelSeries that must be written
+     * @param[in] _filename DICOM file name
+     * @param[in] _model ModelSeries that must be written
      */
     void save_surface_segmentation(
         const std::filesystem::path _filename,

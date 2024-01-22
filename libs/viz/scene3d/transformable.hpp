@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
 
     /**
      * @brief Retrieve the node matching m_transformId or create it.
-     * @param _parentNode The parent node, used if transform node doesn't exists.
+     * @param _parent_node The parent node, used if transform node doesn't exists.
      * @return The node matching m_transformId. (cannot be nullptr)
      */
     VIZ_SCENE3D_API Ogre::SceneNode* get_or_create_transform_node(Ogre::SceneNode* _parent_node);

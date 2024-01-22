@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ public:
 
     /**
      * @brief Generate a mesh.
-     * @param mesh mesh to generate
+     * @param _mesh mesh to generate
      */
     UTEST_DATA_API static void generate_mesh(const data::mesh::sptr& _mesh);
 
@@ -51,8 +51,8 @@ public:
      *
      * This method generates synthetic mesh with quads (two faces of a cube).
      *
-     * @param[out]  mesh data::mesh empty mesh structure to fill with quad cells.
-     * @param[in]  attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
+     * @param[out] _mesh data::mesh empty mesh structure to fill with quad cells.
+     * @param[in]  _attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
     UTEST_DATA_API static void generate_quad_mesh(
         const data::mesh::sptr& _mesh,
@@ -64,8 +64,8 @@ public:
      *
      * This method generates synthetic mesh with triangles (two faces of a cube).
      *
-     * @param[out]  mesh data::mesh empty mesh structure to fill with triangle cell.
-     * @param[in]  attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
+     * @param[out]  _mesh data::mesh empty mesh structure to fill with triangle cell.
+     * @param[in]   _attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
     UTEST_DATA_API static void generate_triangle_mesh(
         const data::mesh::sptr& _mesh,
@@ -77,8 +77,8 @@ public:
      *
      * This method generates synthetic mesh with triangles and quads (four faces of a cube).
      *
-     * @param[out]  mesh data::mesh empty mesh structure to fill with quad and triangle cells.
-     * @param[in]  attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
+     * @param[out]  _mesh data::mesh empty mesh structure to fill with quad and triangle cells.
+     * @param[in]   _attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
     UTEST_DATA_API static void generate_triangle_quad_mesh(
         const data::mesh::sptr& _mesh,
@@ -90,10 +90,10 @@ private:
     /**
      * @brief Add quad cells in mesh, this method generates synthetic data (two face of a cube).
      *
-     * @param[out]  mesh data::mesh Mesh structure to fill with quad cells.
-     * @param[in]   points points_map_t Point registration map used to not create point which already in mesh buffer.
-     * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
-     * @param[in]   edgeDim float Edge dimension in 3D world.
+     * @param[out]  _mesh data::mesh Mesh structure to fill with quad cells.
+     * @param[in]   _points points_map_t Point registration map used to not create point which already in mesh buffer.
+     * @param[in]   _nb_points_by_edge std::size_t Number of points by edge.
+     * @param[in]   _edge_dim float Edge dimension in 3D world.
      */
 
     static void add_quad_mesh(
@@ -106,10 +106,10 @@ private:
     /**
      * @brief Add triangle cells in mesh, this method generates synthetic data (two face of a cube).
      *
-     * @param[out]  mesh data::mesh Mesh structure to fill with triangle cells.
-     * @param[in]   points points_map_t Point registration map used to not create point which already in mesh buffer.
-     * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
-     * @param[in]   edgeDim float Edge dimension in 3D world.
+     * @param[out]  _mesh data::mesh Mesh structure to fill with triangle cells.
+     * @param[in]   _points points_map_t Point registration map used to not create point which already in mesh buffer.
+     * @param[in]   _nb_points_by_edge std::size_t Number of points by edge.
+     * @param[in]   _edge_dim float Edge dimension in 3D world.
      */
     static void add_triangle_mesh(
         const data::mesh::sptr& _mesh,
@@ -126,7 +126,7 @@ private:
     /**
      * @brief Shake points of the mesh.
      *
-     * @param[out]  mesh data::mesh structure to shake.
+     * @param[out]  _mesh data::mesh structure to shake.
      */
     static void shake_points(const data::mesh::sptr& _mesh);
 };

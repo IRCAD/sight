@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,10 +124,10 @@ private:
 
     /**
      * @brief Update the viewport object according to the current state of the shutter.
-     * @param x x position of the shutter.
-     * @param y y position of the shutter.
-     * @param width width of the shutter.
-     * @param height height of the shutter.
+     * @param _x x position of the shutter.
+     * @param _y y position of the shutter.
+     * @param _width width of the shutter.
+     * @param _height height of the shutter.
      */
     void update_viewport_from_shutter(double _x, double _y, double _width, double _height);
 

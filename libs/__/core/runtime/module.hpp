@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,13 +98,14 @@ public:
     /**
      * @brief       Retrieves the value of the given parameter
      * @remark      When no such parameter has been found, an empty string is returned.
-     * @param[in]   identifier  a string containing a parameter identifier
+     * @param[in]   _identifier  a string containing a parameter identifier
      * @return      a string containing the parameter value
      */
     [[nodiscard]] CORE_API virtual std::string get_parameter_value(const std::string& _identifier) const = 0;
 
     /**
      * @brief   Tells if a parameter exists.
+     * @param   _name   name of parameter to test
      * @return  true or false
      */
     [[nodiscard]] CORE_API virtual bool has_parameter(const std::string& _name) const = 0;

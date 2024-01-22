@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,9 @@ public:
 
     /**
      * Check whether the tooltip of a tool_button exactly matches the expected result.
-     * @param tester The current tester
-     * @param label How to get the label to check
-     * @param expected The expected content of the tooltip
+     * @param _tester The current tester
+     * @param _label How to get the label to check
+     * @param _expected The expected content of the tooltip
      */
     UI_TEST_API static void tool_tip_matches(tester& _tester, const selector& _label, const std::string& _expected);
 };

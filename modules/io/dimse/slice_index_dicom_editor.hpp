@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,14 +129,14 @@ private:
 
     /**
      * @brief Pulls the slice from the PACS.
-     * @param _selectedSliceIndex index of the slice to pull.
+     * @param _selected_slice_index index of the slice to pull.
      */
     void pull_slice(std::size_t _selected_slice_index) const;
 
     /**
      * @brief Reads a local slice.
-     * @param _dicomSeries the dicom series instance.
-     * @param _selectedSliceIndex index of the slice to read.
+     * @param _dicom_series the dicom series instance.
+     * @param _selected_slice_index index of the slice to read.
      */
     void read_slice(
         const data::mt::locked_ptr<data::dicom_series>& _dicom_series,

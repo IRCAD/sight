@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ public:
     /*-------- This part of the interfaces deals with reading data. ----- */
 
     /** Determine if the file can be read with this ImageIO implementation.
-     * \param FileNameToRead The name of the file to test for reading.
+     * \param _file_name_to_read The name of the file to test for reading.
      * \post Sets classes ImageIOBase::m_FileName variable to be FileNameToWrite
      * \return Returns true if this ImageIO can read the file specified.
      */
@@ -70,7 +70,7 @@ public:
     /*-------- This part of the interfaces deals with writing data. ----- */
 
     /** Determine if the file can be written with this ImageIO implementation.
-     * \param FileNameToWrite The name of the file to test for writing.
+     * \param _file_name_to_write The name of the file to test for writing.
      * \post Sets classes ImageIOBase::m_FileName variable to be FileNameToWrite
      * \return Returns true if this ImageIO can write the file specified.
      */

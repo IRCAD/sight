@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,19 +54,19 @@ public:
 
     /**
      * @brief Set the dialog title.
-     * @param[in] title Dialog title
+     * @param[in] _title Dialog title
      */
     UI_QT_API_QT void set_title(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
-     * @param[in] message Dialog message
+     * @param[in] _message Dialog message
      */
     UI_QT_API_QT void set_message(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
-     * @param[in] logger Dialog logger
+     * @param[in] _logger Dialog logger
      */
     UI_QT_API_QT void set_logger(const core::log::logger::sptr& _logger) override;
 
@@ -79,7 +79,7 @@ protected Q_SLOTS:
 
     /**
      * @brief Slot called when the user wants to display the logs
-     * @param[in] state Checkbox state
+     * @param[in] _state Checkbox state
      */
     void display_logs(int _state);
 

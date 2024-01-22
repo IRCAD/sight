@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,13 +137,13 @@ public:
 
     /**
      * @brief Sets the material template Name.
-     * @param _materialName material name.
+     * @param _material_name material name.
      */
     MODULE_VIZ_SCENE3D_API void set_material_template_name(const std::string& _material_name);
 
     /**
      * @brief Enables/disables automatic reset on camera.
-     * @param _autoResetCamera use true to activate it.
+     * @param _auto_reset_camera use true to activate it.
      */
     MODULE_VIZ_SCENE3D_API void set_auto_reset_camera(bool _auto_reset_camera);
 
@@ -161,26 +161,26 @@ public:
 
     /**
      * @brief Sets meshes vertex buffer to dynamic state (only has effect if called before service starting/update).
-     * @param _isDynamic use true to use dynamic vertex buffer.
+     * @param _is_dynamic use true to use dynamic vertex buffer.
      */
     MODULE_VIZ_SCENE3D_API void set_dynamic_vertices(bool _is_dynamic);
 
     /**
      * @brief Sets meshes and indices buffers to dynamic state (only has effect if called before service
      * starting/update).
-     * @param _isDynamic use true to use dynamic vertex and indices buffer.
+     * @param _is_dynamic use true to use dynamic vertex and indices buffer.
      */
     MODULE_VIZ_SCENE3D_API void set_dynamic(bool _is_dynamic);
 
     /**
      * @brief Sets the query flag.
-     * @param _queryFlags value of the query flag.
+     * @param _query_flags value of the query flag.
      */
     MODULE_VIZ_SCENE3D_API void set_query_flags(std::uint32_t _query_flags);
 
     /**
      * @brief Sets if the reconstruction is managed or not.
-     * @param _isReconstructionManaged use true if the reconstruction is managed.
+     * @param _is_reconstruction_managed use true if the reconstruction is managed.
      */
     MODULE_VIZ_SCENE3D_API void set_is_reconstruction_managed(bool _is_reconstruction_managed);
 
@@ -238,8 +238,8 @@ private:
 
     /**
      * @brief Instantiates a new material adaptor
-     * @param _materialSuffix used for the material name.
      * @param _mesh used to create an unique material name.
+     * @param _material_suffix used for the material name.
      */
     module::viz::scene3d::adaptor::material::sptr create_material_service(
         data::mesh::csptr _mesh,

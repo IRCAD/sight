@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,21 +42,21 @@ public:
 
     /**
      * Move the slider by clicking on the slider, thus moving by a set number of steps
-     * @param tester The current tester
-     * @param slider How to get the slider to be moved
-     * @param position The direction where the slider must be moved
-     * @param times The number of times the slider must be moved
+     * @param _tester The current tester
+     * @param _slider How to get the slider to be moved
+     * @param _position The direction where the slider must be moved
+     * @param _times The number of times the slider must be moved
      * @{
      */
-    UI_TEST_API static void move(tester& _tester, const selector& _slider, position _pos);
-    UI_TEST_API static void move(tester& _tester, const selector& _slider, position _pos, int _times);
+    UI_TEST_API static void move(tester& _tester, const selector& _slider, position _position, int _times);
+    UI_TEST_API static void move(tester& _tester, const selector& _slider, position _position);
     /// @}
 
     /**
      * Set the value of the slider by calling setValue slot
-     * @param tester The current tester
-     * @param slider How to get the slider to be setted
-     * @param value The new value of the slider
+     * @param _tester The current tester
+     * @param _slider How to get the slider to be setted
+     * @param _value The new value of the slider
      */
     UI_TEST_API static void set(tester& _tester, const selector& _slider, int _value);
 };

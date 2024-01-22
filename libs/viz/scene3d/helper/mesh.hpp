@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,8 @@ public:
      * @brief Copy the color layer of a mesh.
      * @param _dest[out] destination points
      * @param _src[in] source points
-     * @param _numPoints[in] number of points
-     * @param _numComponents[in] number of components, must be 3 or 4
+     * @param _num_points[in] number of points
+     * @param _num_components[in] number of components, must be 3 or 4
      */
     VIZ_SCENE3D_API static void copy_colors(
         Ogre::RGBA* _dest,

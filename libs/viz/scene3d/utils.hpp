@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,13 +78,13 @@ public:
     VIZ_SCENE3D_API static void add_plugins(const std::vector<std::string>& _plugins);
 
     /**
-     * @brief utils::addRessourcesPath
-     *        Add a path to load Ogre ressources from a specific module.
-     *        You must edit the ressource.cfg file for each module containing specific resources
+     * @brief utils::add_resources_path
+     *        Add a path to load Ogre resources from a specific module.
+     *        You must edit the resource.cfg file for each module containing specific resources
      *        In this case, you can call this method in the plugin.cpp file of this module
-     * @param path Relative path to the ressource.cfg file from a specific module
+     * @param _path Relative path to the resource.cfg file from a specific module
      */
-    VIZ_SCENE3D_API static void add_resources_path(const std::string& _module_name);
+    VIZ_SCENE3D_API static void add_resources_path(const std::string& _path);
 
     /**
      * @brief getOgreRoot
@@ -108,14 +108,13 @@ public:
 
     /**
      * @brief getPixelFormatOgre
-     * @param imageFw The Sight image
+     * @param _image_fw The Sight image
      * @return Pixel format of a data::image
      */
     VIZ_SCENE3D_API static Ogre::PixelFormat get_pixel_format_ogre(const data::image& _image_fw);
 
     /**
-     * @brief set the pixel format of an image from an Ogre pixel format
-     * @param _image The Sight image
+     * @brief get the image pixel format from an Ogre pixel format
      * @param _format Pixel format of Ogre
      */
     VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format> get_pixel_format_from_ogre(
@@ -136,7 +135,7 @@ public:
      * @param[in] _height height of the texture
      * @param[in] _depth depth of the texture
      * @param[in] _format pixel format
-     * @param[in] _texType texture type (Ogre::TEX_TYPE_2D, TEX_TYPE_3D, ...)
+     * @param[in] _tex_type texture type (Ogre::TEX_TYPE_2D, TEX_TYPE_3D, ...)
      * @param[in] _dynamic true if the image has to be modified frequently
      * @return
      */
@@ -152,7 +151,7 @@ public:
 
     /**
      * @brief convert an OgreColor into a sight::data::color
-     * @param[in] _ogreColor Color to convert into a Sight color
+     * @param[in] _ogre_color Color to convert into a Sight color
      * @return The converted Sight color
      */
     VIZ_SCENE3D_API static data::color::sptr from_ogre_color(const Ogre::ColourValue& _ogre_color);
@@ -179,7 +178,7 @@ public:
      * @brief Pick an object from a screen-space position.
      * @param _x screen width position.
      * @param _y screen height position.
-     * @param _queryMask Mask used to query entities with matching flags.
+     * @param _query_mask Mask used to query entities with matching flags.
      * @param _layer scene manager where to pick objects from.
      * @return Object and intersection.
      */
@@ -213,9 +212,9 @@ private:
     /**
      * @brief Copies an ogre config stream and turns paths absolute.
      *
-     * @param[in] key Path parameter name whose value needs to be absolute.
-     * @param[in] input Input stream, must be from an ogre configuration file.
-     * @param[out] output Output stream, where the new config is copied to.
+     * @param[in] _key Path parameter name whose value needs to be absolute.
+     * @param[in] _input Input stream, must be from an ogre configuration file.
+     * @param[out] _output Output stream, where the new config is copied to.
      * @return whether or not the key was found in the input.
      */
     static bool make_paths_absolute(

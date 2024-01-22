@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,13 +59,13 @@ public:
 
     /**
      * @brief Convert HTTP series response to data::dicom_series
-     * @param[in] answer HTTP responses from the PACS that must be converted
+     * @param[in] _answer HTTP responses from the PACS that must be converted
      */
     IO_HTTP_API static DicomSeriesContainer to_fw_med_data(const QJsonObject& _answer);
 
     /**
      * @brief Convert std::vector< data::dicom_series > to series instance uid container
-     * @param[in] series Series vector used to extract the series instance uids
+     * @param[in] _series Series vector used to extract the series instance uids
      */
     IO_HTTP_API static InstanceUIDContainer to_series_instance_uid_container(DicomSeriesContainer _series);
 };

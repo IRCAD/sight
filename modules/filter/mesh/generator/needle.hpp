@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,7 +153,7 @@ private:
     /**
      * \brief filter and color an object through its source algorithm (i.e. source->GetOutputPort()).
      *
-     * \param _sourceAlgorithm Source algorithm of the object that needs to be filtered and colored.
+     * \param _source_algorithm Source algorithm of the object that needs to be filtered and colored.
      * \param _rgba Needed RGBA color to apply on the object.
      *
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the filtered and colored object.

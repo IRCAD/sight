@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -74,15 +74,15 @@ public:
     /// @{
 
     /// Set SOP class filters to use when scanning for DICOM files (CTImageStorage, SpatialFiducialsStorage, ...).
-    /// @param[in] filters SOP class filters
+    /// @param[in] _filters SOP class filters
     IO_DICOM_API void set_filters(const data::series::SopKeywords& _filters);
 
     /// Set the scanned Series list, unsorted
-    /// @param[in] scanned The Series with their associated files
+    /// @param[in] _scanned The Series with their associated files
     IO_DICOM_API void set_scanned(const data::series_set::sptr& _scanned);
 
     /// Set the sorted Series list. These are the series that will be read
-    /// @param[in] sorted The Series with their associated files
+    /// @param[in] _sorted The Series with their associated files
     IO_DICOM_API void set_sorted(const data::series_set::sptr& _sorted);
 
     /// Set/get the current job

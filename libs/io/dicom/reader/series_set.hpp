@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,8 +82,8 @@ public:
 
     /**
      * @brief Reads DICOM data from DicomSeries and fills series_set object
-     * @param[in] dicom_series_set series_set containing DicomSeries that must be read
-     * @param[in] notifier Service used to notify changes in series_set
+     * @param[in] _dicom_series_set series_set containing DicomSeries that must be read
+     * @param[in] _notifier Service used to notify changes in series_set
      */
     IO_DICOM_API void read_from_dicom_series_set(
         const data::series_set::csptr& _dicom_series_set,
@@ -167,14 +167,13 @@ private:
 
     /**
      * @brief Convert DicomSeries to Image or Model Series
-     * @param[in] dicomSeries Dicom Series that must be converted
      */
     void convert_dicom_series(const sight::service::base::sptr& _notifier = sight::service::base::sptr());
 
     /**
      * @brief Function used to sort DicomSeries
-     * @param[in] a First DicomSeries
-     * @param[in] b Second DicomSeries
+     * @param[in] _a First DicomSeries
+     * @param[in] _b Second DicomSeries
      */
     static bool dicom_series_comparator(
         const SPTR(data::dicom_series)& _a,

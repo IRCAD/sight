@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,12 +47,12 @@ public:
 
     /**
      * @brief Draws a line in an image slice.
-     * @param[in] orientation slice orientation.
-     * @param[in] startCoord point where the line begins.
-     * @param[in] endCoord point where the line ends.
-     * @param[in] value value written in the image buffer.
-     * @param[in] thickness line thickness in millimeters.
-     * @param[in] overwrite overwrite mode, don't overwrite existing pixels if not set.
+     * @param[in] _orientation slice orientation.
+     * @param[in] _start_coord point where the line begins.
+     * @param[in] _end_coord point where the line ends.
+     * @param[in] _value value written in the image buffer.
+     * @param[in] _thickness line thickness in millimeters.
+     * @param[in] _overwrite overwrite mode, don't overwrite existing pixels if not set.
      * @return The differences in the image before and after drawing.
      */
     FILTER_IMAGE_API image_diff draw(
@@ -71,13 +71,13 @@ private:
      *
      *  The minor and major axes are computed from the radius and the spacing.
      *
-     * @param[in] c center of the ellipse.
-     * @param[in] value value written in the image buffer.
-     * @param[in] radius the radius of the ellipse in millimeters.
-     * @param[in] firstDim the main axis of the plane (slice) in which the ellipse is drawn.
-     * @param[in] secondDim the secondary axis of the plane (slice) in which the ellipse is drawn.
-     * @param[in] overwrite overwrite mode, don't overwrite existing pixels if not set.
-     * @param[in,out] diff vector storing the differences in the image before and after drawing.
+     * @param[in] _c center of the ellipse.
+     * @param[in] _value value written in the image buffer.
+     * @param[in] _radius the radius of the ellipse in millimeters.
+     * @param[in] _first_dim the main axis of the plane (slice) in which the ellipse is drawn.
+     * @param[in] _second_dim the secondary axis of the plane (slice) in which the ellipse is drawn.
+     * @param[in] _overwrite overwrite mode, don't overwrite existing pixels if not set.
+     * @param[in,out] _diff vector storing the differences in the image before and after drawing.
      * @return true if at least one pixel has been drawn, false otherwise.
      */
     bool draw_ellipse(
@@ -98,10 +98,10 @@ private:
      * - The pixel has a value different from the one being set
      * - Don't overwrite a non empty pixel if not in overwrite mode
      *
-     * @param[in] index index in the image buffer where the pixel will be written.
-     * @param[in] value value written in the image buffer.
-     * @param[in] overwrite overwrite mode, don't overwrite existing pixels if not set.
-     * @param[in,out] diff vector storing the differences in the image before and after drawing.
+     * @param[in] _index index in the image buffer where the pixel will be written.
+     * @param[in] _value value written in the image buffer.
+     * @param[in] _overwrite overwrite mode, don't overwrite existing pixels if not set.
+     * @param[in,out] _diff vector storing the differences in the image before and after drawing.
      * @return true if at least one pixel has been drawn, false otherwise.
      */
     bool draw_pixel(

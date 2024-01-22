@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
      * @brief Assign a layout to the container widget. Previous layout and its children are deleted and the container
      *  widget take the ownership of the new layout
      *
-     * @param The layout to set on the container widget
+     * @param _layout   The layout to set on the container widget
      */
     UI_QT_API virtual void set_layout(QLayout* _layout);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -313,7 +313,7 @@ private:
     /**
      * @brief Triangulates a point list.
      * @param _points the point list to triangulate.
-     * @param _wordTriangulation vector where all generated triangles are pushed.
+     * @param _word_triangulation vector where all generated triangles are pushed.
      */
     void generate_delaunay_triangulation(
         const std::vector<Ogre::Vector3>& _points,

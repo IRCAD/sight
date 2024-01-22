@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,14 +43,14 @@ public:
     /**
      * @brief Convert an entry of the form '(AAA;BBB;CCC)' into a list of DicomCodedAttributes.
      * Several DicomCodedAttributes can be detected in a single entry.
-     * @param[in] entry Entry containing one or several coded attributes.
+     * @param[in] _entry Entry containing one or several coded attributes.
      */
     IO_DICOM_API static DicomCodedAttributeVectorType convert_entry_to_coded_attribute(const std::string& _entry);
 
     /**
      * @brief Convert an entry of the form '(AAA;BBB;CCC)' into GDCM's BasicCodedEntryVector.
      * Several DicomCodedAttributes can be detected in a single entry.
-     * @param[in] entry Entry containing one or several coded attributes.
+     * @param[in] _entry Entry containing one or several coded attributes.
      */
     IO_DICOM_API static gdcm::Segment::BasicCodedEntryVector convert_entry_to_gdcm_coded_attribute(
         const std::string& _entry
@@ -60,8 +60,8 @@ public:
      * @brief Retrieve '(AAA;BBB;CCC)' patterns inside of the entry string.
      * Remove spaces or other characters that might be present between matches.
      * If a single value is requested, check the uniqueness of the value.
-     * @param[in,out] entry Value that shall be verified and formatted
-     * @param[in] multipleValue If set to 'false', check the uniqueness of the value
+     * @param[in,out] _entry Value that shall be verified and formatted
+     * @param[in] _multiple_value If set to 'false', check the uniqueness of the value
      */
     IO_DICOM_API static bool check_and_format_entry(std::string& _entry, bool _multiple_value = false);
 };

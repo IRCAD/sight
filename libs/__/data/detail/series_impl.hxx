@@ -94,7 +94,7 @@ struct has_fixed_multiplicity<
 /// @}
 
 /// Remove the trailing padding \0 characters from a string.
-/// @param[in] source The string to be trimmed.
+/// @param[in] _source The string to be trimmed.
 /// @return The trimmed string.
 static inline std::string shrink(const std::string& _source)
 {
@@ -105,7 +105,7 @@ static inline std::string shrink(const std::string& _source)
 
 /// Returns the maximum or fixed size of a Value Representation and its padding character.
 /// @note the data come from https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
-/// @param[in] vr_type The Value Representation to get the size of.
+/// @param[in] _vr_type The Value Representation to get the size of.
 static constexpr std::tuple<std::size_t, bool, char> get_vr_format(gdcm::VR::VRType _vr_type)
 {
     switch(_vr_type)
@@ -209,8 +209,8 @@ static constexpr std::tuple<std::size_t, bool, char> get_vr_format(gdcm::VR::VRT
 
 /// Returns a string from a number to be stored in a Integer String or Decimal String. The precision is set
 /// coordinately to the VR.
-/// @param value The value to be converted.
-/// @param vr_type The Value Representation of the value.
+/// @param _value The value to be converted.
+/// @param _vr_type The Value Representation of the value.
 /// @return The string representation of the value.
 template<typename V>
 static inline std::string arithmetic_to_string(const V& _value, gdcm::VR::VRType _vr_type)
@@ -801,7 +801,7 @@ public:
     /// Return the GDCM SequenceOfItems associated to a sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
     [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_group_sequence(
@@ -842,7 +842,7 @@ public:
     /// `FrameAcquisitionDateTime`
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G, typename S>
     [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_sequence(
@@ -883,7 +883,7 @@ public:
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     /// @return attribute value. If the tag is not found, an empty vector is returned.
     template<typename G, typename S, typename A>
     [[nodiscard]] inline std::optional<typename A::ArrayType> get_multi_frame_value(std::size_t _frame_index = 0) const
@@ -904,7 +904,7 @@ public:
     /// Return the GDCM group sequence of a sequence group like `PerFrameFunctionalGroupsSequence`
     /// Construct intermediate DataElements if they don't exist.
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
     inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_group_sequence(std::size_t _frame_index = 0)
@@ -950,7 +950,7 @@ public:
     /// Construct intermediate DataElements if they don't exist.
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G, typename S>
     inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_sequence(std::size_t _frame_index = 0)
@@ -996,7 +996,7 @@ public:
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     template<typename G, typename S, typename A>
     inline void set_multi_frame_value(const std::optional<typename A::ArrayType>& _value, std::size_t _frame_index = 0)
     {
@@ -1023,7 +1023,7 @@ public:
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     /// @return attribute value. If the tag is not found, an empty vector is returned.
     template<typename G, typename S, typename A>
     [[nodiscard]] inline std::vector<typename A::ArrayType> get_multi_frame_values(std::size_t _frame_index = 0) const
@@ -1057,7 +1057,7 @@ public:
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param frameIndex index of the frame
+    /// @param _frame_index index of the frame
     template<typename G, typename S, typename A>
     inline void set_multi_frame_values(const std::vector<typename A::ArrayType>& _values, std::size_t _frame_index = 0)
     {
@@ -1066,7 +1066,7 @@ public:
 
         if(_values.empty())
         {
-            // Force a real emtpy value..
+            // Force a real empty value.
             attribute_dataset.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
         }
         else
@@ -1091,8 +1091,8 @@ public:
     /// Return a private GDCM sequence group associated to a private sequence attribute of a sequence group
     /// Construct intermediate DataElements if they don't exist.
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param[in] element private element number in the range of 0x10 to 0xFF
-    /// @param[in] frameIndex index of the frame
+    /// @param[in] _element private element number in the range of 0x10 to 0xFF
+    /// @param[in] _frame_index index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
     inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_private_sequence(
@@ -1108,7 +1108,7 @@ public:
         auto& frame_item    = group_sequence->GetItem(_frame_index + 1);
         auto& frame_dataset = frame_item.GetNestedDataSet();
 
-        // Verify that the creator tag is already there..
+        // Verify that the creator tag is already there.
         if(const gdcm::Tag creator_tag(PRIVATE_GROUP, PRIVATE_CREATOR_ELEMENT);
            !frame_dataset.FindDataElement(creator_tag))
         {
@@ -1151,8 +1151,8 @@ public:
 
     /// Return a private GDCM sequence group associated to a private sequence attribute of a sequence group
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param[in] element private element number in the range of 0x10 to 0xFF
-    /// @param[in] frameIndex index of the frame
+    /// @param[in] _element private element number in the range of 0x10 to 0xFF
+    /// @param[in] _frame_index index of the frame
     /// @return GDCM dataset of the attribute
     template<typename G>
     inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_private_sequence(
@@ -1194,10 +1194,10 @@ public:
     /// Retrieve private DICOM tag value from a multi-frame sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param frameIndex index of the frame
-    /// @param[in] sequence_element private sequence element number in the range of 0x10 to 0xFF
-    /// @param[in] value_element private value element number in the range of 0x10 to 0xFF
-    ///                          (must be different from sequence_element)
+    /// @param _frame_index index of the frame
+    /// @param[in] _sequence_element private sequence element number in the range of 0x10 to 0xFF
+    /// @param[in] _value_element    private value element number in the range of 0x10 to 0xFF
+    ///                              (must be different from sequence_element)
     /// @return attribute value. If the tag is not found, an empty vector is returned.
     template<typename G>
     [[nodiscard]] inline std::optional<std::string> get_multi_frame_private_value(
@@ -1234,11 +1234,11 @@ public:
     /// `FrameAcquisitionDateTime`
     /// Construct intermediate DataElements if they don't exist.
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param[in] value private string value to set
-    /// @param[in] sequence_element private sequence element number in the range of 0x10 to 0xFF
-    /// @param[in] value_element private value element number in the range of 0x10 to 0xFF
+    /// @param[in] _value private string value to set
+    /// @param[in] _sequence_element private sequence element number in the range of 0x10 to 0xFF
+    /// @param[in] _value_element private value element number in the range of 0x10 to 0xFF
     ///                          (must be different from sequence_element)
-    /// @param[in] frameIndex index of the frame
+    /// @param[in] _frame_index index of the frame
     template<typename G>
     inline void set_multi_frame_private_value(
         const std::optional<std::string>& _value,
@@ -1667,7 +1667,7 @@ public:
     }
 
     /// Shrink a multi-frame sequence attribute of a sequence group.
-    /// @param size the new number of frames
+    /// @param _size the new number of frames
     inline void shrink_multi_frame(std::size_t _size)
     {
         if(!m_frame_datasets.empty())

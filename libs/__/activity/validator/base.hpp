@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,8 +77,8 @@ public:
 
     /**
      * @brief Performs validation of given data as inputs for the considered activity.
-     * @param[in] activity_info a structure which contains all the activity configuration
-     * @param[in] currentSelection a vector which contains current selected data.
+     * @param[in] _activity_info a structure which contains all the activity configuration
+     * @param[in] _current_selection a vector which contains current selected data.
      * @return result of the validation
      *
      * @see validator::return_t

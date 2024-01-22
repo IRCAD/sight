@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -80,10 +80,10 @@ public:
 
     /// Adds a reference to a GPU resource. If it does not exist, it creates a new one, otherwise
     /// this returns the existing one.
-    /// @param object CPU representation of the object
-    /// @param suffixId optional suffix to the object identifier, this allows to create different copies of the object
+    /// @param _object CPU representation of the object
+    /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
     /// @return shared pointer on the resource
-    Ogre::SharedPtr<RESOURCE> instantiate(CSPTR(OBJECT), const std::string& _suffix_id = "");
+    Ogre::SharedPtr<RESOURCE> instantiate(CSPTR(OBJECT) _object, const std::string& _suffix_id = "");
 
     /// Removes a reference to a GPU resource. If this was the last reference, it destroys it.
     void release(Ogre::SharedPtr<RESOURCE> /*_resource*/);

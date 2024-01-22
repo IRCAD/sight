@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,8 +42,8 @@ public:
 
     /**
      * @brief constructor : define an output to log system as :  [prefix] message percent [postfix]
-     * @param[in] prefix  allow to add a prefix in the formated log message
-     * @param[in] postfix  allow to add a postfix in the formated log message
+     * @param[in] _prefix  allow to add a prefix in the formated log message
+     * @param[in] _postfix  allow to add a postfix in the formated log message
      */
     CORE_API progress_to_logger(std::string _prefix, std::string _postfix = " %");
 

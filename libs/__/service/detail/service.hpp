@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,7 @@ public:
 
     /**
      * @brief Affect the configuration, using a boost property tree
-     * @param[in] config property tree
+     * @param[in] _config property tree
      * @post m_configurationState == UNCONFIGURED
      */
     void set_config(const config_t& _config);

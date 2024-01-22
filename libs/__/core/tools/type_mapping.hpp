@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,8 +47,8 @@ struct is_mapping_single_mplhelper;
 //
 /**
  * @brief   Create a type (T) binding/mapping with a key_t ( std::string, pixel_t etc...
- * @tparam TSingle_or_TSEQ a sequence or 1 element type to test
- * @tparam KeyType_or_KeyTypeContainer to keys (sequence or single one)
+ * @tparam single_or_seq a sequence or 1 element type to test
+ * @tparam key_type_or_key_type_container to keys (sequence or single one)
  * @return  true iff the value of the key_t can deal with the specified type T
  *
  *
@@ -86,11 +86,11 @@ bool is_mapping(const key_type_or_key_type_container& _type)
  * @tparam  T the type to test
  * @tparam  key_t the type to match
  */
-template<class T, class key_type>
+template<class T, class key_t>
 struct is_mapping_single_mplhelper
 {
     /// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<single_t>
-    static bool evaluate(const key_type& _key)
+    static bool evaluate(const key_t& _key)
     {
         SIGHT_NOT_USED(_key);
         static_assert(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);

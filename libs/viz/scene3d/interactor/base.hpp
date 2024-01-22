@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ public:
     /**
      * @brief Sets the scene manager from the layer if it exists.
      * @param _layer the layer on which the interator work.
-     * @param _layerOrderDependant define if the interaction must take into account above layers.
+     * @param _layer_order_dependant define if the interaction must take into account above layers.
      */
     VIZ_SCENE3D_API base(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true);
 
@@ -95,7 +95,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      * @param _dx width displacement of the mouse since the last event.
-     * @param _dx height displacement of the mouse since the last event.
+     * @param _dy height displacement of the mouse since the last event.
      */
     VIZ_SCENE3D_API virtual void mouse_move_event(
         mouse_button _button,
@@ -109,8 +109,8 @@ public:
     /**
      * @brief Listens to the mouse's wheel being spun.
      * @param _mods keyboard modifiers.
-     * @param _angleDelta distance that the wheel is rotated, in eighths of a degree.
-     *                    See @ref https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
+     * @param _angle_delta distance that the wheel is rotated, in eighths of a degree.
+     *                     See @ref https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
@@ -147,8 +147,8 @@ public:
      * @brief Listens to keyboard keys being pressed.
      * @param _key pressed key.
      * @param _mods keyboard modifiers.
-     * @param _x width coordinate of the mouse at the time of the event.
-     * @param _y height coordinate of the mouse at the time of the event.
+     * @param _mouse_x width coordinate of the mouse at the time of the event.
+     * @param _mouse_y height coordinate of the mouse at the time of the event.
      */
     VIZ_SCENE3D_API virtual void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y);
 
@@ -156,8 +156,8 @@ public:
      * @brief Listens to keyboard keys being released.
      * @param _key pressed key.
      * @param _mods keyboard modifiers.
-     * @param _x width coordinate of the mouse at the time of the event.
-     * @param _y height coordinate of the mouse at the time of the event.
+     * @param _mouse_x width coordinate of the mouse at the time of the event.
+     * @param _mouse_y height coordinate of the mouse at the time of the event.
      */
     VIZ_SCENE3D_API virtual void key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse_y);
 
@@ -173,10 +173,10 @@ public:
 
     /**
      * @brief Checks if the cursor is inside a layer's viewport.
-     * @param mouseX width coordinate of the mouse in pixels.
-     * @param mouseY height coordinate of the mouse in pixels.
+     * @param _mouse_x width coordinate of the mouse in pixels.
+     * @param _mouse_y height coordinate of the mouse in pixels.
      * @param _layer layer on which to check the cursor's belonging.
-     * @param _layerOrderDependant define if interaction must take into account above layers.
+     * @param _layer_order_dependant define if interaction must take into account above layers.
      */
     VIZ_SCENE3D_API static bool is_in_layer(int _mouse_x, int _mouse_y, SPTR(layer) _layer,
                                             bool _layer_order_dependant);
@@ -190,10 +190,10 @@ public:
 
     /**
      * @brief Listens to pinch gesture events.
-     * @param _scaleFactor the scale factor of the pinch
-     *                     (See @ref https://doc.qt.io/qt-5/qpinchgesture.html#scaleFactor-prop)
-     * @param _centerX the width coordinate of the center of the pinch
-     * @param _centerY the height coordinate of the center of the pinch
+     * @param _scale_factor the scale factor of the pinch
+     *                      (See @ref https://doc.qt.io/qt-5/qpinchgesture.html#scaleFactor-prop)
+     * @param _center_x the width coordinate of the center of the pinch
+     * @param _center_y the height coordinate of the center of the pinch
      */
     VIZ_SCENE3D_API virtual void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y);
 

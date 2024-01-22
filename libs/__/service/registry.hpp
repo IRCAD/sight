@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,14 +48,14 @@ std::set<SPTR(SERVICE)> get_services();
 /**
  * @brief Register the service alone
  *
- * @param service Service to add to the OSR
+ * @param _service Service to add to the OSR
  */
 SERVICE_API void register_service(SPTR(service::base) _service);
 
 /**
  * @brief Remove the service (service) from the m_container
  *
- * @param service Service whose key should be removed
+ * @param _service Service whose key should be removed
  */
 SERVICE_API void unregister_service(SPTR(service::base) _service);
 

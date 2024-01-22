@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,8 +94,8 @@ std::string get_value(
 
 /**
  * @brief Verify tag values according to JSON files generated from DICOM dump
- * @param filename DICOM folder name
- * @param series_set series_set object containing DICOM series
+ * @param _filename DICOM folder name
+ * @param _series_set series_set object containing DICOM series
  */
 void verify_tag_values(const std::string& _filename, const data::series_set::sptr& _series_set)
 {

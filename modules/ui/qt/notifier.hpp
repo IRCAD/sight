@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,11 +112,11 @@ public:
     MODULE_UI_QT_API void set_enum_parameter(std::string _val, std::string _key);
 
     /// Slot: pops a notification.
-    /// @param notification notification.
+    /// @param _notification notification.
     MODULE_UI_QT_API void pop(service::notification _notification);
 
     /// Slot: close a notification identified by the channel name.
-    /// @param channel notification channel.
+    /// @param _channel notification channel.
     MODULE_UI_QT_API void close_notification(std::string _channel);
 
 protected:
@@ -149,17 +149,17 @@ private:
     void on_notification_closed(const sight::ui::dialog::notification::sptr& _notif);
 
     /// Erase a notification from m_popups and move down the remaining
-    /// @param position The stack where we need to erase a notification
-    /// @param it the iterator pointing on the element to erase
+    /// @param _position The stack where we need to erase a notification
+    /// @param _it the iterator pointing on the element to erase
     std::list<sight::ui::dialog::notification::sptr>::iterator erase_notification(
         const enum service::notification::position& _position,
         const std::list<sight::ui::dialog::notification::sptr>::iterator& _it
     );
 
     /// Count the number of notifications and remove the oldest if > m_maxStackedNotifs
-    /// @param position The stack to clean
-    /// @param max The maximum number of element
-    /// @param skipPermanent if true, only non permanent notifications are counted
+    /// @param _position The stack to clean
+    /// @param _max The maximum number of element
+    /// @param _skip_permanent if true, only non permanent notifications are counted
     void clean_notifications(
         const enum service::notification::position& _position,
         std::size_t _max,

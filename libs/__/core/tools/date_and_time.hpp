@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace sight::core::tools
 //------------------------------------------------------------------------------
 /**
  * @brief       Convert a string date to a boost date
- * @param[in]   dateStr date in the string format YYYYMMDD (ie : 20090722)
+ * @param[in]   _date_str date in the string format YYYYMMDD (ie : 20090722)
  * @return      Date in the boost format
  */
 CORE_API boost::gregorian::date str_to_boost_date(const std::string& _date_str);
@@ -46,7 +46,7 @@ CORE_API boost::gregorian::date str_to_boost_date(const std::string& _date_str);
 
 /**
  * @brief       Convert a string time to a boost time
- * @param[in]   timeStr time in the string format HHMMSS
+ * @param[in]   _time_str time in the string format HHMMSS
  * @return      Time in the boost format
  */
 CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& _time_str);
@@ -55,8 +55,8 @@ CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& _
 
 /**
  * @brief       Convert string data time to a boost time
- * @param[in]   dateStr date in the string format YYYYMMDD (ie : 20090722)
- * @param[in]   timeStr time in the string format HHMMSS (by default : "000000")
+ * @param[in]   _date_str date in the string format YYYYMMDD (ie : 20090722)
+ * @param[in]   _time_str time in the string format HHMMSS (by default : "000000")
  * @return      Time in the boost format
  */
 CORE_API boost::posix_time::ptime str_to_boost_date_and_time(
@@ -68,7 +68,7 @@ CORE_API boost::posix_time::ptime str_to_boost_date_and_time(
 
 /**
  * @brief       Convert a boost time to a string date
- * @param[in]   date_and_time time in the boost format
+ * @param[in]   _date_and_time time in the boost format
  * @return      Date in the string format YYYYMMDD
  */
 CORE_API std::string get_date(const boost::posix_time::ptime& _date_and_time);
@@ -78,7 +78,7 @@ CORE_API std::string get_date(const boost::posix_time::ptime& _date_and_time);
 // HHMMSS
 /**
  * @brief       Convert a boost time to a string time
- * @param[in]   date_and_time time in the boost format
+ * @param[in]   _date_and_time time in the boost format
  * @return      Time in the string format HHMMSS
  */
 CORE_API std::string get_time(const boost::posix_time::ptime& _date_and_time);

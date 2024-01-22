@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,21 +44,21 @@ public:
 
     /**
      * @brief Creates a new file entry in archive and returns output stream for this file.
-     * @param path file in archive.
+     * @param _path file in archive.
      * @return output stream of file entry in archive.
      */
     virtual SPTR(std::ostream) create_file(const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Writes source file in archive.
-     * @param sourceFile source file.
-     * @param path file in archive.
+     * @param _source_file source file.
+     * @param _path file in archive.
      */
     virtual void put_file(const std::filesystem::path& _source_file, const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Creates a folder in archive.
-     * @param path folder to create in archive.
+     * @param _path folder to create in archive.
      */
     virtual bool create_dir(const std::filesystem::path& _path) = 0;
 

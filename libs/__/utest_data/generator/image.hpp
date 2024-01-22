@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,13 +49,13 @@ public:
     );
 
     /// Generate an image.
-    /// @param [inout] image image to generate
-    /// @param [in] sizes image sizes
-    /// @param [in] type image component type
-    /// @param [in] format image pixel format
-    /// @param [in] spacing image spacing
-    /// @param [in] origin image origin
-    /// @param [in] seed [optional] random seed used to generate the buffer. If not set, fill the buffer with 0.
+    /// @param [inout] _image image to generate
+    /// @param [in] _sizes image sizes
+    /// @param [in] _spacing image spacing
+    /// @param [in] _origin image origin
+    /// @param [in] _type image component type
+    /// @param [in] _format image pixel format
+    /// @param [in] _seed [optional] random seed used to generate the buffer. If not set, fill the buffer with 0.
     UTEST_DATA_API static void generate_image(
         data::image::sptr _image,
         const data::image::size_t& _sizes             = {64, 64, 64},

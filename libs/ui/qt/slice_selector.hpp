@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
 
     /**
      * @brief Constructor.
-     * @param parent The parent widget.
+     * @param _parent The parent widget.
      */
     UI_QT_API_QT slice_selector(
         bool _display_axis_selector,
@@ -86,13 +86,13 @@ protected Q_SLOTS:
 
     /**
      * @brief Event handler for a slice type change.
-     * @param index index of the selected type item.
+     * @param _index index of the selected type item.
      */
     UI_QT_API_QT void on_slice_type_change(int _index);
 
     /**
      * @brief Event handler for a slice index change.
-     * @param value current value of the slice index slider.
+     * @param _value current value of the slice index slider.
      */
     UI_QT_API_QT void on_slice_index_change(int _value) noexcept;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,8 +114,8 @@ public:
     VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& _coord) const;
 
     /** @brief Compute the viewport coordinates mapped to scene coordinates.
-     * @param coord input viewport coordinates
-     * @param clip clip the returned coordinates to the size of the scene
+     * @param _coord input viewport coordinates
+     * @param _clip clip the returned coordinates to the size of the scene
      * @return scene coordinates
      */
     VIZ_SCENE2D_API scene2d::vec2d_t map_to_scene(const scene2d::vec2d_t& _coord, bool _clip = false) const;

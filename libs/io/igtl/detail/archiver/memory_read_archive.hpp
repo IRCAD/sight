@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ public:
 
     /**
      * @brief Returns input stream for the file in current archive (zip).
-     * @param[in] path file in archive.
+     * @param[in] _path file in archive.
      * @return input stream from request file.
      *
      * @throw io::zip::exception::Read if file doesn't exist in archive.
@@ -95,7 +95,7 @@ private:
     /**
      * @brief read file data from buffer
      *
-     * @param[in] buffer buffer data to fill
+     * @param[in] _content buffer data to fill
      */
     void read_entry(buffer_s_ptr _content);
 

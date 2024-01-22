@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,9 +54,9 @@ private:
      * @brief Ensure that a given fragment program is created.
      *
      * @param[in] _name name of the program
-     * @param[in] _algoName name of the algorithm
-     * @param[in] _algoPassName new suffix to use
-     * @param[in] _baseName new suffix to use
+     * @param[in] _algo_name name of the algorithm
+     * @param[in] _algo_pass_name new suffix to use
+     * @param[in] _base_name new suffix to use
      */
     static Ogre::GpuProgramPtr ensure_fp_created(
         const std::string& _name,

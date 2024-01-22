@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ public:
     /**
      * @brief Launches Appconfig.
      * @param _srv  service to connect with config root object.
-     * @param _optReplaceMap optional replace map used to replace patterns (concatenated with parsed parameter).
+     * @param _opt_replace_map optional replace map used to replace patterns (concatenated with parsed parameter).
      */
     APP_API void start_config(
         service::base::sptr _srv,
@@ -93,9 +93,9 @@ private:
     /**
      * @brief initialise a config provided in param
      *
-     * @param appCfgId : the id of the config to init
-     * @param oldConfig : the current service config
-     * @param _service : service to connect with config root object.
+     * @param _app_cfg_id   the id of the config to init
+     * @param _old_config   the current service config
+     * @param _service      Service to connect with config root object.
      * @return the initialised config
      */
     service::config_t init_config(

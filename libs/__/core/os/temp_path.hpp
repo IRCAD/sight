@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -67,7 +67,7 @@ public:
 
     /// Returns the root path of all temporary directories.
     /// This directory will only be deleted at application exit.
-    /// @param subdirectory_prefix if set, creates a subdirectory with the given prefix
+    /// @param _subdirectory_prefix if set, creates a subdirectory with the given prefix
     CORE_API static std::filesystem::path shared_directory(const std::string& _subdirectory_prefix = std::string());
 
 protected:
@@ -143,7 +143,7 @@ class CORE_CLASS_API temp_dir final : public temp_path
 public:
 
     /// Constructor
-    /// @param[in] path Allows to specify a path, that will be deleted when the instance is destroyed.
+    /// @param[in] _path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
     CORE_API temp_dir(const std::optional<std::filesystem::path>& _path = std::nullopt);
 
@@ -172,9 +172,9 @@ class CORE_CLASS_API temp_file final : public temp_path
 public:
 
     /// Constructor
-    /// @param[in] openmode If provided, an ofstream will be opened with the given parameters.
+    /// @param[in] _openmode If provided, an ofstream will be opened with the given parameters.
     ///                     This is the safest way to avoid race conditions and possible security problems.
-    /// @param[in] path Allows to specify a path, that will be deleted when the instance is destroyed.
+    /// @param[in] _path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
     CORE_API temp_file(
         const std::optional<std::ios_base::openmode>& _openmode = std::nullopt,
@@ -202,7 +202,7 @@ public:
 
     /// Returns an unique temporary file path and an ofstream. The stream will be closed and the file deleted when
     /// application exit.
-    /// @param openmode Open mode of the stream.
+    /// @param _openmode Open mode of the stream.
     CORE_API static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > unique_stream(
         const std::optional<std::ios_base::openmode>& _openmode = std::ios_base::out | std::ios_base::trunc
     );

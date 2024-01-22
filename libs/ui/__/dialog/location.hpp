@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ public:
 
     /**
      * @brief specify some filtering when browsing files:
-     * @param[in] filterName a string that will be displayed as filter name
-     * @param[in] wildcardList a string of extension (glob syntax) separated by spaces
+     * @param[in] _filter_name a string that will be displayed as filter name
+     * @param[in] _wildcard_list a string of extension (glob syntax) separated by spaces
      * example : addFilter("images","*.png *.jpg")
      */
     UI_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;

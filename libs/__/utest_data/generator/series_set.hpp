@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,9 +57,8 @@ public:
 
     /**
      * @brief Creates a series_set.
-     * @param nbImgSeries       number of ImageSeries to add in series_set
-     * @param nbModelSeries     number of ModelSeries to add in series_set
-     * @param nbActivity  number of Activity to add in series_set
+     * @param _nb_img_series       number of ImageSeries to add in series_set
+     * @param _nb_model_series     number of ModelSeries to add in series_set
      * @return The created series_set
      */
     UTEST_DATA_API static SPTR(data::series_set) create_series_set(
@@ -75,7 +74,7 @@ public:
 
     /**
      * @brief Returns a ModelSeries containing random Reconstructions
-     * @param nbReconstruction number of Reconstrutions to add in the ModelSeries
+     * @param _nb_reconstruction number of Reconstrutions to add in the ModelSeries
      */
     UTEST_DATA_API static SPTR(data::model_series) create_model_series(unsigned char _nb_reconstruction);
 
@@ -84,8 +83,8 @@ public:
 
     /**
      * @brief Generate a reconstruction.
-     * @param rec   reconstruction to generate
-     * @param index index of the reconstruction in reconstruction list (optional).
+     * @param _rec   reconstruction to generate
+     * @param _index index of the reconstruction in reconstruction list (optional).
      * If index > -1, it will be used to prefix organName (and filename) by the index (ex: '0_Liver...')
      * this can be helpful in tests to ensure that readers will load reconstruction in the same order than the
      * reconstructionDB.

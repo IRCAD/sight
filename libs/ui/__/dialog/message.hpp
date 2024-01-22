@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,9 +43,9 @@ public:
     /**
      * Opens a default message box with the specified title, text and icon.
      *
-     * @param title Title of the message box
-     * @param message Message of the message box
-     * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
+     * @param _title Title of the message box
+     * @param _message Message of the message box
+     * @param _icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      * @return Returns the button enum value corresponding to the pressed button
      */
     UI_API static message::buttons show(
@@ -61,9 +61,9 @@ public:
      * Constructor
      * Creates a message box with the specified title text and icon.
      *
-     * @param title Title of the message box
-     * @param message Message of the message box
-     * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
+     * @param _title Title of the message box
+     * @param _message Message of the message box
+     * @param _icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      */
     UI_API message(const std::string& _title, const std::string& _message, message::icons _icon = info);
 

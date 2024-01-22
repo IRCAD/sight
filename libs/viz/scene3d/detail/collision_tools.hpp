@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,8 +75,8 @@ public:
 
     /**
      * @brief Create the ray scene query.
-     * @param _sceneMgr The scene manager where launch the ray.
-     * @param _queryMask Mask used to query entities with matching flags.
+     * @param _scene_mgr The scene manager where launch the ray.
+     * @param _query_mask Mask used to query entities with matching flags.
      */
     collision_tools(Ogre::SceneManager& _scene_mgr, std::uint32_t _query_mask);
 
@@ -85,11 +85,11 @@ public:
 
     /**
      * @brief Check for collisions with entities along a cylinder.
-     * @param _fromPoint The ray origin.
-     * @param _toPoint The ray destination.
-     * @param _queryMask Mask used to query entities with matching flags.
-     * @param _collisionRadius Radius of the cylinder.
-     * @param _rayHeightLevel The height level of the ray.
+     * @param _from_point The ray origin.
+     * @param _to_point The ray destination.
+     * @param _query_mask Mask used to query entities with matching flags.
+     * @param _collision_radius Radius of the cylinder.
+     * @param _ray_height_level The height level of the ray.
      * @return True if an entity collide the ray.
      */
     [[nodiscard]] bool collides_with_entity(
@@ -105,7 +105,7 @@ public:
      * @param _rw The render window used to retrieve width and height.
      * @param _camera The camera use to get the origin of the ray.
      * @param _mousecoords The mouse position used to get the ray destination.
-     * @param _queryMask Mask used to query entities with matching flags.
+     * @param _query_mask Mask used to query entities with matching flags.
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
@@ -120,7 +120,7 @@ public:
      * @brief raycastFromPoint Check for collisions with entities along a ray define by an origin and a direction.
      * @param _point The ray origin.
      * @param _normal The ray direction.
-     * @param _queryMask Mask used to query entities with matching flags.
+     * @param _query_mask Mask used to query entities with matching flags.
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
@@ -133,7 +133,7 @@ public:
     /**
      * @brief Check for collisions with entities along a ray.
      * @param _ray The ray used to check collisions.
-     * @param _queryMaskMask used to query entities with matching flags.
+     * @param _query_mask   Mask used to query entities with matching flags.
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
@@ -150,9 +150,9 @@ private:
      * @param _a The first vertex of the triangle.
      * @param _b The second vertex of the triangle.
      * @param _c The third vertex of the triangle.
-     * @param _closestDistance The current closest intersection distance with the ray.
-     * @param _positiveSide Set to true to intersect with the positive side of the triangle.
-     * @param _negativeSide Set to true to intersect with the negative side of the triangle.
+     * @param _closest_distance The current closest intersection distance with the ray.
+     * @param _positive_side Set to true to intersect with the positive side of the triangle.
+     * @param _negative_side Set to true to intersect with the negative side of the triangle.
      * @return A pair containing a boolean to specify if there was an intersection, and the distance of between the ray
      * origin and the intersection.
      */

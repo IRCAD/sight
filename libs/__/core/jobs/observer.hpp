@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,8 @@ public:
     /**
      * @brief Constructor
      *
-     * @param name The job name
+     * @param _name         The job name
+     * @param _work_units   Number of work units to reach to complete the job
      */
     CORE_API observer(const std::string& _name, std::uint64_t _work_units = 100);
 

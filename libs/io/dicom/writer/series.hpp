@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ private:
 
     /**
      * @brief Check if there is comment on acquisition.
-     * @param[in] series ImageSeries that must be checked.
+     * @param[in] _series ImageSeries that must be checked.
      */
     static bool has_document_sr(const data::image_series::csptr& _series);
 

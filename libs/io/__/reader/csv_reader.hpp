@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
     /**
      * @brief Constructor
      *
-     * @param csvStream the stream to read
+     * @param _csv_path the stream to read
      */
     IO_API csv_reader(const std::filesystem::path& _csv_path);
 
@@ -64,7 +64,7 @@ public:
      * @brief Returns tokens on next line to read, using comma separator
      *
      * Other separators can be used
-     * @param separator token separator
+     * @param _separator token separator
      *
      * @return tokens found on next line separated with given characters
      */

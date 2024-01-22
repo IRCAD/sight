@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,8 +68,8 @@ public:
     /**
      * @brief method to connect client to a server by using hostname and port
      *
-     * @param[in] addr ip or hostname
-     * @param[in] port port of server
+     * @param[in] _addr ip or hostname
+     * @param[in] _port port of server
      */
     IO_IGTL_API void connect(const std::string& _addr, std::uint16_t _port);
 
@@ -89,8 +89,8 @@ private:
 
     /**
      * @brief utility method to avoid code duplication
-     * @param[in] msg exception message
-     * @param[in] result throw the exception if result=true
+     * @param[in] _msg exception message
+     * @param[in] _result throw the exception if result=true
      */
     void throw_exception_if_failed(const std::string& _msg, bool _result);
 };

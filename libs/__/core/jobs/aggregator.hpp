@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ public:
     /**
      * @brief Constructor
      *
-     * @param name The job's name
+     * @param _name The job's name
      */
     CORE_API aggregator(const std::string& _name);
 
@@ -75,10 +75,10 @@ public:
      * @warning Be careful not to add an aggregator to itself, directly or
      * indirectly (through other aggregators for instance).
      *
-     * @param job the base to add to the aggregator
-     * @param weight added base's weight. Avoid values lower than 0.01
+     * @param _job the base to add to the aggregator
+     * @param _weight added base's weight. Avoid values lower than 0.01
      */
-    CORE_API void add(const core::jobs::base::sptr& _i_job, double _weight = 1.);
+    CORE_API void add(const core::jobs::base::sptr& _job, double _weight = 1.);
 
     /**
      * @brief Retrieve sub job sequence of the aggregator

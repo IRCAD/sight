@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -399,13 +399,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
@@ -413,7 +413,7 @@ public:
 
     /// Defines partial copy. Useful to share data between different series
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy from
+    /// @param _source source object to copy from
     /// @{
     DATA_API void copy_patient_module(const series::csptr& _source, std::size_t _instance                = 0);
     DATA_API void copy_clinical_trial_subject_module(const series::csptr& _source, std::size_t _instance = 0);
@@ -430,9 +430,9 @@ public:
 
     /// Value getter using given tag. The returned string is used as a Byte buffer and is not necessarily a string.
     /// @throws data::exception if tag doesn't exist
-    /// @param[in] group the group tag to get
-    /// @param[in] element the element tag to get
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _group the group tag to get
+    /// @param[in] _element the element tag to get
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a string
     /// @{
@@ -442,10 +442,10 @@ public:
 
     /// Value setter using given tag. The string argument is used as a Byte buffer and is not necessarily a string.
     /// @throws data::exception if the data mismatch the tag type
-    /// @param[in] group the group tag to set
-    /// @param[in] element the element tag to set
-    /// @param[in] value the value to insert
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _group the group tag to set
+    /// @param[in] _element the element tag to set
+    /// @param[in] _value the value to insert
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @throw data::exception if tag doesn't exist
     /// @throw data::exception if value size is not correct
@@ -468,9 +468,9 @@ public:
 
     /// Values getter using given tag. Initial string is split using DICOM delimiter '\'.
     /// @throws data::exception if tag doesn't exist
-    /// @param[in] group the group tag to get
-    /// @param[in] element the element tag to get
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _group the group tag to get
+    /// @param[in] _element the element tag to get
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a vector of strings
     /// @{
@@ -485,10 +485,10 @@ public:
 
     /// Values setter using given tag. Strings are joined using DICOM delimiter '\'.
     /// @throws data::exception if the data mismatch the tag type
-    /// @param[in] group the group tag to set
-    /// @param[in] element the element tag to set
-    /// @param[in] value the vector of value to insert
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _group the group tag to set
+    /// @param[in] _element the element tag to set
+    /// @param[in] _values the vector of value to insert
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @{
     DATA_API void set_byte_values(
@@ -507,9 +507,9 @@ public:
 
     /// Value getter using given tag. The value is converted to string, depending of the VR.
     /// @throws data::exception if tag doesn't exist
-    /// @param[in] group the group tag to get
-    /// @param[in] element the element tag to get
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _group the group tag to get
+    /// @param[in] _element the element tag to get
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a string
     /// @{
@@ -524,10 +524,10 @@ public:
 
     /// Value setter using given tag. The string argument is converted to the right, depending of the VR.
     /// @throws data::exception if the data mismatch the tag type
-    /// @param[in] group the group tag to set
-    /// @param[in] element the element tag to set
-    /// @param[in] value the value to insert
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _group the group tag to set
+    /// @param[in] _element the element tag to set
+    /// @param[in] _value the value to insert
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @throw data::exception if tag doesn't exist
     /// @throw data::exception if value size is not correct
@@ -549,8 +549,8 @@ public:
 
     /// Private value getter.
     /// @throws data::exception if tag doesn't exist
-    /// @param[in] element private element number in the range of 0x10 to 0xFF
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _element private element number in the range of 0x10 to 0xFF
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the private value as a string
     DATA_API std::optional<std::string> get_private_value(
@@ -560,9 +560,9 @@ public:
 
     /// Private values setter.
     /// @throws data::exception if the data mismatch the tag type
-    /// @param[in] value the string to insert. If empty (std::nullopt), the private tag is removed.
-    /// @param[in] element private element number in the range of 0x10 to 0xFF
-    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    /// @param[in] _value the string to insert. If empty (std::nullopt), the private tag is removed.
+    /// @param[in] _element private element number in the range of 0x10 to 0xFF
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     DATA_API void set_private_value(
         const std::optional<std::string>& _value,
@@ -572,9 +572,9 @@ public:
 
     /// Private value getter for a DICOM Multi-frame Functional Groups Module.
     /// @throws data::exception if tag doesn't exist
-    /// @param[in] element private sequence element number in the range of 0x10 to 0xFF.
+    /// @param[in] _element private sequence element number in the range of 0x10 to 0xFF.
     ///                    The corresponding attribute will take element+0x01 as private element number.
-    /// @param[in] frameIndex the frame index where to store the private tag.
+    /// @param[in] _frame_index the frame index where to store the private tag.
     /// @return the private value as a string
     DATA_API std::optional<std::string> get_multi_frame_private_value(
         std::uint8_t _element,
@@ -583,10 +583,10 @@ public:
 
     /// Private values setter for a DICOM Multi-frame Functional Groups Module.
     /// @throws data::exception if the data mismatch the tag type
-    /// @param[in] value the string to insert. If empty (std::nullopt), the private tag is removed.
-    /// @param[in] element private sequence element number in the range of 0x10 to 0xFF.
+    /// @param[in] _value the string to insert. If empty (std::nullopt), the private tag is removed.
+    /// @param[in] _element private sequence element number in the range of 0x10 to 0xFF.
     ///                    The corresponding attribute will take element+0x01 as private element number.
-    /// @param[in] frameIndex the frame index where to store the private tag.
+    /// @param[in] _frame_index the frame index where to store the private tag.
     DATA_API void set_multi_frame_private_value(
         const std::optional<std::string>& _value,
         std::uint8_t _element,
@@ -607,7 +607,7 @@ public:
     using DicomTypes = std::underlying_type_t<dicom_t>;
 
     /// Convenience function to convert from dicom_t enum value to string
-    /// @param[in] type the dicom_t enum value to convert
+    /// @param[in] _type the dicom_t enum value to convert
     constexpr static std::string_view dicom_type_to_string(dicom_t _type) noexcept
     {
         switch(_type)
@@ -630,7 +630,7 @@ public:
     }
 
     /// Convenience function to convert from string to dicom_t enum value
-    /// @param[in] type the string to convert
+    /// @param[in] _type the string to convert
     constexpr static dicom_t string_to_dicom_type(std::string_view _type) noexcept
     {
         if(constexpr auto image = dicom_type_to_string(dicom_t::image); _type == image)
@@ -685,7 +685,7 @@ public:
     DATA_API std::size_t num_instances() const noexcept;
 
     /// Utility function that sort instances according to a sorted map of instance index.
-    /// @param[in] sorted the sorted vector of instance.
+    /// @param[in] _sorted the sorted vector of instance.
     DATA_API bool sort(const std::vector<std::size_t>& _sorted);
 
     /// Returns true if the series is multi-frame.
@@ -702,7 +702,7 @@ public:
 
     /// Shrink the number of instances / frames to the given size.
     /// This is mainly an optimization and a bugfix when using GDCM to write a multi-frame DICOM file.
-    /// @param size
+    /// @param _size
     DATA_API void shrink_frames(std::size_t _size);
 
     DATA_API void set_frame_landmarks(std::vector<data::landmarks::sptr> _landmarks, std::size_t _frame_index);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,8 +44,8 @@ GEOMETRY_DATA_API bool invert(
 
 /**
  * @brief Multiply two matrices.
- * @param[in] trfA First matrix.
- * @param[in] trfB Second matrix.
+ * @param[in] _trf_a First matrix.
+ * @param[in] _trf_b Second matrix.
  * @param[out] _output Output matrix.
  */
 GEOMETRY_DATA_API void multiply(

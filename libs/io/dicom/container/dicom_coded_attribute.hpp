@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,10 +44,10 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] codeValue Code Value (0008,0100)
-     * @param[in] codingSchemeDesignator Coding Scheme Designator (0008,0102)
-     * @param[in] codeMeaning Code Meaning (0008,0104)
-     * @param[in] codingSchemeVersion Coding Scheme Version (0003,0103)
+     * @param[in] _code_value Code Value (0008,0100)
+     * @param[in] _coding_scheme_designator Coding Scheme Designator (0008,0102)
+     * @param[in] _code_meaning Code Meaning (0008,0104)
+     * @param[in] _coding_scheme_version Coding Scheme Version (0003,0103)
      */
     IO_DICOM_API dicom_coded_attribute(
         std::string _code_value               = "",

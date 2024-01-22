@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,13 +89,12 @@ public:
 
     /**
      * @brief Initializes the connection.
-     * @param _applicationTitle The local application title.
-     * @param _peerHostName The pacs host name.
-     * @param _peerPort The pacs port.
-     * @param _peerApplicationTitle The pacs application title.
-     * @param _path The local dicom folder path.
-     * @param _moveApplicationTitle The move application title.
-     * @param _progressCallback The progress callback.
+     * @param _application_title The local application title.
+     * @param _peer_host_name The pacs host name.
+     * @param _peer_port The pacs port.
+     * @param _peer_application_title The pacs application title.
+     * @param _move_application_title The move application title.
+     * @param _progress_callback The progress callback.
      */
     IO_DIMSE_API void initialize(
         const std::string& _application_title,
@@ -134,15 +133,15 @@ public:
 
     /**
      * @brief Finds series by birthdate.
-     * @param _birthDate birthdate of the series.
+     * @param _birth_date birthdate of the series.
      * @return The dcmtk response list.
      */
     IO_DIMSE_API OFList<QRResponse*> find_series_by_patient_birth_date(const std::string& _birth_date);
 
     /**
      * @brief Finds series by study date.
-     * @param _fromDate The beginning date.
-     * @param _toDate The ending date.
+     * @param _from_date The beginning date.
+     * @param _to_date The ending date.
      * @return The dcmtk response list.
      *
      * @pre _fromDate and _toDate must match the format YYYYMMDD.
@@ -172,8 +171,8 @@ public:
 
     /**
      * @brief Finds SOPInstanceUID of the specified instance.
-     * @param _seriesInstanceUID The series instance UID.
-     * @param _instanceNumber The instance number.
+     * @param _series_instance_uid The series instance UID.
+     * @param _instance_number The instance number.
      * @return The SOPInstanceUID corresponding to the instanceNumber.
      */
     IO_DIMSE_API std::string find_sop_instance_uid(
@@ -183,20 +182,20 @@ public:
 
     /**
      * @brief Pulls series using C-MOVE requests.
-     * @param _instanceUIDContainer The series instance UID container.
+     * @param _instance_uid_container The series instance UID container.
      */
     IO_DIMSE_API void pull_series_using_move_retrieve_method(InstanceUIDContainer _instance_uid_container);
 
     /**
      * @brief Pulls series using C-GET requests.
-     * @param _instanceUIDContainer The series instance UID container.
+     * @param _instance_uid_container The series instance UID container.
      */
     IO_DIMSE_API void pull_series_using_get_retrieve_method(InstanceUIDContainer _instance_uid_container);
 
     /**
      * @brief Pulls instance using C-MOVE requests.
-     * @param _seriesInstanceUID The series instance UID.
-     * @param _sopInstanceUID The sOP Instance UID.
+     * @param _series_instance_uid The series instance UID.
+     * @param _sop_instance_uid The sOP Instance UID.
      */
     IO_DIMSE_API void pull_instance_using_move_retrieve_method(
         const std::string& _series_instance_uid,
@@ -205,8 +204,8 @@ public:
 
     /**
      * @brief Pulls instance using C-GET requests.
-     * @param _seriesInstanceUID The series instance UID.
-     * @param _sopInstanceUID The sOP Instance UID.
+     * @param _series_instance_uid The series instance UID.
+     * @param _sop_instance_uid The sOP Instance UID.
      */
     IO_DIMSE_API void pull_instance_using_get_retrieve_method(
         const std::string& _series_instance_uid,
@@ -215,13 +214,13 @@ public:
 
     /**
      * @brief Pushs instances using C-STORE requests.
-     * @param _pathContainer The instance paths container.
+     * @param _path_container The instance paths container.
      */
     IO_DIMSE_API void push_series(const instance_path_container_t& _path_container);
 
     /**
      * @brief Pushs instances using C-STORE requests.
-     * @param _DatasetContainer The dICOM dataset container.
+     * @param _dataset_container The dICOM dataset container.
      */
     IO_DIMSE_API void push_series(const dataset_container_t& _dataset_container);
 
@@ -264,9 +263,9 @@ protected:
 
     /**
      * @brief Handles a C-MOVE response.
-     * @param _presID
+     * @param _pres_id
      * @param _response
-     * @param _waitForNextResponse
+     * @param _wait_for_next_response
      * @return
      */
     IO_DIMSE_API OFCondition handleMOVEResponse(
@@ -277,10 +276,7 @@ protected:
 
     /**
      * @brief Handles a C-STORE response.
-     * @param _presID
-     * @param _incomingObject
-     * @param _continueCGETSession
-     * @param _cStoreReturnStatus
+     * @param _incoming_object
      * @return
      */
     IO_DIMSE_API OFCondition handleSTORERequest(
@@ -293,7 +289,7 @@ protected:
 
     /**
      * @brief Finds uncompressed presentation context.
-     * @param _sopClass The sOP class which needs the presentation context.
+     * @param _sop_class The sOP class which needs the presentation context.
      */
     IO_DIMSE_API Uint8 find_uncompressed_pc(const OFString& _sop_class);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -334,8 +334,8 @@ public:
      * @details If it's the creation of a child widget, it infects it as well, if it's a user interaction, it saves it
      * in its interactions vector.
      *
-     * @param target The widget being targeted by the event
-     * @param e The event which was sent to the target
+     * @param _target The widget being targeted by the event
+     * @param _e The event which was sent to the target
      * @returns Should the event handling stop?
      */
     bool eventFilter(QObject* _target, QEvent* _e) override;
@@ -344,7 +344,7 @@ public:
      * @brief Infects a widget and its children recursively, so that the events they will receive will be filtered with
      * @ref MacroSaver
      *
-     * @param o The widget to infect
+     * @param _o The widget to infect
      */
     MODULE_UI_TEST_API void infect(QObject* _o);
 

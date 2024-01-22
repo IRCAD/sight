@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -238,7 +238,7 @@ private Q_SLOTS:
     /**
      * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
      * widget.
-     * @param _checkBox Dependency widget.
+     * @param _check_box Dependency widget.
      * @param _widget Child widget.
      * @param _reverse Reverse the state check.
      */
@@ -247,7 +247,7 @@ private Q_SLOTS:
     /**
      * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
      * widget.
-     * @param _comboBox Dependency widget.
+     * @param _combo_box Dependency widget.
      * @param _widget Child widget.
      * @param _value Value of the combo box.
      * @param _reverse Reverse the state check.

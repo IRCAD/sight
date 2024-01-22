@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,15 +42,15 @@ public:
     using matrix_t = ::itk::Matrix<double, 4, 4>;
     /**
      * @brief convert a Sight transformation to itk
-     * @param _inTrf input data::matrix4
+     * @param _in_trf input data::matrix4
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
     IO_ITK_API static matrix_t convert_to_itk(const data::matrix4::csptr& _in_trf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a Sight one
-     * @param _inTrf Const Pointer to a itk::Transform<double, 4,4>
-     * @param _outTrf output data::matrix4 (needs to be allocated before)
+     * @param _in_trf Const Pointer to a itk::Transform<double, 4,4>
+     * @param _out_trf output data::matrix4 (needs to be allocated before)
      */
     IO_ITK_API static void convert_from_itk(
         const matrix_t& _in_trf,

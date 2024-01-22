@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,7 +134,7 @@ private:
     void paintGL() override;
 
     /// Forwards the resize event.
-    /// @param _newSize size in hidpi, you must multiplicate with devicePixelRatioF to get the real pixel value
+    /// @param _new_size size in hidpi, you must multiplicate with devicePixelRatioF to get the real pixel value
     void ogre_resize(const QSize& _new_size);
 
     /// Inform Ogre about the OpenGL context change made by Qt

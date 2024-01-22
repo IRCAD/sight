@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,8 @@ namespace sight::core::tools::os
 /**
  * @brief Returns a environment variable value
  *
- * @param name environment variable 'name'
- * @param[out] ok boolean set to true if variable exists
+ * @param _name environment variable 'name'
+ * @param[out] _ok boolean set to true if variable exists
  *
  * @return The environment variable content if it exists, else an empty string
  */
@@ -44,17 +44,17 @@ CORE_API std::string get_env(const std::string& _name, bool* _ok = nullptr);
 /**
  * @brief Returns a environment variable value
  *
- * @param name environment variable 'name'
- * @param defaultValue Value returned if variable 'name' doesn't exist
+ * @param _name environment variable 'name'
+ * @param _default_value Value returned if variable 'name' doesn't exist
  */
 CORE_API std::string get_env(const std::string& _name, const std::string& _default_value);
 
 /**
  * @brief   Return the users's application config directory
  *
- * @param company The company name
- * @param appName The application name
- * @param createDirectory if true, create the returned directory if it don't exist
+ * @param _app_name The application name
+ * @param _create_directory if true, create the returned directory if it don't exist
+ * @param _company The company name
  *
  * Return the application config directory. If company or appName is not empty, append them to
  * the path. Under unix, XDG conventions are respected.
@@ -69,9 +69,9 @@ CORE_API std::filesystem::path get_user_data_dir(
 /**
  * @brief   Return the users's application config directory
  *
- * @param company The company name
- * @param appName The application name
- * @param createDirectory if true, create the returned directory if it don't exist
+ * @param _app_name The application name
+ * @param _create_directory if true, create the returned directory if it don't exist
+ * @param _company The company name
  *
  * Return the application config directory. If company or appName is not empty, append them to
  * the path. Under unix, XDG conventions are respected.
@@ -86,9 +86,9 @@ CORE_API std::filesystem::path get_user_config_dir(
 /**
  * @brief   Return the users's application cache directory
  *
- * @param company The company name
- * @param appName The application name
- * @param createDirectory if true, create the returned directory if it don't exist
+ * @param _app_name The application name
+ * @param _create_directory if true, create the returned directory if it don't exist
+ * @param _company The company name
  *
  * Return the application data directory. If company or appName is not empty, append them to
  * the path. Under unix, XDG conventions are respected.
@@ -103,7 +103,7 @@ CORE_API std::filesystem::path get_user_cache_dir(
 /**
  * @brief   Return the path to a shared library name
  * The library should have already been loaded before.
- * @param _libName The name of the shared library, without any 'lib' prefix, 'd' suffix or extension,
+ * @param _lib_name The name of the shared library, without any 'lib' prefix, 'd' suffix or extension,
  * i.e. 'jpeg' or 'boost_filesystem'. The function will try to use the appropriate combination according to
  * the platform and the build type.
  * @return path to the library on the filesystem

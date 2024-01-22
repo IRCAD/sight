@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ struct native
     /**
      * @brief       Constructor
      *
-     * @param[in]   name    libray name
+     * @param[in]   _name    library name
      */
     native(std::string _name) noexcept;
 
@@ -73,7 +73,7 @@ struct native
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
      *
-     * @param[in]   name    a string containing the symbol name.
+     * @param[in]   _name    a string containing the symbol name.
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
@@ -92,8 +92,6 @@ struct native
     /**
      * @brief       Retrieves the file path of the library including the owning module's path.
      *
-     * @param[in]   _bMustBeFile  if true : module is a dynamic library and we want return an exception if is not a file
-     *
      * @return      a file path
      *
      * @see         getPath
@@ -110,7 +108,7 @@ struct native
     /**
      * @brief       Set the initial path from which the library will be loaded.
      *
-     * @param[in]   path  search path
+     * @param[in]   _path  search path
      */
     void set_search_path(const std::filesystem::path& _path) noexcept;
 

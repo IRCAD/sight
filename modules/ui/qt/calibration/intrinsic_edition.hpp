@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ private Q_SLOTS:
 
     /**
      * @brief onNewCalibration
-     * @param cal
+     * @param _cal  the new calibration data
      */
     void on_new_calibration(std::array<double, 12>& _cal);
 

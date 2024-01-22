@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,41 +54,41 @@ public:
 
     /**
      * @brief Adds a DICOM path.
-     * @param _instanceIndex index of the instance.
+     * @param _instance_index index of the instance.
      * @param _path the path.
      */
     DATA_API void add_dicom_path(std::size_t _instance_index, const std::filesystem::path& _path);
 
     /**
      * @brief Adds a binary buffer.
-     * @param _instanceIndex index of the instance.
+     * @param _instance_index index of the instance.
      * @param _buffer the buffer.
      */
     DATA_API void add_binary(std::size_t _instance_index, const core::memory::buffer_object::sptr& _buffer);
 
     /**
      * @brief Gets if the instance is available on the local computer
-     * @param _instanceIndex the instance to check.
+     * @param _instance_index the instance to check.
      * @return True if the instance is available on the local computer
      */
     DATA_API bool is_instance_available(std::size_t _instance_index) const;
 
     /**
      * @brief Adds a sop_classUID that is used by this series.
-     * @param _sopClassUID sop_classUID that must be added.
+     * @param _sop_class_uid sop_classUID that must be added.
      */
     DATA_API void addsop_class_uid(const std::string& _sop_class_uid);
 
     /**
      * @brief Adds a computed value to the specified tag.
-     * @param _tagName Name of the tag.
+     * @param _tag_name Name of the tag.
      * @param _value Computed value.
      */
     DATA_API void add_computed_tag_value(const std::string& _tag_name, const std::string& _value);
 
     /**
      * @brief Gets if there is a computed value for the specified tag.
-     * @param _tagName Name of the tag.
+     * @param _tag_name Name of the tag.
      * @return True if there is a computed value for the tag.
      */
     DATA_API bool has_computed_values(const std::string& _tag_name) const;
@@ -177,13 +177,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()

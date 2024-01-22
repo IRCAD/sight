@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,9 +71,9 @@ public:
      * - Anatomic Region (With unique (AAA;BBB;CCC) value) [MANDATORY]
      * - Anatomic Region Modifiers (With one or more (AAA;BBB;CCC) values)
      * Each of those elements shall be separated using the '|' separator
-     * @param[in] filepath Path of the CSV file
-     * @param[in] omitFirstLine If set to 'true', the first line of the file is omitted
-     * @param[in] logger Logger used to display errors
+     * @param[in] _filepath Path of the CSV file
+     * @param[in] _omit_first_line If set to 'true', the first line of the file is omitted
+     * @param[in] _logger Logger used to display errors
      */
     IO_DICOM_API bool read_segmented_property_registry_file(
         const std::filesystem::path& _filepath,
@@ -91,9 +91,9 @@ public:
      * - Anatomic Region (With unique (AAA;BBB;CCC) value)
      * - Anatomic Region Modifiers (With one or more (AAA;BBB;CCC) values)
      * Each of those elements shall be separated using the '|' separator
-     * @param[in] csvStream CSV stream
-     * @param[in] omitFirstLine If set to 'true', the first line of the file is omitted
-     * @param[in] logger Logger used to display errors
+     * @param[in] _csv_stream CSV stream
+     * @param[in] _omit_first_line If set to 'true', the first line of the file is omitted
+     * @param[in] _logger Logger used to display errors
      */
     IO_DICOM_API bool read_segmented_property_registry_file(
         std::istream& _csv_stream,
@@ -112,19 +112,19 @@ public:
 
     /**
      * @brief Check if there is an entry for the corresponding structure type
-     * @param[in] structureType Structure type
+     * @param[in] _structure_type Structure type
      */
     [[nodiscard]] IO_DICOM_API bool has_entry(const std::string& _structure_type) const;
 
     /**
      * @brief Returns matching entry for the corresponding structure type
-     * @param[in] structureType Structure type
+     * @param[in] _structure_type Structure type
      */
     [[nodiscard]] IO_DICOM_API entry_t get_entry(const std::string& _structure_type) const;
 
     /**
      * @brief Getters for entry's attributes
-     * @param[in] structureType Structure type
+     * @param[in] _structure_type Structure type
      * @{ */
     [[nodiscard]] IO_DICOM_API std::string get_property_type(const std::string& _structure_type) const;
     [[nodiscard]] IO_DICOM_API std::string get_property_category(const std::string& _structure_type) const;
@@ -136,11 +136,11 @@ public:
     /**
      * @brief Returns the structure type associated to the attribute list.
      * If no match is found, it returns an empty string.
-     * @param[in] propertyType Property Type
-     * @param[in] propertyCategory Property Category
-     * @param[in] propertyTypeModifiers Property Modifiers
-     * @param[in] anatomicRegion Anatomic Region
-     * @param[in] anatomicRegionModifiers Anatomic Region Modifiers
+     * @param[in] _property_type Property Type
+     * @param[in] _property_category Property Category
+     * @param[in] _property_type_modifiers Property Modifiers
+     * @param[in] _anatomic_region Anatomic Region
+     * @param[in] _anatomic_region_modifiers Anatomic Region Modifiers
      */
     [[nodiscard]] IO_DICOM_API std::string get_structure_type(
         const std::string& _property_type,

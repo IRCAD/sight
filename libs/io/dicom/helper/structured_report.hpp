@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,15 +41,15 @@ public:
 
     /**
      * @brief Read a Structured Report
-     * @param[in] dataset Dataset from which the SR must be created
+     * @param[in] _dataset Dataset from which the SR must be created
      */
     IO_DICOM_API static SPTR(io::dicom::container::sr::dicom_sr_container_node)
     read_sr(const gdcm::DataSet& _dataset);
 
     /**
      * @brief Dump the SR in graphviz format
-     * @param[in] root Root node
-     * @param[in] out Destination stream
+     * @param[in] _root Root node
+     * @param[in] _out Destination stream
      */
     IO_DICOM_API static void dump_sr(
         const SPTR(io::dicom::container::sr::dicom_sr_node)& _root,
@@ -60,25 +60,25 @@ protected:
 
     /**
      * @brief Read all sub nodes and add it as children to the parent node
-     * @param[in] dataset Dataset from which the sub nodes must been read
-     * @param[in] parent Parent node
+     * @param[in] _dataset Dataset from which the sub nodes must been read
+     * @param[in] _parent Parent node
      */
     static void read_sub_node_container(const gdcm::DataSet& _dataset,
                                         SPTR(io::dicom::container::sr::dicom_sr_node) _parent);
 
     /**
      * @brief Read a sub node and add it as a child to the parent node
-     * @param[in] dataset Dataset from which the sub node must been read
-     * @param[in] parent Parent node
+     * @param[in] _dataset Dataset from which the sub node must been read
+     * @param[in] _parent Parent node
      */
     static void read_sub_node(const gdcm::DataSet& _dataset,
                               SPTR(io::dicom::container::sr::dicom_sr_node) _parent);
 
     /**
      * @brief Dump an SR node in graphviz format
-     * @param[in] node Node
-     * @param[in] out Destination stream
-     * @param[in] index Node index
+     * @param[in] _node Node
+     * @param[in] _out Destination stream
+     * @param[in] _index Node index
      */
     IO_DICOM_API static void dump_sr_node(
         const SPTR(io::dicom::container::sr::dicom_sr_node)& _node,
@@ -89,7 +89,7 @@ protected:
     /**
      * @brief Read content of a code sequence (eg : Concept Name Code Sequence, ...)
      * @note This method can return a DicomCodedAttribute with empty members.
-     * @param[in] dataset   Data set where the code sequence is supposed to be.
+     * @param[in] _dataset   Data set where the code sequence is supposed to be.
      * @tparam GROUP Tag group of the code sequence.
      * @tparam ELEMENT Element group of the code sequence.
      */

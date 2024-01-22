@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,9 +50,9 @@ public:
     /**
      * Opens a default input box with the specified title and message.
      *
-     * @param title Title of the input box
-     * @param message Message of the input box
-     * @param text the input text in the input field
+     * @param _title Title of the input box
+     * @param _message Message of the input box
+     * @param _text the input text in the input field
      * @return Returns text in the input field
      */
     UI_API static std::pair<std::string, bool> show_input_dialog(
@@ -78,9 +78,9 @@ public:
     /**
      * Constructor. Creates a input box with the specified title and message.
      *
-     * @param title Title of the input box
-     * @param message Message of the input box
-     * @param text the input text in the input field
+     * @param _title Title of the input box
+     * @param _message Message of the input box
+     * @param _text the input text in the input field
      */
     UI_API input(
         const std::string& _title,

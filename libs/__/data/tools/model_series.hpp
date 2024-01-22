@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
 
     /**
      * @brief Add a mesh into a model series. A reconstruction for this mesh will be created.
-     * @param _modelSeries Model series where the mesh must be added.
+     * @param _model_series Model series where the mesh must be added.
      * @param _rec Reconstruction that must be added
      */
     DATA_API static void add_reconstruction(
@@ -55,8 +55,8 @@ public:
     /**
      * @brief Create a reconstruction from a mesh.
      * @param _mesh Mesh that must be added
-     * @param _organName Organ name to associate with the mesh
-     * @param _structureType Structure type to associate with the mesh
+     * @param _organ_name Organ name to associate with the mesh
+     * @param _structure_type Structure type to associate with the mesh
      * @param _color Color of the material of the reconstruction.
      * @param _mode Representation mode of the material of the reconstruction.
      * @param _visible Visibility flag of the reconstruction.
@@ -73,10 +73,10 @@ public:
 
     /**
      * @brief Add a mesh into a model series. A reconstruction for this mesh will be automatically created.
-     * @param _modelSeries Model series where the mesh must be added.
+     * @param _model_series Model series where the mesh must be added.
      * @param _mesh Mesh that must be added
-     * @param _organName Organ name to associate with the mesh
-     * @param _structureType Structure type to associate with the mesh
+     * @param _organ_name Organ name to associate with the mesh
+     * @param _structure_type Structure type to associate with the mesh
      * @param _color Color of the material of the reconstruction.
      * @param _mode Representation mode of the material of the reconstruction.
      * @param _visible Visibility flag of the reconstruction.

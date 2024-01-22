@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,10 +54,10 @@ public:
     /**
      * @brief       Constructor.
      *
-     * @param[in]   module  a pointer to the module the extension is attached to
-     * @param[in]   id      a string containing the extension identifier
-     * @param[in]   point   a string containing the extension point identifier
-     * @param[in]   xmlNode a pointer to the xml node that represents the extension
+     * @param[in]   _module  a pointer to the module the extension is attached to
+     * @param[in]   _id      a string containing the extension identifier
+     * @param[in]   _point   a string containing the extension point identifier
+     * @param[in]   _xml_node a pointer to the xml node that represents the extension
      *
      * @todo        test parameters validity
      */
@@ -94,7 +94,7 @@ public:
 
     /**
      * @brief       Sets the configuration of the extension.
-     * @param[in]   element a shared pointer to the configuration element to add
+     * @param[in]   _config a shared pointer to the configuration element to add
      */
     void set_config(const core::runtime::config_t& _config);
 

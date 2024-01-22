@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace sight::core::tools
  *
  * Be careful: there is not range checking, overflow is not detected (silent overflow policy)
  *
- * @param value to cast (and rounds if is a floating point type) in TYPEOUT
+ * @param _value to cast (and rounds if is a floating point type) in TYPEOUT
  * @return casted and rounded value.
  */
 template<typename TYPEOUT, typename TYPEIN>

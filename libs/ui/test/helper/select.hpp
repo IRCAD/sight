@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@ public:
     /**
      * Implicit constructor from a string. Equivalent to selector::fromMain. @see fromMain
      *
-     * @param objectName The objectName of the object to be selected
+     * @param _object_name The objectName of the object to be selected
      *
      * @{
      */
@@ -60,29 +60,29 @@ public:
     /**
      * Create a selector to select an object from the main window.
      *
-     * @param objectName The objectName of the object to be selected
+     * @param _object_name The objectName of the object to be selected
      */
     UI_TEST_API static selector from_main(const std::string& _object_name);
 
     /**
      * Create a selector to select an object from the current dialog window.
      *
-     * @param objectName The objectName of the object to be selected
+     * @param _object_name The objectName of the object to be selected
      */
     UI_TEST_API static selector from_dialog(const std::string& _object_name);
 
     /**
      * Create a selector to select an object via its parent.
      *
-     * @param parentName The objectName of the parent of the object to be selected
-     * @param childName The objectName of the object to be selected
+     * @param _parent_name The objectName of the parent of the object to be selected
+     * @param _child_name The objectName of the object to be selected
      */
     UI_TEST_API static selector from_parent(const std::string& _parent_name, const std::string& _child_name);
 
     /**
      * Create a selector to select an object via the current graphic component.
      *
-     * @param objectName The objectName of the object to be selected
+     * @param _object_name The objectName of the object to be selected
      */
     UI_TEST_API static selector from_current(const std::string& _object_name);
 
@@ -99,7 +99,7 @@ public:
     /**
      * Sets the timeout associated with the selection.
      *
-     * @param timeout Timeout in milliseconds
+     * @param _timeout Timeout in milliseconds
      *
      * @returns A copy of this
      */
@@ -108,7 +108,7 @@ public:
     /**
      * Adds a new condition for the object to meet
      *
-     * @param condition A condition for the object to meet
+     * @param _condition A condition for the object to meet
      *
      * @returns A copy of this
      */
@@ -117,7 +117,7 @@ public:
     /**
      * selects the desired object.
      *
-     * @param tester The current tester
+     * @param _tester The current tester
      *
      * @post The current tester's current graphic component is the desired object if it was found.
      */
@@ -126,7 +126,7 @@ public:
     /**
      * Returns the description of the object
      *
-     * @param tester The current tester
+     * @param _tester The current tester
      *
      * @returns The description of the object
      */

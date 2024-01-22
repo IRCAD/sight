@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,12 +68,12 @@ public:
 
     /// Adds a camera
     /// @throws core::exception if the camera is already present.
-    /// @param[in] camera the camera to add
+    /// @param[in] _camera the camera to add
     DATA_API void add_camera(camera::sptr _camera);
 
     /// Returns the camera at the index.
     /// @throws std::out_of_range if the index is out of range
-    /// @param[in] index the index of the camera to return
+    /// @param[in] _index the index of the camera to return
     /// @return the camera at the index
     /// @{
     DATA_API camera::csptr get_camera(std::size_t _index) const;
@@ -82,20 +82,20 @@ public:
 
     /// Remove the given camera
     /// @throws core::exception if the camera is not found
-    /// @param[in] camera the camera to remove
+    /// @param[in] _camera the camera to remove
     DATA_API void remove_camera(camera::sptr _camera);
 
     /// Sets the extrinsic matrix.
     /// @throws std::out_of_range if the index is out of range
-    /// @param[in] index index of the camera associated to this extrinsic matrix. The matrix correspond to the
-    ///                  transformation from camera[0] to camera[index].
-    /// @param[in] matrix the extrinsic matrix
+    /// @param[in] _index index of the camera associated to this extrinsic matrix. The matrix correspond to the
+    ///                   transformation from camera[0] to camera[index].
+    /// @param[in] _matrix the extrinsic matrix
     DATA_API void set_extrinsic_matrix(std::size_t _index, matrix4::sptr _matrix);
 
     /// Gets the extrinsic matrix.
     /// @throws std::out_of_range if the index is out of range
-    /// @param[in] index index of the camera associated to this extrinsic matrix. The matrix correspond to the
-    ///                  transformation from camera[0] to camera[index].
+    /// @param[in] _index index of the camera associated to this extrinsic matrix. The matrix correspond to the
+    ///                   transformation from camera[0] to camera[index].
     /// @return Returns the extrinsic transformation matrix, or null if not defined.
     ///
     /// @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
@@ -106,13 +106,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache  cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()

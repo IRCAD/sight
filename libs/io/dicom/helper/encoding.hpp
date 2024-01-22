@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,9 +52,9 @@ public:
 
     /**
      * @brief Convert a DICOM string from the specified charset to utf-8.
-     * @param[in] source Source buffer
-     * @param[in] definedCharsetTerm DICOM source charset
-     * @param[in] logger Logger used for conversion errors
+     * @param[in] _source Source buffer
+     * @param[in] _defined_charset_term DICOM source charset
+     * @param[in] _logger Logger used for conversion errors
      * @throw core::exception
      * @throw boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
@@ -69,9 +69,9 @@ private:
 
     /**
      * @brief Convert string charset without code extension from DICOM format to boost format.
-     * @param[in] source Source buffer
-     * @param[in] definedTerm DICOM charset
-     * @param[in] logger Logger used for conversion errors
+     * @param[in] _source Source buffer
+     * @param[in] _defined_term DICOM charset
+     * @param[in] _logger Logger used for conversion errors
      * @return converted charset
      */
     static std::string convert_string_without_code_extensions(
@@ -81,9 +81,9 @@ private:
     );
     /**
      * @brief Convert string sequence with a code extension.
-     * @param[in] sequence Sequence buffer
-     * @param[in] definedTermList DICOM charset list
-     * @param[in] logger Logger used for conversion errors
+     * @param[in] _sequence Sequence buffer
+     * @param[in] _defined_term_list DICOM charset list
+     * @param[in] _logger Logger used for conversion errors
      * @throw core::exception
      * @throw boost::locale::conv::invalid_charset_error
      * @return converted sequence in utf-8 format

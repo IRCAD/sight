@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,27 +62,27 @@ public:
 
     /**
      * @brief Retrieves data over network
-     * @param request the request
+     * @param _request the request
      */
     IO_HTTP_API QByteArray get(request::sptr _request);
 
     /**
      * @brief Retrieves data over network
-     * @param request the request
+     * @param _request the request
      */
     IO_HTTP_API std::string get_file(request::sptr _request);
 
     /**
      * @brief Performs head request
-     * @param request the request
+     * @param _request the request
      * @return headers resulting of the request
      */
     IO_HTTP_API request::headers_t head(request::sptr _request);
 
     /**
      * @brief Performs POST request
-     * @param request the request
-     * @return body The body content
+     * @param _request the request
+     * @param _body The body content
      */
     IO_HTTP_API QByteArray post(request::sptr _request, const QByteArray& _body);
 

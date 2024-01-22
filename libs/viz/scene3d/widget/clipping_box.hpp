@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,14 +46,14 @@ public:
     /**
      * @brief Constructor.
      *
-     * @param id                     parent service id.
-     * @param parentSceneNode        holds the volume object.
-     * @param camera                 camera viewing this scene.
-     * @param sceneManager           scene manager handling this object.
-     * @param clippingMatrix         the initial clipping transform in world space
-     * @param clippingUpdateCallback function called when the widget is modified through interaction.
-     * @param boxMtlName             material used to display the box edges and faces.
-     * @param handleMtlName          material used to display the widget handles.
+     * @param _id                       parent service id.
+     * @param _parent_scene_node        holds the volume object.
+     * @param _camera                   camera viewing this scene.
+     * @param _scene_manager            scene manager handling this object.
+     * @param _clipping_matrix          the initial clipping transform in world space
+     * @param _clipping_update_callback function called when the widget is modified through interaction.
+     * @param _box_mtl_name             material used to display the box edges and faces.
+     * @param _handle_mtl_name          material used to display the widget handles.
      */
     VIZ_SCENE3D_API clipping_box(
         std::string _id,
@@ -77,9 +77,9 @@ public:
      *
      * @pre the _pickedWidget must belong to this widget.
      *
-     * @param _pickedWidget picked widget.
-     * @param _screenX cursor's horizontal position.
-     * @param _screenY cursor's vertical position.
+     * @param _picked_widget picked widget.
+     * @param _screen_x cursor's horizontal position.
+     * @param _screen_y cursor's vertical position.
      */
     VIZ_SCENE3D_API void widget_picked(Ogre::MovableObject* _picked_widget, int _screen_x, int _screen_y);
 
@@ -89,10 +89,10 @@ public:
     /**
      * @brief Translates the clipping box along the screen's axes.
      *
-     * @param x  cursor current horizontal position.
-     * @param y  cursor current vertical position.
-     * @param dx displacement along the horizontal axis.
-     * @param dy displacement along the vertical axis.
+     * @param _x  cursor current horizontal position.
+     * @param _y  cursor current vertical position.
+     * @param _dx displacement along the horizontal axis.
+     * @param _dy displacement along the vertical axis.
      *
      * @return whether the box was selected and moved.
      */
@@ -101,9 +101,9 @@ public:
     /**
      * @brief Scales the clipping box.
      *
-     * @param x  cursor current horizontal position.
-     * @param y  cursor current vertical position.
-     * @param dy displacement along the vertical axis, used to compute scale factor.
+     * @param _x  cursor current horizontal position.
+     * @param _y  cursor current vertical position.
+     * @param _dy displacement along the vertical axis, used to compute scale factor.
      *
      * @return whether the box was selected and scaled.
      */
@@ -183,7 +183,7 @@ private:
     /// Object used to display the clipping box.
     Ogre::ManualObject* m_bounding_box {nullptr};
 
-    /// Oject holding the highlighted face geometry.
+    /// Object holding the highlighted face geometry.
     Ogre::ManualObject* m_selected_face {nullptr};
 
     /// Widget currently being dragged.

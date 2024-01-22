@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,10 +58,9 @@ public:
     ///   to open the archive session outside sight
     /// "FORCED" means always encrypt and use a salted key. The password will be deterministically generated if none is
     ///   provided
-    /// @param password original password
-    /// @param salt salt used to change a bit the password
-    /// @param level the way the password is changed
-    /// @param policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
+    /// @param _password original password
+    /// @param _salt salt used to change a bit the password
+    /// @param _policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& _password,
         const core::crypto::secure_string& _salt,

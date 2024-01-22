@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -204,9 +204,9 @@ private:
 
     /**
      * @brief SLOT: updates the image slice index.
-     * @param _axialIndex new axial slice index.
-     * @param _frontalIndex new frontal slice index.
-     * @param _sagittalIndex new sagittal slice index.
+     * @param _axial_index new axial slice index.
+     * @param _frontal_index new frontal slice index.
+     * @param _sagittal_index new sagittal slice index.
      */
     void change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index);
 

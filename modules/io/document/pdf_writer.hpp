@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -149,7 +149,7 @@ private:
 
     /**
      * @brief convertFwImageToQImage: converts a data::image to a QImage
-     * @param data::image to convert
+     * @param _image    data::image to convert
      * @return converted QImage
      */
     static QImage convert_fw_image_to_q_image(const data::image& _image);

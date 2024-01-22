@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,14 +41,14 @@ public:
 
     /**
      * @brief Add data to the TableModel and call the reset function to emit changes to Qml.
-     * @param[in] data One data row with role name as key inside the QHash
+     * @param[in] _data One data row with role name as key inside the QHash
      */
     void add_data(const QHash<QByteArray, QVariant>& _data);
 
     /**
      * @brief Add role to the TableModel that can only be called before any data added
-     * @param[in] enumNb the key of the QHash that carry the roles that need to be at least Qt::UserRole +1
-     * @param[in] role the value of the string role in qml
+     * @param[in] _enum_nb the key of the QHash that carry the roles that need to be at least Qt::UserRole +1
+     * @param[in] _role the value of the string role in qml
      */
     void add_role(const int& _enum_nb, const QByteArray& _role);
 

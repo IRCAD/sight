@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ public:
      * @brief Create a config that will be used to expose an shader parameter adaptor in a parameters.
      *
      * @param[in] _adaptor adaptor to bind.
-     * @param[in] _paramSrv editor service.
+     * @param[in] _param_srv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
     MODULE_UI_VIZ_API static service::config_t create_config(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,9 +36,9 @@ namespace sight::core::tools::random
 
 /**
  * @brief On each invocation, it returns a random value uniformly distributed in the range [min..max).
- * @param min      The "min" parameter of the distribution.
- * @param max      The "max" parameter of the distribution.
- * @param seedVal  Seed for generator.
+ * @param _min       The "min" parameter of the distribution.
+ * @param _max       The "max" parameter of the distribution.
+ * @param _seed_val  Seed for generator.
  * @pre   min <= max
  *
  * @return returns a random value uniformly distributed in the range [min..max)
@@ -61,10 +61,10 @@ T get_value(T _min, T _max, std::uint32_t _seed_val = static_cast<std::uint32_t>
 /**
  * @brief On each invocation, this method fills specified container with random values uniformly distributed in the
  * range [min..max).
- * @param[in] min            The "min" parameter of the distribution.
- * @param[in] max            The "max" parameter of the distribution.
- * @param[out] randContainer Container to fill with random values.
- * @param[in] seedVal        Seed for generator.
+ * @param[in] _min             The "min" parameter of the distribution.
+ * @param[in] _max             The "max" parameter of the distribution.
+ * @param[out] _rand_container Container to fill with random values.
+ * @param[in] _seed_val        Seed for generator.
  * @pre  min <= max
  * @pre  CONTAINER type same as template T
  */

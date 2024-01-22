@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -269,7 +269,7 @@ private:
 
     /**
      * @brief Updates the sampling.
-     * @param _nbSamples number of sample.
+     * @param _nb_samples number of sample.
      *
      * @pre _nbSamples must fit in a 16 bit unsigned int.
      */
@@ -277,49 +277,49 @@ private:
 
     /**
      * @brief Sets the opacity correction.
-     * @param _opacityCorrection value of the opacity correction.
+     * @param _opacity_correction value of the opacity correction.
      */
     void update_opacity_correction(unsigned _opacity_correction);
 
     /**
      * @brief Sets the ambient occlusion factor.
-     * @param _aoFactor value of the ambient occlusion factor.
+     * @param _ao_factor value of the ambient occlusion factor.
      */
     void update_ao_factor(float _ao_factor);
 
     /**
      * @brief Sets the color bleeding factor.
-     * @param _colorBleedingFactor value of the color bleeding factor.
+     * @param _color_bleeding_factor value of the color bleeding factor.
      */
     void update_color_bleeding_factor(float _color_bleeding_factor);
 
     /**
      * @brief Sets the SAT size ratio.
-     * @param _sizeRatio value of the SAT size ratio.
+     * @param _size_ratio value of the SAT size ratio.
      */
     void update_sat_size_ratio(unsigned _size_ratio);
 
     /**
      * @brief Sets the SAT shells number.
-     * @param _shellsNumber the number of shells used by the SAT.
+     * @param _shells_number the number of shells used by the SAT.
      */
     void update_sat_shells_number(unsigned _shells_number);
 
     /**
      * @brief Sets the SAT shells radius.
-     * @param _shellRadius the shells radius used by the SAT.
+     * @param _shell_radius the shells radius used by the SAT.
      */
     void update_sat_shell_radius(unsigned _shell_radius);
 
     /**
      * @brief Sets the SAT cone angle.
-     * @param _coneAngle the cone angle size of the SAT. Cones ares used to compute soft shadows.
+     * @param _cone_angle the cone angle size of the SAT. Cones ares used to compute soft shadows.
      */
     void update_sat_cone_angle(float _cone_angle);
 
     /**
      * @brief Sets the SAT cone samples.
-     * @param _nbConeSamples the cone sample number of the SAT. Cones ares used to compute soft shadows.
+     * @param _nb_cone_samples the cone sample number of the SAT. Cones ares used to compute soft shadows.
      */
     void update_sat_cone_samples(unsigned _nb_cone_samples);
 
@@ -331,13 +331,13 @@ private:
 
     /**
      * @brief Enables/disables the ambient occlusion.
-     * @param _ambientOcclusion state of the ambient occlusion.
+     * @param _ambient_occlusion state of the ambient occlusion.
      */
     void toggle_ambient_occlusion(bool _ambient_occlusion);
 
     /**
      * @brief Enables/disables the color bleeding.
-     * @param _colorBleeding state of the color bleeding.
+     * @param _color_bleeding state of the color bleeding.
      */
     void toggle_color_bleeding(bool _color_bleeding);
 
@@ -355,7 +355,7 @@ private:
 
     /**
      * @brief Sets the focal distance.
-     * @param _focalDistance value of the focal distance.
+     * @param _focal_distance value of the focal distance.
      */
     void set_focal_distance(int _focal_distance);
 
@@ -420,7 +420,7 @@ private:
 
     /**
      * @brief Updates or creates the illumination volume according to the given VR effect.
-     * @param _vrEffect volume rendering effects.
+     * @param _vr_effect volume rendering effects.
      * @param _enable enable that effect or not.
      */
     void toggle_vr_effect(vr_effect_type _vr_effect, bool _enable);

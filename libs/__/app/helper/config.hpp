@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -130,8 +130,8 @@ public:
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
      *        slots informations.
      *
-     * @param cfg configuration element containing "<connect>" tags
-     * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
+     * @param _cfg configuration element containing "<connect>" tags
+     * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     APP_API static connection_info parse_connections(
         const core::runtime::config_t& _cfg,
@@ -143,7 +143,7 @@ public:
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
      *        slots informations.
      *
-     * @param cfg configuration element containing "<connect>" tags
+     * @param _connection_cfg configuration element containing "<connect>" tags
      */
     APP_API static core::com::helper::proxy_connections parse_connections2(
         const core::runtime::config_t& _connection_cfg,
@@ -154,9 +154,9 @@ public:
     /**
      * @brief Parses "<connect>" tags from given configuration to connect signals and slots using given helper.
      *
-     * @param cfg configuration element containing "<connect>" tags
-     * @param helper sig_slot_connection helper to connect signals and slots
-     * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
+     * @param _cfg configuration element containing "<connect>" tags
+     * @param _helper sig_slot_connection helper to connect signals and slots
+     * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     APP_API static void create_connections(
         const core::runtime::config_t& _cfg,

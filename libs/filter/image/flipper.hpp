@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,9 +39,9 @@ public:
 
     /**
      * @brief flips an image according to the axis parameter.
-     * @param _inImage image to flip.
-     * @param _outImage flipped image.
-     * @param _flipAxis axes on which to flip the image.
+     * @param _in_image     image to flip.
+     * @param _out_image    flipped image.
+     * @param _in_flip_axes axes on which to flip the image.
      */
     static FILTER_IMAGE_API void flip(
         const data::image::csptr& _in_image,

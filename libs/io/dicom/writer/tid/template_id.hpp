@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,9 +44,9 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] writer GDCM writer that must be enriched
-     * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] object Sight data object
+     * @param[in] _writer GDCM writer that must be enriched
+     * @param[in] _instance DICOM instance used to share informations between modules
+     * @param[in] _object Sight data object
      */
     IO_DICOM_API template_id(
         SPTR(gdcm::Writer)_writer,

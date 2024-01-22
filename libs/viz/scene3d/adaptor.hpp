@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ public:
 
     /**
      * @brief SLOT: sets the visibility of the adaptor.
-     * @param _isVisible the visibility status.
+     * @param _is_visible the visibility status.
      * @see setVisible(bool)
      */
     VIZ_SCENE3D_API void update_visibility(bool _is_visible);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ protected:
 
     /// Implementation of the interface must allocate a core::memory::buffer_object::lock_t and store it into the
     /// parameter
-    /// @param locks The vector of locks to store the new lock
+    /// @param _locks The vector of locks to store the new lock
     CORE_API virtual void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const = 0;
 };
 

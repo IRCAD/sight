@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ public:
 
     /**
      * @brief constructor
-     * @param[in] content readable content it correspond to a data of a entry in archive
+     * @param[in] _content readable content it correspond to a data of a entry in archive
      */
     explicit memory_archive_source(buffer_cs_ptr _content) :
         m_content(std::move(_content))
@@ -61,8 +61,8 @@ public:
 
     /**
      * @brief implement read method for boost::iostreams
-     * @param[in] buffer buffer to fill with n bytes in data
-     * @param[in] n maximum number of bytes to read
+     * @param[in] _s    buffer to fill with n bytes in data
+     * @param[in] _n    maximum number of bytes to read
      * @return number of bytes of content it was read
      */
     std::streamsize read(char* _s, std::streamsize _n);

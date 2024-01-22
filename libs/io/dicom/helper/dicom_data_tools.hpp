@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,14 +47,14 @@ public:
 
     /**
      * @brief Return the gdcm pixel type of a sight image.
-     * @param[in] type pixel type from a sight.
+     * @param[in] _type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
     IO_DICOM_API static gdcm::PixelFormat get_pixel_type(const core::type& _type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.
-     * @param[in] image Image
+     * @param[in] _image Image
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     IO_DICOM_API static gdcm::PhotometricInterpretation get_photometric_interpretation(
@@ -64,7 +64,7 @@ public:
     /**
      * @brief Convert a surface representation mode (Sight) into recommended presentation type (DICOM).
      * @see Recommended Presentation Type Tag (0066,000d).
-     * @param[in] representationMode Surface representation mode.
+     * @param[in] _representation_mode Surface representation mode.
      * @return Corresponding recommended presentation type.
      */
     IO_DICOM_API static gdcm::Surface::VIEWType convert_to_presentation_type(
@@ -73,7 +73,7 @@ public:
 
     /**
      * @brief Convert a surface recommended presentation type (DICOM) into representation mode (Sight).
-     * @param[in] presentationType Surface recommended presentation type.
+     * @param[in] _presentation_type Surface recommended presentation type.
      * @return Corresponding representation mode
      */
     IO_DICOM_API static data::material::representation_t convert_to_representation_mode(
@@ -82,8 +82,8 @@ public:
 
     /**
      * @brief Convert a 3D point to the closest frame number index
-     * @param[in] image Image containing the point
-     * @param[in] point 3D point
+     * @param[in] _image Image containing the point
+     * @param[in] _point 3D point
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API static std::size_t convert_point_to_frame_number(
@@ -93,8 +93,8 @@ public:
 
     /**
      * @brief Convert a frame number to a Z coordinate
-     * @param[in] image Image containing the point
-     * @param[in] frameNumber Frame number
+     * @param[in] _image Image containing the point
+     * @param[in] _frame_number Frame number
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API static double convert_frame_number_to_z_coordinate(

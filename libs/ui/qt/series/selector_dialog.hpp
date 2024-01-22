@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -38,8 +38,8 @@ Q_OBJECT
 public:
 
     /// Initializes the selector dialog.
-    /// @param series the series to select.
-    /// @param parent the parent widget.
+    /// @param _series_set the series to select.
+    /// @param _parent the parent widget.
     UI_QT_API_QT selector_dialog(
         data::series_set::csptr _series_set,
         const std::string& _displayed_column,

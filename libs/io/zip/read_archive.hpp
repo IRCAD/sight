@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
 
     /**
      * @brief Returns input stream for the file in current archive.
-     * @param path file in archive.
+     * @param _path file in archive.
      * @return input stream from request file.
      */
     virtual SPTR(std::istream) get_file(const std::filesystem::path& _path) = 0;

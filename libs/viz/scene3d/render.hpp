@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -261,7 +261,7 @@ private:
 
     /**
      * @brief Renders the scene in fullscreen on the screen with the given index.
-     * @param screen the index of the screen where the fullscreen is enabled.
+     * @param _screen the index of the screen where the fullscreen is enabled.
      */
     void enable_fullscreen(int _screen);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ public:
     raw_archive_reader& operator=(raw_archive_reader&&)      = delete;
 
     /// Constructor. It open the archive and create all resources needed to access it.
-    /// @param archivePath path of the archive file. The file will be kept opened as long as the instance lives.
+    /// @param _root path of the archive file. The file will be kept opened as long as the instance lives.
     explicit raw_archive_reader(const std::filesystem::path& _root) :
         archive_reader(_root),
         m_root(_root)

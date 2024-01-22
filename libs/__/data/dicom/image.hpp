@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,13 +40,13 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] samplesPerPixel Samples per pixel
-     * @param[in] bitsAllocated Bits allocated
-     * @param[in] bitsStored Bits stored
-     * @param[in] highBit High bit
-     * @param[in] pixelRepresentation Pixel representation
-     * @param[in] rescaleSlope Rescale slope
-     * @param[in] rescaleIntercept Rescale intercept
+     * @param[in] _samples_per_pixel Samples per pixel
+     * @param[in] _bits_allocated Bits allocated
+     * @param[in] _bits_stored Bits stored
+     * @param[in] _high_bit High bit
+     * @param[in] _pixel_representation Pixel representation
+     * @param[in] _rescale_slope Rescale slope
+     * @param[in] _rescale_intercept Rescale intercept
      */
     DATA_API image(
         std::uint16_t _samples_per_pixel,

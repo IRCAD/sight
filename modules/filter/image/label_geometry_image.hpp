@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,8 +98,6 @@ private:
 
     /**
      * @brief Update the selected point list
-     * @param value
-     * @param key
      */
     void update_selected_point_list(std::string _value, std::string _key);
 

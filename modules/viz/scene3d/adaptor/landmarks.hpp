@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -149,44 +149,44 @@ public:
     MODULE_VIZ_SCENE3D_API void remove_all();
 
     /// SLOT: removes an entire group.
-    /// @param _groupName name of the group to remove.
+    /// @param _group_name name of the group to remove.
     MODULE_VIZ_SCENE3D_API void remove_group(std::string _group_name);
 
     /// SLOT: removes an entire group and re-create it.
-    /// @param _groupName name of the group to update.
+    /// @param _group_name name of the group to update.
     MODULE_VIZ_SCENE3D_API void modify_group(std::string _group_name);
 
     /// SLOT: replaces an entire group and re-create it.
-    /// @param _oldGroupName old group name to update.
-    /// @param _newGroupName new group name to replace the old one.
+    /// @param _old_group_name old group name to update.
+    /// @param _new_group_name new group name to replace the old one.
     MODULE_VIZ_SCENE3D_API void rename_group(std::string _old_group_name, std::string _new_group_name);
 
     /// SLOT: removes a point group and update it.
-    /// @param _groupName name of the group to update.
+    /// @param _group_name name of the group to update.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_API void modify_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: adds the last point of a landmarks group.
-    /// _groupName group name of the point to add.
+    /// @param _group_name  group name of the point to add.
     MODULE_VIZ_SCENE3D_API void add_point(std::string _group_name);
 
     /// SLOT: removes a point.
-    /// @param _groupName group name of the landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_API void remove_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: inserts a point.
-    /// @param _groupName group name of the landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_API void insert_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: hightlights the selected landmark.
-    /// @param _groupName group name of the landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_API void select_point(std::string _group_name, std::size_t _index);
 
     /// SLOT: resets the hightlights the selected landmark.
-    /// @param _groupName group name of the landmark.
+    /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     MODULE_VIZ_SCENE3D_API void deselect_point(std::string _group_name, std::size_t _index);
 
@@ -199,17 +199,17 @@ public:
     MODULE_VIZ_SCENE3D_API void change_slice_type(int _from, int _to);
 
     /// SLOT: updates the image slice index to show or hide landmarks.
-    /// @param _axialIndex new axial slice index.
-    /// @param _frontalIndex new frontal slice index.
-    /// @param _sagittalIndex new sagittal slice index.
+    /// @param _axial_index new axial slice index.
+    /// @param _frontal_index new frontal slice index.
+    /// @param _sagittal_index new sagittal slice index.
     MODULE_VIZ_SCENE3D_API void change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index);
 
     /// SLOT: Toggle landmarks addition
-    /// @param toggle set or unset landmarks addition mode.
+    /// @param _toggle set or unset landmarks addition mode.
     MODULE_VIZ_SCENE3D_API void toggle_add_landmarks(bool _toggle);
 
     /// SLOT: Toggle landmarks removal
-    /// @param toggle set or unset landmarks removal mode.
+    /// @param _toggle set or unset landmarks removal mode.
     MODULE_VIZ_SCENE3D_API void toggle_remove_landmarks(bool _toggle);
 
     /// SLOT: Remove all visible landmarks
@@ -220,13 +220,13 @@ public:
 
     /// SLOT: Configure the new landmarks size, shape and color used when adding landmarks ind "ADD" mode.
     /// Parameter with `std::nullopt`, means "no change".
-    /// @param group the group name of the landmarks to configure.
-    /// @param color the color of the landmarks.
-    /// @param size the size of the landmarks.
-    /// @param shape the shape of the landmarks.
-    /// @param groupMax the maximum number of landmark in the group. Value < 0 means "no limit".
-    /// @param visibleMax the maximum number of visible landmark. Value < 0 means "no limit".
-    /// @param totalMax the maximum number of total landmark. Value < 0 means "no limit".
+    /// @param _group the group name of the landmarks to configure.
+    /// @param _color the color of the landmarks.
+    /// @param _size the size of the landmarks.
+    /// @param _shape the shape of the landmarks.
+    /// @param _group_max the maximum number of landmark in the group. Value < 0 means "no limit".
+    /// @param _visible_max the maximum number of visible landmark. Value < 0 means "no limit".
+    /// @param _total_max the maximum number of total landmark. Value < 0 means "no limit".
     MODULE_VIZ_SCENE3D_API void configure_landmarks(
         std::optional<std::string> _group,
         std::optional<sight::data::landmarks::color_t> _color,
@@ -394,7 +394,7 @@ private:
 
     /**
      * @brief inserts a point.
-     * @param _groupName group name of the landmark.
+     * @param _group_name group name of the landmark.
      * @param _index index of the point relative to the group.
      * @param _landmarks landmarks data in which the point will be inserted.
      */
@@ -406,7 +406,7 @@ private:
 
     /**
      * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
-     * @param _selectedLandmark which landmarks to manage.
+     * @param _selected_landmark which landmarks to manage.
      */
     void hightlight(std::shared_ptr<selected_landmark> _selected_landmark);
 
@@ -438,8 +438,8 @@ private:
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
-     * @param landmark the landmark to hide.
-     * @param landmarks landmarks data in which the landmarks should be hidden.
+     * @param _landmark the landmark to hide.
+     * @param _landmarks landmarks data in which the landmarks should be hidden.
      */
     void hide_my_landmark(landmark& _landmark, const data::landmarks& _landmarks);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ private:
     /**
      * @brief Opens a gui dialog to choose the distance to remove.
      * @param _image The image where the distance need to be removed.
-     * @param _removeAll Is set to true if all distance need to be removed.
+     * @param _remove_all Is set to true if all distance need to be removed.
      * @return The distance to removed only if a specific distance is chosen, if all distances need to be removed, a
      * nullptr is return.
      */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,22 +34,22 @@ public:
 
     /**
      * Toggle a check box by clicking on it
-     * @param tester The current tester
-     * @param checkBox How to get the check box to toggle
+     * @param _tester The current tester
+     * @param _check_box How to get the check box to toggle
      */
     UI_TEST_API static void toggle(tester& _tester, const selector& _check_box);
 
     /**
      * Check whether a check box is checked
-     * @param tester The current tester
-     * @param checkBox How to get the check box to verify
+     * @param _tester The current tester
+     * @param _check_box How to get the check box to verify
      */
     UI_TEST_API static void should_be_checked(tester& _tester, const selector& _check_box);
 
     /**
      * Check whether a check box isn't checked
-     * @param tester The current tester
-     * @param checkBox How to get the check box to verify
+     * @param _tester The current tester
+     * @param _check_box How to get the check box to verify
      */
     UI_TEST_API static void should_not_be_checked(tester& _tester, const selector& _check_box);
 };

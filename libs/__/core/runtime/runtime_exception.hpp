@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,14 +40,14 @@ struct CORE_CLASS_API runtime_exception : public core::exception
     /**
      * @brief       Copy constructor.
      *
-     * @param[in]   exception   an exception instance to copy
+     * @param[in]   _exception   an exception instance to copy
      */
     CORE_API runtime_exception(const runtime_exception& _exception) noexcept;
 
     /**
      * @brief       Constructor.
      *
-     * @param[in]   message a string containing the exception message
+     * @param[in]   _message a string containing the exception message
      */
     CORE_API runtime_exception(const std::string& _message) noexcept;
 

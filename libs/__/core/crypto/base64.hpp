@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,14 +30,14 @@ namespace sight::core::crypto
 {
 
 /// Decode a base64 message
-/// @param message encoded message
+/// @param _message encoded message
 /// @returns decoded message
 CORE_API secure_string from_base64(const secure_string& _message);
 
 CORE_API std::string from_base64(const std::string& _message);
 
 /// Encode a message to base64
-/// @param message clear message
+/// @param _message clear message
 /// @returns encoded message
 CORE_API secure_string to_base64(const secure_string& _message);
 

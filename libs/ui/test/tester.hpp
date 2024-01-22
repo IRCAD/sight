@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -100,10 +100,10 @@ public:
     /**
      * @brief Stores a graphic component as the new current graphic component.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param graphicComponent A function which returns the new graphic component.
-     * @param condition The condition the new graphic component must respect.
-     * @param timeout The max time to wait for the component before the test fails.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _graphic_component A function which returns the new graphic component.
+     * @param _condition The condition the new graphic component must respect.
+     * @param _timeout The max time to wait for the component before the test fails.
      *
      * @note If the template is used, the value returned by graphicComponent will be casted before being used in
      * condition.
@@ -128,17 +128,17 @@ public:
     /**
      * @brief Stores a graphic component as the new current graphic component.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param graphicComponent The new graphic component.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _graphic_component The new graphic component.
      */
     UI_TEST_API void take(const std::string& _component_description, QObject* _graphic_component);
 
     /**
      * @brief Stores a graphic component as the new current graphic component.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param parent The parent of the new current graphic component, typically a window. Default is the main window.
-     * @param componentName The objectName of the new current graphic component to be found.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _parent The parent of the new current graphic component, typically a window. Default is the main window.
+     * @param _object_name The objectName of the new current graphic component to be found.
      *
      * @{
      */
@@ -160,7 +160,7 @@ public:
     /**
      * @brief Interacts with the current graphic component.
      *
-     * @param interaction The interaction that will be used on the current graphic component.
+     * @param _interaction The interaction that will be used on the current graphic component.
      *
      * @warning The interaction must be allocated on the heap. Guitester will take care of freeing the interaction, it
      * is unsafe to try to access the interaction after this method is called.
@@ -170,9 +170,9 @@ public:
     /**
      * @brief Check if the assertion is true.
      *
-     * @param resultDescription The description of the expected result. Used in failure messages.
-     * @param result The assertion, which must be true for the test to pass.
-     * @param timeout The max time to wait for the assertion to become true before the test fails.
+     * @param _result_description The description of the expected result. Used in failure messages.
+     * @param _result The assertion, which must be true for the test to pass.
+     * @param _timeout The max time to wait for the assertion to become true before the test fails.
      *
      * @note If the template is used, the current component will be casted before being used in result.
      *
@@ -195,10 +195,10 @@ public:
      * @brief Like @ref take, but the graphicComponent function get access to the old graphic component. It also
      * slightly changes the failure messages.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param graphicComponent A function which returns the new graphic component and takes the old graphic component
-     * @param condition The condition the new graphic component must respect.
-     * @param timeout The max time to wait for the component before the test fails.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _graphic_component A function which returns the new graphic component and takes the old graphic component
+     * @param _condition The condition the new graphic component must respect.
+     * @param _timeout The max time to wait for the component before the test fails.
      *
      * @note If the template is used, the value returned by graphicComponent will be casted before being used in
      * condition.
@@ -224,8 +224,8 @@ public:
      * @brief Like @ref take, but the graphicComponent is found inside the current graphic component tree. It also
      * slightly changes the failure messages.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param objectName The objectName of the new graphic component to be found.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _object_name The objectName of the new graphic component to be found.
      *
      * @note The template version narrows the search to the components compatible with that type.
      *
@@ -250,10 +250,10 @@ public:
      * @brief Like @ref take, but the test doesn't fail if the component doesn't appear, instead the following commands
      * will be ignored, until the next @ref take.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param graphicComponent A function which returns the new graphic component and takes the old graphic component
-     * @param condition The condition the new graphic component must respect.
-     * @param timeout The max time to wait for the component before the test fails.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _graphic_component A function which returns the new graphic component and takes the old graphic component
+     * @param _condition The condition the new graphic component must respect.
+     * @param _timeout The max time to wait for the component before the test fails.
      *
      * @note If the template is used, the value returned by graphicComponent will be casted before being used in
      * condition.
@@ -278,7 +278,7 @@ public:
     /**
      * @brief Calls the function with the current component, in order to cause side-effects.
      *
-     * @param f The function to be called, which will get the current component.
+     * @param _f The function to be called, which will get the current component.
      *
      * @note If the template is used, the value returned by graphicComponent will be casted before being used in f.
      *
@@ -292,7 +292,7 @@ public:
     /**
      * @brief Like @ref do_something, but the function is called asynchronously, on the main GUI thread.
      *
-     * @param f The function to be called asynchronously, which will get the current component.
+     * @param _f The function to be called asynchronously, which will get the current component.
      *
      * @note If the template is used, the value returned by graphicComponent will be casted before being used in f.
      *
@@ -305,7 +305,7 @@ public:
 
     /**
      * @brief Takes a screenshot of the current graphic component
-     * @param path Where to save the screenshot
+     * @param _path Where to save the screenshot
      */
     UI_TEST_API void take_screenshot(const std::filesystem::path& _path);
 
@@ -315,7 +315,7 @@ public:
      * main window, and finally wait for the main window to disappear. Code in the thread is surrounded with a
      * try/catch, as to not catch exceptions in a thread causes process termination in C++.
      *
-     * @param f The function to be called.
+     * @param _f The function to be called.
      *
      * @pre @ref init was called.
      */
@@ -324,10 +324,10 @@ public:
     /**
      * @brief Check if the specified component doesn't exist or exists but is hidden, the test fails else.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param graphicComponent A function which returns the new graphic component and takes the old graphic component
-     * @param condition An additional condition the new graphic component must respect.
-     * @param timeout The max time to wait for the component.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _graphic_component A function which returns the new graphic component and takes the old graphic component
+     * @param _condition An additional condition the new graphic component must respect.
+     * @param _timeout The max time to wait for the component.
      *
      * @return Is the component is hidden?
      *
@@ -344,10 +344,10 @@ public:
      * @brief Check if the specified component exist and is visible, the test fails else. The current graphic component
      * becomes this one after the call.
      *
-     * @param componentDescription The description of the new graphic component. Used in failure messages.
-     * @param graphicComponent A function which returns the new graphic component and takes the old graphic component
-     * @param condition An additional condition the new graphic component must respect.
-     * @param timeout The max time to wait for the component.
+     * @param _component_description The description of the new graphic component. Used in failure messages.
+     * @param _graphic_component A function which returns the new graphic component and takes the old graphic component
+     * @param _condition An additional condition the new graphic component must respect.
+     * @param _timeout The max time to wait for the component.
      *
      * @return Is the component present?
      */
@@ -429,7 +429,7 @@ public:
      * @details Some components of the GUI are QAction, which are abstract and not directly interactable. This method
      * exists to easily get an interactable widget associated with the QAction.
      *
-     * @param action The action for which the associated widget is needed.
+     * @param _action The action for which the associated widget is needed.
      *
      * @note For convenience, if action is nullptr, this method returns nullptr.
      */
@@ -438,11 +438,11 @@ public:
     /**
      * @brief Move the mouse on a component, alternative to QTest::mouseMove as a workaround to QTBUG-5232.
      *
-     * @param component The component on which move the mouse
-     * @param pos The position where the mouse will be, in coordinates relative to the component.
-     * @param delay The delay before executing this interaction.
-     * @param button The button which clicked while moving
-     * @param modifiers The modifiers which are active while moving
+     * @param _component The component on which move the mouse
+     * @param _pos The position where the mouse will be, in coordinates relative to the component.
+     * @param _delay The delay before executing this interaction.
+     * @param _button The button which clicked while moving
+     * @param _modifiers The modifiers which are active while moving
      *
      * @{
      */
@@ -466,8 +466,10 @@ public:
      * @brief Compare images by comparing pixel by pixel.
      * @details Returns the percentage of similar pixels between the two images.
      *
-     * @param a,b The images to compare
-     * @param strict Describe the behavior if the size of the images is different: if strict, return 0, else, resize the
+     * @param _a    first image to compare
+     * @param _b    second image to compare
+     * @param _strict Describe the behavior if the size of the images is different: if strict, return 0, else, resize
+     * the
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
@@ -477,8 +479,10 @@ public:
      * @brief Compare images using the Mean Square Error.
      * @details The MSE is normalized so that its value is between 0 and 1.
      *
-     * @param a,b The images to compare
-     * @param strict Describe the behavior if the size of the images is different: if strict, return 0, else, resize the
+     * @param _a    first image to compare
+     * @param _b    second image to compare
+     * @param _strict Describe the behavior if the size of the images is different: if strict, return 0, else, resize
+     * the
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
@@ -488,8 +492,10 @@ public:
      * @brief Compare images by computing the cosine of the angle between the matrices of the two images.
      * @details Extremely sensible to big color changes.
      *
-     * @param a,b The images to compare
-     * @param strict Describe the behavior if the size of the images is different: if strict, return 0, else, resize the
+     * @param _a    first image to compare
+     * @param _b    second image to compare
+     * @param _strict Describe the behavior if the size of the images is different: if strict, return 0, else, resize
+     * the
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
@@ -499,7 +505,8 @@ public:
      * @brief Compare images by computing an histogram.
      * @details May be used with images of different size, but totally ignore the position of the pixels.
      *
-     * @param a,b The images to compare
+     * @param _a    first image to compare
+     * @param _b    second image to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
     UI_TEST_API static double compare_images_histogram(const QImage& _a, const QImage& _b);
@@ -507,7 +514,8 @@ public:
     /**
      * @brief Compare images by computing Spearman's correlation coefficient of the two matrices of the two images.
      *
-     * @param a,b The images to compare
+     * @param _a    first image to compare
+     * @param _b    second image to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
     UI_TEST_API static double compare_images_correlation(QImage _a, QImage _b, bool _strict = false);
@@ -516,7 +524,8 @@ public:
      * @brief Compare images by using the MSE on normalized, scaled-down, rotated and flipped version of the images.
      * @details Comes from https://stackoverflow.com/a/26061
      *
-     * @param a,b The images to compare
+     * @param _a    first image to compare
+     * @param _b    second image to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
     UI_TEST_API static double compare_images_voodoo(const QImage& _a, const QImage& _b);
@@ -524,7 +533,7 @@ public:
     /**
      * @brief Respectively returns the center, the left, the right, the top and the bottom of a widget.
      *
-     * @param widget The widget for which compute the position
+     * @param _widget The widget for which compute the position
      * @returns The position
      *
      * @{

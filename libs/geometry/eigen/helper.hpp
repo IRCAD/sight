@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,29 +67,29 @@ GEOMETRY_EIGEN_API rvec_tvec_t eigen_mat_to_rvec_tvec(const Eigen::Matrix4d& _ma
 GEOMETRY_EIGEN_API rvec_tvec_t f4s_mat_to_rvec_tvec(const data::matrix4::csptr _mat);
 /**
  * @brief toEigen
- * @param array of float (16 values)
+ * @param _farray of float (16 values)
  * @return eigen Matrix (double)
  */
 GEOMETRY_EIGEN_API EigenMatrix to_eigen(const std::array<float, 16>& _farray);
 
 /**
  * @brief toEigen
- * @param array of double (16 values)
+ * @param _farray of double (16 values)
  * @return eigen Matrix (double)
  */
 GEOMETRY_EIGEN_API EigenMatrix to_eigen(const std::array<double, 16>& _farray);
 
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
- * @param _mat : input matrix
+ * @param _farray input matrix
  * @return std::pair of Eigen::Vector3d (see rvec_tvec_t)
  */
 GEOMETRY_EIGEN_API rvec_tvec_t float16_to_rvec_tvec(const std::array<float, 16>& _farray);
 
 /**
  * @brief Transform a data::matrix4::sptr to a eigen 4x4 matrix
- * @param _tvec : input translation vector
- * @param _mat : output matrix
+ * @param _trf  input matrix to transform
+ * @return the corresponding eigen 4x4 matrix
  */
 template<class T = double>
 Eigen::Matrix<T, 4, 4, Eigen::RowMajor> to_eigen(const data::matrix4::csptr _trf)

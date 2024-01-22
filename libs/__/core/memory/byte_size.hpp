@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ public:
     /**
      * @brief Convert this size to a string with specified unit
      *
-     * @param unit Unit to convert this size to.
+     * @param _unit Unit to convert this size to.
      *
      * @return std::string representing the size
      */
@@ -108,7 +108,7 @@ public:
      * The unit will be chosen to make the numeric value fit in [0; 1024[ when
      * possible.
      *
-     * @param standard Wanted set of unit
+     * @param _standard Wanted set of unit
      *
      * @return std::string representing the size
      */

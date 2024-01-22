@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
 
     /**
      * @brief Return a specific registered service
-     * @param[in] id Identifier of the service
+     * @param[in] _id Identifier of the service
      */
     [[nodiscard]] SERVICE_API CSPTR(service::base) get_registered_service(const core::tools::id::type& _id) const;
 
@@ -66,8 +66,8 @@ protected:
 
     /**
      * @brief Register a new service linked to this service
-     * @param[in] _implType Type of the service
-     * @param[in] id Optional identifier of the service
+     * @param[in] _impl_type Type of the service
+     * @param[in] _id Optional identifier of the service
      */
     SERVICE_API SPTR(service::base) register_service(
         const std::string& _impl_type,
@@ -76,27 +76,27 @@ protected:
 
     /**
      * @brief Register a new service linked to this service
-     * @param[in] _implType Type of the service
-     * @param[in] id Optional identifier of the service
+     * @param[in] _impl_type Type of the service
+     * @param[in] _id Optional identifier of the service
      */
     template<class T>
     SPTR(T) register_service(const std::string& _impl_type, const std::string& _id = "");
 
     /**
      * @brief Unregister a specific service
-     * @param id Identifier of the service
+     * @param _id Identifier of the service
      */
     SERVICE_API void unregister_service(const core::tools::id::type& _id);
 
     /**
      * @brief Unregister a specific service
-     * @param service Pointer to the service
+     * @param _service Pointer to the service
      */
     SERVICE_API void unregister_service(const service::base::sptr& _service);
 
     /**
      * @brief Unregister all services linked to this service, optionally matches only a given type of services
-     * @param _implType Optional type of the services to unregister
+     * @param _impl_type Optional type of the services to unregister
      */
     SERVICE_API void unregister_services(const std::string& _impl_type = "");
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,12 +43,12 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] writer GDCM writer that must be enriched
-     * @param[in] instance DICOM instance used to share information between modules
-     * @param[in] series Series data
-     * @param[in] logger Logger
-     * @param[in] progress Progress callback
-     * @param[in] cancel Cancel requested callback
+     * @param[in] _writer GDCM writer that must be enriched
+     * @param[in] _instance DICOM instance used to share information between modules
+     * @param[in] _series Series data
+     * @param[in] _logger Logger
+     * @param[in] _progress Progress callback
+     * @param[in] _cancel Cancel requested callback
      */
     IO_DICOM_API surface(
         const SPTR(gdcm::Writer)& _writer,
@@ -65,7 +65,7 @@ public:
 
     /**
      * @brief Load Segmented Property Registry
-     * @param[in] filepath Path to the registry CSV file
+     * @param[in] _filepath Path to the registry CSV file
      * @return True on success
      */
     IO_DICOM_API bool load_segmented_property_registry(const std::filesystem::path& _filepath);
@@ -87,10 +87,10 @@ protected:
     /**
      * @brief Write Segment Item into Segment Sequence
      * @see PS 3.3 C.8.23.1
-     * @param[in] reconstruction Reconstruction data
-     * @param[in] segmentItem GDCM segment item
-     * @param[in] segment GDCM segment
-     * @param[in] segmentNumber Segment number
+     * @param[in] _reconstruction Reconstruction data
+     * @param[in] _segment_item GDCM segment item
+     * @param[in] _segment GDCM segment
+     * @param[in] _segment_number Segment number
      */
     IO_DICOM_API virtual void write_segment_sequence(
         const CSPTR(data::reconstruction)& _reconstruction,
@@ -101,10 +101,10 @@ protected:
     /**
      * @brief Write Surface Item into Surface Sequence
      * @see PS 3.3 C.27.1
-     * @param[in] reconstruction Reconstruction data
-     * @param[in] surfaceItem GDCM surface item
-     * @param[in] surface GDCM surface
-     * @param[in] segmentNumber Associated segment number
+     * @param[in] _reconstruction Reconstruction data
+     * @param[in] _surface_item GDCM surface item
+     * @param[in] _surface GDCM surface
+     * @param[in] _segment_number Associated segment number
      */
     IO_DICOM_API virtual void write_surface_sequence(
         const CSPTR(data::reconstruction)& _reconstruction,

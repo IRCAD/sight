@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,11 +59,11 @@ public:
     CORE_API std::string get_uuid() const;
 
     /// Sets the uuid of the current instance
-    /// @param force force use of new uuid even if already used.
+    /// @param _force force use of new uuid even if already used.
     CORE_API void set_uuid(const std::string& _uuid, bool _force = false);
 
     /// Retrieves the object associated with an uuid
-    /// @param uuid the uuid of the object to retrieve
+    /// @param _uuid the uuid of the object to retrieve
     CORE_API static object::sptr from_uuid(const std::string& _uuid);
 };
 

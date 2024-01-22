@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ struct CORE_CLASS_API executable_factory_registry
     /**
      * @brief       Constructor
      *
-     * @param[in]   factory a shared pointer to an executable factory instance to manage
+     * @param[in]   _factory a shared pointer to an executable factory instance to manage
      * @pre         Loading module exists.
      */
     CORE_API executable_factory_registry(std::shared_ptr<executable_factory> _factory);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,8 +36,8 @@ namespace sight::io::dicom::helper
 /**
  * @brief Parse group and element strings and return a gdcm::Tag instance
  *
- * @param group the group part of the tag
- * @param element the element part of the tag
+ * @param _group the group part of the tag
+ * @param _element the element part of the tag
  *
  * @return a gdcm::Tag instance
  */
@@ -61,7 +61,7 @@ using private_tag_vec_t = std::vector<gdcm::Tag>;
  *  @endverbatim
  *
  * @pre file must exist
- * @param tagsPath path to CSV file containing private tags
+ * @param _tags_path path to CSV file containing private tags
  *
  * @return a list of gdcm::PrivateTag instances
  */

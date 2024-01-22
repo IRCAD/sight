@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,16 +125,16 @@ protected:
 
     /**
      * @brief Display a message
-     * @param[in] message Message to display
-     * @param[in] error True if the message is an error messsage
+     * @param[in] _message Message to display
+     * @param[in] _error True if the message is an error messsage
      */
     static MODULE_IO_DIMSE_API void display_message(const std::string& _message, bool _error);
 
     /**
      * @brief Progress callback
-     * @param[in] seriesInstanceUID Series instance UID
-     * @param[in] instanceNumber Instance number
-     * @param[in] filePath File path
+     * @param[in] _series_instance_uid Series instance UID
+     * @param[in] _instance_number Instance number
+     * @param[in] _file_path File path
      */
     MODULE_IO_DIMSE_API void progress_callback(
         const std::string& _series_instance_uid,

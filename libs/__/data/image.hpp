@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,12 +120,12 @@ class point_list;
  * To get an iterator on the image, use begin<T>() and end<T>() methods.
  *
  * @warning The iterator does not assert that the image type is the same as the given format. It only asserts (in debug)
- * that the iterator does not iterate outside of the buffer bounds).
+ * that the iterator does iterate inside of the buffer bounds).
  *
  * \b Example :
  * @code{.cpp}
     image::sptr img = image::New();
-    img->resize(1920, 1080, 1, core::type::UINT8, image::pixel_format::rgba);
+    img->resize({1920, 1080, 1}, core::type::UINT8, image::pixel_format::rgba);
     auto iter    = img->begin<color>();
     const auto iterEnd = img->end<color>();
 
@@ -200,7 +200,6 @@ public:
 
     /**
      * @brief Constructor
-     * @param key Private construction key
      */
     DATA_API image();
 
@@ -258,9 +257,9 @@ public:
        @{
      * @brief Resize the image and allocate the memory if needed.
      *
-     * @param size array of size in each direction (x,y,z)
-     * @param type type of a single pixel component value
-     * @param format specify the ordering and the meaning of a pixel components
+     * @param _size array of size in each direction (x,y,z)
+     * @param _type type of a single pixel component value
+     * @param _format specify the ordering and the meaning of a pixel components
      *
      * If the data array owns its buffer, this method will always work (until it remain free memory)
      * Otherwise an exception is thrown :
@@ -355,6 +354,7 @@ public:
      * @code{.cpp}
         image::sptr img = image::New();
         img->resize(1920, 1080, 0, core::type::UINT8, image::pixel_format::rgba);
+        img->resize({1920, 1080, 0}, core::type::UINT8, image::pixel_format::rgba);
         image::iterator< Color > iter    = img->begin< Color >();
         const image::iterator< Color > iterEnd = img->end< Color >();
 
@@ -368,7 +368,7 @@ public:
        @endcode
      *
      * @warning The iterator does not assert that the buffer type is the same as the given format. It only asserts
-     * (in debug) that the iterator does not iterate outside of the buffer bounds).
+     * (in debug) that the iterator does iterate inside of the buffer bounds).
      * @{
      */
     template<typename T>
@@ -419,11 +419,12 @@ public:
      *
      * An existing buffer will be released if the array own it.
      *
-     * @param buf            Buffer to set as Array's buffer
-     * @param takeOwnership  if true, the Array will manage allocation and destroy the buffer when needed.
-     * @param type           Type of the array view
-     * @param size           Size of the array view
-     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
+     * @param _buf             Buffer to set as Array's buffer
+     * @param _take_ownership  if true, the Array will manage allocation and destroy the buffer when needed.
+     * @param _type            Type of the array view
+     * @param _size            Size of the array view
+     * @param _format          Specify the ordering and the meaning of a pixel components
+     * @param _policy          If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
     DATA_API void set_buffer(
         void* _buf,
@@ -439,7 +440,7 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
-     * @param id Item image index
+     * @param _id Item image index
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
@@ -456,10 +457,10 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
-     * @param x x index
-     * @param y y index
-     * @param z z index
-     * @param c component index
+     * @param _x x index
+     * @param _y y index
+     * @param _z z index
+     * @param _c component index
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
@@ -475,22 +476,22 @@ public:
 
     /**
      * @brief Return a pointer on a image pixel
-     * @param index offset of the pixel
+     * @param _index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
     DATA_API void* get_pixel(index_t _index);
 
     /**
      * @brief Return a pointer on a image pixel
-     * @param index offset of the pixel
+     * @param _index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
     DATA_API const void* get_pixel(index_t _index) const;
 
     /**
      * @brief Set pixel value represented as a void* buffer
-     * @param index offset of the pixel
-     * @param pixBuf pixel value represented as a void* buffer
+     * @param _index    offset of the pixel
+     * @param _pix_buf  pixel value represented as a void* buffer
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
     DATA_API void set_pixel(index_t _index, const buffer_t* _pix_buf);
@@ -516,13 +517,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
@@ -537,13 +538,13 @@ protected:
 private:
 
     /**
-       @{
+     * @{
      * @brief Resize the image and allocate the memory if needed.
      *
-     * @param size array of size in each direction (x,y,z)
-     * @param type type of a single pixel component value
-     * @param format specify the ordering and the meaning of a pixel components
-     * @param realloc allows to not reallocate, for instance when importing directly the buffer with setBuffer()
+     * @param _size array of size in each direction (x,y,z)
+     * @param _type type of a single pixel component value
+     * @param _format specify the ordering and the meaning of a pixel components
+     * @param _realloc allows to not reallocate, for instance when importing directly the buffer with setBuffer()
      *
      * If the data array owns its buffer, this method will always work (until it remain free memory)
      * Otherwise an exception is thrown :
@@ -564,9 +565,9 @@ private:
      * @brief Protected setter for the array buffer.
      * An existing buffer will be released if the array own it.
      *
-     * @param buf Buffer to set as Array's buffer
-     * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
-     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
+     * @param _buf              Buffer to set as Array's buffer
+     * @param _take_ownership   If true, the Array will manage allocation and destroy the buffer when needed.
+     * @param _policy           If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
     void set_buffer(
         void* _buf,
@@ -583,7 +584,7 @@ private:
     //! origin_t of the image in 3D repair
     origin_t m_origin {0., 0., 0.};
 
-    //! Preferred window center/with
+    //! Preferred window center/width
     ///@{
     std::vector<double> m_window_centers;
     std::vector<double> m_window_widths;

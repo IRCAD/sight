@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
 
     /**
      * @brief setParameters
-     * @param calibration parameters in a array< double , 12>
+     * @param _parameters parameters in a array< double , 12>
      */
     void set_parameters(std::array<double, 12>& _parameters);
 

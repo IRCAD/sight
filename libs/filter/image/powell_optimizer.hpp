@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,10 +49,10 @@ public:
     /**
      * @brief Constructor. Initializes the ITK optimizer.
      * @param _f function whose minimum is to find.
-     * @param _stepTolerance step value below which we consider the optimizer converged.
-     * @param _valueTolerance terminates optimization once the function return value difference is within this range.
-     * @param _stepLength first and maximum step length.
-     * @param _maximumIterations maximum number of iterations allowed.
+     * @param _step_tolerance step value below which we consider the optimizer converged.
+     * @param _value_tolerance terminates optimization once the function return value difference is within this range.
+     * @param _step_length first and maximum step length.
+     * @param _maximum_iterations maximum number of iterations allowed.
      */
     FILTER_IMAGE_API powell_optimizer(
         const optimized_function_t& _f,
@@ -64,7 +64,7 @@ public:
 
     /**
      * @brief Runs the optimization function.
-     * @param _initParameters initial set of values to evaluate.
+     * @param _init_parameters initial set of values to evaluate.
      * @return the set of parameters at the end of the optimization process.
      */
     FILTER_IMAGE_API function_parameters_t optimize(const function_parameters_t& _init_parameters);

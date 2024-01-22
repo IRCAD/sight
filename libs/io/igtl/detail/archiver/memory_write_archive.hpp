@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,8 +65,8 @@ public:
     /**
      * @brief constructor
      *
-     * @param[in] archive archive instance
-     * @param[in] path virtual path in archive if file exist it get the stat of file otherwise create fake stat
+     * @param[in] _archive archive instance
+     * @param[in] _path virtual path in archive if file exist it get the stat of file otherwise create fake stat
      */
     memory_archive_sink(struct archive* _archive, std::filesystem::path _path);
 
@@ -117,7 +117,7 @@ public:
     /**
      * @brief create new entry in archive and return output stream for this memory file
      *
-     * @param[in] path file in archive
+     * @param[in] _path file in archive
      * @return output stream of memory entry archive
      */
     IO_IGTL_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
@@ -125,8 +125,8 @@ public:
     /**
      * @brief Write source file in memory archive
      *
-     * @param[in] sourceFile source file
-     * @param[in] path file in archive
+     * @param[in] _source_file source file
+     * @param[in] _path file in archive
      * @throw io::zip::exception::Write when file cannot be opened
      */
     IO_IGTL_API void put_file(
@@ -137,7 +137,7 @@ public:
     /**
      * @brief Create folder in archive
      *
-     * @param[in] path folder to create in memory archive in reality it create nothing
+     * @param[in] _path folder to create in memory archive in reality it create nothing
      */
     IO_IGTL_API bool create_dir(const std::filesystem::path& _path) override;
 
@@ -156,18 +156,18 @@ public:
     /**
      * @brief open callback for archive instance
      *
-     * @param[in] archive archive instance
-     * @param[in] client_data contain a pointer std::vector internally
+     * @param[in] _archive archive instance
+     * @param[in] _client_data contain a pointer std::vector internally
      */
     static int open(struct archive* _archive, void* _client_data);
 
     /**
      * @brief write callback for archive instance
      *
-     * @param[in] archive archive instance
-     * @param[out] client_data contain a pointer to a std::vector
-     * @param[in] buff buff to copy in vector
-     * @param[in] n number of byte to write
+     * @param[in] _archive archive instance
+     * @param[out] _client_data contain a pointer to a std::vector
+     * @param[in] _buff buff to copy in vector
+     * @param[in] _size number of byte to write
      * @return number of byte have been written
      */
     static ssize_t write(struct archive* _archive, void* _client_data, const void* _buff, std::size_t _size);
@@ -176,8 +176,8 @@ public:
      * @brief close callback for archive instance
      *
      *
-     * @param[in] archive archive instance
-     * @param[in] client_data callback user parameter
+     * @param[in] _archive archive instance
+     * @param[in] _client_data callback user parameter
      */
     static int close(struct archive* _archive, void* _client_data);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,19 +63,19 @@ public:
     /**
      * @brief Creates the slide bar widget.
      * @param _parent parent where attached the slide bar.
-     * @param _hAlign horizontal alignment.
-     * @param _vAlign vertical alignment.
+     * @param _h_align horizontal alignment.
+     * @param _v_align vertical alignment.
      * @param _width width of the widget.
-     * @param _percentWidth defines if the width must be read a percent.
+     * @param _percent_width defines if the width must be read a percent.
      * @param _height height of the widget.
-     * @param _percentHeight defines if the height must be read a percent.
-     * @param _hOffset h offset of the widget.
-     * @param _percentHOffset defines if the h offset must be read a percent.
-     * @param _vOffset v offset of the widget.
-     * @param _percentVOffset defines if the v offset must be read a percent.
+     * @param _percent_height defines if the height must be read a percent.
+     * @param _h_offset h offset of the widget.
+     * @param _percent_h_offset defines if the h offset must be read a percent.
+     * @param _v_offset v offset of the widget.
+     * @param _percent_v_offset defines if the v offset must be read a percent.
      * @param _opacity opacity of the widget.
      * @param _animatable defines if the animation is enable.
-     * @param _animatableAlignment defines the animation direction.
+     * @param _animatable_alignment defines the animation direction.
      */
     UI_QT_API_QT slide_bar(
         QWidget* _parent,

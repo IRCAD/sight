@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,8 +65,6 @@ public:
     /**
      * @brief Creates the container that holds the QtWidget.
      * @param _parent the parent container of the widget.
-     * @param _renderOnDemand if true, the rendering will be done only when it's requested.
-     * @param _fullscreen enable the fullscreen.
      */
     MODULE_VIZ_QT3D_API void create_container(ui::container::widget::sptr _parent) final;
 

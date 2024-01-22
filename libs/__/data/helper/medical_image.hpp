@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ enum orientation_t
  *
  * The image size must be > 1 for each dimension.
  *
- * @param[in]   _pImg   image checked.
+ * @param[in]   _p_img   image checked.
  * @return      true if the image is valid.
  */
 DATA_API bool check_image_validity(data::image::csptr _p_img);
@@ -66,17 +66,17 @@ DATA_API bool check_image_validity(data::image::csptr _p_img);
  *
  * The image size must be > 1 for each dimension.
  *
- * @param[in]   _pImg   image checked.
+ * @param[in]   _p_img   image checked.
  * @return      true if the image is valid.
  */
-DATA_API bool check_image_validity(const data::image& _image);
+DATA_API bool check_image_validity(const data::image& _p_img);
 
 /**
  * @brief       Check if the image has slice index fields.
  *
  * If the image hasn't frontal, axial and sagittal slice index fields, they are added.
  *
- * @param       _pImg   image which must contains the field.
+ * @param       _p_img   image which must contains the field.
  * @return      true if the fields are added.
  */
 DATA_API bool check_image_slice_index(data::image::sptr _p_img);
@@ -84,16 +84,16 @@ DATA_API bool check_image_slice_index(data::image::sptr _p_img);
 /**
  * @brief Checks if buf contains zero, from begin to begin + len
  *
- * @param buf data::image::buffer_t* begin of the buffer.
- * @param len unsigned int length, as begin+len.
+ * @param _buf data::image::buffer_t* begin of the buffer.
+ * @param _len unsigned int length, as begin+len.
  * @return boolean, true if null, false otherwise.
  */
 DATA_API bool is_buf_null(const data::image::buffer_t* _buf, unsigned int _len);
 
 /**
  * @brief Return a buffer of image type's size, containing 'value' casted to image data type
- * @param[in] image : reference image
- * @param[in] value : value to map
+ * @param[in] _image : reference image
+ * @param[in] _value : value to map
  */
 template<typename T>
 SPTR(data::image::buffer_t) get_pixel_in_image_space(data::image::sptr _image, T & _value);
@@ -127,7 +127,7 @@ DATA_API std::optional<std::int64_t> get_slice_index(const data::image& _image, 
  *
  * @param _image : input image reference
  * @param _orientation : desired orientation.
- * @param _sliceCount : current slice index to set as std::int64_t.
+ * @param _slice_count : current slice index to set as std::int64_t.
  */
 DATA_API void set_slice_index(
     data::image& _image,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ namespace sight::module::io::bitmap
  *
  * Service to read a bitmap from various format using sight::io::bitmap library.
  *
- * @copydoc sight::io::bitmap::Reader
+ * @copydoc sight::io::bitmap::reader
  *
  * @section Signals Signals
  * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is read
@@ -119,7 +119,7 @@ protected:
 private:
 
     /// Retrieve the backend in the enabled backend list from the given extension
-    /// @param extension the extension of the file to write
+    /// @param _extension the extension of the file to write
     /// @return the found backend
     sight::io::bitmap::backend find_backend(const std::string& _extension) const;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,8 +45,8 @@ public:
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if
      * defaultValue is not null.
-     * @param[in] name field name
-     * @param[in] defaultValue default return value if field was not found
+     * @param[in] _name field name
+     * @param[in] _default_value default return value if field was not found
      * @return pointer to corresponding field.
      */
     template<typename DATA_TYPE>

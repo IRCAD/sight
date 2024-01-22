@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,15 +134,15 @@ protected:
 
     /**
      * @brief Create and add a filter in a specific position
-     * @param[in] filterTypeIndex filter type index in the combobox
-     * @param[in] position Position in the list
+     * @param[in] _filter_type_index filter type index in the combobox
+     * @param[in] _position Position in the list
      */
     MODULE_UI_DICOM_API void add_filter(int _filter_type_index, int _position);
 
     /**
      * @brief Sort filters
-     * @param[in] a First filter
-     * @param[in] b Second filter
+     * @param[in] _a First filter
+     * @param[in] _b Second filter
      */
     static bool sort_filters(
         const sight::filter::dicom::filter::sptr& _a,

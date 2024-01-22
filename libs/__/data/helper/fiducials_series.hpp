@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ public:
 
     /**
      * Get all the fiducials satisfying one or several features.
-     * @param fiducialSet The fiducial set whose fiducials must be filtered
+     * @param _fiducial_set The fiducial set whose fiducials must be filtered
      * @return The list of fiducial whose shape type is point
      */
     [[nodiscard]] DATA_API static std::vector<data::fiducials_series::fiducial> filter_fiducials(

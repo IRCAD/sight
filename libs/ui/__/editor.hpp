@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,6 @@ namespace sight::ui
 /**
  * @brief Defines the service interface managing the editor service for object.
  */
-
 class UI_CLASS_API editor : public ui::service
 {
 public:

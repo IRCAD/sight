@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ public:
      * @param[in] _key key of the object
      * @param[in] _index index of the data in the group
      * @param[in] _access access to the object (in/inout/out)
-     * @param[in] _autoConnect if true, the service will be connected to the object's signals
+     * @param[in] _auto_connect if true, the service will be connected to the object's signals
      * @param[in] _optional if true, the service can be started even if the objet is not present
      */
     SERVICE_API static void set_object(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,19 +88,19 @@ public:
 
     /**
      * @brief Enables/disables automatic reset on camera.
-     * @param _autoResetCamera use true to activate it.
+     * @param _auto_reset_camera use true to activate it.
      */
     MODULE_VIZ_SCENE3D_API void set_auto_reset_camera(bool _auto_reset_camera);
 
     /**
      * @brief Sets the material template Name.
-     * @param _materialName material name.
+     * @param _material_name material name.
      */
     MODULE_VIZ_SCENE3D_API void set_material_template_name(const std::string& _material_name);
 
     /**
      * @brief Sets the query flag.
-     * @param _queryFlags value of the query flag.
+     * @param _query_flags value of the query flag.
      */
     MODULE_VIZ_SCENE3D_API void set_query_flags(std::uint32_t _query_flags);
 

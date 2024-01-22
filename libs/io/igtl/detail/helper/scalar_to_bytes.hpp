@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ public:
     /**
      * @brief method to convert a scalar to his representation in bytes
      *
-     * @param[in] scalar
+     * @param[in] _scalar
      * @return the representation in bytes for the given scalar
      */
     static raw_data_t to_bytes(T const _scalar)
@@ -85,7 +85,7 @@ public:
     /**
      * @brief method to convert bytes to a scalar
      *
-     * @param[in] bytes
+     * @param[in] _bytes
      * @return the scalar value from bytes
      */
     static T from_bytes(const char* const _bytes)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ private:
 
     /**
      * @brief Sends a modified signal on the configuration.
-     * @param _pacsConfiguration the modified data .
+     * @param _pacs_configuration the modified data .
      */
     void modified_notify(sight::io::dimse::data::pacs_configuration::sptr _pacs_configuration);
 

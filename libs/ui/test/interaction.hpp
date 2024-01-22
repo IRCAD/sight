@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -136,7 +136,8 @@ class UI_TEST_CLASS_API mouse_wheel : public interaction
 public:
 
     /**
-     * @param angleDelta relative amount that the wheel is to be rotated, in eighths of a degree. A positive value means
+     * @param _angle_delta relative amount that the wheel is to be rotated, in eighths of a degree. A positive value
+     * means
      * that the wheel is rotated forwards away from the user.
      * The x part of the QPoint represents a horizontal wheel move, while the y part is the classical top vertical wheel
      * move.
@@ -144,8 +145,8 @@ public:
      *  i.e., 120 units * 1/8 = 15 degrees.
      * For a classical test this value can be set to QPoint(0, 1200) for a 150° turn of the top wheel.
      * see @ref https://doc.qt.io/qt-5/qwheelevent.html#angleDelta for more information
-     * @param modifiers the keyboard modifier to be held when the mouse wheel is used
-     * @param position the position of the widget where the mouse wheel is to be rotated
+     * @param _modifiers the keyboard modifier to be held when the mouse wheel is used
+     * @param _position the position of the widget where the mouse wheel is to be rotated
      */
     UI_TEST_API mouse_wheel(
         const QPoint& _angle_delta,
@@ -214,8 +215,8 @@ class UI_TEST_CLASS_API pinch_gesture : public interaction
 public:
 
     /**
-     * @param firstFingerPos the starting position and ending position of the first finger
-     * @param secondFingerPos the starting position and ending position of the second finger
+     * @param _first_finger_pos the starting position and ending position of the first finger
+     * @param _second_finger_pos the starting position and ending position of the second finger
      */
     UI_TEST_API pinch_gesture(
         std::pair<QPoint, QPoint> _first_finger_pos,

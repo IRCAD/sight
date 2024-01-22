@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,15 +120,15 @@ private:
 
     /**
      * @brief Reads local series.
-     * @param _selectedSeries DICOM series that must be read.
+     * @param _selected_series DICOM series that must be read.
      */
     void read_local_series(dicom_series_container_t _selected_series);
 
     /**
      * @brief Stores instance callback.
-     * @param _seriesInstanceUID series instance UID.
-     * @param _instanceNumber instance number.
-     * @param _filePath file path.
+     * @param _series_instance_uid series instance UID.
+     * @param _instance_number instance number.
+     * @param _file_path file path.
      */
     void store_instance_callback(
         const std::string& _series_instance_uid,

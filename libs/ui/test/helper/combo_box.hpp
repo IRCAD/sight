@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,17 +34,17 @@ public:
 
     /**
      * Select an entry in a combo box by text
-     * @param tester The current tester
-     * @param comboBox How to get the combo box to modify
-     * @param text The text of the entry to be selected
+     * @param _tester The current tester
+     * @param _combo_box How to get the combo box to modify
+     * @param _text The text of the entry to be selected
      */
     UI_TEST_API static void select(tester& _tester, const selector& _combo_box, const std::string& _text);
 
     /**
      * Check whether a combo box has the good value
-     * @param tester The current tester
-     * @param comboBox How to get the combo box to check
-     * @param expected The text the combo box must have
+     * @param _tester The current tester
+     * @param _combo_box How to get the combo box to check
+     * @param _expected The text the combo box must have
      */
     UI_TEST_API static void value_equals(tester& _tester, const selector& _combo_box, const std::string& _expected);
 };

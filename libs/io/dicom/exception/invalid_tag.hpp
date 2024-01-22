@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] message Exception message
+     * @param[in] _message Exception message
      */
     IO_DICOM_API invalid_tag(const std::string& _message);
 

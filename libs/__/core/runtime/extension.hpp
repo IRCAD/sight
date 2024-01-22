@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,9 +46,9 @@ public:
     /**
      * @brief       Constructor.
      *
-     * @param[in]   module  a pointer to the module the extension is attached to
-     * @param[in]   id      a string containing the extension identifier
-     * @param[in]   point   a string containing the extension point identifier
+     * @param[in]   _module  a pointer to the module the extension is attached to
+     * @param[in]   _id      a string containing the extension identifier
+     * @param[in]   _point   a string containing the extension point identifier
      *
      * @todo        test parameters validity
      */

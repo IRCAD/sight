@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -243,9 +243,9 @@ protected:
     /**
      * @brief SLOT: Changes the association between a frame timeline, its element index and the outputVar
      *
-     * @param _tlIndex : the new timeline index in the configuration
-     * @param _elementIndex : the element index in the configuration
-     * @param _outputVarIndex : the output var to update
+     * @param _tl_index         the new timeline index in the configuration
+     * @param _element_index    the element index in the configuration
+     * @param _output_var_index the output var to update
      */
     MODULE_SYNC_API void set_frame_binding(
         std::size_t _tl_index,
@@ -256,9 +256,9 @@ protected:
     /**
      * @brief SLOT: Changes the association between a matrix timeline, its element index and the outputVar
      *
-     * @param _tlIndex : the new timeline index in the configuration
-     * @param _elementIndex : the element index in the configuration
-     * @param _outputVarIndex : the output var to update
+     * @param _tl_index         the new timeline index in the configuration
+     * @param _element_index    the element index in the configuration
+     * @param _output_var_index the output var to update
      */
     MODULE_SYNC_API void set_matrix_binding(
         std::size_t _tl_index,
@@ -279,8 +279,8 @@ protected:
      *  The delay will be applied to the corresponding timeline. Once synchronized, the effective frame/matrix
      *  picked by the algorithm will be in the past with a temporal offset of delay.
      *
-     * @param val : value to set. Should be a positive value.
-     * @param key : needs to be either frameDelay_i or matrixDelay_i
+     * @param _key : needs to be either frameDelay_i or matrixDelay_i
+     * @param _val : value to set. Should be a positive value.
      * where i is the index of the timeline in the input vector
      */
     MODULE_SYNC_API void set_delay(int _val, std::string _key);
@@ -290,15 +290,15 @@ private:
     /**
      * @brief Get the index of the frame output vars, associated to the given TL
      *
-     * @param frameTLIndex : the index of the frameTL to treat
+     * @param _frame_tl_index : the index of the frameTL to treat
      */
     std::vector<out_var_parameter> get_frame_tl_output_var_index(std::size_t _frame_tl_index);
 
     /**
      * @brief Copy the synchronized frame from the tl toward the corresponding output variables.
      *
-     * @param frameTLIndex : the index of the frameTL to treat
-     * @param synchronizationTimestamp : the synchronization timestamp
+     * @param _frame_tl_index : the index of the frameTL to treat
+     * @param _synchronization_timestamp : the synchronization timestamp
      */
     void copy_frame_from_t_lto_output(
         std::size_t _frame_tl_index,
@@ -308,15 +308,15 @@ private:
     /**
      * @brief Get the index of the matrix output vars, associated to the given TL
      *
-     * @param matrixTLIndex : the index of the matrixTL to treat
+     * @param _matrix_tl_index : the index of the matrixTL to treat
      */
     std::vector<out_var_parameter> get_matrix_tl_output_var_index(std::size_t _matrix_tl_index);
 
     /**
      * @brief Copy the synchronized matrix from the tl toward the corresponding output variables.
      *
-     * @param matrixTLIndex : the index of the matrixTL to treat
-     * @param synchronizationTimestamp : the synchronization timestamp
+     * @param _matrix_tl_index : the index of the matrixTL to treat
+     * @param _synchronization_timestamp : the synchronization timestamp
      */
     void copy_matrix_from_t_lto_output(
         std::size_t _matrix_tl_index,
@@ -326,14 +326,14 @@ private:
     /**
      * @brief send signals for the frame variables which required it, each time that the synchronization state changes
      *
-     * @param synchFrameTLIndex : vector of index of the frameTl which have just been synchronized
+     * @param _synch_frame_tl_index : vector of index of the frameTl which have just been synchronized
      */
     void send_frame_var_status(const std::vector<std::size_t>& _synch_frame_tl_index);
 
     /**
      * @brief send signals for the frame variables which required it, each time that the synchronization state changes
      *
-     * @param synchFrameTLIndex : vector of index of the matrixTl which have just been synchronized
+     * @param _synch_matrix_tl_index : vector of index of the matrixTl which have just been synchronized
      */
     void send_matrix_var_status(const std::vector<std::size_t>& _synch_matrix_tl_index);
 

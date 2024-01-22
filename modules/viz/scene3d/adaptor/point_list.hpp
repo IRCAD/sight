@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,7 +156,7 @@ private:
     /**
      * @brief Updates the point list from a point list, checks if color, number of vertices have changed, and updates
      * them.
-     * @param _pointList point list used for the update.
+     * @param _point_list point list used for the update.
      */
     void update_mesh(const data::point_list::csptr& _point_list);
 
@@ -186,7 +186,7 @@ private:
 
     /**
      * @brief Creates all the labels and attach them to the sceneNode vector.
-     * @param _pointList point list used to retreive each point informations.
+     * @param _point_list point list used to retreive each point informations.
      */
     void create_label(const data::point_list::csptr& _point_list);
 

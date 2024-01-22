@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -109,7 +109,7 @@ public:
 protected:
 
     /// Emits notification signal
-    /// @param[in] notification
+    /// @param[in] _notification
     /// @{
     SERVICE_API void notify(notification _notification) const;
     inline void notify(enum notification::type _type, std::string _message, std::string _channel = "") const;

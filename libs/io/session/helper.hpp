@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,9 @@ constexpr static auto VERSION {".version"};
 
 /// Convenience function to read a version from a tree.
 /// Optionally checks the version number, when minVersion or maxVersion > 0.
-/// @param[in] tree boost property tree where version is stored
-/// @param[in] minVersion the minimum valid version
-/// @param[in] maxVersion the maximum valid version
+/// @param[in] _tree boost property tree where version is stored
+/// @param[in] _min_version the minimum valid version
+/// @param[in] _max_version the maximum valid version
 template<typename T>
 inline static int read_version(
     const boost::property_tree::ptree& _tree,
@@ -62,8 +62,8 @@ inline static int read_version(
 }
 
 /// Convenience function to write a version number in the property tree
-/// @param[inout] tree boost property tree where the version must be stored
-/// @param[in] version the version number to store
+/// @param[inout] _tree boost property tree where the version must be stored
+/// @param[in] _version the version number to store
 template<typename T>
 inline static void write_version(boost::property_tree::ptree& _tree, const int _version = 1)
 {
@@ -72,8 +72,8 @@ inline static void write_version(boost::property_tree::ptree& _tree, const int _
 }
 
 /// Convenience function to safely read strings from a tree
-/// @param[in] tree boost property tree where string data are stored
-/// @param[in] key the string data key
+/// @param[in] _tree boost property tree where string data are stored
+/// @param[in] _key the string data key
 inline static std::string read_string(
     const boost::property_tree::ptree& _tree,
     const std::string& _key,
@@ -97,9 +97,9 @@ inline static std::string read_string(
 }
 
 /// Convenience function to safely put strings into a tree
-/// @param[inout] tree boost property tree where string data must be stored
-/// @param[in] key the string data key
-/// @param[in] value the string data
+/// @param[inout] _tree boost property tree where string data must be stored
+/// @param[in] _key the string data key
+/// @param[in] _value the string data
 inline static void write_string(
     boost::property_tree::ptree& _tree,
     const std::string& _key,
@@ -112,7 +112,7 @@ inline static void write_string(
 
 /// Convenience function to cast and check an object
 /// Mainly to factorize error management
-/// @param[in] object the object to cast to type T
+/// @param[in] _object the object to cast to type T
 template<typename T>
 inline static typename T::sptr safe_cast(sight::data::object::sptr _object)
 {
@@ -132,7 +132,7 @@ inline static typename T::sptr safe_cast(sight::data::object::sptr _object)
 
 /// Convenience function to cast and check an object
 /// Mainly to factorize error management
-/// @param[in] object the object to cast to type T
+/// @param[in] _object the object to cast to type T
 template<typename T>
 inline static typename T::sptr cast_or_create(sight::data::object::sptr _object)
 {
@@ -146,7 +146,7 @@ inline static typename T::sptr cast_or_create(sight::data::object::sptr _object)
 
 /// Convenience function to cast and check an object
 /// Mainly to factorize error management
-/// @param[in] object the object to cast to type T
+/// @param[in] _object the object to cast to type T
 template<typename T>
 inline static typename T::csptr safe_cast(sight::data::object::csptr _object)
 {
@@ -165,11 +165,11 @@ inline static typename T::csptr safe_cast(sight::data::object::csptr _object)
 }
 
 /// Generic serialization function
-/// @param[in,out] archive output archive where to write binary files to
-/// @param[in,out] tree output tree where to write trivial class members to
-/// @param[in] object the object to serialize
-/// @param[out] children the list of child objects belonging to object
-/// @param[in] password (optional) the password to use if encryption is enabled
+/// @param[in,out] _archive output archive where to write binary files to
+/// @param[in,out] _tree output tree where to write trivial class members to
+/// @param[in] _object the object to serialize
+/// @param[out] _children the list of child objects belonging to object
+/// @param[in] _password (optional) the password to use if encryption is enabled
 template<typename T>
 inline static void serialize(
     zip::archive_writer& /*unused*/,
@@ -188,11 +188,11 @@ inline static void serialize(
 }
 
 /// Generic deserialization function
-/// @param[in] archive the archive where to read binary files
-/// @param[in] tree the tree where to read trivial object members
-/// @param[in] children a map of data object that belongs to the object
-/// @param[in,out] object the object to deserialize using the archive, the tree and the children map
-/// @param[in] password (optional) the password used for encryption
+/// @param[in] _archive the archive where to read binary files
+/// @param[in] _tree the tree where to read trivial object members
+/// @param[in] _children a map of data object that belongs to the object
+/// @param[in,out] _object the object to deserialize using the archive, the tree and the children map
+/// @param[in] _password (optional) the password used for encryption
 template<typename T>
 inline static typename T::sptr deserialize(
     zip::archive_reader& /*unused*/,

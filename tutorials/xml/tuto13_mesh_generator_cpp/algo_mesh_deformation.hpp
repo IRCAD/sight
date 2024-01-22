@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ private:
     /**
      * @brief Sets the algorithm parameters.
      * @param _mesh the mesh to deform.
-     * @param _nbStep the number of simulated acquisitions to compute between inspiration and expiration.
+     * @param _nb_step the number of simulated acquisitions to compute between inspiration and expiration.
      * @param _amplitude
      */
     void set_param(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,6 @@ public:
     /**
      * @brief Creates the container that holds the QtWidget.
      * @param _parent the parent container of the widget.
-     * @param _renderOnDemand if true, the rendering will be done only when it's requested.
      * @param _fullscreen enable the fullscreen.
      */
     MODULE_VIZ_SCENE3D_QT_API void create_container(
@@ -103,7 +102,7 @@ public:
     /**
      * @brief Sets the fullscreen or windowed rendering mode.
      * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
-     * @param _screenNumber index of the screen on which to render in fullscreen mode.
+     * @param _screen_number index of the screen on which to render in fullscreen mode.
      */
     MODULE_VIZ_SCENE3D_QT_API void set_fullscreen(bool _fullscreen, int _screen_number) final;
 

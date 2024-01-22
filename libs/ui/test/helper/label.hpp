@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,36 +34,36 @@ public:
 
     /**
      * Check whether the tooltip of a label exactly matches the expected result.
-     * @param tester The current tester
-     * @param label How to get the label to check
-     * @param expected The expected content of the tooltip
+     * @param _tester The current tester
+     * @param _label How to get the label to check
+     * @param _expected The expected content of the tooltip
      */
     UI_TEST_API static void tool_tip_matches(tester& _tester, const selector& _label, const std::string& _expected);
 
     /**
      * Check whether the label contains the expected substring.
-     * @param tester The current tester
-     * @param label How to get the label to check
-     * @param expected The substring expected to be contained in the label
+     * @param _tester The current tester
+     * @param _label How to get the label to check
+     * @param _expected The substring expected to be contained in the label
      */
     UI_TEST_API static void contain(tester& _tester, const selector& _label, const std::string& _expected);
 
     /**
      * Check whether the label exactly matches the expected result.
-     * @param tester The current tester
-     * @param label How to get the label to check
-     * @param expected The expected content of the label
+     * @param _tester The current tester
+     * @param _label How to get the label to check
+     * @param _expected The expected content of the label
      */
     UI_TEST_API static void exactly_match(tester& _tester, const selector& _label, const std::string& _expected);
 
     /**
      * Check whether the label is equal to the number with a tolerance.
-     * @param tester The current tester
-     * @param label How to get the label to check
-     * @param expected The expected value of the label
-     * @param tolerance The tolerance for the expected value
-     * @param re A regexp describing how to find the number to be checked in the label, it should be the first capture
-     *           group.
+     * @param _tester The current tester
+     * @param _label How to get the label to check
+     * @param _expected The expected value of the label
+     * @param _tolerance The tolerance for the expected value
+     * @param _re A regexp describing how to find the number to be checked in the label, it should be the first capture
+     *            group.
      */
     UI_TEST_API static void equal(
         tester& _tester,
@@ -75,8 +75,8 @@ public:
 
     /**
      * Get the value within a label.
-     * @param tester The current tester
-     * @param label The objectName of the label
+     * @param _tester The current tester
+     * @param _label_name The objectName of the label
      */
     UI_TEST_API static std::string get(tester& _tester, const selector& _label_name);
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,6 @@ public:
 
     /**
      * @brief Constructor
-     * @param key Private construction key
      */
     DATA_API material();
 
@@ -57,7 +56,7 @@ public:
     /**
      * @brief Setter for ambient color
      *
-     * @param ambient color
+     * @param _ambient color
      */
     DATA_API void set_ambient(const color::sptr& _ambient);
 
@@ -69,7 +68,7 @@ public:
     /**
      * @brief Setter for diffuse color
      *
-     * @param diffuse color
+     * @param _diffuse color
      */
     DATA_API void set_diffuse(const color::sptr& _diffuse);
 
@@ -84,7 +83,7 @@ public:
     /**
      * @brief Setter for diffuse texture
      *
-     * @param diffuseTexture texture
+     * @param _diffuse_texture texture
      */
     DATA_API void set_diffuse_texture(const image::sptr& _diffuse_texture);
 
@@ -200,13 +199,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()

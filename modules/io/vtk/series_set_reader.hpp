@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -144,8 +144,8 @@ private:
 
     /**
      * @brief Load VTK mesh or image and push it into series_set.
-     * @param[in] vtkFiles vector of std::filesystem::path.
-     * @param[out] series_set std::shared_ptr< data::series_set >.
+     * @param[in] _vtk_files vector of std::filesystem::path.
+     * @param[out] _series_set std::shared_ptr< data::series_set >.
      * @return bool.
      *
      * This method is used to load a mesh using the file path.

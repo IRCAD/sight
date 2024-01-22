@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,25 +52,25 @@ public:
     /// Destructor
     IO_ZIP_API ~archive_reader() override = default;
 
-    /// Shared factory. It uses a cache mechanism to return the same instance for the same _prchivePath.
-    /// @param archive_path path of the archive file. The file will be kept opened as long as the instance leave.
-    /// @param format the format of the archive. @see sight::io::zip::archive::archiveFormat
+    /// Shared factory. It uses a cache mechanism to return the same instance for the same _archive_path.
+    /// @param _archive_path path of the archive file. The file will be kept opened as long as the instance leave.
+    /// @param _format the format of the archive. @see sight::io::zip::archive::archiveFormat
     IO_ZIP_API static archive_reader::uptr get(
         const std::filesystem::path& _archive_path,
         archive_format _format = archive_format::DEFAULT
     );
 
     /// Returns an std::istream to read an archived file
-    /// @param file_path path of an archived file.
-    /// @param password the password needed to decrypt the file.
+    /// @param _file_path path of an archived file.
+    /// @param _password the password needed to decrypt the file.
     IO_ZIP_API virtual std::unique_ptr<std::istream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = ""
     )                                                = 0;
 
     /// Extracts all the content of the archive in the specified folder
-    /// @param outputPath the output folder
-    /// @param password the password needed to decrypt the file.
+    /// @param _output_path the output folder
+    /// @param _password the password needed to decrypt the file.
     IO_ZIP_API virtual void extract_all_to(
         const std::filesystem::path& _output_path,
         const core::crypto::secure_string& _password = ""

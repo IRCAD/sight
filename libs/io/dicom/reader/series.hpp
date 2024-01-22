@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
 
     /**
      * @brief Read DICOM series
-     * @param[in] dicomSeries DICOM series that shall be read
+     * @param[in] _dicom_series DICOM series that shall be read
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API data::series::sptr read(const data::dicom_series::csptr& _dicom_series);
@@ -68,7 +68,7 @@ public:
 
     /**
      * @brief Set progress callback
-     * @param[in] callback Progress callback
+     * @param[in] _callback Progress callback
      */
     void set_progress_callback(progress_callback _callback)
     {
@@ -77,7 +77,7 @@ public:
 
     /**
      * @brief Set cancel callback
-     * @param[in] callback Cancel callback
+     * @param[in] _callback Cancel callback
      */
     void set_cancel_requested_callback(cancel_requested_callback _callback)
     {

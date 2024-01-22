@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -193,7 +193,7 @@ public:
     UI_API ~preferences();
 
     /// Returns the preference associated with the given key/path
-    /// @param key the key/path of the preference.
+    /// @param _key the key/path of the preference.
     template<typename T>
     [[nodiscard]] inline T get(const std::string& _key) const
     {
@@ -207,7 +207,7 @@ public:
     }
 
     /// Returns an optional preference associated with the given key/path.
-    /// @param key the key/path of the preference.
+    /// @param _key the key/path of the preference.
     template<typename T>
     [[nodiscard]] inline boost::optional<T> get_optional(const std::string& _key) const
     {
@@ -222,8 +222,8 @@ public:
 
     /// Returns the preference associated with the given key/path. If the preference doesn't exist, the default value is
     /// returned
-    /// @param key the key/path of the preference.
-    /// @param default_value the default value used when the key/path is not found.
+    /// @param _key the key/path of the preference.
+    /// @param _default_value the default value used when the key/path is not found.
     template<typename T>
     [[nodiscard]] inline T get(const std::string& _key, const T& _default_value) const noexcept
     {
@@ -246,8 +246,8 @@ public:
 
     /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
     /// return the key as a value, otherwise, we search in the preference
-    /// @param key the key/path of the preference, that could be the preference if no delimiter are used.
-    /// @param delimiter the magical delimiter.
+    /// @param _key the key/path of the preference, that could be the preference if no delimiter are used.
+    /// @param _delimiter the magical delimiter.
     template<typename T>
     [[nodiscard]] inline std::pair<std::string, T> parsed_get(
         const std::string& _key,
@@ -268,8 +268,8 @@ public:
 
     /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
     /// return the key as a value, otherwise, we search in the preference
-    /// @param key the key/path of the preference, that could be the preference if no delimiter are used.
-    /// @param delimiter the magical delimiter.
+    /// @param _key the key/path of the preference, that could be the preference if no delimiter are used.
+    /// @param _delimiter the magical delimiter.
     template<typename T>
     [[nodiscard]] inline T delimited_get(
         const std::string& _key,
@@ -282,9 +282,9 @@ public:
     /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
     /// return the key as a value, otherwise, we search in the preference. If no preference is found, we return the
     /// default value
-    /// @param key the key/path of the preference, that could be the preference if no delimiter are used.
-    /// @param default_value the default value used when the key/path is not found.
-    /// @param delimiter the magical delimiter.
+    /// @param _key the key/path of the preference, that could be the preference if no delimiter are used.
+    /// @param _default_value the default value used when the key/path is not found.
+    /// @param _delimiter the magical delimiter.
     template<typename T>
     [[nodiscard]] inline T delimited_get(
         const std::string& _key,
@@ -308,8 +308,8 @@ public:
     }
 
     /// Set a preference associated with the given key/path
-    /// @param key the key/path of the preference.
-    /// @param value the value to set.
+    /// @param _key the key/path of the preference.
+    /// @param _value the value to set.
     template<typename T>
     inline void put(const std::string& _key, const T& _value)
     {
@@ -341,11 +341,11 @@ public:
     UI_API static void set_password(const core::crypto::secure_string& _password);
 
     /// Set the password policy
-    /// @param policy @see sight::core::crypto::password_keeper::password_policy
+    /// @param _policy @see sight::core::crypto::password_keeper::password_policy
     UI_API static void set_password_policy(core::crypto::password_keeper::password_policy _policy);
 
     /// Set the encryption policy
-    /// @param policy @see sight::core::crypto::password_keeper::encryption_policy
+    /// @param _policy @see sight::core::crypto::password_keeper::encryption_policy
     UI_API static void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
 
     /// If true, the application will be terminated in case of password error

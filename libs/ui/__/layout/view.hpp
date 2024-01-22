@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,8 +73,8 @@ public:
     UI_API virtual std::vector<ui::container::widget::sptr> get_sub_views();
 
     /// Modify a layout element, depending of the key.
-    /// @param parameter The parameter of the action.
-    /// @param key The action to perform.
+    /// @param _parameter The parameter of the action.
+    /// @param _key The action to perform.
     UI_API virtual void modify_layout(const ui::parameter_t& _parameter, const std::string& _key);
 
 protected:

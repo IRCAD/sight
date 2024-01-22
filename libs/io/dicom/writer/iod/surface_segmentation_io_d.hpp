@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,12 +40,12 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] instance DICOM instance used to share information between modules
-     * @param[in] imageInstance Associated image instance
-     * @param[in] destinationPath Destination path
-     * @param[in] logger Logger
-     * @param[in] progress Progress callback
-     * @param[in] cancel Cancel requested callback
+     * @param[in] _instance DICOM instance used to share information between modules
+     * @param[in] _image_instance Associated image instance
+     * @param[in] _destination_path Destination path
+     * @param[in] _logger Logger
+     * @param[in] _progress Progress callback
+     * @param[in] _cancel Cancel requested callback
      */
     IO_DICOM_API surface_segmentation_iod(
         const SPTR(io::dicom::container::dicom_instance)& _instance,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,13 +60,13 @@ protected:
     /**
      * @brief Compute the Z coordinate of the slice according to the ImagePositionPatient and ImageOrientationPatient
      *  tags.
-     *  @param[in] bufferObj BufferObject containing the slice
+     *  @param[in] _buffer_obj BufferObject containing the slice
      */
     FILTER_DICOM_API virtual double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_obj) const;
 
     /**
      * @brief Get the SliceThickness value from an instance.
-     *  @param[in] bufferObj BufferObject containing the slice
+     *  @param[in] _buffer_obj BufferObject containing the slice
      */
     FILTER_DICOM_API virtual double get_slice_thickness(const core::memory::buffer_object::sptr& _buffer_obj) const;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ public:
      * @brief Copies a technique to an existing material
      *
      * @param[in] _tech technique to copy
-     * @param[in] _schemeName new technique's scheme
+     * @param[in] _scheme_name new technique's scheme
      * @param[inout] _mtl material to which the technique is added
      * @return the newly created technique
      */

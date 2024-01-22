@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,13 +53,13 @@ public:
 
     /**
      * @brief Convert a dicom_series to an image_series
-     * @param[in] series dicom_series that must be converted
+     * @param[in] _series dicom_series that must be converted
      */
     DATA_API static SPTR(data::image_series) convert_to_image_series(const CSPTR(data::dicom_series) & _series);
 
     /**
      * @brief Convert a dicom_series to a model_series
-     * @param[in] series dicom_series that must be converted
+     * @param[in] _series dicom_series that must be converted
      */
     DATA_API static SPTR(data::model_series) convert_to_model_series(const CSPTR(data::dicom_series) & _series);
 };

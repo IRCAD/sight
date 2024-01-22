@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,8 +74,8 @@ struct CORE_CLASS_API slot_call<R(A ...)>: slot_run<void(A ...)>
     /**
      * @brief Call the Slot with the given parameters asynchronously.
      *
-     * @param worker Worker that will run the Slot.
-     * @param args run arguments.
+     * @param _worker Worker that will run the Slot.
+     * @param _args run arguments.
      *
      * @return a shared_future object associated with Slot's call result.
      *

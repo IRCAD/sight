@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -219,7 +219,7 @@ protected:
 
     /**
      * @brief Constructor.
-     * @param[in] value The initial value.
+     * @param[in] _value The initial value.
      */
     generic_field(const T _value = T()) noexcept :
         m_value(_value)

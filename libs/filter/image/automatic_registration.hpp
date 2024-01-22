@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,10 +64,10 @@ public:
      * @param[in] _reference reference, i.e. the image that will be transformed into the target.
      * @param[out] _trf the resulting rigid transform.
      * @param[in] _metric the metric to be used for registration.
-     * @param[in] _multiResolutionParameters Shrink factors per level and smoothing sigmas per level
-     * @param[in] _samplingPercentage the percentage of sample to use for registration
-     * @param[in] _minStep minimum step for used by optimizer for each iteration.
-     * @param[in] _maxIterations the maximum number of iterations
+     * @param[in] _multi_resolution_parameters Shrink factors per level and smoothing sigmas per level
+     * @param[in] _sampling_percentage the percentage of sample to use for registration
+     * @param[in] _min_step minimum step for used by optimizer for each iteration.
+     * @param[in] _max_iterations the maximum number of iterations
      */
     FILTER_IMAGE_API void register_image(
         const data::image::csptr& _target,

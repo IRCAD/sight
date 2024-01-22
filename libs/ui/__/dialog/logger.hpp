@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,9 +44,9 @@ public:
 
     /**
      * Opens a default logger dialog with the specified title, message and logs.
-     * @param[in] title Title of the dialog
-     * @param[in] message Message of the dialog
-     * @param[in] logger Logger of the dialog
+     * @param[in] _title Title of the dialog
+     * @param[in] _message Message of the dialog
+     * @param[in] _logger Logger of the dialog
      * @return Returns true or false whether the user has selected the OK or CANCEL button
      */
     UI_API static bool show_logger_dialog(
@@ -63,9 +63,9 @@ public:
 
     /**
      * Constructor. Create a selector with the specified title, message and logs.
-     * @param[in] title Title of the dialog
-     * @param[in] message Message of the dialog
-     * @param[in] logger Logger of the dialog
+     * @param[in] _title Title of the dialog
+     * @param[in] _message Message of the dialog
+     * @param[in] _logger Logger of the dialog
      */
     UI_API logger(
         const std::string& _title,
@@ -75,19 +75,19 @@ public:
 
     /**
      * @brief Set the dialog title.
-     * @param[in] title Dialog title
+     * @param[in] _title Dialog title
      */
     UI_API void set_title(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
-     * @param[in] message Dialog message
+     * @param[in] _message Dialog message
      */
     UI_API void set_message(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
-     * @param[in] logger Dialog logger
+     * @param[in] _logger Dialog logger
      */
     UI_API void set_logger(const core::log::logger::sptr& _logger) override;
 

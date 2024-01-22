@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,9 +55,9 @@ public:
 
     /**
      * @brief Constructor.
-     * @param[in] inImage image in which we propagate.
-     * @param[in,out] outImage mask image containing the written values.
-     * @param[in] roi region of interest.
+     * @param[in] _in_image image in which we propagate.
+     * @param[in,out] _out_image mask image containing the written values.
+     * @param[in] _roi region of interest.
      */
     FILTER_IMAGE_API min_max_propagation(
         data::image::csptr _in_image,
@@ -68,11 +68,11 @@ public:
     /**
      * @brief propagates through the image starting from each seed as along as the encountered voxel value
      * is greater than smallest seed value.
-     * @param[in] seeds points where propagation is started.
-     * @param[in] value the value propagated through the buffer.
-     * @param[in] radius maximum propagation distance.
-     * @param[in] overwrite overwrite non zero voxels.
-     * @param[in] mode propagation mode (min, max, or minmax).
+     * @param[in] _seeds points where propagation is started.
+     * @param[in] _value the value propagated through the buffer.
+     * @param[in] _radius maximum propagation distance.
+     * @param[in] _overwrite overwrite non zero voxels.
+     * @param[in] _mode propagation mode (min, max, or minmax).
      * @return the differences in the image before and after propagation.
      */
     FILTER_IMAGE_API image_diff propagate(

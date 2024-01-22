@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,8 +82,8 @@ public:
 
     /**
      * @brief Copy a directory recursively.
-     * @param input Input file
-     * @param output Output file
+     * @param _input Input file
+     * @param _output Output file
      */
     IO_DICOM_API static void copy_directory(
         const std::filesystem::path& _input,
@@ -108,7 +108,7 @@ public:
     /**
      * @brief Add a date tag that must be shifted.
      * The shift is made according to the interval between the date and the reference date.
-     * @param dateTag Date tag that must be shifted. (This tag shall be a date: VR shall be DA)
+     * @param _tag Date tag that must be shifted. (This tag shall be a date: VR shall be DA)
      *
      * @note The shift is done from Jan 1, 1900.
      */
@@ -117,7 +117,7 @@ public:
     /**
      * @brief Tells the anonymizer to do not anonymize the given private tag.
      *
-     * @param tag private tag to be preserved from anonymisation
+     * @param _tag private tag to be preserved from anonymization
      */
     IO_DICOM_API void preserve_private_tag(const gdcm::Tag& _tag);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
     static IO_IGTL_API creator_container_t init_factory();
     /**
      * @brief create create a message with the type specified in parameter
-     * @param[in] type
+     * @param[in] _type
      * @return a smart pointer to a igtl message
      */
     static IO_IGTL_API ::igtl::MessageBase::Pointer create(std::string const& _type);
@@ -71,7 +71,7 @@ public:
      * Hack to compile in msvc, with others compiler, this struct may be useless
      * (see assignement of  pointer function to a overload function to std::function).
      * @tparam T class derivate from ::igtl::MessageBase
-     * @tparam Bool withParam, true use the specialized structure with parameters, false take the no parameters one.
+     * @tparam withParam    true use the specialized structure with parameters, false take the no parameters one.
      */
     template<typename T, bool withParam>
     struct MessageMaker;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,9 +46,9 @@ public:
      * The value is returned without binary space padding.
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
-     * @param[in] dataset Data set containing the tag
-     * @param[in] charset Specific Character Set (if empty assuming ASCII).
-     * @param[in] logger Logger used for encoding issue
+     * @param[in] _dataset Data set containing the tag
+     * @param[in] _charset Specific Character Set (if empty assuming ASCII).
+     * @param[in] _logger Logger used for encoding issue
      * @note charset shall be set if SpecificCharacterSet (0008,0005) is
      * defined and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
@@ -106,9 +106,9 @@ public:
      * @brief Return an utf-8 tag value from the tag value's buffer
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
-     * @param[in] buffer Tag value's buffer
-     * @param[in] charset Specific Character Set (if empty assuming ASCII).
-     * @param[in] logger Logger used for encoding issue
+     * @param[in] _buffer Tag value's buffer
+     * @param[in] _charset Specific Character Set (if empty assuming ASCII).
+     * @param[in] _logger Logger used for encoding issue
      * @note charset shall be set if SpecificCharacterSet (0008,0005) is
      * defined and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
@@ -151,7 +151,7 @@ public:
      * @tparam GROUP Group of the tag.
      * @tparam ELEMENT Element of the tag.
      * @tparam T Type of value.
-     * @param[in] dataset Data set of tags.
+     * @param[in] _dataset Data set of tags.
      * @return The tag value.
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT, typename T>

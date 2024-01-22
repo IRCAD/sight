@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -121,7 +121,7 @@ public:
      *
      * @return True if data are correct, else false and errorMsg contains detailled error.
      * @param _activity activity to fill with the selected data.
-     * @param[out] _errorMsg it will contain the error information if the data are not correct.
+     * @param[out] _error_msg it will contain the error information if the data are not correct.
      */
     MODULE_UI_QT_API bool check_and_compute_data(
         const data::activity::sptr& _activity,
@@ -131,14 +131,14 @@ public:
     /**
      * @brief Checks if the current required data are selected And return this data.
      * @param _index index of the requirement to check (this index also correspond to a tab).
-     * @param[out] _errorMsg it will contain the error information if the data are not correct.
+     * @param[out] _error_msg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
     MODULE_UI_QT_API data::object::sptr check_data(std::size_t _index, std::string& _error_msg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
-     * @param _ioSelectorSrvConfig the service configuration used for the IO selector.
+     * @param _io_selector_srv_config the service configuration used for the IO selector.
      */
     inline void set_io_selector_config(const std::string& _io_selector_srv_config)
     {
@@ -147,7 +147,7 @@ public:
 
     /**
      * @brief Sets the IO selector configuration used to import data from a series set.
-     * @param _ioSelectorSrvConfig the service configuration used for the IO selector.
+     * @param _io_selector_srv_config the service configuration used for the IO selector.
      */
     inline void set_sdbio_selector_config(const std::string& _io_selector_srv_config)
     {
@@ -159,7 +159,7 @@ public:
 
     /**
      * @brief Sets the map that defines the icon associated to an object.
-     * @param _objectIcons the map associating an object type to an icon.
+     * @param _object_icons the map associating an object type to an icon.
      */
     void set_object_icon_association(const object_icon_map_t& _object_icons)
     {
@@ -190,7 +190,7 @@ private:
      * properly
      * read.
      * @param _classname the class name of the object to read.
-     * @param _ioSelectorSrvConfig the IO selector configuration.
+     * @param _io_selector_srv_config the IO selector configuration.
      * @return the object read by the selector.
      */
     static data::object::sptr read_object(const std::string& _classname, const std::string& _io_selector_srv_config);
@@ -209,7 +209,7 @@ private:
 
     /**
      * @brief Adds the current item in the tree.
-     * @param index index used to find the associated tree widget.
+     * @param _index index used to find the associated tree widget.
      * @param _obj object to add in the tree.
      */
     void add_object_item(std::size_t _index, const data::object::csptr& _obj);

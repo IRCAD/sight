@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,9 +40,9 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] writer GDCM writer that must be enriched
-     * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] image Image data
+     * @param[in] _writer GDCM writer that must be enriched
+     * @param[in] _instance DICOM instance used to share informations between modules
+     * @param[in] _image Image data
      */
     IO_DICOM_API measurement_report(
         const SPTR(gdcm::Writer)& _writer,
@@ -55,7 +55,7 @@ public:
 
     /**
      * @brief Create Measurement Report template root node
-     * @param[in] useSCoord3D True if we must write SCOORD3D, false if we must write SCOORD
+     * @param[in] _use_s_coord_3d True if we must write SCOORD3D, false if we must write SCOORD
      */
     IO_DICOM_API virtual SPTR(io::dicom::container::sr::dicom_sr_node) create_root_node(bool _use_s_coord_3d = true);
 };

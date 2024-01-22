@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -301,7 +301,6 @@ public:
 
     /**
      * @brief Constructor
-     * @param key Private construction key
      */
     DATA_API mesh();
 
@@ -315,10 +314,10 @@ public:
      * parameters.
      * It does not modify the number of points and cells.
      *
-     * @param nbPts number of points to allocate
-     * @param nbCells number of cells to allocate
-     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate.
-     * @param arrayMask mesh attribute: additional Arrays to allocate
+     * @param _nb_pts       number of points to allocate
+     * @param _nb_cells     number of cells to allocate
+     * @param _cell_type    type of cell to allocate, it defines the number of points by cell to allocate.
+     * @param _array_mask   mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::point_normals)
      *
      * @return Return the allocated memory
@@ -337,10 +336,10 @@ public:
      *
      * Initializes points, cell-types, cell-data, and cell-data-offsets arrays with the information given by the
      * parameters.
-     * @param nbPts number of points to allocate
-     * @param nbCells number of cells to allocate
-     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate.
-     * @param arrayMask mesh attribute: additional Arrays to allocate
+     * @param _nb_pts       number of points to allocate
+     * @param _nb_cells     number of cells to allocate
+     * @param _cell_type    type of cell to allocate, it defines the number of points by cell to allocate.
+     * @param _array_mask   mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::point_normals)
      *
      * @return Return the allocated memory
@@ -456,8 +455,8 @@ public:
      *
      * The mesh must be allocated before calling this method.
      *
-     * @param id point index
-     * @param p point coordinates
+     * @param _id point index
+     * @param _p point coordinates
      * @throw Raise Exception if the id is out of bounds
      */
     DATA_API void set_point(point_t _id, const std::array<position_t, 3>& _p);
@@ -495,8 +494,8 @@ public:
      *
      * @warning The point colors must be allocated with 4 components (RGBA)
      *
-     * @param id point index
-     * @param c color
+     * @param _id point index
+     * @param _c color
      */
     DATA_API void set_point_color(point_t _id, const std::array<color_t, 4>& _c);
     DATA_API void set_point_color(point_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
@@ -508,8 +507,8 @@ public:
      *
      * @warning The cell colors must be allocated with 4 components (RGBA)
      *
-     * @param id cell index
-     * @param c color
+     * @param _id cell index
+     * @param _c color
      */
     DATA_API void set_cell_color(cell_t _id, const std::array<color_t, 4>& _c);
     DATA_API void set_cell_color(cell_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
@@ -521,8 +520,8 @@ public:
      *
      * The normal array must be allocated before calling this method.
      *
-     * @param id point index
-     * @param n normal
+     * @param _id point index
+     * @param _n normal
      */
     DATA_API void set_point_normal(point_t _id, const std::array<normal_t, 3>& _n);
     DATA_API void set_point_normal(point_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
@@ -533,8 +532,8 @@ public:
      *
      * The normal array must be allocated before calling this method.
      *
-     * @param id cell index
-     * @param n normal
+     * @param _id cell index
+     * @param _n normal
      */
     DATA_API void set_cell_normal(cell_t _id, const std::array<normal_t, 3>& _n);
     DATA_API void set_cell_normal(cell_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
@@ -545,8 +544,8 @@ public:
      *
      * The texCoord array must be allocated before calling this method.
      *
-     * @param id point index
-     * @param t texCoord
+     * @param _id point index
+     * @param _t texCoord
      */
     DATA_API void set_point_tex_coord(point_t _id, const std::array<texcoord_t, 2>& _t);
     DATA_API void set_point_tex_coord(point_t _id, texcoord_t _u, texcoord_t _v);
@@ -558,8 +557,8 @@ public:
      *
      * The texCoord array must be allocated before calling this method.
      *
-     * @param id cell index
-     * @param t texCoord
+     * @param _id cell index
+     * @param _t texCoord
      */
     DATA_API void set_cell_tex_coord(cell_t _id, const std::array<texcoord_t, 2>& _t);
     DATA_API void set_cell_tex_coord(cell_t _id, texcoord_t _u, texcoord_t _v);
@@ -605,13 +604,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()

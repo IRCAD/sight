@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,22 +34,22 @@ public:
 
     /**
      * Click on the specified button
-     * @param tester The current tester
-     * @param button How to get the button to be clicked
+     * @param _tester The current tester
+     * @param _button How to get the button to be clicked
      */
     UI_TEST_API static void push(tester& _tester, const selector& _button);
 
     /**
      * Click on a button in a menu bar
-     * @param tester The current tester
-     * @param button How to get the menu bar button to be clicked
+     * @param _tester The current tester
+     * @param _button How to get the menu bar button to be clicked
      */
     UI_TEST_API static void push_menu_bar_item(tester& _tester, const selector& _button);
 
     /**
      * Wait for a button to be clickable
-     * @param tester The current tester
-     * @param button How to get the button to wait
+     * @param _tester The current tester
+     * @param _button How to get the button to wait
      */
     UI_TEST_API static void wait_for_clickability(
         tester& _tester,

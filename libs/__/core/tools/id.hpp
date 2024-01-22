@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ protected:
     /**
      * @brief Returns the id of the object. If it is not set and the policy value is
      * \li EMPTY then an empty id is returned
-     * \li GENERATE (default) then a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is
+     * \li GENERATE (default) then a new ID will be generated (and recorded) using the pattern "CLASSNAME-NUM". NUM is
      * always increasing
      * \li MUST_EXIST then an exception Failed is raised
      * @note We consider an object be constant whatever if its id is generated.

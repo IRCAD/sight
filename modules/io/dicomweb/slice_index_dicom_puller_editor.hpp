@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ private Q_SLOTS:
 
     /**
      * @brief Slot called when the slider is moved
-     * @param[in] value Slider value
+     * @param[in] _value Slider value
      */
     void change_slice_index(int _value);
 
@@ -113,7 +113,7 @@ private:
 
     /**
      * @brief Read the selected image
-     * @param[in] selectedSliceIndex Selected slice of the image that must be read
+     * @param[in] _selected_slice_index Selected slice of the image that must be read
      */
     void read_image(sight::data::dicom_series& _dicom_series, std::size_t _selected_slice_index);
 

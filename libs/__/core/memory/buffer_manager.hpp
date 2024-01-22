@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,23 +125,23 @@ public:
     /**
      * @brief Hook called when a new BufferObject is created
      *
-     * @param bufferPtr BufferObject's buffer pointer.
+     * @param _buffer_ptr BufferObject's buffer pointer.
      */
     CORE_API virtual std::shared_future<void> register_buffer(buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when a BufferObject is destroyed
      *
-     * @param bufferPtr BufferObject's buffer pointer.
+     * @param _buffer_ptr BufferObject's buffer pointer.
      */
     CORE_API virtual std::shared_future<void> unregister_buffer(buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when an allocation is requested from a BufferObject
      *
-     * @param bufferPtr BufferObject's buffer pointer
-     * @param size requested size for allocation
-     * @param policy BufferObject's allocation policy
+     * @param _buffer_ptr BufferObject's buffer pointer
+     * @param _size requested size for allocation
+     * @param _policy BufferObject's allocation policy
      */
     CORE_API virtual std::shared_future<void> allocate_buffer(
         buffer_ptr_t _buffer_ptr,
@@ -152,10 +152,10 @@ public:
     /**
      * @brief Hook called when a request is made to set BufferObject's buffer from an external buffer
      *
-     * @param bufferPtr BufferObject's buffer pointer
-     * @param buffer new buffer
-     * @param size requested size for allocation
-     * @param policy BufferObject's allocation policy
+     * @param _buffer_ptr BufferObject's buffer pointer
+     * @param _buffer new buffer
+     * @param _size requested size for allocation
+     * @param _policy BufferObject's allocation policy
      */
     CORE_API virtual std::shared_future<void> set_buffer(
         buffer_ptr_t _buffer_ptr,
@@ -167,30 +167,30 @@ public:
     /**
      * @brief Hook called when a reallocation is requested from a BufferObject
      *
-     * @param bufferPtr BufferObject's buffer pointer
-     * @param newSize requested size for reallocation
+     * @param _buffer_ptr BufferObject's buffer pointer
+     * @param _new_size requested size for reallocation
      */
     CORE_API virtual std::shared_future<void> reallocate_buffer(buffer_ptr_t _buffer_ptr, size_t _new_size);
 
     /**
      * @brief Hook called when a destruction is requested from a BufferObject
      *
-     * @param bufferPtr BufferObject's buffer pointer
+     * @param _buffer_ptr BufferObject's buffer pointer
      */
     CORE_API virtual std::shared_future<void> destroy_buffer(buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when a request to swap two BufferObject contents is made
      *
-     * @param bufA First BufferObject's buffer
-     * @param bufB Second BufferObject's buffer
+     * @param _buf_a First BufferObject's buffer
+     * @param _buf_b Second BufferObject's buffer
      */
     CORE_API virtual std::shared_future<void> swap_buffer(buffer_ptr_t _buf_a, buffer_ptr_t _buf_b);
 
     /**
      * @brief Hook called when a BufferObject is locked
      *
-     * @param bufferPtr BufferObject's buffer pointer
+     * @param _buffer_ptr BufferObject's buffer pointer
      *
      * @return false if the BufferManager supported the action
      */
@@ -199,7 +199,7 @@ public:
     /**
      * @brief Hook called when a BufferObject lock is released
      *
-     * @param bufferPtr BufferObject's buffer pointer
+     * @param _buffer_ptr BufferObject's buffer pointer
      *
      * @return false if the BufferManager supported the action
      */
@@ -215,7 +215,7 @@ public:
      *
      * Keeps up to date buffer's information
      *
-     * @param bufferPtr Buffer to dump/restore
+     * @param _buffer_ptr Buffer to dump/restore
      *
      * @return true on success
      * @{ */
@@ -228,9 +228,9 @@ public:
      *
      * The buffer is written/read in a raw format
      *
-     * @param buffer Buffer to write/read
-     * @param size Buffer's size
-     * @param path file to  write/read
+     * @param _buffer Buffer to write/read
+     * @param _size Buffer's size
+     * @param _path file to  write/read
      *
      * @return true on success
      * @{ */

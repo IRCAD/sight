@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,13 +95,13 @@ public:
 
     /**
      * @brief This method is used to load an vtk image using a file path.
-     * @param[in] vtkFile file system path of vtk image
-     * @param[out] image new empty image that will contain image loaded, if reading process is a success.
-     * @return bool  \b true if the image loading is a success and \b false if it fails
+     * @param[in] _vtk_file file system path of vtk image
+     * @param[out] _image new empty image that will contain image loaded, if reading process is a success.
+     * @return bool \b true if the image loading is a success and \b false if it fails
      */
     MODULE_IO_VTK_API static bool load_image(
         const std::filesystem::path& _vtk_file,
-        std::shared_ptr<data::image> _img,
+        std::shared_ptr<data::image> _image,
         const SPTR(job_created_signal_t)& _sig_job_created
     );
 

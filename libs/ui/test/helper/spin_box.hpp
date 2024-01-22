@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,35 +34,35 @@ public:
 
     /**
      * Increment a spin box
-     * @param tester The current tester
-     * @param spinBox How to get the spin box to increment
-     * @param times Number of times to increment
+     * @param _tester The current tester
+     * @param _spin_box How to get the spin box to increment
+     * @param _times Number of times to increment
      * @note This method assumes that the spin box uses a style where the buttons are at the left and right.
      */
     UI_TEST_API static void increment(tester& _tester, const selector& _spin_box, int _times = 1);
 
     /**
      * Decrement a spin box
-     * @param tester The current tester
-     * @param spinBox How to get the spin box to decrement
-     * @param times Number of times to decrement
+     * @param _tester The current tester
+     * @param _spin_box How to get the spin box to decrement
+     * @param _times Number of times to decrement
      * @note This method assumes that the spin box uses a style where the buttons are at the left and right.
      */
     UI_TEST_API static void decrement(tester& _tester, const selector& _spin_box, int _times = 1);
 
     /**
      * Check whether a spin box has the good value
-     * @param tester The current tester
-     * @param spinBox How to get the spin box to check
-     * @param expected The value the spin box should have
+     * @param _tester The current tester
+     * @param _spin_box How to get the spin box to check
+     * @param _expected The value the spin box should have
      */
     UI_TEST_API static void value_equals(tester& _tester, const selector& _spin_box, const std::string& _expected);
 
     /**
      * Check whether a spin box has the good value
-     * @param tester The current tester
-     * @param spinBox How to get the spin box to check
-     * @param expected The value the spin box should have
+     * @param _tester The current tester
+     * @param _spin_box How to get the spin box to check
+     * @param _expected The value the spin box should have
      * @note This overload isn't recommanded for double spin boxes, use the string overload instead.
      */
     UI_TEST_API static void value_equals(tester& _tester, const selector& _spin_box, int _expected);

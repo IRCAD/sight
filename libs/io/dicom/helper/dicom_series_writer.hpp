@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,8 +97,8 @@ public:
     /**
      * @brief Defines output archive for DICOM files.
      *
-     * @param archive Archive instance
-     * @param subPath Path within archive where DICOM files are saved (only if an anonymizer instance is defined)
+     * @param _archive Archive instance
+     * @param _sub_path Path within archive where DICOM files are saved (only if an anonymizer instance is defined)
      */
     IO_DICOM_API void set_output_archive(
         const SPTR(io::zip::write_archive)& _archive,

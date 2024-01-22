@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,11 +41,11 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] dicomSeries DicomSeries used to access computed tag values.
-     * @param[in] reader GDCM reader that must be used to read series.
-     * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] image Sight data object
-     * @param[in] logger Logger
+     * @param[in] _dicom_series DicomSeries used to access computed tag values.
+     * @param[in] _reader GDCM reader that must be used to read series.
+     * @param[in] _instance DICOM instance used to share informations between modules
+     * @param[in] _image Sight data object
+     * @param[in] _logger Logger
      */
     IO_DICOM_API fiducial(
         const CSPTR(data::dicom_series)& _dicom_series,
@@ -60,7 +60,7 @@ public:
 
     /**
      * @brief Read a fiducial node
-     * @param[in] node Node that must be read
+     * @param[in] _node Node that must be read
      */
     IO_DICOM_API virtual void read_node(const SPTR(io::dicom::container::sr::dicom_sr_node)& _node);
 
@@ -68,10 +68,10 @@ protected:
 
     /**
      * @brief Add a landmark into the image
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @param z Z coordinate
-     * @param label Landmark label
+     * @param _x X coordinate
+     * @param _y Y coordinate
+     * @param _z Z coordinate
+     * @param _label Landmark label
      */
     void add_landmark(double _x, double _y, double _z, const std::string& _label);
 };

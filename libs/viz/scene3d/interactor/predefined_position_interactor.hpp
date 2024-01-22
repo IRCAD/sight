@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -96,9 +96,9 @@ public:
 
     /**
      * @brief Moves the camera towards or away the central point.
-     * @param _scalingFactor distance of the fingers
-     * @param _centerX the width coordinate of the center of the pinch
-     * @param _centerY the height coordinate of the center of the pinch
+     * @param _scale_factor distance of the fingers
+     * @param _center_x the width coordinate of the center of the pinch
+     * @param _center_y the height coordinate of the center of the pinch
      */
     VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) override;
 
@@ -107,8 +107,8 @@ public:
      * @param _key pressed key code. Defines the following behaviour:
      * - 'A' or 'a': animates the camera to rotate around the focus point.
      * - 'R' or 'r': moves the camera backwards to see the whole scene.
-     * @param _mouseX the mouse's width position at the time of the key press.
-     * @param _mouseY the mouse's height position at the time of the key press.
+     * @param _mouse_x the mouse's width position at the time of the key press.
+     * @param _mouse_y the mouse's height position at the time of the key press.
      */
     VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int _mouse_x, int _mouse_y) override;
 
@@ -153,8 +153,8 @@ private:
 
     /**
      * @brief The camera's scene node will rotate around its point of interest (lookAt).
-     * @param dx The mouse's X displacement
-     * @param dy The mouse's Y displacement
+     * @param _dx The mouse's X displacement
+     * @param _dy The mouse's Y displacement
      */
     void camera_rotate_by_mouse(int _dx, int _dy);
 

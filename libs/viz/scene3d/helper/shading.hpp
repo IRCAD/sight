@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,8 +76,8 @@ public:
 
     /**
      * @brief Constructs a suffix to use in vertex and fragment programs names.
-     * @param[in] _vertexColor is vertex color enabled ?
-     * @param[in] _diffuseTexture is diffuse texture bound ?
+     * @param[in] _diffuse_texture is diffuse texture bound ?
+     * @param[in] _vertex_color is vertex color enabled ?
      */
     VIZ_SCENE3D_API static std::string get_permutation(
         data::material::shading_t _mode,
@@ -87,10 +87,10 @@ public:
 
     /**
      * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
-     * @param[in] _primitiveType type of the primitive (only triangles, quads and tetrahedrons supported right now)
-     * @param[in] _diffuseTexture is diffuse texture bound ?
-     * @param[in] _vertexColor is vertex color enabled ?
-     * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
+     * @param[in] _primitive_type type of the primitive (only triangles, quads and tetrahedrons supported right now)
+     * @param[in] _diffuse_texture is diffuse texture bound ?
+     * @param[in] _vertex_color is vertex color enabled ?
+     * @param[in] _has_primitive_color is primitive color enabled bound ?
      */
     VIZ_SCENE3D_API static std::string get_r2_vb_geometry_program_name(
         data::mesh::cell_type_t _primitive_type,
@@ -120,7 +120,8 @@ public:
      *        the returned program name will be "Default/Ambient+VT_FP"
      *
      * @param[in] _name name of the program
-     * @param[in] _suffix new suffix to use
+     * @param[in] _tech new suffix to use
+     * @todo Fix this comment
      */
     VIZ_SCENE3D_API static std::string set_technique_in_program_name(
         const std::string& _name,
@@ -139,8 +140,9 @@ public:
      * @brief Create a Sight data that can be used to interact with a shader parameter.
      *
      * @param[in] _params shader parameters
-     * @param[in] _shaderType shader type (vertex, fragment or geometry)
-     * @param[in] _enableLightConstants indicates whether or not the method should look into the light related constants
+     * @param[in] _shader_type shader type (vertex, fragment or geometry)
+     * @param[in] _enable_light_constants indicates whether or not the method should look into the light related
+     * constants
      * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
      */
     VIZ_SCENE3D_API static shader_constants_t find_shader_constants(
@@ -165,11 +167,10 @@ public:
      *        Typically used when we want to add some preprocessor defines.
      *
      * @param[in] _name name of gpu program resource
-     * @param[in] _sourceFileName name of the glsl source file
-     * @param[in] _sourceFileName name of the glsl source file
+     * @param[in] _source_file_name name of the glsl source file
      * @param[in] _parameters parameters of the program
-     * @param[in] _shaderType shader type (vertex, fragment or geometry)
-     * @param[in] _baseName name of the base gpu program
+     * @param[in] _shader_type shader type (vertex, fragment or geometry)
+     * @param[in] _base_name name of the base gpu program
      */
     VIZ_SCENE3D_API static Ogre::GpuProgramPtr create_program_from(
         const std::string& _name,

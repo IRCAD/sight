@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,6 @@ public:
 
     /**
      * @brief Creates the series.
-     * @param _key private construction key.
      */
     DATA_API image_series();
 
@@ -94,13 +93,13 @@ public:
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
@@ -110,9 +109,9 @@ public:
        @{
      * @brief Resize the image and allocate the memory if needed.
      *
-     * @param size array of size in each direction (x,y,z)
-     * @param type type of a single pixel component value
-     * @param format specify the ordering and the meaning of a pixel components
+     * @param _size array of size in each direction (x,y,z)
+     * @param _type type of a single pixel component value
+     * @param _format specify the ordering and the meaning of a pixel components
      *
      * If the data array owns its buffer, this method will always work (until it remain free memory)
      * Otherwise an exception is thrown :

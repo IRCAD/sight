@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,30 +43,30 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   identifier  a string containing a module identifier
-     * @param[in]   version     a string a module version
+     * @param[in]   _identifier  a string containing a module identifier
+     * @param[in]   _version     a string a module version
      */
     activater(std::string _identifier, const std::string& _version);
 
     /**
      * @brief       Adds a new parameter to the activater.
      *
-     * @param[in]   identifier  a string containing the parameter name
-     * @param[in]   value       a string containing the parameter value
+     * @param[in]   _identifier  a string containing the parameter name
+     * @param[in]   _value       a string containing the parameter value
      */
     void add_parameter(const std::string& _identifier, const std::string& _value);
 
     /**
      * @brief       Adds a new disable extension point  to the activater.
      *
-     * @param[in]   identifier    a string containing the parameter name
+     * @param[in]   _identifier    a string containing the parameter name
      */
     void add_disable_extension_point(const std::string& _identifier);
 
     /**
      * @brief       Adds a new disable extension  to the activater.
      *
-     * @param[in]   identifier    a string containing the parameter name
+     * @param[in]   _identifier    a string containing the parameter name
      */
     void add_disable_extension(const std::string& _identifier);
 

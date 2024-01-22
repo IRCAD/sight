@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,10 +94,11 @@ public:
 
     /**
      * @brief Register a new service configuration
-     * @param configId the identifier of the registered configuration.
-     * @param service  the implementation of the service
-     * @param desc     the description of the configuration
-     * @param config   the registered config
+     * @param _config_id the identifier of the registered configuration.
+     * @param _service  the implementation of the service
+     * @param _desc     the description of the configuration
+     * @param _config   the registered config
+     * @param _config   the registered config
      * @note This method is thread safe
      */
     SERVICE_API void add_service_config_info(

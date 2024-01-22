@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,8 +46,8 @@ public:
      * @brief Build an Activity with required data present in currentSelection and defined in configuration.
      * returns specific data Activity for the specified Activity, or a
      * null pointer if the builder canceled the activity creation.
-     * @param[in] activity_info a structure which contains all the Activity configuration
-     * @param[in] currentSelection a vector which contains current selected data.
+     * @param[in] _activity_info a structure which contains all the Activity configuration
+     * @param[in] _current_selection a vector which contains current selected data.
      * @return Activity or null
      */
     ACTIVITY_API virtual data::activity::sptr build_data(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,7 +127,7 @@ private:
 
     /**
      * @brief This method is used to load a mesh using the file path.
-     * @param[in] _vtkFile std::filesystem::path.
+     * @param[in] _vtk_file std::filesystem::path.
      * @return true, if mesh is read, false otherwise(error or exception).
      */
     bool load_mesh(const std::filesystem::path& _vtk_file);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -194,7 +194,7 @@ private:
 
     /**
      * @brief Slots to launch the given series.
-     * @param series the activity is launched on this series.
+     * @param _series the activity is launched on this series.
      *
      * If series is an Activity, it is launched, otherwise it launches the first available activity for
      * this series or used m_quickLaunch information if a default association is defined for this series type.
@@ -203,7 +203,7 @@ private:
 
     /**
      * @brief Slots to launch the given activity.
-     * @param series the activity to launch.
+     * @param _activity the activity to launch.
      */
     void launch_activity(data::activity::sptr _activity);
 
@@ -212,15 +212,15 @@ private:
      * If given activity info contains an activity::validator::base, first checks if activity is valid according to
      * validator, then build activity with activity builder.
      *
-     * @param info activity information
+     * @param _info activity information
      */
     void send_config(const sight::activity::extension::activity_info& _info);
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
      *
-     * @param info activity information
-     * @param selection input data to launch the activity
+     * @param _info activity information
+     * @param _selection input data to launch the activity
      */
     void build_activity(const sight::activity::extension::activity_info& _info, const data::vector::csptr& _selection);
 

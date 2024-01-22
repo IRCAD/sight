@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,8 +50,8 @@ public:
 
     /**
      * @brief Return a weak data pointer of the input object at the given key and index.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
+     * @param _key key of data to retrieve.
+     * @param _index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE = sight::data::object, typename CDATATYPE = std::add_const_t<DATATYPE> >
@@ -59,8 +59,8 @@ public:
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key and index.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
+     * @param _key key of data to retrieve.
+     * @param _index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE = sight::data::object>
@@ -68,8 +68,8 @@ public:
 
     /**
      * @brief Return a weak data pointer of the out object at the given key and index.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
+     * @param _key key of data to retrieve.
+     * @param _index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE = sight::data::object>
@@ -92,7 +92,7 @@ public:
      *
      * @param[in] _obj input object used by the service
      * @param[in] _key key of the object
-     * @param[in] _autoConnect if true, the service will be connected to the object's signals
+     * @param[in] _auto_connect if true, the service will be connected to the object's signals
      * @param[in] _optional if true, the service can be started even if the objet is not present
      * @param[in] _index if specified, indicates the object is part of a group and gives its index
      */
@@ -108,7 +108,7 @@ public:
      *
      * @param[in] _obj in/out object used by the service
      * @param[in] _key key of the object
-     * @param[in] _autoConnect if true, the service will be connected to the object's signals
+     * @param[in] _auto_connect if true, the service will be connected to the object's signals
      * @param[in] _optional if true, the service can be started even if the objet is not present
      * @param[in] _index if specified, indicates the object is part of a group and gives its index
      */
@@ -143,7 +143,7 @@ protected:
      * @param[in] _key key of the object
      * @param[in] _index index of the data in the group
      * @param[in] _access access to the object (in/inout/out)
-     * @param[in] _autoConnect if true, the service will be connected to the object's signals
+     * @param[in] _auto_connect if true, the service will be connected to the object's signals
      * @param[in] _optional if true, the service can be started even if the objet is not present
      */
     DATA_API void set_object(

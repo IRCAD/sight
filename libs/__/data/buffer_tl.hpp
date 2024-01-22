@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,8 +56,8 @@ public:
 
     /**
      * @brief Return the closest object to the given timestamp
-     * @param timestamp timestamp used to find the closest object
-     * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
+     * @param _timestamp timestamp used to find the closest object
+     * @param _direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     DATA_API CSPTR(timeline::object) get_closest_object(
         core::clock::type _timestamp,

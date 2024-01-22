@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,6 @@ public:
 
     /**
      * @brief Constructor
-     * @param key Private construction key
      */
     matrix_tl() :
         generic_tl<std::array<float, 16> >()

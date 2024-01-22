@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,9 +60,9 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] series Series from which the instance is created
-     * @param[in] isMultiFiles Set whether the instance must be split in several files or not
-     * @param[in] logger Logger
+     * @param[in] _series Series from which the instance is created
+     * @param[in] _logger Logger
+     * @param[in] _is_multi_files Set whether the instance must be split in several files or not
      */
     IO_DICOM_API dicom_instance(
         const CSPTR(data::series)& _series,
@@ -72,8 +72,8 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] dicomSeries DicomSeries from which the instance is created
-     * @param[in] logger Logger
+     * @param[in] _dicom_series DicomSeries from which the instance is created
+     * @param[in] _logger Logger
      */
     IO_DICOM_API dicom_instance(
         const CSPTR(data::dicom_series)& _dicom_series,
@@ -168,19 +168,19 @@ protected:
 
     /**
      * @brief Compute sop_classUID
-     * @param[in] series Series
+     * @param[in] _series Series
      */
     void computesop_class_uid(const CSPTR(data::series)& _series);
 
     /**
      * @brief Generate SOPInstanceUIDs according to series type and dimension
-     * @param[in] series Series
+     * @param[in] _series Series
      */
     void generate_sop_instance_ui_ds(const CSPTR(data::series)& _series);
 
     /**
      * @brief Extract 'SOP Instance UIDs' and 'Frame of Reference UID' from a DICOM series
-     * @param[in] dicomSeries DICOM Series from which the UIDs are extracted
+     * @param[in] _dicom_series DICOM Series from which the UIDs are extracted
      */
     void read_uid_from_dicom_series(const CSPTR(data::dicom_series)& _dicom_series);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,11 +58,10 @@ public:
 
     /**
      * @brief Initialize the connection
-     * @param[in] applicationTitle Move application title
-     * @param[in] applicationport Move application port
-     * @param[in] path Local dicom folder path
-     * @param[in] timeout Connection timeout
-     * @param[in] progress_callback Progress callback
+     * @param[in] _application_title Move application title
+     * @param[in] _applicationport Move application port
+     * @param[in] _timeout Connection timeout
+     * @param[in] _progress_callback Progress callback
      */
     IO_DIMSE_API void initialize(
         const std::string& _application_title,
@@ -87,8 +86,8 @@ protected:
 
     /**
      * @brief Handle C-STORE Request
-     * @param[in] incomingMsg Incoming DIMSE message
-     * @param[in] presID Presentation context ID
+     * @param[in] _incoming_msg Incoming DIMSE message
+     * @param[in] _pres_id Presentation context ID
      * @return OFTrue on success
      */
     virtual OFCondition handleSTORERequest(T_DIMSE_Message* _incoming_msg, T_ASC_PresentationContextID _pres_id);
@@ -99,7 +98,7 @@ protected:
     /// Progress callback slot
     progress_callback_slot_t::sptr m_progress_callback;
 
-    /// Dowloaded instance index
+    /// Downloaded instance index
     unsigned int m_instance_index {};
 };
 

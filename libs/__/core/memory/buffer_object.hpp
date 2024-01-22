@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,13 +47,13 @@ class factory;
  * any cleverness about allocating/destroying the buffer. Users of this class
  * needs to take care about allocation and destruction by themselves.
  *
- * BufferObject class has a BufferManager and Locks mechanism, Allowing to
- * trigger special treatments on various events on BufferObjects (allocation,
+ * buffer_object class has a BufferManager and Locks mechanism, Allowing to
+ * trigger special treatments on various events on buffer_objects (allocation,
  * reallocation, destruction, swapping, locking, unlocking) and allowing to
  * give some guarantees.
  *
- * Users of buffer have to keep a lock on a BufferObject when dealing with the
- * buffers content. Keeping a lock on a BufferObject guarantees that the buffer
+ * Users of buffer have to keep a lock on a buffer_object when dealing with the
+ * buffers content. Keeping a lock on a buffer_object guarantees that the buffer
  * will not be changed or modified by the BufferManager mechanism. A lock *DO
  * NOT ENSURE* that an other user of this buffer object are not
  * changing/modifying the buffer.
@@ -84,12 +84,12 @@ public:
     }
 
     /**
-     * @brief base class for BufferObject Lock
+     * @brief base class for buffer_object Lock
      *
      * This class purpose is to provide a way to count buffer uses, to prevent
      * BufferManager changes on buffer if nb uses > 0
      *
-     * The count is shared with the associated BufferObject. Be aware that this
+     * The count is shared with the associated buffer_object. Be aware that this
      * mechanism is actually not thread-safe.
      *
      */
@@ -103,7 +103,7 @@ public:
         lock_base() = default;
         inline ~lock_base()
         {
-            // Resetting the counter in the destructor **BEFORE** resetting BufferObject shared pointer is required !
+            // Resetting the counter in the destructor **BEFORE** resetting buffer_object shared pointer is required !
             // Otherwise, the lock count assert in the destruction of the buffer, in
             // BufferManager::::unregisterBufferImpl() will be triggered.
             m_count.reset();
@@ -112,9 +112,9 @@ public:
         /**
          * @brief Build a lock on object 'bo'
          *
-         * Increments BufferObject's lock counts.
+         * Increments buffer_object's lock counts.
          *
-         * @param bo BufferObject to lock
+         * @param _bo buffer_object to lock
          */
         lock_base(const SPTR(T)& _bo) :
             m_count(_bo->m_count.lock()),
@@ -132,7 +132,7 @@ public:
         }
 
         /**
-         * @brief Returns BufferObject's buffer pointer
+         * @brief Returns buffer_object's buffer pointer
          */
         [[nodiscard]] typename lock_base<T>::buffer_t buffer() const
         {
@@ -167,14 +167,14 @@ public:
     /**  @} */
 
     /**
-     * @brief BufferObject constructor
+     * @brief buffer_object constructor
      *
      * Register the buffer to an existing buffer manager.
      */
     CORE_API buffer_object(bool _auto_delete = false);
 
     /**
-     * @brief BufferObject destructor
+     * @brief buffer_object destructor
      *
      * unregister the buffer from the buffer manager.
      */
@@ -186,8 +186,8 @@ public:
      * Allocate a buffer using given policy.
      * The allocation may have been hooked by the buffer manager.
      *
-     * @param size number of bytes to allocate
-     * @param policy Buffer allocation policy, default is Malloc policy
+     * @param _size number of bytes to allocate
+     * @param _policy Buffer allocation policy, default is Malloc policy
      *
      */
     CORE_API virtual void allocate(
@@ -203,7 +203,7 @@ public:
      * handle reallocation.
      * The reallocation may have been hooked by the buffer manager.
      *
-     * @param size New buffer size
+     * @param _size New buffer size
      *
      */
     CORE_API virtual void reallocate(size_t _size);
@@ -222,9 +222,9 @@ public:
      *
      * Set the buffer from an existing one.
      *
-     * @param buffer External Buffer
-     * @param size Buffer's size
-     * @param policy External buffer allocation policy, default is Malloc policy
+     * @param _buffer External Buffer
+     * @param _size Buffer's size
+     * @param _policy External buffer allocation policy, default is Malloc policy
      *
      */
     CORE_API virtual void set_buffer(
@@ -236,16 +236,16 @@ public:
     );
 
     /**
-     * @brief Return a lock on the BufferObject
+     * @brief Return a lock on the buffer_object
      *
-     * @return Lock on the BufferObject
+     * @return Lock on the buffer_object
      */
     CORE_API virtual lock_t lock();
 
     /**
-     * @brief Return a const lock on the BufferObject
+     * @brief Return a const lock on the buffer_object
      *
-     * @return ConstLock on the BufferObject
+     * @return ConstLock on the buffer_object
      */
     CORE_API virtual const_lock_t lock() const;
 
@@ -266,7 +266,7 @@ public:
     }
 
     /**
-     * @brief Returns the number of locks on the BufferObject
+     * @brief Returns the number of locks on the buffer_object
      */
     std::int64_t lock_count() const
     {
@@ -282,7 +282,7 @@ public:
     }
 
     /**
-     * @brief Returns pointer on BufferObject's buffer
+     * @brief Returns pointer on buffer_object's buffer
      */
     core::memory::buffer_manager::const_buffer_ptr_t get_buffer_pointer() const
     {
@@ -296,7 +296,7 @@ public:
         return m_mutex;
     }
 
-    /// Exchanges the content of the BufferObject with the content of _source.
+    /// Exchanges the content of the buffer_object with the content of _source.
     CORE_API void swap(const buffer_object::sptr& _source) noexcept;
 
     CORE_API buffer_manager::stream_info get_stream_info() const;
@@ -305,11 +305,11 @@ public:
      * @brief Set a stream factory for the buffer manager
      * The factory will be used to load data on demand by the buffer manager.
      *
-     * @param factory core::memory::stream::in::IFactory stream factory
-     * @param size size of data provided by the stream
-     * @param sourceFile Filesystem path of the source file, if applicable
-     * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided
-     * @param policy Buffer allocation policy
+     * @param _factory core::memory::stream::in::IFactory stream factory
+     * @param _size size of data provided by the stream
+     * @param _source_file Filesystem path of the source file, if applicable
+     * @param _format file format (RAW,RAWZ,OTHER), if sourceFile is provided
+     * @param _policy Buffer allocation policy
      */
     CORE_API void set_istream_factory(
         const SPTR(core::memory::stream::in::factory)& _factory,

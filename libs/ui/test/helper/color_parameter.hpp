@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,17 +34,17 @@ public:
 
     /**
      * Select a color in a color parameter
-     * @param tester The current tester
-     * @param colorParam How to get the color parameter to modify
-     * @param color The color to be selected
+     * @param _tester The current tester
+     * @param _color_param How to get the color parameter to modify
+     * @param _color The color to be selected
      */
     UI_TEST_API static void select(tester& _tester, const selector& _color_param, const QColor& _color);
 
     /**
      * Check whether the color parameter has the good color
-     * @param tester The current tester
-     * @param colorParam How to get the color parameter to check
-     * @param color The color it should have
+     * @param _tester The current tester
+     * @param _color_param How to get the color parameter to check
+     * @param _color The color it should have
      */
     UI_TEST_API static void color_equals(tester& _tester, const selector& _color_param, const QColor& _color);
 };

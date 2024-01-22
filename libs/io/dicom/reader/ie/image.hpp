@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,13 +39,13 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] dicomSeries DicomSeries used to access computed tag values.
-     * @param[in] reader GDCM reader that must be enriched
-     * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] image image data
-     * @param[in] logger Logger
-     * @param[in] progress Progress callback
-     * @param[in] cancel Cancel requested callback
+     * @param[in] _dicom_series DicomSeries used to access computed tag values.
+     * @param[in] _reader GDCM reader that must be enriched
+     * @param[in] _instance DICOM instance used to share informations between modules
+     * @param[in] _image image data
+     * @param[in] _logger Logger
+     * @param[in] _progress Progress callback
+     * @param[in] _cancel Cancel requested callback
      */
     IO_DICOM_API image(
         const CSPTR(data::dicom_series)& _dicom_series,
@@ -88,10 +88,10 @@ protected:
 
     /**
      * @brief Read image buffer
-     * @param[in] dimensions image dimensions
-     * @param[in] bitsAllocated Number of bits allocated before rescale
-     * @param[in] newBitsAllocated Number of bits allocated after rescale
-     * @param[in] performRescale Set to true when a rescale must be perfromed
+     * @param[in] _dimensions image dimensions
+     * @param[in] _bits_allocated Number of bits allocated before rescale
+     * @param[in] _new_bits_allocated Number of bits allocated after rescale
+     * @param[in] _perform_rescale Set to true when a rescale must be perfromed
      * @return Global raw buffer of the image.
      * @throw(io::dicom::exception::Failed)
      */
@@ -105,9 +105,9 @@ protected:
 
     /**
      * @brief Correct image buffer according to image orientation
-     * @param[in,out] buffer image buffer
-     * @param[in] dimensions image dimensions
-     * @param[in] bitsAllocated Number of bits allocated before rescale
+     * @param[in,out] _buffer image buffer
+     * @param[in] _dimensions image dimensions
+     * @param[in] _bits_allocated Number of bits allocated before rescale
      */
     char* correct_image_orientation(
         char* _buffer,

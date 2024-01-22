@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,18 +70,18 @@ public:
     IO_ZIP_API ~archive_writer() override = default;
 
     /// Shared factory. It uses a cache mechanism to return the same instance for the same archive_path.
-    /// @param archive_path path of the archive file. The file will be kept opened as long as the instance leave.
-    /// @param format the format of the archive. @see sight::io::zip::archive::archiveFormat
+    /// @param _archive_path path of the archive file. The file will be kept opened as long as the instance leave.
+    /// @param _format the format of the archive. @see sight::io::zip::archive::archiveFormat
     IO_ZIP_API static archive_writer::uptr get(
         const std::filesystem::path& _archive_path,
         archive_format _format = archive_format::DEFAULT
     );
 
     /// Returns an std::ostream to read an archived file
-    /// @param file_path path of the file inside the archive.
-    /// @param password the password needed to encrypt the file.
-    /// @param method the compression algorithm to use.
-    /// @param level the compression level to use.
+    /// @param _file_path path of the file inside the archive.
+    /// @param _password the password needed to encrypt the file.
+    /// @param _method the compression algorithm to use.
+    /// @param _level the compression level to use.
     IO_ZIP_API virtual std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = "",

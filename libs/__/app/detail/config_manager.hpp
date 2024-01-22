@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,8 +75,8 @@ public:
 
     /**
      * @brief Sets configuration.
-     * @param _configId The identifier of the requested config.
-     * @param _replaceFields The associations between the value and the pattern to replace in the config.
+     * @param _config_id The identifier of the requested config.
+     * @param _replace_fields The associations between the value and the pattern to replace in the config.
      */
     void set_config(
         const std::string& _config_id,

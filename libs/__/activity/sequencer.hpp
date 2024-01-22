@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,9 +68,9 @@ protected:
      *
      * Uses the data of the previously launched activities to create/update the current activity
      *
-     * @param activity_set ActivitySet containing all the activities to be launched sequentially
-     * @param index index of the activity to retrieve
-     * @param slot slot to block in case the activity is created. It is usefull if the service listen notification on
+     * @param _activity_set ActivitySet containing all the activities to be launched sequentially
+     * @param _index index of the activity to retrieve
+     * @param _slot slot to block in case the activity is created. It is useful if the service listen notification on
      * the activity_set
      */
     ACTIVITY_API data::activity::sptr get_activity(
@@ -84,8 +84,8 @@ protected:
      *
      * This is used to clear the activity set and requirement when going backward.
      *
-     * @param activity_set ActivitySet containing all the activities
-     * @param index the activity in index and all the following will be removed
+     * @param _activity_set ActivitySet containing all the activities
+     * @param _index the activity in index and all the following will be removed
      */
     ACTIVITY_API void remove_last_activities(data::activity_set& _activity_set, std::size_t _index);
 

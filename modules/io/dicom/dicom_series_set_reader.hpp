@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,7 +129,7 @@ private:
 
     /**
      * @brief Create a series_set and fill it using the data of the DICOM files
-     * @param[in] dicomDir DICOM folder
+     * @param[in] _dicom_dir DICOM folder
      */
     SPTR(data::series_set) create_series_set(const std::filesystem::path& _dicom_dir);
 

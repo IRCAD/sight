@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ public:
     /**
      * @brief get core::type from an igtlType
      *
-     * @param[in] igtlType
+     * @param[in] _igtl_type
      * @return a core::type
      */
     static const core::type& get_fw_tools_type(const std::uint8_t& _igtl_type);
@@ -68,7 +68,7 @@ public:
     /**
      * @brief get igtlType from a core::type
      *
-     * @param[in] type
+     * @param[in] _type
      * @return uint8 value correspond to an type enum in ::igtl::ImageMessage2
      */
     static std::uint8_t get_igtl_type(const core::type& _type);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,9 +80,9 @@ public:
 
     /**
      * @brief Read DicomSeries from paths.
-     * @param[in] filenames instance paths
-     * @param[in] readerObserver reader observer
-     * @param[in] completeSeriesObserver complete series observer
+     * @param[in] _filenames instance paths
+     * @param[in] _reader_observer reader observer
+     * @param[in] _complete_series_observer complete series observer
      * @return container containing DicomSeries
      */
     static IO_DICOM_API dicom_series_container_t read(
@@ -92,8 +92,8 @@ public:
     );
     /**
      * @brief Fill DicomSeries information for series generated using DICOMDIR helper
-     * @param[in,out] series_set List of DicomSeries that must be completed with information
-     * @param[in] completeSeriesObserver complete series observer
+     * @param[in,out] _series_container List of DicomSeries that must be completed with information
+     * @param[in] _complete_series_observer complete series observer
      */
     static IO_DICOM_API void complete(
         dicom_series_container_t& _series_container,
@@ -104,8 +104,8 @@ protected:
 
     /**
      * @brief Fill series with information contained in first instance
-     * @param[in,out] series_set List of DicomSeries that must be completed with information
-     * @param[in] completeSeriesObserver complete series observer
+     * @param[in,out] _series_container List of DicomSeries that must be completed with information
+     * @param[in] _complete_series_observer complete series observer
      */
     static void fill_series(
         dicom_series_container_t& _series_container,
@@ -115,8 +115,8 @@ protected:
     /**
      * @brief Create DicomSeries from list of files. Every instance is read in
      * order to retrieve instance information regarding the matching series.
-     * @param[in] filenames List of files
-     * @param[in] readerObserver reader observer
+     * @param[in] _filenames List of files
+     * @param[in] _reader_observer reader observer
      */
     static dicom_series_container_t split_files(
         filename_container_t& _filenames,
@@ -125,9 +125,9 @@ protected:
 
     /**
      * @brief Create a series from the dataset and store it in the series map
-     * @param[in,out] series_set List of DicomSeries that must be completed with information
-     * @param[in] scanner GDCM Scanner used to read information
-     * @param[in] filename Filename from which the information must be read
+     * @param[in,out] _series_container List of DicomSeries that must be completed with information
+     * @param[in] _scanner GDCM Scanner used to read information
+     * @param[in] _filename Filename from which the information must be read
      */
     static void create_series(
         dicom_series_container_t& _series_container,

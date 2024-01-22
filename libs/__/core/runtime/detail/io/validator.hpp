@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
      *
      * Copy a validator.
      *
-     * @param   validator to be copied
+     * @param   _validator to be copied
      */
     validator(const validator& _validator);
 
@@ -61,16 +61,16 @@ public:
      *
      * Builds a validator with a string containing a XML schema.
      *
-     * @param   schema  a string containing the XML schema
+     * @param   _schema  a string containing the XML schema
      */
-    validator(std::string _buffer);
+    validator(std::string _schema);
 
     /**
      * @brief   Constructor
      *
      * Builds a validator with a path to a file containing an XML schema.
      *
-     * @param   path    a path to the xml schema file to load
+     * @param   _path    a path to the xml schema file to load
      */
     validator(const std::filesystem::path& _path);
 
@@ -94,7 +94,7 @@ public:
     /**
      * @brief   Validates the given file.
      *
-     * @param   xmlFile a path to an xml file to validate
+     * @param   _xml_file a path to an xml file to validate
      *
      * @return  true when the validation succeeds, false otherwise
      */
@@ -103,7 +103,7 @@ public:
     /**
      * @brief   Validates the given xml node.
      *
-     * @param   node    a pointer to an xml node
+     * @param   _node    a pointer to an xml node
      *
      * @return  true when the validation succeeds, false otherwise
      */

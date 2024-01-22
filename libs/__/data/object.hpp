@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,8 +113,8 @@ public:
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
-     * @param[in] name field name
-     * @param[in] defaultValue Default value
+     * @param[in] _name field name
+     * @param[in] _default_value Default value
      * @return defaultValue if field is not found
      */
     DATA_API object::sptr get_field(
@@ -124,7 +124,7 @@ public:
 
     /**
      * @brief Returns a pointer of corresponding field.
-     * @param[in] name field name
+     * @param[in] _name field name
      * @return pointer to corresponding field, nullptr if field is not found.
      */
     template<typename DATA_TYPE>
@@ -132,8 +132,8 @@ public:
 
     /**
      * @brief Returns a pointer of corresponding field.
-     * @param[in] name field name
-     * @param[in] defaultValue Default value
+     * @param[in] _name field name
+     * @param[in] _default_value Default value
      * @return pointer to corresponding field, defaultValue if field is not found.
      */
     template<typename DATA_TYPE>
@@ -142,8 +142,8 @@ public:
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if
      * defaultValue is not null.
-     * @param[in] name field name
-     * @param[in] defaultValue default return value if field was not found
+     * @param[in] _name field name
+     * @param[in] _default_value default return value if field was not found
      * @return pointer to corresponding field.
      */
     template<typename DATA_TYPE>
@@ -161,8 +161,8 @@ public:
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
-     * @param[in] name field name
-     * @param[in] obj  field
+     * @param[in] _name field name
+     * @param[in] _obj  field
      */
     DATA_API void set_field(const field_name_t& _name, object::sptr _obj);
 
@@ -173,19 +173,19 @@ public:
 
     /**
      * @brief Removes field with specified name.
-     * @param[in] name field name
+     * @param[in] _name field name
      */
     DATA_API void remove_field(const field_name_t& _name);
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param[in] source the source object to copy
+    /// @param[in] _source the source object to copy
     DATA_API virtual void shallow_copy(const object::csptr& _source);
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
-    /// @param source source object to copy
-    /// @param cache cache used to deduplicate pointers
+    /// @param _source source object to copy
+    /// @param _cache cache used to deduplicate pointers
     DATA_API virtual void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()

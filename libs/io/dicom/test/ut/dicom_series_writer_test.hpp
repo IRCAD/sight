@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,8 +59,8 @@ private:
      *
      * @note Do not compare local_dicom_paths attributes
      *
-     * @param p path to read Dicom series to be compared
-     * @param anonymized if true, further attributes related to anonymisation are not compared.
+     * @param _p path to read Dicom series to be compared
+     * @param _anonymized if true, further attributes related to anonymization are not compared.
      */
     void check_dicom_series(
         const std::filesystem::path& _p,

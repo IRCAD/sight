@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ public:
 
     /**
      * @brief m_object setter.
-     * @param[out] obj replaces weakptr m_object of the instance reader
+     * @param[out] _obj replaces weakptr m_object of the instance reader
      *
      * This method overloads set_object to ensure that given object corresponds to DATATYPE
      */

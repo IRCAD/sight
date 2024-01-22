@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ CORE_API std::filesystem::path working_path() noexcept;
 /**
  * @brief   Retrieve the filesystem valid path of resources of a module.
  *
- * @param   moduleIdentifier    a string containing a module identifier
+ * @param   _module_identifier    a string containing a module identifier
  *
  * @return  a system valid path
  */
@@ -51,8 +51,8 @@ CORE_API std::filesystem::path get_module_resource_path(const std::string& _modu
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
  *
- * @param   moduleIdentifier    a string containing a module identifier
- * @param   path                a module relative path
+ * @param   _module_identifier    a string containing a module identifier
+ * @param   _path                 a module relative path
  *
  * @return  a system valid path
  */
@@ -66,7 +66,7 @@ CORE_API std::filesystem::path get_module_resource_file_path(
  * For instance for "module/dir/file.txt", the function returns
  * "/home/login/sight/build/share/module/dir/file.txt"
  *
- * @param   path                relative path whose first element is a module identifier
+ * @param   _path                relative path whose first element is a module identifier
  *
  * @return  a system valid path
  */
@@ -77,7 +77,7 @@ CORE_API std::filesystem::path get_module_resource_file_path(const std::filesyst
  * For instance for "fwLib/dir/file.txt", the function returns
  * "/home/login/sight/build/share/fwLib/dir/file.txt"
  *
- * @param   path                relative path whose first element is a library identifier
+ * @param   _path                relative path whose first element is a library identifier
  *
  * @return  a system valid path
  */
@@ -97,7 +97,7 @@ CORE_API std::filesystem::path get_library_resource_file_path(const std::filesys
  *  the function returns:
  * - "/home/login/sight/build/share/module/dir/file.txt"
  *
- * @param   path   relative path whose first element is a module or library identifier
+ * @param   _path   relative path whose first element is a module or library identifier
  *
  * @return  a system valid path or an empty path if nothing is found
  */
@@ -106,8 +106,8 @@ CORE_API std::filesystem::path get_resource_file_path(const std::filesystem::pat
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified module.
  *
- * @param   module  a pointer to a module instance
- * @param   path    a path relative to the module
+ * @param   _module  a pointer to a module instance
+ * @param   _path    a path relative to the module
  *
  * @return  a system valid path
  */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,10 +42,10 @@ public:
     /*!
      * @brief Convert a data::transfer_function to a vtkLookupTable.
      *
-     * @param[in] tf data::transfer_function
-     * @param[in] allowTransparency Enable conversion of data::transfer_function alpha channel
-     * @param[in] size lookup table size
-     * @param[out] lt vtkLookupTable
+     * @param[in] _tf data::transfer_function
+     * @param[in] _allow_transparency Enable conversion of data::transfer_function alpha channel
+     * @param[in] _size lookup table size
+     * @param[out] _lt vtkLookupTable
      */
     IO_VTK_API static void to_vtk_lookup_table(
         data::transfer_function::csptr _tf,
@@ -57,10 +57,10 @@ public:
     /*!
      * @brief Convert the range of an image or a transfer_function to a black and white vtkLookupTable.
      *
-     * @param[in] rangeMin
-     * @param[in] rangeMax
-     * @param[in] size lookup table size
-     * @param[out] lt vtkLookupTable
+     * @param[in] _range_min
+     * @param[in] _range_max
+     * @param[in] _size lookup table size
+     * @param[out] _lt vtkLookupTable
      *
      */
     IO_VTK_API static void to_bw_vtk_lookup_table(

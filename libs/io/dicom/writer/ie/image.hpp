@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,12 +38,12 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] writer GDCM writer that must be enriched
-     * @param[in] instance DICOM instance used to share information between modules
-     * @param[in] image image data
-     * @param[in] logger Logger
-     * @param[in] progress Progress callback
-     * @param[in] cancel Cancel requested callback
+     * @param[in] _writer GDCM writer that must be enriched
+     * @param[in] _instance DICOM instance used to share information between modules
+     * @param[in] _image image data
+     * @param[in] _logger Logger
+     * @param[in] _progress Progress callback
+     * @param[in] _cancel Cancel requested callback
      */
     IO_DICOM_API image(
         const SPTR(gdcm::Writer)& _writer,
@@ -66,7 +66,7 @@ public:
     /**
      * @brief Write General image Module specific tags
      * @see PS 3.3 C.7.6.1
-     * @param[in] instanceNumber Instance number
+     * @param[in] _instance_number Instance number
      */
     IO_DICOM_API virtual void write_general_image_module_specific_tags(unsigned int _instance_number);
 
@@ -79,7 +79,7 @@ public:
     /**
      * @brief Write image Plane Module tags
      * @see PS 3.3 C.7.6.2
-     * @param[in] instanceNumber Instance number
+     * @param[in] _instance_number Instance number
      */
     IO_DICOM_API virtual void write_image_plane_module_specific_tags(unsigned int _instance_number);
 
@@ -92,7 +92,7 @@ public:
     /**
      * @brief Write image Pixel Module specific tags
      * @see PS 3.3 C.7.6.3
-     * @param[in] instanceNumber Instance number
+     * @param[in] _instance_number Instance number
      */
     IO_DICOM_API virtual void write_image_pixel_module_specific_tags(unsigned int _instance_number);
 
@@ -111,7 +111,7 @@ public:
     /**
      * @brief Write SOP Common Module specific tags
      * @see PS 3.3 C.12.1
-     * @param[in] instanceNumber Instance number
+     * @param[in] _instance_number Instance number
      */
     IO_DICOM_API virtual void write_sop_common_module_specific_tags(unsigned int _instance_number);
 

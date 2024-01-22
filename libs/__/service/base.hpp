@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -201,7 +201,7 @@ public:
 
     /**
      * @brief Affect the configuration, using a boost property tree
-     * @param[in] ptree property tree
+     * @param[in] _ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
     SERVICE_API void set_config(const config_t& _ptree);
@@ -220,7 +220,7 @@ public:
     /**
      * @brief Set configuration and then invoke configuring() if m_globalState == STOPPED
      * @post m_configurationState == CONFIGURED
-     * @param[in] ptree property tree
+     * @param[in] _ptree property tree
      */
     SERVICE_API void configure(const config_t& _ptree);
 
@@ -328,7 +328,6 @@ protected:
      * The key in parameter indicates allows to retrieve the new data with input(), inout() or output().
      * If you need the old object, you need to keep a shared pointer on it inside your service implementation.
      *
-     * @param key of the object
      * @see swap_key()
      * @todo This method must be pure virtual
      * @todo This method must have in parameter the new object or the old ?

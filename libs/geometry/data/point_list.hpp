@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,8 +46,8 @@ public:
 
     /**
      * @brief Computes the point-to-point distance between 2 pointlists
-     * @param[in] _pointList1 first point list
-     * @param[in] _pointList2 second point list
+     * @param[in] _point_list1 first point list
+     * @param[in] _point_list2 second point list
      * @return array of the size of one the pointlists (they must have the same size)
      */
     GEOMETRY_DATA_API static sight::data::array::sptr compute_distance(
@@ -57,7 +57,7 @@ public:
 
     /**
      * @brief Transform a pointList with a transformation matrix
-     * @param[in] _pointList pointlist to be transformed
+     * @param[in] _point_list pointlist to be transformed
      * @param[in] _matrix transformation to apply to each points in pointlist
      */
     GEOMETRY_DATA_API static void transform(
@@ -69,8 +69,8 @@ public:
      * @brief Associate 2 pointLists:
      * Take 2 pointLists as input and re-order the second one, so that the points at the
      * same index on both lists are the closest to each other
-     * @param[in] _pointList1 first pointlist
-     * @param[in] _pointList2 pointlist that will be re-ordered
+     * @param[in] _point_list1 first pointlist
+     * @param[in] _point_list2 pointlist that will be re-ordered
      */
     GEOMETRY_DATA_API static void associate(
         const sight::data::point_list::csptr& _point_list1,
@@ -79,9 +79,9 @@ public:
 
     /**
      * @brief removeClosestPoint: removes the closest point from a reference point
-     * @param[in] _pointList: the point list
-     * @param[in] _point: used to find the closest point in the list of points
-     * @param[in] _delta: the maximum tolerance  between the reference point and the point to find
+     * @param[in] _point_list the point list
+     * @param[in] _point used to find the closest point in the list of points
+     * @param[in] _delta the maximum tolerance  between the reference point and the point to find
      * @return the removed point or nullptr if no point has been removed
      */
     GEOMETRY_DATA_API static sight::data::point::sptr remove_closest_point(

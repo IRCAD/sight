@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ public:
 
     /**
      * @brief Insert an empty tag in a data set. Useful for empty type 2 tags.
-     * @param[in] dataset Data set of tags
+     * @param[in] _dataset Data set of tags
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
@@ -55,8 +55,8 @@ public:
 
     /**
      * @brief Insert the value of a tag in a data set.
-     * @param[in] value Value to set
-     * @param[in] dataset Data set of tags
+     * @param[in] _value Value to set
+     * @param[in] _dataset Data set of tags
      * @tparam T Type of value
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
@@ -71,8 +71,8 @@ public:
 
     /**
      * @brief Insert the string value of a tag in a data set.
-     * @param[in] value Value to set
-     * @param[in] dataset Data set of tags
+     * @param[in] _value Value to set
+     * @param[in] _dataset Data set of tags
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
@@ -84,9 +84,9 @@ public:
 
     /**
      * @brief Insert multiple values of a tag in a data set.
-     * @param[in] array An Array.
-     * @param[in] size Size of the array.
-     * @param[in] dataset Data set of tags.
+     * @param[in] _array An Array.
+     * @param[in] _size Size of the array.
+     * @param[in] _dataset Data set of tags.
      * @tparam T Type of pointer.
      * @tparam GROUP Group of the tag.
      * @tparam ELEMENT Element of the tag.
@@ -106,8 +106,8 @@ public:
 
     /**
      * @brief Set and insert a sequence of items with a tag in the specified data set.
-     * @param[in] sequence Sequence of items to insert
-     * @param[in] dataset Data set
+     * @param[in] _sequence Sequence of items to insert
+     * @param[in] _dataset Data set
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
@@ -129,7 +129,7 @@ public:
 
     /**
      * @brief Create and set a sequence of items with a tag in the specified data set.
-     * @param[in] dataset Data set
+     * @param[in] _dataset Data set
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
@@ -145,8 +145,8 @@ public:
     /**
      * @brief Insert a sequence of items with a tag in the specified data set.
      * If the tag already exists, items of the old and new sequences are added in a new one.
-     * @param[in] sequence Sequence of items to insert
-     * @param[in] dataset Data set
+     * @param[in] _sequence Sequence of items to insert
+     * @param[in] _dataset Data set
      *
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
@@ -180,8 +180,8 @@ public:
 
     /**
      * @brief Set tag value for the code sequence.
-     * @param[in] attribute attribute to set
-     * @param[in] dataset Data set
+     * @param[in] _attribute attribute to set
+     * @param[in] _dataset Data set
      *
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag

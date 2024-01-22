@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,10 +41,10 @@ public:
 
     /**
      * @brief transforms and resamples an image using ITK.
-     * @param[in] _inImg the input data::image.
-     * @param[out] _outImg the resulting transformed image.
-     * @param[in] _trf transform applied to the input.
-     * @param[in] _targetImg image used to set the desired origin, spacing and size.
+     * @param[in] _in_image     the input data::image.
+     * @param[out] _out_image   the resulting transformed image.
+     * @param[in] _trf          transform applied to the input.
+     * @param[in] _parameters   set the desired origin, spacing and size.
      */
     static FILTER_IMAGE_API void resample(
         const data::image::csptr& _in_image,
@@ -59,7 +59,7 @@ public:
      * @brief transforms and resamples the image into a new grid big enough so it won't crop the input image.
      * @param _img image to resample.
      * @param _trf transform applied to the image.
-     * @param _outputSpacing desired sampling rate.
+     * @param _output_spacing desired sampling rate.
      * @return resampled image.
      */
     static FILTER_IMAGE_API data::image::sptr resample(

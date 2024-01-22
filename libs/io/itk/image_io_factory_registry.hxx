@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::io::itk
 /**
  * @brief The purpose of this class is to automatically register a Concrete ImageIOFactory in the factory database of
  * ITK ( itk::ObjectFactoryBase ).
- * @tparam the type of imageiofactory class to register
+ * @tparam ConcreteImageIOFactory the type of imageiofactory class to register
  * The technique used is declare a global variable as instance of a class ( see REGISTER_IMAGEIOFACTORY ). The creation
  * of the instance will call the
  * registration of the factory

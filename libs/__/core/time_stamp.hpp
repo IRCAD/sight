@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
     /**
      * @brief Greater than operator for TimeStamp.
      *
-     * @param ts TimeStamp to compare to
+     * @param _ts TimeStamp to compare to
      */
     CORE_API bool operator>(const time_stamp& _ts) const
     {
@@ -69,7 +69,7 @@ public:
     /**
      * @brief Lesser than operator for TimeStamp.
      *
-     * @param ts TimeStamp to compare to
+     * @param _ts TimeStamp to compare to
      */
     CORE_API bool operator<(const time_stamp& _ts) const
     {
@@ -87,7 +87,7 @@ public:
     /**
      * @brief Setter for the life period
      *
-     * @param period Period in milliseconds
+     * @param _period Period in milliseconds
      */
     CORE_API void set_life_period(time_stamp_type _period)
     {

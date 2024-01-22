@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,9 @@ public:
 
     /**
      * Fill a field with the specified text.
-     * @param tester The current tester
-     * @param field How to get the field to fill
-     * @param text The text to put in the field
+     * @param _tester The current tester
+     * @param _field How to get the field to fill
+     * @param _text The text to put in the field
      */
     UI_TEST_API static void fill(tester& _tester, const selector& _field, const std::string& _text);
 };

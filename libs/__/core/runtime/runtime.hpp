@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,14 +51,14 @@ CORE_API void shutdown();
 /**
  * @brief   Loads all modules that can be found in the specified directory.
  *
- * @param   directory   a path to the directory to explore for modules
+ * @param   _directory   a path to the directory to explore for modules
  */
 CORE_API void add_modules(const std::filesystem::path& _directory);
 
 /**
  * @brief   Retrieves the module with the given identifier and version
  *
- * @param   identifier  a string containing a module identifier
+ * @param   _identifier  a string containing a module identifier
  *
  * @return  a shared pointer to the found module, or empty when none
  */
@@ -74,7 +74,7 @@ CORE_API std::set<std::shared_ptr<module> > modules();
 /**
  * @brief   Load a module.
  *
- * @param   identifier  a string containing a module identifier
+ * @param   _identifier  a string containing a module identifier
  *
  * @return  a shared pointer to the found module, or empty when it is not found
  */
@@ -83,14 +83,14 @@ CORE_API std::shared_ptr<module> load_module(const std::string& _identifier);
 /**
  * @brief   Starts the module specified by the given identifier.
  *
- * @param   identifier  a string containing a module identifier
+ * @param   _identifier  a string containing a module identifier
  */
 CORE_API void start_module(const std::string& _identifier);
 
 /**
  * @brief   Unload a module.
  *
- * @param   identifier  a string containing a module identifier
+ * @param   _identifier  a string containing a module identifier
  *
  * @return  a shared pointer to the found module, or empty when it is not found
  */
@@ -99,7 +99,7 @@ CORE_API void unload_module(const std::string& _identifier);
 /**
  * @brief   Load a library.
  *
- * @param   identifier  a string containing a module identifier
+ * @param   _identifier  a string containing a module identifier
  *
  * @return  success
  */
@@ -108,7 +108,7 @@ CORE_API bool load_library(const std::string& _identifier);
 /**
  * @brief   Retrieve the extension having the specified identifier.
  *
- * @param   identifier  a string containing an extension identifier
+ * @param   _identifier  a string containing an extension identifier
  *
  * @return  a shared pointer to the found extension or null if none
  */

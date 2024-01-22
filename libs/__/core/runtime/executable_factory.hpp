@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   type    a string containing a type identifier
+     * @param[in]   _type    a string containing a type identifier
      */
     CORE_API executable_factory(const std::string& _type);
 

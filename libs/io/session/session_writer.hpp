@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -84,29 +84,29 @@ public:
     IO_SESSION_API std::string extension() const override;
 
     /// Sets the password
-    /// @param password the new password
+    /// @param _password the new password
     IO_SESSION_API void set_password(const core::crypto::secure_string& _password);
 
     /// Sets the encryption policy
-    /// @param policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
+    /// @param _policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     IO_SESSION_API void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
 
     /// Set archive format
-    /// @param archiveFormat how files are stored in the archive: @see sight::io::zip::archive::archiveFormat
+    /// @param _archive_format how files are stored in the archive: @see sight::io::zip::archive::archiveFormat
     IO_SESSION_API void set_archive_format(zip::archive::archive_format _archive_format);
 
     /// Set a serialization function for an object
-    /// @param className the name of the object to serialize
-    /// @param serializer the function pointer to the serialization function
+    /// @param _class_name the name of the object to serialize
+    /// @param _serializer the function pointer to the serialization function
     IO_SESSION_API void set_custom_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
 
     /// Set a default serialization function for an object
-    /// @param className the name of the object to serialize
-    /// @param serializer the function pointer to the serialization function
+    /// @param _class_name the name of the object to serialize
+    /// @param _serializer the function pointer to the serialization function
     IO_SESSION_API static void set_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
 
     /// Return the registered serialization function for an object
-    /// @param className the name of the object to serialize
+    /// @param _class_name the name of the object to serialize
     /// @return the function pointer to the serialization function
     IO_SESSION_API static serializer_t serializer(const std::string& _class_name);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@ public:
      * @brief Creates a across, instantiates its material. The cross is not visible when created, call update() to set
      * the coordinates of its two segments.
      * @param _name unique identifier of the scene node.
-     * @param _sceneManager the Ogre scene manager.
+     * @param _scene_manager the Ogre scene manager.
      * @param _parent parent node where attach the plane.
      */
     VIZ_SCENE3D_API picking_cross(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,8 +94,8 @@ private:
 
     /**
      * @brief Write a series_set to a folder in DICOM format
-     * @param[in] folder DICOM folder
-     * @param[in] series_set series_set that must be written
+     * @param[in] _folder DICOM folder
+     * @param[in] _series_set series_set that must be written
      */
     void save_series_set(const std::filesystem::path _folder, SPTR(data::series_set) _series_set);
 

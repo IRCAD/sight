@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -265,19 +265,19 @@ public:
     /**
      * @brief Called when a new landmark is set as current one (double click or pick)
      *
-     * @param world_coord coordinate of the current landmark
+     * @param _world_coord coordinate of the current landmark
      */
     void update_current_landmark(data::landmarks::point_t& _world_coord) const;
 
     /**
      * @brief Called when a group's point size is modified.
-     * @param _newSize the new size of the group.
+     * @param _new_size the new size of the group.
      */
     void on_size_changed(int _new_size);
 
     /**
      * @brief Called when a group's opacity is modified.
-     * @param _newOpacity the new opacity of the group.
+     * @param _new_opacity the new opacity of the group.
      */
     void on_opacity_changed(int _new_opacity);
 
@@ -303,20 +303,20 @@ public:
 
     /**
      * @brief SLOT: adds a point to the editor.
-     * @param _groupName the group name where the point is added.
+     * @param _group_name the group name where the point is added.
      */
     void add_point(std::string _group_name) const;
 
     /**
      * @brief Slot: updates a point coordinates in the editor.
-     * @param _groupName the group name of the updated point.
+     * @param _group_name the group name of the updated point.
      * @param _index the index of the point to update.
      */
     void modify_point(std::string _group_name, std::size_t _index) const;
 
     /**
      * @brief SLOT: selects the point's corresponding item in the editor.
-     * @param _groupName the group name of the selected point.
+     * @param _group_name the group name of the selected point.
      * @param _index the index of the point to select.
      */
     void select_point(std::string _group_name, std::size_t _index) const;
@@ -338,15 +338,15 @@ public:
 
     /**
      * @brief SLOT: removes point from editor
-     * @param _groupName the group name of the point the remove.
+     * @param _group_name the group name of the point the remove.
      * @param _index the index of the point to remove.
      */
     void remove_point(std::string _group_name, std::size_t _index) const;
 
     /**
      * @brief SLOT: renames a group in the editor.
-     * @param _oldName the old name of the group.
-     * @param _newName the new name of the group.
+     * @param _old_name the old name of the group.
+     * @param _new_name the new name of the group.
      */
     void rename_group(std::string _old_name, std::string _new_name) const;
 
@@ -365,7 +365,7 @@ public:
 
     /**
      * @brief Gets tree item representing the group.
-     * @param _groupName the name of the item to find.
+     * @param _group_name the name of the item to find.
      * @return The item representing _groupName.
      */
     QTreeWidgetItem* get_group_item(const std::string& _group_name) const;
@@ -391,7 +391,7 @@ public:
 
     /**
      * @brief Draws a colored square on the button.
-     * @param button the button where the square will be drawn.
+     * @param _button the button where the square will be drawn.
      * @param _color the color of the square.
      */
     static void set_color_button_icon(QPushButton* _button, const QColor& _color);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,8 +36,8 @@ namespace sight::geometry::data
  * @brief Compute the closest points between two rays.
  *  @param [in]  _ray1 ray (origin,direction). Direction vector is assumed be normalized.
  *  @param [in]  _ray2 ray (origin,direction). Direction vector is assumed be normalized.
- *  @param [out] _pointOnThis intersection point.
- *  @param [out] _pointOnfw_line barycenter of the triangle defined by the three points of the place.
+ *  @param [out] _point_on_this intersection point.
+ *  @param [out] _point_onfw_line barycenter of the triangle defined by the three points of the place.
  * Return FALSE if the lines are parallel, TRUE otherwise.
  * @verbatim
    p1 + t1 * d1

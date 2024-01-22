@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,16 +35,16 @@ namespace sight::filter::vision
  * @brief Computes the 3D reprojection of a pixel according to a depth map, given the camera calibration data.
  *
  * @tparam T floating point type used for the computation
- * @param[in] px X pixel coordinate.
- * @param[in] py Y pixel coordinate.
- * @param[in] depth Pixel depth according to the depth map.
- * @param[in] cx X Pixel coordinate of the camera optical center.
- * @param[in] cy Y Pixel coordinate of the camera optical center.
- * @param[in] fx X focal length of the camera.
- * @param[in] fy Y focal length of the camera.
- * @param[out] x Output X coordinate.
- * @param[out] y Output Y coordinate.
- * @param[out] z Output Z coordinate.
+ * @param[in] _px X pixel coordinate.
+ * @param[in] _py Y pixel coordinate.
+ * @param[in] _depth Pixel depth according to the depth map.
+ * @param[in] _cx X Pixel coordinate of the camera optical center.
+ * @param[in] _cy Y Pixel coordinate of the camera optical center.
+ * @param[in] _fx X focal length of the camera.
+ * @param[in] _fy Y focal length of the camera.
+ * @param[out] _x Output X coordinate.
+ * @param[out] _y Output Y coordinate.
+ * @param[out] _z Output Z coordinate.
  */
 template<class T>
 void project_pixel(
@@ -64,17 +64,17 @@ void project_pixel(
  * @brief compute the projection of a point in a 2D image
  *
  * @tparam T floating point type used for the computation
- * @param[in] x x coordinate of the point
- * @param[in] y y coordinate of the point
- * @param[in] z z coordinate of the point
- * @param[in] cx X Pixel coordinate of the camera optical center.
- * @param[in] cy Y Pixel coordinate of the camera optical center.
- * @param[in] fx X focal length of the camera.
- * @param[in] fy Y focal length of the camera.
- * @param[in] width image width
- * @param[in] height image height
- * @param[out] px output x pixel coordinate
- * @param[out] py output y pixel coordinate
+ * @param[in] _x x coordinate of the point
+ * @param[in] _y y coordinate of the point
+ * @param[in] _z z coordinate of the point
+ * @param[in] _cx X Pixel coordinate of the camera optical center.
+ * @param[in] _cy Y Pixel coordinate of the camera optical center.
+ * @param[in] _fx X focal length of the camera.
+ * @param[in] _fy Y focal length of the camera.
+ * @param[in] _width image width
+ * @param[in] _height image height
+ * @param[out] _px output x pixel coordinate
+ * @param[out] _py output y pixel coordinate
  * @return true if the point can be projected on the image
  */
 template<class T>

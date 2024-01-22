@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,9 @@ public:
     /**
      * @brief Default constructor.
      *
-     * @param[in] maxMemory the maximum amount of memory used by the manager (commands are dumped beyond this point)
-     * @param[in] maxUndo the maximum number of commands stored by the manager (commands are dumped beyond this point)
+     * @param[in] _max_memory the maximum amount of memory used by the manager (commands are dumped beyond this point)
+     * @param[in] _max_commands the maximum number of commands stored by the manager (commands are dumped beyond this
+     * point)
      */
     UI_HISTORY_API undo_redo_manager(
         std::size_t _max_memory   = std::numeric_limits<std::size_t>::max(),
@@ -52,7 +53,7 @@ public:
     /**
      * @brief Push a command to the history.
      *
-     * @param[in] cmd the command
+     * @param[in] _cmd the command
      *
      * @return false if the enqueue failed.
      */

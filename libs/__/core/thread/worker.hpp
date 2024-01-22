@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -102,7 +102,7 @@ public:
      * for maxtime milliseconds or until there are no more tasks to process.
      * You can call this function occasionally when your program is busy performing a long operation.
      *
-     * @param maxtime milliseconds to process worker pending tasks.
+     * @param _maxtime milliseconds to process worker pending tasks.
      * @warning Qt implementation processes all Qt and Worker pending events, be careful.
      * @warning WxWidgets version is not yet implemented.
      */
@@ -136,7 +136,7 @@ using worker_key_type = std::string;
 
 /**
  * @brief Get a registered worker given a key, if the key does not exist a null pointer is returned
- * @param key name of the worker thread
+ * @param _key name of the worker thread
  * @note This method is thread safe.
  */
 CORE_API core::thread::worker::sptr get_worker(const worker_key_type& _key);
@@ -144,22 +144,22 @@ CORE_API core::thread::worker::sptr get_worker(const worker_key_type& _key);
 /**
  * @brief Registers a worker.
  * The caller is still responsible of the lifetime of the worker and should call remove_worker() symmetrically.
- * @param key name of the worker thread
- * @param worker pointer to the worker thread
+ * @param _key name of the worker thread
+ * @param _worker pointer to the worker thread
  * @note This method is thread safe.
  */
 CORE_API void add_worker(const worker_key_type& _key, core::thread::worker::sptr _worker);
 
 /**
  * @brief Stops and unregisters a worker
- * @param key name of the worker thread
+ * @param _key name of the worker thread
  * @note This method is thread safe.
  */
 CORE_API void remove_worker(const worker_key_type& _key);
 
 /**
  * @brief Stops and unregisters a worker
- * @param worker pointer to the worker thread
+ * @param _worker pointer to the worker thread
  * @note This method is thread safe.
  */
 CORE_API void remove_worker(core::thread::worker::sptr _worker);
@@ -177,7 +177,7 @@ CORE_API core::thread::worker::sptr get_default_worker();
  * the default WorkerAsio, which should not be already in use.
  * If you use this method, you need to call reset_default_worker() to unregister the worker thread.
  *
- * @param worker pointer to the worker thread
+ * @param _worker pointer to the worker thread
  * @note This method is thread safe.
  * @throw sight::core::exception if the worker is null or if the previous default worker is already in use.
  */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,12 +38,12 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] writer GDCM writer that must be enriched
-     * @param[in] instance DICOM instance used to share information between modules
-     * @param[in] patient Patient data
-     * @param[in] logger Logger
-     * @param[in] progress Progress callback
-     * @param[in] cancel Cancel requested callback
+     * @param[in] _writer GDCM writer that must be enriched
+     * @param[in] _instance DICOM instance used to share information between modules
+     * @param[in] _series Patient data
+     * @param[in] _logger Logger
+     * @param[in] _progress Progress callback
+     * @param[in] _cancel Cancel requested callback
      */
     IO_DICOM_API patient(
         const SPTR(gdcm::Writer)& _writer,

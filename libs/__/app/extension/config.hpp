@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,12 +98,11 @@ public:
 
     /**
      * @brief Register a new config.
-     * @param configId the identifier of the registered config.
-     * @param type the type of the added config. It can be TEMPLATE, STANDARD or PARAMETERS.
-     * @param group the name of the group that owns the config.
-     * @param desc the config description.
-     * @param parameters the list of template parameters in the config.
-     * @param config the registered config.
+     * @param _config_id the identifier of the registered config.
+     * @param _group the name of the group that owns the config.
+     * @param _desc the config description.
+     * @param _parameters the list of template parameters in the config.
+     * @param _config the registered config.
      * @note This method is thread safe
      */
     APP_API void addapp_info(
@@ -117,8 +116,8 @@ public:
 
     /**
      * @brief  Return the adapted config with the identifier configId.
-     * @param configId the identifier of the requested config.
-     * @param replaceFields associations between the value and the pattern to replace in the config.
+     * @param _config_id the identifier of the requested config.
+     * @param _replace_fields associations between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
     APP_API core::runtime::config_t get_adapted_template_config(
@@ -129,8 +128,8 @@ public:
 
     /**
      * @brief  Return the adapted config with the identifier configId.
-     * @param configId the identifier of the requested config.
-     * @param replaceFields composite of association between the value and the pattern to replace in the config.
+     * @param _config_id the identifier of the requested config.
+     * @param _replace_fields composite of association between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
     APP_API core::runtime::config_t get_adapted_template_config(
@@ -142,7 +141,7 @@ public:
 
     /**
      * @brief Retrieves the module from the config id
-     * @param configId the config identifier
+     * @param _config_id the config identifier
      */
     APP_API std::shared_ptr<core::runtime::module> get_module(const std::string& _config_id);
 

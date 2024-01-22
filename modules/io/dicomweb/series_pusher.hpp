@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,8 +103,8 @@ private:
 
     /**
      * @brief Display a message
-     * @param[in] message Message to display
-     * @param[in] error True if the message is an error messsage
+     * @param[in] _message Message to display
+     * @param[in] _error True if the message is an error messsage
      */
     static void display_message(const std::string& _message, bool _error);
 

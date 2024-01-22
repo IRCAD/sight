@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,14 +113,14 @@ protected:
 
     /**
      * @brief process the tracking
-     * @param[in,out] timestamp the timestamp of the processes object of the timeline
+     * @param[in,out] _timestamp the timestamp of the processes object of the timeline
      */
     SERVICE_API virtual void tracking(core::clock::type& _timestamp) = 0;
 
     /// timestamp of the last tracking
     core::clock::type m_last_timestamp {0};
 
-    /// If true, only last object is retrived
+    /// If true, only last object is retrieved
     bool m_drop_obj {true};
 
     /// If false, the trackMethod does nothing

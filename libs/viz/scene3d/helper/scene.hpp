@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,8 +36,8 @@ public:
 
     /**
      * @brief Looks for a given scene node in a scene manager.
-     * @param[in] _nodeId Identifier of the node
-     * @param[in] _sceneMgr scene manager
+     * @param[in] _node_id Identifier of the node
+     * @param[in] _scene_node scene manager
      * @return the Ogre scene node, null if not found
      */
     VIZ_SCENE3D_API static Ogre::SceneNode* get_node_by_id(
@@ -47,7 +47,7 @@ public:
 
     /**
      * Computes the bounding box of the descendants of the provided node.
-     * @param rootsceneNode The node whose bounding box is to be computed
+     * @param _root_scene_node The node whose bounding box is to be computed
      * @return The bounding box of the node
      */
     VIZ_SCENE3D_API static Ogre::AxisAlignedBox compute_bounding_box(const Ogre::SceneNode* _root_scene_node);
@@ -55,8 +55,8 @@ public:
     /**
      * Computes the projection of the bounding box of the descendants of the provided node in screen space using the
      * provided camera.
-     * @param camera The camera used for the projection
-     * @param rootsceneNode The node whose bounding box is to be computed
+     * @param _camera The camera used for the projection
+     * @param _root_scene_node The node whose bounding box is to be computed
      * @return The projection of the bounding box in screen space as a pair, with the first element being the minimum
      * (top left) and the second element the maximum (bottom right).
      */
@@ -66,8 +66,8 @@ public:
     );
 
     /**
-     * @brief Generates a color from a distance ID.
-     * @param _id ID of the distance.
+     * @brief Generates a color from an index.
+     * @param _color_index  index in the color table
      * @return The generated color.
      */
     VIZ_SCENE3D_API static Ogre::ColourValue generate_color(int _color_index);

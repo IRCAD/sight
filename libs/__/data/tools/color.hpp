@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ public:
 
     /**
      * @brief Convert a color coded as an hexadecimal string into an array of four bytes (RGBA)
-     * @param _hexaColor[in] Color string that start with '#' and followed by 6 ou 8 hexadecimal digits (ex: #FF81EC)
+     * @param _hexa_color[in] Color string that start with '#' and followed by 6 ou 8 hexadecimal digits (ex: #FF81EC)
      * @param _rgba[out] RGBA values
      */
     DATA_API static void hexa_string_to_rgba(const std::string& _hexa_color, std::array<std::uint8_t, 4>& _rgba);

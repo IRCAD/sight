@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,15 +80,14 @@ public:
     /**
      * @brief       Adds all module found in the given path.
      *
-     * @param[in]   repository  a path that may containing modules
+     * @param[in]   _repository  a path that may containing modules
      */
     void add_modules(const std::filesystem::path& _repository);
 
     /**
      * @brief       Retrieves the module for the specified identifier.
      *
-     * @param[in]   identifier  a string containing a module identifier
-     * @param[in]   version     the version of the module (undefined by default)
+     * @param[in]   _identifier  a string containing a module identifier
      *
      * @return      a shared pointer to the found module or null if none
      */
@@ -102,7 +101,7 @@ public:
      *
      * @remark      This method will not try to load any module.
      *
-     * @param[in]   type    a string containing an executable type
+     * @param[in]   _type    a string containing an executable type
      *
      * @return      a pointer to the created executable instance
      */
@@ -111,7 +110,7 @@ public:
     /**
      * @brief       Retrieves the extension instance matching the specified identifier.
      *
-     * @param[in]   identifier  a string containing an extension identifier
+     * @param[in]   _identifier  a string containing an extension identifier
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
@@ -138,22 +137,21 @@ public:
      * @brief       Adds a new module instance to the runtime system.
      *
      * @remark      The given module state will be altered according to the current configuration rules.
-     * @param[in]   module  a shared pointer to the module instance to add
+     * @param[in]   _module  a shared pointer to the module instance to add
      */
     void add_module(std::shared_ptr<detail::module> _module);
 
     /**
      * @brief       Unregister a module instance to the runtime system.
      *
-     * @param[in]   module  a shared pointer to the module instance to unregister
+     * @param[in]   _module  a shared pointer to the module instance to unregister
      */
     void unregister_module(std::shared_ptr<detail::module> _module);
 
     /**
      * @brief       Retrieves the enabled module for the specified identifier.
      *
-     * @param[in]   identifier  a string containing a module identifier
-     * @param[in]   version     the version of the module (undefined by default)
+     * @param[in]   _identifier  a string containing a module identifier
      *
      * @return      a shared pointer to the found module or null if none
      */
@@ -170,30 +168,30 @@ public:
     /**
      * @brief       Adds a new executable factory instance to the runtime system.
      *
-     * @param[in]   factory a shared pointer to an executable factory
+     * @param[in]   _factory a shared pointer to an executable factory
      */
     void add_executable_factory(std::shared_ptr<executable_factory> _factory);
 
     /**
      * @brief       Unregister a new executable factory instance to the runtime system.
      *
-     * @param[in]   factory a shared pointer to an executable factory
+     * @param[in]   _factory a shared pointer to an executable factory
      */
     void unregister_executable_factory(std::shared_ptr<executable_factory> _factory);
 
     /**
      * @brief       Retrieves the executable factory for the given identifier.
      *
-     * @param[in]   type    a string containing a type identifier
+     * @param[in]   _type    a string containing a type identifier
      *
-     * @return      a sgared pointer to the found executable factory or null of none
+     * @return      a shared pointer to the found executable factory or null of none
      */
     [[nodiscard]] std::shared_ptr<executable_factory> find_executable_factory(const std::string& _type) const;
 
     /**
      * @brief       Retrieves the plugin instance for the specified module.
      *
-     * @param[in]   module  a shared pointer to a module instance
+     * @param[in]   _module  a shared pointer to a module instance
      *
      * @return      a shared pointer to a plugin instance or null if none
      */
@@ -210,14 +208,14 @@ public:
     /**
      * @brief       Registers a new extension.
      *
-     * @param[in]   extension   a shared pointer to the extension to register
+     * @param[in]   _extension   a shared pointer to the extension to register
      */
     void add_extension(std::shared_ptr<detail::extension> _extension);
 
     /**
      * @brief       Unregister a new extension.
      *
-     * @param[in]   extension   a shared pointer to the extension to register
+     * @param[in]   _extension   a shared pointer to the extension to register
      */
     void unregister_extension(std::shared_ptr<detail::extension> _extension);
 
@@ -234,21 +232,21 @@ public:
     /**
      * @brief       Registers a new extension point.
      *
-     * @param[in]   point   a pointer to the extension point to register
+     * @param[in]   _point   a pointer to the extension point to register
      */
     void add_extension_point(std::shared_ptr<extension_point> _point);
 
     /**
      * @brief       Unregister a new extension point.
      *
-     * @param[in]   point   a pointer to the extension point to register
+     * @param[in]   _point   a pointer to the extension point to register
      */
     void unregister_extension_point(std::shared_ptr<extension_point> _point);
 
     /**
      * @brief       Retrieves the extension point instance matching the specified identifier.
      *
-     * @param[in]   identifier  a string containing an extension point identifier
+     * @param[in]   _identifier  a string containing an extension point identifier
      *
      * @return      a shared pointer to the found extension point instance or null if none
      */

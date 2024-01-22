@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,11 +52,11 @@ public:
 
     /**
      * @brief Constructor
-     * @param[in] dicomSeries DicomSeries
-     * @param[in] instance Instance
-     * @param[in] logger Logger
-     * @param[in] progress Progress callback
-     * @param[in] cancel Cancel requested callback
+     * @param[in] _dicom_series DicomSeries
+     * @param[in] _instance Instance
+     * @param[in] _logger Logger
+     * @param[in] _progress Progress callback
+     * @param[in] _cancel Cancel requested callback
      */
     IO_DICOM_API surface_segmentation_iod(
         const data::dicom_series::csptr& _dicom_series,
@@ -71,7 +71,7 @@ public:
 
     /**
      * @brief Read a DICOM File
-     * @param[in,out] series Series that must be enriched
+     * @param[in,out] _series Series that must be enriched
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API void read(data::series::sptr _series) override;

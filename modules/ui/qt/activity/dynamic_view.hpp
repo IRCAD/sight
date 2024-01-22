@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -181,8 +181,8 @@ private:
 
     /**
      * @brief Close the tab at the given index.
-     * @param index : index of the tab to close
-     * @param forceClose : if true, close the tab even if the tab is not "closable"
+     * @param _index : index of the tab to close
+     * @param _force_close : if true, close the tab even if the tab is not "closable"
      */
     void close_tab(int _index, bool _force_close);
 

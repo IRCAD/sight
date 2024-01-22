@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
 
     /**
      * @brief Creates a new file entry in archive and returns output stream for this file.
-     * @param path file in archive.
+     * @param _path file in archive.
      * @return output stream of file entry in archive.
      *
      * @note Creates all parent directories of the path in archive.
@@ -66,8 +66,8 @@ public:
 
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
-     * @param sourceFile source file.
-     * @param destinationFile file in archive.
+     * @param _source_file source file.
+     * @param _destination_file file in archive.
      *
      * @note Do nothing if destinationFile already exists in archive.
      */
@@ -78,7 +78,7 @@ public:
 
     /**
      * @brief Creates a folder in archive.
-     * @param path folder to create in archive.
+     * @param _path folder to create in archive.
      */
     IO_ZIP_API bool create_dir(const std::filesystem::path& _path) override;
 

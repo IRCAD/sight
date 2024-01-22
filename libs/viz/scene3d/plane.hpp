@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,14 +68,14 @@ public:
 
     /**
      * @brief Creates a plane, instantiates its material. Call @ref plane::update() to create its geometry.
-     * @param _negatoId unique identifier of the negato.
-     * @param _parentSceneNode parent node where attach the plane.
-     * @param _sceneManager the Ogre scene manager.
+     * @param _negato_id unique identifier of the negato.
+     * @param _parent_scene_node parent node where attach the plane.
+     * @param _scene_manager the Ogre scene manager.
      * @param _tex texture to apply on the plane.
      * @param _filtering filtering method used to apply the texture.
-     * @param _displayBorder display a border around the negato plane.
-     * @param _displayOtherPlanes display a line indicating the location of the two other planes.
-     * @param _entityOpacity opacity of the entity.
+     * @param _display_border display a border around the negato plane.
+     * @param _display_other_planes display a line indicating the location of the two other planes.
+     * @param _entity_opacity opacity of the entity.
      */
     VIZ_SCENE3D_API plane(
         const core::tools::id::type& _negato_id,
@@ -93,7 +93,7 @@ public:
 
     /**
      * @brief Instantiates the plane mesh and entity.
-     * @param _enableTransparency used true to enable the opacity.
+     * @param _enable_transparency used true to enable the opacity.
      */
     VIZ_SCENE3D_API void update(
         orientation_mode _orientation,
@@ -106,7 +106,7 @@ public:
      * @brief Handles the slice plane move.
      *     - in 2D, it will convert the position in unit floating value and call the fragment shader.
      *     - in 3D, it will also move the scene node in space.
-     * @param _slicesIndex the image slices indexes.
+     * @param _slices_index the image slices indexes.
      */
     VIZ_SCENE3D_API void change_slice(const std::array<float, 3>& _slices_index);
 
@@ -126,7 +126,7 @@ public:
 
     /**
      * @brief Adds or updates the texture containing the transfer function data in the negato passes.
-     * @param _tfTexture the TF texture.
+     * @param _tf_texture the TF texture.
      */
     VIZ_SCENE3D_API void set_tf_data(const viz::scene3d::transfer_function& _tf_texture);
 
@@ -195,7 +195,7 @@ private:
     /// Contains the texture.
     viz::scene3d::texture::sptr m_texture;
 
-    /// Contains the scenemanager containing the plane.
+    /// Contains the scene manager containing the plane.
     Ogre::SceneManager* m_scene_manager {nullptr};
 
     /// Defines a strings needed to initialize mesh, scenenode, etc.

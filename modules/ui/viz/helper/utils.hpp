@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ public:
 
     /**
      * @brief convertOgreColorToQColor
-     * @param _ogreColor the Ogre color to convert.
+     * @param _ogre_color the Ogre color to convert.
      * @return the converted QColor.
      */
     static constexpr QColor convert_ogre_color_to_q_color(const Ogre::ColourValue& _ogre_color)
@@ -52,7 +52,7 @@ public:
 
     /**
      * @brief convertQColorToOgreColor
-     * @param _qColor the Qt color to convert.
+     * @param _q_color the Qt color to convert.
      * @return the converted Ogre color.
      */
     static inline Ogre::ColourValue convert_q_color_to_ogre_color(const QColor& _q_color)

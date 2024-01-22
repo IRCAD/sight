@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -123,8 +123,8 @@ public:
      * @param _object the Ogre::ManualObject used to store the cone
      * @param _p1 first point
      * @param _p2 second point
-     * @param _dashLength length of a dash
-     * @param _dashSpacing spacing between two dashes
+     * @param _dash_length length of a dash
+     * @param _dash_spacing spacing between two dashes
      * @param _color optional line color, only necessary when using a material that supports vertex color
      */
     VIZ_SCENE3D_API static void draw_dashed_line(

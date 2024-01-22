@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,7 +96,7 @@ public:
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
      *
-     * By default, the selector::m_mode is defined as READER_MODE, and selector::m_servicesAreExcluded as true.
+     * By default, the selector::m_mode is defined as reader_mode, and selector::m_servicesAreExcluded as true.
      */
     MODULE_UI_API selector();
 
@@ -106,7 +106,7 @@ public:
     /**
      * @brief This method allows to configure the service in reader or writer mode (set selector::m_mode).
      *
-     *@param[in] _mode the value can be selector::READER_MODE or selector::WRITER_MODE.
+     *@param[in] _mode the value can be selector::reader_mode or selector::writer_mode.
      */
     MODULE_UI_API void set_io_mode(io_mode _mode);
 

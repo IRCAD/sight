@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ public:
 
     /**
      * @brief Returns SOP Class Name
-     * @param sop_classUID SOP Class UID
+     * @param _sop_class_uid SOP Class UID
      * @return SOP Class Name according to UID
      * @note If the UID is not registered, the function returns the UID
      */
@@ -49,7 +49,7 @@ public:
 
     /**
      * @brief Returns whether the SOP Class is hazardous or not
-     * @param sop_classUID SOP Class UID
+     * @param _sop_class_uid SOP Class UID
      * @return True if the SOP Class is hazardous
      * @note A hazardous SOP class may contain patient's information even after
      * the anonymization process (like pictures, pdf report, etc.)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,9 +95,9 @@ public:
 
     /**
      * @brief Save a VTK image.
-     * @param[in] imgFile std::filesystem::path.
-     * @param[in] image std::shared_ptr< data::image >.
-     * @param[in] sigJobCreated signal emitted when the image is saved.
+     * @param[in] _img_file std::filesystem::path.
+     * @param[in] _image std::shared_ptr< data::image >.
+     * @param[in] _sig_job_created signal emitted when the image is saved.
      * @return bool.
      *
      * This method is used to save an image using the file path.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,8 +52,8 @@ validator::validator(const validator& _validator) :
 
 //------------------------------------------------------------------------------
 
-validator::validator(std::string _buffer) :
-    m_xsd_content(std::move(_buffer))
+validator::validator(std::string _schema) :
+    m_xsd_content(std::move(_schema))
 {
 }
 

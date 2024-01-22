@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ public:
     /**
      * @brief Creates a new Request with given url.
      *
-     * @param url URL belonging to the request.
+     * @param _url URL belonging to the request.
      *
      * @return  the newly created Request object
      */
