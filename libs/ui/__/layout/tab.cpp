@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,6 +60,7 @@ void tab::initialize(const ui::config_t& _configuration)
             vi.m_use_scroll_bar = view_cfg->get<bool>("useScrollBar", vi.m_use_scroll_bar);
 
             vi.m_caption = view_cfg->get<std::string>("caption", "");
+            vi.m_qss_key = view_cfg->get<std::string>("QSSClass", "");
 
             if(const auto hexa_color = view_cfg->get<std::string>("backgroundColor", ""); !hexa_color.empty())
             {

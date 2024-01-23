@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -197,6 +197,7 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
     c.widget = _widget;
     c.button = new QPushButton(this);
     c.button->setObjectName("QfwToolBoxButton");
+    c.button->setProperty("class", "toolbox_button");
     c.button->setBackgroundRole(QPalette::Window);
     c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     c.button->setFocusPolicy(Qt::NoFocus);
@@ -207,18 +208,6 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
     b_icon.addPixmap(pix_close, QIcon::Normal, QIcon::Off);
     b_icon.addPixmap(pix_open, QIcon::Active, QIcon::On);
     c.set_icon(b_icon);
-    if(qApp->styleSheet().isEmpty())
-    {
-        QString style(
-            "text-align: left;"
-            "background-color: lightgray;"
-            "border-style: solid;"
-            "border-width: 1px;"
-            "border-color: darkgray;"
-            "height: 20px;"
-        );
-        c.button->setStyleSheet(style);
-    }
 
     connect(c.button, &QPushButton::toggled, this, &toolbox::button_toggled);
 
@@ -227,6 +216,7 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
     vertical_layout->setMargin(0);
     vertical_layout->addWidget(_widget);
     c.sv->hide();
+    c.sv->setProperty("class", "toolbox_frame");
     c.sv->setFrameStyle(QFrame::NoFrame);
 
     c.set_text(_text);

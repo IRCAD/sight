@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,6 +70,11 @@ void menubar::create_menu_bar(ui::container::widget::sptr _parent)
             << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
             const QString style = QString::fromStdString(ss.str());
             menu_bar->setStyleSheet(qApp->styleSheet() + style);
+        }
+
+        if(!m_qss_class.empty())
+        {
+            menu_bar->setProperty("class", QString::fromStdString(m_qss_class));
         }
     }
 }

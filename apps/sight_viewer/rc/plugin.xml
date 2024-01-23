@@ -81,7 +81,8 @@
                         <name>Sight Viewer</name>
                         <version>@sight_viewer_VERSION@</version>
                         <icon>sight_viewer/Ogre_logo.svg</icon>
-                        <minSize width="1150" height="700" />
+                        <minSize width="1280" height="720" />
+                        <style QSSClass="Background" />
                     </frame>
                 </gui>
                 <registry>
@@ -93,7 +94,7 @@
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
-                        <view proportion="1" topBorder="5" bottomBorder="5" backgroundColor="#2E2F30" />
+                        <view proportion="1" topBorder="5" bottomBorder="5" QSSClass="view_background" />
                     </layout>
                 </gui>
                 <registry>
@@ -121,7 +122,7 @@
                     <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
-                        <view proportion="0" minWidth="500" backgroundColor="#36393E" />
+                        <view proportion="0" minWidth="500" QSSClass="view_background" />
                     </layout>
                 </gui>
                 <registry>
@@ -132,7 +133,7 @@
 
             <service uid="rightToolbarSliderView" type="sight::module::ui::view">
                 <gui>
-                    <toolbar backgroundColor="#3E4453" />
+                    <toolbar QSSClass="view_background" />
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                     </layout>
@@ -159,12 +160,12 @@
                     <toolbar/>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
-                        <view proportion="0" spacing="0" />
-                        <view proportion="0" spacing="0" />
-                        <view proportion="0" spacing="0" />
-                        <view proportion="0" spacing="0" />
-                        <view proportion="0" spacing="0" />
-                        <view proportion="0" spacing="0" />
+                        <view proportion="0" spacing="0" QSSClass="view_background"/>
+                        <view proportion="0" spacing="0" QSSClass="view_background"/>
+                        <view proportion="0" spacing="0" QSSClass="view_background"/>
+                        <view proportion="0" spacing="0" QSSClass="view_background"/>
+                        <view proportion="0" spacing="0" QSSClass="view_background" />
+                        <view proportion="0" spacing="0" QSSClass="view_background"/>
                     </layout>
                 </gui>
                 <registry>

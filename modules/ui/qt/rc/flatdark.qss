@@ -1363,9 +1363,14 @@ QProgressBar::chunk
 /**************************** QfwToolBox ********************************/
 /************************************************************************/
 
-#QfwToolBoxButton
+.toolbox_button
 {
     text-align: left;
+    background-color: lightgray;
+    border-style: solid;
+    border-width: 1px;
+    border-color: darkgray;
+    height: 20px;
 }
 
 /************************************************************************/
@@ -1459,6 +1464,16 @@ QProgressBar::chunk
   padding: 0;
   background: none;
 }
+
+.view_background 
+{
+    background: #2E2F30;
+}
+.scene2d_render 
+{
+    background: #36393E
+}
+
 
 QPushButton.Bracket:disabled
 {

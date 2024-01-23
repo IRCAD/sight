@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,6 +66,11 @@ void toolbar::create_tool_bar(ui::container::widget::sptr _parent)
         << static_cast<std::int16_t>(rgba[2]) << ','
         << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
         style = QString::fromStdString(ss.str());
+    }
+
+    if(!m_qss_class.empty())
+    {
+        tool_bar->setProperty("class", QString::fromStdString(m_qss_class));
     }
 
     if(m_spacing != 0)

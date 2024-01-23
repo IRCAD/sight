@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,6 +73,8 @@ public:
         /// Background color. When given an empty string, a default background is used. To use another color, set an
         /// hexadecimal value (it has to start with "#").
         std::string m_background_color;
+        /// Defines a qss key to apply style
+        std::string m_qss_key;
     };
 
     UI_API cardinal()           = default;

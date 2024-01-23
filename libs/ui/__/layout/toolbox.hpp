@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,6 +61,8 @@ public:
 
         /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
         std::string m_background_color;
+        /// Defines a qss key to apply style
+        std::string m_qss_key;
     };
 
     /// Constructor. Do nothing.

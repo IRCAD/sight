@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -230,9 +230,19 @@ void render::start_context()
     // Convert the background color
     std::array<std::uint8_t, 4> color {};
     sight::data::tools::color::hexa_string_to_rgba(m_background, color);
-
     m_scene = new QGraphicsScene(m_scene_start.x, m_scene_start.y, m_scene_width.x, m_scene_width.y);
-    m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));
+
+    // First use the qss class if available
+    if(!m_qss_class.empty())
+    {
+        m_scene->setProperty("class", QString::fromStdString(m_qss_class));
+    }
+    // Use the background color if no qss
+    else
+    {
+        m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));
+    }
+
     m_scene->setFocus(Qt::MouseFocusReason);
 
     m_view = new graphics_view(m_scene, qt_container->get_qt_container());
@@ -324,6 +334,11 @@ void render::configure_scene(const config_t& _conf)
             && (hexa_color.length() == 7 || hexa_color.length() == 9)
         );
         m_background = hexa_color;
+    }
+
+    if(const auto qss_class = _conf.get<std::string>("QSSClass", ""); !qss_class.empty())
+    {
+        m_qss_class = qss_class;
     }
 }
 

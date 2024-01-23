@@ -51,7 +51,7 @@
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" minWidth="55" minHeight="100" />
+                    <view x="0" y="0" minWidth="200" minHeight="100" />
                 </layout>
             </gui>
             <registry>
@@ -66,7 +66,7 @@
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" backgroundColor="#36393E" spacing="0" />
+                    <view proportion="0" QSSClass="view_background" spacing="0" />
                 </layout>
             </gui>
             <registry>
@@ -107,7 +107,7 @@
 
         <service uid="sceneSrv" type="sight::viz::scene3d::render">
             <scene>
-                <background topColor="#36393E" bottomColor="#36393E" />
+                <background  material="bkg_gradient" />
 
                 <layer id="gridLayer" order="1" >
                     <adaptor uid="gridCameraAdp" />
@@ -210,7 +210,7 @@
         </service>
 
         <service uid="gridAdp" type="sight::module::viz::scene3d::adaptor::grid">
-            <config size="5000" step="50" color="#555555" elevation="400" dashLength="10"/>
+            <config size="5000" step="50" color="#505050" elevation="400" dashLength="10"/>
         </service>
 
         <!-- Reset the clipping box matreix -->

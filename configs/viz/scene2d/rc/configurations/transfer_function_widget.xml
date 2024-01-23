@@ -25,9 +25,9 @@
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#3E4453" maxHeight="50"/>
-                    <view proportion="0" backgroundColor="#36393E" minHeight="300" maxHeight="400" />
-                    <view proportion="0" backgroundColor="#36393E" maxHeight="100" />
+                    <view proportion="0"  maxHeight="200"/>
+                    <view proportion="0" QSSClass="view_background" minHeight="500" maxHeight="600" />
+                    <view proportion="0" QSSClass="view_background" maxHeight="300" />
                 </layout>
             </gui>
             <registry>
@@ -42,7 +42,7 @@
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
-                    <view proportion="0" />
+                    <view proportion="0" QSSClass="view_as_toolbar" />
                     <spacer />
                 </layout>
             </gui>
@@ -55,7 +55,7 @@
 
         <service uid="genericSceneMultipleTF" type="sight::viz::scene2d::render">
               <scene>
-                <scene x="-3000" y="-1.1" width="6000" height="1.2" antialiasing="true" background="#36393E" />
+                <scene x="-3000" y="-1.1" width="6000" height="1.2" antialiasing="true" QSSClass="scene2d_render" />
 
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -130,7 +130,7 @@
 
         <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::render">
             <scene>
-                <scene x="-5000" y="-1.1" width="10000" height="1.2" antialiasing="true" background="#36393E" />
+                <scene x="-5000" y="-1.1" width="10000" height="1.2" antialiasing="true" QSSClass="scene2d_render" />
 
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />

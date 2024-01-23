@@ -42,7 +42,7 @@
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" backgroundColor="#36393E" spacing="0" />
+                    <view proportion="0" QSSClass="view_background" spacing="0" />
                 </layout>
             </gui>
             <registry>
@@ -87,7 +87,7 @@
 
         <service uid="sceneSrv" type="sight::viz::scene3d::render">
             <scene>
-                <background topColor="#36393E" bottomColor="#36393E" />
+                <background color="#303A65" />
 
                 <layer id="negatoLayer" order="1">
                     <adaptor uid="negatoAdp" />

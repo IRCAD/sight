@@ -54,7 +54,7 @@ class adaptor;
  * @code{.xml}
    <service uid="GENERIC_UID_Scene2D" type="sight::viz::scene2d::render" >
        <scene>
-           <scene x="-1100" y="-1.1" width="2500" height="1.2" background="#FFFFFF" />
+           <scene x="-1100" y="-1.1" width="2500" height="1.2" background="#FFFFFF" QSSClass="my_class" />
            <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
            <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
            <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
@@ -76,6 +76,7 @@ class adaptor;
  *     when scaling an rectangle (See https://doc.qt.io/qt-5/qt.html#AspectRatioMode-enum).
  *   - \b background (optional, default: #000000): the background color of the rendering screen.
  *        The color value must be defined as a hexadecimal value (ex : \#ffffff for white).
+ *   - \b QSSClass (optional): specify a QSS class to configure the scene.
  * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
  *   - \b id: set the axis id
  *   - \b origin: set the axis origin
@@ -182,6 +183,9 @@ private:
 
     /// Background color of the scene.
     std::string m_background;
+
+    /// QSS class of the widget.
+    std::string m_qss_class;
 
     /// How the scene should behave on view resize events
     Qt::AspectRatioMode m_aspect_ratio_mode {Qt::IgnoreAspectRatio};

@@ -25,7 +25,7 @@ QFrame
 {
     padding: 3px;
     border: none;
-    background: #FFFFFF;
+    background: transparent;
 }
 
 QDialog
@@ -1424,6 +1424,25 @@ QProgressBar::chunk
     background: rgb(255,255,255);
 }
 
+.view_background
+{
+    background: rgba(255, 255, 255, 0%);
+}
+
+.view_as_toolbar
+{
+    background: rgba(255, 255, 255, 10%);
+    padding: 3px;
+    icon-size: 32px 32px;
+    margin: 5px;
+    border-radius: 30%;
+}
+
+.scene2d_render
+{
+    background: #303A65;
+}
+
 /************************************************************************/
 /************************** SActivityWizard *****************************/
 /************************************************************************/
@@ -1444,10 +1463,37 @@ QProgressBar::chunk
 /************************************************************************/
 /**************************** QfwToolBox ********************************/
 /************************************************************************/
-
-#QfwToolBoxButton
+.toolbox_button
 {
     text-align: left;
+    background-color: #303A65;
+    border-style: solid;
+    border-width: 1px;
+    border-color:rgba(255, 255, 255, 10%);
+    height: 20px;
+}
+
+.toolbox_button:checked
+{
+    background-color: #303A65;
+}
+
+.toolbox_button:unchecked 
+{
+    background-color: #303A65;
+}
+
+.toolbox_button:hover 
+{
+    background-color: #303A65;
+    border-color: rgba(255, 255, 255, 50%);
+}
+.toolbox_frame
+{
+    background-color: rgba(255, 255, 255, 10%);
+    padding: 3px;
+    margin: 5px;
+    border-radius: 10%;
 }
 
 /************************************************************************/

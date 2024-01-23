@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,6 +76,7 @@ void cardinal::initialize(const ui::config_t& _configuration)
             vi.m_visible        = view_cfg->get<bool>("visible", vi.m_visible);
             vi.m_use_scroll_bar = view_cfg->get<bool>("useScrollBar", vi.m_use_scroll_bar);
             vi.m_tool_tip       = view_cfg->get<std::string>("toolTip", vi.m_tool_tip);
+            vi.m_qss_key        = view_cfg->get<std::string>("QSSClass", "");
 
             if(auto caption = view_cfg->get_optional<std::string>("caption"); caption.has_value())
             {

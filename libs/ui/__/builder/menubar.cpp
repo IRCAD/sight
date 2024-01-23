@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,6 +45,11 @@ void menubar::initialize(const ui::config_t& _configuration)
             && (hexa_color.length() == 7 || hexa_color.length() == 9)
         );
         m_background_color = hexa_color;
+    }
+
+    if(const auto qss_class = _configuration.get<std::string>("<xmlattr>.QSSClass", ""); !qss_class.empty())
+    {
+        m_qss_class = qss_class;
     }
 }
 
