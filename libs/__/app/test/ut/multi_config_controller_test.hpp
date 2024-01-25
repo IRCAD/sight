@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,6 +20,8 @@
  ***********************************************************************/
 
 #pragma once
+
+#include <app/config_manager.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

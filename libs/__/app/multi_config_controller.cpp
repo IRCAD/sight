@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -74,8 +74,12 @@ void multi_config_controller::set_config(sight::ui::parameter_t _val, std::strin
 {
     if(_key == m_key && std::holds_alternative<std::string>(_val))
     {
-        m_config_launcher->set_config(std::get<std::string>(_val));
-        this->update();
+        const auto new_config = std::get<std::string>(_val);
+        if(m_config_launcher->config() != new_config || !m_config_launcher->config_is_running())
+        {
+            m_config_launcher->set_config(new_config);
+            this->update();
+        }
     }
 }
 

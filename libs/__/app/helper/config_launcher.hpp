@@ -76,6 +76,7 @@ public:
     }
 
     APP_API void set_config(const std::string& _key);
+    const std::string& config() const;
 
 private:
 
@@ -118,11 +119,15 @@ private:
     /// Defines a special key to defines the associated object him self.
     static const std::string SELF_KEY;
 
-    /// Defines a special key to defines the generated uid.
-    static const std::string GENERIC_UID_KEY;
-
     /// Stores key and uid of optional inputs.
     std::map<std::string, std::pair<std::string, size_t> > m_optional_inputs;
 };
+
+//------------------------------------------------------------------------------
+
+inline const std::string& config_launcher::config() const
+{
+    return m_config_key;
+}
 
 } // namespace sight::app::helper

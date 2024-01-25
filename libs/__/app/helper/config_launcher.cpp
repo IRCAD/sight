@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,8 +54,7 @@ config_launcher::parameters::parameters(const service::config_t& _config) :
 
 //------------------------------------------------------------------------------
 
-const std::string config_launcher::SELF_KEY        = "self";
-const std::string config_launcher::GENERIC_UID_KEY = "GENERIC_UID";
+const std::string config_launcher::SELF_KEY = "self";
 
 //------------------------------------------------------------------------------
 
@@ -189,10 +188,6 @@ void config_launcher::start_config(
 )
 {
     field_adaptor_t replace_map(_opt_replace_map);
-
-    // Generate generic UID
-    const std::string generic_uid_adaptor = app::extension::config::get_unique_identifier(_service->get_id());
-    replace_map[config_launcher::GENERIC_UID_KEY] = generic_uid_adaptor;
 
     //get the right appConfig
     const auto app_config = m_app_config_parameters[m_config_key];

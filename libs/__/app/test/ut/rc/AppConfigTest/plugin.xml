@@ -447,4 +447,29 @@
             <param2>value2</param2>
         </config>
     </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>multi_cfg_ctl_1</id>
+        <desc>Test configuration for multi_config_controller_1</desc>
+        <config>
+
+            <service uid="srv" type="sight::app::ut::test_no_data" />
+
+            <start uid="srv" />
+
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>multi_cfg_ctl_2</id>
+        <desc>Test configuration for multi_config_controller_2</desc>
+        <config>
+
+            <service uid="srv" type="sight::app::ut::test_no_data" />
+
+            <start uid="srv" />
+
+        </config>
+    </extension>
+
 </plugin>
