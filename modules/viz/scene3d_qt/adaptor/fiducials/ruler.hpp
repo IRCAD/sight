@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,12 +112,13 @@ public:
     {
         using key_t = sight::core::com::slots::key_t;
 
-        inline static const key_t REMOVE_ALL                    = "remove_all";
-        inline static const key_t REMOVE_DISTANCES              = "removeDistances";
-        inline static const key_t UPDATE_VISIBILITY_FROM_FIELDS = "updateVisibilityFromField";
-        inline static const key_t ACTIVATE_DISTANCE_TOOL        = "activate_distance_tool";
-        inline static const key_t UPDATE_MODIFIED_DISTANCE      = "updateModifiedDistance";
-        inline static const key_t RESTRICT_TO_CURRENT_SLICE     = "restrict_to_current_slice";
+        inline static const key_t REMOVE_ALL                          = "remove_all";
+        inline static const key_t REMOVE_DISTANCES                    = "removeDistances";
+        inline static const key_t REMOVE_DISTANCES_FROM_CURRENT_SLICE = "remove_distances_from_current_slice";
+        inline static const key_t UPDATE_VISIBILITY_FROM_FIELDS       = "updateVisibilityFromField";
+        inline static const key_t ACTIVATE_DISTANCE_TOOL              = "activate_distance_tool";
+        inline static const key_t UPDATE_MODIFIED_DISTANCE            = "updateModifiedDistance";
+        inline static const key_t RESTRICT_TO_CURRENT_SLICE           = "restrict_to_current_slice";
     };
 
     /**
@@ -239,6 +240,9 @@ private:
 
     /// Retrieves distances from the image and remove them from the scene.
     void remove_distances();
+
+    /// SLOT: Remove only distances from the current slice
+    void remove_distances_from_current_slice();
 
     /// Updates distances visibility from the image field.
     void update_visibility_from_field();

@@ -67,6 +67,7 @@ ruler::ruler() noexcept
 {
     new_slot(slots::REMOVE_ALL, &ruler::remove_all, this);
     new_slot(slots::REMOVE_DISTANCES, &ruler::remove_distances, this);
+    new_slot(slots::REMOVE_DISTANCES_FROM_CURRENT_SLICE, &ruler::remove_distances_from_current_slice, this);
     new_slot(slots::UPDATE_VISIBILITY_FROM_FIELDS, &ruler::update_visibility_from_field, this);
     new_slot(slots::ACTIVATE_DISTANCE_TOOL, &ruler::activate_distance_tool, this);
     new_slot(slots::UPDATE_MODIFIED_DISTANCE, &ruler::update_modified_distance, this);
@@ -473,6 +474,63 @@ void ruler::remove_distances()
     }
 
     this->request_render();
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::remove_distances_from_current_slice()
+{
+    if(m_bin_button != nullptr)
+    {
+        m_bin_button->hide();
+        delete m_bin_button;
+        m_bin_button = nullptr;
+    }
+
+    data::vector::sptr distance_list_copy = std::make_shared<data::vector>();
+    {
+        const auto image = m_image.lock();
+        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
+        {
+            const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
+                                                         *image_series,
+                                                         sight::data::helper::medical_image::orientation_t::axial
+            ).value_or(-1));
+
+            if(slice_index < 0)
+            {
+                SIGHT_ERROR("Invalid slice index. Cannot extract inferred data.");
+                return;
+            }
+
+            // Get ruler fiducials ruler on the current slice
+            const auto& s_fiducials = image_series->get_fiducials()->filter_fiducials(
+                data::fiducials_series::shape::ruler,
+                slice_index
+            );
+
+            if(!s_fiducials.empty())
+            {
+                for(const auto& sf : s_fiducials)
+                {
+                    distance_list_copy->push_back(sight::data::helper::fiducials_series::to_point_list(sf));
+                }
+            }
+        }
+        else
+        {
+            data::vector::sptr distance_list = data::helper::medical_image::get_distances(*image);
+            distance_list_copy->shallow_copy(distance_list);
+            distance_list->clear();
+        }
+    }
+
+    for(const data::object::sptr& element : *distance_list_copy)
+    {
+        auto pl = std::dynamic_pointer_cast<data::point_list>(element);
+        SIGHT_ASSERT("All elements in distance image field must be point lists.", pl);
+        remove_distance(pl);
+    }
 }
 
 //------------------------------------------------------------------------------
