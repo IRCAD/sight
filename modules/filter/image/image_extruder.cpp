@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,6 @@ service::connections_t image_extruder::auto_connections() const
     connections.push(MESHES_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
 
     connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
     connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
