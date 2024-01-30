@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -284,30 +284,43 @@ void ruler::restrict_to_current_slice()
             return;
         }
 
-        auto fiducials = image_series->get_fiducials()->filter_fiducials(
-            data::fiducials_series::shape::ruler,
-            slice_index
-        );
-
-        for(const auto& cached_fiducial : m_cached_fiducials)
+        const auto& fiducial_sets = image_series->get_fiducials()->get_fiducial_sets();
+        for(const auto& fiducial_set : fiducial_sets)
         {
-            bool found = false;
-            for(const auto& fiducial : fiducials)
+            for(std::size_t i = 0 ; i < fiducial_set.fiducial_sequence.size() ; i++)
             {
-                if(fiducial.fiducial_identifier == cached_fiducial.fiducial_identifier)
+                // Filter by shape
+                bool shape_ok = false;
+                if(fiducial_set.fiducial_sequence[i].shape_type == data::fiducials_series::shape::ruler)
                 {
-                    found = true;
-                    break;
+                    shape_ok = true;
                 }
-            }
 
-            if(found)
-            {
-                this->set_visible(cached_fiducial.fiducial_identifier, true);
-            }
-            else
-            {
-                this->set_visible(cached_fiducial.fiducial_identifier, false);
+                // Filter by referenced frame number (slice index)
+                bool referenced_frame_number_ok = false;
+                const auto& sequence            = fiducial_set.referenced_image_sequence;
+                if(sequence.has_value()
+                   && !sequence->empty()
+                   && !(sequence->at(i).referenced_frame_number.empty()))
+                {
+                    for(const auto& frame_number : sequence->at(i).referenced_frame_number)
+                    {
+                        if(frame_number == slice_index)
+                        {
+                            referenced_frame_number_ok = true;
+                        }
+                    }
+                }
+
+                // Hide or show the fiducial according to current slice
+                if(shape_ok && referenced_frame_number_ok)
+                {
+                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_identifier, true);
+                }
+                else
+                {
+                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_identifier, false);
+                }
             }
         }
     }
@@ -1154,6 +1167,28 @@ void ruler::update_image_distance_field(data::point_list::sptr _pl)
             // lazy to do that, so I simply get rid of GraphicCoordinatesDataSequence.
             fiducial.graphic_coordinates_data_sequence = std::nullopt;
             fiducial_set.fiducial_sequence.push_back(fiducial);
+
+            // Fill in the referenced_image with the slice index to easily retrieve fiducials related to a specific
+            // slice.
+            sight::data::fiducials_series::referenced_image ri;
+            /// ReferencedSOPClassUID (0008,1150)
+            ri.referenced_sop_class_uid = image_series->get_sop_class_uid();
+            /// ReferencedSOPInstanceUID (0008,1155)
+            ri.referenced_sop_instance_uid = image_series->get_sop_instance_uid();
+
+            const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
+                                                         *image_series,
+                                                         sight::data::helper::medical_image::orientation_t::axial
+            ).value_or(-1));
+
+            /// ReferencedFrameNumber (0008,1160)
+            ri.referenced_frame_number.push_back(static_cast<std::int32_t>(slice_index));
+            /// ReferencedSegmentNumber (0062,000B)
+            ri.referenced_segment_number.push_back(0);
+
+            fiducial_set.referenced_image_sequence = std::vector<sight::data::fiducials_series::referenced_image>();
+            fiducial_set.referenced_image_sequence->push_back(ri);
+
             image_series->get_fiducials()->append_fiducial_set(fiducial_set);
         }
         else
