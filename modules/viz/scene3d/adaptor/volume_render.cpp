@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -353,11 +353,22 @@ void volume_render::update_image()
 
 void volume_render::update_mask()
 {
-    const auto mask = m_mask.lock();
-
     this->render_service()->make_current();
 
-    m_volume_renderer->update_mask(mask.get_shared());
+    {
+        const auto mask = m_mask.lock();
+
+        if(!data::helper::medical_image::check_image_validity(*mask))
+        {
+            return;
+        }
+
+        m_volume_renderer->update_clipping_box(mask.get_shared());
+    }
+
+    /// Load updated mask to the gpu
+    /// @warning This locks the mask again, do it outside the scope
+    m_volume_renderer->load_mask();
 
     this->request_render();
 }

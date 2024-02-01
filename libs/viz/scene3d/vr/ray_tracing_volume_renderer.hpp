@@ -148,8 +148,8 @@ public:
     /// Function called when a new image is being rendered.
     VIZ_SCENE3D_API void update_image(data::image::csptr _image, data::transfer_function::csptr _tf) override;
 
-    /// Function called when the mask is updated.
-    VIZ_SCENE3D_API void update_mask(data::image::csptr _mask);
+    /// Updates clipping box when the mask is updated.
+    VIZ_SCENE3D_API void update_clipping_box(data::image::csptr _mask);
 
     /// Called when the transfer function is updated.
     VIZ_SCENE3D_API void update_volume_tf(const data::transfer_function::csptr& _tf) override;

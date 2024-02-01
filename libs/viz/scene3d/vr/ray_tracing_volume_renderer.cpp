@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -336,15 +336,8 @@ void ray_tracing_volume_renderer::update_image(
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::update_mask(const data::image::csptr _mask)
+void ray_tracing_volume_renderer::update_clipping_box(const data::image::csptr _mask)
 {
-    if(!data::helper::medical_image::check_image_validity(_mask))
-    {
-        return;
-    }
-
-    this->load_mask();
-
     auto clipping_box               = sight::viz::scene3d::helper::image::compute_bounding_box_from_mask(_mask);
     const auto current_bounding_box = m_entry_point_geometry->getBoundingBox();
     m_freehand_crop_box = clipping_box;
