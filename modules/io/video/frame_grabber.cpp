@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -957,9 +957,13 @@ void frame_grabber::set_parameter(ui::parameter_t _value, std::string _key)
         // Save the changed step value
         m_step_changed = static_cast<std::uint64_t>(step);
     }
+    else if(_key == "loop")
+    {
+        m_loop_video = std::get<bool>(_value);
+    }
     else
     {
-        SIGHT_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
+        SIGHT_WARN("Only 'step' and 'loop' keys are supported (current key value is : '" << _key << "').");
     }
 }
 

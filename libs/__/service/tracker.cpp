@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,14 @@ void tracker::configuring()
         SIGHT_ASSERT("'dropObj' value must be 'true' or 'false'.", drop_str == "true" || drop_str == "false");
         m_drop_obj = (drop_str == "true");
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void tracker::configuring(const config_t& /*unused*/)
+{
+    // Move the code of the following method here once it reaches the end of the deprecation phase
+    this->configuring();
 }
 
 //-----------------------------------------------------------------------------

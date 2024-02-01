@@ -96,6 +96,7 @@ protected:
     SERVICE_API ~tracker() override;
 
     SERVICE_API void configuring() override;
+    SERVICE_API void configuring(const config_t& _config) override;
 
     /**
      * @brief This method calls tracking.
