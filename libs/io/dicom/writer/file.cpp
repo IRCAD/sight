@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -462,6 +462,19 @@ void file::write()
         {
             if(auto fiducials = image_series->get_fiducials(); !fiducials->get_fiducial_sets().empty())
             {
+                // Make sure to include this field as it is necessary for creating a correct header for the DICOM file
+                if(fiducials->get_sop_instance_uid().empty())
+                {
+                    fiducials->set_sop_instance_uid(
+                        std::string(
+                            sight::data::dicom::sop::get(
+                                sight::data::dicom::sop::Keyword::
+                                SpatialFiducialsStorage
+                            ).m_uid
+                        ) + ".0"
+                    );
+                }
+
                 write_spatial_fiducials(*fiducials, filepath);
             }
         }
@@ -469,6 +482,19 @@ void file::write()
         {
             if(auto fiducials = model_series->get_fiducials(); !fiducials->get_fiducial_sets().empty())
             {
+                // Make sure to include this field as it is necessary for creating a correct header for the DICOM file
+                if(fiducials->get_sop_instance_uid().empty())
+                {
+                    fiducials->set_sop_instance_uid(
+                        std::string(
+                            sight::data::dicom::sop::get(
+                                sight::data::dicom::sop::Keyword::
+                                SpatialFiducialsStorage
+                            ).m_uid
+                        ) + ".0"
+                    );
+                }
+
                 write_spatial_fiducials(*fiducials, filepath);
             }
         }

@@ -256,7 +256,6 @@ void ruler::update_from_fiducials()
             m_distances.find(id) == m_distances.end())
         {
             plv.push_back(sight::data::helper::fiducials_series::to_point_list(fiducial));
-            plv.back()->set_id(id);
         }
     }
 
