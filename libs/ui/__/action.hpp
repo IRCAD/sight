@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -222,6 +222,7 @@ private:
     bool m_visible {true};
     bool m_confirm_action {false};
     bool m_default_button {false};
+    bool m_emit_at_start {true};
     std::string m_confirm_message;
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,8 +96,9 @@ void action::initialize()
     m_checked = core::runtime::get_ptree_value(config, "state.<xmlattr>.checked", m_checked);
     m_enabled = core::runtime::get_ptree_value(config, "state.<xmlattr>.enabled", m_enabled);
 
-    m_inverted = core::runtime::get_ptree_value(config, "state.<xmlattr>.inverse", m_inverted);
-    m_visible  = core::runtime::get_ptree_value(config, "state.<xmlattr>.visible", m_visible);
+    m_inverted      = core::runtime::get_ptree_value(config, "state.<xmlattr>.inverse", m_inverted);
+    m_visible       = core::runtime::get_ptree_value(config, "state.<xmlattr>.visible", m_visible);
+    m_emit_at_start = core::runtime::get_ptree_value(config, "state.<xmlattr>.emit_at_start", m_emit_at_start);
 
     m_confirm_action  = config.get_child_optional("confirmation").has_value();
     m_confirm_message = config.get<std::string>("confirmation.<xmlattr>.message", "");
@@ -117,7 +118,10 @@ void action::action_service_stopping()
 void action::action_service_starting()
 {
     this->m_registry->action_service_starting();
-    this->set_checked(m_checked);
+    if(m_emit_at_start)
+    {
+        this->set_checked(m_checked);
+    }
 }
 
 //-----------------------------------------------------------------------------
