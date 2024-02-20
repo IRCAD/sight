@@ -614,7 +614,17 @@ private:
      */
     void update_landmark_visibility(landmark& _landmark, const landmarks_or_image_series_const_lock& _lock);
 
-    bool is_landmark_visible(const data::landmarks::point_t& _point, data::landmarks::size_t _group_size) const;
+    bool is_landmark_visible_with_lock(
+        const data::landmarks::point_t& _point,
+        data::landmarks::size_t _group_size
+    ) const;
+
+    bool is_landmark_visible_without_lock(
+        const data::landmarks::point_t& _point,
+        data::landmarks::size_t _group_size,
+        sight::data::image::spacing_t _spacing,
+        std::array<float, 3> _slice_position
+    ) const;
 
     std::shared_ptr<landmark> try_pick(int _x, int _y, bool _for_modification = true) const;
 

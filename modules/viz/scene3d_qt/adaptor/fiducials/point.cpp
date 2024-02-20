@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -1034,7 +1034,7 @@ std::shared_ptr<point::landmark> point::create_manual_object(
                 object,
                 m_material_adaptor->get_material_name(),
                 color,
-                _group_data.m_size * 0.5F
+                m_current_size
             );
             break;
 
@@ -1043,7 +1043,7 @@ std::shared_ptr<point::landmark> point::create_manual_object(
                 object,
                 m_material_adaptor->get_material_name(),
                 color,
-                _group_data.m_size
+                m_current_size
             );
             break;
     }
@@ -1391,7 +1391,7 @@ void point::remove_landmarks()
 
             for(auto it = group.m_points.begin() ; it < group.m_points.end() ; )
             {
-                if(is_landmark_visible(*it, group.m_size))
+                if(is_landmark_visible_with_lock(*it, group.m_size))
                 {
                     it          = group.m_points.erase(it);
                     has_deleted = true;
@@ -1431,10 +1431,19 @@ void point::remove_landmarks()
                     continue;
                 }
 
-                if(is_landmark_visible(*point, *size))
+                if(is_landmark_visible_without_lock(
+                       *point,
+                       *size,
+                       fl_lock.image_series->spacing(),
+                       get_current_slice_pos(*fl_lock.image_series)
+                ))
                 {
                     it          = fiducial_set->first.fiducial_sequence.erase(it);
                     has_deleted = true;
+                }
+                else
+                {
+                    ++it;
                 }
             }
 
@@ -1451,7 +1460,7 @@ void point::remove_landmarks()
         }
         else if(fl_lock.image_series != nullptr)
         {
-            object = fl_lock.image_series->get_fiducials();
+            object = fl_lock.image_series.get_shared();
         }
 
         object->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->async_emit();
@@ -1793,7 +1802,7 @@ bool point::is_max_landmarks_reached()
             {
                 for(const auto& point : group.m_points)
                 {
-                    if(is_landmark_visible(point, group.m_size))
+                    if(is_landmark_visible_with_lock(point, group.m_size))
                     {
                         ++max_visible;
 
@@ -1862,7 +1871,7 @@ void point::update_landmark_visibility(landmark& _landmark, std::optional<data::
             }
 
             const auto& position = _landmark.m_node->getPosition();
-            return is_landmark_visible({position[0], position[1], position[2]}, _group->m_size);
+            return is_landmark_visible_with_lock({position[0], position[1], position[2]}, _group->m_size);
         }();
 
     // Show or hide the landmark.
@@ -1878,41 +1887,61 @@ void point::update_landmark_visibility(landmark& _landmark, const landmarks_or_i
 
 //------------------------------------------------------------------------------
 
-bool point::is_landmark_visible(
+bool point::is_landmark_visible_with_lock(
     const data::landmarks::point_t& _point,
     data::landmarks::size_t _group_size
 ) const
 {
     if(const auto& iis_lock = const_lock_image(); iis_lock.image || iis_lock.image_series)
     {
-        const auto position       = _point[m_orientation];
-        data::image::csptr image  = iis_lock.image ? iis_lock.image.get_shared() : iis_lock.image_series.get_shared();
-        const auto slice_position = get_current_slice_pos(*image)[m_orientation];
-        const auto spacing        = image->spacing()[m_orientation];
+        data::image::csptr image = iis_lock.image ? iis_lock.image.get_shared() : iis_lock.image_series.get_shared();
 
-        switch(m_view_distance)
+        return is_landmark_visible_without_lock(
+            _point,
+            _group_size,
+            image->spacing(),
+            get_current_slice_pos(*image)
+        );
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool point::is_landmark_visible_without_lock(
+    const data::landmarks::point_t& _point,
+    data::landmarks::size_t _group_size,
+    sight::data::image::spacing_t _spacing,
+    std::array<float, 3> _slice_position
+) const
+{
+    const auto position                                = _point[m_orientation];
+    const double spacing                               = _spacing[m_orientation];
+    const sight::data::mesh::position_t slice_position = _slice_position[m_orientation];
+
+    switch(m_view_distance)
+    {
+        case view_distance::slices_in_range:
         {
-            case view_distance::slices_in_range:
-            {
-                // Check if the position is the same than slice position
-                const auto group_half_size = _group_size * 0.5;
-                const auto max_size        = std::max(group_half_size, spacing);
+            // Check if the position is the same than slice position
+            const auto group_half_size = _group_size * 0.5;
+            const auto max_size        = std::max(group_half_size, spacing);
 
-                return core::tools::is_greater(position, (slice_position - _group_size))
-                       && core::tools::is_less(position, (slice_position + max_size));
-            }
-
-            case view_distance::current_slice:
-            {
-                // Check if the position is the same than slice position
-                const auto rounded_position       = std::round(position / spacing);
-                const auto rounded_slice_position = std::round(slice_position / spacing);
-                return core::tools::is_equal(rounded_position, rounded_slice_position);
-            }
-
-            default:
-                break;
+            return core::tools::is_greater(position, (slice_position - _group_size))
+                   && core::tools::is_less(position, (slice_position + max_size));
         }
+
+        case view_distance::current_slice:
+        {
+            // Check if the position is the same than slice position
+            const auto rounded_position       = std::round(position / spacing);
+            const auto rounded_slice_position = std::round(slice_position / spacing);
+            return core::tools::is_equal(rounded_position, rounded_slice_position);
+        }
+
+        default:
+            break;
     }
 
     return true;
@@ -2341,7 +2370,7 @@ std::shared_ptr<point::landmark> point::try_pick(int _x, int _y, bool _for_modif
                 {
                     if(auto group = get_group(landmark->m_group_name, lock);
                        group.has_value() && group->m_visibility
-                       && is_landmark_visible(group->m_points[landmark->m_index], group->m_size)
+                       && is_landmark_visible_with_lock(group->m_points[landmark->m_index], group->m_size)
                        && (!_for_modification
                            || !m_can_only_modify_current
                            || landmark->m_group_name == m_current_group
