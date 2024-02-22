@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -170,13 +170,12 @@ openvslam::~openvslam() noexcept
 
 //------------------------------------------------------------------------------
 
-void openvslam::configuring()
+void openvslam::configuring(const config_t& _config)
 {
-    this->service::tracker::configuring();
-    const config_t cfg = this->get_config();
+    this->service::tracker::configuring(_config);
 
-    m_down_sample_width = cfg.get<std::size_t>(DOWNSAMPLE_CONFIG, m_down_sample_width);
-    const std::string mode = cfg.get<std::string>(MODE_CONFIG, "MONO");
+    m_down_sample_width = _config.get<std::size_t>(DOWNSAMPLE_CONFIG, m_down_sample_width);
+    const std::string mode = _config.get<std::string>(MODE_CONFIG, "MONO");
 
     // if mode is not set: assuming MONO
     if(mode == "STEREO")

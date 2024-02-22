@@ -41,6 +41,8 @@
             <object uid="markerToCamera" type="sight::data::matrix4" />
             <!-- Camera matrix in the marker world -->
             <object uid="cameraToMarker" type="sight::data::matrix4" />
+            <!-- Camera matrix in the marker world -->
+            <object uid="cameraToMarkerDamped" type="sight::data::matrix4" />
             <!-- Cube superimposed on the video at the marker location -->
             <object uid="cubeMesh" type="sight::data::mesh" />
             <object uid="undistortMap" type="sight::data::image" />
@@ -76,10 +78,8 @@
                         <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
                         <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <separator />
-                        <menuItem name="Enable video image undistortion" icon="sight::module::ui::flaticons/YellowUndistortion.svg" />
-                        <menuItem name="Disable video image undistortion" icon="sight::module::ui::flaticons/YellowDistortion.svg" />
-                        <menuItem name="Enable 3D rendering distortion" icon="sight::module::ui::flaticons/YellowDistortion.svg" />
-                        <menuItem name="Disable 3D rendering distortion" icon="sight::module::ui::flaticons/YellowUndistortion.svg" />
+                        <menuItem name="Enable video image undistortion" icon="sight::module::ui::flaticons/YellowUndistortion.svg" style="check" />
+                        <menuItem name="Enable 3D rendering distortion" icon="sight::module::ui::flaticons/YellowDistortion.svg" style="check" />
                         <separator />
                         <menuItem name="Show Mesh on tag" icon="sight::module::ui::flaticons/Mask.svg" style="check" />
                         <separator />
@@ -95,9 +95,7 @@
                     <menuItem sid="stopVideoAct" start="true" />
                     <menuItem sid="loopVideoAct" start="true" />
                     <menuItem sid="startUndistortAct" start="true" />
-                    <menuItem sid="stopUndistortAct" start="true" />
                     <menuItem sid="startDistortAct" start="true" />
-                    <menuItem sid="stopDistortAct" start="true" />
                     <menuItem sid="showMeshAct" start="true" />
                     <menuItem sid="showParametersAct" start="true" />
                 </registry>
@@ -138,13 +136,15 @@
                         <view proportion="3" />
                         <view proportion="2" />
                         <view proportion="1" />
+                        <view proportion="1" />
                         <spacer />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="arucoParametersSrv" start="true" />
-                    <view sid="reprojectionParamametersSrv" start="true" />
+                    <view sid="reprojectionParametersSrv" start="true" />
                     <view sid="material_opacity_editor" start="true" />
+                    <view sid="damping_parameters" start="true" />
                 </registry>
             </service>
 
@@ -186,15 +186,7 @@
 
             <service uid="startUndistortAct" type="sight::module::ui::action" />
 
-            <service uid="stopUndistortAct" type="sight::module::ui::action">
-                <state visible="false" />
-            </service>
-
             <service uid="startDistortAct" type="sight::module::ui::action" />
-
-            <service uid="stopDistortAct" type="sight::module::ui::action">
-                <state visible="false" />
-            </service>
 
             <service uid="showMeshAct" type="sight::module::ui::action">
                 <state checked="true" />
@@ -207,7 +199,7 @@
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <!-- It is essential to use the 'sync' mode when doing AR -->
                 <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1" compositors="Remap" >
@@ -225,8 +217,8 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="sourceFrame" />
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" >
+                <in key="image" uid="sourceFrame" auto_connect="false"/>
             </service>
 
             <service uid="undistortAdp" type="sight::module::viz::scene3d::adaptor::compositor_parameter" auto_connect="true">
@@ -240,7 +232,7 @@
 
             <!-- Camera for the 3D layer -->
             <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <inout key="transform" uid="cameraToMarker" />
+                <inout key="transform" uid="cameraToMarkerDamped" />
                 <in key="calibration" uid="camera" />
             </service>
 
@@ -338,10 +330,17 @@
                 </parameters>
             </service>
 
-            <service uid="reprojectionParamametersSrv" type="sight::module::ui::qt::parameters">
+            <service uid="reprojectionParametersSrv" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#ffffff" />
+                </parameters>
+            </service>
+
+            <service uid="damping_parameters" type="sight::module::ui::qt::parameters">
+                <parameters>
+                    <param type="bool" name="Damping" key="enabled" defaultValue="true" />
+                    <param type="double" name="Weight" key="weight" defaultValue="0.35" min="0.1" max="1." widget="slider" />
                 </parameters>
             </service>
 
@@ -437,13 +436,19 @@
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
             <service uid="syncGenericSceneSrv" type="sight::module::sync::signal_gate">
                 <signal>sourceFrame/buffer_modified</signal>
-                <signal>cameraToMarker/modified</signal>
+                <signal>cameraAdp/updated</signal>
             </service>
 
             <service uid="material_opacity_editor" type="sight::module::ui::qt::material_opacity_editor">
                 <inout key="material" uid="cubeMaterial" />
                 <label>Cube opacity</label>
             </service>
+
+            <service uid="damp_matrix_srv" type="sight::module::geometry::weighted_mean_matrix" >
+                <in key="raw" uid="cameraToMarker" />
+                <inout key="damped" uid="cameraToMarkerDamped" />
+                <config weight="0.6" />
+           </service>
 
             <!-- ******************************* Connections ***************************************** -->
 
@@ -485,8 +490,13 @@
 
             <!-- signal/slot connection -->
             <connect>
-                <signal>reprojectionParamametersSrv/parameter_changed</signal>
+                <signal>reprojectionParametersSrv/parameter_changed</signal>
                 <slot>errorSrv/set_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>damping_parameters/parameter_changed</signal>
+                <slot>damp_matrix_srv/set_parameter</slot>
             </connect>
 
             <connect>
@@ -508,6 +518,11 @@
             <connect>
                 <signal>trackerSrv/marker_detected</signal>
                 <slot>axisAdp/update_visibility</slot>
+            </connect>
+
+            <connect>
+                <signal>trackerSrv/updated</signal>
+                <slot>videoAdp/update</slot>
             </connect>
 
             <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
@@ -559,35 +574,27 @@
             </connect>
 
             <connect>
-                <signal>startUndistortAct/updated</signal>
+                <signal>startUndistortAct/checked</signal>
                 <slot>undistortAdp/show</slot>
                 <slot>startDistortAct/disable</slot>
-                <slot>startUndistortAct/hide</slot>
-                <slot>stopUndistortAct/show</slot>
             </connect>
 
             <connect>
-                <signal>stopUndistortAct/updated</signal>
+                <signal>startUndistortAct/unchecked</signal>
                 <slot>undistortAdp/hide</slot>
                 <slot>startDistortAct/enable</slot>
-                <slot>startUndistortAct/show</slot>
-                <slot>stopUndistortAct/hide</slot>
             </connect>
 
             <connect>
-                <signal>startDistortAct/updated</signal>
+                <signal>startDistortAct/checked</signal>
                 <slot>distortAdp/show</slot>
                 <slot>startUndistortAct/disable</slot>
-                <slot>startDistortAct/hide</slot>
-                <slot>stopDistortAct/show</slot>
             </connect>
 
             <connect>
-                <signal>stopDistortAct/updated</signal>
+                <signal>startDistortAct/unchecked</signal>
                 <slot>distortAdp/hide</slot>
                 <slot>startUndistortAct/enable</slot>
-                <slot>startDistortAct/show</slot>
-                <slot>stopDistortAct/hide</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->
@@ -615,6 +622,7 @@
             <start uid="cameraAdp" />
             <start uid="cubeAdp" />
             <start uid="distortAdp" />
+            <start uid="damp_matrix_srv" />
 
             <!-- ******************************* Update services ***************************************** -->
 
@@ -623,7 +631,8 @@
             <update uid="hideAxisSrv" />
             <update uid="loadMeshSrv" />
             <update uid="arucoParametersSrv" />
-            <update uid="reprojectionParamametersSrv" />
+            <update uid="reprojectionParametersSrv" />
+            <update uid="damp_matrix_srv" />
 
         </config>
     </extension>

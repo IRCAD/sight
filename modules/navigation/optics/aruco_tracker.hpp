@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,7 +140,7 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    MODULE_NAVIGATION_OPTICS_API void configuring() override;
+    MODULE_NAVIGATION_OPTICS_API void configuring(const config_t& _config) override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.

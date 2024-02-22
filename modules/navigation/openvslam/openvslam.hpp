@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -172,7 +172,7 @@ public:
 protected:
 
     /// Configures the service by parsing XML.
-    MODULE_NAVIGATION_OPENVSLAM_API void configuring() final;
+    MODULE_NAVIGATION_OPENVSLAM_API void configuring(const config_t& _config) final;
 
     /// Retrieves input data.
     MODULE_NAVIGATION_OPENVSLAM_API void starting() final;

@@ -1,0 +1,5 @@
+sight_add_target(module_geometry_test TYPE TEST)
+
+add_dependencies(module_geometry_test module_geometry)
+
+target_link_libraries(module_geometry_test PUBLIC service utest)

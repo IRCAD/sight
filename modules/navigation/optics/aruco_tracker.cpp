@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,13 +100,11 @@ service::connections_t aruco_tracker::auto_connections() const
 
 //-----------------------------------------------------------------------------
 
-void aruco_tracker::configuring()
+void aruco_tracker::configuring(const config_t& _config)
 {
-    this->service::tracker::configuring();
+    this->service::tracker::configuring(_config);
 
-    const auto config = this->get_config();
-
-    const auto& track_cfg = config.get_child("track");
+    const auto& track_cfg = _config.get_child("track");
 
     // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_FOREACH(const auto& elt, track_cfg.equal_range("marker"))
@@ -125,10 +123,10 @@ void aruco_tracker::configuring()
     }
 
     // Get the debug markers flag
-    m_debug_markers = config.get<bool>("debugMarkers", false);
+    m_debug_markers = _config.get<bool>("debugMarkers", false);
 
     // Do corner refinement ?
-    const bool do_corner_refinement = config.get<bool>("cornerRefinement", true);
+    const bool do_corner_refinement = _config.get<bool>("cornerRefinement", true);
     m_detector_params->cornerRefinementMethod = (do_corner_refinement
                                                  ? cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
                                                  : cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
