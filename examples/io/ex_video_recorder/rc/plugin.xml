@@ -188,7 +188,7 @@
             <connect>
                 <signal>frameUpdaterSrv/synchronization_done</signal>
                 <slot>genericSceneSrv/render</slot>
-                <slot>frameUpdaterSrv/synchronize</slot>
+                <slot>frameUpdaterSrv/request_sync</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

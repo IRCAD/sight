@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,18 +33,18 @@ namespace sight::module::sync
 
 synchronizer::synchronizer()
 {
-    new_slot(slots::RESET_TIMELINE_SLOT, &synchronizer::reset_timeline, this);
-    new_slot(slots::SYNCHRONIZE_SLOT, &synchronizer::synchronize, this);
-    new_slot(slots::SET_FRAME_BINDING_SLOT, &synchronizer::set_frame_binding, this);
-    new_slot(slots::SET_MATRIX_BINDING_SLOT, &synchronizer::set_matrix_binding, this);
-    new_slot(slots::SET_DELAY_SLOT, &synchronizer::set_delay, this);
+    new_slot(slots::RESET_TIMELINE, &synchronizer::reset_timeline, this);
+    new_slot(slots::TRY_SYNC, &synchronizer::try_sync, this);
+    new_slot(slots::REQUEST_SYNC, &synchronizer::request_sync, this);
+    new_slot(slots::SET_FRAME_BINDING, &synchronizer::set_frame_binding, this);
+    new_slot(slots::SET_MATRIX_BINDING, &synchronizer::set_matrix_binding, this);
+    new_slot(slots::SET_DELAY, &synchronizer::set_delay, this);
 
-    new_signal<signals::timestamp_signal_t>(signals::SYNCHRONIZATION_DONE_SIG);
-    new_signal<signals::void_signal_t>(signals::SYNCHRONIZATION_SKIPPED_SIG);
-    new_signal<signals::int_signal_t>(signals::FRAME_SYNCHRONIZED_SIG);
-    new_signal<signals::int_signal_t>(signals::FRAME_UNSYNCHRONIZED_SIG);
-    new_signal<signals::int_signal_t>(signals::MATRIX_SYNCHRONIZED_SIG);
-    new_signal<signals::int_signal_t>(signals::MATRIX_UNSYNCHRONIZED_SIG);
+    new_signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE);
+    new_signal<signals::int_t>(signals::FRAME_SYNCHRONIZED);
+    new_signal<signals::int_t>(signals::FRAME_UNSYNCHRONIZED);
+    new_signal<signals::int_t>(signals::MATRIX_SYNCHRONIZED);
+    new_signal<signals::int_t>(signals::MATRIX_UNSYNCHRONIZED);
 }
 
 //-----------------------------------------------------------------------------
@@ -52,10 +52,10 @@ synchronizer::synchronizer()
 service::connections_t synchronizer::auto_connections() const
 {
     return {
-        {config_key::FRAMETL_INPUT, data::timeline::signals::CLEARED, slots::RESET_TIMELINE_SLOT},
-        {config_key::MATRIXTL_INPUT, data::timeline::signals::CLEARED, slots::RESET_TIMELINE_SLOT},
-        {config_key::FRAMETL_INPUT, data::timeline::signals::PUSHED, service::slots::UPDATE},
-        {config_key::MATRIXTL_INPUT, data::timeline::signals::PUSHED, service::slots::UPDATE}
+        {config_key::FRAMETL_INPUT, data::timeline::signals::CLEARED, slots::RESET_TIMELINE},
+        {config_key::MATRIXTL_INPUT, data::timeline::signals::CLEARED, slots::RESET_TIMELINE},
+        {config_key::FRAMETL_INPUT, data::timeline::signals::PUSHED, slots::TRY_SYNC},
+        {config_key::MATRIXTL_INPUT, data::timeline::signals::PUSHED, slots::TRY_SYNC}
     };
 }
 
@@ -213,17 +213,6 @@ void synchronizer::starting()
 
 void synchronizer::updating()
 {
-    m_update_mask |= object_received;
-
-    if(m_legacy_auto_sync)
-    {
-        return;
-    }
-
-    if((m_update_mask & sync_requested) != 0)
-    {
-        this->synchronize();
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -243,12 +232,6 @@ void synchronizer::stopping()
 
 void synchronizer::synchronize()
 {
-    m_update_mask |= sync_requested;
-    if((m_update_mask & object_received) == 0)
-    {
-        return;
-    }
-
     // do the synchronisation
     // step 1: get the TL implicated in the synchronization
     std::vector<std::size_t> frame_tl_populated_index;
@@ -325,8 +308,8 @@ void synchronizer::synchronize()
     if(max_synchronization_timestamp == 0)
     {
         // there is nothing to synchronize
-        SIGHT_INFO("skip synch, because there is nothing to synch");
-        this->signal<signals::void_signal_t>(signals::SYNCHRONIZATION_SKIPPED_SIG)->async_emit();
+        SIGHT_INFO("skip sync, because there is nothing to sync");
+        this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(max_synchronization_timestamp);
         return;
     }
 
@@ -367,23 +350,37 @@ void synchronizer::synchronize()
             copy_matrix_from_t_lto_output(tl_index, synchronization_timestamp);
         }
 
-        this->signal<signals::timestamp_signal_t>(signals::SYNCHRONIZATION_DONE_SIG)->async_emit(
-            synchronization_timestamp
-        );
+        this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(synchronization_timestamp);
         send_frame_var_status(frame_tl_to_synch_index);
         send_matrix_var_status(matrix_tl_to_synch_index);
-
-        // synchronisation has been done with success, reset the mask
-        m_update_mask = m_legacy_auto_sync ? object_received : 0;
     }
     else
     {
-        SIGHT_INFO("skip synch, because m_lastTimeStamp == synchronizationTimestamp");
-        this->signal<signals::void_signal_t>(signals::SYNCHRONIZATION_SKIPPED_SIG)->async_emit();
+        this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(synchronization_timestamp);
     }
 }
 
 // ----------------------------------------------------------------------------
+
+void synchronizer::try_sync()
+{
+    if(m_locked)
+    {
+        return;
+    }
+
+    m_locked = true;
+    this->synchronize();
+}
+
+//------------------------------------------------------------------------------
+
+void synchronizer::request_sync()
+{
+    m_locked = false;
+}
+
+//------------------------------------------------------------------------------
 
 std::vector<synchronizer::out_var_parameter> synchronizer::get_frame_tl_output_var_index(std::size_t _frame_tl_index)
 {
@@ -576,8 +573,8 @@ void synchronizer::send_frame_var_status(const std::vector<std::size_t>& _synch_
             {
                 output_var_param.is_synchronized = is_synch;
                 const auto signal_key =
-                    is_synch ? signals::FRAME_SYNCHRONIZED_SIG : signals::FRAME_UNSYNCHRONIZED_SIG;
-                this->signal<signals::int_signal_t>(signal_key)->async_emit(
+                    is_synch ? signals::FRAME_SYNCHRONIZED : signals::FRAME_UNSYNCHRONIZED;
+                this->signal<signals::int_t>(signal_key)->async_emit(
                     static_cast<int>(output_var_param.
                                      out_var_index)
                 );
@@ -605,8 +602,8 @@ void synchronizer::send_matrix_var_status(const std::vector<std::size_t>& _synch
             {
                 output_var_param.is_synchronized = is_synch;
                 const auto signal_key =
-                    is_synch ? signals::MATRIX_SYNCHRONIZED_SIG : signals::MATRIX_UNSYNCHRONIZED_SIG;
-                this->signal<signals::int_signal_t>(signal_key)->async_emit(
+                    is_synch ? signals::MATRIX_SYNCHRONIZED : signals::MATRIX_UNSYNCHRONIZED;
+                this->signal<signals::int_t>(signal_key)->async_emit(
                     static_cast<int>(output_var_param.
                                      out_var_index)
                 );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,6 +72,7 @@ render::render() noexcept :
     new_signal<signals::compositor_updated_signal_t>(signals::COMPOSITOR_UPDATED);
     new_signal<signals::void_signal_t>(signals::FULLSCREEN_SET);
     new_signal<signals::void_signal_t>(signals::FULLSCREEN_UNSET);
+    new_signal<signals::void_signal_t>(signals::RENDERED);
 
     new_slot(COMPUTE_CAMERA_ORIG_SLOT, &render::reset_camera_coordinates, this);
     new_slot(RESET_CAMERAS_SLOT, &render::reset_cameras, this);
@@ -449,6 +450,9 @@ void render::render_now()
     if(m_render_mode == render_mode::manual)
     {
         m_interactor_manager->render_now();
+
+        auto sig = this->signal<signals::void_signal_t>(signals::RENDERED);
+        sig->async_emit();
     }
 }
 

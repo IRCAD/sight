@@ -148,6 +148,7 @@ public:
         static inline const key_t FULLSCREEN_SET     = "fullscreen_set";
         static inline const key_t FULLSCREEN_UNSET   = "fullscreen_unset";
         static inline const key_t COMPOSITOR_UPDATED = "compositorUpdated";
+        static inline const key_t RENDERED           = "rendered";
     };
 
     /// Defines the type of adaptors ID.

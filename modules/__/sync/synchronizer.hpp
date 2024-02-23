@@ -38,15 +38,15 @@ namespace sight::module::sync
 /**
  * @brief The synchronizer service synchronizes video frames and/or transform matrices.
  * This service takes a set of frames and matrices timelines.
- * The timelines contents are synchronized when some data are added, and when the synchronization is required,
- * which can be automated or through slot.
+ * The timelines contents are synchronized when new data are added and a sync request has been sent.
+ * If no request is sent before, the synchronisation is skipped. This mechanism is designed to be used by the
+ * application logic, to inform that the update loop is over and ensure only one synchronisation impulse is sent.
+ *
  * Once synchronized, the timeline data are pushed in output variables, which are associated through the configuration.
  *
  * @section Signals Signals
  * - \b synchronization_done(core::clock::type): Emitted when a synchronization has been done, and forward
  * the synchronization timestamp.
- * - \b synchronization_skipped(): Emitted when the synchronization is not done, either because the timelines are all
- * empty, or because the synchronization timestamp has not changed.
  * - \b frameSynchronized(int): Emitted when a frame with sendStatus at true is synchronized while it wasn't previously.
  * - \b frameUnsynchronized(int): Emitted when a frame with sendStatus at true is unsynchronized while it wasn't
  * previously.
@@ -56,7 +56,10 @@ namespace sight::module::sync
  * previously.
  *
  * @section Slots Slots
- * - \b synchronize() : synchronizes the timelines.
+ * - \b try_sync() : synchronizes the timelines, if a request has been sent earlier. Normally you don't need to connect
+ *  this slot, it is autoconnected to the input timelines.
+ * - \b request_sync() : flag the service to honor the next call to try_sync(), to be called at the end of the update
+ *  loop of your application.
  * - \b reset() : reset the previous synchronization timestamp to 0.
  * - \b setFrameBinding( std::size_t, unsigned int, std::size_t) : change the association of a frame output var
  * with a TL and the element index in the timeline.
@@ -137,27 +140,27 @@ public:
     struct signals
     {
         using key_t = sight::core::com::signals::key_t;
-        static inline const key_t SYNCHRONIZATION_DONE_SIG    = "synchronization_done";
-        static inline const key_t SYNCHRONIZATION_SKIPPED_SIG = "synchronization_skipped";
-        static inline const key_t FRAME_SYNCHRONIZED_SIG      = "frameSynchronized";
-        static inline const key_t FRAME_UNSYNCHRONIZED_SIG    = "frameUnsynchronized";
-        static inline const key_t MATRIX_SYNCHRONIZED_SIG     = "matrix_synchronized";
-        static inline const key_t MATRIX_UNSYNCHRONIZED_SIG   = "matrix_unsynchronized";
+        static inline const key_t SYNCHRONIZATION_DONE  = "synchronization_done";
+        static inline const key_t FRAME_SYNCHRONIZED    = "frameSynchronized";
+        static inline const key_t FRAME_UNSYNCHRONIZED  = "frameUnsynchronized";
+        static inline const key_t MATRIX_SYNCHRONIZED   = "matrix_synchronized";
+        static inline const key_t MATRIX_UNSYNCHRONIZED = "matrix_unsynchronized";
 
-        using timestamp_signal_t = sight::core::com::signal<void (core::clock::type _timestamp)>;
-        using void_signal_t      = sight::core::com::signal<void ()>;
-        using int_signal_t       = sight::core::com::signal<void (int)>;
+        using timestamp_t = sight::core::com::signal<void (core::clock::type _timestamp)>;
+        using void_t      = sight::core::com::signal<void ()>;
+        using int_t       = sight::core::com::signal<void (int)>;
     };
 
     /// Internal wrapper holding slots keys.
     struct slots
     {
         using key_t = sight::core::com::slots::key_t;
-        static inline const key_t RESET_TIMELINE_SLOT         = "reset";
-        static inline const key_t SYNCHRONIZE_SLOT            = "synchronize";
-        static inline const key_t SET_FRAME_BINDING_SLOT      = "setFrameBinding";
-        static inline const key_t SET_MATRIX_BINDING_SLOT     = "setMatrixBinding";
-        static inline const key_t SET_DELAY_SLOT              = "set_delay";
+        static inline const key_t RESET_TIMELINE              = "reset";
+        static inline const key_t TRY_SYNC                    = "try_sync";
+        static inline const key_t REQUEST_SYNC                = "request_sync";
+        static inline const key_t SET_FRAME_BINDING           = "setFrameBinding";
+        static inline const key_t SET_MATRIX_BINDING          = "setMatrixBinding";
+        static inline const key_t SET_DELAY                   = "set_delay";
         static constexpr std::string_view FRAME_DELAY_PREFIX  = "frameDelay_";
         static constexpr std::string_view MATRIX_DELAY_PREFIX = "matrixDelay_";
     };
@@ -204,7 +207,7 @@ public:
      * @brief Return proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connections
      *
-     * Connect data::timeline::signals::CLEARED to RESET_TIMELINE_SLOT
+     * Connect data::timeline::signals::CLEARED to RESET_TIMELINE
      */
     MODULE_SYNC_API service::connections_t auto_connections() const final;
 
@@ -234,6 +237,12 @@ protected:
      * @brief SLOT: Synchronizes the TLs, fill the output variables, and send notifications
      */
     MODULE_SYNC_API void synchronize();
+
+    /// Triggers a synchronization if the service is unlocked
+    MODULE_SYNC_API void try_sync();
+
+    /// Unlocks the service, which will honor the next synchronization when calling try_sync()
+    MODULE_SYNC_API void request_sync();
 
     /**
      * @brief SLOT: Resets the last timestamp stored
@@ -368,14 +377,6 @@ private:
     // specify if the synchronization is called automatically or only when the slot synchronize is called.
     bool m_legacy_auto_sync {false};
 
-    // enum values for the update/synchronize mask
-    enum : std::uint8_t
-    {
-        object_received = 0x1,
-        sync_requested  = 0x2
-    };
-    std::uint8_t m_update_mask {sync_requested};
-
     /// Timer used for the update
     core::thread::timer::sptr m_timer;
 
@@ -389,6 +390,8 @@ private:
     core::clock::type m_tolerance {500.};
 
     core::clock::type m_last_time_stamp {0.};
+
+    bool m_locked {false};
 
     /// Contains the input video timelines.
     data::ptr_vector<data::frame_tl, data::access::in> m_frame_t_ls {this, config_key::FRAMETL_INPUT, true};

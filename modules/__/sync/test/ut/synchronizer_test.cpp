@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -189,12 +189,11 @@ public:
         memset(elt_buffer, _timestamp, frame_size[0] * frame_size[1]);
 
         _frame_tl->push_object(data);
-        srv->update().wait();
     }
 
     //------------------------------------------------------------------------------
 
-    void add_matrix_to_matrix_tl(
+    static void add_matrix_to_matrix_tl(
         data::matrix_tl::sptr& _matrix_tl,
         unsigned int _element_index,
         const std::uint8_t _timestamp
@@ -209,12 +208,11 @@ public:
         matrix[0] = float(_timestamp);
         data->set_element(matrix, _element_index);
         _matrix_tl->push_object(data);
-        srv->update().wait();
     }
 
     //------------------------------------------------------------------------------
 
-    void add_matrix_to_matrix_tl(data::matrix_tl::sptr& _matrix_tl, const std::uint8_t _timestamp)
+    static void add_matrix_to_matrix_tl(data::matrix_tl::sptr& _matrix_tl, const std::uint8_t _timestamp)
     {
         add_matrix_to_matrix_tl(_matrix_tl, 0, _timestamp);
     }
@@ -330,7 +328,8 @@ void synchronizer_test::single_frame_tl_population()
     // populate the TLs
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     //test the output
     synchronizer_tester::check_frame(tester.frame1, 2);
     synchronizer_tester::check_frame(tester.frame2, 0);
@@ -338,7 +337,8 @@ void synchronizer_test::single_frame_tl_population()
 
     // populate the TL
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 3);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     //test the output
     synchronizer_tester::check_frame(tester.frame1, 3);
@@ -361,15 +361,17 @@ void synchronizer_test::single_matrix_tl_population()
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection = tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame1, 0);
     synchronizer_tester::check_frame(tester.frame2, 0);
     synchronizer_tester::check_matrix(tester.matrix1, 2);
 
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     synchronizer_tester::check_frame(tester.frame1, 0);
     synchronizer_tester::check_frame(tester.frame2, 0);
@@ -411,7 +413,6 @@ void synchronizer_test::basic_synchronisation()
 
     //signal - slot connections for tests
     core::clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received  = false;
     auto slot_synchronization_done         =
         sight::core::com::new_slot(
             [&last_timestamp_synch](core::clock::type _timestamp)
@@ -421,15 +422,6 @@ void synchronizer_test::basic_synchronisation()
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
         tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
-    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
-        [&synchronization_skipped_received]()
-        {
-            synchronization_skipped_received = true;
-        });
-    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
-        slot_synchronization_skipped_received
-    );
 
     // This is done just to handle automatic synch at first data push
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -437,8 +429,9 @@ void synchronizer_test::basic_synchronisation()
 
     //time 1: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     synchronizer_tester::check_frame(tester.frame1, 1);
     synchronizer_tester::check_frame(tester.frame2, 1);
@@ -447,8 +440,9 @@ void synchronizer_test::basic_synchronisation()
     //time 2: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 2);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 2);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     synchronizer_tester::check_frame(tester.frame1, 2);
     synchronizer_tester::check_frame(tester.frame2, 2);
@@ -457,8 +451,9 @@ void synchronizer_test::basic_synchronisation()
     //time 3: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 6);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 6);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     synchronizer_tester::check_frame(tester.frame1, 6);
     synchronizer_tester::check_frame(tester.frame2, 6);
@@ -467,16 +462,17 @@ void synchronizer_test::basic_synchronisation()
     //time 4: no synch, as new timestamp is min (8, 8, 6) = 6 = last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 8);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 8);
-    tester.srv->slot("synchronize")->run();
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame1, 6);
     synchronizer_tester::check_frame(tester.frame2, 6);
     synchronizer_tester::check_matrix(tester.matrix1, 6);
 
     //time 5: synch, with timestamp  min(9,8,9)=8 => take frame/matrix closest to 8
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 9);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 9);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 9);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 8);
     synchronizer_tester::check_frame(tester.frame1, 8);
     synchronizer_tester::check_frame(tester.frame2, 8);
@@ -484,24 +480,25 @@ void synchronizer_test::basic_synchronisation()
 
     //time 6: no synch, as new timestamp is min (10, 8, 9) = 8 = last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 10);
-    tester.srv->slot("synchronize")->run();
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame1, 8);
     synchronizer_tester::check_frame(tester.frame2, 8);
     synchronizer_tester::check_matrix(tester.matrix1, 9);
 
     //time 7: no synch, as new timestamp is min (11, 8, 11) = 8 = last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 11);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 11);
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 11);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame2, 8);
     synchronizer_tester::check_matrix(tester.matrix1, 9);
 
     //time 8: synch, with timestamp  min(12,12,11)=11 => take frame/matrix closest to 11
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 12);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 12);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 11);
     synchronizer_tester::check_frame(tester.frame1, 11);
     synchronizer_tester::check_frame(tester.frame2, 12);
@@ -510,16 +507,18 @@ void synchronizer_test::basic_synchronisation()
     //time 9: no synch, as new timestamp is min (13, 13, 11) = 11 = last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 13);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 13);
-    tester.srv->slot("synchronize")->run();
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 11);
     synchronizer_tester::check_frame(tester.frame1, 11);
     synchronizer_tester::check_frame(tester.frame2, 12);
     synchronizer_tester::check_matrix(tester.matrix1, 11);
 
     //time 10: synch, with timestamp  min(14,13,14)=13 => take frame/matrix closest to 13
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 14);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 14);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 14);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 13);
     synchronizer_tester::check_frame(tester.frame1, 13);
     synchronizer_tester::check_frame(tester.frame2, 13);
@@ -528,8 +527,9 @@ void synchronizer_test::basic_synchronisation()
     //time 11: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 15);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 15);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 15);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 15);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 15);
     synchronizer_tester::check_frame(tester.frame1, 15);
     synchronizer_tester::check_frame(tester.frame2, 15);
@@ -553,7 +553,6 @@ void synchronizer_test::time_gap_synchronisation()
 {
     synchronizer_tester tester;
     core::clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received  = false;
     auto slot_synchronization_done         =
         sight::core::com::new_slot(
             [&last_timestamp_synch](core::clock::type _timestamp)
@@ -563,15 +562,6 @@ void synchronizer_test::time_gap_synchronisation()
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
         tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
-    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
-        [&synchronization_skipped_received]()
-        {
-            synchronization_skipped_received = true;
-        });
-    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
-        slot_synchronization_skipped_received
-    );
 
     // This is done just to handle automatic synch at first data push
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -579,8 +569,9 @@ void synchronizer_test::time_gap_synchronisation()
 
     //time 1: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     synchronizer_tester::check_frame(tester.frame1, 1);
     synchronizer_tester::check_frame(tester.frame2, 1);
@@ -589,8 +580,9 @@ void synchronizer_test::time_gap_synchronisation()
     //time 2: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 2);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 2);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     synchronizer_tester::check_frame(tester.frame1, 2);
     synchronizer_tester::check_frame(tester.frame2, 2);
@@ -599,8 +591,9 @@ void synchronizer_test::time_gap_synchronisation()
     //time 3: ignore matrix too far away  timestamp  min(50, 49)=49
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 50);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 49);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 49);
     synchronizer_tester::check_frame(tester.frame1, 50);
     synchronizer_tester::check_frame(tester.frame2, 49);
@@ -609,18 +602,19 @@ void synchronizer_test::time_gap_synchronisation()
     //time 4: synch, with timestamp  min(51,50,49)=49 => last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 51);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 50);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 49);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 49);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 49);
-    synchronization_skipped_received = false;
     synchronizer_tester::check_frame(tester.frame1, 50);
     synchronizer_tester::check_frame(tester.frame2, 49);
     synchronizer_tester::check_matrix(tester.matrix1, 2);
 
     //time 5: synch, with timestamp  min(52,50,50)=50 => take frame/matrix closest to 50
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 52);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 50);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 50);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 50);
     synchronizer_tester::check_frame(tester.frame1, 50);
     synchronizer_tester::check_frame(tester.frame2, 50);
@@ -629,9 +623,8 @@ void synchronizer_test::time_gap_synchronisation()
     //time 6: no synch, as new timestamp is min (53, 51, 50) = 50 = last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 53);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 51);
-    tester.srv->slot("synchronize")->run();
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame1, 50);
     synchronizer_tester::check_frame(tester.frame2, 50);
     synchronizer_tester::check_matrix(tester.matrix1, 50);
@@ -639,7 +632,9 @@ void synchronizer_test::time_gap_synchronisation()
     //time 7: synch, with timestamp  min(54,52,52)=52 => take frame/matrix closest to 52
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 54);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 52);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 52);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 52);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 52);
     synchronizer_tester::check_frame(tester.frame1, 52);
     synchronizer_tester::check_frame(tester.frame2, 52);
@@ -648,8 +643,9 @@ void synchronizer_test::time_gap_synchronisation()
     //time 8: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 55);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 55);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 55);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 55);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 55);
     synchronizer_tester::check_frame(tester.frame1, 55);
     synchronizer_tester::check_frame(tester.frame2, 55);
@@ -673,7 +669,6 @@ void synchronizer_test::reset_timeline_synchronisation()
 {
     synchronizer_tester tester;
     core::clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received  = false;
     auto slot_synchronization_done         =
         sight::core::com::new_slot(
             [&last_timestamp_synch](core::clock::type _timestamp)
@@ -683,15 +678,6 @@ void synchronizer_test::reset_timeline_synchronisation()
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
         tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
-    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
-        [&synchronization_skipped_received]()
-        {
-            synchronization_skipped_received = true;
-        });
-    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
-        slot_synchronization_skipped_received
-    );
 
     // This is done just to handle automatic synch at first data push
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -699,8 +685,9 @@ void synchronizer_test::reset_timeline_synchronisation()
 
     //time 1: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     synchronizer_tester::check_frame(tester.frame1, 1);
     synchronizer_tester::check_frame(tester.frame2, 1);
@@ -709,8 +696,9 @@ void synchronizer_test::reset_timeline_synchronisation()
     //time 2: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 2);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 2);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     synchronizer_tester::check_frame(tester.frame1, 2);
     synchronizer_tester::check_frame(tester.frame2, 2);
@@ -719,8 +707,9 @@ void synchronizer_test::reset_timeline_synchronisation()
     //time 3: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 6);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 6);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     last_timestamp_synch = 0;
     synchronizer_tester::check_frame(tester.frame1, 6);
@@ -733,7 +722,8 @@ void synchronizer_test::reset_timeline_synchronisation()
     // it is not the same as the previous one because of the reset
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 8);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 8);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     synchronizer_tester::check_frame(tester.frame1, 6);
     synchronizer_tester::check_frame(tester.frame2, 6);
@@ -741,8 +731,9 @@ void synchronizer_test::reset_timeline_synchronisation()
 
     //time 5: synch, with timestamp  min(9,8,9)=8 => take frame/matrix closest to 8
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 9);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 9);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 9);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 8);
     synchronizer_tester::check_frame(tester.frame1, 8);
     synchronizer_tester::check_frame(tester.frame2, 8);
@@ -750,9 +741,8 @@ void synchronizer_test::reset_timeline_synchronisation()
 
     //time 6: no synch, timestamp  min(10,8,9)= 8 = last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 10);
-    tester.srv->slot("synchronize")->run();
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame1, 8);
     synchronizer_tester::check_frame(tester.frame2, 8);
     synchronizer_tester::check_matrix(tester.matrix1, 9);
@@ -760,6 +750,8 @@ void synchronizer_test::reset_timeline_synchronisation()
     //time 7: sync, with, timestamp  min(11,11,9)= 9 => take frame/matrix closest to 9
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 11);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 11);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 9);
     synchronizer_tester::check_frame(tester.frame1, 9);
     synchronizer_tester::check_frame(tester.frame2, 8);
@@ -783,7 +775,6 @@ void synchronizer_test::reset_and_loop_synchronisation()
 {
     synchronizer_tester tester;
     core::clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received  = false;
     auto slot_synchronization_done         =
         sight::core::com::new_slot(
             [&last_timestamp_synch](core::clock::type _timestamp)
@@ -793,15 +784,6 @@ void synchronizer_test::reset_and_loop_synchronisation()
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
         tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
-    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
-        [&synchronization_skipped_received]()
-        {
-            synchronization_skipped_received = true;
-        });
-    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
-        slot_synchronization_skipped_received
-    );
 
     // This is done just to handle automatic synch at first data push
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
@@ -809,8 +791,9 @@ void synchronizer_test::reset_and_loop_synchronisation()
 
     //time 1: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     synchronizer_tester::check_frame(tester.frame1, 1);
     synchronizer_tester::check_frame(tester.frame2, 1);
@@ -819,8 +802,9 @@ void synchronizer_test::reset_and_loop_synchronisation()
     //time 2: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 3);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 3);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     synchronizer_tester::check_frame(tester.frame1, 3);
     synchronizer_tester::check_frame(tester.frame2, 3);
@@ -829,10 +813,9 @@ void synchronizer_test::reset_and_loop_synchronisation()
     //time 3: no synch, new timestamp is in the past
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame1, 3);
     synchronizer_tester::check_frame(tester.frame2, 3);
     synchronizer_tester::check_matrix(tester.matrix1, 3);
@@ -840,7 +823,9 @@ void synchronizer_test::reset_and_loop_synchronisation()
     //time 3: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 6);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 6);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     synchronizer_tester::check_frame(tester.frame1, 6);
     synchronizer_tester::check_frame(tester.frame2, 6);
@@ -849,16 +834,17 @@ void synchronizer_test::reset_and_loop_synchronisation()
     //time 4: no synch, timestamp  min(8,8,6)= 6 = last_timestamp
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 8);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 8);
-    tester.srv->slot("synchronize")->run();
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     synchronizer_tester::check_frame(tester.frame1, 6);
     synchronizer_tester::check_frame(tester.frame2, 6);
     synchronizer_tester::check_matrix(tester.matrix1, 6);
 
     //time 5: synch, with timestamp  min(9,8,9)=8 => take frame/matrix closest to 8
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 9);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 9);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 9);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 8);
     synchronizer_tester::check_frame(tester.frame1, 8);
     synchronizer_tester::check_frame(tester.frame2, 8);
@@ -875,8 +861,9 @@ void synchronizer_test::reset_and_loop_synchronisation()
     //time 7: sync
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     synchronizer_tester::check_frame(tester.frame1, 1);
     synchronizer_tester::check_frame(tester.frame2, 1);
@@ -885,8 +872,9 @@ void synchronizer_test::reset_and_loop_synchronisation()
     //time 8: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 2);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 2);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     synchronizer_tester::check_frame(tester.frame1, 2);
     synchronizer_tester::check_frame(tester.frame2, 2);
@@ -1013,7 +1001,6 @@ void synchronizer_test::mixt_matrix_tl_config_test()
     tester.srv->update().wait();
 
     core::clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received  = false;
     auto slot_synchronization_done         =
         sight::core::com::new_slot(
             [&last_timestamp_synch](core::clock::type _timestamp)
@@ -1023,22 +1010,11 @@ void synchronizer_test::mixt_matrix_tl_config_test()
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
         tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
-    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
-        [&synchronization_skipped_received]()
-        {
-            synchronization_skipped_received = true;
-        });
-    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
-        slot_synchronization_skipped_received
-    );
 
     tester.add_matrix_to_matrix_tl(matrix_t_l1, {0, 1, 2}, 1);
     tester.add_matrix_to_matrix_tl(matrix_t_l2, {0, 1, 2}, 1);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     tester.add_matrix_to_matrix_tl(matrix_t_l1, {0, 1, 2}, 3);
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
     tester.add_matrix_to_matrix_tl(matrix_t_l2, {0, 1, 2}, 2);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
 
@@ -1386,7 +1362,6 @@ void synchronizer_test::full_config_test()
     tester.srv->update().wait();
 
     core::clock::type last_timestamp_synch = 0;
-    bool synchronization_skipped_received  = false;
     auto slot_synchronization_done         =
         sight::core::com::new_slot(
             [&last_timestamp_synch](core::clock::type _timestamp)
@@ -1396,15 +1371,6 @@ void synchronizer_test::full_config_test()
     slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
     auto synch_done_connection =
         tester.srv->signal("synchronization_done")->connect(slot_synchronization_done);
-    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
-        [&synchronization_skipped_received]()
-        {
-            synchronization_skipped_received = true;
-        });
-    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
-    auto synch_skipped_connection = tester.srv->signal("synchronization_skipped")->connect(
-        slot_synchronization_skipped_received
-    );
 
     tester.add_frame_to_frame_tl(frame_t_l1, 1);
     tester.add_matrix_to_matrix_tl(matrix_t_l1, {0, 1, 2}, 1);
@@ -1429,8 +1395,6 @@ void synchronizer_test::full_config_test()
     tester.add_frame_to_frame_tl(frame_t_l4, 3);
     tester.add_frame_to_frame_tl(frame_t_l6, 4);
     tester.add_matrix_to_matrix_tl(matrix_t_l2, {0, 1, 2}, 4);
-    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
-    synchronization_skipped_received = false;
 
     synchronizer_tester::check_frame(frame1, 2);
     synchronizer_tester::check_frame(frame4, 0);
@@ -1498,8 +1462,9 @@ void synchronizer_test::update_config_test()
 
     //time 1: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     synchronizer_tester::check_frame(tester.frame1, 1);
     synchronizer_tester::check_frame(tester.frame2, 1);
@@ -1509,7 +1474,8 @@ void synchronizer_test::update_config_test()
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 4);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 5);
     tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, {0, 1, 2}, 6);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
     synchronizer_tester::check_frame(tester.frame1, 4);
     synchronizer_tester::check_frame(tester.frame2, 5);
@@ -1521,7 +1487,8 @@ void synchronizer_test::update_config_test()
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 10);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 11);
     tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, {0, 1, 2}, 12);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 10);
     synchronizer_tester::check_frame(tester.frame1, 11);
     synchronizer_tester::check_frame(tester.frame2, 11);
@@ -1533,7 +1500,8 @@ void synchronizer_test::update_config_test()
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 20);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 21);
     tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, {0, 1, 2}, 22);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 20);
     synchronizer_tester::check_frame(tester.frame1, 21);
     synchronizer_tester::check_frame(tester.frame2, 20);
@@ -1640,8 +1608,9 @@ void synchronizer_test::send_status_test()
     //time 1: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SIGHT_TEST_FAIL_WAIT(matrix_var_index_synch_signal == 0);
     SIGHT_TEST_FAIL_WAIT(frame_var_index_synch_signal[0]);
@@ -1655,8 +1624,9 @@ void synchronizer_test::send_status_test()
     //time 2
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 2);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 2);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
     CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
@@ -1668,8 +1638,9 @@ void synchronizer_test::send_status_test()
     //time 3
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 50);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 50);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 50);
     SIGHT_TEST_FAIL_WAIT(matrix_var_index_un_synch_signal == 0);
     CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
@@ -1683,8 +1654,9 @@ void synchronizer_test::send_status_test()
     //time 4
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 51);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 51);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 51);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 51);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 51);
     SIGHT_TEST_FAIL_WAIT(matrix_var_index_synch_signal == 0);
     CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
@@ -1698,8 +1670,9 @@ void synchronizer_test::send_status_test()
     //time 5
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 53);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 100);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 100);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 100);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 100);
     SIGHT_TEST_FAIL_WAIT(frame_var_index_un_synch_signal[0]);
     CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
@@ -1712,8 +1685,9 @@ void synchronizer_test::send_status_test()
     //time 6
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 101);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 101);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 101);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 101);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 101);
     SIGHT_TEST_FAIL_WAIT(frame_var_index_synch_signal[0]);
     CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
@@ -1766,16 +1740,16 @@ void synchronizer_test::delay_test()
     //time 1: synch on timestamp 4, expected (2,4,1)
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 1);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 2);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 2);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 2);
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 3);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 3);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 3);
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 4);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 4);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 4);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 4);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
     synchronizer_tester::check_frame(tester.frame1, 2);
     synchronizer_tester::check_frame(tester.frame2, 4);
@@ -1784,7 +1758,7 @@ void synchronizer_test::delay_test()
     //time 2: synch on timestamp 5, expected (3,5,2)
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 5);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 5);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 5);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 5);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 5);
     synchronizer_tester::check_frame(tester.frame1, 3);
     synchronizer_tester::check_frame(tester.frame2, 5);
@@ -1800,7 +1774,7 @@ void synchronizer_test::delay_test()
     //time 3: synch on timestamp 6, expected (5,6,4)
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 6);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 6);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 6);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     synchronizer_tester::check_frame(tester.frame1, 5);
     synchronizer_tester::check_frame(tester.frame2, 6);
@@ -1812,7 +1786,7 @@ void synchronizer_test::delay_test()
     //time 4: synch on timestamp 7, expected (7,7,7)
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 7);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 7);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 7);
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 7);
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 7);
     synchronizer_tester::check_frame(tester.frame1, 7);
     synchronizer_tester::check_frame(tester.frame2, 7);
@@ -1851,8 +1825,9 @@ void synchronizer_test::tolerance_test()
 
     //time 1: synch
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 1);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 1);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     synchronizer_tester::check_frame(tester.frame1, 1);
     synchronizer_tester::check_frame(tester.frame2, 1);
@@ -1861,8 +1836,9 @@ void synchronizer_test::tolerance_test()
     //time 2: synch, all good, diff is bellow tolerance which is 5
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 5);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 5);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 4);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 4);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
     synchronizer_tester::check_frame(tester.frame1, 5);
     synchronizer_tester::check_frame(tester.frame2, 5);
@@ -1870,8 +1846,9 @@ void synchronizer_test::tolerance_test()
 
     //time 3: frame 2 is stuck. Tolerance is out
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 50);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 50);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 50);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 50);
     synchronizer_tester::check_frame(tester.frame1, 50);
     synchronizer_tester::check_frame(tester.frame2, 5);
@@ -1880,8 +1857,9 @@ void synchronizer_test::tolerance_test()
     //time 3: frame 2 caches up
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 53);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 54);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 53);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 53);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 53);
     synchronizer_tester::check_frame(tester.frame1, 53);
     synchronizer_tester::check_frame(tester.frame2, 54);
@@ -1890,8 +1868,9 @@ void synchronizer_test::tolerance_test()
     //time 4: matrix is stuck
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 100);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 100);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 55);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 55);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 100);
     synchronizer_tester::check_frame(tester.frame1, 100);
     synchronizer_tester::check_frame(tester.frame2, 100);
@@ -1900,8 +1879,9 @@ void synchronizer_test::tolerance_test()
     //time 5: matrix catches up
     tester.add_frame_to_frame_tl(tester.frame_t_l1, 110);
     tester.add_frame_to_frame_tl(tester.frame_t_l2, 110);
-    tester.add_matrix_to_matrix_tl(tester.matrix_t_l1, 111);
-    tester.srv->slot("synchronize")->run();
+    synchronizer_tester::add_matrix_to_matrix_tl(tester.matrix_t_l1, 111);
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 110);
     synchronizer_tester::check_frame(tester.frame1, 110);
     synchronizer_tester::check_frame(tester.frame2, 110);
@@ -1977,7 +1957,7 @@ void synchronizer_test::image_series_time_tagging_test()
 
     frame_t_l1->push_object(data);
 
-    tester.srv->update().wait();
+    tester.srv->slot("try_sync")->run();
 
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == timestamp);
 
@@ -2093,7 +2073,8 @@ void synchronizer_test::single_image_series_tl_population()
     // populate the TLs
     tester.add_frame_to_frame_tl(frame_t_l1, 1);
     tester.add_frame_to_frame_tl(frame_t_l1, 2);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     //test the output
     synchronizer_tester::check_frame(frame1, 2);
@@ -2114,7 +2095,8 @@ void synchronizer_test::single_image_series_tl_population()
 
     // populate the TL
     tester.add_frame_to_frame_tl(frame_t_l1, 3);
-    tester.srv->slot("synchronize")->run();
+    tester.srv->slot("request_sync")->run();
+    tester.srv->slot("try_sync")->run();
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     //test the output
     synchronizer_tester::check_frame(frame1, 3);

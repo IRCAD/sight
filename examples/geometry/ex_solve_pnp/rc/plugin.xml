@@ -401,7 +401,7 @@
             <connect>
                 <signal>frameUpdaterSrv/synchronization_done</signal>
                 <slot>ARSceneSrv/render</slot>
-                <slot>frameUpdaterSrv/synchronize</slot>
+                <slot>frameUpdaterSrv/request_sync</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -548,7 +548,7 @@
                 <signal>syncGenericSceneSrv/all_received</signal>
                 <slot>leftGenericSceneSrv/render</slot>
                 <slot>rightGenericSceneSrv/render</slot>
-                <slot>frameMatrixSynchronizerSrv/synchronize</slot>
+                <slot>frameMatrixSynchronizerSrv/request_sync</slot>
             </connect>
 
             <connect>

@@ -497,14 +497,14 @@
 
         <connect>
             <signal>chessboardDetectorSrv/chessboard_detected</signal>
-            <slot>frameSynchronizerSrv/synchronize</slot>
+            <slot>frameSynchronizerSrv/request_sync</slot>
             <slot>detectionStatusSrv/toggle_green_red</slot>
         </connect>
 
         <connect>
             <signal>chessboardDetectorSrv/updated</signal>
             <slot>genericSceneSrv/render</slot>
-            <slot>frameSynchronizerSrv/synchronize</slot>
+            <slot>frameSynchronizerSrv/request_sync</slot>
         </connect>
 
         <connect>

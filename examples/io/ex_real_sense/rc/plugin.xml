@@ -731,7 +731,7 @@
                 <slot>videoRenderSrv/render</slot>
                 <slot>distanceMapRenderSrv/render</slot>
                 <slot>reconstructionRenderSrv/render</slot>
-                <slot>frameUpdaterSrv/synchronize</slot>
+                <slot>frameUpdaterSrv/request_sync</slot>
             </connect>
 
             <connect>
