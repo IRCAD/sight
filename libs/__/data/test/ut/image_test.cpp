@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -557,6 +557,35 @@ void image_test::test_rgb_iterator()
         );
         ++count;
     }
+
+    auto begin_iter_rgb   = img->begin<data::iterator::rgb>();
+    auto current_iter_rgb = img->begin<data::iterator::rgb>();
+
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(0), current_iter_rgb->r);
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(1), current_iter_rgb->g);
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(2), current_iter_rgb->b);
+
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->r, begin_iter_rgb[0].r);
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->g, begin_iter_rgb[0].g);
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->b, begin_iter_rgb[0].b);
+
+    ++current_iter_rgb;
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(3), current_iter_rgb->r);
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(4), current_iter_rgb->g);
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(5), current_iter_rgb->b);
+
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->r, begin_iter_rgb[1].r);
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->g, begin_iter_rgb[1].g);
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->b, begin_iter_rgb[1].b);
+
+    ++current_iter_rgb;
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(6), current_iter_rgb->r);
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(7), current_iter_rgb->g);
+    CPPUNIT_ASSERT_EQUAL(static_cast<uint8_t>(8), current_iter_rgb->b);
+
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->r, begin_iter_rgb[2].r);
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->g, begin_iter_rgb[2].g);
+    CPPUNIT_ASSERT_EQUAL(current_iter_rgb->b, begin_iter_rgb[2].b);
 }
 
 //------------------------------------------------------------------------------

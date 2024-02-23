@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -110,6 +110,9 @@ public:
     array_iterator& operator-=(difference_type _index);
 
     constexpr difference_type operator-(const array_iterator& _other) const noexcept;
+
+    /// Subscript operator
+    constexpr auto& operator[](const std::size_t _index) const noexcept;
 
     /// Value access operators
     reference operator*() const;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -193,6 +193,14 @@ constexpr FINLINE typename array_iterator<FORMAT>::difference_type array_iterato
 ) const noexcept
 {
     return m_current - _other.m_current;
+}
+
+//------------------------------------------------------------------------------
+
+template<class FORMAT>
+constexpr FINLINE auto& array_iterator<FORMAT>::operator[](const std::size_t _index) const noexcept
+{
+    return *(*this + static_cast<difference_type>(_index));
 }
 
 //------------------------------------------------------------------------------
