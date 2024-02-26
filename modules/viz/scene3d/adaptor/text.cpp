@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,16 +29,30 @@
 #include <viz/scene3d/render.hpp>
 #include <viz/scene3d/window_interactor.hpp>
 
+#include <regex>
+
+// cspell:ignore RRGGBB RRGGBBAA
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t SET_TEXT_SLOT = "set_text";
+static const core::com::slots::key_t SET_TEXT_SLOT  = "set_text";
+static const core::com::slots::key_t SET_COLOR_SLOT = "set_color";
+
+// Helper function to control color format in hexa.
+bool check_color_format(const std::string& _color)
+{
+    // Check that _color matches #RRGGBB or #RRGGBBAA in hexa format.
+    const std::regex pattern("#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?");
+    std::smatch match;
+    return std::regex_match(_color, match, pattern);
+}
 
 //----------------------------------------------------------------------------
 
 text::text() noexcept
 {
     new_slot(SET_TEXT_SLOT, &text::set_text, this);
+    new_slot(SET_COLOR_SLOT, &text::set_color, this);
 }
 
 //----------------------------------------------------------------------------
@@ -82,7 +96,16 @@ void text::configuring()
     m_position.x = config.get<float>(s_X_CONFIG, m_position.x);
     m_position.y = config.get<float>(s_Y_CONFIG, m_position.y);
 
-    m_text_color = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
+    const auto color = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
+
+    if(check_color_format(color))
+    {
+        m_text_color = color;
+    }
+    else
+    {
+        SIGHT_WARN("Color '" + color + "' isn't a valid color format (#RRGGBB or #RRGGBBAA in hexa)");
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -133,6 +156,20 @@ void text::set_text(std::string _str)
     m_text->set_text(_str);
     m_text->set_text_color(m_text_color);
     m_text->set_text_alignment(m_horizontal_alignment, m_vertical_alignment);
+}
+
+//----------------------------------------------------------------------------
+
+void text::set_color(std::string _color)
+{
+    if(check_color_format(_color))
+    {
+        m_text->set_text_color(_color);
+    }
+    else
+    {
+        SIGHT_WARN("Color '" + _color + "' isn't a valid color format (#RRGGBB or #RRGGBBAA in hexa)");
+    }
 }
 
 //----------------------------------------------------------------------------

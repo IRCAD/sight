@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,6 +112,10 @@ private:
     /// Defines the text string.
     void set_text(std::string _str);
 
+    // cspell:ignore RRGGBB RRGGBBAA
+    ///Slot: Updates the text color (#RRGGBB or #RRGGBBAA)
+    void set_color(std::string _color);
+
     /// Updates the displayed text from the input object.
     void update_text();
 
@@ -119,7 +123,7 @@ private:
     sight::viz::scene3d::text::sptr m_text;
 
     /// Defines the text's color.
-    std::string m_text_color;
+    std::string m_text_color {"#FFFFFF"};
 
     /// Defines the font size in points.
     std::size_t m_font_size {12};
