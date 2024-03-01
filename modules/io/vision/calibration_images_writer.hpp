@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ protected:
 private:
 
     /// Output file extension, can be any format handled by `cv::imwrite()`.
-    std::string m_file_extension;
+    std::string m_file_extension {".tiff"};
 };
 
 } // namespace sight::module::io::vision

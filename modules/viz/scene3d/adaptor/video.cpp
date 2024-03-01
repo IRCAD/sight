@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,7 +110,6 @@ void video::starting()
         m_point_list_adaptor->set_input(m_point_list, PL_INPUT, true);
 
         service::config_t config;
-        config.add(CONFIG + "layer", this->layer_id());
         config.add(CONFIG + "autoresetcamera", "false");
         if(!m_material_template_name.empty())
         {
@@ -165,6 +164,7 @@ void video::starting()
         m_point_list_adaptor->set_config(config);
 
         m_point_list_adaptor->set_render_service(this->render_service());
+        m_point_list_adaptor->set_layer_id(this->layer_id());
 
         m_point_list_adaptor->configure();
         m_point_list_adaptor->start();

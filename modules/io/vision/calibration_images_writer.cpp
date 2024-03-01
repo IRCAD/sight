@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ void calibration_images_writer::configuring()
     sight::io::service::writer::configuring();
 
     const auto config_tree = this->get_config();
-    m_file_extension = config_tree.get("format", ".tiff");
+    m_file_extension = config_tree.get("format", m_file_extension);
 }
 
 //------------------------------------------------------------------------------

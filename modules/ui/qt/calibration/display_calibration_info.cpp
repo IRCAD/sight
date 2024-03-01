@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,7 @@ static const core::com::slots::key_t DISPLAY_IMAGE_SLOT = "display_image";
 static const core::com::slots::key_t STOP_CONFIG_SLOT   = "stopConfig";
 
 static const std::string SINGLE_IMAGE_CONFIG = "singleImageConfig";
+static const std::string TWO_IMAGES_CONFIG   = "twoImagesConfig";
 
 static const std::string CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
@@ -81,6 +82,10 @@ void display_calibration_info::stopping()
 
 void display_calibration_info::configuring()
 {
+    const auto config = this->get_config().get_child("config.<xmlattr>");
+
+    m_single_image_config = config.get<std::string>(SINGLE_IMAGE_CONFIG, m_single_image_config);
+    m_two_images_config   = config.get<std::string>(TWO_IMAGES_CONFIG, m_two_images_config);
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +116,7 @@ void display_calibration_info::display_image(std::size_t _idx)
 
         const auto cal_info2 = m_calibration_info2.lock();
 
-        std::string str_config = std::string(ONE_IMAGE_CONFIG);
+        std::string str_config = m_single_image_config;
 
         // Prepare configuration
         sight::app::field_adaptor_t replace_map;
@@ -124,7 +129,7 @@ void display_calibration_info::display_image(std::size_t _idx)
 
         if(cal_info2)
         {
-            str_config = std::string(TWO_IMAGES_CONFIG);
+            str_config = m_two_images_config;
 
             data::image::csptr img2 = cal_info2->get_image(_idx);
             replace_map["imageId2"] = img2->get_id();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,8 +112,8 @@ private:
     /// config manager, used to launch the config
     app::config_manager::sptr m_config_mgr;
 
-    static constexpr std::string_view ONE_IMAGE_CONFIG {"displayImageConfig"};
-    static constexpr std::string_view TWO_IMAGES_CONFIG {"displayTwoImagesConfig"};
+    std::string m_single_image_config {"displayImageConfig"};
+    std::string m_two_images_config {"displayTwoImagesConfig"};
 
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 

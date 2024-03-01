@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -249,8 +249,10 @@ void writer::configuring()
     if((this->get_path_type() & io::service::folder) != 0)
     {
         SIGHT_THROW_IF("No more than one folder must be defined in configuration", config.count("folder") > 1);
-        const auto folder = config.get<std::string>("folder");
-        this->set_folder(std::filesystem::path(folder));
+        if(const auto folder = config.get_optional<std::string>("folder"); folder.has_value())
+        {
+            this->set_folder(std::filesystem::path(folder.value()));
+        }
     }
 }
 
