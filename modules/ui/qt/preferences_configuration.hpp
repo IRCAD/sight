@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -157,6 +157,10 @@ protected:
 
     /// Does nothing.
     MODULE_UI_QT_API void request_values();
+
+private Q_SLOTS:
+
+    void on_reset_to_default_value(QObject* _widget);
 
 private:
 

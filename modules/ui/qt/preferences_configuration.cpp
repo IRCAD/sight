@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,9 @@
 #include <QHBoxLayout>
 #include <QIntValidator>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
-
+#include <QWidget>
 namespace sight::module::ui::qt
 {
 
@@ -118,7 +119,7 @@ void preferences_configuration::configuring()
     {
         preference_elt pref;
 
-        auto type = cfg.second.get<std::string>("type");
+        auto type = cfg.second.get<std::string>("type"); //  balise type of .xml preference
         if(type == "checkbox")
         {
             pref.m_type = preference_t::checkbox;
@@ -206,6 +207,7 @@ void preferences_configuration::updating()
     {
         QPointer<QLabel> label = new QLabel(QString::fromStdString(pref.m_name));
         layout->addWidget(label, index, 0);
+        QWidget* widget_to_reset = nullptr;
 
         if(pref.m_type == preference_t::text || pref.m_type == preference_t::list)
         {
@@ -213,6 +215,7 @@ void preferences_configuration::updating()
             pref.m_line_edit->setObjectName(pref.m_preference_key.c_str());
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
             layout->addWidget(pref.m_line_edit, index, 1);
+            widget_to_reset = pref.m_line_edit;
         }
         else if(pref.m_type == preference_t::checkbox)
         {
@@ -220,6 +223,7 @@ void preferences_configuration::updating()
             pref.m_check_box->setObjectName(pref.m_preference_key.c_str());
             pref.m_check_box->setChecked(pref.m_preference_value == "true");
             layout->addWidget(pref.m_check_box, index, 1);
+            widget_to_reset = pref.m_check_box;
         }
         else if(pref.m_type == preference_t::INT || pref.m_type == preference_t::DOUBLE)
         {
@@ -244,6 +248,7 @@ void preferences_configuration::updating()
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
 
             layout->addWidget(pref.m_line_edit, index, 1);
+            widget_to_reset = pref.m_line_edit;
             QObject::connect(
                 pref.m_line_edit,
                 &QLineEdit::textEdited,
@@ -277,6 +282,7 @@ void preferences_configuration::updating()
             pref.m_line_edit->setObjectName(pref.m_preference_key.c_str());
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
             layout->addWidget(pref.m_line_edit, index, 1);
+            widget_to_reset = pref.m_line_edit;
             QPointer<QPushButton> directory_selector = new QPushButton("...");
             layout->addWidget(directory_selector, index, 2);
             QObject::connect(
@@ -293,6 +299,7 @@ void preferences_configuration::updating()
             pref.m_line_edit->setObjectName(pref.m_preference_key.c_str());
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
             layout->addWidget(pref.m_line_edit, index, 1);
+            widget_to_reset = pref.m_line_edit;
             QPointer<QPushButton> directory_selector = new QPushButton("...");
             layout->addWidget(directory_selector, index, 2);
             QObject::connect(
@@ -327,6 +334,26 @@ void preferences_configuration::updating()
             }
 
             layout->addWidget(pref.m_combo_box, index, 1);
+            widget_to_reset = pref.m_combo_box;
+        }
+
+        QPointer<QPushButton> default_selector = new QPushButton("R");
+
+        default_selector->setFocusPolicy(Qt::NoFocus);
+        default_selector->setToolTip("Reset this preference value to default");
+        default_selector->setMaximumWidth(30);
+        layout->addWidget(default_selector, index, 3);
+
+        if(widget_to_reset != nullptr)
+        {
+            QObject::connect(
+                default_selector,
+                &QPushButton::clicked,
+                this,
+                [this, widget_to_reset]()
+                {
+                    this->on_reset_to_default_value(widget_to_reset);
+                });
         }
 
         ++index;
@@ -505,10 +532,85 @@ void preferences_configuration::update_from_preferences() noexcept
     }
     catch(const sight::ui::preferences_disabled& /*e*/)
     {
-        // Nothing to do..
+        // Nothing to do...
     }
 }
 
 //------------------------------------------------------------------------------
+
+void preferences_configuration::on_reset_to_default_value(QObject* _widget)
+{
+    if(auto* const line_edit = qobject_cast<QLineEdit*>(_widget); line_edit != nullptr)
+    {
+        for(const auto& pref : m_preferences)
+        {
+            if(pref.m_line_edit == line_edit)
+            {
+                QString default_value;
+
+                switch(pref.m_type)
+                {
+                    case preference_t::text:
+                    case preference_t::path:
+                    case preference_t::file:
+                    case preference_t::list:
+                    case preference_t::INT:
+                    case preference_t::DOUBLE:
+                        default_value = QString::fromStdString(pref.m_default_value);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                line_edit->setText(default_value);
+
+                const sight::ui::parameter_t variant_value = default_value.toStdString();
+                auto sig                                   = this->signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
+                sig->async_emit(variant_value, pref.m_preference_key);
+
+                break;
+            }
+        }
+    }
+    else if(auto* const combo_box = qobject_cast<QComboBox*>(_widget); combo_box != nullptr)
+    {
+        for(const auto& pref : m_preferences)
+        {
+            if(pref.m_combo_box == combo_box)
+            {
+                const QString default_value = QString::fromStdString(pref.m_default_value);
+                int index                   = combo_box->findText(default_value);
+                if(index != -1)
+                {
+                    combo_box->setCurrentIndex(index);
+                }
+
+                const sight::ui::parameter_t variant_value = default_value.toStdString();
+                auto sig                                   = this->signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
+                sig->async_emit(variant_value, pref.m_preference_key);
+
+                break;
+            }
+        }
+    }
+    else if(auto* const check_box = qobject_cast<QCheckBox*>(_widget); check_box != nullptr)
+    {
+        for(const auto& pref : m_preferences)
+        {
+            if(pref.m_check_box == check_box)
+            {
+                const bool check_state = pref.m_default_value == "true";
+                check_box->setChecked(check_state);
+
+                const sight::ui::parameter_t variant_value = check_state;
+                auto sig                                   = this->signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
+                sig->async_emit(variant_value, pref.m_preference_key);
+
+                break;
+            }
+        }
+    }
+}
 
 } // namespace sight::module::ui::qt
