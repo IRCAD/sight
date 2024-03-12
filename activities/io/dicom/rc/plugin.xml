@@ -1,4 +1,4 @@
-<plugin id="sight::activity::io::dicom" >
+<plugin id="sight::activity::io::dicom">
 
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
@@ -22,7 +22,7 @@
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="sight::activity::io::dicom::pacs_reader">
         </appConfig>
-        </extension>
+    </extension>
 
     <extension implements="sight::activity::extension">
         <id>sight::activity::io::dicom::pacs_writer</id>
@@ -48,7 +48,7 @@
         <id>sight::activity::io::dicom::filtering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
-        <icon>sight::module::ui::icons/icon-DICOM-Filtering.svg</icon>
+        <icon>sight::module::ui::icons/GreenPlus.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
@@ -69,12 +69,12 @@
     </extension>
 
     <extension implements="sight::service::extension::config">
-         <id>sight::activity::io::dicom::reader_config</id>
-         <desc>DICOM Reader config</desc>
-         <config>
+        <id>sight::activity::io::dicom::reader_config</id>
+        <desc>DICOM Reader config</desc>
+        <config>
             <dicomdirSupport>user_selection</dicomdirSupport>
             <mode>direct</mode>
-         </config>
-     </extension>
+        </config>
+    </extension>
 
 </plugin>

@@ -110,7 +110,7 @@
                         <menuItem name="Load image 2" icon="ex_image_substraction/icons/icon-load2.png" />
                         <separator />
                         <menuItem name="Save image" icon="ex_image_substraction/icons/save.png" />
-                        <menuItem name="Substract image" icon="sight::module::ui::icons/Minus.svg" />
+                        <menuItem name="Substract image" icon="sight::module::ui::icons/RedMinus.svg" />
                     </layout>
                 </gui>
                 <registry>

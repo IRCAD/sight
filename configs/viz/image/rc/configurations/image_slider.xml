@@ -62,9 +62,9 @@ Example:
         <service uid="topToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="slice" icon="sight::module::ui::flaticons/Layers.svg" style="radio" />
-                    <menuItem name="windowing" icon="sight::module::ui::qt/windowing.svg" style="radio" />
-                    <menuItem name="opacity" icon="sight::module::ui::qt/opacity.svg" style="radio" />
+                    <menuItem name="slice" icon="sight::module::ui::icons/Layers.svg" style="radio" />
+                    <menuItem name="windowing" icon="sight::module::ui::icons/windowing.svg" style="radio" />
+                    <menuItem name="opacity" icon="sight::module::ui::icons/opacity.svg" style="radio" />
                     <spacer />
                 </layout>
             </gui>

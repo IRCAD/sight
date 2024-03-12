@@ -21,7 +21,7 @@
         <id>SDBdicomXplorer</id>
         <title>SDB</title>
         <desc>Series Selector</desc>
-        <icon>sight::module::ui::icons/selector.svg</icon>
+        <icon>sight::module::ui::icons/YellowMenu.svg</icon>
         <requirements />
         <appConfig id="SDBdicomXplorer">
             <parameters />

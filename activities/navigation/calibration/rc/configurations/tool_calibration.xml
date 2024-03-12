@@ -49,14 +49,14 @@
             <gui>
                 <layout>
                     <menuItem name="Start Tracker client"
-                        icon="sight::module::ui::icons/Network-Receiving.svg" />
+                        icon="sight::module::ui::icons/Pull.svg" />
                     <menuItem name="Stop Tracker client"
-                        icon="sight::module::ui::icons/Network-Stop-Receiving.svg" />
+                        icon="sight::module::ui::icons/stop.svg" />
                     <menuItem name="Configure Tracker client"
-                        icon="sight::module::ui::icons/Settings.svg" />
-                    <menuItem name="Add point" icon="sight::module::ui::icons/Import.svg" />
+                        icon="sight::module::ui::icons/gear.svg" />
+                    <menuItem name="Add point" icon="sight::module::ui::icons/ImportSession.svg" />
                     <menuItem name="Compute tool calibration"
-                        icon="sight::module::ui::icons/CheckButton.svg" />
+                        icon="sight::module::ui::icons/GreenCheck.svg" />
                     <menuItem name="Save calibration matrix"
                         icon="sight::module::ui::icons/Export.svg" />
                 </layout>

@@ -1,17 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg version="1.1" viewBox="0 0 131.72 131.72" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<metadata>
-<rdf:RDF>
-<cc:Work rdf:about="">
-<dc:format>image/svg+xml</dc:format>
-<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-<dc:title/>
-</cc:Work>
-</rdf:RDF>
-</metadata>
-<g transform="translate(-250.19 -121.94)">
-<text x="246.47722" y="272.52441" fill="#000000" font-family="DejaVu Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="246.47722" y="272.52441"/></text>
-<rect x="255.19" y="126.94" width="121.71" height="121.71" ry="9.9184" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="10"/>
-<text transform="scale(.91596 1.0917)" x="291.01212" y="211.66046" fill="#005544" font-family="DejaVu Sans" font-size="108.76px" font-weight="bold" letter-spacing="0px" stroke="#000000" stroke-width=".30863" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="291.01212" y="211.66046" fill="#005544" font-weight="bold" stroke="#000000" stroke-width=".30863">M</tspan></text>
-</g>
-</svg>
+<svg enable-background="new 0 0 131.7 131.7" version="1.1" viewBox="0 0 132 132" xmlns="http://www.w3.org/2000/svg"><style type="text/css">.st0{fill:none;stroke:#000000;stroke-width:5.7607;stroke-linejoin:round;}
+	.st1{fill:#FFFFFF;}
+	
+		.st2{fill:none;stroke:#FFFFFF;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:2.4977;}
+	.st3{fill:none;}
+	
+		.st4{fill:none;stroke:#FFFFFF;stroke-width:1.2778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:6.3831;}
+	.st5{font-family:'Roboto-Black';}
+	.st6{font-size:36.7467px;}
+	
+		.st7{fill:none;stroke:#FFFFFF;stroke-width:0.2569;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:1.5415;}
+	.st8{fill:none;stroke:#FFFFFF;stroke-width:0.2826;stroke-miterlimit:10;}
+	
+		.st9{fill:none;stroke:#FFFFFF;stroke-width:0.2826;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:1.0135;}</style><path class="st1" d="m114 46c-0.26-0.51-0.51-1-1-1.3s-1-0.26-1.5 0c-3.1 1.5-6.1 2.6-9.5 3.1-6.6 1-12 0-12 0 0 0-6.4-1.3-8.2-1.5-1.3 0-2.6-0.26-3.8-0.26-4.6-0.26-9.5 0.77-9.5 0.77-1.5 0.51-3.3 1-3.6 1s-0.77 0.26-1 0.51c-1.3 0.77-2.6 1.5-3.6 3.1-1.3 1.3-2 3.1-2.8 4.6-1.8 4.3-2.6 8.7-3.1 13-0.26 4.9 0 10 0.77 15 0.26 2 0.77 4.3 1 6.4 0 0.77 0.26 1.8 0.77 2.6 0.26 0.51 0.51 0.51 1 0.51 1-0.26 1.5-0.77 2-1.8 0.26-0.77 0.26-1.5 0.77-2 1.8-3.8 4.6-6.1 8.7-7.4 2-0.77 4.3-1 6.4-1.8 8.4-3.3 20-12 20-13 5.6-4.9 11-10 16-16 1-1 1.8-2.6 2.6-3.8 0-0.79 0-1.6-0.25-2.3z"/><polyline class="st4" points="130 35 80 9.6 29 35"/><path class="st4" d="m80 60"/><polyline class="st4" points="29 35 29 98 80 123"/><polyline class="st4" points="130 35 130 98 80 123"/><line class="st4" x1="80" x2="80" y1="9.6" y2="54"/><line class="st4" x1="29" x2="62" y1="98" y2="82"/><line class="st4" x1="130" x2="82" y1="98" y2="75"/><rect class="st3" x="1.4" y="18" width="55" height="42"/><text class="st1 st5 st6" transform="translate(4.1 55)">3D</text></svg>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ void filter_selection_editor::starting()
     auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
 
     // Add filter button
-    m_add_filter_button = new QPushButton(QIcon(QString::fromStdString((path / "Plus.svg").string())), "Add");
+    m_add_filter_button = new QPushButton(QIcon(QString::fromStdString((path / "GreenPlus.svg").string())), "Add");
     m_add_filter_button->setSizePolicy(policy);
     top_layout->addWidget(m_add_filter_button);
 
@@ -144,13 +144,14 @@ void filter_selection_editor::starting()
     button_layout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Apply filters button
-    m_apply_filters_button = new QPushButton(QIcon(QString::fromStdString((path / "Apply.svg").string())), "Apply");
+    m_apply_filters_button =
+        new QPushButton(QIcon(QString::fromStdString((path / "GreenCheck.svg").string())), "Apply");
     m_apply_filters_button->setSizePolicy(policy);
     button_layout->addWidget(m_apply_filters_button);
 
     // Configure filter button
     m_configure_filter_button = new QPushButton(
-        QIcon(QString::fromStdString((path / "Settings.svg").string())),
+        QIcon(QString::fromStdString((path / "gear.svg").string())),
         "Configure"
     );
     m_configure_filter_button->setSizePolicy(policy);
@@ -165,7 +166,7 @@ void filter_selection_editor::starting()
 
     // Remove filter button
     m_remove_filter_button =
-        new QPushButton(QIcon(QString::fromStdString((path / "Minus.svg").string())), "Remove");
+        new QPushButton(QIcon(QString::fromStdString((path / "RedMinus.svg").string())), "Remove");
     m_remove_filter_button->setSizePolicy(policy);
     m_remove_filter_button->setEnabled(false);
     button_layout->addWidget(m_remove_filter_button);
@@ -595,7 +596,7 @@ QIcon filter_selection_editor::get_filter_icon(sight::filter::dicom::filter::spt
 {
     const std::filesystem::path path = core::runtime::get_module_resource_path(std::string("sight::module::ui::icons"));
     std::array icons {
-        QIcon(QString::fromStdString((path / "Modifier.svg").string())),
+        QIcon(QString::fromStdString((path / "OrangeLoop.svg").string())),
         QIcon(QString::fromStdString((path / "Sorter.svg").string())),
         QIcon(QString::fromStdString((path / "Splitter.svg").string())),
         QIcon(QString::fromStdString((path / "Composite.svg").string())),

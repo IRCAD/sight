@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,8 @@
 #include <ui/qt/worker_qt.hpp>
 
 #include <QFile>
+#include <QPainter>
+#include <QProxyStyle>
 #include <QResource>
 #include <QString>
 #include <QStyleFactory>
@@ -67,10 +69,34 @@ namespace sight::module::ui::qt
 
 SIGHT_REGISTER_PLUGIN("sight::module::ui::qt::plugin");
 
-//-----------------------------------------------------------------------------
+/// This class is used to provide a proper disabled icon, especially when the icon is full white.
+class proxy_style final : public QProxyStyle
+{
+public:
 
-plugin::~plugin() noexcept =
-    default;
+    using QProxyStyle::QProxyStyle;
+
+    //------------------------------------------------------------------------------
+
+    QPixmap generatedIconPixmap(QIcon::Mode _icon_mode, const QPixmap& _pixmap, const QStyleOption* _option) const final
+    {
+        if(_icon_mode == QIcon::Disabled)
+        {
+            // Copy the original pixmap
+            QPixmap disabled_pixmap = _pixmap;
+
+            // Create a QPainter and fill the pixmap with a semi-transparent white
+            QPainter painter(&disabled_pixmap);
+            painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            painter.fillRect(disabled_pixmap.rect(), QColor(255, 255, 255, 25));
+            painter.end();
+
+            return disabled_pixmap;
+        }
+
+        return QProxyStyle::generatedIconPixmap(_icon_mode, _pixmap, _option);
+    }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -118,7 +144,7 @@ int plugin::run() noexcept
 
 void plugin::load_style_sheet()
 {
-    if(QCoreApplication::instance() != nullptr)
+    if(qApp != nullptr)
     {
         if(this->get_module()->has_parameter("resource"))
         {
@@ -129,10 +155,15 @@ void plugin::load_style_sheet()
             SIGHT_ASSERT("Cannot load resources '" + resource_file + "'.", resource_loaded);
         }
 
+        // Also apply our proxy style to override default disabled icon look
         if(this->get_module()->has_parameter("style"))
         {
             const std::string style = this->get_module()->get_parameter_value("style");
-            qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
+            qApp->setStyle(new proxy_style(QStyleFactory::create(QString::fromStdString(style))));
+        }
+        else
+        {
+            qApp->setStyle(new proxy_style);
         }
 
         QString touch_friendly_style;

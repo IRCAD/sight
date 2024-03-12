@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,7 @@ void camera_config_launcher::starting()
     QIcon add_icon(QString::fromStdString(
                        core::runtime::get_module_resource_file_path(
                            "sight::module::ui::icons",
-                           "Import.svg"
+                           "ImportSession.svg"
                        )
                        .string()
     ));
@@ -105,7 +105,7 @@ void camera_config_launcher::starting()
     QIcon import_icon(QString::fromStdString(
                           core::runtime::get_module_resource_file_path(
                               "sight::module::ui::icons",
-                              "CameraSeries.svg"
+                              "ImportSession.svg"
                           )
                           .string()
     ));
@@ -116,7 +116,7 @@ void camera_config_launcher::starting()
     QIcon remove_icon(QString::fromStdString(
                           core::runtime::get_module_resource_file_path(
                               "sight::module::ui::icons",
-                              "remove.svg"
+                              "RedMinus.svg"
                           )
                           .string()
     ));

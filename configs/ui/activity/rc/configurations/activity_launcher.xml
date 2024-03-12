@@ -124,7 +124,7 @@
 
         <service uid="openButton" type="sight::module::ui::qt::com::signal_button">
             <config>
-                <icon>sight::module::ui::icons/open.svg</icon>
+                <icon>sight::module::ui::icons/BlueLoad.svg</icon>
                 <iconWidth>40</iconWidth>
                 <iconHeight>40</iconHeight>
             </config>
@@ -132,7 +132,7 @@
 
         <service uid="saveButton" type="sight::module::ui::qt::com::signal_button">
             <config>
-                <icon>sight::module::ui::icons/save.svg</icon>
+                <icon>sight::module::ui::icons/BlueSave.svg</icon>
                 <iconWidth>40</iconWidth>
                 <iconHeight>40</iconHeight>
             </config>

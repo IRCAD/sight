@@ -31,7 +31,7 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />
+                    <menuItem name="Import" icon="sight::module::ui::icons/ImportSession.svg" />
                     <menuItem name="Anonymize selected series" icon="sight::module::ui::icons/icon-Anonymization.svg" />
                     <menuItem name="Push selected series to Pacs" icon="sight::module::ui::icons/Push.svg" />
                 </layout>
@@ -45,7 +45,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="sight::module::ui::series::db_merger" >
+        <service uid="action_import" type="sight::module::ui::series::db_merger">
             <inout key="seriesSet" uid="seriesSet" />
             <IOSelectorSrvConfig name="sight::activity::io::dicom::series_set_selector_config" />
         </service>

@@ -48,7 +48,7 @@
         <id>ToolCalibration</id>
         <title>Tool calibration</title>
         <desc>Tool Calibration Activity using a tracking system</desc>
-        <icon>sight::module::ui::icons/calibrationActivity.svg</icon>
+        <icon>sight::module::ui::icons/YellowCamera.svg</icon>
         <requirements></requirements>
         <appConfig id="toolCalibration">
             <parameters></parameters>

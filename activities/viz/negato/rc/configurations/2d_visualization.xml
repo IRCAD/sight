@@ -18,7 +18,7 @@
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view caption="Negato1" align="center" />
-                    <view caption="Negato2" align="right" minWidth="300"/>
+                    <view caption="Negato2" align="right" minWidth="300" />
                     <view caption="Negato3" align="right" />
                     <view align="left" visible="false" />
                 </layout>
@@ -36,8 +36,8 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
-                    <menuItem name="Next" icon="sight::module::ui::icons/Next.svg" />
+                    <menuItem name="Previous" icon="sight::module::ui::icons/YellowLeftChevron.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/YellowRightChevron.svg" />
                 </layout>
             </gui>
             <registry>

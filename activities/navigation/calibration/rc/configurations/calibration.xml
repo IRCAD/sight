@@ -37,8 +37,8 @@
         <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
-                    <menuItem name="Next" icon="sight::module::ui::icons/Next.svg" />
+                    <menuItem name="Previous" icon="sight::module::ui::icons/YellowLeftChevron.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/YellowRightChevron.svg" />
                     <menuItem name="Export camera set" icon="sight::module::ui::flaticons/BlueSave.svg" />
                     <separator />
                     <menuItem name="Export xml/yaml" icon="sight::module::ui::flaticons/BlueFile.svg" />

@@ -17,11 +17,11 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::view" >
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" minWidth="200" />
-                    <view align="bottom"/>
+                    <view align="bottom" />
                     <view align="right" minWidth="350" />
                 </layout>
                 <toolbar />
@@ -35,17 +35,17 @@
             </registry>
         </service>
 
-        <service uid="toolbar" type="sight::module::ui::toolbar" >
+        <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Read DICOM files" icon="sight::module::ui::icons/Import.svg" />
-                    <menuItem name="Preview filtered DICOM series" icon="sight::module::ui::icons/Preview.svg" style="check" />
-                    <menuItem name="Read filtered DICOM series" icon="sight::module::ui::icons/Apply.svg" />
+                    <menuItem name="Read DICOM files" icon="sight::module::ui::icons/ImportSession.svg" />
+                    <menuItem name="Preview filtered DICOM series" icon="sight::module::ui::icons/BlueMagnifyingGlass.svg" style="check" />
+                    <menuItem name="Read filtered DICOM series" icon="sight::module::ui::icons/GreenCheck.svg" />
                     <menuItem name="Push selected series to the main SeriesSet" icon="sight::module::ui::icons/Push.svg" />
 
                     <spacer />
 
-                    <menu name="Help"/>
+                    <menu name="Help" />
                 </layout>
             </gui>
             <registry>
@@ -59,7 +59,7 @@
         </service>
 
 
-        <service uid="centerView" type="sight::module::ui::view" >
+        <service uid="centerView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -73,7 +73,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="sight::module::ui::view" >
+        <service uid="bottomView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -87,7 +87,7 @@
             </registry>
         </service>
 
-        <service uid="rightView" type="sight::module::ui::view" >
+        <service uid="rightView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -100,7 +100,7 @@
         </service>
 
         <!--HELP -->
-        <service uid="menuHelp" type="sight::module::ui::menu" >
+        <service uid="menuHelp" type="sight::module::ui::menu">
             <gui>
                 <layout>
                     <menuItem name="Activity help" />
@@ -113,12 +113,12 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="activityHelp" type="sight::module::ui::qt::launch_browser" >
+        <service uid="activityHelp" type="sight::module::ui::qt::launch_browser">
             <url>dicomFilteringActivity/quickstart.pdf</url>
         </service>
 
         <!-- READING SELECTION -->
-        <service uid="action_readDicomSeries" type="sight::module::ui::series::db_merger" >
+        <service uid="action_readDicomSeries" type="sight::module::ui::series::db_merger">
             <inout key="seriesSet" uid="readingSeriesSet" />
             <IOSelectorSrvConfig name="sight::activity::io::dicom::series_set_selector_config" />
         </service>
@@ -147,7 +147,7 @@
             <inout group="data">
                 <key name="SERIES_SET" uid="filteredSeriesSet" />
             </inout>
-            <parameter replace="ICON_PATH" by="sight::module::ui::icons/Preview.svg" />
+            <parameter replace="ICON_PATH" by="sight::module::ui::icons/BlueMagnifyingGlass.svg" />
         </service>
 
         <service uid="action_convertSeries" type="sight::module::io::dicom::dicom_series_converter">

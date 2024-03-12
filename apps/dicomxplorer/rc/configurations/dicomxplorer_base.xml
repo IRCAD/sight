@@ -72,7 +72,7 @@
         <service uid="menu_preferences" type="sight::module::ui::menu">
             <gui>
                 <layout>
-                    <menuItem name="Preferences configuration"/>
+                    <menuItem name="Preferences configuration" />
                 </layout>
             </gui>
             <registry>
@@ -105,14 +105,7 @@
                 <name>Pacs Server Port</name>
                 <key>PACS_SERVER_PORT</key>
                 <default_value>80</default_value>
-             </preference>
-             <preference>
-                 <type>combobox</type>
-                 <name>Color Theme</name>
-                 <key>THEME</key>
-                 <values>DEFAULT,DARKSTYLE,FLATDARK</values>
-                 <default_value>DARKSTYLE</default_value>
-             </preference>
+            </preference>
         </service>
 
         <service uid="action_about" type="sight::module::ui::qt::show_about">
@@ -133,7 +126,7 @@
 
         <service uid="progress_statusbar" type="sight::module::ui::job_bar" />
 
-         <service uid="qtSelector" type="sight::module::ui::qt::style_selector" />
+        <service uid="qtSelector" type="sight::module::ui::qt::style_selector" />
 
         <connect channel="progressStatus">
             <signal>SDBWriter/job_created</signal>

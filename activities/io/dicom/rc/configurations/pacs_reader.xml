@@ -18,12 +18,12 @@
         <object uid="localSeriesSet" type="sight::data::series_set" />
         <object uid="localSelections" type="sight::data::vector" />
 
-        <service uid="mainView" type="sight::module::ui::view" >
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
-                    <view caption="DICOM Query" align="left"/>
+                    <view caption="DICOM Query" align="left" />
                     <view align="center" minWidth="200" />
-                    <view align="bottom"/>
+                    <view align="bottom" />
                 </layout>
                 <toolbar />
             </gui>
@@ -36,10 +36,10 @@
             </registry>
         </service>
 
-        <service uid="toolbar" type="sight::module::ui::toolbar" >
+        <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/Settings.svg" style="check" />
+                    <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/gear.svg" style="check" />
                     <menuItem name="Pull selected series from Pacs" icon="sight::module::ui::icons/Pull.svg" />
                     <menuItem name="Push selected series to the main SeriesSet" icon="sight::module::ui::icons/Push.svg" />
                 </layout>
@@ -51,7 +51,7 @@
             </registry>
         </service>
 
-        <service uid="leftView" type="sight::module::ui::view" >
+        <service uid="leftView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -65,7 +65,7 @@
             </registry>
         </service>
 
-        <service uid="queryEditorSpacerView" type="sight::module::ui::view" >
+        <service uid="queryEditorSpacerView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -75,7 +75,7 @@
             </registry>
         </service>
 
-        <service uid="centerView" type="sight::module::ui::view" >
+        <service uid="centerView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -89,7 +89,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="sight::module::ui::view" >
+        <service uid="bottomView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -110,7 +110,7 @@
             <inout group="data">
                 <key name="PACS_CONFIGURATION" uid="pacsConfiguration" />
             </inout>
-            <parameter replace="ICON_PATH" by="sight::module::ui::icons/Settings.svg"  />
+            <parameter replace="ICON_PATH" by="sight::module::ui::icons/gear.svg" />
         </service>
 
         <service uid="action_pullSeries" type="sight::module::ui::action" />
@@ -122,7 +122,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="progressBarController" type="sight::module::io::dimse::progress_bar_controller"  worker="progress" />
+        <service uid="progressBarController" type="sight::module::io::dimse::progress_bar_controller" worker="progress" />
 
         <!-- PACS CONFIGURATION -->
         <service uid="pacsConfigurationInitializer" type="sight::module::io::dimse::pacs_configuration_initializer">
@@ -136,7 +136,7 @@
                 moveApplicationPort="11110"
                 retrieveMethod="GET"
                 preferenceKey="PACS_CONFIGURATION"
-                />
+            />
         </service>
 
         <!-- PREVIEW -->
@@ -161,7 +161,7 @@
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
-                <config id="sight::activity::io::dicom::2d_pacs_preview" type="sight::data::dicom_series" >
+                <config id="sight::activity::io::dicom::2d_pacs_preview" type="sight::data::dicom_series">
                     <parameter replace="PACS_CONFIGURATION" by="pacsConfiguration" />
                 </config>
             </configs>

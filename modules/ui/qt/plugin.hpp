@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,26 +39,26 @@ namespace sight::module::ui::qt
 /**
  * @brief   This class is called when the guiQt module is loaded.
  */
-class MODULE_UI_QT_CLASS_API plugin : public core::runtime::plugin
+class MODULE_UI_QT_CLASS_API plugin final : public core::runtime::plugin
 {
 public:
 
     /**
      * @brief   destructor
      */
-    MODULE_UI_QT_API ~plugin() noexcept override;
+    MODULE_UI_QT_API ~plugin() noexcept final = default;
 
     // Overrides
-    MODULE_UI_QT_API void start() override;
+    MODULE_UI_QT_API void start() final;
 
     // Overrides
-    MODULE_UI_QT_API void stop() noexcept override;
+    MODULE_UI_QT_API void stop() noexcept final;
 
     static MODULE_UI_QT_API int run() noexcept;
 
-protected:
+private:
 
-    MODULE_UI_QT_API void load_style_sheet();
+    void load_style_sheet();
 };
 
 } // namespace sight::module::ui::qt

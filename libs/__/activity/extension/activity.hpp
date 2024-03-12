@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -178,7 +178,7 @@ struct ACTIVITY_CLASS_API activity_requirement
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
         <desc>Activity description ...</desc>
-        <icon>sight::module::ui::icons/icon-3D.png</icon>
+        <icon>sight::module::ui::icons/Volume.svg</icon>
         <requirements>
             <requirement name="param1" type="data::image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="data::mesh" maxOccurs="3" >

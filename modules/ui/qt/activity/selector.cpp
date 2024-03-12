@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,7 +134,7 @@ void selector::starting()
     sight::activity::extension::activity_info info_load;
     info_load.title = "Load activity";
     info_load.icon  =
-        core::runtime::get_module_resource_file_path("sight::module::ui::icons", "LoadActivity.svg").string();
+        core::runtime::get_module_resource_file_path("sight::module::ui::icons", "BlueLoad.svg").string();
     info_load.description = "Load a previously saved activity.";
 
     m_activities_info.insert(m_activities_info.begin(), info_load);

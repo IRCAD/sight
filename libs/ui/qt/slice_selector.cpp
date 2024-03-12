@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -163,8 +163,8 @@ slice_selector::slice_selector(
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* step_backward = new QToolButton(this);
-        auto path           = core::runtime::get_module_resource_path("sight::module::ui::flaticons");
-        step_backward->setIcon(QIcon(QString::fromStdString((path / "YellowBackwardStep.svg").string())));
+        auto path           = core::runtime::get_module_resource_path("sight::module::ui::icons");
+        step_backward->setIcon(QIcon(QString::fromStdString((path / "YellowLeftChevron.svg").string())));
         step_backward->setToolTip(tr("Step backward"));
 
         QObject::connect(
@@ -182,7 +182,7 @@ slice_selector::slice_selector(
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* step_forward = new QToolButton(this);
-        step_forward->setIcon(QIcon(QString::fromStdString((path / "YellowForwardStep.svg").string())));
+        step_forward->setIcon(QIcon(QString::fromStdString((path / "YellowRightChevron.svg").string())));
         step_backward->setToolTip(tr("Step forward"));
 
         QObject::connect(
