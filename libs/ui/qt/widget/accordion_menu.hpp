@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -60,9 +60,9 @@ private:
 
     [[nodiscard]] std::vector<QWidget*> children_widgets() const;
 
-    Qt::Orientation m_orientation              = Qt::Horizontal;
-    bool m_folded                              = true;
-    QParallelAnimationGroup* m_animation_group = new QParallelAnimationGroup;
+    Qt::Orientation m_orientation             = Qt::Horizontal;
+    bool m_folded                             = true;
+    QParallelAnimationGroup m_animation_group = {};
     QMetaObject::Connection m_first_button_connection;
     QPushButton* m_bracket = new QPushButton;
     QPixmap m_pixmap;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ accordion_menu::accordion_menu(QWidget* _parent, Qt::Orientation _orientation) :
     setProperty("folded", true);
     setProperty("class", "accordion_menu");
     QObject::connect(
-        m_animation_group,
+        &m_animation_group,
         &QAnimationGroup::finished,
         [this]
         {
@@ -97,8 +97,8 @@ void accordion_menu::fold()
     }
 
     m_folded = true;
-    m_animation_group->setDirection(QAbstractAnimation::Backward);
-    m_animation_group->start();
+    m_animation_group.setDirection(QAbstractAnimation::Backward);
+    m_animation_group.start();
 }
 
 //------------------------------------------------------------------------------
@@ -120,8 +120,8 @@ void accordion_menu::unfold()
     qApp->style()->unpolish(this);
     qApp->style()->polish(this);
     std::ranges::for_each(children_widgets(), &QWidget::show);
-    m_animation_group->setDirection(QAbstractAnimation::Forward);
-    m_animation_group->start();
+    m_animation_group.setDirection(QAbstractAnimation::Forward);
+    m_animation_group.start();
 }
 
 //------------------------------------------------------------------------------
@@ -171,9 +171,9 @@ void accordion_menu::add_widget(QWidget* _w)
 void accordion_menu::update()
 {
     QObject::disconnect(m_first_button_connection);
-    int current_time = m_animation_group->currentTime();
-    m_animation_group->clear();
-    m_animation_group->setCurrentTime(current_time);
+    int current_time = m_animation_group.currentTime();
+    m_animation_group.clear();
+    m_animation_group.setCurrentTime(current_time);
     std::vector<QWidget*> widgets = children_widgets();
     if(widgets.empty())
     {
@@ -233,7 +233,7 @@ void accordion_menu::update()
             total_size += m_orientation == Qt::Horizontal ? _w->width() : _w->height();
         });
     min_accordion_size_anim->setEndValue(total_size);
-    m_animation_group->addAnimation(min_accordion_size_anim);
+    m_animation_group.addAnimation(min_accordion_size_anim);
     if(m_orientation == Qt::Horizontal)
     {
         setMinimumWidth(min_accordion_size_anim->currentValue().toInt());
@@ -258,7 +258,7 @@ void accordion_menu::update()
             == Qt::Horizontal ? QPoint(offset, margin_to_center) : QPoint(margin_to_center, offset)
         );
         offset += m_orientation == Qt::Horizontal ? widgets[i]->width() : widgets[i]->height();
-        m_animation_group->addAnimation(anim);
+        m_animation_group.addAnimation(anim);
         widgets[i]->move(anim->currentValue().toPoint());
     }
 
@@ -282,7 +282,7 @@ void accordion_menu::update()
         {
             m_bracket->setIcon(rotate(m_pixmap, _rotation.toDouble()));
         });
-    m_animation_group->addAnimation(bracket_anim);
+    m_animation_group.addAnimation(bracket_anim);
 }
 
 //------------------------------------------------------------------------------
