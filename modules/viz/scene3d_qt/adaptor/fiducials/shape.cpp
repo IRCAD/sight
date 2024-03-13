@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -91,21 +91,19 @@ void shape::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_FONT_SIZE_CONFIG     = CONFIG + "fontSize";
-    static const std::string s_RADIUS_CONFIG        = CONFIG + "radius";
-    static const std::string s_INTERACTIVE_CONFIG   = CONFIG + "interactive";
-    static const std::string s_PRIORITY_CONFIG      = CONFIG + "priority";
-    static const std::string s_QUERY_MASK_CONFIG    = CONFIG + "queryMask";
-    static const std::string s_QUERY_FLAGS_CONFIG   = CONFIG + "queryFlags";
-    static const std::string s_COLOR_CONFIG         = CONFIG + "color";
-    static const std::string s_APPLY_SPACING_CONFIG = CONFIG + "apply_spacing";
+    static const std::string s_FONT_SIZE_CONFIG   = CONFIG + "fontSize";
+    static const std::string s_RADIUS_CONFIG      = CONFIG + "radius";
+    static const std::string s_INTERACTIVE_CONFIG = CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG    = CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG  = CONFIG + "queryMask";
+    static const std::string s_QUERY_FLAGS_CONFIG = CONFIG + "queryFlags";
+    static const std::string s_COLOR_CONFIG       = CONFIG + "color";
 
     m_font_size     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
     m_sphere_radius = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
     m_interactive   = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority      = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_config_color  = config.get<std::string>(s_COLOR_CONFIG, m_config_color);
-    m_apply_spacing = config.get<bool>(s_APPLY_SPACING_CONFIG, m_apply_spacing);
 
     std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexa_mask.empty())
@@ -227,15 +225,6 @@ void shape::update_from_fiducials()
     // First collect the point lists to be added (to prevent deadlocks on function calls)
     {
         const auto image = m_image.lock();
-
-        if(m_apply_spacing)
-        {
-            m_spacing = sight::viz::scene3d::helper::scene::spacing_as_vector3(image->spacing());
-        }
-        else
-        {
-            m_spacing = Ogre::Vector3(1.0, 1.0, 1.0);
-        }
 
         if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
         {
@@ -601,13 +590,8 @@ void shape::create_mask(data::point_list::sptr _pl)
         mask->set_window_center({0.});
     }
 
-    // Copy the input image in the output image
-    // Must be done in every cases (passthrough included)
-    // Copy it, do not shallow-copy it (when switching networks, it might cause issues)
-    auto* mask_buffer = static_cast<unsigned char*>(mask->buffer());
-
     // Set the mask to 0
-    std::memset(mask_buffer, 0, mask->size_in_bytes());
+    std::memset(mask->buffer(), 0, mask->size_in_bytes());
 
     // If the input point list is empty we forward the currently empty mask
     if(_pl == nullptr)
@@ -621,37 +605,28 @@ void shape::create_mask(data::point_list::sptr _pl)
         return;
     }
 
-    cv::Mat output = sight::io::opencv::image::move_to_cv(mask.get_shared());
-
     try
     {
-        std::vector<std::vector<cv::Point> > contours;
-        contours.emplace_back();
+        std::vector<cv::Point> contour;
+        const auto& points     = _pl->get_points();
+        const std::size_t size = points.size();
 
-        std::size_t size = _pl->get_points().size();
-        if(size > 0)
+        if(size > 5)
         {
-            std::size_t i = 0;
-            auto& points  = _pl->get_points();
+            contour.reserve(size);
+            const auto& spacing = image->spacing();
 
-            contours.back().emplace_back(
-                static_cast<int>(std::nearbyint(points.at(i)->get_coord()[0])),
-                static_cast<int>(std::nearbyint(points.at(i)->get_coord()[1]))
-            );
-
-            for(i = 1 ; i < size - 1 ; i++)
+            for(const auto& point : points)
             {
-                contours.back().emplace_back(
-                    static_cast<int>(std::nearbyint(points.at(i)->get_coord()[0])),
-                    static_cast<int>(std::nearbyint(points.at(i)->get_coord()[1]))
+                auto coord = point->get_coord();
+                coord[0] /= spacing[0];
+                coord[1] /= spacing[1];
+
+                contour.emplace_back(
+                    static_cast<int>(std::nearbyint(coord[0])),
+                    static_cast<int>(std::nearbyint(coord[1]))
                 );
             }
-        }
-
-        // Erase contours with less than five elements
-        if(!contours.empty())
-        {
-            std::erase_if(contours, [](std::vector<cv::Point>& _p){return _p.size() < 5;});
         }
 
         std::optional<Ogre::ColourValue> colour = std::nullopt;
@@ -672,25 +647,30 @@ void shape::create_mask(data::point_list::sptr _pl)
             colour = sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
         }
 
-        for(const auto& contour : contours)
+        if(!contour.empty())
         {
+            cv::Mat output = sight::io::opencv::image::move_to_cv(mask.get_shared());
+
             // Bounding ellipse
             cv::RotatedRect min_ellipse = cv::fitEllipse(contour);
             cv::ellipse(
                 output,
                 min_ellipse,
-                {static_cast<double>(colour->r * 255.), static_cast<double>(colour->g * 255.),
-                 static_cast<double>(colour->b * 255.), 255.0
+                {
+                    static_cast<double>(colour->r * 255.),
+                    static_cast<double>(colour->g * 255.),
+                    static_cast<double>(colour->b * 255.),
+                    255.0
                 },
                 2
             );
-        }
 
-        // Emit the image output signal
-        auto sig = mask->signal<sight::data::image::buffer_modified_signal_t>(
-            sight::data::image::BUFFER_MODIFIED_SIG
-        );
-        sig->async_emit();
+            // Emit the image output signal
+            auto sig = mask->signal<sight::data::image::buffer_modified_signal_t>(
+                sight::data::image::BUFFER_MODIFIED_SIG
+            );
+            sig->async_emit();
+        }
     }
     catch(cv::Exception& e)
     {
@@ -758,12 +738,12 @@ void shape::create_shape(data::point_list::sptr _pl)
                 static_cast<float>(p1[0]),
                 static_cast<float>(p1[1]),
                 static_cast<float>(p1[2])
-                                     ) * m_spacing;
+            );
             const Ogre::Vector3 v2 = Ogre::Vector3(
                 static_cast<float>(p2[0]),
                 static_cast<float>(p2[1]),
                 static_cast<float>(p2[2])
-                                     ) * m_spacing;
+            );
 
             // First sphere.
             Ogre::ManualObject* const sphere1 = scene_mgr->createManualObject(
@@ -775,7 +755,7 @@ void shape::create_shape(data::point_list::sptr _pl)
                 sphere1,
                 m_sphere_material_name,
                 *colour,
-                m_sphere_radius * m_spacing.x
+                m_sphere_radius
             );
 
             sphere1->setQueryFlags(m_query_flag);
@@ -821,8 +801,8 @@ void shape::create_shape(data::point_list::sptr _pl)
                 dashed_line,
                 v1,
                 v2,
-                m_sphere_radius * m_spacing.x * 2.0F,
-                m_sphere_radius * m_spacing.x * 1.5F,
+                m_sphere_radius,
+                m_sphere_radius,
                 colour
             );
             dashed_line->end();

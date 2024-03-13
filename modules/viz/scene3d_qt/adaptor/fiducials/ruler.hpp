@@ -67,8 +67,6 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  *      snapped.
  * - \b distanceQueryFlags (optional, uint32, default=0x40000000): mask apply to distances spheres.
  * - \b color (optional, string, default=""): color applied to the rulers, generated if empty.
- * - \b apply_spacing (optional, bool, default=false): whether computed positions require the spacing
- *      to be taken into account or not.
  *
  * @section Slots Slots
  * - \b remove_all(): remove all distances.
@@ -353,10 +351,6 @@ private:
 
     // Cached fiducials from the input image
     std::vector<sight::data::fiducials_series::fiducial> m_cached_fiducials;
-
-    // Image spacing to be applied on measures
-    bool m_apply_spacing {false};
-    Ogre::Vector3 m_spacing;
 
     QPushButton* m_bin_button = nullptr;
 

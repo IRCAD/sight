@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -71,8 +71,6 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities
  *   when the shape is auto snapped.
  * - \b queryFlags (optional, uint32, default=0x40000000): mask applied to the spheres.
- * - \b apply_spacing (optional, bool, default=false): whether computed positions require the spacing to be taken into
- * account.
  *
  * @section Slots Slots
  * - \b removeAll(): remove all shapes.
@@ -345,10 +343,6 @@ private:
 
     // Cached fiducials from the input image
     std::vector<sight::data::fiducials_series::fiducial> m_cached_fiducials;
-
-    // Image spacing to be applied on measures
-    bool m_apply_spacing {false};
-    Ogre::Vector3 m_spacing;
 
     QPushButton* m_bin_button {nullptr};
 

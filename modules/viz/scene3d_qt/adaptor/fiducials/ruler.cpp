@@ -96,21 +96,19 @@ void ruler::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_FONT_SIZE_CONFIG     = CONFIG + "fontSize";
-    static const std::string s_RADIUS_CONFIG        = CONFIG + "radius";
-    static const std::string s_INTERACTIVE_CONFIG   = CONFIG + "interactive";
-    static const std::string s_PRIORITY_CONFIG      = CONFIG + "priority";
-    static const std::string s_QUERY_MASK_CONFIG    = CONFIG + "queryMask";
-    static const std::string s_QUERY_FLAGS_CONFIG   = CONFIG + "distanceQueryFlags";
-    static const std::string s_COLOR_CONFIG         = CONFIG + "color";
-    static const std::string s_APPLY_SPACING_CONFIG = CONFIG + "apply_spacing";
+    static const std::string s_FONT_SIZE_CONFIG   = CONFIG + "fontSize";
+    static const std::string s_RADIUS_CONFIG      = CONFIG + "radius";
+    static const std::string s_INTERACTIVE_CONFIG = CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG    = CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG  = CONFIG + "queryMask";
+    static const std::string s_QUERY_FLAGS_CONFIG = CONFIG + "distanceQueryFlags";
+    static const std::string s_COLOR_CONFIG       = CONFIG + "color";
 
     m_font_size     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
     m_sphere_radius = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
     m_interactive   = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority      = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_config_color  = config.get<std::string>(s_COLOR_CONFIG, m_config_color);
-    m_apply_spacing = config.get<bool>(s_APPLY_SPACING_CONFIG, m_apply_spacing);
 
     std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexa_mask.empty())
@@ -230,15 +228,6 @@ void ruler::update_from_fiducials()
     {
         const auto image = m_image.lock();
 
-        if(m_apply_spacing)
-        {
-            m_spacing = sight::viz::scene3d::helper::scene::spacing_as_vector3(image->spacing());
-        }
-        else
-        {
-            m_spacing = Ogre::Vector3(1.0, 1.0, 1.0);
-        }
-
         if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
         {
             auto fiducials = image_series->get_fiducials()->filter_fiducials(
@@ -251,7 +240,7 @@ void ruler::update_from_fiducials()
 
     for(const auto& fiducial : m_cached_fiducials)
     {
-        std::string id = fiducial.fiducial_identifier;
+        std::string id = fiducial.fiducial_uid.value_or("");
         if( /* Check that the distance hasn't been already inserted */
             m_distances.find(id) == m_distances.end())
         {
@@ -315,11 +304,11 @@ void ruler::restrict_to_current_slice()
                 // Hide or show the fiducial according to current slice
                 if(shape_ok && referenced_frame_number_ok)
                 {
-                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_identifier, true);
+                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_uid.value_or(""), true);
                 }
                 else
                 {
-                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_identifier, false);
+                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_uid.value_or(""), false);
                 }
             }
         }
@@ -1084,12 +1073,12 @@ void ruler::create_distance(data::point_list::sptr& _pl)
         static_cast<float>(front[0]),
         static_cast<float>(front[1]),
         static_cast<float>(front[2])
-                                ) * m_spacing;
+    );
     const Ogre::Vector3 end = Ogre::Vector3(
         static_cast<float>(back[0]),
         static_cast<float>(back[1]),
         static_cast<float>(back[2])
-                              ) * m_spacing;
+    );
 
     // First sphere.
     Ogre::ManualObject* const sphere1 = scene_mgr->createManualObject(this->get_id() + "_sphere1_" + id);
@@ -1097,7 +1086,7 @@ void ruler::create_distance(data::point_list::sptr& _pl)
         sphere1,
         m_sphere_material_name,
         *colour,
-        m_sphere_radius * m_spacing.x
+        m_sphere_radius
     );
     sphere1->setQueryFlags(m_distance_query_flag);
     // Render this sphere over all others objects.
@@ -1113,7 +1102,7 @@ void ruler::create_distance(data::point_list::sptr& _pl)
         sphere2,
         m_sphere_material_name,
         *colour,
-        m_sphere_radius * m_spacing.x
+        m_sphere_radius
     );
     sphere2->setQueryFlags(m_distance_query_flag);
     // Render this sphere over all others objects.
@@ -1433,12 +1422,12 @@ void ruler::update_modified_distance(data::point_list::sptr _pl)
             static_cast<float>(front[0]),
             static_cast<float>(front[1]),
             static_cast<float>(front[2])
-                                    ) * m_spacing;
+        );
         const Ogre::Vector3 end = Ogre::Vector3(
             static_cast<float>(back[0]),
             static_cast<float>(back[1]),
             static_cast<float>(back[2])
-                                  ) * m_spacing;
+        );
         this->update_distance(&distance_to_update, begin, end);
     }
 }
