@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -151,6 +151,8 @@ std::vector<double> to_floats(const std::vector<fiducials_series::point3>& _poin
 
 gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::referenced_image _referenced_image)
 {
+    std::unique_lock lock(_pimpl.m_mutex);
+
     gdcm::DataSet data_set;
     _pimpl.set_string_value<kw::ReferencedSOPClassUID>(_referenced_image.referenced_sop_class_uid, data_set);
     _pimpl.set_string_value<kw::ReferencedSOPInstanceUID>(_referenced_image.referenced_sop_instance_uid, data_set);
@@ -163,12 +165,14 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::referenced_i
 
 gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::graphic_coordinates_data _graphic_coordinates_data)
 {
+    std::unique_lock lock(_pimpl.m_mutex);
+
     gdcm::DataSet data_set;
     auto referenced_image_sequence = gdcm::SequenceOfItems::New();
     gdcm::Item item;
     item.SetNestedDataSet(to_gdcm(_pimpl, _graphic_coordinates_data.referenced_image_sequence));
     referenced_image_sequence->AddItem(item);
-    detail::SeriesImpl::set_sequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
+    _pimpl.set_sequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
     _pimpl.set_values<kw::GraphicData>(to_floats(_graphic_coordinates_data.graphic_data), data_set);
     return data_set;
 }
@@ -177,6 +181,8 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::graphic_coor
 
 gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial _fiducial)
 {
+    std::unique_lock lock(_pimpl.m_mutex);
+
     gdcm::DataSet data_set;
     _pimpl.set_string_value<kw::ShapeType>(shape_to_string(_fiducial.shape_type), data_set);
     _pimpl.set_string_value<kw::FiducialDescription>(_fiducial.fiducial_description, data_set);
@@ -191,7 +197,7 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial _fi
             gcds->AddItem(item);
         }
 
-        detail::SeriesImpl::set_sequence(kw::GraphicCoordinatesDataSequence::GetTag(), gcds, data_set);
+        _pimpl.set_sequence(kw::GraphicCoordinatesDataSequence::GetTag(), gcds, data_set);
     }
 
     _pimpl.set_string_value<kw::FiducialUID>(_fiducial.fiducial_uid.value_or(""), data_set);
@@ -208,6 +214,8 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial _fi
 
 gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial_set _fiducial_set)
 {
+    std::unique_lock lock(_pimpl.m_mutex);
+
     gdcm::DataSet data_set;
     if(_fiducial_set.referenced_image_sequence)
     {
@@ -219,7 +227,7 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial_set
             referenced_image_sequence->AddItem(item);
         }
 
-        detail::SeriesImpl::set_sequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
+        _pimpl.set_sequence(kw::ReferencedImageSequence::GetTag(), referenced_image_sequence, data_set);
     }
 
     if(_fiducial_set.frame_of_reference_uid)
@@ -235,20 +243,20 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial_set
         fiducial_sequence->AddItem(item);
     }
 
-    detail::SeriesImpl::set_sequence(kw::FiducialSequence::GetTag(), fiducial_sequence, data_set);
-    detail::SeriesImpl::set_private_value(0, _fiducial_set.group_name, data_set);
-    detail::SeriesImpl::set_private_value(1, color_to_string(_fiducial_set.color), data_set);
+    _pimpl.set_sequence(kw::FiducialSequence::GetTag(), fiducial_sequence, data_set);
+    _pimpl.set_private_value(0, _fiducial_set.group_name, data_set);
+    _pimpl.set_private_value(1, color_to_string(_fiducial_set.color), data_set);
     std::optional<std::string> size;
     if(_fiducial_set.size.has_value())
     {
         size = std::to_string(*_fiducial_set.size);
     }
 
-    detail::SeriesImpl::set_private_value(2, size, data_set);
-    detail::SeriesImpl::set_private_value(3, private_shape_to_string(_fiducial_set.shape), data_set);
+    _pimpl.set_private_value(2, size, data_set);
+    _pimpl.set_private_value(3, private_shape_to_string(_fiducial_set.shape), data_set);
     if(_fiducial_set.visibility.has_value())
     {
-        detail::SeriesImpl::set_private_value(4, *_fiducial_set.visibility ? "true" : "false", data_set);
+        _pimpl.set_private_value(4, *_fiducial_set.visibility ? "true" : "false", data_set);
     }
 
     return data_set;
@@ -259,7 +267,7 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial_set
 template<typename T>
 gdcm::SmartPointer<gdcm::SequenceOfItems> append_in_sequence(
     detail::SeriesImpl& _pimpl,
-    gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence,
+    const gdcm::SmartPointer<gdcm::SequenceOfItems>& _sequence,
     T _element
 )
 {
@@ -1820,6 +1828,8 @@ const
 
 fiducials_series::referenced_image fiducials_series::to_referenced_image(const gdcm::DataSet& _data_set) const
 {
+    std::unique_lock lock(m_pimpl->m_mutex);
+
     return referenced_image {
         .referenced_sop_class_uid    = m_pimpl->get_value<kw::ReferencedSOPClassUID>(_data_set).value_or(""),
         .referenced_sop_instance_uid = m_pimpl->get_value<kw::ReferencedSOPInstanceUID>(_data_set).value_or(""),
@@ -1847,11 +1857,13 @@ const
 
 fiducials_series::fiducial fiducials_series::to_fiducial(const gdcm::DataSet& _data_set) const
 {
+    std::unique_lock lock(m_pimpl->m_mutex);
+
     fiducial fiducial;
     fiducial.shape_type           = string_to_shape(m_pimpl->get_value<kw::ShapeType>(_data_set));
     fiducial.fiducial_description = m_pimpl->get_value<kw::FiducialDescription>(_data_set).value_or("");
     fiducial.fiducial_identifier  = m_pimpl->get_value<kw::FiducialIdentifier>(_data_set).value_or("");
-    if(auto gcds = m_pimpl->get_sequence(kw::GraphicCoordinatesDataSequence::GetTag(), _data_set))
+    if(const auto& gcds = m_pimpl->get_sequence(kw::GraphicCoordinatesDataSequence::GetTag(), _data_set))
     {
         fiducial.graphic_coordinates_data_sequence = std::vector<graphic_coordinates_data> {};
         for(std::size_t i = 1 ; i <= gcds->GetNumberOfItems() ; i++) // GDCM Sequence of Items is 1-indexed
@@ -1887,8 +1899,10 @@ fiducials_series::fiducial fiducials_series::to<fiducials_series::fiducial>(cons
 fiducials_series::graphic_coordinates_data fiducials_series::to_graphic_coordinates_data(const gdcm::DataSet& _data_set)
 const
 {
+    std::unique_lock lock(m_pimpl->m_mutex);
+
     graphic_coordinates_data gcd;
-    if(auto ris = m_pimpl->get_sequence(kw::ReferencedImageSequence::GetTag(), _data_set);
+    if(const auto& ris = m_pimpl->get_sequence(kw::ReferencedImageSequence::GetTag(), _data_set);
        ris != nullptr && ris->GetNumberOfItems() > 0)
     {
         // GDCM Sequence of Items is 1-indexed
@@ -1946,8 +1960,11 @@ std::vector<fiducials_series::point3> fiducials_series::to_point3(const std::vec
 //------------------------------------------------------------------------------
 
 template<typename T>
-std::optional<std::vector<T> > fiducials_series::to_vector(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence) const
+std::optional<std::vector<T> > fiducials_series::to_vector(const gdcm::SmartPointer<gdcm::SequenceOfItems>& _sequence)
+const
 {
+    std::unique_lock lock(m_pimpl->m_mutex);
+
     if(_sequence == nullptr)
     {
         return std::nullopt;
@@ -1969,6 +1986,8 @@ template<typename T>
 gdcm::SmartPointer<gdcm::SequenceOfItems> fiducials_series::to_sequence(const std::optional<std::vector<T> >& _vector)
 const
 {
+    std::unique_lock lock(m_pimpl->m_mutex);
+
     if(!_vector)
     {
         return nullptr;

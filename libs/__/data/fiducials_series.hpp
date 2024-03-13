@@ -820,7 +820,7 @@ private:
     static std::vector<point3> to_point3(const std::vector<double>& _floats);
 
     template<typename T>
-    std::optional<std::vector<T> > to_vector(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence) const;
+    std::optional<std::vector<T> > to_vector(const gdcm::SmartPointer<gdcm::SequenceOfItems>& _sequence) const;
 
     template<typename T>
     gdcm::SmartPointer<gdcm::SequenceOfItems> to_sequence(const std::optional<std::vector<T> >& _vector) const;
