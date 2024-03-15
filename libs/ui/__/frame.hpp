@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,10 +81,11 @@ class view;
  *   - \b message : a confirmation dialog appears asking user to confirm closing application
  * - \<frame\> : defines the frame name, icon, size and style.
  *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
- *     Allowed values are MODAL, STAY_ON_TOP and DEFAULT (default value).
+ *     Allowed values are MODAL, STAY_ON_TOP, FULLSCREEN and DEFAULT (default value).
  *   - \b visibility : set the frame visibility when it is created. Possible values are true (default) or false.
  *   - \b minSize : the minimum width and height the application window can have
  *   - \b maxSize : the maximum width and height the application window can have
+ *   - \b size : the default width and height of the application window. It is constrained by minSize and maxSize.
  * - The toolbar section isn't mandatory.
  * - The menubar section isn't mandatory.
 

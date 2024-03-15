@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,8 @@ public:
     {
         DEFAULT,
         stay_on_top,
-        modal
+        modal,
+        fullscreen
     };
 
     using registry_key_t = std::string;
@@ -64,7 +65,8 @@ public:
         unknown     = 0, ///< the unknown state
         iconized    = 1, ///< the minimized state
         maximized   = 2, ///< the maximied state
-        full_screen = 3  ///< the full screen state
+        full_screen = 3, ///< the full screen state
+        normal      = 4  ///< the normal state
     };
 
     class frame_info
@@ -93,6 +95,9 @@ public:
 
         /// Frame maximum size (max width and max height)
         std::pair<int, int> m_max_size {-1, -1};
+
+        /// Frame default size (width and height)
+        std::pair<int, int> m_default_size {-1, -1};
 
         /// Frame style
         style m_style {DEFAULT};

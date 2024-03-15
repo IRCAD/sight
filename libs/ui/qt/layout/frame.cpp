@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 #include <QGuiApplication>
 #include <QIcon>
 #include <QScreen>
+#include <QShortcut>
 #include <QStyle>
 
 SIGHT_REGISTER_GUI(sight::ui::qt::layout::frame, sight::ui::layout::frame_manager::REGISTRY_KEY);
@@ -91,22 +92,37 @@ void frame::create_frame()
     {
         m_qt_window->setWindowModality(Qt::ApplicationModal);
     }
+    else if(frame_info.m_style == ui::layout::frame_manager::fullscreen && frame_info.m_state == frame_state::unknown)
+    {
+        frame_info.m_state = frame_state::full_screen;
+    }
 
-    int size_x = (frame_info.m_size.first > 0) ? frame_info.m_size.first : m_qt_window->size().width();
-    int size_y = (frame_info.m_size.second > 0) ? frame_info.m_size.second : m_qt_window->size().height();
+    const auto& [width, height] =
+        [&]
+        {
+            if(frame_info.m_size.first > 0 && frame_info.m_size.second > 0)
+            {
+                return frame_info.m_size;
+            }
 
-    int pos_x = frame_info.m_position.first;
-    int pos_y = frame_info.m_position.second;
-    QPoint pos(pos_x, pos_y);
+            if(frame_info.m_default_size.first > 0 && frame_info.m_default_size.second > 0)
+            {
+                return frame_info.m_default_size;
+            }
+
+            return std::make_pair(m_qt_window->width(), m_qt_window->height());
+        }();
+
+    QPoint pos(frame_info.m_position.first, frame_info.m_position.second);
     const QScreen* screen = QGuiApplication::screenAt(pos);
     if(screen == nullptr)
     {
-        QRect frame_rect(0, 0, size_x, size_y);
+        QRect frame_rect(0, 0, width, height);
         frame_rect.moveCenter(QGuiApplication::primaryScreen()->geometry().center());
         pos = frame_rect.topLeft();
     }
 
-    m_qt_window->setGeometry(pos.x(), pos.y(), size_x, size_y);
+    m_qt_window->setGeometry(pos.x(), pos.y(), width, height);
 
     this->set_state(frame_info.m_state);
 
@@ -114,6 +130,21 @@ void frame::create_frame()
     m_qt_window->setCentralWidget(qwidget);
 
     QObject::connect(m_qt_window, &QMainWindow::destroyed, this, &frame::on_close_frame);
+
+    m_shortcut = new QShortcut(
+        QKeySequence::FullScreen,
+        m_qt_window,
+        [&]
+        {
+            if(m_qt_window->isFullScreen())
+            {
+                m_qt_window->showNormal();
+            }
+            else
+            {
+                m_qt_window->showFullScreen();
+            }
+        });
 
     ui::qt::container::widget::sptr container = ui::qt::container::widget::make();
     container->set_qt_container(qwidget);
@@ -179,22 +210,22 @@ void frame::set_state(frame_state _state)
 
 ui::layout::frame_manager::frame_state frame::get_state()
 {
-    frame_state state(frame_state::unknown);
-
     if(m_qt_window->isMinimized())
     {
-        state = frame_state::iconized;
-    }
-    else if(m_qt_window->isMaximized())
-    {
-        state = frame_state::maximized;
-    }
-    else if(m_qt_window->isFullScreen())
-    {
-        state = frame_state::full_screen;
+        return frame_state::iconized;
     }
 
-    return state;
+    if(m_qt_window->isMaximized())
+    {
+        return frame_state::maximized;
+    }
+
+    if(m_qt_window->isFullScreen())
+    {
+        return frame_state::full_screen;
+    }
+
+    return frame_state::normal;
 }
 
 //-----------------------------------------------------------------------------

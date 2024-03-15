@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,6 +35,7 @@
 
 QT_BEGIN_NAMESPACE
 class QMainWindow;
+class QShortcut;
 QT_END_NAMESPACE
 
 namespace sight::ui::qt::layout
@@ -74,6 +75,7 @@ private:
     frame_state get_state();
 
     QPointer<QMainWindow> m_qt_window;
+    QPointer<QShortcut> m_shortcut;
 };
 
 } // namespace sight::ui::qt::layout

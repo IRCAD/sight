@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,6 +126,11 @@ void frame_manager::initialize(const ui::config_t& _configuration)
         m_frame_info.m_max_size.second
     );
 
+    m_frame_info.m_default_size = std::make_pair(
+        _configuration.get<int>("size.<xmlattr>.width", m_frame_info.m_default_size.first),
+        _configuration.get<int>("size.<xmlattr>.height", m_frame_info.m_default_size.second)
+    );
+
     if(const auto mode = _configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
     {
         if(mode.value() == "DEFAULT")
@@ -140,9 +145,15 @@ void frame_manager::initialize(const ui::config_t& _configuration)
         {
             m_frame_info.m_style = modal;
         }
+        else if(mode.value() == "FULLSCREEN")
+        {
+            m_frame_info.m_style = fullscreen;
+        }
         else
         {
-            SIGHT_FATAL("The style " << mode.value() << " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
+            SIGHT_FATAL(
+                "The style " << mode.value() << " is unknown, it should be DEFAULT, STAY_ON_TOP, FULLSCREEN or MODAL."
+            );
         }
     }
 
@@ -210,10 +221,12 @@ void frame_manager::write_config() const
     {
         ui::preferences preferences;
 
-        if(m_frame_info.m_state != frame_state::iconized)
-        {
-            preferences.put(get_frame_state_key(m_frame_info.m_name), static_cast<std::uint8_t>(m_frame_info.m_state));
-        }
+        preferences.put(
+            get_frame_state_key(m_frame_info.m_name),
+            static_cast<std::uint8_t>(
+                m_frame_info.m_state == frame_state::iconized ? frame_state::normal : m_frame_info.m_state
+            )
+        );
 
         preferences.put(get_frame_w_key(m_frame_info.m_name), m_frame_info.m_size.first);
         preferences.put(get_frame_h_key(m_frame_info.m_name), m_frame_info.m_size.second);
