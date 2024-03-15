@@ -36,6 +36,8 @@
 #include <QPushButton>
 #include <QSlider>
 
+class QGroupBox;
+
 namespace sight::module::ui::qt
 {
 
@@ -102,6 +104,7 @@ namespace sight::module::ui::qt
                 <item value="button2" label="..." icon="..."/>
                 <item value="button3" icon="..."/>
             </param>
+            <param type="int" name="Something" key="..." widget="slider" orientation="vertical" .../>
         </parameters>
        </service>
    @endcode
@@ -129,13 +132,15 @@ namespace sight::module::ui::qt
  * - \b reset (optional, default=true): display the reset button.
  * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
  * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
- * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKBOARD
+ * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKERBOARD
  * and will send 'imageBlend' or 'imageCheckerboard'.
  * - \b depends (optional, string): key of the dependency.
  * - \b dependsValue (optional, string): value of the dependency in case of enum.
  * - \b dependsReverse (optional, bool, default=false): reverse the dependency status checking.
  * - \b emitOnRelease (optional, default = false): sliders only, if true send value when slider is released,
  * send value when value changed otherwise.
+ * - \b min_width (optional, int) Minimum width, in device coordinates. @todo Support relative widget size.
+ * - \b min_height (optional, int) Minimum height, in device coordinates. @todo Support relative widget size.
  */
 class MODULE_UI_QT_CLASS_API parameters : public QObject,
                                           public sight::ui::editor
@@ -216,10 +221,30 @@ public:
         std::string icon_path {""};
     };
 
+    struct param_widget
+    {
+        std::string name          = {};
+        std::string key           = {};
+        std::string default_value = {};
+        bool reset_button         = true;
+        bool hide_min_max         = false;
+        QSize min_size            = {0, 0};
+    };
+
+    template<typename T>
+    struct scalar_widget : param_widget
+    {
+        T min = T {0};
+        T max = T {1};
+    };
+
+    using int_widget    = scalar_widget<int>;
+    using double_widget = scalar_widget<double>;
+
     MODULE_UI_QT_API parameters() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_QT_API ~parameters() noexcept override;
+    ~parameters() noexcept override = default;
 
     /// Configure the editor.
     MODULE_UI_QT_API void configuring() override;
@@ -255,22 +280,22 @@ private Q_SLOTS:
     static void on_depends_changed(QComboBox* _combo_box, QWidget* _widget, const std::string& _value, bool _reverse);
 
     /// This method is called when a boolean value changes
-    void on_change_boolean(int _value);
+    void on_change_boolean(int _value) const;
 
     /// This method is called when a color button is clicked
     void on_color_button();
 
     /// This method is called when an integer value changes
-    void on_change_integer(int _value);
+    void on_change_integer(int _value) const;
 
     /// This method is called when a double value changes
-    void on_change_double(double _value);
+    void on_change_double(double _value) const;
 
     /// This method is called when a double slider value changes
-    void on_change_double_slider(int _value);
+    void on_change_double_slider(int _value) const;
 
     /// This method is called when selection changes (QComboBox)
-    void on_change_enum(int _value);
+    void on_change_enum(int _value) const;
 
     /// This method is called to connect sliders to their labels
     static void on_slider_mapped(QLabel* _label, QSlider* _slider);
@@ -279,10 +304,10 @@ private Q_SLOTS:
     static void on_double_slider_mapped(QLabel* _label, QSlider* _slider);
 
     /// This method is called to connect reset buttons and checkboxes
-    void on_reset_boolean_mapped(QWidget* _widget);
+    void on_reset_boolean_mapped(QWidget* _widget) const;
 
     /// This method is called to connect reset buttons and color widgets
-    void on_reset_color_mapped(QWidget* _widget);
+    void on_reset_color_mapped(QWidget* _widget) const;
 
     /// This method is called to connect reset buttons and sliders
     void on_reset_integer_mapped(QWidget* _widget);
@@ -306,78 +331,62 @@ private:
      */
     bool eventFilter(QObject* _watched, QEvent* _event) override;
 
-    /// Snippet to create the reset button
-    QPushButton* create_reset_button(const std::string& _key);
+    /// Creates a reset button for one widget.
+    /// @param _key Name of the parameter it resets.
+    /// @param _on_click Slot to call when the button is clicked (when QPushButton::clicked is sent)
+    /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
+    [[nodiscard]]
+    QPushButton* create_reset_button(const std::string& _key, std::function<void()> _on_click) const;
 
     /// Create a widget associated with a boolean type
-    void create_bool_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        const std::string& _default_value,
-        bool _reset_button
-    );
+    /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
+    [[nodiscard]]
+    QPushButton* create_bool_widget(QBoxLayout& _layout, const param_widget& _setup) const;
 
     /// Create a widget associated with a color type
-    void create_color_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        const std::string& _default_value,
-        bool _reset_button
-    );
+    /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
+    [[nodiscard]]
+    QPushButton* create_color_widget(QBoxLayout& _layout, const param_widget& _setup) const;
 
     /// Create a widget associated with a double type
-    void create_double_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        double _default_value,
-        double _min,
-        double _max,
+    /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
+    [[nodiscard]]
+    QPushButton* create_double_widget(
+        QBoxLayout& _layout,
+        const double_widget& _setup,
         int _count,
-        bool _reset_button = true
+        Qt::Orientation _orientation
     );
 
     /// Create a slider widget associated with a double type.
-    void create_double_slider_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        double _default_value,
-        double _min,
-        double _max,
+    /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
+    [[nodiscard]]
+    QPushButton* create_double_slider_widget(
+        QBoxLayout& _layout,
+        const double_widget& _setup,
         std::uint8_t _decimals,
-        bool _reset_button,
-        bool _on_release,
-        bool _orientation,
-        bool _hide_min_max
+        Qt::Orientation _orientation,
+        bool _on_release
     );
 
     /// Create a slider widget associated with an integer type
-    void create_integer_slider_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        int _default_value,
-        int _min,
-        int _max,
-        bool _reset_button,
-        bool _on_release,
-        bool _orientation,
-        bool _hide_min_max
+    /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
+    [[nodiscard]]
+    QPushButton* create_integer_slider_widget(
+        QBoxLayout& _layout,
+        const int_widget& _setup,
+        Qt::Orientation _orientation,
+        bool _on_release
     );
 
     /// Create a spin widget associated with an integer type
-    void create_integer_spin_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        int _default_value,
-        int _min,
-        int _max,
+    /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
+    [[nodiscard]]
+    QPushButton* create_integer_spin_widget(
+        QBoxLayout& _layout,
+        const int_widget& _setup,
         int _count,
-        bool _reset_button
+        Qt::Orientation _orientation
     );
 
     /// Parses the string for an enum
@@ -390,46 +399,40 @@ private:
 
     /// Create a multi choice widget
     void create_enum_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        const std::string& _default_value,
+        QBoxLayout& _layout,
+        const param_widget& _setup,
         const std::vector<std::string>& _values,
         const std::vector<std::string>& _data
-    );
+    ) const;
 
     /// Create a multi choice widget with integer values
     void create_slider_enum_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        const std::string& _default_value,
+        QBoxLayout& _layout,
+        const param_widget& _setup,
         const std::vector<std::string>& _values,
-        bool _on_release,
-        bool _orientation,
-        bool _hide_min_max
-    );
+        Qt::Orientation _orientation,
+        bool _on_release
+    ) const;
 
     void create_button_bar_enum_widget(
-        QGridLayout& _layout,
-        int _row,
-        const std::string& _key,
-        const std::string& _default_value,
+        QBoxLayout& _layout,
+        const param_widget& _setup,
         const std::vector<enum_button_param>& _button_list,
         const int _width,
         const int _height,
-        const int _h_offset,
-        const std::string& _style
-    );
+        const int _spacing,
+        const std::string& _style,
+        Qt::Orientation _orientation
+    ) const;
 
     /// Emit the signal(s) for the integer widget
-    void emit_integer_signal(QObject* _widget);
+    void emit_integer_signal(QObject* _widget) const;
 
     /// Emit the signal(s) for the double widget
-    void emit_double_signal(QObject* _widget);
+    void emit_double_signal(QObject* _widget) const;
 
     /// Emit the signal for the color widget
-    void emit_color_signal(const QColor _color, const std::string& _key);
+    void emit_color_signal(const QColor _color, const std::string& _key) const;
 
     /**
      * @name Slots
@@ -512,6 +515,11 @@ private:
 
     /// if true, the signals are not emitted
     bool m_block_signals {false};
+
+    /// The list of intermediate boxes containing each widgets. This array is processed each time we need to find
+    /// a parameter with a given key (when enabling/disabling, etc.).
+    /// This vector is cleared upon stopping().
+    std::vector<QPointer<QGroupBox> > m_param_boxes;
 };
 
 //------------------------------------------------------------------------------
