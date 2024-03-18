@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -154,9 +154,14 @@ void plane::update(
         m_slice_plane.reset();
     }
 
+    // Save visibility if the plane existed before
+    bool visible = true;
     if(m_scene_manager->hasEntity(m_entity_name))
     {
-        m_scene_manager->getEntity(m_entity_name)->detachFromParent();
+        auto* entity = m_scene_manager->getEntity(m_entity_name);
+        SIGHT_ASSERT("Could not find entity " + m_entity_name, entity);
+        entity->detachFromParent();
+        visible = entity->isVisible();
         m_scene_manager->destroyEntity(m_entity_name);
     }
 
@@ -312,6 +317,9 @@ void plane::update(
 
         m_plane_scene_node->attachObject(m_border.shape);
     }
+
+    // Restore visibility if the plane existed before
+    m_plane_scene_node->setVisible(visible, true);
 
     this->update_position();
 }
