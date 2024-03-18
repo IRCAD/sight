@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,25 +37,7 @@
 #include <numeric>
 #include <utility> // std::pair
 
-namespace sight::data::helper
-{
-
-namespace id
-{
-
-// Note: keeping old name to preserve compatibility, should be harmonized in the future.
-static constexpr std::string_view AXIAL_SLICE_INDEX    = "Axial Slice Index";
-static constexpr std::string_view FRONTAL_SLICE_INDEX  = "Frontal Slice Index";
-static constexpr std::string_view SAGITTAL_SLICE_INDEX = "Sagittal Slice Index";
-static constexpr std::string_view LANDMARKS            = "m_imageLandmarksId";
-static constexpr std::string_view DISTANCES            = "m_imageDistancesId";
-static constexpr std::string_view DISTANCE_VISIBILITY  = "ShowDistances";
-static constexpr std::string_view TRANSFER_FUNCTION    = "m_transferFunctionCompositeId";
-static constexpr std::string_view LANDMARKS_VISIBILITY = "ShowLandmarks";
-
-} // namespace id
-
-namespace medical_image
+namespace sight::data::helper::medical_image
 {
 
 //------------------------------------------------------------------------------
@@ -318,6 +300,28 @@ void set_landmarks_visibility(data::image& _image, bool _visibility)
 
 //------------------------------------------------------------------------------
 
+data::matrix4::sptr get_direction(const data::image& _image)
+{
+    if(auto direction = _image.get_field<data::matrix4>(std::string(id::DIRECTION)); direction)
+    {
+        return direction;
+    }
+
+    return std::make_shared<data::matrix4>();
+}
+
+//------------------------------------------------------------------------------
+
+void set_direction(data::image& _image, data::matrix4::sptr _direction)
+{
+    if(_direction)
+    {
+        _image.set_field(std::string(id::DIRECTION), _direction);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 data::transfer_function::sptr get_transfer_function(const data::image& _image)
 {
     return _image.get_field<data::transfer_function>(std::string(id::TRANSFER_FUNCTION));
@@ -332,6 +336,4 @@ void set_transfer_function(data::image& _image, const data::transfer_function::s
 
 //------------------------------------------------------------------------------
 
-} //namespace medical_image
-
-} // namespace sight::data::helper
+} // namespace sight::data::helper::medical_image

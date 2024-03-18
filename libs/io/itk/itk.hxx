@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,6 +58,17 @@ void move_from_itk(
 
     _data_image->set_origin(v_origin);
     _data_image->set_spacing(v_spacing);
+
+    std::shared_ptr<data::matrix4> f_direction = std::make_shared<data::matrix4>();
+    for(std::uint8_t y = 0 ; y < dim ; ++y)
+    {
+        for(std::uint8_t x = 0 ; x < dim ; ++x)
+        {
+            (*f_direction)(y, x) = _itk_image->GetDirection()(y, x);
+        }
+    }
+
+    _data_image->set_field(std::string(data::helper::id::DIRECTION), f_direction);
 
     const auto pixel_type = core::type::get<typename ITKIMAGE::PixelType>();
     const auto dump_lock  = _data_image->dump_lock();
@@ -142,6 +153,24 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
 
     // update origin information
     itk_image->SetOrigin(_image_data->origin().data());
+
+    // Update direction information
+    std::shared_ptr<data::matrix4> direction_mat =
+        _image_data->get_field<data::matrix4>(std::string(data::helper::id::DIRECTION));
+
+    if(direction_mat)
+    {
+        typename ITKIMAGE::DirectionType direction = itk_image->GetDirection();
+        for(std::uint8_t y = 0 ; y < ITKIMAGE::ImageDimension ; ++y)
+        {
+            for(std::uint8_t x = 0 ; x < ITKIMAGE::ImageDimension ; ++x)
+            {
+                direction(y, x) = (*direction_mat)(y, x);
+            }
+        }
+
+        itk_image->SetDirection(direction);
+    }
 
     ::itk::ImageRegion<ITKIMAGE::ImageDimension> itk_region;
 

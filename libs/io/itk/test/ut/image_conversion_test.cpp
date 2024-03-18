@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,6 +61,7 @@ void image_conversion_test::test_conversion()
     // create Image
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(image, core::type::INT16);
+    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
 
     using image_t = ::itk::Image<std::int16_t, 3>;
     image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
@@ -117,6 +118,7 @@ void image_conversion_test::test_conversion_2d()
     core::type type                = core::type::INT16;
 
     utest_data::generator::image::generate_image(image, size, spacing, origin, type, data::image::gray_scale, 0);
+    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
 
     using image_t = ::itk::Image<std::int16_t, 2>;
 

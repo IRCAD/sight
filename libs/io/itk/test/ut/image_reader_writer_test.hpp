@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include <data/image.hpp>
+#include <data/matrix4.hpp>
 
 #include <service/macros.hpp>
 
@@ -65,7 +66,8 @@ private:
         std::size_t _expected_dim,
         const data::image::spacing_t& _expected_spacing,
         const data::image::origin_t& _expected_origin,
-        const data::image::size_t& _expected_size
+        const data::image::size_t& _expected_size,
+        const data::matrix4::sptr& _expected_direction
     );
 };
 

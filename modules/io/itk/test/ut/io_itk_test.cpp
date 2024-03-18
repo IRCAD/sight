@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include <core/thread/worker.hpp>
 #include <core/tools/date_and_time.hpp>
 
+#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/series_set.hpp>
 
@@ -125,6 +126,7 @@ void io_itk_test::test_save_load_inr()
 {
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(image, core::type::INT16);
+    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
 
     // inr only support image origin (0,0,0)
     const data::image::origin_t origin = {0., 0., 0.};
@@ -172,6 +174,7 @@ void io_itk_test::test_save_load_nifti()
 {
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(image, core::type::INT16);
+    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
 
     const data::image::origin_t origin = {0.5F, 0.2F, 1.2F};
     image->set_origin(origin);
@@ -218,6 +221,7 @@ void io_itk_test::image_series_inr_test()
 {
     auto image_series = std::make_shared<data::image_series>();
     utest_data::generator::image::generate_random_image(image_series, core::type::INT16);
+    sight::data::helper::medical_image::set_direction(*image_series, std::make_shared<data::matrix4>());
 
     // inr only support image origin (0,0,0)
     const data::image::origin_t origin = {0., 0., 0.};
@@ -271,6 +275,7 @@ void io_itk_test::image_series_nifti_test()
 {
     auto image_series = std::make_shared<data::image_series>();
     utest_data::generator::image::generate_random_image(image_series, core::type::INT16);
+    sight::data::helper::medical_image::set_direction(*image_series, std::make_shared<data::matrix4>());
 
     // inr only support image origin (0,0,0)
     const data::image::origin_t origin = {0., 0., 0.};

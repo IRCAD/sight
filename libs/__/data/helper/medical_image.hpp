@@ -29,6 +29,7 @@
 
 #include <data/image.hpp>
 #include <data/integer.hpp>
+#include <data/matrix4.hpp>
 #include <data/point_list.hpp>
 #include <data/thread/region_threader.hpp>
 #include <data/transfer_function.hpp>
@@ -36,7 +37,26 @@
 
 #include <optional>
 
-namespace sight::data::helper::medical_image
+namespace sight::data::helper
+{
+
+namespace id
+{
+
+// Note: keeping old name to preserve compatibility, should be harmonized in the future.
+static constexpr std::string_view AXIAL_SLICE_INDEX    = "Axial Slice Index";
+static constexpr std::string_view FRONTAL_SLICE_INDEX  = "Frontal Slice Index";
+static constexpr std::string_view SAGITTAL_SLICE_INDEX = "Sagittal Slice Index";
+static constexpr std::string_view LANDMARKS            = "m_imageLandmarksId";
+static constexpr std::string_view DISTANCES            = "m_imageDistancesId";
+static constexpr std::string_view DISTANCE_VISIBILITY  = "ShowDistances";
+static constexpr std::string_view TRANSFER_FUNCTION    = "m_transferFunctionCompositeId";
+static constexpr std::string_view LANDMARKS_VISIBILITY = "ShowLandmarks";
+static constexpr std::string_view DIRECTION            = "direction";
+
+} // namespace id
+
+namespace medical_image
 {
 
 enum orientation_t
@@ -231,6 +251,20 @@ DATA_API std::string get_label(const data::image& _image);
  */
 DATA_API void set_label(data::image& _image, const std::string& _label);
 
+/**
+ * @brief Helper function to get the direction field from an image data.
+ *
+ * @param _image : input image reference.
+ */
+DATA_API data::matrix4::sptr get_direction(const data::image& _image);
+
+/**
+ * @brief Helper function to set the direction field from an image data.
+ *
+ * @param _image : input image reference.
+ */
+DATA_API void set_direction(data::image& _image, data::matrix4::sptr _direction);
+
 // ------------------------------------------------------------------------------
 
 template<typename VALUE>
@@ -415,16 +449,16 @@ public:
         rt(
             [capture0 = image->cbegin<IMAGE>(), &min_result, &max_result](std::ptrdiff_t _p_h1, std::ptrdiff_t _p_h2,
                                                                           std::size_t _p_h3, auto&& ...)
-            {
-                return min_max_functor::get_min_max<IMAGE>(
-                    capture0,
-                    min_result,
-                    max_result,
-                    _p_h1,
-                    _p_h2,
-                    _p_h3
-                );
-            },
+                {
+                    return min_max_functor::get_min_max<IMAGE>(
+                        capture0,
+                        min_result,
+                        max_result,
+                        _p_h1,
+                        _p_h2,
+                        _p_h3
+                    );
+                },
             image->cend<IMAGE>() - image->cbegin<IMAGE>()
         );
 
@@ -445,3 +479,5 @@ void get_min_max(const data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _m
 }
 
 } // namespace sight::data::helper::medical_image
+
+} // namespace sight::data::helper

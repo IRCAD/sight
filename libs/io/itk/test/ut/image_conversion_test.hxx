@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,6 +38,7 @@ void image_conversion_test::stress_test_for_a_type()
     {
         data::image::sptr image = std::make_shared<data::image>();
         utest_data::generator::image::generate_random_image(image, core::type::get<TYPE>());
+        sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
 
         typedef ::itk::Image<TYPE, 3> image_t;
         typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
