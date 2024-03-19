@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 
 #include <service/macros.hpp>
 
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_config);
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_no_data);
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_no_data2);
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input);
@@ -110,6 +111,24 @@ void test_service_with_data::updating()
 void test_service_with_data::stopping()
 {
     m_output = nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+void test_config::configuring()
+{
+    std::unique_lock lock(m_config_mutex);
+    m_config = this->get_config();
+
+    test_srv::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+sight::service::base::config_t test_config::export_config() const
+{
+    std::unique_lock lock(m_config_mutex);
+    return m_config;
 }
 
 //------------------------------------------------------------------------------

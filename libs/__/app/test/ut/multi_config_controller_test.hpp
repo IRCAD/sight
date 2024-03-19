@@ -37,6 +37,7 @@ CPPUNIT_TEST_SUITE(multi_config_controller_test);
 CPPUNIT_TEST(multi_config_test);
 CPPUNIT_TEST(set_config_key_test);
 CPPUNIT_TEST(default_loading_test);
+CPPUNIT_TEST(parameters_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -58,6 +59,9 @@ public:
 
     //Test the default config loaded when update is call without any setConfig before.
     static void default_loading_test();
+
+    // test parameters from set_config
+    static void parameters_test();
 };
 
 } // namespace sight::app::ut

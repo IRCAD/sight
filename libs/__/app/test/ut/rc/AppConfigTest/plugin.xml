@@ -1,4 +1,4 @@
-<plugin id="config_test" >
+<plugin id="config_test">
 
     <extension implements="sight::app::extension::config">
         <id>parametersConfigTest1</id>
@@ -55,9 +55,9 @@
             </service>
             <service uid="TestService5Uid" type="sight::app::ut::test4_inputs">
                 <in key="data1" uid="data1Id" />
-                <in key="data2" uid="data2Id" optional="false"/>
-                <in key="data3" uid="data3Id" optional="false"/>
-                <in key="data4" uid="data4Id" optional="false"/>
+                <in key="data2" uid="data2Id" optional="false" />
+                <in key="data3" uid="data3Id" optional="false" />
+                <in key="data4" uid="data4Id" optional="false" />
             </service>
 
             <start uid="SGenerateData" />
@@ -134,7 +134,7 @@
             </service>
 
             <service uid="TestService1Uid" type="sight::app::ut::test_no_data" />
-            <service uid="TestService2Uid" type="sight::app::ut::test1_input" >
+            <service uid="TestService2Uid" type="sight::app::ut::test1_input">
                 <in key="data1" uid="data1Id" />
             </service>
             <service uid="TestService3Uid" type="sight::app::ut::test1_input1_output2_inouts">
@@ -247,7 +247,7 @@
                 <in key="data3" uid="data3Id" auto_connect="false" />
                 <in key="data4" uid="data4Id" auto_connect="true" />
             </service>
-            <service uid="TestService2Uid" type="sight::app::ut::test4_inputs" >
+            <service uid="TestService2Uid" type="sight::app::ut::test4_inputs">
                 <in key="data1" uid="data5Id" auto_connect="true" />
                 <in key="data2" uid="data2Id" auto_connect="false" />
                 <in key="data3" uid="data3Id" auto_connect="false" />
@@ -301,10 +301,10 @@
                 </in>
             </service>
 
-            <service uid="TestService2Uid" type="sight::app::ut::test2_input_groups" >
+            <service uid="TestService2Uid" type="sight::app::ut::test2_input_groups">
                 <in group="dataGroup0">
                     <key uid="data1Id" />
-                    <key uid="data2Id" auto_connect="true" optional="true"/>
+                    <key uid="data2Id" auto_connect="true" optional="true" />
                 </in>
                 <in group="dataGroup1">
                     <key uid="data3Id" />
@@ -344,7 +344,7 @@
         <desc>Test configuration for parameter replace</desc>
         <config>
 
-            <object uid="${data1}" type="sight::data::string"  />
+            <object uid="${data1}" type="sight::data::string" />
             <object uid="data2Id" type="sight::data::boolean" />
 
             <service uid="TestService1Uid" type="sight::app::ut::test2_inputs">
@@ -353,7 +353,7 @@
                 <view wid="view1" />
             </service>
 
-            <service uid="TestService2Uid" type="sight::app::config_controller" >
+            <service uid="TestService2Uid" type="sight::app::config_controller">
                 <appConfig id="parameterReplaceTestSubConfig" />
                 <inout group="data">
                     <key name="data1" uid="${data1}" />
@@ -394,7 +394,7 @@
         <config>
 
             <object uid="${data1}" type="sight::data::string" src="ref" />
-            <object uid="${data2}" type="sight::data::boolean" src="ref"  />
+            <object uid="${data2}" type="sight::data::boolean" src="ref" />
 
             <service uid="TestServiceUid" type="sight::app::ut::test2_inputs">
                 <in key="data1" uid="${data1}" />
@@ -450,25 +450,30 @@
 
     <extension implements="sight::app::extension::config">
         <id>multi_cfg_ctl_1</id>
+        <parameters>
+            <param name="param1" default="" />
+        </parameters>
         <desc>Test configuration for multi_config_controller_1</desc>
         <config>
-
-            <service uid="srv" type="sight::app::ut::test_no_data" />
+            <service uid="srv" type="sight::app::ut::test_config">
+                <param1>${param1}</param1>
+            </service>
 
             <start uid="srv" />
-
         </config>
     </extension>
 
     <extension implements="sight::app::extension::config">
         <id>multi_cfg_ctl_2</id>
+        <parameters>
+            <param name="param1" default="" />
+        </parameters>
         <desc>Test configuration for multi_config_controller_2</desc>
         <config>
-
-            <service uid="srv" type="sight::app::ut::test_no_data" />
-
+            <service uid="srv" type="sight::app::ut::test_config">
+                <param1>${param1}</param1>
+            </service>
             <start uid="srv" />
-
         </config>
     </extension>
 

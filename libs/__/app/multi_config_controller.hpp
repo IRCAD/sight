@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -54,6 +54,7 @@ namespace sight::app
                 <config name="config1" id="..." />
                 <config name="config2" id="..." />
                 <config name="config3" id="..." />
+                <parameter replace="model" by="model_key"  />
             </appConfig>
             <inout group="data">
                 <key name="object1" uid="..." />
@@ -72,31 +73,42 @@ namespace sight::app
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
  * - \b appConfig: this section allows to specify the configs which can be started. Each config is associated to a name
- * which has to be unique.
- * On update, the multi_config_controller will start a given config based on its name, and stop the other ones.
- * - \b default: a default name can be specified, to indicate which config should be started when no config have been
- * precises specifically.
- * - \b key: the setConfig slot is adapted to a classical SParameter signal. For a given multi_config_controller to be
- * sure that the setConfig is actually addressed to it, the key attribute from the config will be compared to the key
- * attribute of the setConfig slot.
- * Only signals with the same key will be considered.
- *
+ *                 which has to be unique.
+ *                 On update, the multi_config_controller will start a given config based on its name, and stop the
+ *                 other ones.
+ *   - \b default: a default name can be specified, to indicate which config should be started when no config have been
+ *                 precises specifically.
+ *   - \b key: the set_config slot is adapted to a classical SParameter signal. For a given multi_config_controller to
+ *             be sure that the setConfig is actually addressed to it, the key attribute from the config will be *
+ *             compared to the key attribute of the set_config slot.
+ *             Only signals with the same key will be considered.
+ *   - \b parameter: the set_config slot can also set random parameters that will be passed to the selected
+ *                   config. If the the key from the set_config slot matches the key from the config, the parameters
+ *                   will be replaced by the value from the set_config slot.
  *
  * @subsection slots slots:
  * - \b set_config( sight::ui::parameter_t, std::string): allows to change the currently started config. The first
- * attribute should
- * match the
- * appConfig key, otherwise the service will ignore it. The second parameter should be a supported config name.
- * This slot only specifies which config will be started. Though to effectively start it a update is required.
+ *                attribute should match the appConfig key, otherwise the service will ignore it. The second parameter *
+ *                should be a supported config name.
+ *                This slot only specifies which config will be started. Though to effectively start it a update is
+ *                required.
  */
 class APP_CLASS_API multi_config_controller : public service::controller
 {
 public:
 
-    struct slots
+    struct APP_CLASS_API slots final
     {
         using key_t = sight::core::com::slots::key_t;
         static inline const key_t SET_CONFIG = "set_config";
+    };
+
+    struct APP_CLASS_API signals final
+    {
+        using key_t           = sight::core::com::signals::key_t;
+        using string_signal_t = sight::core::com::signal<void (std::string)>;
+
+        static inline const key_t CONFIG_STARTED = "config_started";
     };
 
     SIGHT_DECLARE_SERVICE(multi_config_controller, service::controller);
@@ -106,6 +118,9 @@ public:
 
     /// Destructor. Does nothing.
     APP_API ~multi_config_controller() noexcept override = default;
+
+    /// SLOT: Allows changing the config to start
+    APP_API void set_config(sight::ui::parameter_t _val, std::string _key);
 
 protected:
 
@@ -124,16 +139,16 @@ protected:
     /// Overrides
     void info(std::ostream& _sstream) override;
 
-    /// Allows changing the config to start
-    void set_config(sight::ui::parameter_t _val, std::string _key);
-
 private:
 
     /// config manager
     app::helper::config_launcher::uptr m_config_launcher;
 
-    // the config name for configuration set key evaluation
+    /// the config name for configuration set key evaluation
     std::string m_key {"multiConfigController"};
+
+    /// Will store the extra parameters map filled by set_parameter slot
+    sight::app::field_adaptor_t m_config_parameters_map;
 
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};

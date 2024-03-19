@@ -23,6 +23,8 @@
 
 #include <core/com/slots.hxx>
 
+#include <boost/range/iterator_range.hpp>
+
 namespace sight::app
 {
 
@@ -31,6 +33,7 @@ namespace sight::app
 multi_config_controller::multi_config_controller() noexcept :
     m_config_launcher(std::make_unique<app::helper::config_launcher>())
 {
+    new_signal<signals::string_signal_t>(signals::CONFIG_STARTED);
     new_slot(slots::SET_CONFIG, &multi_config_controller::set_config, this);
 }
 
@@ -61,25 +64,43 @@ void multi_config_controller::stopping()
 
 void multi_config_controller::updating()
 {
-    if(m_config_launcher->config_is_running())
+    // Start the configuration if it is not running
+    bool start = !m_config_launcher->config_is_running();
+
+    if(const auto& found = m_config_parameters_map.find(m_key); found != m_config_parameters_map.end())
     {
-        m_config_launcher->stop_config();
+        const auto& new_config = found->second;
+
+        // If the configuration is different from the current one
+        if(m_config_launcher->config() != new_config)
+        {
+            // Set the new configuration to start
+            m_config_launcher->set_config(new_config);
+
+            // Stop the current configuration and force restart
+            if(!start)
+            {
+                start = true;
+                m_config_launcher->stop_config();
+            }
+        }
     }
 
-    m_config_launcher->start_config(this->get_sptr());
+    if(start)
+    {
+        m_config_launcher->start_config(this->get_sptr(), m_config_parameters_map);
+
+        auto sig = signal<signals::string_signal_t>(signals::CONFIG_STARTED);
+        sig->async_emit(m_config_launcher->config());
+    }
 }
 
 //------------------------------------------------------------------------------
 void multi_config_controller::set_config(sight::ui::parameter_t _val, std::string _key)
 {
-    if(_key == m_key && std::holds_alternative<std::string>(_val))
+    if(std::holds_alternative<std::string>(_val))
     {
-        const auto new_config = std::get<std::string>(_val);
-        if(m_config_launcher->config() != new_config || !m_config_launcher->config_is_running())
-        {
-            m_config_launcher->set_config(new_config);
-            this->update();
-        }
+        m_config_parameters_map[_key] = std::get<std::string>(_val);
     }
 }
 

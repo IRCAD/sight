@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,10 +57,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void configuring() final
+    void configuring() override
     {
         const config_t cfg = this->get_config();
-
         m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
     }
 
@@ -270,6 +269,24 @@ private:
     bool m_received {false};
     std::string m_swapped_object_key;
     data::object::csptr m_swapped_object;
+};
+
+class test_config : public test_srv
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_config, app::ut::test_srv);
+
+    sight::service::base::config_t export_config() const;
+
+protected:
+
+    void configuring() override;
+
+private:
+
+    mutable std::recursive_mutex m_config_mutex;
+    sight::service::base::config_t m_config;
 };
 
 class test_no_data : public test_srv
