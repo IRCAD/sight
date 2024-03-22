@@ -29,6 +29,8 @@
 
 #include <ui/__/dialog/notification.hpp>
 
+#include <QSoundEffect>
+
 namespace sight::module::ui::qt
 {
 
@@ -169,6 +171,8 @@ private:
 
     /// Default message (if message in slot are empty), the default message can be configured in xml.
     std::string m_default_message {"Notification"};
+
+    std::unique_ptr<QSoundEffect> m_sound;
 
     struct configuration final
     {

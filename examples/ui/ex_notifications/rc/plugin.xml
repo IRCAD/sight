@@ -51,6 +51,7 @@ are already displayed and where they are displayed on screen.
                         <editor />
                         <editor />
                         <editor />
+                        <editor />
                         <separator />
                         <menuItem name="NOTIFY" />
                         <menuItem name="Close CHANNEL1" />
@@ -62,6 +63,7 @@ are already displayed and where they are displayed on screen.
                 <registry>
                     <editor sid="useNotifierAct" start="true" />
                     <editor sid="maxChar" start="true" />
+                    <editor sid="useSound" start="true" />
                     <editor sid="durationAct" start="true" />
                     <editor sid="typeAct" start="true" />
                     <editor sid="positionAct" start="true" />
@@ -91,6 +93,12 @@ are already displayed and where they are displayed on screen.
             <service uid="maxChar" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="bool" name="Reach max. characters" key="reachMaxCharacters" defaultValue="false" />
+                </parameters>
+            </service>
+
+            <service uid="useSound" type="sight::module::ui::qt::parameters">
+                <parameters>
+                    <param type="bool" name="Sound" key="sound" defaultValue="false" />
                 </parameters>
             </service>
 
@@ -196,6 +204,7 @@ are already displayed and where they are displayed on screen.
             <connect>
                 <signal>useNotifierAct/bool_changed</signal>
                 <signal>maxChar/bool_changed</signal>
+                <signal>useSound/bool_changed</signal>
                 <slot>testNotifierSrv/set_bool_parameter</slot>
             </connect>
 

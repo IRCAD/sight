@@ -62,6 +62,7 @@ struct SERVICE_CLASS_API notification final
     std::string channel {};
     std::optional<bool> closable {std::nullopt};
     std::array<int, 2> size {200, 60};
+    std::optional<bool> sound {std::nullopt};
 };
 
 /**
@@ -112,10 +113,15 @@ protected:
     /// @param[in] _notification
     /// @{
     SERVICE_API void notify(notification _notification) const;
-    inline void notify(enum notification::type _type, std::string _message, std::string _channel = "") const;
-    inline void info(std::string _message, std::string _channel                                  = "") const;
-    inline void success(std::string _message, std::string _channel                               = "") const;
-    inline void failure(std::string _message, std::string _channel                               = "") const;
+    inline void notify(
+        enum notification::type _type,
+        std::string _message,
+        std::string _channel = "",
+        bool sound           = false
+    ) const;
+    inline void info(std::string _message, std::string _channel    = "", bool sound = false) const;
+    inline void success(std::string _message, std::string _channel = "", bool sound = false) const;
+    inline void failure(std::string _message, std::string _channel = "", bool sound = false) const;
     /// @}
 
     /// Emits close channel signal
@@ -137,30 +143,41 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline void notifier::notify(enum notification::type _type, std::string _message, std::string _channel) const
+inline void notifier::notify(
+    enum notification::type _type,
+    std::string _message,
+    std::string _channel,
+    bool _sound
+) const
 {
-    this->notify({.type = std::move(_type), .message = std::move(_message), .channel = std::move(_channel)});
+    this->notify(
+        {
+            .type    = std::move(_type),
+            .message = std::move(_message),
+            .channel = std::move(_channel),
+            .sound   = std::move(_sound)
+        });
 }
 
 //------------------------------------------------------------------------------
 
-inline void notifier::info(std::string _message, std::string _channel) const
+inline void notifier::info(std::string _message, std::string _channel, bool _sound) const
 {
-    this->notify(notification::type::info, std::move(_message), std::move(_channel));
+    this->notify(notification::type::info, std::move(_message), std::move(_channel), std::move(_sound));
 }
 
 //------------------------------------------------------------------------------
 
-inline void notifier::success(std::string _message, std::string _channel) const
+inline void notifier::success(std::string _message, std::string _channel, bool _sound) const
 {
-    this->notify(notification::type::success, std::move(_message), std::move(_channel));
+    this->notify(notification::type::success, std::move(_message), std::move(_channel), std::move(_sound));
 }
 
 //------------------------------------------------------------------------------
 
-inline void notifier::failure(std::string _message, std::string _channel) const
+inline void notifier::failure(std::string _message, std::string _channel, bool _sound) const
 {
-    this->notify(notification::type::failure, std::move(_message), std::move(_channel));
+    this->notify(notification::type::failure, std::move(_message), std::move(_channel), std::move(_sound));
 }
 
 } // namespace sight::service

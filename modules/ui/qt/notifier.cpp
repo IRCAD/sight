@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,15 @@
 
 #include <core/base.hpp>
 #include <core/com/slots.hxx>
+#include <core/runtime/path.hpp>
 
 #include <service/macros.hpp>
 
 #include <ui/__/registry.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
+
+#include <QApplication>
 
 namespace sight::module::ui::qt
 {
@@ -45,6 +48,18 @@ static const std::string MAX_KEY("max");
 static const std::string CLOSABLE_KEY("closable");
 
 static const std::string INFINITE("infinite");
+
+static const std::vector<std::filesystem::path> SOUND_BOARD = {
+    std::filesystem::canonical(
+        sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/info_beep.wav")
+    ),
+    std::filesystem::canonical(
+        sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/success_beep.wav")
+    ),
+    std::filesystem::canonical(
+        sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/failure_beep.wav")
+    )
+};
 
 static const std::map<const std::string, const sight::ui::dialog::notification::position> POSITION_MAP = {
     {"TOP_RIGHT", service::notification::position::top_right},
@@ -180,6 +195,10 @@ void notifier::configuring()
             m_channels.insert_or_assign(uid, channel_config);
         }
     }
+
+    // Lastly, initialize sound strutures.
+    m_sound = std::make_unique<QSoundEffect>(qApp);
+    m_sound->setVolume(1.0);
 
     m_default_message     = config.get<std::string>("message", m_default_message);
     m_parent_container_id = config.get<std::string>("parent.<xmlattr>.uid", m_parent_container_id);
@@ -391,6 +410,12 @@ void notifier::pop(service::notification _notification)
     popup->set_channel(_notification.channel);
     popup->set_closable(closable);
     popup->show();
+
+    if(_notification.sound.has_value() && _notification.sound.value())
+    {
+        m_sound->setSource(QUrl::fromLocalFile(QString::fromStdString(SOUND_BOARD[_notification.type].string())));
+        m_sound->play();
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -164,6 +164,10 @@ void display_test_notifications::set_bool_parameter(bool _val, std::string _key)
     {
         m_reach_max_characters = _val;
     }
+    else if(_key == "sound")
+    {
+        m_notification.sound = _val;
+    }
     else
     {
         SIGHT_ERROR("Key '" + _key + "' is not handled.");
@@ -260,7 +264,8 @@ void display_test_notifications::updating()
                 .message  = message,
                 .duration = m_notification.duration,
                 .channel  = m_notification.channel,
-                .closable = m_notification.closable
+                .closable = m_notification.closable,
+                .sound    = m_notification.sound
             });
     }
     else
