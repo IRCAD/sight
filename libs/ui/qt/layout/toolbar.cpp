@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -276,10 +276,18 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
             }
 
             // create shortcut
-            if(!action_info.m_shortcut.empty())
+            QList<QKeySequence> total_sequence;
+            for(auto const& shortcut_str : action_info.m_shortcuts)
             {
-                action->setShortcut(QKeySequence(QString::fromStdString(action_info.m_shortcut)));
+                total_sequence.append(QKeySequence(QString::fromStdString(shortcut_str)));
             }
+
+            if(!total_sequence.empty())
+            {
+                action->setShortcuts(total_sequence);
+            }
+
+            action->setAutoRepeat(false);
 
             menu_item->set_qt_menu_item(action);
 

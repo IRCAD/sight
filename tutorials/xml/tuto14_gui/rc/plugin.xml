@@ -142,7 +142,7 @@
             <service uid="toolBarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout style="ToolButtonTextUnderIcon">
-                        <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
+                        <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="space;f"/>
                         <menuItem name="pause" icon="sight::module::ui::flaticons/OrangePause.svg" />
                         <menuItem name="stop" icon="sight::module::ui::flaticons/RedStop.svg" />
                         <separator />

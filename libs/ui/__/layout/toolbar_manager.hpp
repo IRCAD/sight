@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,7 +124,7 @@ public:
         }
 
         std::string m_name;
-        std::string m_shortcut;
+        std::vector<std::string> m_shortcuts;
         std::filesystem::path m_icon;
         std::filesystem::path m_icon2;
         bool m_is_checkable {false};

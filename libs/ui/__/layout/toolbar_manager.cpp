@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,15 @@
 
 #include <core/runtime/path.hpp>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
 namespace sight::ui::layout
 {
 
 const toolbar_manager::registry_key_t toolbar_manager::REGISTRY_KEY = "sight::ui::layout::toolbar";
+
+const std::string SHORTCUT_SEPARATOR = ";";
 
 //-----------------------------------------------------------------------------
 
@@ -45,8 +48,14 @@ std::vector<toolbar_manager::action_info> configure(
     {
         toolbar_manager::action_info info;
 
-        info.m_name     = _tool_bar_item.second.get<std::string>("<xmlattr>.name");
-        info.m_shortcut = _tool_bar_item.second.get<std::string>("<xmlattr>.shortcut", info.m_shortcut);
+        info.m_name = _tool_bar_item.second.get<std::string>("<xmlattr>.name");
+
+        std::string shortcut_string;
+        shortcut_string = _tool_bar_item.second.get<std::string>("<xmlattr>.shortcut", shortcut_string);
+        if(!shortcut_string.empty())
+        {
+            boost::split(info.m_shortcuts, shortcut_string, boost::is_any_of(SHORTCUT_SEPARATOR));
+        }
 
         const auto icon = _tool_bar_item.second.get<std::string>("<xmlattr>.icon", "");
         if(!icon.empty())
