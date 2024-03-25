@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -145,23 +145,6 @@ void system::robust_rename(
             std::filesystem::rename(_p1, _p2);
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-[[deprecated("Removed in sight 23.0.")]] const std::filesystem::path& system::get_temp_path() noexcept
-{
-    static const std::filesystem::path s_TEMP_PATH = std::filesystem::temp_directory_path();
-    return s_TEMP_PATH;
-}
-
-//------------------------------------------------------------------------------
-
-[[deprecated("Removed in sight 23.0.")]] std::filesystem::path system::get_temporary_folder(
-    const std::string& _sub_folder_prefix
-) noexcept
-{
-    return os::temp_dir::shared_directory(_sub_folder_prefix);
 }
 
 } //end namespace sight::core::tools

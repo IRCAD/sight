@@ -27,9 +27,6 @@ and are, therefore, contained in sub-folders according to their specificity.
 * **view**: defines the generic layout for application.
 
 ### com
-* **signal**: sends a signal when it is triggered.
-
-* **starter**: applies an action (start, stop, ...) on a service specify by uid.
 
 * **timestamp_slot_caller**: runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.
 

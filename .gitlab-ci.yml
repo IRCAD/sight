@@ -61,8 +61,9 @@ lint:sheldon:
     # Build
     - ninja -j${RUNNER_THREADS} | tee output.log
     # Generate metrics information
-    - nb_warnings=$(grep -c "warning:" output.log)
-    - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log)
+    # Note: beware when there is no warning, grep returns false...
+    - nb_warnings=$(grep -c "warning:" output.log || true)
+    - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log || true)
     - echo -e "Cpp_Warnings $nb_warnings\nCpp_Deprecated_declaration $nb_deprecated" >metrics.txt
     # Print CCache statistics (Cache hit rate should have raised)
     - ccache -s

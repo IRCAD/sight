@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,7 @@
 
 #include "extract_test.hpp"
 
-#include <core/tools/system.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <io/vtk/vti_image_reader.hpp>
 
@@ -50,9 +50,7 @@ namespace sight::module::io::zip::ut
 
 void extract_test::basic_archive_test()
 {
-    std::filesystem::path tmp_folder = core::tools::system::get_temporary_folder("extract_test_basicArchiveTest");
-    std::filesystem::remove_all(tmp_folder);
-    std::filesystem::create_directories(tmp_folder);
+    const core::os::temp_dir tmp_folder;
 
     service::base::sptr extract = service::add("sight::module::io::zip::extract");
     CPPUNIT_ASSERT(extract);
@@ -124,9 +122,7 @@ void extract_test::basic_archive_test()
 
 void extract_test::encrypted_archive_test()
 {
-    std::filesystem::path tmp_folder = core::tools::system::get_temporary_folder("extract_test_encryptedArchiveTest");
-    std::filesystem::remove_all(tmp_folder);
-    std::filesystem::create_directories(tmp_folder);
+    const core::os::temp_dir tmp_folder;
 
     service::base::sptr extract = service::add("sight::module::io::zip::extract");
     CPPUNIT_ASSERT(extract);

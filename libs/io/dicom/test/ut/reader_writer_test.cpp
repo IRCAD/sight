@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,7 @@
 
 #include "reader_writer_test.hpp"
 
-#include <core/tools/system.hpp>
+#include <core/os/temp_path.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <data/image_series.hpp>
@@ -69,17 +69,6 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
     }
 
     return series_set;
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::filesystem::path create_temp_folder()
-{
-    auto tmp_folder = core::tools::system::get_temporary_folder() / core::tools::uuid::generate();
-    std::filesystem::remove_all(tmp_folder);
-    std::filesystem::create_directories(tmp_folder);
-
-    return tmp_folder;
 }
 
 //------------------------------------------------------------------------------
@@ -195,7 +184,7 @@ void reader_writer_test::setUp()
 
 static void test_image(const std::string& _name)
 {
-    const auto& folder   = create_temp_folder();
+    const core::os::temp_dir folder;
     const auto& expected = read(utest_data::dir() / _name);
 
     auto writer = std::make_shared<io::dicom::writer::file>();
