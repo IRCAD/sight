@@ -72,12 +72,9 @@
 
             <service uid="loadMeshAct" type="sight::module::ui::action" />
 
-            <service uid="startServerAct" type="sight::module::ui::com::starter">
-                <start uid="matrixNetworkSenderSrv" />
-            </service>
+            <service uid="startServerAct" type="sight::module::ui::action" />
 
-            <service uid="stopServerAct" type="sight::module::ui::com::starter">
-                <stop uid="matrixNetworkSenderSrv" />
+            <service uid="stopServerAct" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
@@ -90,12 +87,9 @@
                 </preference>
             </service>
 
-            <service uid="startClientAct" type="sight::module::ui::com::starter">
-                <start uid="matrixNetworkListenerSrv" />
-            </service>
+            <service uid="startClientAct" type="sight::module::ui::action" />
 
-            <service uid="stopClientAct" type="sight::module::ui::com::starter">
-                <stop uid="matrixNetworkListenerSrv" />
+            <service uid="stopClientAct" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
@@ -199,6 +193,26 @@
                 <signal>matrixNetworkListenerSrv/disconnected</signal>
                 <slot>startClientAct/show</slot>
                 <slot>stopClientAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>startServerAct/clicked</signal>
+                <slot>matrixNetworkSenderSrv/start</slot>
+            </connect>
+
+            <connect>
+                <signal>stopServerAct/clicked</signal>
+                <slot>matrixNetworkSenderSrv/stop</slot>
+            </connect>
+
+            <connect>
+                <signal>startClientAct/clicked</signal>
+                <slot>matrixNetworkListenerSrv/start</slot>
+            </connect>
+
+            <connect>
+                <signal>stopClientAct/clicked</signal>
+                <slot>matrixNetworkListenerSrv/stop</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

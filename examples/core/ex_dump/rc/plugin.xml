@@ -141,7 +141,7 @@
                 <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
             </service>
 
-            <service uid="saveAct" type="sight::module::ui::com::starter" >
+            <service uid="saveAct" type="sight::module::ui::action" >
                 <start uid="SDBWriterSrv" />
             </service>
 
@@ -187,10 +187,16 @@
                 </configs>
             </service>
 
+            <connect>
+                <signal>saveAct/clicked</signal>
+                <slot>SDBWriterSrv/update</slot>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
             <start uid="seriesViewerSrv" />
+            <start uid="SDBWriterSrv" />
 
         </config>
     </extension>

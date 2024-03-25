@@ -64,7 +64,7 @@ class action;
  *
  * Example of configuration
  * @code{.xml}
-    <service uid="item" type="sight::module::ui::default_action" auto_connect="false" >
+    <service uid="item" type="sight::module::ui::action" auto_connect="false" >
         <state checked="false" enabled="false" inverse="true" visible="true" />
         <confirmation message="..." />
     </service>

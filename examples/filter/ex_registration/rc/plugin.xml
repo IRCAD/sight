@@ -163,19 +163,13 @@ Detail of the ToolBar
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
-            <service uid="openImageAct" type="sight::module::ui::com::starter">
-                <start uid="imageReaderSrv" />
-            </service>
+            <service uid="openImageAct" type="sight::module::ui::action" />
 
             <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
-            <service uid="openMesh1Act" type="sight::module::ui::com::starter">
-                <start uid="meshReader1Srv" />
-            </service>
+            <service uid="openMesh1Act" type="sight::module::ui::action" />
 
             <!-- Action to load a mesh in the Tab 2 (Point list 2)    -->
-            <service uid="openMesh2Act" type="sight::module::ui::com::starter">
-                <start uid="meshReader2Srv" />
-            </service>
+            <service uid="openMesh2Act" type="sight::module::ui::action" />
 
             <!-- Action to do the registration -->
             <service uid="registerAct" type="sight::module::ui::action" />
@@ -350,6 +344,18 @@ Detail of the ToolBar
                 <slot>addLAndmarksInPL2Srv/pick</slot>
             </connect>
 
+            <connect>
+                <signal>openImageAct/clicked</signal>
+                <slot>imageReaderSrv/update</slot>
+            </connect>
+            <connect>
+                <signal>openMesh1Act/clicked</signal>
+                <slot>meshReader1Srv/update</slot>
+            </connect>
+            <connect>
+                <signal>openMesh2Act/clicked</signal>
+                <slot>meshReader2Srv/update</slot>
+            </connect>
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -370,6 +376,9 @@ Detail of the ToolBar
             <start uid="N3Mesh1Adp" />
             <start uid="N3NegatoAdp" />
             <start uid="N3TransformAdp" />
+            <start uid="imageReaderSrv" />
+            <start uid="meshReader1Srv" />
+            <start uid="meshReader2Srv" />
 
         </config>
     </extension>

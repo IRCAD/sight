@@ -12,9 +12,7 @@
             <inout key="seriesSet" uid="seriesSet" />
             <IOSelectorSrvConfig name="SDBSessionReaderIOSelectorConfig" />
         </service>
-        <service uid="action_save" type="sight::module::ui::com::starter">
-            <start uid="SDBWriter" />
-        </service>
+        <service uid="action_save" type="sight::module::ui::action" />
         <service uid="SDBWriter" type="sight::module::ui::io::selector">
             <inout key="data" uid="seriesSet" />
             <type mode="writer" />
@@ -142,9 +140,15 @@
             <slot>styleSelector/update_from_preferences</slot>
         </connect>
 
+        <connect>
+            <signal>action_save/clicked</signal>
+            <slot>SDBWriter/update</slot>
+        </connect>
+
         <start uid="mainFrame" />
         <start uid="progress_statusbar" />
         <start uid="qtSelector" />
+        <start uid="SDBWriter" />
 
     </config>
 </extension>

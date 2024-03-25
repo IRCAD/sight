@@ -143,17 +143,9 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Actions to call readers -->
-            <service uid="openImageAct" type="sight::module::ui::com::starter">
-                <start uid="imageReaderSrv" />
-            </service>
-
-            <service uid="openMeshAct" type="sight::module::ui::com::starter">
-                <start uid="meshReaderSrv" />
-            </service>
-
-            <service uid="openTextureAct" type="sight::module::ui::com::starter">
-                <start uid="textureReaderSrv" />
-            </service>
+            <service uid="openImageAct" type="sight::module::ui::action" />
+            <service uid="openMeshAct" type="sight::module::ui::action" />
+            <service uid="openTextureAct" type="sight::module::ui::action" />
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -254,9 +246,26 @@
 
             <!-- ******************************* Start services ***************************************** -->
 
+            <connect>
+                <signal>openImageAct/clicked</signal>
+                <slot>imageReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>openMeshAct/clicked</signal>
+                <slot>meshReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>openTextureAct/clicked</signal>
+                <slot>textureReaderSrv/update</slot>
+            </connect>
+
             <start uid="mainFrame" />
             <start uid="progressBarView" />
-            <start uid="imageWriterSrv" />
+            <start uid="imageReaderSrv" />
+            <start uid="meshReaderSrv" />
+            <start uid="textureReaderSrv" />
             <start uid="trackballInteractorAdp" />
             <start uid="textureAdp" />
             <start uid="meshAdp" />

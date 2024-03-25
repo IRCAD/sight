@@ -75,14 +75,12 @@
 
         <!-- *************************** Begin Actions *************************** -->
 
-        <service uid="actionStartOpenIGTLinkClient" type="sight::module::ui::com::starter">
+        <service uid="actionStartOpenIGTLinkClient" type="sight::module::ui::action">
             <state checked="true" visible="true" />
-            <start uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionStopOpenIGTLinkClient" type="sight::module::ui::com::starter">
+        <service uid="actionStopOpenIGTLinkClient" type="sight::module::ui::action">
             <state checked="true" visible="false" />
-            <stop uid="trackerTLMatrixListener" />
         </service>
 
         <service uid="actionAddPoint" type="sight::module::ui::action" />
@@ -281,6 +279,16 @@
         <connect>
             <signal>trackerTLMatrixSynchronizer/matrix_unsynchronized</signal>
             <slot>status/change_nth_to_red</slot>
+        </connect>
+
+        <connect>
+            <signal>actionStartOpenIGTLinkClient/clicked</signal>
+            <slot>trackerTLMatrixListener/start</slot>
+        </connect>
+
+        <connect>
+            <signal>actionStopOpenIGTLinkClient/clicked</signal>
+            <slot>trackerTLMatrixListener/stop</slot>
         </connect>
 
         <connect>

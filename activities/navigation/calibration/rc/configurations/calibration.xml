@@ -114,11 +114,11 @@
 
         <!-- The action "previous" and "next" are visible only if the application use a "sequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="sight::module::ui::com::signal">
+        <service uid="previousAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="sight::module::ui::com::signal">
+        <service uid="nextAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
@@ -148,7 +148,7 @@
 
         <!-- Connection to called 'previous' slot of the application's sequencer. -->
         <connect channel="${previousActivityChannel}">
-            <signal>previousAct/triggered</signal>
+            <signal>previousAct/clicked</signal>
         </connect>
 
         <!-- Connection to enable "next" action. It should be connected to a sequencer in the application configuration.-->
@@ -160,7 +160,7 @@
 
         <!-- Connection to called 'next' slot of the application's sequencer. -->
         <connect channel="${nextActivityChannel}">
-            <signal>nextAct/triggered</signal>
+            <signal>nextAct/clicked</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

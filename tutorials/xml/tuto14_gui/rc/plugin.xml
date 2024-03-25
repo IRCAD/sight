@@ -181,9 +181,9 @@
                 </registry>
             </service>
 
-            <service uid="hideShowToolbar" type="sight::module::ui::com::signal">
-                <state checked="true" />
-            </service>
+        <service uid="hideShowToolbar" type="sight::module::ui::action" >
+            <state checked="true" />
+        </service>
 
             <service uid="testHideShowView" type="sight::module::ui::menu">
                 <gui>
@@ -449,10 +449,10 @@
                 <slot>pauseAct/hide</slot>
             </connect>
 
-            <connect>
-                <signal>hideShowToolbar/triggered</signal>
-                <slot>toolbar2View/set_visible</slot>
-            </connect>
+        <connect>
+            <signal>hideShowToolbar/is_checked</signal>
+            <slot>toolbar2View/set_visible</slot>
+        </connect>
 
             <connect>
                 <signal>item16Act/checked</signal>

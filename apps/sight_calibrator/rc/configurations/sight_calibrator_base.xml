@@ -110,23 +110,15 @@
             </preference>
         </service>
 
-        <service uid="openDataSetAct" type="sight::module::ui::com::starter">
-            <start uid="dataSetReaderSrv" />
-        </service>
+        <service uid="openDataSetAct" type="sight::module::ui::action" />
 
-        <service uid="openActivityAct" type="sight::module::ui::com::starter">
-            <start uid="activitySetReaderSrv" />
-        </service>
+        <service uid="openActivityAct" type="sight::module::ui::action" />
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
-        <service uid="saveAct" type="sight::module::ui::com::starter">
-            <start uid="dataSetWriterSrv" />
-        </service>
+        <service uid="saveAct" type="sight::module::ui::action" />
 
         <!-- Save current activity. -->
-        <service uid="saveActivityAct" type="sight::module::ui::com::starter">
-            <start uid="activitySetWriterSrv" />
-        </service>
+        <service uid="saveActivityAct" type="sight::module::ui::action" />
 
         <service uid="quitAct" type="sight::module::ui::quit" />
 
@@ -164,10 +156,33 @@
             <slot>dynamicView/create_tab</slot>
         </connect>
 
+        <connect>
+            <signal>openDataSetAct/clicked</signal>
+            <slot>dataSetReaderSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>openActivityAct/clicked</signal>
+            <slot>activitySetReaderSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>saveAct/clicked</signal>
+            <slot>dataSetWriterSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>saveActivityAct/clicked</signal>
+            <slot>activitySetWriterSrv/update</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainFrame" />
+        <start uid="dataSetReaderSrv" />
         <start uid="activitySetReaderSrv" />
+        <start uid="dataSetWriterSrv" />
+        <start uid="activitySetWriterSrv" />
 
     </config>
 </extension>

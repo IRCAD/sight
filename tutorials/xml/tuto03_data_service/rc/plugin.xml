@@ -90,13 +90,10 @@
 
             <!--
                 Open file action:
-                This service (sight::module::ui::com::starter) is a generic action, it starts and updates the
-                services given in the configuration when the user clicks on the action.
-                Here, the reader selector will be called when the action is clicked.
+                This service (sight::module::ui::action) is a generic action.
+                Its 'clicked' signal is connected to the 'update' slot of the image reader service.
             -->
-            <service uid="openImageAct" type="sight::module::ui::com::starter" >
-                <start uid="imageReaderSrv" />
-            </service>
+            <service uid="openImageAct" type="sight::module::ui::action" />
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -122,6 +119,11 @@
                 <in key="image" uid="image" auto_connect="true" />
             </service>
 
+            <connect>
+                <signal>openImageAct/clicked</signal>
+                <slot>imageReaderSrv/update</slot>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <!--
@@ -131,6 +133,7 @@
                 - the menus starts the actions
             -->
             <start uid="mainFrame" />
+            <start uid="imageReaderSrv" />
 
         </config>
     </extension>

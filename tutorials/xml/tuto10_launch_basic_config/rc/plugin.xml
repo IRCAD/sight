@@ -62,9 +62,7 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::com::starter" >
-                <start uid="imageReaderSrv" />
-            </service>
+            <service uid="openImageAct" type="sight::module::ui::action" />
 
             <service uid="quitAct" type="sight::module::ui::quit" />
 
@@ -96,9 +94,15 @@
                 <in key="image" uid="image" />
             </service>
 
+            <connect>
+                <signal>openImageAct/clicked</signal>
+                <slot>imageReaderSrv/update</slot>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
+            <start uid="imageReaderSrv" />
 
         </config>
     </extension>

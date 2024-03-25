@@ -1,4 +1,4 @@
-sight_add_target(ex_igtl TYPE APP UNIQUE ON)
+sight_add_target(ex_igtl TYPE APP UNIQUE OFF)
 
 add_dependencies(
     ex_igtl

@@ -178,23 +178,13 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::com::starter">
-                <start uid="imageReaderSrv" />
-            </service>
-
-            <service uid="saveModelSeriesAct" type="sight::module::ui::com::starter">
-                <start_if_exists uid="modelSeriesWriterSrv" />
-            </service>
+            <service uid="openImageAct" type="sight::module::ui::action" />
+            <service uid="saveModelSeriesAct" type="sight::module::ui::action" />
 
             <service uid="quitAct" type="sight::module::ui::quit" />
 
-            <service uid="createMesh50Act" type="sight::module::ui::com::starter">
-                <start_if_exists uid="mesher50Srv" />
-            </service>
-
-            <service uid="createMesh80Act" type="sight::module::ui::com::starter">
-                <start_if_exists uid="mesher80Srv" />
-            </service>
+            <service uid="createMesh50Act" type="sight::module::ui::action" />
+            <service uid="createMesh80Act" type="sight::module::ui::action" />
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -316,6 +306,26 @@
 
             <!-- ******************************* Start services ***************************************** -->
 
+            <connect>
+                <signal>openImageAct/clicked</signal>
+                <slot>imageReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>saveModelSeriesAct/clicked</signal>
+                <slot>modelSeriesWriterSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>createMesh50Act/clicked</signal>
+                <slot>mesher50Srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>createMesh80Act/clicked</signal>
+                <slot>mesher80Srv/update</slot>
+            </connect>
+
             <start uid="mainFrame" />
             <start uid="progressBarView" />
             <start uid="imageWriterSrv" />
@@ -327,11 +337,13 @@
             <start uid="listOrganEditorSrv" />
             <start uid="mesher50Srv" />
             <start uid="mesher80Srv" />
-            <start uid="modelSeriesWriterSrv" />
             <start uid="trackballInteractorAdp" />
             <start uid="modelSeriesAdp" />
             <start uid="negatoAdp" />
             <start uid="snapshotAdp" />
+            <start uid="imageReaderSrv" />
+            <start uid="modelSeriesWriterSrv" />
+
         </config>
     </extension>
 </plugin>

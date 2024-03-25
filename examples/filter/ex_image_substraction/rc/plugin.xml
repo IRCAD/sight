@@ -227,19 +227,13 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Action to load an image in the Tab 1 -->
-            <service uid="openImage1Act" type="sight::module::ui::com::starter">
-                <start uid="readerFile1Srv" />
-            </service>
+            <service uid="openImage1Act" type="sight::module::ui::action" />
 
             <!-- Action to load an image in the Tab 2 -->
-            <service uid="openImage2Act" type="sight::module::ui::com::starter">
-                <start uid="readerFile2Srv" />
-            </service>
+            <service uid="openImage2Act" type="sight::module::ui::action" />
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="saveImageAct" type="sight::module::ui::com::starter">
-                <start uid="imageWriterSrv" />
-            </service>
+            <service uid="saveImageAct" type="sight::module::ui::action" />
 
             <!-- Action to save an image in the Tab 3 -->
             <service uid="computeImageAct" type="sight::module::ui::action" />
@@ -428,6 +422,21 @@
                 <slot>imageWriter3Srv/update</slot>
             </connect>
 
+            <connect>
+                <signal>openImage1Act/clicked</signal>
+                <slot>readerFile1Srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>openImage2Act/clicked</signal>
+                <slot>readerFile2Srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>saveImageAct/clicked</signal>
+                <slot>imageWriterSrv/update</slot>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -447,6 +456,10 @@
             <start uid="N3TrackballInteractorAdp" />
             <start uid="N3SnapshotAdp" />
             <start uid="N3NegatoAdp" />
+
+            <start uid="readerFile1Srv" />
+            <start uid="readerFile2Srv" />
+            <start uid="imageWriterSrv" />
 
         </config>
     </extension>

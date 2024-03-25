@@ -13,12 +13,6 @@
          <desc>Defines the default action to have a simple action button.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::factory">
-         <type>sight::ui::action</type>
-         <service>sight::module::ui::default_action</service>
-         <desc>Defines the default action to have a simple action button.</desc>
-    </extension>
-
      <extension implements="sight::service::extension::factory">
           <type>sight::ui::frame</type>
           <service>sight::module::ui::frame</service>
@@ -65,18 +59,6 @@
           <type>sight::ui::view</type>
           <service>sight::module::ui::view</service>
           <desc>Defines the generic layout for application.</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::action</type>
-          <service>sight::module::ui::com::signal</service>
-          <desc>action that sends a signal when it is triggered</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::action</type>
-          <service>sight::module::ui::com::starter</service>
-          <desc>Apply an action (start, stop, ...) on a service specify by uid.</desc>
      </extension>
 
      <extension implements="sight::service::extension::factory">
