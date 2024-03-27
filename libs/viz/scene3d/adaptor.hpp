@@ -149,6 +149,9 @@ protected:
 
     /// Enables the adaptor visibility.
     bool m_visible {true};
+
+    /// Ensure visibility changes are applied when rendering is requested.
+    bool m_visibility_applied {true};
 };
 
 //------------------------------------------------------------------------------

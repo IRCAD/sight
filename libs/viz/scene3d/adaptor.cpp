@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -150,14 +150,20 @@ Ogre::SceneManager* adaptor::get_scene_manager()
 void adaptor::request_render()
 {
     auto render_service = this->render_service();
-    render_service->request_render();
+    if(m_visible || !m_visibility_applied)
+    {
+        render_service->request_render();
+    }
+
+    m_visibility_applied = true;
 }
 
 //-----------------------------------------------------------------------------
 
 void adaptor::update_visibility(bool _is_visible)
 {
-    m_visible = _is_visible;
+    m_visible            = _is_visible;
+    m_visibility_applied = false;
     this->set_visible(m_visible);
 }
 
