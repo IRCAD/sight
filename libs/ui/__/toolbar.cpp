@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ void toolbar::initialize()
     {
         this->initialize_layout_manager(layout_config.value());
 
-        m_hide_actions = layout_config->get<bool>("hideActions", m_hide_actions);
+        m_hide_actions = layout_config->get<bool>("<xmlattr>.hideActions", m_hide_actions);
     }
 }
 

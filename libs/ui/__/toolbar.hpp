@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,9 +74,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="ui::toolbar" impl="sight::module::ui::toolbar"
-     * auto_connect="false"
-     *>
+       <service uid="toolbar2" type="ui::toolbar" impl="sight::module::ui::toolbar">
            <gui>
                <layout hideActions="false" style="ToolButtonIconOnly">
                    <menuItem name="My item 2" style="radio" icon="TutoGui/system.png"/>

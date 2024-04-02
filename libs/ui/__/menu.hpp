@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,10 +71,9 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-        <service uid="myMenu" type="ui::menu" impl="sight::module::ui::menu"
-     * auto_connect="false" >
+        <service uid="myMenu" type="ui::menu" impl="sight::module::ui::menu">
             <gui>
-                <layout hideAction="false">
+                <layout hideActions="false">
                     <menuItem name="My item 1" shortcut="1" style="check" />
                     <separator />
                     <menuItem name="My item 2" shortcut="2" style="radio" />
@@ -96,7 +95,7 @@ protected:
        @endcode
      * - \<gui\> \</gui\> : (mandatory) describe the interface of the service. It must contain a layout section.
      *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
-     *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
+     *     - \b hideActions: (optional, default=false): if true, the actions are hidden when they are stopped.
      * - \<registry\> \</registry\> : (mandatory) describe the service management.
      *   - \<menuItem\> represents action
      *   - \<menu\> represents menu

@@ -141,7 +141,7 @@
 
             <service uid="toolBarView" type="sight::module::ui::toolbar">
                 <gui>
-                    <layout style="ToolButtonTextUnderIcon">
+                    <layout hideActions="true" style="ToolButtonTextUnderIcon">
                         <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="space;f"/>
                         <menuItem name="pause" icon="sight::module::ui::flaticons/OrangePause.svg" />
                         <menuItem name="stop" icon="sight::module::ui::flaticons/RedStop.svg" />
@@ -430,22 +430,16 @@
             </connect>
 
             <connect>
-                <signal>startAct/updated</signal>
+                <signal>startAct/clicked</signal>
                 <slot>startAct/hide</slot>
                 <slot>stopAct/enable</slot>
                 <slot>pauseAct/show</slot>
             </connect>
 
             <connect>
-                <signal>stopAct/updated</signal>
+                <signal>stopAct/clicked</signal>
                 <slot>startAct/show</slot>
                 <slot>stopAct/disable</slot>
-                <slot>pauseAct/hide</slot>
-            </connect>
-
-            <connect>
-                <signal>startAct/updated</signal>
-                <slot>startAct/show</slot>
                 <slot>pauseAct/hide</slot>
             </connect>
 
